@@ -86,7 +86,7 @@ The `build` command is used to independently construct the Cangjie runtime envir
 - `-t, --build-type <value>` specifies the build configuration. Valid values: `release, debug, relwithdebinfo`. Default: `release`.
 - `-v, --version <value>` sets the version number for the Cangjie runtime. Default: `0.0.1`.
 - `--prefix <value>` defines the installation path for build outputs. Defaults to `runtime/output/common`. If both `build` and `install` specify paths, install takes precedence.
-- `-hwasan` enables Hardware-Assisted Address Sanitizer (HWASAN).
+- `--hwasan` enables Hardware-Assisted Address Sanitizer (HWASAN).
 - `--target-toolchain <value>` specifies the toolchain for cross-compilation. **Required for cross-compilation builds**. See [Build Preparation](#build-preparation) for toolchain configuration details.
 
 Example:

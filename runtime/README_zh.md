@@ -80,7 +80,7 @@
 - `-t, --build-type <value>` 用于指定构建模式。`value` 的取值包括：`release、debug、relwithdebinfo`，区分大小写，默认值为 `release`。
 - `-v, --version <value>` 用于指定仓颉运行时的版本，`value` 默认值为 `0.0.1`
 - `--prefix <value>` 可用于指定构建产物的安装路径，默认安装到 runtime 目录下的 output/common 目录。当 `build` 和 `install` 同时指定了安装路径，后者生效。
-- `-hwasan` 用于使能 Hardware-Assisted Address Sanitizer (HWASAN)。
+- `--hwasan` 用于使能 Hardware-Assisted Address Sanitizer (HWASAN)。
 - `--target-toolchain <value>` 用于指定交叉编译的工具链，**交叉编译构建时为必选参数**。工具链配置请参见[构建准备](#构建准备)。
 
 示例：
