@@ -184,7 +184,7 @@ public:
 
     virtual bool ResurrectObject(BaseObject* obj)
     {
-        bool resurrected = RegionSpace::ResurrentObject(obj);
+        bool resurrected = RegionSpace::ResurrectObject(obj);
         if (!resurrected) {
             reinterpret_cast<RegionSpace&>(theAllocator).CountLiveObject(obj);
             if (!fixReferences && RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj))->IsFromRegion()) {

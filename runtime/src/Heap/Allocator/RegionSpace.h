@@ -174,10 +174,10 @@ public:
         RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
         return regionInfo->MarkObject(obj);
     }
-    static bool ResurrentObject(const BaseObject* obj)
+    static bool ResurrectObject(const BaseObject* obj)
     {
         RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
-        return regionInfo->ResurrentObject(obj);
+        return regionInfo->ResurrectObject(obj);
     }
 
     static bool EnqueueObject(const BaseObject* obj)

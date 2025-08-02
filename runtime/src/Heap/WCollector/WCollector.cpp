@@ -42,7 +42,7 @@ bool WCollector::MarkObject(BaseObject* obj) const
 
 bool WCollector::ResurrectObject(BaseObject* obj)
 {
-    bool resurrected = RegionSpace::ResurrentObject(obj);
+    bool resurrected = RegionSpace::ResurrectObject(obj);
     if (!resurrected) {
         reinterpret_cast<RegionSpace&>(theAllocator).CountLiveObject(obj);
         RegionInfo* region = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));

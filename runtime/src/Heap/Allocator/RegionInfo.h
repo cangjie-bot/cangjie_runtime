@@ -308,7 +308,7 @@ public:
         return marked;
     }
 
-    bool ResurrentObject(const BaseObject* obj)
+    bool ResurrectObject(const BaseObject* obj)
     {
         if (IsLargeRegion()) {
             if (metadata.isResurrected != 1) {
