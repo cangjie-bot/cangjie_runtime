@@ -508,6 +508,7 @@ public enum TokenKind <: ToString {
             case (PERFORM, PERFORM) => true
             case (RESUME, RESUME) => true
             case (THROWING, THROWING) => true
+            case (FEATURES, FEATURES) => true
             case (ILLEGAL, ILLEGAL) => true
             case _ => false
         }
