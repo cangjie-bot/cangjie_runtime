@@ -1505,7 +1505,7 @@ public func getTokenKind(no: UInt16): TokenKind {
     let maxSize = PATTERNS.size
     let index = Int64(no)
     if (index >= maxSize) {
-       /* Return ILLEGAL Token. */
+        /* Return ILLEGAL Token. */
         return PATTERNS[maxSize - 1][0]
     }
     return PATTERNS[index][0];
