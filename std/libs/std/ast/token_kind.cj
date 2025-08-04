@@ -12,322 +12,322 @@ package std.ast
  * Note: If Tokens.inc is changed, TokenKind and PATTERNS should change accordingly.
  */
 public enum TokenKind <: ToString {
-    DOT
-    | /*  "."           */
-        COMMA
-    | /*  ","           */
-        LPAREN
-    | /*  "("           */
-        RPAREN
-    | /*  ")"           */
-        LSQUARE
-    | /*  "["           */
-        RSQUARE
-    | /*  "]"           */
-        LCURL
-    | /*  "{"           */
-        RCURL
-    | /*  "}"           */
-        EXP
-    | /*  "**"          */
-        MUL
-    | /*  "*"           */
-        MOD
-    | /*  "%"           */
-        DIV
-    | /*  "/"           */
-        ADD
-    | /*  "+"           */
-        SUB
-    | /*  "-"           */
-        INCR
-    | /*  "++"          */
-        DECR
-    | /*  "--"          */
-        AND
-    | /*  "&&"          */
-        OR
-    | /*  "||"          */
-        COALESCING
-    | /*  "??"          */
-        PIPELINE
-    | /*  "|>"          */
-        COMPOSITION
-    | /*  "~>"          */
-        NOT
-    | /*  "!"           */
-        BITAND
-    | /*  "&"           */
-        BITOR
-    | /*  "|"           */
-        BITXOR
-    | /*  "^"           */
-        BITNOT
-    | /*  "~"           */
-        LSHIFT
-    | /*  "<<"          */
-        RSHIFT
-    | /*  ">>"          */
-        COLON
-    | /*  ":"           */
-        SEMI
-    | /*  ";"           */
-        ASSIGN
-    | /*  "="           */
-        ADD_ASSIGN
-    | /*  "+="          */
-        SUB_ASSIGN
-    | /*  "-="          */
-        MUL_ASSIGN
-    | /*  "*="          */
-        EXP_ASSIGN
-    | /*  "**="         */
-        DIV_ASSIGN
-    | /*  "/="          */
-        MOD_ASSIGN
-    | /*  "%="          */
-        AND_ASSIGN
-    | /*  "&&="         */
-        OR_ASSIGN
-    | /*  "||="         */
-        BITAND_ASSIGN
-    | /*  "&="          */
-        BITOR_ASSIGN
-    | /*  "|="          */
-        BITXOR_ASSIGN
-    | /*  "^="          */
-        LSHIFT_ASSIGN
-    | /*  "<<="         */
-        RSHIFT_ASSIGN
-    | /*  ">>="         */
-        ARROW
-    | /*  "->"          */
-        BACKARROW
-    | /*  "<-"          */
-        DOUBLE_ARROW
-    | /*  "=>"          */
-        RANGEOP
-    | /*  ".."          */
-        CLOSEDRANGEOP
-    | /*  "..="         */
-        ELLIPSIS
-    | /*  "..."         */
-        HASH
-    | /*  "#"           */
-        AT
-    | /*  "@"           */
-        QUEST
-    | /*  "?"           */
-        LT
-    | /*  "<"           */
-        GT
-    | /*  ">"           */
-        LE
-    | /*  "<="          */
-        GE
-    | /*  ">="          */
-        IS
-    | /*  "is"          */
-        AS
-    | /*  "as"          */
-        NOTEQ
-    | /*  "!="          */
-        EQUAL
-    | /*  "=="          */
-        WILDCARD
-    | /*  "_"           */
-        INT8
-    | /*  "Int8"        */
-        INT16
-    | /*  "Int16"       */
-        INT32
-    | /*  "Int32"       */
-        INT64
-    | /*  "Int64"       */
-        INTNATIVE
-    | /*  "IntNative"   */
-        UINT8
-    | /*  "UInt8"       */
-        UINT16
-    | /*  "UInt16"      */
-        UINT32
-    | /*  "UInt32"      */
-        UINT64
-    | /*  "UInt64"      */
-        UINTNATIVE
-    | /*  "UIntNative"  */
-        FLOAT16
-    | /*  "Float16"     */
-        FLOAT32
-    | /*  "Float32"     */
-        FLOAT64
-    | /*  "Float64"     */
-        RUNE
-    | /*  "Rune"        */
-        BOOLEAN
-    | /*  "Bool"        */
-        NOTHING
-    | /*  "Nothing"     */
-        UNIT
-    | /*  "Unit"        */
-        STRUCT
-    | /*  "struct"      */
-        ENUM
-    | /*  "enum"        */
-        VARRAY
-    | /*  "VArray"      */
-        THISTYPE
-    | /*  "This"        */
-        PACKAGE
-    | /*  "package"     */
-        IMPORT
-    | /*  "import"      */
-        CLASS
-    | /*  "class"       */
-        INTERFACE
-    | /*  "interface"   */
-        FUNC
-    | /*  "func"        */
-        MACRO
-    | /*  "macro"       */
-        QUOTE
-    | /*  "quote"       */
-        DOLLAR
-    | /*  "$"           */
-        LET
-    | /*  "let"         */
-        VAR
-    | /*  "var"         */
-        CONST
-    | /*  "const"       */
-        TYPE
-    | /*  "type"        */
-        INIT
-    | /*  "init"        */
-        THIS
-    | /*  "this"        */
-        SUPER
-    | /*  "super"       */
-        IF
-    | /*  "if"          */
-        ELSE
-    | /*  "else"        */
-        CASE
-    | /*  "case"        */
-        TRY
-    | /*  "try"         */
-        CATCH
-    | /*  "catch"       */
-        FINALLY
-    | /*  "finally"     */
-        FOR
-    | /*  "for"         */
-        DO
-    | /*  "do"          */
-        WHILE
-    | /*  "while"       */
-        THROW
-    | /*  "throw"       */
-        RETURN
-    | /*  "return"      */
-        CONTINUE
-    | /*  "continue"    */
-        BREAK
-    | /*  "break"       */
-        IN
-    | /*  "in"          */
-        NOT_IN
-    | /*  "!in"         */
-        MATCH
-    | /*  "match"       */
-        WHERE
-    | /*  "where"       */
-        EXTEND
-    | /*  "extend"      */
-        WITH
-    | /*  "with"        */
-        PROP
-    | /*  "prop"        */
-        STATIC
-    | /*  "static"      */
-        PUBLIC
-    | /*  "public"      */
-        PRIVATE
-    | /*  "private"     */
-        INTERNAL
-    | /*  "internal"     */
-        PROTECTED
-    | /*  "protected"   */
-        OVERRIDE
-    | /*  "override"    */
-        REDEF
-    | /*  "redef"       */
-        ABSTRACT
-    | /*  "abstract"    */
-        SEALED
-    | /*  "sealed"      */
-        OPEN
-    | /*  "open"        */
-        FOREIGN
-    | /*  "foreign"     */
-        INOUT
-    | /*  "inout"       */
-        MUT
-    | /*  "mut"         */
-        UNSAFE
-    | /*  "unsafe"      */
-        OPERATOR
-    | /*  "operator"    */
-        SPAWN
-    | /*  "spawn"       */
-        SYNCHRONIZED
-    | /*  "synchronized */
-        UPPERBOUND
-    | /*  "<:"          */
-        MAIN
-    | /*  "main"        */
-        IDENTIFIER
-    | /*  "x"           */
-        PACKAGE_IDENTIFIER
-    | /*  "x-y"         */
-        INTEGER_LITERAL
-    | /*  e.g. "1"      */
-        RUNE_BYTE_LITERAL
-    | /*  e.g. "b'x'"   */
-        FLOAT_LITERAL
-    | /*  e.g. "'1.0'"  */
-        COMMENT
-    | /*  e.g. "/*xx*/" */
-        NL
-    | /*  newline         */
-        END
-    | /*  end of file     */
-        SENTINEL
-    | /*  ";"             */
-        RUNE_LITERAL
-    | /*  e.g. "r'x'"      */
-        STRING_LITERAL
-    | /*  e.g. ""xx""     */
-        SINGLE_QUOTED_STRING_LITERAL
-    | /*  e.g. "'xx'"     */
-        JSTRING_LITERAL
-    | /*  e.g. "J"xx""     */
-        MULTILINE_STRING
-    | /*  e.g. """"aaa""""   */
-        MULTILINE_RAW_STRING
-    | /*  e.g. "#"aaa"#"     */
-        BOOL_LITERAL
-    | /*  "true" or "false"  */
-        UNIT_LITERAL
-    | /*  "()"               */
-        DOLLAR_IDENTIFIER
-    | /*  e.g. "$x"          */
-        ANNOTATION
-    | /*  e.g. "@When"       */
-        AT_EXCL
-    | /*  "@!"               */
-        ILLEGAL
-    | ...
+    /*  "."           */
+    |   DOT
+    /*  ","           */
+    |   COMMA
+    /*  "("           */
+    |   LPAREN
+    /*  ")"           */
+    |   RPAREN
+    /*  "["           */
+    |   LSQUARE
+    /*  "]"           */
+    |   RSQUARE
+    /*  "{"           */
+    |   LCURL
+    /*  "}"           */
+    |   RCURL
+    /*  "**"          */
+    |   EXP
+    /*  "*"           */
+    |   MUL
+    /*  "%"           */
+    |   MOD
+    /*  "/"           */
+    |   DIV
+    /*  "+"           */
+    |   ADD
+    /*  "-"           */
+    |   SUB
+    /*  "++"          */
+    |   INCR
+    /*  "--"          */
+    |   DECR
+    /*  "&&"          */
+    |   AND
+    /*  "||"          */
+    |   OR
+    /*  "??"          */
+    |   COALESCING
+    /*  "|>"          */
+    |   PIPELINE
+    /*  "~>"          */
+    |   COMPOSITION
+    /*  "!"           */
+    |   NOT
+    /*  "&"           */
+    |   BITAND
+    /*  "|"           */
+    |   BITOR
+    /*  "^"           */
+    |   BITXOR
+    /*  "~"           */
+    |   BITNOT
+    /*  "<<"          */
+    |   LSHIFT
+    /*  ">>"          */
+    |   RSHIFT
+    /*  ":"           */
+    |   COLON
+    /*  ";"           */
+    |   SEMI
+    /*  "="           */
+    |   ASSIGN
+    /*  "+="          */
+    |   ADD_ASSIGN
+    /*  "-="          */
+    |   SUB_ASSIGN
+    /*  "*="          */
+    |   MUL_ASSIGN
+    /*  "**="         */
+    |   EXP_ASSIGN
+    /*  "/="          */
+    |   DIV_ASSIGN
+    /*  "%="          */
+    |   MOD_ASSIGN
+    /*  "&&="         */
+    |   AND_ASSIGN
+    /*  "||="         */
+    |   OR_ASSIGN
+    /*  "&="          */
+    |   BITAND_ASSIGN
+    /*  "|="          */
+    |   BITOR_ASSIGN
+    /*  "^="          */
+    |   BITXOR_ASSIGN
+    /*  "<<="         */
+    |   LSHIFT_ASSIGN
+    /*  ">>="         */
+    |   RSHIFT_ASSIGN
+    /*  "->"          */
+    |   ARROW
+    /*  "<-"          */
+    |   BACKARROW
+    /*  "=>"          */
+    |   DOUBLE_ARROW
+    /*  ".."          */
+    |   RANGEOP
+    /*  "..="         */
+    |   CLOSEDRANGEOP
+    /*  "..."         */
+    |   ELLIPSIS
+    /*  "#"           */
+    |   HASH
+    /*  "@"           */
+    |   AT
+    /*  "?"           */
+    |   QUEST
+    /*  "<"           */
+    |   LT
+    /*  ">"           */
+    |   GT
+    /*  "<="          */
+    |   LE
+    /*  ">="          */
+    |   GE
+    /*  "is"          */
+    |   IS
+    /*  "as"          */
+    |   AS
+    /*  "!="          */
+    |   NOTEQ
+    /*  "=="          */
+    |   EQUAL
+    /*  "_"           */
+    |   WILDCARD
+    /*  "Int8"        */
+    |   INT8
+    /*  "Int16"       */
+    |   INT16
+    /*  "Int32"       */
+    |   INT32
+    /*  "Int64"       */
+    |   INT64
+    /*  "IntNative"   */
+    |   INTNATIVE
+    /*  "UInt8"       */
+    |   UINT8
+    /*  "UInt16"      */
+    |   UINT16
+    /*  "UInt32"      */
+    |   UINT32
+    /*  "UInt64"      */
+    |   UINT64
+    /*  "UIntNative"  */
+    |   UINTNATIVE
+    /*  "Float16"     */
+    |   FLOAT16
+    /*  "Float32"     */
+    |   FLOAT32
+    /*  "Float64"     */
+    |   FLOAT64
+    /*  "Rune"        */
+    |   RUNE
+    /*  "Bool"        */
+    |   BOOLEAN
+    /*  "Nothing"     */
+    |   NOTHING
+    /*  "Unit"        */
+    |   UNIT
+    /*  "struct"      */
+    |   STRUCT
+    /*  "enum"        */
+    |   ENUM
+    /*  "VArray"      */
+    |   VARRAY
+    /*  "This"        */
+    |   THISTYPE
+    /*  "package"     */
+    |   PACKAGE
+    /*  "import"      */
+    |   IMPORT
+    /*  "class"       */
+    |   CLASS
+    /*  "interface"   */
+    |   INTERFACE
+    /*  "func"        */
+    |   FUNC
+    /*  "macro"       */
+    |   MACRO
+    /*  "quote"       */
+    |   QUOTE
+    /*  "$"           */
+    |   DOLLAR
+    /*  "let"         */
+    |   LET
+    /*  "var"         */
+    |   VAR
+    /*  "const"       */
+    |   CONST
+    /*  "type"        */
+    |   TYPE
+    /*  "init"        */
+    |   INIT
+    /*  "this"        */
+    |   THIS
+    /*  "super"       */
+    |   SUPER
+    /*  "if"          */
+    |   IF
+    /*  "else"        */
+    |   ELSE
+    /*  "case"        */
+    |   CASE
+    /*  "try"         */
+    |   TRY
+    /*  "catch"       */
+    |   CATCH
+    /*  "finally"     */
+    |   FINALLY
+    /*  "for"         */
+    |   FOR
+    /*  "do"          */
+    |   DO
+    /*  "while"       */
+    |   WHILE
+    /*  "throw"       */
+    |   THROW
+    /*  "return"      */
+    |   RETURN
+    /*  "continue"    */
+    |   CONTINUE
+    /*  "break"       */
+    |   BREAK
+    /*  "in"          */
+    |   IN
+    /*  "!in"         */
+    |   NOT_IN
+    /*  "match"       */
+    |   MATCH
+    /*  "where"       */
+    |   WHERE
+    /*  "extend"      */
+    |   EXTEND
+    /*  "with"        */
+    |   WITH
+    /*  "prop"        */
+    |   PROP
+    /*  "static"      */
+    |   STATIC
+    /*  "public"      */
+    |   PUBLIC
+    /*  "private"     */
+    |   PRIVATE
+    /*  "internal"     */
+    |   INTERNAL
+    /*  "protected"   */
+    |   PROTECTED
+    /*  "override"    */
+    |   OVERRIDE
+    /*  "redef"       */
+    |   REDEF
+    /*  "abstract"    */
+    |   ABSTRACT
+    /*  "sealed"      */
+    |   SEALED
+    /*  "open"        */
+    |   OPEN
+    /*  "foreign"     */
+    |   FOREIGN
+    /*  "inout"       */
+    |   INOUT
+    /*  "mut"         */
+    |   MUT
+    /*  "unsafe"      */
+    |   UNSAFE
+    /*  "operator"    */
+    |   OPERATOR
+    /*  "spawn"       */
+    |   SPAWN
+    /*  "synchronized */
+    |   SYNCHRONIZED
+    /*  "<:"          */
+    |   UPPERBOUND
+    /*  "main"        */
+    |   MAIN
+    /*  "x"           */
+    |   IDENTIFIER
+    /*  "x-y"         */
+    |   PACKAGE_IDENTIFIER
+    /*  e.g. "1"      */
+    |   INTEGER_LITERAL
+    /*  e.g. "b'x'"   */
+    |   RUNE_BYTE_LITERAL
+    /*  e.g. "'1.0'"  */
+    |   FLOAT_LITERAL
+    /*  e.g. "/*xx*/" */
+    |   COMMENT
+    /*  newline         */
+    |   NL
+    /*  end of file     */
+    |   END
+    /*  ";"             */
+    |   SENTINEL
+    /*  e.g. "r'x'"      */
+    |   RUNE_LITERAL
+    /*  e.g. ""xx""     */
+    |   STRING_LITERAL
+    /*  e.g. "'xx'"     */
+    |   SINGLE_QUOTED_STRING_LITERAL
+    /*  e.g. "J"xx""     */
+    |   JSTRING_LITERAL
+    /*  e.g. """"aaa""""   */
+    |   MULTILINE_STRING
+    /*  e.g. "#"aaa"#"     */
+    |   MULTILINE_RAW_STRING
+    /*  "true" or "false"  */
+    |   BOOL_LITERAL
+    /*  "()"               */
+    |   UNIT_LITERAL
+    /*  e.g. "$x"          */
+    |   DOLLAR_IDENTIFIER
+    /*  e.g. "@When"       */
+    |   ANNOTATION
+    /*  "@!"               */
+    |   AT_EXCL
+    |   ILLEGAL
+    |   ...
 
     public operator func ==(right: TokenKind): Bool {
         match (this) {
@@ -1505,7 +1505,7 @@ public func getTokenKind(no: UInt16): TokenKind {
     let maxSize = PATTERNS.size
     let index = Int64(no)
     if (index >= maxSize) {
-        /* Return ILLEGAL Token. */
+       /* Return ILLEGAL Token. */
         return PATTERNS[maxSize - 1][0]
     }
     return PATTERNS[index][0];
