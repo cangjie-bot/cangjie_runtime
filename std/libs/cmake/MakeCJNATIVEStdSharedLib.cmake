@@ -82,11 +82,7 @@ function(make_cangjie_lib target_name)
                 list(APPEND flags_to_compile "${RUNTIME_COMMON_LIB_DIR}/section.o")
             endif()
             list(APPEND flags_to_compile "${RUNTIME_COMMON_LIB_DIR}/cjstart.o")
-<<<<<<< HEAD
-            list(APPEND flags_to_compile "${CMAKE_BINARY_DIR}/lib/libclang_rt-profile.a")
-=======
-            
->>>>>>> d1c1765 (coverage)
+            list(APPEND flags_to_compile "-lclang_rt-profile")
 
             set(target_system_name ${CMAKE_SYSTEM_NAME})
             if(OHOS)
@@ -116,7 +112,6 @@ function(make_cangjie_lib target_name)
         list(APPEND flags_to_compile "-L${CMAKE_BINARY_DIR}/lib/${output_std_cj_lib_dir}")
         list(APPEND flags_to_compile "-L$ENV{CANGJIE_HOME}/runtime/lib/${output_cj_lib_dir}")
         list(APPEND flags_to_compile "-L$ENV{CANGJIE_HOME}/lib/${output_cj_lib_dir}")
-        list(APPEND flags_to_compile "-lclang_rt-profile")
         if(NOT DARWIN)
             # In cross-compilation, we need -L (above one) for library searching and -rpath-link (below one) for
             # secondary dependencies (DSOs) searching.
