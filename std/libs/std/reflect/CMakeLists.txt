@@ -4,7 +4,7 @@
 #
 # See https://cangjie-lang.cn/pages/LICENSE for license information.
 
-if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
+
     set(REFLECT_SRCS
         class_type_info_cjnative.cj
         constants.cj
@@ -22,4 +22,3 @@ if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
         variable_info_cjnative.cj
         to_any_cjnative.cj
         CACHE INTERNAL "")
-endif()
