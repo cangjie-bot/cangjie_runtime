@@ -29,7 +29,7 @@ main(): Int64 {
     try (socket = UnixSocket(SOCKET_PATH)) {
         socket.connect()
 
-        let buf = Array<Byte>(10, repeat: 0)
+        let buf = Array<Byte>(5, repeat: 0)
         socket.read(buf)
 
         println(String.fromUtf8(buf)) // hello

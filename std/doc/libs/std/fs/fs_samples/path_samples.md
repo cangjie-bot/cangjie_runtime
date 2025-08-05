@@ -109,7 +109,7 @@ Path.isAbsolute: false; Path.isRelative: true
 Path8: ./
 Path.parent: 
 Path.fileName: .
-Path.extensionName:
+Path.extensionName: 
 Path.fileNameWithoutExtension: 
 Path.isAbsolute: false; Path.isRelative: true
 
