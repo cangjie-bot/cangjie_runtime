@@ -69,6 +69,10 @@ if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
     target_link_libraries(${libname} m)
     target_link_libraries(${libname} clang_rt-profile)
 
+    string(TOLOWER ${TARGET_TRIPLE_DIRECTORY_PREFIX}_${CJNATIVE_BACKEND} output_cj_lib_dir)
+    target_link_directories(${libname} PRIVATE $ENV{CANGJIE_HOME}/lib/${output_cj_lib_dir})
+    target_link_libraries(${libname} clang_rt-profile)
+
     if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
         if(DARWIN)
             target_link_libraries(${libname} "-Wl,-force_load,${RUNTIME_COMMON_LIB_DIR}/libcangjie-aio.a")
