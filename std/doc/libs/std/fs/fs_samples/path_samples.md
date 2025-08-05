@@ -43,7 +43,6 @@ main() {
         println("Path.isAbsolute: ${path.isAbsolute()}; Path.isRelative: ${path.isRelative()}")
         println()
     }
-
     return 0
 }
 ```
