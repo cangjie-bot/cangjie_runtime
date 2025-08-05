@@ -95,7 +95,7 @@ class User {
     @DeriveInclude
     prop name: String {
         get() {
-            "s_${id}"
+            "id${id}"
         }
     }
 }
@@ -108,7 +108,7 @@ main() {
 运行结果：
 
 ```text
-User(name: id0, id: 0)
+User(id: 0, name: id0)
 ```
 
 ## 常见的 Deriving 语法
@@ -236,9 +236,9 @@ main() {
 上述示例将打印以下内容，看起来顺序没有很大影响。
 
 ```text
-Floor(level = 1, building = 2)
-Floor(level = 2, building = 1)
-Floor(level = 3, building = 2)
+Floor(level: 1, building: 2)
+Floor(level: 2, building: 1)
+Floor(level: 3, building: 2)
 ```
 
 但是当我实现 `Comparable` 时，不同的顺序将影响结果。
@@ -246,6 +246,7 @@ Floor(level = 3, building = 2)
 <!-- verify -->
 ```cangjie
 import std.deriving.*
+import std.sort.*
 
 @Derive[Comparable, ToString]
 @DeriveOrder[building, level] // 相比上面示例多了这一行代码
@@ -271,9 +272,9 @@ main() {
 此时，结果将首先按 `building` 排序，然后按 `level` 排序：
 
 ```text
-Floor(building = 1, level = 2)
-Floor(building = 2, level = 1)
-Floor(building = 2, level = 3)
+Floor(building: 1, level: 2)
+Floor(building: 2, level: 1)
+Floor(building: 2, level: 3)
 ```
 
 ## 泛型
