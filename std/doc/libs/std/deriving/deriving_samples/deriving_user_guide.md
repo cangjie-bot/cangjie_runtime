@@ -76,7 +76,7 @@ main() {
 运行结果：
 
 ```text
-User(name: id0, id: 0)
+User(id: 0, name: id0)
 ```
 
 请注意，因为属性 `name` 是在 `id` 之后声明的，因此打印的顺序为先 `id` 后 `name` 。
@@ -108,7 +108,7 @@ main() {
 运行结果：
 
 ```text
-User(id: 0, name: id0)
+User(name: id0, id: 0)
 ```
 
 ## 常见的 Deriving 语法
