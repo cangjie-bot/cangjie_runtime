@@ -210,6 +210,9 @@ function(add_cangjie_library target_name)
         list(APPEND COMPILE_BC_CMD "-O2")
     endif()
 
+    list(APPEND COMPILE_CMD "--coverage")
+    list(APPEND COMPILE_CMD "--int-overflow=wrapping")
+
     set(ENV{LD_LIBRARY_PATH} $ENV{LD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/lib)
     string(TOLOWER ${TARGET_TRIPLE_DIRECTORY_PREFIX}_${BACKEND} output_cj_lib_dir)
 
