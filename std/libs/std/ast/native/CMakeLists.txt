@@ -65,6 +65,10 @@ else()
 endif()
 
 target_compile_options(${libname} PRIVATE ${CMAKE_C_COVERAGE_FLAGS})
+
+target_compile_options(${libname} PUBLIC "-fno-exceptions")
+target_compile_definitions(${libname} PRIVATE CANGJIE_ENABLE_GCOV)
+
 target_include_directories(${libname} PRIVATE ${CANGJIE_INC_DIR} ${CMAKE_BINARY_DIR}/include)
 
 # install for dynamic and static lib

@@ -82,7 +82,8 @@ function(make_cangjie_lib target_name)
                 list(APPEND flags_to_compile "${RUNTIME_COMMON_LIB_DIR}/section.o")
             endif()
             list(APPEND flags_to_compile "${RUNTIME_COMMON_LIB_DIR}/cjstart.o")
-            
+            list(APPEND flags_to_compile "${CMAKE_BINARY_DIR}/lib/libclang_rt-profile.a")
+
             set(target_system_name ${CMAKE_SYSTEM_NAME})
             if(OHOS)
                 set(target_system_name "linux_ohos")

@@ -67,6 +67,7 @@ if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
     target_link_libraries(${libname} ${pcre2_lib})
     add_dependencies(${libname} modify_typetemplate_object)
     target_link_libraries(${libname} m)
+    target_link_libraries(${libname} clang_rt-profile)
 
     if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
         if(DARWIN)
