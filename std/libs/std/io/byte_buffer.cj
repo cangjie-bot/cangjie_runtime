@@ -87,9 +87,7 @@ public class ByteBuffer <: IOStream & Seekable {
      * Clears data from the ByteBuffer.
      */
     public func clear(): Unit {
-        for (i in 0..(start + _length)) {
-            myData[i] = 0
-        }
+        myData[0..(start + _length)].fill(0)
         start = 0
         _length = 0
     }
