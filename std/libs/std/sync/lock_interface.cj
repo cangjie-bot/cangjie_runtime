@@ -34,6 +34,14 @@ public interface Lock {
     func tryLock(): Bool
 
     /**
+     * @brief Try to lock the mutex or `timeout` nanoseconds give up.
+     * @return false if the lock is not available;
+     * @return returns true, otherwise.
+     * @throws IllegalArgumentException if `timeout < Duration.Zero`
+     */
+    func tryLock(timeout!: Duration): Bool
+
+    /**
      * @brief Unlock the mutex.
      * If there are other threads blocking on this lock, then wake up one of them.
      * @throws IllegalSynchronizationStateException if the current thread does not hold the lock.
