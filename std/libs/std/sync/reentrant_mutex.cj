@@ -49,6 +49,16 @@ public open class ReentrantMutex <: Lock {
     }
 
     /**
+     * @brief Try to lock the mutex or `timeout` nanoseconds give up.
+     * @return false if the lock is not available;
+     * @return returns true, otherwise.
+     * @throws IllegalArgumentException if `timeout <= Duration.Zero`
+     */
+    public func tryLock(timeout!: Duration = Duration.Max): Bool {
+        return mutex.tryLock(timeout: timeout)
+    }
+
+    /**
      * @brief Unlock the mutex.
      * If there are other threads blocking on this lock, then wake up one of them.
      * @throws IllegalSynchronizationStateException if the current thread does not hold the lock
