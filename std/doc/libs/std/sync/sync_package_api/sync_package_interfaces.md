@@ -190,6 +190,7 @@ func unlock(): Unit
 public interface Lock {
     func lock(): Unit
     func tryLock(): Bool
+    func tryLock(timeout!: Duration): Bool
     func unlock(): Unit
 }
 ```
@@ -217,6 +218,18 @@ func tryLock(): Bool
 ```
 
 功能：尝试锁定互斥体。
+
+返回值：
+
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果互斥体已被锁定，则返回 false；反之，则锁定互斥体并返回 true。
+
+### func tryLock(timeout!: Duration)
+
+```cangjie
+func tryLock(timeout!: Duration): Bool
+```
+
+功能：尝试锁定互斥体，阻塞时间超过 `timeout`退出。
 
 返回值：
 

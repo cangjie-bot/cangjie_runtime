@@ -3634,6 +3634,18 @@ public func tryLock(): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果互斥体已被锁定，则返回 `false`；反之，则锁定互斥体并返回 `true`。
 
+### func tryLock(timeout!: Duration)
+
+```cangjie
+public func tryLock(timeout!: Duration): Bool
+```
+
+功能：尝试锁定互斥体，阻塞时间超过 `timeout`退出。
+
+返回值：
+
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果互斥体已被锁定，则返回 `false`；反之，则锁定互斥体并返回 `true`。
+
 ### func unlock
 
 ```cangjie

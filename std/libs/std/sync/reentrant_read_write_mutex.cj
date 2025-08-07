@@ -8,6 +8,8 @@
 
 package std.sync
 
+import std.time.MonoTime
+
 @Deprecated
 public enum ReadWriteMutexMode {
     | Unfair
@@ -304,6 +306,52 @@ class ReadWriteLockImpl {
         return false
     }
 
+    func tryReadLock(timeout!: Duration = Duration.Zero): Bool {
+        if (timeout < Duration.Zero) {
+            throw IllegalArgumentException("Timeout cannot be less than to `Duration.Zero`.")
+        }
+        let timeoutNanos = if (timeout > MAX_TIMEOUT_DURATION) {
+            MAX_TIMEOUT_DURATION
+        } else {
+            timeout
+        }
+        let startTime = MonoTime.now()
+        let currThread = Thread.currentThread.id
+        // Case 1: write-mutex is held by the current thread
+        if (writeOwner.load() == currThread) {
+            // state: | share count | write count |
+            // Increase counters
+            incShareCount()
+            incThreadReadCount()
+            return true
+        }
+        while (true) {
+            let currState = state.load()
+            // Case 2: write-mutex is held by another thread
+            if (decodeWriteCount(currState) > 0) {
+                if (isTimeout(startTime, timeoutNanos)) {
+                    return false
+                } else {
+                    // Do nothing; retry
+                }
+            } else { // Case 3: try to hold the read-lock.
+                // Notice that `tryLock` does not obey the fairness constraint.
+                // Expected state: | share count | write count == 0 |
+                if (decodeWriteCount(currState) != 0) {
+                    throw IllegalSynchronizationStateException("Inconsistent state.")
+                }
+                if (state.compareAndSwap(currState, currState + SHARE_UNIT)) { // Succeed
+                    incThreadReadCount()
+                    return true
+                } else { // Fail
+                    // Do nothing; retry
+                }
+            }
+        }
+        // Unreachable
+        return false
+    }
+
     func readUnlock(): Unit {
         let currThread = Thread.currentThread.id
         // Case 1: The current thread does not hold the read-mutex
@@ -402,6 +450,59 @@ class ReadWriteLockImpl {
                 return false
             } else if (decodeShareCount(currState) > 0) { // Case 3: read-mutex is held
                 return false
+            } else { // Case 4: try to hold the write-mutex
+                // Expected state: | share count == 0 | write count 0 |
+                if (currState != 0) {
+                    throw IllegalSynchronizationStateException("Inconsistent state.")
+                }
+                if (state.compareAndSwap(currState, WRITE_UNIT)) { // Succeed
+                    writeOwner.store(currThread)
+                    return true
+                } else { // Fail;
+                    // Do nothing; retry
+                }
+            }
+        }
+        // Unreachable
+        return false
+    }
+
+    func tryWriteLock(timeout!: Duration = Duration.Zero): Bool {
+        if (timeout < Duration.Zero) {
+            throw IllegalArgumentException("Timeout cannot be less than to `Duration.Zero`.")
+        }
+        let timeoutNanos = if (timeout > MAX_TIMEOUT_DURATION) {
+            MAX_TIMEOUT_DURATION
+        } else {
+            timeout
+        }
+        let startTime = MonoTime.now()
+        let currThread = Thread.currentThread.id
+        // Case 1: write-mutex is held by the current thread
+        if (writeOwner.load() == currThread) {
+            let currState = state.load()
+            // state: | share count | write count > 0 |
+            if (decodeWriteCount(currState) <= 0) {
+                throw IllegalSynchronizationStateException("Inconsistent state.")
+            }
+            // Increase write count
+            incWriteCount()
+            return true
+        }
+        while (true) {
+            let currState = state.load()
+            if (decodeWriteCount(currState) > 0) { // Case 2: write-mutex is held
+                if (isTimeout(startTime, timeoutNanos)) {
+                    return false
+                } else {
+                    // Do nothing; retry
+                }
+            } else if (decodeShareCount(currState) > 0) { // Case 3: read-mutex is held
+                if (isTimeout(startTime, timeoutNanos)) {
+                    return false
+                } else {
+                    // Do nothing; retry
+                }
             } else { // Case 4: try to hold the write-mutex
                 // Expected state: | share count == 0 | write count 0 |
                 if (currState != 0) {
