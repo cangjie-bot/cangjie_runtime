@@ -49,6 +49,30 @@ public class Mutex <: UniqueLock {
     }
 
     /**
+     * @brief Try to lock the mutex or `timeout` nanoseconds give up.
+     * @return false if the lock is not available;
+     * @return returns true, otherwise.
+     * @throws IllegalArgumentException if `timeout <= Duration.Zero`
+     */
+    public func tryLock(timeout!: Duration): Bool {
+        if (timeout <= Duration.Zero) {
+            throw IllegalArgumentException("Timeout cannot be less than or equal to `Duration.Zero`.")
+        }
+        let timeoutNanos = if (timeout > MAX_TIMEOUT_DURATION) {
+            MAX_TIMEOUT_NS * Duration.nanosecond
+        } else {
+            timeout
+        }
+        let startTime = MonoTime.now()
+        while (!tryLock()) {
+            if (isTimeout(startTime, timeoutNanos)) {
+                return false
+            }
+        }
+        return true
+    }
+
+    /**
      * @brief Unlock the mutex.
      * If there are other threads blocking on this lock, then wake up one of them.
      * @throws IllegalSynchronizationStateException if the current thread does not hold the lock.
@@ -172,4 +196,8 @@ class MutexCondition <: Condition {
             case false => timeout.toNanoseconds()
         }
     }
+}
+
+func isTimeout(startTime: MonoTime, timeout: Duration): Bool {
+    (MonoTime.now() - startTime) >= timeout
 }
