@@ -46,7 +46,8 @@ set(CMAKE_C_FLAGS
     -fgnu89-inline \
     -fsigned-char \
     -fno-common \
-    -fstack-protector-strong \
+    -fno-stack-protector \
+#    -fstack-protector-strong \
     -fPIC"
 )
 
@@ -67,7 +68,8 @@ set(CMAKE_CXX_FLAGS
     -fno-omit-frame-pointer \
     -fsigned-char \
     -fno-common \
-    -fstack-protector-strong \
+    -fno-stack-protector
+#    -fstack-protector-strong \
     -fno-exceptions \
     -fPIC"
 )
@@ -79,8 +81,10 @@ endif()
 
 # if building stage is publish, add CMAKE_C_FLAGS
 if("${BUILDING_STAGE}" STREQUAL "publish")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fstack-protector-strong")
-    set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fstack-protector-strong")
+#    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fstack-protector-strong")
+#    set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fstack-protector-strong")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-stack-protector")
+    set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fno-stack-protector")
 endif()
 
 # compile flags for debug version only
@@ -137,9 +141,9 @@ add_compile_definitions(
 set(CMAKE_SHARED_LINKER_FLAGS
     "-m64 \
     -rdynamic \
-    -Wl,-z,noexecstack \
-    -Wl,-z,relro \
-    -Wl,-z,now \
+#    -Wl,-z,noexecstack \
+#    -Wl,-z,relro \
+#    -Wl,-z,now \
     -lpthread"
 )
 
