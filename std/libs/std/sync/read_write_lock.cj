@@ -50,6 +50,9 @@ class ReadLock <: Lock {
     public func tryLock(): Bool {
         _readWriteLockImpl.tryReadLock()
     }
+    public func tryLock(timeout!: Duration = Duration.Max): Bool {
+        _readWriteLockImpl.tryReadLock(timeout: timeout)
+    }
     public func unlock(): Unit {
         _readWriteLockImpl.readUnlock()
     }
@@ -63,6 +66,9 @@ class WriteLock <: UniqueLock {
     }
     public func tryLock(): Bool {
         _readWriteLockImpl.tryWriteLock()
+    }
+    public func tryLock(timeout!: Duration = Duration.Max): Bool {
+        _readWriteLockImpl.tryWriteLock(timeout: timeout)
     }
     public func unlock(): Unit {
         _readWriteLockImpl.writeUnlock()
