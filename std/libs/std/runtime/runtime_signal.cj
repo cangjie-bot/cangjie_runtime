@@ -17,10 +17,11 @@ public type SignalHandlerFunc = (Int32) -> Bool
 private let mtx = Mutex()
 
 class SignalManager {
+    // TODO To be confirmed
     static const MAX_SIG_NUM = 32
     static let sigSlot = Array<ArrayList<SignalHandlerFunc>>(MAX_SIG_NUM, {i => ArrayList<SignalHandlerFunc>()})
     static let paction = LibC.malloc<SignalAction>(count: 1)
-    static init(){
+    static init() {
         let action = SignalAction(signalHandler)
         unsafe {
             paction.write(action)
@@ -28,8 +29,12 @@ class SignalManager {
     }
 }
 
+/*
+ * This file provides a way to register signal handlers in Cangjie.
+ * It uses a mutex to ensure thread safety when accessing the signal slots.
+ */
 public func registerSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
-    // todo func check
+    // TODO func check
 
     if (Int64(sig.value) >= SignalManager.MAX_SIG_NUM) {
         throw IllegalArgumentException("Signal value must < ${SignalManager.MAX_SIG_NUM}")
@@ -39,9 +44,12 @@ public func registerSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
         if (slot.size == 0) {
             regSigChain(sig)
         }
-        slot.add(handler) // todo 不需要注册？
+        slot.add(handler) // TODO 不需要注册？
     }
+}
 
+// TODO: Unregister signal handler
+public func unregisterSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
 }
 
 @C
@@ -67,7 +75,6 @@ func regSigChain(sig: Signal) {
     }
 }
 
-
 type SigHandlerCFunc = CFunc<(Int32, CPointer<Unit>, CPointer<Unit>) -> Bool>
 
 @C
@@ -80,11 +87,9 @@ struct SignalAction {
     }
 }
 
-
 foreign func CJ_MCC_AddSignalHandler(signal: Int32, sa: CPointer<SignalAction>): Unit
 
 foreign func CJ_MCC_RemoveSignalHandler(signal: Int32, fn: SigHandlerCFunc): Unit
-
 
 public struct Signal {
     public static const SIGHUP = Signal(0x1, "hangup")
