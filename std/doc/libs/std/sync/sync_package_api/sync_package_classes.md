@@ -4199,10 +4199,10 @@ main() {
 Tick at: 1s2ms74us551ns
 ```
 
-### static func repeat(Duration, Duration, ()->Unit, CatchupStyle)
+### static func repeat(Duration, Duration, ()->Unit, CatchupStyle, end)
 
 ```cangjie
-public static func repeat(delay: Duration, interval: Duration, task: ()->Unit, style!: CatchupStyle = Burst): Timer
+public static func repeat(delay: Duration, interval: Duration, task: ()->Unit, style!: CatchupStyle = Burst, end!: Option<()->Unit> = None): Timer
 ```
 
 功能：设置并启动重复性定时任务，返回控制这个任务的 [Timer](sync_package_classes.md#class-timer) 对象实例。
@@ -4213,6 +4213,7 @@ public static func repeat(delay: Duration, interval: Duration, task: ()->Unit, s
 - interval: [Duration](../../../std/core/core_package_api/core_package_structs.md#struct-duration) - 两次 Task 之间的时间间隔。取值范围 ([Duration.Zero](../../core/core_package_api/core_package_structs.md#static-const-zero), [Duration.Max](../../core/core_package_api/core_package_structs.md#static-const-max)]。
 - task: ()->Unit - 待定时执行的任务。
 - style!: [CatchupStyle](./sync_package_enums.md#enum-catchupstyle) - 追平策略，默认 Burst。当 Task 执行时间过长时，后续任务执行时间点可能发生延迟，不同的追平策略适用于不同的场景，详见 [CatchupStyle](sync_package_enums.md#enum-catchupstyle) 说明。
+- end!: Option<()->Unit> - 定时器终止时会调用的lambda函数
 
 返回值：
 
@@ -4251,10 +4252,10 @@ Tick at: 3s6ms275us464ns
 Tick at: 4s8ms18us399ns
 ```
 
-### static func repeatDuring(Duration, Duration, Duration, ()->Unit, CatchupStyle)
+### static func repeatDuring(Duration, Duration, Duration, ()->Unit, CatchupStyle, end)
 
 ```cangjie
-public static func repeatDuring(period: Duration, delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst): Timer
+public static func repeatDuring(period: Duration, delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst, end!: Option<()->Unit> = None): Timer
 ```
 
 功能：设置并启动重复性定时任务，指定重复周期的最大持续时间，返回控制这个任务的 [Timer](sync_package_classes.md#class-timer) 对象实例。
@@ -4266,6 +4267,7 @@ public static func repeatDuring(period: Duration, delay: Duration, interval: Dur
 - interval: [Duration](../../../std/core/core_package_api/core_package_structs.md#struct-duration) - 两次 Task 之间的时间间隔。取值范围 ([Duration.Zero](../../core/core_package_api/core_package_structs.md#static-const-zero), [Duration.Max](../../core/core_package_api/core_package_structs.md#static-const-max)]。
 - task: ()->Unit - 待定时执行的任务。
 - style!: [CatchupStyle](./sync_package_enums.md#enum-catchupstyle) - 追平策略，默认 Burst。当 Task 执行时间过长时，后续任务执行时间点可能发生延迟，不同的追平策略适用于不同的场景，详见 [CatchupStyle](sync_package_enums.md#enum-catchupstyle) 说明。
+- end!: Option<()->Unit> - 定时器终止时会调用的lambda函数
 
 返回值：
 
@@ -4305,10 +4307,10 @@ Tick at: 5s660us104ns
 Tick at: 6s3ms257us508ns
 ```
 
-### static func repeatTimes(Int64, Duration, Duration, ()->Unit, CatchupStyle)
+### static func repeatTimes(Int64, Duration, Duration, ()->Unit, CatchupStyle, end)
 
 ```cangjie
-public static func repeatTimes(count: Int64, delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst): Timer
+public static func repeatTimes(count: Int64, delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst, end!: Option<()->Unit> = None): Timer
 ```
 
 功能：设置并启动重复性定时任务，指定 Task 最大执行次数，返回控制这个任务的 [Timer](sync_package_classes.md#class-timer) 对象实例。
@@ -4320,6 +4322,7 @@ public static func repeatTimes(count: Int64, delay: Duration, interval: Duration
 - interval: [Duration](../../../std/core/core_package_api/core_package_structs.md#struct-duration) - 两次 Task 之间的时间间隔。取值范围 ([Duration.Zero](../../core/core_package_api/core_package_structs.md#static-const-zero), [Duration.Max](../../core/core_package_api/core_package_structs.md#static-const-max)]。
 - task: ()->Unit - 待定时执行的任务。
 - style!: [CatchupStyle](./sync_package_enums.md#enum-catchupstyle) - 追平策略，默认 Burst。当 Task 执行时间过长时，后续任务执行时间点可能发生延迟，不同的追平策略适用于不同的场景，详见 [CatchupStyle](sync_package_enums.md#enum-catchupstyle) 说明。
+- end!: Option<()->Unit> - 定时器终止时会调用的lambda函数
 
 返回值：
 

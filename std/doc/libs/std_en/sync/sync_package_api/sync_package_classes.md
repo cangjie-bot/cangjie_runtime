@@ -4200,10 +4200,10 @@ Possible execution result:
 Tick at: 1s2ms74us551ns
 ```
 
-### static func repeat(Duration, Duration, ()->Unit, CatchupStyle)
+### static func repeat(Duration, Duration, ()->Unit, CatchupStyle, end)
 
 ```cangjie
-public static func repeat(delay: Duration, interval: Duration, task: ()->Unit, style!: CatchupStyle = Burst): Timer
+public static func repeat(delay: Duration, interval: Duration, task: ()->Unit, style!: CatchupStyle = Burst, end!: Option<()->Unit> = None): Timer
 ```
 
 Function: Sets up and starts a recurring timer task, returning a [Timer](sync_package_classes.md#class-timer) object instance to control this task.
@@ -4214,6 +4214,7 @@ Parameters:
 - interval: [Duration](../../../std_en/core/core_package_api/core_package_structs.md#struct-duration) - The time interval between two Task executions. Valid range: ([Duration.Zero](../../core/core_package_api/core_package_structs.md#static-const-zero), [Duration.Max](../../core/core_package_api/core_package_structs.md#static-const-max)].
 - task: ()->Unit - The task to be executed periodically.
 - style!: [CatchupStyle](./sync_package_enums.md#enum-catchupstyle) - Catch-up strategy, defaults to Burst. When Task execution takes too long, subsequent task execution times may be delayed. Different catch-up strategies suit different scenarios. See [CatchupStyle](sync_package_enums.md#enum-catchupstyle) for details.
+- end!: Option<()->Unit> - A lambda function to be called when the timer terminates.
 
 Return value:
 
@@ -4252,10 +4253,10 @@ Tick at: 3s6ms275us464ns
 Tick at: 4s8ms18us399ns
 ```
 
-### static func repeatDuring(Duration, Duration, Duration, ()->Unit, CatchupStyle)
+### static func repeatDuring(Duration, Duration, Duration, ()->Unit, CatchupStyle, end)
 
 ```cangjie
-public static func repeatDuring(period: Duration, delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst): Timer
+public static func repeatDuring(period: Duration, delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst, end!: Option<()->Unit> = None): Timer
 ```
 
 Function: Sets up and starts a recurring timer task with a maximum duration for the repetition period, returning a [Timer](sync_package_classes.md#class-timer) object instance to control this task.
@@ -4267,6 +4268,7 @@ Parameters:
 - interval: [Duration](../../../std_en/core/core_package_api/core_package_structs.md#struct-duration) - The time interval between two Task executions. Valid range: ([Duration.Zero](../../core/core_package_api/core_package_structs.md#static-const-zero), [Duration.Max](../../core/core_package_api/core_package_structs.md#static-const-max)].
 - task: ()->Unit - The task to be executed periodically.
 - style!: [CatchupStyle](./sync_package_enums.md#enum-catchupstyle) - Catch-up strategy, defaults to Burst. When Task execution takes too long, subsequent task execution times may be delayed. Different catch-up strategies suit different scenarios. See [CatchupStyle](sync_package_enums.md#enum-catchupstyle) for details.
+- end!: Option<()->Unit> - A lambda function to be called when the timer terminates.
 
 Return value:
 
@@ -4306,10 +4308,10 @@ Tick at: 5s660us104ns
 Tick at: 6s3ms257us508ns
 ```
 
-### static func repeatTimes(Int64, Duration, Duration, ()->Unit, CatchupStyle)
+### static func repeatTimes(Int64, Duration, Duration, ()->Unit, CatchupStyle, end)
 
 ```cangjie
-public static func repeatTimes(count: Int64, delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst): Timer
+public static func repeatTimes(count: Int64, delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst, end!: Option<()->Unit> = None): Timer
 ```
 
 Function: Sets up and starts a recurring timer task with a maximum execution count for the Task, returning a [Timer](sync_package_classes.md#class-timer) object instance to control this task.
@@ -4321,6 +4323,7 @@ Parameters:
 - interval: [Duration](../../../std_en/core/core_package_api/core_package_structs.md#struct-duration) - The time interval between two Task executions. Valid range: ([Duration.Zero](../../core/core_package_api/core_package_structs.md#static-const-zero), [Duration.Max](../../core/core_package_api/core_package_structs.md#static-const-max)].
 - task: ()->Unit - The task to be executed periodically.
 - style!: [CatchupStyle](./sync_package_enums.md#enum-catchupstyle) - Catch-up strategy, defaults to Burst. When Task execution takes too long, subsequent task execution times may be delayed. Different catch-up strategies suit different scenarios. See [CatchupStyle](sync_package_enums.md#enum-catchupstyle) for details.
+- end!: Option<()->Unit> - A lambda function to be called when the timer terminates.
 
 Return value:
 
