@@ -2,7 +2,7 @@
 
 ## 功能介绍
 
-posix 包主要适配 POSIX 系统接口。
+posix 包主要适配 POSIX 系统的接口。
 
 本包提供多平台统一操控能力，目前支持 Linux 平台，macOS 平台，Windows 平台。
 
