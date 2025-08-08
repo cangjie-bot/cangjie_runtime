@@ -224,9 +224,8 @@ public class Timer <: Equatable<Timer> & Hashable {
         return id
     }
 
-    func reload(duration: Duration): Unit {
+    func nextRound(duration: Duration): Unit {
         endTime = MonoTime.now() + duration
-        isEnabled = true
         scheduler.add(this)
     }
 }
@@ -458,11 +457,14 @@ class TimerScheduler {
             var duration: ?Duration
             try {
                 duration = timer.task()
-            } finally {
-                timer.isEnabled = false
+            } catch(e:Exception) {
+                // Set duration to None to ensure the timer stops.
+                duration = None
             }
             if (let Some(d) <- duration) {
-                timer.reload(d)
+                timer.nextRound(d)
+            }else{
+                timer.isEnabled = false
             }
         }
     }
