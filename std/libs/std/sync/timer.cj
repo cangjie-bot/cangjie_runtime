@@ -39,10 +39,11 @@ public class Timer <: Equatable<Timer> & Hashable {
 
     private let scheduler: TimerScheduler
     let task: () -> ?Duration
+    let end: Option<()->Unit>
     var endTime: MonoTime
     var isEnabled = true
 
-    init(delay: Duration, task: () -> ?Duration) {
+    init(delay: Duration, end:Option<()->Unit>, task: () -> ?Duration) {
         let realDelay = if (delay > Duration.Zero) {
             delay
         } else {
@@ -51,6 +52,7 @@ public class Timer <: Equatable<Timer> & Hashable {
 
         this.scheduler = TimerScheduler.getScheduler(id)
         this.task = task
+        this.end = end
         try {
             this.endTime = MonoTime.now() + realDelay
         } catch (e: ArithmeticException) {
@@ -73,7 +75,7 @@ public class Timer <: Equatable<Timer> & Hashable {
      * @return A Timer instance.
      */
     public static func after(delay: Duration, task: () -> Option<Duration>): Timer {
-        Timer(delay, task)
+        Timer(delay, None, task)
     }
 
     /**
@@ -84,7 +86,7 @@ public class Timer <: Equatable<Timer> & Hashable {
      * @param task Associated task that are scheduled to run by the timer.
      */
     public static func once(delay: Duration, task: () -> Unit): Timer {
-        Timer(delay) {
+        Timer(delay, None) {
             task()
             None
         }
@@ -98,10 +100,12 @@ public class Timer <: Equatable<Timer> & Hashable {
      * @param interval The minimum interval between two execution times of the associated task.
      * @param task Associated task that are scheduled to run by the timer.
      * @param style The catchup style, default is Burst.
+     * @param end A lambda function to be called when the timer terminates.
      *
      * @throw IllegalArgumentException if @p interval is less than or equal to `Duration.Zero`.
      */
-    public static func repeat(delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst): Timer {
+    public static func repeat(delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst
+        ,end!:Option<()->Unit> = None): Timer {
         if (interval <= Duration.Zero) {
             throw IllegalArgumentException("Interval cannot be less than or equal to Duration.Zero.")
         }
@@ -112,7 +116,7 @@ public class Timer <: Equatable<Timer> & Hashable {
             case Skip => skipStyleTick(delay, interval)
         }
 
-        Timer(delay) {
+        Timer(delay,end) {
             task()
             nextTick()
         }
@@ -127,12 +131,13 @@ public class Timer <: Equatable<Timer> & Hashable {
      * @param interval The minimum interval between two execution times of the associated task.
      * @param task Associated task that are scheduled to run by the timer.
      * @param style The catchup style, default is Burst.
+     * @param end A lambda function to be called when the timer terminates.
      *
      * @throw IllegalArgumentException when the @p period is less than or equal to `Duration.Zero`,
      *                                 or @p interval is less than or equal to `Duration.Zero`.
      */
     public static func repeatDuring(period: Duration, delay: Duration, interval: Duration, task: () -> Unit,
-        style!: CatchupStyle = Burst): Timer {
+        style!: CatchupStyle = Burst,end!:Option<()->Unit> = None): Timer {
         if (period <= Duration.Zero) {
             throw IllegalArgumentException("Period cannot be less than or equal to Duration.Zero.")
         }
@@ -147,7 +152,7 @@ public class Timer <: Equatable<Timer> & Hashable {
         }
         let nextTick = tickDuring(delay, period, innerTick)
 
-        Timer(delay) {
+        Timer(delay,end) {
             task()
             nextTick()
         }
@@ -162,12 +167,13 @@ public class Timer <: Equatable<Timer> & Hashable {
      * @param interval The minimum interval between two execution times of the associated task.
      * @param task Associated task that are scheduled to run by the timer.
      * @param style The catchup style, default is Burst.
+     * @param end A lambda function to be called when the timer terminates.
      *
      * @throw IllegalArgumentException when @p count is less than or equal to 0,
      *                                 or @p interval is less than or equal to `Duration.Zero`.
      */
     public static func repeatTimes(count: Int64, delay: Duration, interval: Duration, task: () -> Unit,
-        style!: CatchupStyle = Burst): Timer {
+        style!: CatchupStyle = Burst,end!:Option<()->Unit> = None): Timer {
         if (count <= 0) {
             throw IllegalArgumentException("Count cannot be less than or equal to 0.")
         }
@@ -182,7 +188,7 @@ public class Timer <: Equatable<Timer> & Hashable {
         }
         let nextTick = tickTimes(count, innerTick)
 
-        Timer(delay) {
+        Timer(delay,end) {
             task()
             nextTick()
         }
@@ -465,6 +471,7 @@ class TimerScheduler {
                 timer.nextRound(d)
             }else{
                 timer.isEnabled = false
+                timer.end?()
             }
         }
     }
