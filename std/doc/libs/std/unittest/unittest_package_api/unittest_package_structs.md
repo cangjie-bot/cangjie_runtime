@@ -1637,6 +1637,73 @@ func setup()
 
 功能：此 CPU 计数器的初始化例程。在每个基准步骤之前调用。
 
+## struct RelativeDelta\<T>
+
+```cangjie
+public struct RelativeDelta<T> {
+    public RelativeDelta(let absolute!: T, let relative!: T) {}
+}
+```
+
+功能：对于浮点类型，提供相对的 delta 数据类型来做近似相等的计算。计算公式如下。
+
+$$|x - y| <= absolute + relative * max(abs(x), abs(y))$$
+
+### RelativeDelta(T, T)
+
+```cangjie
+public RelativeDelta(let absolute!: T, let relative!: T)
+```
+
+功能：RelativeDelta 的主构造函数。
+
+参数：
+
+- absolute!: T - 绝对比较部分的 delta 值。
+- relative!: T - 相对比较部分的 delta 值。
+
+## struct TestCaseInfo
+
+```cangjie
+public struct TestCaseInfo {
+    public let groupName: String
+    public let suiteName: String
+    public let caseName: String
+}
+```
+
+功能：当前正在运行的测试用例的信息。通常在动态 API 的超时处理句柄中被使用。
+
+### let caseName
+
+```cangjie
+public let caseName: String
+```
+
+功能：用例名称。
+
+类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
+
+### let groupName
+
+```cangjie
+public let groupName: String
+```
+
+功能：用例的测试组名称。
+
+类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
+
+### let suiteName
+
+```cangjie
+public let suiteName: String
+```
+
+功能：用例的测试套名称。
+
+类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
+
 ## struct TimeNow
 
 ```cangjie
