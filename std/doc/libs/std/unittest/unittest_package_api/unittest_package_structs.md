@@ -288,7 +288,7 @@ public static func createOrExisting(arg: T, x!:Int64=0): ImmutableInputProvider<
 
 - ImmutableInputProvider\<T> - 输入提供器。
 
-### static func createOrExisting\<U>(U): U where U <: BenchInputProvider\<T>
+### static func createOrExisting\<U>(U)
 
 ```cangjie
 public static func createOrExisting<U>(arg: U): U where U <: BenchInputProvider<T>
@@ -302,7 +302,7 @@ public static func createOrExisting<U>(arg: U): U where U <: BenchInputProvider<
 
 返回值：
 
-- U where U <: BenchInputProvider\<T> - 输入提供器。
+- U - 输入提供器。
 
 ## struct KeyBaseline
 
@@ -1319,38 +1319,6 @@ public prop name: String
 ```
 
 功能：配置项的键值的名称。
-
-## struct KeyTags
-
-```cangjie
-public struct KeyTags <: KeyFor<Array<String>> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 配置键值。
-
-父类型：
-
-- [KeyFor](../unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop tags
-
-```cangjie
-public static prop tags: KeyTags
-```
-
-功能：配置项的键值。
-
-类型：[KeyTags](#struct-keytags)
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)
 
 ## struct KeyTimeout
 

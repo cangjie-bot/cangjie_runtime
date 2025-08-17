@@ -1301,7 +1301,7 @@ public func reportTo<T>(reporter: Reporter<TestReport, T>): T
 
 返回值：
 
-- T : 打印返回值，一般为 Unit 。
+- T - 打印返回值，一般为 Unit 。
 
 ## class TestSuite
 
@@ -1431,7 +1431,7 @@ public func add(benchmark: Benchmark): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func add(UnitTestCase)
 
@@ -1447,7 +1447,7 @@ public func add(test: UnitTestCase): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func afterAll(() -> Unit)
 
@@ -1463,7 +1463,7 @@ public func afterAll(body: () -> Unit): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func afterEach(() -> Unit)
 
@@ -1479,7 +1479,7 @@ public func afterEach(body: () -> Unit): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func afterEach((String) -> Unit)
 
@@ -1495,7 +1495,7 @@ public func afterEach(body: (String) -> Unit): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func beforeAll(() -> Unit)
 
@@ -1511,7 +1511,7 @@ public func beforeAll(body: () -> Unit): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func beforeEach(() -> Unit)
 
@@ -1527,7 +1527,7 @@ public func beforeEach(body: () -> Unit): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func beforeEach((String) -> Unit)
 
@@ -1543,7 +1543,7 @@ public func beforeEach(body: (String) -> Unit): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func template(TestSuite)
 
@@ -1559,7 +1559,7 @@ public func template(template: TestSuite): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func build()
 
@@ -1587,7 +1587,7 @@ public func configure(configuration: Configuration): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ### func setName(String)
 
@@ -1603,7 +1603,7 @@ public func setName(name: String): TestSuiteBuilder
 
 返回值：
 
-- [TestGroupBuilder](#class-testgroupbuilder) - 测试组合构造器。
+- [TestSuiteBuilder](#class-testsuitebuilder) - 测试组合构造器。
 
 ## class UnitTestCase
 

@@ -72,7 +72,7 @@ public static func mapped<T, R>(random: RandomSource, body: (T) -> R): Generator
 
 返回值：
 
-- [Generator](../../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-generatort)\<T> - 生成器。
+- [Generator](../../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-generatort)\<R> - 生成器。
 
 ### static func mapped\<T1, T2, R>(RandomSource, (T1, T2) -> R)
 
@@ -89,7 +89,7 @@ public static func mapped<T, R>(random: RandomSource, body: (T) -> R): Generator
 
 返回值：
 
-- [Generator](../../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-generatort)\<T> - 生成器。
+- [Generator](../../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-generatort)\<R> - 生成器。
 
 ### static func mapped\<T1, T2, T3, R>(RandomSource, (T1, T2, T3) -> R)
 
@@ -107,7 +107,7 @@ public static func mapped<T1, T2, T3, R>(random: RandomSource, body: (T1, T2, T3
 
 返回值：
 
-- [Generator](../../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-generatort)\<T> - 生成器。
+- [Generator](../../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-generatort)\<R> - 生成器。
 
 ### static func mapped\<T1, T2, T3, T4, R>(RandomSource, (T1, T2, T3, T4) -> R)
 
@@ -125,7 +125,7 @@ public static func mapped<T1, T2, T3, T4, R>(random: RandomSource, body: (T1, T2
 
 返回值：
 
-- [Generator](../../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-generatort)\<T> - 生成器。
+- [Generator](../../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-generatort)\<R> - 生成器。
 
 ### static func pick\<T>(RandomSource, Array\<Generator\<T>>)
 
@@ -207,16 +207,6 @@ public RandomDataProvider(private let configuration: Configuration)
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 configuration 不包含 random 实例时，抛出异常。
 
-### prop isInfinite
-
-```cangjie
-public override prop isInfinite: Bool
-```
-
-功能：当该策略为无穷尽时，值为 true, 否则为 false。
-
-类型：[Bool](../../core/core_package_api/core_package_intrinsics.md#bool)。
-
 ### func provide()
 
 ```cangjie
@@ -282,7 +272,7 @@ public class RandomDataShrinker<T> <: DataShrinker<T> {}
 
 - [DataShrinker](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datashrinkert)\<T>
 
-### func shrinker(T)
+### func shrink(T)
 
 ```cangjie
 public override func shrink(value: T): Iterable<T>
@@ -364,7 +354,7 @@ public override func provider(configuration: Configuration): RandomDataProvider<
 
 返回值：
 
-- [RandomDataProvider](unittest_package_classes.md#class-randomdataprovidert) - 随机数提供者。
+- [RandomDataProvider](unittest_package_classes.md#class-randomdataprovidert)\<T> - 随机数提供者。
 
 ### func shrinker(Configuration)
 
@@ -380,7 +370,7 @@ public override func shrinker(_: Configuration): RandomDataShrinker<T>
 
 返回值：
 
-- [RandomDataShrinker](unittest_package_classes.md#class-randomdatashrinkert) - 随机数据的缩减器。
+- [RandomDataShrinker](unittest_package_classes.md#class-randomdatashrinkert)\<T> - 随机数据的缩减器。
 
 ## class RandomDataStrategyRange\<T>
 
@@ -426,7 +416,7 @@ override func provider(configuration: Configuration): RandomDataProviderRange<T>
 
 返回值：
 
-- [RandomDataProviderRange](unittest_prop_test_package_classes.md#class-randomdataproviderranget) - 随机数提供者。
+- [RandomDataProviderRange](unittest_prop_test_package_classes.md#class-randomdataproviderranget)\<T> - 随机数提供者。
 
 ### func shrinker(Configuration)
 
@@ -442,12 +432,12 @@ public override func shrinker(_: Configuration): RandomDataShrinkerRange<T>
 
 返回值：
 
-- [RandomDataShrinkerRange](unittest_package_classes.md#class-randomdatashrinkerranget) - 随机数据的缩减器。
+- [RandomDataShrinkerRange](unittest_package_classes.md#class-randomdatashrinkerranget)\<T> - 随机数据的缩减器。
 
 ### prop isInfinite
 
 ```cangjie
-public override prop isInfinite: Bool 
+public prop isInfinite: Bool 
 ```
 
 功能：当该策略为无穷尽时，值为 true, 否则为 false。
@@ -582,7 +572,7 @@ public func prepend(element: T): LazySeq<T>
 
 返回值：
 
-- [LazySeq](#class-lazyseqt)\<U> - 处理后的序列。
+- [LazySeq](#class-lazyseqt)\<T> - 处理后的序列。
 
 ### static func mix(LazySeq\<T>,LazySeq\<T>)
 
@@ -601,7 +591,7 @@ public static func mix(l1: LazySeq<T>, l2: LazySeq<T>): LazySeq<T>
 
 返回值：
 
-- [LazySeq](#class-lazyseqt)\<U> - 处理后的序列。
+- [LazySeq](#class-lazyseqt)\<T> - 处理后的序列。
 
 ### static func mix(LazySeq\<T>,LazySeq\<T>,LazySeq\<T>)
 
@@ -619,7 +609,7 @@ public static func mix(l1: LazySeq<T>, l2: LazySeq<T>, l3: LazySeq<T>): LazySeq<
 
 返回值：
 
-- [LazySeq](#class-lazyseqt)\<U> - 处理后的序列。
+- [LazySeq](#class-lazyseqt)\<T> - 处理后的序列。
 
 ### static func mix(LazySeq\<T>,LazySeq\<T>,LazySeq\<T>,LazySeq\<T>)
 
@@ -638,7 +628,7 @@ public static func mix(l1: LazySeq<T>, l2: LazySeq<T>, l3: LazySeq<T>, l4: LazyS
 
 返回值：
 
-- [LazySeq](#class-lazyseqt)\<U> - 处理后的序列。
+- [LazySeq](#class-lazyseqt)\<T> - 处理后的序列。
 
 ### static func mix(LazySeq\<T>,LazySeq\<T>,LazySeq\<T>,LazySeq\<T>,LazySeq\<T>)
 
@@ -658,7 +648,7 @@ public static func mix(l1: LazySeq<T>, l2: LazySeq<T>, l3: LazySeq<T>, l4: LazyS
 
 返回值：
 
-- [LazySeq](#class-lazyseqt)\<U> - 处理后的序列。
+- [LazySeq](#class-lazyseqt)\<T> - 处理后的序列。
 
 ### static func of(Iterable\<T>)
 
@@ -674,7 +664,7 @@ public static func of(iterable: Iterable<T>): LazySeq<T>
 
 返回值：
 
-- [LazySeq](#class-lazyseqt)\<U> - 处理后的序列。
+- [LazySeq](#class-lazyseqt)\<T> - 处理后的序列。
 
 ### static func of(Array\<T>)
 
@@ -690,7 +680,7 @@ public static func of(array: Array<T>): LazySeq<T>
 
 返回值：
 
-- [LazySeq](#class-lazyseqt)\<U> - 处理后的序列。
+- [LazySeq](#class-lazyseqt)\<T> - 处理后的序列。
 
 ## class ShrinkHelpers
 
