@@ -128,39 +128,6 @@ func pprint(to: PrettyPrinter): PrettyPrinter
 
 - [PrettyPrinter](./unittest_common_package_classes.md#class-prettyprinter) - 打印器。
 
-
-#### func pprint(PrettyPrinter)
-
-```cangjie
-public func pprint(to: PrettyPrinter): PrettyPrinter
-```
-
-功能：将 [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> 打印到指定的打印器中。
-
-参数：
-
-- to: [PrettyPrinter](./unittest_common_package_classes.md#class-prettyprinter) - 打印器。
-
-返回值：
-
-- [PrettyPrinter](./unittest_common_package_classes.md#class-prettyprinter) - 打印器。
-
-#### func pprint(PrettyPrinter)
-
-```cangjie
-public func pprint(to: PrettyPrinter): PrettyPrinter
-```
-
-功能：将 ArrayList\<T> 打印到指定的打印器中。
-
-参数：
-
-- to: [PrettyPrinter](./unittest_common_package_classes.md#class-prettyprinter) - 打印器。
-
-返回值：
-
-- [PrettyPrinter](./unittest_common_package_classes.md#class-prettyprinter) - 打印器。
-
 ## interface KeyFor
 
 ```cangjie
