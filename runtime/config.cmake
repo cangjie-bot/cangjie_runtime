@@ -48,7 +48,7 @@ message(STATUS "HWASAN_FLAG : ${HWASAN_FLAG}")
 if (NOT OHOS_FLAG)
     set(OHOS_FLAG 0 CACHE STRING "ohos default is false" FORCE)
 endif ()
-set(OHOS_FLAG_LIST "1" "2")
+set(OHOS_FLAG_LIST "1" "2" "3")
 message(STATUS "OHOS_FLAG : ${OHOS_FLAG}")
 
 if (NOT WINDOWS_FLAG)
@@ -187,6 +187,12 @@ if (OHOS_FLAG MATCHES 2)
     set(OHOS_SDK_OUT_PATH "sdk")
     set(OHOS_COMPILE_OPTION "")
 endif ()
+if (OHOS_FLAG MATCHES 3)
+    message("set CMAKE_SYSTEM_PROCESSOR arm")
+    set(CMAKE_SYSTEM_PROCESSOR "arm" CACHE FILEPATH "" FORCE)
+    set(OHOS_SDK_OUT_PATH "sdk")
+    set(OHOS_COMPILE_OPTION "")
+endif()
 
 # Detect operating system and host processor
 message(STATUS "System: ${CMAKE_SYSTEM_NAME}")
@@ -227,11 +233,16 @@ if (OHOS_FLAG IN_LIST OHOS_FLAG_LIST)
         -Wno-error=int-in-bool-context -Wno-error=xor-used-as-pow -Wno-error=return-stack-address \
         -Wno-error=dangling-gsl -Wno-undefined-var-template -Wno-nonportable-include-path -Wno-user-defined-warnings \
         -Wno-unused-lambda-capture -Wno-null-pointer-arithmetic -Wno-enum-compare-switch \
-        -fdata-sections -g2 -ggnu-pubnames -fno-common -Wheader-hygiene -flto -fsanitize=cfi -fno-sanitize=cfi-nvcall,cfi-icall ${OHOS_COMPILE_OPTION}\
+        -fdata-sections -g2 -ggnu-pubnames -fno-common -Wheader-hygiene \
         -Wstring-conversion -Wtautological-overlap-compare -Wl,--allow-shlib-undefined \
         -Wno-unused-command-line-argument -fno-omit-frame-pointer -fvisibility=default -fno-exceptions -fno-rtti \
         -ffunction-sections -Wall -fstack-protector-strong -Werror -fno-emulated-tls \
-        --sysroot=${OHOS_ROOT}/out/sdk/obj/third_party/musl/sysroot ${OHOS_INCLUDE}")
+        --sysroot=${OHOS_ROOT}/out/sdk/obj/third_party/musl/sysroot ${OHOS_INCLUDE}"
+    )
+
+    if (OHOS_FLAG MATCHES 1 OR OHOS_FLAG MATCHES 2)
+        set(CMAKE_INIT_FLAGS "${CMAKE_INIT_FLAGS} -flto -fsanitize=cfi -fno-sanitize=cfi-nvcall,cfi-icall ${OHOS_COMPILE_OPTION}")
+    endif()
 elseif (WINDOWS_FLAG MATCHES 1)
     set(CMAKE_INIT_FLAGS "-Wno-unused-command-line-argument -fno-omit-frame-pointer -fvisibility=hidden -fno-exceptions \
         -fno-rtti -ffunction-sections -Wall -fstack-protector-strong -Werror -Wunused-variable -Wno-inconsistent-dllimport")
@@ -332,6 +343,8 @@ if (OHOS_FLAG MATCHES 1 OR WINDOWS_FLAG MATCHES 1)
     set(BOUNDSCHECK_LIBS ${OHOS_ROOT}/prebuilts/ohos-sdk/linux/11/native/sysroot/usr/lib/aarch64-linux-ohos)
 elseif (OHOS_FLAG MATCHES 2)
     set(BOUNDSCHECK_LIBS ${OHOS_ROOT}/prebuilts/ohos-sdk/linux/11/native/sysroot/usr/lib/x86_64-linux-ohos)
+elseif (OHOS_FLAG MATCHES 3)
+    set(BOUNDSCHECK_LIBS ${OHOS_ROOT}/prebuilts/ohos-sdk/linux/11/native/sysroot/usr/lib/arm-linux-ohos)
 endif ()
 include_directories(${BOUNDSCHECK_INCLUDE})
 
@@ -349,6 +362,9 @@ if (OHOS_FLAG MATCHES 1)
 endif()
 if (OHOS_FLAG MATCHES 2)
     set(TARGET_ARCH "linux_ohos_x86_64_cjnative")    
+endif()
+if (OHOS_FLAG MATCHES 3)
+    set(TARGET_ARCH "linux_ohos_aarch32_cjnative")    
 endif()
 if (MACOS_FLAG MATCHES 1)
     set(TARGET_ARCH "darwin_${CMAKE_HOST_SYSTEM_PROCESSOR}_cjnative")    
