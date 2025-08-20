@@ -1277,6 +1277,16 @@ public mut prop genericParam: GenericParam
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - 当节点未定义类型形参列表时，抛出异常。
 
+### var identifier_
+
+```cangjie
+protected var identifier_: Token
+```
+
+功能：获取或设置定义节点的标识符，如 `class foo {}` 中的 `foo`。
+
+类型：[Token](ast_package_structs.md#struct-token)
+
 ### prop identifier
 
 ```cangjie
@@ -1297,6 +1307,16 @@ public mut prop isGenericDecl: Bool
 
 类型：[Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 是一个泛型节点为 true；反之为 false。
 
+### var keyword_
+
+```cangjie
+protected var keyword_: Token
+```
+
+功能：获取或设置定义节点的关键字。
+
+类型：[Token](ast_package_structs.md#struct-token)
+
 ### prop keyword
 
 ```cangjie
@@ -1307,6 +1327,16 @@ public mut prop keyword: Token
 
 类型：[Token](ast_package_structs.md#struct-token)
 
+### var modifiers_
+
+```cangjie
+protected var modifiers_: ArrayList<Modifier>
+```
+
+功能：获取或设置修饰节点的修饰符列表。
+
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Modifier](ast_package_classes.md#class-modifier)>
+
 ### prop modifiers
 
 ```cangjie
@@ -1316,6 +1346,15 @@ public mut prop modifiers: ArrayList<Modifier>
 功能：获取或设置修饰节点的修饰符列表。
 
 类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Modifier](ast_package_classes.md#class-modifier)>
+
+### var node
+```cangjie
+protected var node: Node
+```
+
+功能：获取或设置[Decl](ast_package_classes.md#class-decl) 节点的形参节点。
+
+类型：[Node](ast_package_classes.md#class-node)
 
 ### func getAttrs()
 
@@ -1328,6 +1367,26 @@ public func getAttrs(): Tokens
 返回值：
 
 - [Tokens](ast_package_classes.md#class-tokens) - 当前节点的属性。
+
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(indent: UInt16): String
+```
+
+功能：将当前语法树节点转化为树形结构的形态并进行打印。
+
+参数：
+
+- indent: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - 格式化输出的缩进空格数量。
+
+语法树节点的树形结构将按照以下形式进行输出：
+
+- `-` 字符串：表示当前节点的公共属性， 如 `-keyword` , `-identifier`。
+- 节点属性后紧跟该节点的具体类型， 如 `-declType: PrimitiveType` 表示节点类型是一个 [PrimitiveType](ast_package_classes.md#class-primitivetype) 节点。
+- 每个类型使用大括号表示类型的作用区间。
+
+语法树输出的详细格式请参见[语法树节点打印](../ast_samples/dump.md)。
 
 ### func hasAttr(String)
 
@@ -1936,6 +1995,28 @@ public func traverse(v: Visitor): Unit
 参数：
 
 - v: [Visitor](ast_package_classes.md#class-visitor) - [Visitor](ast_package_classes.md#class-visitor) 类型的实例。
+
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(_: UInt16): String
+```
+
+功能：将当前语法树节点转化为树形结构的形态并进行打印，需要被子类重写。
+
+参数：
+
+- _: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - 格式化输出的缩进空格数量。
+
+### func precedence()
+
+```cangjie
+protected open func precedence(): Int64
+```
+
+功能：返回当前表达式节点的优先级
+
+返回值：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
 ## class ExtendDecl
 
@@ -2558,6 +2639,18 @@ public func traverse(v: Visitor): Unit
 参数：
 
 - v: [Visitor](ast_package_classes.md#class-visitor) - [Visitor](ast_package_classes.md#class-visitor) 类型的实例。
+
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(indent: UInt16): String
+```
+
+功能：将当前语法树节点转化为树形结构的形态并进行打印。
+
+参数：
+
+- indent: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - 格式化输出的缩进空格数量
 
 ## class FuncType
 
@@ -6024,6 +6117,18 @@ public func traverse(v: Visitor): Unit
 
 - v: [Visitor](ast_package_classes.md#class-visitor) - [Visitor](ast_package_classes.md#class-visitor) 类型的实例。
 
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(_: UInt16): String
+```
+
+功能：将当前语法树节点转化为树形结构的形态并进行打印，需要被子类重写。
+
+参数：
+
+- _: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - 格式化输出的缩进空格数量。
+
 ## class PrefixType
 
 ```cangjie
@@ -8343,6 +8448,16 @@ public open operator func [](range: Range<Int64>): Tokens
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 `range.step` 不等于 1 时，抛出异常。
 - [IndexOutOfBoundsException](../../core/core_package_api/core_package_exceptions.md#class-indexoutofboundsexception) - 当 range 无效时，抛出异常。
 
+### var tokens
+
+```cangjie
+protected var tokens: ArrayList<Token>
+```
+
+功能：获取或设置内部以[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Token](ast_package_structs.md#struct-token)>格式存储的全部[Token](ast_package_structs.md#struct-token)。
+
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Token](ast_package_structs.md#struct-token)>
+
 ## class TokensIterator
 
 ```cangjie
@@ -9244,6 +9359,18 @@ public func traverse(v: Visitor): Unit
 
 - v: [Visitor](ast_package_classes.md#class-visitor) - [Visitor](ast_package_classes.md#class-visitor) 类型的实例。
 
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(indent: UInt16): String
+```
+
+功能：将当前语法树节点转化为树形结构的形态并进行打印。
+
+参数：
+
+- indent: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - 格式化输出的缩进空格数量
+
 ## class TypePattern
 
 ```cangjie
@@ -9997,6 +10124,697 @@ public func breakTraverse(): Unit
 ```
 
 功能：用于重写 `visit` 函数中，通过调用该函数来终止继续遍历子节点的行为。
+
+### func needBreakTraverse()
+
+```cangjie
+protected func needBreakTraverse(): Bool
+```
+
+功能：用于判断是否需要停止遍历
+
+返回值：[Bool](../../core/core_package_api/core_package_intrinsics.md#bool)
+
+### func visit(Node)
+protected open func visit(_: Node): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Node](ast_package_classes.md#class-node) - [Node](ast_package_classes.md#class-node) 类型的被遍历节点。
+
+### func visit(Expr)
+protected open func visit(_: Expr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Expr](ast_package_classes.md#class-expr) - [Expr](ast_package_classes.md#class-expr) 类型的被遍历节点。
+
+### func visit(IsExpr)
+protected open func visit(_: IsExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [IsExpr](ast_package_classes.md#class-isexpr) - [IsExpr](ast_package_classes.md#class-isexpr) 类型的被遍历节点。
+
+### func visit(AsExpr)
+protected open func visit(_: AsExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [AsExpr](ast_package_classes.md#class-asexpr) - [AsExpr](ast_package_classes.md#class-asexpr) 类型的被遍历节点。
+
+### func visit(LitConstExpr)
+protected open func visit(_: LitConstExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [LitConstExpr](ast_package_classes.md#class-litconstexpr) - [LitConstExpr](ast_package_classes.md#class-litconstexpr) 类型的被遍历节点。
+
+### func visit(UnaryExpr)
+protected open func visit(_: UnaryExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [UnaryExpr](ast_package_classes.md#class-unaryexpr) - [UnaryExpr](ast_package_classes.md#class-unaryexpr) 类型的被遍历节点。
+
+### func visit(BinaryExpr)
+protected open func visit(_: BinaryExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [BinaryExpr](ast_package_classes.md#class-binaryexpr) - [BinaryExpr](ast_package_classes.md#class-binaryexpr) 类型的被遍历节点。
+
+### func visit(ParenExpr)
+protected open func visit(_: ParenExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ParenExpr](ast_package_classes.md#class-parenexpr) - [ParenExpr](ast_package_classes.md#class-parenexpr) 类型的被遍历节点。
+
+### func visit(CallExpr)
+protected open func visit(_: CallExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [CallExpr](ast_package_classes.md#class-callexpr) - [CallExpr](ast_package_classes.md#class-callexpr) 类型的被遍历节点。
+
+### func visit(RefExpr)
+protected open func visit(_: RefExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [RefExpr](ast_package_classes.md#class-refexpr) - [RefExpr](ast_package_classes.md#class-refexpr) 类型的被遍历节点。
+
+### func visit(ReturnExpr)
+protected open func visit(_: ReturnExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ReturnExpr](ast_package_classes.md#class-returnexpr) - [ReturnExpr](ast_package_classes.md#class-returnexpr) 类型的被遍历节点。
+
+### func visit(AssignExpr)
+protected open func visit(_: AssignExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [AssignExpr](ast_package_classes.md#class-assignexpr) - [AssignExpr](ast_package_classes.md#class-assignexpr) 类型的被遍历节点。
+
+### func visit(MemberAccess)
+protected open func visit(_: MemberAccess): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [MemberAccess](ast_package_classes.md#class-memberaccess) - [MemberAccess](ast_package_classes.md#class-memberaccess) 类型的被遍历节点。
+
+### func visit(IfExpr)
+protected open func visit(_: IfExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [IfExpr](ast_package_classes.md#class-ifexpr) - [IfExpr](ast_package_classes.md#class-ifexpr) 类型的被遍历节点。
+
+### func visit(LetPatternExpr)
+protected open func visit(_: LetPatternExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) - [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) 类型的被遍历节点。
+
+### func visit(MatchExpr)
+protected open func visit(_: MatchExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [MatchExpr](ast_package_classes.md#class-matchexpr) - [MatchExpr](ast_package_classes.md#class-matchexpr) 类型的被遍历节点。
+
+### func visit(WhileExpr)
+protected open func visit(_: WhileExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [WhileExpr](ast_package_classes.md#class-whileexpr) - [WhileExpr](ast_package_classes.md#class-whileexpr) 类型的被遍历节点。
+
+### func visit(LambdaExpr)
+protected open func visit(_: LambdaExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [LambdaExpr](ast_package_classes.md#class-lambdaexpr) - [LambdaExpr](ast_package_classes.md#class-lambdaexpr) 类型的被遍历节点。
+
+### func visit(SpawnExpr)
+protected open func visit(_: SpawnExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [SpawnExpr](ast_package_classes.md#class-spawnexpr) - [SpawnExpr](ast_package_classes.md#class-spawnexpr) 类型的被遍历节点。
+
+### func visit(SynchronizedExpr)
+protected open func visit(_: SynchronizedExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr) - [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr) 类型的被遍历节点。
+
+### func visit(TrailingClosureExpr)
+protected open func visit(_: TrailingClosureExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) - [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) 类型的被遍历节点。
+
+### func visit(TypeConvExpr)
+protected open func visit(_: TypeConvExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) - [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) 类型的被遍历节点。
+
+### func visit(ForInExpr)
+protected open func visit(_: ForInExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ForInExpr](ast_package_classes.md#class-forinexpr) - [ForInExpr](ast_package_classes.md#class-forinexpr) 类型的被遍历节点。
+
+### func visit(PrimitiveTypeExpr)
+protected open func visit(_: PrimitiveTypeExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) - [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) 类型的被遍历节点。
+
+### func visit(ArrayLiteral)
+protected open func visit(_: ArrayLiteral): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ArrayLiteral](ast_package_classes.md#class-arrayliteral) - [ArrayLiteral](ast_package_classes.md#class-arrayliteral) 类型的被遍历节点。
+
+### func visit(TupleLiteral)
+protected open func visit(_: TupleLiteral): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TupleLiteral](ast_package_classes.md#class-tupleliteral) - [TupleLiteral](ast_package_classes.md#class-tupleliteral) 类型的被遍历节点。
+
+### func visit(SubscriptExpr)
+protected open func visit(_: SubscriptExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [SubscriptExpr](ast_package_classes.md#class-subscriptexpr) - [SubscriptExpr](ast_package_classes.md#class-subscriptexpr) 类型的被遍历节点。
+
+### func visit(RangeExpr)
+protected open func visit(_: RangeExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [RangeExpr](ast_package_classes.md#class-rangeexpr) - [RangeExpr](ast_package_classes.md#class-rangeexpr) 类型的被遍历节点。
+
+### func visit(Block)
+protected open func visit(_: Block): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Block](ast_package_classes.md#class-block) - [Block](ast_package_classes.md#class-block) 类型的被遍历节点。
+
+### func visit(DoWhileExpr)
+protected open func visit(_: DoWhileExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) - [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) 类型的被遍历节点。
+
+### func visit(JumpExpr)
+protected open func visit(_: JumpExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [JumpExpr](ast_package_classes.md#class-jumpexpr) - [JumpExpr](ast_package_classes.md#class-jumpexpr) 类型的被遍历节点。
+
+### func visit(IncOrDecExpr)
+protected open func visit(_: IncOrDecExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [IncOrDecExpr](ast_package_classes.md#class-incordecexpr) - [IncOrDecExpr](ast_package_classes.md#class-incordecexpr) 类型的被遍历节点。
+
+### func visit(TryExpr)
+protected open func visit(_: TryExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TryExpr](ast_package_classes.md#class-tryexpr) - [TryExpr](ast_package_classes.md#class-tryexpr) 类型的被遍历节点。
+
+### func visit(ThrowExpr)
+protected open func visit(_: ThrowExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ThrowExpr](ast_package_classes.md#class-throwexpr) - [ThrowExpr](ast_package_classes.md#class-throwexpr) 类型的被遍历节点。
+
+### func visit(OptionalExpr)
+protected open func visit(_: OptionalExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [OptionalExpr](ast_package_classes.md#class-optionalexpr) - [OptionalExpr](ast_package_classes.md#class-optionalexpr) 类型的被遍历节点。
+
+### func visit(QuoteExpr)
+protected open func visit(_: QuoteExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [QuoteExpr](ast_package_classes.md#class-quoteexpr) - [QuoteExpr](ast_package_classes.md#class-quoteexpr) 类型的被遍历节点。
+
+### func visit(MacroExpandExpr)
+protected open func visit(_: MacroExpandExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) - [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) 类型的被遍历节点。
+
+### func visit(WildcardExpr)
+protected open func visit(_: WildcardExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [WildcardExpr](ast_package_classes.md#class-wildcardexpr) - [WildcardExpr](ast_package_classes.md#class-wildcardexpr) 类型的被遍历节点。
+
+### func visit(VArrayExpr)
+protected open func visit(_: VArrayExpr): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [VArrayExpr](ast_package_classes.md#class-varrayexpr) - [VArrayExpr](ast_package_classes.md#class-varrayexpr) 类型的被遍历节点。
+
+### func visit(Decl)
+protected open func visit(_: Decl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Decl](ast_package_classes.md#class-decl) - [Decl](ast_package_classes.md#class-decl) 类型的被遍历节点。
+
+### func visit(ClassDecl)
+protected open func visit(_: ClassDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ClassDecl](ast_package_classes.md#class-classdecl) - [ClassDecl](ast_package_classes.md#class-classdecl) 类型的被遍历节点。
+
+### func visit(FuncDecl)
+protected open func visit(_: FuncDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [FuncDecl](ast_package_classes.md#class-funcdecl) - [FuncDecl](ast_package_classes.md#class-funcdecl) 类型的被遍历节点。
+
+### func visit(MainDecl)
+protected open func visit(_: MainDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [MainDecl](ast_package_classes.md#class-maindecl) - [MainDecl](ast_package_classes.md#class-maindecl) 类型的被遍历节点。
+
+### func visit(MacroDecl)
+protected open func visit(_: MacroDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [MacroDecl](ast_package_classes.md#class-macrodecl) - [MacroDecl](ast_package_classes.md#class-macrodecl) 类型的被遍历节点。
+
+### func visit(StructDecl)
+protected open func visit(_: StructDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [StructDecl](ast_package_classes.md#class-structdecl) - [StructDecl](ast_package_classes.md#class-structdecl) 类型的被遍历节点。
+
+### func visit(InterfaceDecl)
+protected open func visit(_: InterfaceDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [InterfaceDecl](ast_package_classes.md#class-interfacedecl) - [InterfaceDecl](ast_package_classes.md#class-interfacedecl) 类型的被遍历节点。
+
+### func visit(PropDecl)
+protected open func visit(_: PropDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [PropDecl](ast_package_classes.md#class-propdecl) - [PropDecl](ast_package_classes.md#class-propdecl) 类型的被遍历节点。
+
+### func visit(VarDecl)
+protected open func visit(_: VarDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [VarDecl](ast_package_classes.md#class-vardecl) - [VarDecl](ast_package_classes.md#class-vardecl) 类型的被遍历节点。
+
+### func visit(PrimaryCtorDecl)
+protected open func visit(_: PrimaryCtorDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) - [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) 类型的被遍历节点。
+
+### func visit(EnumDecl)
+protected open func visit(_: EnumDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [EnumDecl](ast_package_classes.md#class-enumdecl) - [EnumDecl](ast_package_classes.md#class-enumdecl) 类型的被遍历节点。
+
+### func visit(FuncParam)
+protected open func visit(_: FuncParam): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [FuncParam](ast_package_classes.md#class-funcparam) - [FuncParam](ast_package_classes.md#class-funcparam) 类型的被遍历节点。
+
+### func visit(TypeAliasDecl)
+protected open func visit(_: TypeAliasDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl) - [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl) 类型的被遍历节点。
+
+### func visit(ExtendDecl)
+protected open func visit(_: ExtendDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ExtendDecl](ast_package_classes.md#class-extenddecl) - [ExtendDecl](ast_package_classes.md#class-extenddecl) 类型的被遍历节点。
+
+### func visit(MacroExpandDecl)
+protected open func visit(_: MacroExpandDecl): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) - [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) 类型的被遍历节点。
+
+### func visit(TypeNode)
+protected open func visit(_: TypeNode): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TypeNode](ast_package_classes.md#class-typenode) - [TypeNode](ast_package_classes.md#class-typenode) 类型的被遍历节点。
+
+### func visit(RefType)
+protected open func visit(_: RefType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [RefType](ast_package_classes.md#class-reftype) - [RefType](ast_package_classes.md#class-reftype) 类型的被遍历节点。
+
+### func visit(PrimitiveType)
+protected open func visit(_: PrimitiveType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [PrimitiveType](ast_package_classes.md#class-primitivetype) - [PrimitiveType](ast_package_classes.md#class-primitivetype) 类型的被遍历节点。
+
+### func visit(FuncType)
+protected open func visit(_: FuncType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [FuncType](ast_package_classes.md#class-functype) - [FuncType](ast_package_classes.md#class-functype) 类型的被遍历节点。
+
+### func visit(ThisType)
+protected open func visit(_: ThisType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ThisType](ast_package_classes.md#class-thistype) - [ThisType](ast_package_classes.md#class-thistype) 类型的被遍历节点。
+
+### func visit(ParenType)
+protected open func visit(_: ParenType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ParenType](ast_package_classes.md#class-parentype) - [ParenType](ast_package_classes.md#class-parentype) 类型的被遍历节点。
+
+### func visit(QualifiedType)
+protected open func visit(_: QualifiedType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [QualifiedType](ast_package_classes.md#class-qualifiedtype) - [QualifiedType](ast_package_classes.md#class-qualifiedtype) 类型的被遍历节点。
+
+### func visit(PrefixType)
+protected open func visit(_: PrefixType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [PrefixType](ast_package_classes.md#class-prefixtype) - [PrefixType](ast_package_classes.md#class-prefixtype) 类型的被遍历节点。
+
+### func visit(TupleType)
+protected open func visit(_: TupleType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TupleType](ast_package_classes.md#class-tupletype) - [TupleType](ast_package_classes.md#class-tupletype) 类型的被遍历节点。
+
+### func visit(VArrayType)
+protected open func visit(_: VArrayType): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [VArrayType](ast_package_classes.md#class-varraytype) - [VArrayType](ast_package_classes.md#class-varraytype) 类型的被遍历节点。
+
+### func visit(Pattern)
+protected open func visit(_: Pattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Pattern](ast_package_classes.md#class-pattern) - [Pattern](ast_package_classes.md#class-pattern) 类型的被遍历节点。
+
+### func visit(ConstPattern)
+protected open func visit(_: ConstPattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ConstPattern](ast_package_classes.md#class-constpattern) - [ConstPattern](ast_package_classes.md#class-constpattern) 类型的被遍历节点。
+
+### func visit(WildcardPattern)
+protected open func visit(_: WildcardPattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [WildcardPattern](ast_package_classes.md#class-wildcardpattern) - [WildcardPattern](ast_package_classes.md#class-wildcardpattern) 类型的被遍历节点。
+
+### func visit(VarPattern)
+protected open func visit(_: VarPattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [VarPattern](ast_package_classes.md#class-varpattern) - [VarPattern](ast_package_classes.md#class-varpattern) 类型的被遍历节点。
+
+### func visit(VarOrEnumPattern)
+protected open func visit(_: VarOrEnumPattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern) - [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern) 类型的被遍历节点。
+
+### func visit(ExceptTypePattern)
+protected open func visit(_: ExceptTypePattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) - [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) 类型的被遍历节点。
+
+### func visit(TypePattern)
+protected open func visit(_: TypePattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TypePattern](ast_package_classes.md#class-typepattern) - [TypePattern](ast_package_classes.md#class-typepattern) 类型的被遍历节点。
+
+### func visit(EnumPattern)
+protected open func visit(_: EnumPattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [EnumPattern](ast_package_classes.md#class-enumpattern) - [EnumPattern](ast_package_classes.md#class-enumpattern) 类型的被遍历节点。
+
+### func visit(TuplePattern)
+protected open func visit(_: TuplePattern): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [TuplePattern](ast_package_classes.md#class-tuplepattern) - [TuplePattern](ast_package_classes.md#class-tuplepattern) 类型的被遍历节点。
+
+### func visit(GenericParam)
+protected open func visit(_: GenericParam): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [GenericParam](ast_package_classes.md#class-genericparam) - [GenericParam](ast_package_classes.md#class-genericparam) 类型的被遍历节点。
+
+### func visit(GenericConstraint)
+protected open func visit(_: GenericConstraint): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [GenericConstraint](ast_package_classes.md#class-genericconstraint) - [GenericConstraint](ast_package_classes.md#class-genericconstraint) 类型的被遍历节点。
+
+### func visit(MatchCase)
+protected open func visit(_: MatchCase): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [MatchCase](ast_package_classes.md#class-matchcase) - [MatchCase](ast_package_classes.md#class-matchcase) 类型的被遍历节点。
+
+### func visit(Program)
+protected open func visit(_: Program): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Program](ast_package_classes.md#class-program) - [Program](ast_package_classes.md#class-program) 类型的被遍历节点。
+
+### func visit(PackageHeader)
+protected open func visit(_: PackageHeader): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [PackageHeader](ast_package_classes.md#class-packageheader) - [PackageHeader](ast_package_classes.md#class-packageheader) 类型的被遍历节点。
+
+### func visit(ImportList)
+protected open func visit(_: ImportList): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ImportList](ast_package_classes.md#class-importlist) - [ImportList](ast_package_classes.md#class-importlist) 类型的被遍历节点。
+
+### func visit(ImportContent)
+protected open func visit(_: ImportContent): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ImportContent](ast_package_classes.md#class-importcontent) - [ImportContent](ast_package_classes.md#class-importcontent) 类型的被遍历节点。
+
+### func visit(Constructor)
+protected open func visit(_: Constructor): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Constructor](ast_package_classes.md#class-constructor) - [Constructor](ast_package_classes.md#class-constructor) 类型的被遍历节点。
+
+### func visit(Argument)
+protected open func visit(_: Argument): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Argument](ast_package_classes.md#class-argument) - [Argument](ast_package_classes.md#class-argument) 类型的被遍历节点。
+
+### func visit(Annotation)
+protected open func visit(_: Annotation): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Annotation](ast_package_classes.md#class-annotation) - [Annotation](ast_package_classes.md#class-annotation) 类型的被遍历节点。
+
+### func visit(Modifier)
+protected open func visit(_: Modifier): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Modifier](ast_package_classes.md#class-modifier) - [Modifier](ast_package_classes.md#class-modifier) 类型的被遍历节点。
+
+### func visit(Body)
+protected open func visit(_: Body): Unit
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [Body](ast_package_classes.md#class-body) - [Body](ast_package_classes.md#class-body) 类型的被遍历节点。
+
 
 ## class WhileExpr
 
