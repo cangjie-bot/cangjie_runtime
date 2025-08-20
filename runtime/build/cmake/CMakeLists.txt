@@ -3,6 +3,7 @@
 # with Runtime Library Exception.
 #
 # See https://cangjie-lang.cn/pages/LICENSE for license information.
+
 if (WINDOWS_FLAG MATCHES 1)
     set(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
     set(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
@@ -10,7 +11,7 @@ if (WINDOWS_FLAG MATCHES 1)
     set(SECURE_CFLAG_FOR_SHARED_LIBRARY "-static ${SECURE_CFLAG_FOR_SHARED_LIBRARY}")
     set(CMAKE_C_FLAGS "${SECURE_CFLAG_FOR_SHARED_LIBRARY} ${WARNING_FLAGS}")
 endif()
-
+ 
 if (WINDOWS_FLAG MATCHES 1)
     # MSVCRT already provides most of secure functions,
     # so only files listed below need to be compiled from boundscheck library,

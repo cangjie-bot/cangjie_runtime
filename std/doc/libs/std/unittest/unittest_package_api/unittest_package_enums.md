@@ -22,7 +22,7 @@ public enum ExplicitGcType <: ToString {
 Disabled
 ```
 
-功能：[GC](../../runtime/runtime_package_api/runtime_package_funcs.md#func-gcbool) 不会被框架显式调用。
+功能: [GC](../../runtime/runtime_package_api/runtime_package_funcs.md#func-gcbool) 不会被框架显式调用。
 
 ### Heavy
 
@@ -65,17 +65,13 @@ public enum TimeUnit <: ToString {
 
 功能：可以在 [TimeNow](./unittest_package_structs.md#struct-timenow) 构造函数中使用的时间单位。
 
-父类型：
-
-- [ToString](../../core/core_package_api/core_package_interfaces.md#interface-tostring)
-
 ### Micros
 
 ```cangjie
 Micros
 ```
 
-功能：单位为微秒。
+功能: 单位为微秒。
 
 ### Millis
 
@@ -83,7 +79,7 @@ Micros
 Millis
 ```
 
-功能：单位为毫秒。
+功能: 单位为毫秒。
 
 ### Nanos
 
@@ -91,7 +87,7 @@ Millis
 Nanos
 ```
 
-功能：单位为纳秒。
+功能: 单位为纳秒。
 
 ### Seconds
 
@@ -99,7 +95,7 @@ Nanos
 Seconds
 ```
 
-功能：单位为秒。
+功能: 单位为秒。
 
 ### func toString()
 
@@ -138,7 +134,7 @@ public enum PerfCounter <: ToString {
 }
 ```
 
-功能：枚举 [Perf](./unittest_package_structs.md#struct-perf) 构造器支持的 CPU 计数器。
+功能: 枚举 [Perf](./unittest_package_structs.md#struct-perf) 构造器支持的 CPU 计数器。
 
 有关特定 cpu 计数器的详细信息，请参阅 Linux 内核中 [perf_event_open](https://man7.org/linux/man-pages/man2/perf_event_open.2.html) 系统调用的文档。
 

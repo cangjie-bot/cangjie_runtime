@@ -26,7 +26,7 @@ public BatchInputProvider(let builder: () -> T)
 
 - builder: () -> T - 用于生成基准测试输入的闭包。
 
-### func get(Int64)
+### mut func get(Int64)
 
 ```cangjie
 public mut func get(idx: Int64): T
@@ -36,13 +36,13 @@ public mut func get(idx: Int64): T
 
 参数：
 
-- idx: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 元素索引值。
+- idx : [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 元素索引值。
 
 返回值：
 
 - T - 元素值。
 
-### func reset(Int64)
+### mut func reset(Int64)
 
 ```cangjie
 public mut func reset(max: Int64)
@@ -52,7 +52,7 @@ public mut func reset(max: Int64)
 
 参数：
 
-- max: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 最大值。
+- max : [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 最大值。
 
 ## struct BatchSizeOneInputProvider\<T>
 
@@ -83,7 +83,7 @@ public BatchSizeOneInputProvider(let builder: () -> T)
 
 - builder: () -> T - 用于生成基准测试输入的 lambda 。
 
-### func get(Int64)
+### mut func get(Int64)
 
 ```cangjie
 public mut func get(idx: Int64): T
@@ -93,13 +93,13 @@ public mut func get(idx: Int64): T
 
 参数：
 
-- idx: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 元素索引值。
+- idx : [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 元素索引值。
 
 返回值：
 
 - T - 元素值。
 
-### func reset(Int64)
+### mut func reset(Int64)
 
 ```cangjie
 public mut func reset(max: Int64)
@@ -141,16 +141,6 @@ prop name: String
 ```
 
 功能：提供当前时间单位唯一的显示名称，例如：`CpuCycles`。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
-
-### prop textDescription
-
-```cangjie
-prop textDescription: String
-```
-
-功能：描述此测量的简单文本将显示在某些报告中。
 
 类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
 
@@ -201,7 +191,7 @@ public GenerateEachInputProvider(let builder: () -> T)
 
 - builder: () -> T - 用于生成基准测试输入的闭包。
 
-### func get(Int64)
+### mut func get(Int64)
 
 ```cangjie
 public mut func get(idx: Int64): T
@@ -211,13 +201,13 @@ public mut func get(idx: Int64): T
 
 参数：
 
-- idx: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 元素索引值。
+- idx : [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 元素索引值。
 
 返回值：
 
 - T - 元素值。
 
-### func reset(Int64)
+### mut func reset(Int64)
 
 ```cangjie
 public mut func reset(max: Int64)
@@ -227,7 +217,7 @@ public mut func reset(max: Int64)
 
 参数：
 
-- max: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 最大值。
+- max : [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 最大值。
 
 ## struct ImmutableInputProvider\<T>
 
@@ -255,7 +245,7 @@ public ImmutableInputProvider(let data: T)
 
 - data: T - 基准测试的输入。
 
-### func get(Int64)
+### mut func get(Int64)
 
 ```cangjie
 public mut func get(idx: Int64): T
@@ -265,7 +255,7 @@ public mut func get(idx: Int64): T
 
 参数：
 
-- idx: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 元素索引值。
+- idx : [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 元素索引值。
 
 返回值：
 
@@ -281,14 +271,14 @@ public static func createOrExisting(arg: T, x!:Int64=0): ImmutableInputProvider<
 
 参数：
 
-- arg: T - 提供器需复制的参数。
+- arg : T - 提供器需复制的参数。
 - x!: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 为实现重载而增加的参数。
 
 返回值：
 
 - ImmutableInputProvider\<T> - 输入提供器。
 
-### static func createOrExisting\<U>(U)
+### static func createOrExisting\<U>(U): U where U <: BenchInputProvider\<T>
 
 ```cangjie
 public static func createOrExisting<U>(arg: U): U where U <: BenchInputProvider<T>
@@ -298,1238 +288,22 @@ public static func createOrExisting<U>(arg: U): U where U <: BenchInputProvider<
 
 参数：
 
-- arg: T - 提供器需复制的参数。
+- arg : T - 提供器需复制的参数。
 
 返回值：
 
-- U - 输入提供器。
-
-## struct KeyBaseline
-
-```cangjie
-public struct KeyBaseline <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-例如：
-
-<!-- compile -->
-```cangjie
-let conf = Configuration()
-conf.set(KeyBaseline.baseline, "baseline")
-```
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop baseline
-
-```cangjie
-public static prop baseline: Baseline
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyBaselinePath
-
-```cangjie
-public struct KeyBaselinePath <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop baselinePath
-
-```cangjie
-public static prop baselinePath: BaselinePath
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyBatchSize
-
-```cangjie
-public struct KeyBatchSize <: KeyFor<Int64> & KeyFor<Range<Int64>> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop batchSize
-
-```cangjie
-public static prop batchSize: BatchSize
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyBench
-
-```cangjie
-public struct KeyBench <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop bench
-
-```cangjie
-public static prop bench: Bench
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyCaptureOutput
-
-```cangjie
-public struct KeyCaptureOutput <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop captureOutput
-
-```cangjie
-public static prop captureOutput: CaptureOutput
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyCoverageGuided
-
-```cangjie
-public struct KeyCoverageGuided <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop coverageGuided
-
-```cangjie
-public static prop coverageGuided: CoverageGuided
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyCoverageGuidedBaselineScore
-
-```cangjie
-public struct KeyCoverageGuidedBaselineScore <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop coverageGuidedBaselineScore
-
-```cangjie
-public static prop coverageGuidedBaselineScore: CoverageGuidedBaselineScore
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyCoverageGuidedInitialSeeds
-
-```cangjie
-public struct KeyCoverageGuidedInitialSeeds <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop coverageGuidedInitialSeeds
-
-```cangjie
-public static prop coverageGuidedInitialSeeds: CoverageGuidedInitialSeeds
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyCoverageGuidedMaxCandidates
-
-```cangjie
-public struct KeyCoverageGuidedMaxCandidates <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop coverageGuidedMaxCandidates
-
-```cangjie
-public static prop coverageGuidedMaxCandidates: CoverageGuidedMaxCandidates
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyCoverageGuidedNewCoverageBonus
-
-```cangjie
-public struct KeyCoverageGuidedNewCoverageBonus <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop coverageGuidedNewCoverageBonus
-
-```cangjie
-public static prop coverageGuidedNewCoverageBonus: CoverageGuidedNewCoverageBonus
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyCoverageGuidedNewCoverageScore
-
-```cangjie
-public struct KeyCoverageGuidedNewCoverageScore <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop coverageGuidedNewCoverageScore
-
-```cangjie
-public static prop coverageGuidedNewCoverageScore: CoverageGuidedNewCoverageScore
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyDeathAware
-
-```cangjie
-public struct KeyDeathAware <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop deathAware
-
-```cangjie
-public static prop deathAware: DeathAware
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyDryRun
-
-```cangjie
-public struct KeyDryRun <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop dryRun
-
-```cangjie
-public static prop dryRun: DryRun
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyExcludeTags
-
-```cangjie
-public struct KeyExcludeTags <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop excludeTags
-
-```cangjie
-public static prop excludeTags: ExcludeTags
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyExplicitGC
-
-```cangjie
-public struct KeyExplicitGC <: KeyFor<ExplicitGcType> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop explicitGC
-
-```cangjie
-public static prop explicitGC: ExplicitGC
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyFilter
-
-```cangjie
-public struct KeyFilter <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop filter
-
-```cangjie
-public static prop filter: Filter
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyFromTopLevel
-
-```cangjie
-public struct KeyFromTopLevel <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop fromTopLevel
-
-```cangjie
-public static prop fromTopLevel: FromTopLevel
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyGenerationSteps
-
-```cangjie
-public struct KeyGenerationSteps <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop generationSteps
-
-```cangjie
-public static prop generationSteps: GenerationSteps
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyHelp
-
-```cangjie
-public struct KeyHelp <: KeyFor<Bool> {}
-```
-
-功能：用于在配置信息中指定是否打印帮助信息。
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop help
-
-```cangjie
-public static prop help: KeyHelp
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyIncludeTags
-
-```cangjie
-public struct KeyIncludeTags <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop includeTags
-
-```cangjie
-public static prop includeTags: IncludeTags
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyInternalTestrunnerInputPath
-
-```cangjie
-public struct KeyInternalTestrunnerInputPath <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop internalTestrunnerInputPath
-
-```cangjie
-public static prop internalTestrunnerInputPath: InternalTestrunnerInputPath
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyMeasurement
-
-```cangjie
-public struct KeyMeasurement <: KeyFor<Measurement> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop measurement
-
-```cangjie
-public static prop measurement: Measurement
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyMeasurementInfo
-
-```cangjie
-public struct KeyMeasurementInfo <: KeyFor<MeasurementInfo> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop measurementInfo
-
-```cangjie
-public static prop measurementInfo: MeasurementInfo
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyMinBatches
-
-```cangjie
-public struct KeyMinBatches <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop minBatches
-
-```cangjie
-public static prop minBatches: MinBatches
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyMinDuration
-
-```cangjie
-public struct KeyMinDuration <: KeyFor<Duration> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop minDuration
-
-```cangjie
-public static prop minDuration: MinDuration
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyNoCaptureOutput
-
-```cangjie
-public struct KeyNoCaptureOutput <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop noCaptureOutput
-
-```cangjie
-public static prop noCaptureOutput: NoCaptureOutput
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyNoColor
-
-```cangjie
-public struct KeyNoColor <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop noColor
-
-```cangjie
-public static prop noColor: NoColor
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyOptimizeMocksForBench
-
-```cangjie
-public struct KeyOptimizeMocksForBench <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop optimizeMocksForBench
-
-```cangjie
-public static prop optimizeMocksForBench: OptimizeMocksForBench
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyParallel
-
-```cangjie
-public struct KeyParallel <: KeyFor<Bool> & KeyFor<String> & KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop parallel
-
-```cangjie
-public static prop parallel: Parallel
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyRandomSeed
-
-```cangjie
-public struct KeyRandomSeed <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop randomSeed
-
-```cangjie
-public static prop randomSeed: RandomSeed
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyReductionSteps
-
-```cangjie
-public struct KeyReductionSteps <: KeyFor<Int64> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop reductionSteps
-
-```cangjie
-public static prop reductionSteps: ReductionSteps
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyReportFormat
-
-```cangjie
-public struct KeyReportFormat <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop reportFormat
-
-```cangjie
-public static prop reportFormat: ReportFormat
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyReportPath
-
-```cangjie
-public struct KeyReportPath <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop reportPath
-
-```cangjie
-public static prop reportPath: ReportPath
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyShowAllOutput
-
-```cangjie
-public struct KeyShowAllOutput <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop showAllOutput
-
-```cangjie
-public static prop showAllOutput: ShowAllOutput
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyShowTags
-
-```cangjie
-public struct KeyShowTags <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop showTags
-
-```cangjie
-public static prop showTags: ShowTags
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeySkip
-
-```cangjie
-public struct KeySkip <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop skip
-
-```cangjie
-public static prop skip: Skip
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyTimeout
-
-```cangjie
-public struct KeyTimeout <: KeyFor<Duration> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop timeout
-
-```cangjie
-public static prop timeout: Timeout
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyTimeoutEach
-
-```cangjie
-public struct KeyTimeoutEach <: KeyFor<String> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop timeoutEach
-
-```cangjie
-public static prop timeoutEach: TimeoutEach
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyTimeoutHandler
-
-```cangjie
-public struct KeyTimeoutHandler <: KeyFor<(TestCaseInfo) -> Unit> {}
-```
-
-功能：支持在配置信息中指定超时处理的句柄。
-
-例如：
-
-<!-- compile -->
-```cangjie
-let conf = Configuration()
-conf.set(KeyTimeoutHandler.timeoutHandler, { info => /*...*/ })
-```
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop timeoutHandler
-
-```cangjie
-public static prop timeoutHandler: KeyTimeoutHandler
-```
-
-功能：超时处理句柄。
-
-类型：[KeyTimeoutHandler](#struct-keytimeouthandler)。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：超时处理句柄的名称。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
-
-## struct KeyVerbose
-
-```cangjie
-public struct KeyVerbose <: KeyFor<Bool> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop verbose
-
-```cangjie
-public static prop verbose: Verbose
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct KeyWarmup
-
-```cangjie
-public struct KeyWarmup <: KeyFor<Int64> & KeyFor<Duration> {}
-```
-
-功能：用于在 [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 中作为对应配置项的键值
-
-父类型：
-
-- [KeyFor](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-keyfor)
-
-### prop warmup
-
-```cangjie
-public static prop warmup: Warmup
-```
-
-功能：配置项的键值。
-
-### prop name
-
-```cangjie
-public prop name: String
-```
-
-功能：配置项的键值的名称。
-
-## struct MeasurementInfo
-
-```cangjie
-public struct MeasurementInfo {
-    public let conversionTable: MeasurementUnitTable,
-    public let name: String,
-    public let textDescription: String
-}
-```
-
-功能：存储测量信息的结构体。
-
-### prop conversionTable
-
-```cangjie
-prop conversionTable: MeasurementUnitTable
-```
-
-功能：用于在性能测试报告中构建测量值的表示。
-包含测量单位的边界对。
-根据值的边界，使用最合适的单位。
-对于 CSV 格式报告，始终选择下限以简化结果处理。
-默认值为 `[(1.0, "")]`。
-
-类型：[MeasurementUnitTable](../unittest_package_api/unittest_package_types.md#type-measurementunittable)。
-
-### prop name
-
-```cangjie
-prop name: String
-```
-
-功能：当前 `Measurement` 类型的唯一显示名称。
-有助于区分报告表中的不同测量类型。
-默认值为 `Measurement`。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
-
-### prop textDescription
-
-```cangjie
-prop textDescription: String
-```
-
-功能：描述此测量的简单文本将显示在某些报告中。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
+- U where U <: BenchInputProvider\<T> - 输入提供器。
 
 ## struct Perf
 
 ```cangjie
 public struct Perf <: Measurement {
     public init()
-    public Perf(counter: PerfCounter)
+    public init(counter: PerfCounter)
 }
 ```
 
-功能：使用linux 系统调用 `perf_event_open` 测量各种硬件和软件 CPU 计数器。仅在 Linux 上可用。
+功能：使用 Linux 系统调用 `perf_event_open` 测量各种硬件和软件 CPU 计数器。仅在 Linux 上可用。
 
 父类型：
 
@@ -1555,16 +329,6 @@ prop name: String
 
 类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
 
-### prop textDescription
-
-```cangjie
-prop textDescription: String
-```
-
-功能：描述此测量的简单文本将显示在某些报告中。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
-
 ### init()
 
 ```cangjie
@@ -1573,17 +337,17 @@ public init()
 
 功能：使用 CPU 周期计数器的默认构造函数。
 
-### Perf(PerfCounter)
+### init(PerfCounter)
 
 ```cangjie
-public Perf(counter: PerfCounter)
+public init(counter: PerfCounter)
 ```
 
 功能：指定要测量的 CPU 计数器的构造函数。
 
 参数：
 
-- counter: [PerfCounter](../unittest_package_api/unittest_package_enums.md#enum-perfcounter) - 指定计数器。
+- counter: [PerfCounter](unittest_package_enums.md#enum-perfcounter)
 
 ### func measure()
 
@@ -1604,73 +368,6 @@ func setup()
 ```
 
 功能：此 CPU 计数器的初始化例程。在每个基准步骤之前调用。
-
-## struct RelativeDelta\<T>
-
-```cangjie
-public struct RelativeDelta<T> {
-    public RelativeDelta(let absolute!: T, let relative!: T) {}
-}
-```
-
-功能：对于浮点类型，提供相对的 delta 数据类型来做近似相等的计算。计算公式如下。
-
-$$|x - y| <= absolute + relative * max(abs(x), abs(y))$$
-
-### RelativeDelta(T, T)
-
-```cangjie
-public RelativeDelta(let absolute!: T, let relative!: T)
-```
-
-功能：RelativeDelta 的主构造函数。
-
-参数：
-
-- absolute!: T - 绝对比较部分的 delta 值。
-- relative!: T - 相对比较部分的 delta 值。
-
-## struct TestCaseInfo
-
-```cangjie
-public struct TestCaseInfo {
-    public let groupName: String
-    public let suiteName: String
-    public let caseName: String
-}
-```
-
-功能：当前正在运行的测试用例的信息。通常在动态 API 的超时处理句柄中被使用。
-
-### let caseName
-
-```cangjie
-public let caseName: String
-```
-
-功能：用例名称。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
-
-### let groupName
-
-```cangjie
-public let groupName: String
-```
-
-功能：用例的测试组名称。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
-
-### let suiteName
-
-```cangjie
-public let suiteName: String
-```
-
-功能：用例的测试套名称。
-
-类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)。
 
 ## struct TimeNow
 
