@@ -27,12 +27,6 @@ unittest 包用于编写仓颉项目单元测试代码，提供包括代码编�
 | [Configuration](../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) | 存储 `@Configure` 宏生成的 `unittest` 配置数据的对象。`Configuration` 是一个类似 `HashMap` 的类，但它的键不是键和值类型，而是 `String` 类型，和任何给定类型的值。 |
 | [ConfigurationKey](../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configurationkey) | 配置项的键值对象。提供判等及 hashCode 方法。 |
 
-#### 结构体
-
-|              结构体名          |           功能           |
-| --------------------------- | ------------------------ |
-| [KeyTags](../unittest_common//unittest_common_package_api/unittest_common_package_structs.md#struct-keytags) | 用于在 [Configuration](../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 配置键值。 |
-
 ### 从 unittest.prop_test 包中重导出
 
 #### 函数
@@ -45,7 +39,7 @@ unittest 包用于编写仓颉项目单元测试代码，提供包括代码编�
 
 |              接口名          |           功能           |
 | --------------------------- | ------------------------ |
-| [Arbitrary\<T>](../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-arbitraryt) | 生成 T 类型随机值的接口。 |
+| [Arbitrary](../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-arbitraryt) | 生成 T 类型随机值的接口。 |
 | [Shrink](../unittest_prop_test/unittest_prop_test_package_api/unittest_prop_test_package_interfaces.md#interface-shrinkt) | 将 T 类型的值缩减到多个“更小”的值。 |
 
 ## API 列表
@@ -54,21 +48,16 @@ unittest 包用于编写仓颉项目单元测试代码，提供包括代码编�
 
 |              函数名          |           功能           |
 | --------------------------- | ------------------------ |
-| [assertCaughtUnexpectedE(String, String, String, ?AssertionCtx)](./unittest_package_api/unittest_package_functions.md#func-assertcaughtunexpectedestring-string-string-assertionctx) | 捕获的异常不符合预期，记录信息，抛出异常。 |
-| [assertEqual\<T>(String, String, T, T, ?AssertionCtx)](./unittest_package_api/unittest_package_functions.md#func-assertequaltstring-string-t-t-assertionctx) | 比较 `expected` 和 `actual` 值是否相等。若不等，直接抛出异常。 |
-| [assertEqual\<T>(String, String, T, T, Bool, ?AssertionCtx)](./unittest_package_api/unittest_package_functions.md#func-assertequaltstring-string-t-t-bool-assertionctx) | 比较 `expected` 和 `actual` 值是否相等。若不等，直接抛出异常。 |
+| [assertCaughtUnexpectedE(String, String, String, Option\<AssertionCtx>)](./unittest_package_api/unittest_package_functions.md#func-assertcaughtunexpectedestring-string-string-optionassertionctx) | 捕获的异常不符合预期，记录信息，抛出异常。 |
+| [assertEqual\<T>(String, String, T, T, Option\<AssertionCtx>)](./unittest_package_api/unittest_package_functions.md#func-assertequaltstring-string-t-t-optionassertionctx-unit-where-t--equatablet) | 比较 `expected` 和 `actual` 值是否相等。若不等，直接抛出异常。 |
 | [defaultConfiguration()](./unittest_package_api/unittest_package_functions.md#func-defaultconfiguration) | 生成默认的配置信息。 |
 | [entryMain(TestPackage)](./unittest_package_api/unittest_package_functions.md#func-entrymaintestpackage) | 提供给 `cjc --test` 使用，框架执行测试用例的入口函数。 |
-| [expectCaughtUnexpectedE(String,String,String, ?AssertionCtx)](./unittest_package_api/unittest_package_functions.md#func-assertcaughtunexpectedestring-string-string-assertionctx) | 捕获的异常不符合预期，记录信息，不抛出异常。 |
-| [expectEqual(String, String, T, T, ?AssertionCtx)](./unittest_package_api/unittest_package_functions.md#func-assertequaltstring-string-t-t-assertionctx) | 比较 `expected` 和 `actual` 值是否相等。记录比较结果，不抛出异常。 |
-
-| [expectEqual(String, String, T, T, Bool, ?AssertionCtx)](./unittest_package_api/unittest_package_functions.md#func-expectequaltstring-string-t-t-bool-assertionctx) | 比较 `expected` 和 `actual` 值是否相等。记录比较结果，不抛出异常。 |
+| [expectCaughtUnexpectedE(String,String,String, Option\<AssertionCtx>)](./unittest_package_api/unittest_package_functions.md#func-expectcaughtunexpectedestring-string-string-optionassertionctx) | 捕获的异常不符合预期，记录信息，不抛出异常。 |
+| [expectEqual(String, String, T, T, Option\<AssertionCtx>)](./unittest_package_api/unittest_package_functions.md#func-expectequaltstring-string-t-t-optionassertionctx-unit-where-t--equatablet) | 比较 `expected` 和 `actual` 值是否相等。记录比较结果，不抛出异常。 |
 | [fail(String)](./unittest_package_api/unittest_package_functions.md#func-failstring) | 使该用例失败，直接抛出异常。 |
 | [failExpect(String)](./unittest_package_api/unittest_package_functions.md#func-failexpectstring) | 使该用例失败，记录信息，不抛出异常。 |
-| [invokeCustomAssert\<T>(Array\<String>, String, (AssertionCtx) -> T, ?AssertionCtx)](./unittest_package_api/unittest_package_functions.md#func-invokecustomasserttarraystring-string-assertionctx---t-assertionctx) | 运行在 [`@Test`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#test-宏), [`@TestCase`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#testcase-宏), 或 [`@CustomAssertion`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#customassertion-宏) 宏中使用的 [`@Assert[caller](passerArgs)`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#assert-宏) 指定的用户定义断言函数。 |
-| [invokeCustomExpect\<T>(Array\<String>, String, (AssertionCtx) -> Any, ?AssertionCtx)](./unittest_package_api/unittest_package_functions.md#func-invokecustomexpectarraystring-string-assertionctx---any-assertionctx) | 运行在 [`@Test`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#test-宏), [`@TestCase`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#testcase-宏), 或 [`@CustomAssertion`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#customassertion-宏) 宏中使用的 [`@Expect[caller](passerArgs)`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#expect-宏) 指定的用户定义断言函数。 |
-| [isNearExpansion\<CT, D>(CT, CT, D, String)](./unittest_package_api/unittest_package_functions.md#func-isnearexpansionct-dct-ct-d-string) | 判断近似相等。 |
-| [isNearExpansion\<CT, D>(CT, CT, D, String, Bool)](./unittest_package_api/unittest_package_functions.md#func-isnearexpansionct-dct-ct-d-string-bool) | 判断近似相等。 |
+| [invokeCustomAssert\<T>(Array\<String>, String, (AssertionCtx) -> T, Option\<AssertionCtx>)](./unittest_package_api/unittest_package_functions.md#func-invokecustomasserttarraystring-string-assertionctx---t-optionassertionctx) | 运行在 [`@Test`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#test-宏), [`@TestCase`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#testcase-宏), 或 [`@CustomAssertion`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#customassertion-宏) 宏中使用的 [`@Assert[caller](passerArgs)`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#assert-宏) 指定的用户定义断言函数。 |
+| [invokeCustomExpect\<T>(Array\<String>, String, (AssertionCtx) -> Any, Option\<AssertionCtx>)](./unittest_package_api/unittest_package_functions.md#func-invokecustomexpectarraystring-string-assertionctx---any-optionassertionctx) | 运行在 [`@Test`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#test-宏), [`@TestCase`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#testcase-宏), 或 [`@CustomAssertion`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#customassertion-宏) 宏中使用的 [`@Expect[caller](passerArgs)`](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#expect-宏) 指定的用户定义断言函数。 |
 
 ### 类型别名
 
@@ -83,8 +72,8 @@ unittest 包用于编写仓颉项目单元测试代码，提供包括代码编�
 | [BenchInputProvider](./unittest_package_api/unittest_package_interfaces.md#interface-benchinputprovider) | 用于处理性能测试的接口，其中需要在每次性能测试调用之前执行一些代码或者性能测试的输入发生了变化，并且每次都必须从头开始生成。|
 | [BenchmarkConfig](./unittest_package_api/unittest_package_interfaces.md#interface-benchmarkconfig) | 空接口，区分部分 [Configuration](../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) 函数为性能相关配置。|
 | [BenchmarkInputMarker](./unittest_package_api/unittest_package_interfaces.md#interface-benchmarkinputmarker) | 当我们不知道 `T` 时，该接口能够检测 `BenchInputProvider<T>` 。|
+| [Generator](./unittest_package_api/unittest_package_interfaces.md#interface-generatort) | 生成器生成 T 类型的值。 |
 | [Measurement](./unittest_package_api/unittest_package_interfaces.md#interface-measurement) | 在性能测试过程中可以收集和分析各种数据的接口。性能测试期间使用的 `Measurement` 的具体实例在 `@Measure` 宏中指定（例如在类声明中）。|
-| [NearEquatable\<CT, D>](./unittest_package_api/unittest_package_interfaces.md#interface-nearequatablect-d) | 判断某个对象是否基于这个 delta 近似相等。|
 | [TestClass](./unittest_package_api/unittest_package_interfaces.md#interface-testclass) | 提供创建 [TestSuite](./unittest_package_api/unittest_package_classes.md#class-testsuite) 的方法。|
 
 ### 类
@@ -98,15 +87,21 @@ unittest 包用于编写仓颉项目单元测试代码，提供包括代码编�
 | [ConsoleReporter](./unittest_package_api/unittest_package_classes.md#class-consolereporter) | 打印单元测试用例结果或者性能测试用例结果到控制台。 |
 | [CsvReporter](./unittest_package_api/unittest_package_classes.md#class-csvreporter) | 打印性能测试用例结果数据到 CSV 文件上。 |
 | [CsvRawReporter](./unittest_package_api/unittest_package_classes.md#class-csvrawreporter) | 打印性能测试用例结果数据，该数据只有批次的原始测量值，到 CSV 文件上。 |
+| [CsvStrategy\<T>](./unittest_package_api/unittest_package_classes.md#class-csvstrategyt) | `DataStrategy` 对 CSV 数据格式的序列化实现。 |
 |[DataStrategyProcessor\<T>](./unittest_package_api/unittest_package_classes.md#class-datastrategyprocessort)| 所有 [DataStrategy](../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategy) 组件的基类。该类的实例由 [@Strategy](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#strategy-宏) 宏或成员函数创建。|
 |[FlatMapProcessor\<T,R>](./unittest_package_api/unittest_package_classes.md#class-flatmapprocessortr)| 对参数数据进行 [FlatMap](../collection/collection_package_api/collection_package_function.md#func-flatmapt-r-t---iterabler) 的处理器。 |
 |[FlatMapStrategyProcessor\<T,R>](./unittest_package_api/unittest_package_classes.md#class-flatmapstrategyprocessortr)| 对参数数据进行 [FlatMap](../collection/collection_package_api/collection_package_function.md#func-flatmapt-r-t---iterabler) 的处理器。 |
 | [InputParameter](./unittest_package_api/unittest_package_classes.md#class-inputparameter) | 入参对象类型。 |
+| [JsonStrategy\<T>](./unittest_package_api/unittest_package_classes.md#class-jsonstrategyt) | `DataStrategy` 对 JSON 数据格式的序列化实现。 |
 | [LazyCyclicNode](./unittest_package_api/unittest_package_classes.md#class-lazycyclicnode) | 用于在一个循环中一个接一个地推进类型擦除的内部惰性迭代器。 |
 | [MapProcessor\<T,R>](./unittest_package_api/unittest_package_classes.md#class-mapprocessortr) | 对参数数据进行 [Map](../collection/collection_package_api/collection_package_function.md#func-mapt-rt---r) 的处理器。 |
 | [PowerAssertDiagramBuilder](./unittest_package_api/unittest_package_classes.md#class-powerassertdiagrambuilder) | [PowerAssert](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#powerassert-宏) 输出结果构造器。 |
+| [RandomDataProvider\<T>](./unittest_package_api/unittest_package_classes.md#class-randomdataprovidert) | 使用随机数据生成的 DataProvider 接口的实现。 |
+| [RandomDataShrinker\<T>](./unittest_package_api/unittest_package_classes.md#class-randomdatashrinkert) | 使用随机数据生成的 DataShrinker 接口的实现。 |
+| [RandomDataStrategy\<T>](./unittest_package_api/unittest_package_classes.md#class-randomdatastrategyt) | 使用随机数据生成的 DataStrategy 接口的实现。 |
 | [RawStatsReporter](./unittest_package_api/unittest_package_classes.md#class-rawstatsreporter) | 未处理的性能测试数据报告器。仅给框架内部使用。 |
 | [Report](./unittest_package_api/unittest_package_classes.md#class-report) | 打印测试用例结果报告的基类。 |
+| [SerializableProvider\<T>](./unittest_package_api/unittest_package_classes.md#class-serializableprovidert) | 获取序列化数据 [DataProvider](../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-dataprovider) 接口的实现。 |
 | [SimpleProcessor\<T>](./unittest_package_api/unittest_package_classes.md#class-simpleprocessort) | 简单的数据策略处理器。对 [DataStrategyProcessor](./unittest_package_api/unittest_package_classes.md#class-datastrategyprocessort) 的一种实现。 |
 | [TestGroup](./unittest_package_api/unittest_package_classes.md#class-testgroup) | 提供构建和运行测试组合方法的类。 |
 | [TestGroupBuilder](./unittest_package_api/unittest_package_classes.md#class-testgroupbuilder) | 提供配置测试组合的方法的构造器。 |
@@ -134,51 +129,6 @@ unittest 包用于编写仓颉项目单元测试代码，提供包括代码编�
 | [CpuCycles](./unittest_package_api/unittest_package_structs.md#struct-cpucycles) | 使用本机 `rdtscp` 指令测量 CPU 周期数。仅适用于 x86 平台。 |
 | [GenerateEachInputProvider\<T>](./unittest_package_api/unittest_package_structs.md#struct-generateeachinputprovidert) | 基准输入提供程序，在每次执行基准之前生成输入。 |
 | [ImmutableInputProvider\<T>](./unittest_package_api/unittest_package_structs.md#struct-immutableinputprovidert) | 最简单的输入提供程序，只需为基准测试的每次调用复制数据。适用于基准测试不会改变输入的情况。它在框架内默认使用。 |
-| [KeyBaseline](./unittest_package_api/unittest_package_structs.md#struct-keybaseline) | 作为在配置信息中配置值的键值。 |
-| [KeyBaselinePath](./unittest_package_api/unittest_package_structs.md#struct-KeyBaselinePath) | 作为在配置信息中配置值的键值。 |
-| [KeyBatchSize](./unittest_package_api/unittest_package_structs.md#struct-KeyBatchSize) | 作为在配置信息中配置值的键值。 |
-| [KeyBench](./unittest_package_api/unittest_package_structs.md#struct-KeyBench) | 作为在配置信息中配置值的键值。 |
-| [KeyCaptureOutput](./unittest_package_api/unittest_package_structs.md#struct-KeyCaptureOutput) | 作为在配置信息中配置值的键值。 |
-| [KeyCoverageGuided](./unittest_package_api/unittest_package_structs.md#struct-KeyCoverageGuided) | 作为在配置信息中配置值的键值。 |
-| [KeyCoverageGuidedBaselineScore](./unittest_package_api/unittest_package_structs.md#struct-KeyCoverageGuidedBaselineScore) | 作为在配置信息中配置值的键值。 |
-| [KeyCoverageGuidedInitialSeeds](./unittest_package_api/unittest_package_structs.md#struct-| [KeyCoverageGuidedInitialSeeds](./unittest_package_api/unittest_package_structs.md#struct-keytimeouthandler) | 作为在配置信息中配置值的键值。 |
-) | 作为在配置信息中配置值的键值。 |
-| [KeyCoverageGuidedMaxCandidates](./unittest_package_api/unittest_package_structs.md#struct-KeyCoverageGuidedMaxCandidates) | 作为在配置信息中配置值的键值。 |
-| [KeyCoverageGuidedNewCoverageBonus](./unittest_package_api/unittest_package_structs.md#struct-KeyCoverageGuidedNewCoverageBonus) | 作为在配置信息中配置值的键值。 |
-| [KeyCoverageGuidedNewCoverageScore](./unittest_package_api/unittest_package_structs.md#struct-KeyCoverageGuidedNewCoverageScore) | 作为在配置信息中配置值的键值。 |
-| [KeyDeathAware](./unittest_package_api/unittest_package_structs.md#struct-KeyDeathAware) | 作为在配置信息中配置值的键值。 |
-| [KeyDryRun](./unittest_package_api/unittest_package_structs.md#struct-KeyDryRun) | 作为在配置信息中配置值的键值。 |
-| [KeyExcludeTags](./unittest_package_api/unittest_package_structs.md#struct-KeyExcludeTags) | 作为在配置信息中配置值的键值。 |
-| [KeyExplicitGC](./unittest_package_api/unittest_package_structs.md#struct-KeyExplicitGC) | 作为在配置信息中配置值的键值。 |
-| [KeyFilter](./unittest_package_api/unittest_package_structs.md#struct-KeyFilter) | 作为在配置信息中配置值的键值。 |
-| [KeyFromTopLevel](./unittest_package_api/unittest_package_structs.md#struct-KeyFromTopLevel) | 作为在配置信息中配置值的键值。 |
-| [KeyGenerationSteps](./unittest_package_api/unittest_package_structs.md#struct-KeyGenerationSteps) | 作为在配置信息中配置值的键值。 |
-| [KeyHelp](./unittest_package_api/unittest_package_structs.md#struct-KeyHelp) | 作为在配置信息中配置值的键值。 |
-| [KeyIncludeTags](./unittest_package_api/unittest_package_structs.md#struct-KeyIncludeTags) | 作为在配置信息中配置值的键值。 |
-| [KeyInternalTestrunnerInputPath](./unittest_package_api/unittest_package_structs.md#struct-keytimeouthandKeyInternalTestrunnerInputPather) | 作为在配置信息中配置值的键值。 |
-| [KeyMeasurement](./unittest_package_api/unittest_package_structs.md#struct-KeyMeasurement) | 作为在配置信息中配置值的键值。 |
-| [KeyMeasurementInfo](./unittest_package_api/unittest_package_structs.md#struct-KeyMeasurementInfo) | 作为在配置信息中配置值的键值。 |
-| [KeyMinBatches](./unittest_package_api/unittest_package_structs.md#struct-KeyMinBatches) | 作为在配置信息中配置值的键值。 |
-| [KeyMinDuration](./unittest_package_api/unittest_package_structs.md#struct-KeyMinDuration) | 作为在配置信息中配置值的键值。 |
-| [KeyNoCaptureOutput](./unittest_package_api/unittest_package_structs.md#struct-KeyNoCaptureOutput) | 作为在配置信息中配置值的键值。 |
-| [KeyNoColor](./unittest_package_api/unittest_package_structs.md#struct-KeyNoColor) | 作为在配置信息中配置值的键值。 |
-| [KeyOptimizeMocksForBench](./unittest_package_api/unittest_package_structs.md#struct-KeyOptimizeMocksForBench) | 作为在配置信息中配置值的键值。 |
-| [KeyParallel](./unittest_package_api/unittest_package_structs.md#struct-KeyParallel) | 作为在配置信息中配置值的键值。 |
-| [KeyRandomSeed](./unittest_package_api/unittest_package_structs.md#struct-KeyRandomSeed) | 作为在配置信息中配置值的键值。 |
-| [KeyReductionSteps](./unittest_package_api/unittest_package_structs.md#struct-KeyRandomSeed) | 作为在配置信息中配置值的键值。 |
-| [KeyReportFormat](./unittest_package_api/unittest_package_structs.md#struct-KeyReportFormat) | 作为在配置信息中配置值的键值。 |
-| [KeyReportPath](./unittest_package_api/unittest_package_structs.md#struct-KeyReportPath) | 作为在配置信息中配置值的键值。 |
-| [KeyShowAllOutput](./unittest_package_api/unittest_package_structs.md#struct-KeyShowAllOutput) | 作为在配置信息中配置值的键值。 |
-| [KeyShowTags](./unittest_package_api/unittest_package_structs.md#struct-KeyShowTags) | 作为在配置信息中配置值的键值。 |
-| [KeySkip](./unittest_package_api/unittest_package_structs.md#struct-KeySkip) | 作为在配置信息中配置值的键值。 |
-| [KeyTimeout](./unittest_package_api/unittest_package_structs.md#struct-KeyTimeout) | 作为在配置信息中配置值的键值。 |
-| [KeyTimeoutEach](./unittest_package_api/unittest_package_structs.md#struct-KeyTimeoutEach) | 作为在配置信息中配置值的键值。 |
-| [KeyTimeoutHandler](./unittest_package_api/unittest_package_structs.md#struct-keytimeouthandler) | 支持在配置信息中指定超时处理的句柄。 |
-| [KeyVerbose](./unittest_package_api/unittest_package_structs.md#struct-KeyVerbose) | 作为在配置信息中配置值的键值。 |
-| [KeyWarmup](./unittest_package_api/unittest_package_structs.md#struct-KeyWarmup) | 作为在配置信息中配置值的键值。 |
-| [Perf](./unittest_package_api/unittest_package_structs.md#struct-perf) | 使用linux 系统调用 `perf_event_open` 测量各种硬件和软件 CPU 计数器。仅在 Linux 上可用。 |
-| [RelativeDelta](./unittest_package_api/unittest_package_structs.md#struct-relativedeltat) | 对于浮点类型，提供相对的 delta 数据类型来做近似相等的计算。 |
-| [TestCaseInfo](./unittest_package_api/unittest_package_structs.md#struct-testcaseinfo) | 当前正在运行的测试用例的信息。通常在动态 API 的超时处理句柄中被使用。 |
 | [Perf](./unittest_package_api/unittest_package_structs.md#struct-perf) | 使用 Linux 系统调用 `perf_event_open` 测量各种硬件和软件 CPU 计数器。仅在 Linux 上可用。 |
 | [TimeNow](./unittest_package_api/unittest_package_structs.md#struct-timenow) | [Measurement](./unittest_package_api/unittest_package_interfaces.md#interface-measurement) 的实现，用于测量执行一个函数所花费的时间。 |
 
@@ -190,4 +140,3 @@ unittest 包用于编写仓颉项目单元测试代码，提供包括代码编�
 | [AssertIntermediateException](./unittest_package_api/unittest_package_exceptions.md#class-assertintermediateexception) |[@PowerAssert](../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#powerassert-宏) 检查失败时所抛出的异常。 |
 | [UnittestCliOptionsFormatException](./unittest_package_api/unittest_package_exceptions.md#class-unittestclioptionsformatexception) | 控制台选项格式错误抛出的异常。 |
 | [UnittestException](./unittest_package_api/unittest_package_exceptions.md#class-unittestexception) | 框架通用异常。 |
-| [UnittestTimeoutException](./unittest_package_api/unittest_package_exceptions.md#class-unittesttimeoutexception) | 此异常用于在超时时中止测试用例的执行。不建议用户直接使用。 |
