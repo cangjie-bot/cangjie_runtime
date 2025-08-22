@@ -60,7 +60,7 @@ public:
     private:
 #if defined(_WIN64)
         static constexpr size_t CONTAINER_CAPACITY = 69;
-#elif defined(__aarch64__)
+#elif defined(__aarch64__) || defined(__arm__)
         static constexpr size_t CONTAINER_CAPACITY = 64;
 #else
         static constexpr size_t CONTAINER_CAPACITY = 65;

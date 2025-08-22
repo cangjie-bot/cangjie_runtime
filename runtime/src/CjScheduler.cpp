@@ -329,6 +329,8 @@ void* WrapperTask(void* arg, unsigned int len)
     TypeInfo* typeInfo = future->GetTypeInfo();
 #if defined(__aarch64__)
     ExecuteCangjieStub(future, typeInfo, 0, execute, reinterpret_cast<void*>(threadData), &g_ut);
+#if defined(__arm__)
+    ExecuteCangjieStub(&g_ut, future, typeInfo, execute, threadData);
 #elif defined(__x86_64__)
     ExecuteCangjieStub(&g_ut, future, typeInfo, execute, threadData);
 #endif
@@ -441,6 +443,8 @@ static void* WrapperOfExecuteClosure(void* arg, unsigned int len)
     BaseObject* closureObj = Heap::GetBarrier().ReadStaticRef(reinterpret_cast<RefField<false>&>(lwtData->obj));
 #if defined(__aarch64__)
     ExecuteCangjieStub(closureObj, futureTi, 0, executeClosure, reinterpret_cast<void*>(threadData), &g_ut);
+#elif defined(__arm__)
+    ExecuteCangjieStub(&g_ut, closureObj, futureTi, executeClosure, threadData);
 #elif defined(__x86_64__)
     ExecuteCangjieStub(&g_ut,      /* arg0: sret */
                        closureObj, /* arg1 */

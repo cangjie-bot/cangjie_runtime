@@ -39,6 +39,7 @@ const uint32_t LOCK_OWNER_MUTATOR = LOCK_OWNER_GC + 1;
 bool IsRuntimeThread();
 bool IsGcThread();
 extern "C" void HandleSafepoint(ThreadLocalData* tlData);
+extern "C" void MCC_HandleSafepointForArm();
 
 using MutatorVisitor = std::function<void(Mutator&)>;
 
