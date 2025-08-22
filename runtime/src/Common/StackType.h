@@ -351,7 +351,7 @@ public:
 
     static N2CSlotData* GetSlotData(FrameAddress* fa)
     {
-#if defined __aarch64__
+#if defined __aarch64__ || defined (__arm__)  // todo
         return reinterpret_cast<N2CSlotData*>(fa + OFFSET_FOR_UNWIND_DATA);
 #else
         return reinterpret_cast<N2CSlotData*>(reinterpret_cast<N2CSlotData*>(fa) + OFFSET_FOR_UNWIND_DATA);
@@ -361,7 +361,7 @@ public:
     N2CSlotData* GetSlotData() const { return GetSlotData(this->fa); }
 
 private:
-#if defined __aarch64__
+#if defined __aarch64__ || defined (__arm__)  // todo
     static constexpr int64_t OFFSET_FOR_UNWIND_DATA = 1;
 #else
     static constexpr int64_t OFFSET_FOR_UNWIND_DATA = -1;

@@ -50,6 +50,17 @@ struct CalleeSavedRegisterContext {
     uint64_t d14;
     uint64_t d15;
     uint64_t sp;
+#elif defined(__arm__)
+    uint64_t r4;
+    uint64_t r5;
+    uint64_t r6;
+    uint64_t r7;
+    uint64_t r8;
+    uint64_t r9;
+    uint64_t r10;
+    uint64_t r11;
+    uint64_t sp;
+    uint64_t lr;
 #elif defined(_WIN64)
     // rbx-r15 correspond to callee saved registers bitmap respectively in stackmap.
     uint64_t rbx;

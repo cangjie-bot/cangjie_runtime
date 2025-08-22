@@ -411,6 +411,8 @@ intptr_t Mutator::FixExtendedStack(intptr_t frameBase, uint32_t adjustedSize __a
             uint64_t callerSp = *reinterpret_cast<intptr_t*>(frameBase) - frameSize + 8;
 #elif defined(__aarch64__)
             uint64_t callerSp = *reinterpret_cast<intptr_t*>(frameBase) - frameSize;
+#elif defined(__arm__)
+            uint64_t callerSp = *reinterpret_cast<intptr_t*>(framBase) - frameSize;  // todo
 #endif
             size_t newSize = stackSize + stackSize;
             while (stackBaseAddr - callerSp > newSize - CJThreadStackReversedGet()) {
