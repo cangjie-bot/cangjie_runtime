@@ -1907,6 +1907,13 @@ intptr_t CJThreadStackAdjust(struct CJThread *cjthread, size_t newStackSizeAlign
     );
 #endif
 
+#if (VOS_WORDSIZE == 32) && (MRT_HARDWARE_PLATFORM == MRT_ARM)
+    asm volatile (
+    "mov %0, sp \n"
+    :"=r"(spAddress)
+    );
+#endif
+
 #if ((MRT_HARDWARE_PLATFORM == MRT_X86) || (MRT_HARDWARE_PLATFORM == MRT_WINDOWS_X86)) && (VOS_WORDSIZE == 64)
     asm volatile (
     "mov %%rsp, %0 \n"

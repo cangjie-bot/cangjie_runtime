@@ -19,7 +19,11 @@
 //    of type safety.
 namespace MapleRuntime {
 // Those are mostly managed pointer types for GC
+#ifdef __arm__
+using MAddress = uint64_t;
+#else
 using MAddress = Uptr; // Managed address
+#endif
 constexpr Uptr NULL_ADDRESS = 0;
 
 // object model related types

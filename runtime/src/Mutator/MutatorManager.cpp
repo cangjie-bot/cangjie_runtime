@@ -58,6 +58,7 @@ extern "C" void MCC_HandleSafepointForArm()
     if (safepointState <= 8) {
         return;
     }
+    Mutator* mutator = tlData->mutator;
     // Current mutator enter saferegion
     mutator->DoEnterSaferegion();
     // Current mutator block before leaving saferegion

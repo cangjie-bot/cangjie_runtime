@@ -365,7 +365,11 @@ private:
 };
 
 // Class is a generalization of type information
+#ifdef __arm__
+class TypeInfo {
+#else
 class ATTR_PACKED(4) TypeInfo {
+#endif
     friend class TypeInfoManager;
 public:
     // property/field query
