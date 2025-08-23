@@ -45,7 +45,7 @@ set(CMAKE_RANLIB "$ENV{OHOS_ROOT}/prebuilts/clang/ohos/${cmake_host_system_name}
 
 # compile flags for common
 set(CMAKE_C_FLAGS
-    "-Wdeprecated-copy -fno-strict-aliasing --param=ssp-buffer-size=4  -flto -fvisibility=default -fsanitize=cfi -fno-sanitize=cfi-nvcall,cfi-icall \
+    "-Wdeprecated-copy -fno-strict-aliasing --param=ssp-buffer-size=4 \
      -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -funwind-tables -fcolor-diagnostics \
      -fmerge-all-constants -Xclang -mllvm -Xclang -instcombine-lower-dbg-declare=0 -no-canonical-prefixes \
      -ffunction-sections -fno-short-enums --target=arm-linux-ohos -Wextra -Wthread-safety \
@@ -54,7 +54,7 @@ set(CMAKE_C_FLAGS
 )
 
 set(CMAKE_CXX_FLAGS
-    "-Wdeprecated-copy -fno-strict-aliasing --param=ssp-buffer-size=4  -flto -fvisibility=default -fsanitize=cfi -fno-sanitize=cfi-nvcall,cfi-icall \
+    "-Wdeprecated-copy -fno-strict-aliasing --param=ssp-buffer-size=4 \
      -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -funwind-tables -fcolor-diagnostics \
      -fmerge-all-constants -Xclang -mllvm -Xclang -instcombine-lower-dbg-declare=0 -no-canonical-prefixes \
      -ffunction-sections -fno-short-enums --target=arm-linux-ohos -Wextra -Wthread-safety \
@@ -73,10 +73,10 @@ if("${DEBUG_INFO}" STREQUAL "INFO")
 endif()
 
 # if building stage is publish, add CMAKE_C_FLAGS
-if("${BUILDING_STAGE}" STREQUAL "publish")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto -fvisibility=default -fsanitize=cfi -fno-sanitize=cfi-nvcall,cfi-icall -mbranch-protection=pac-ret")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto -fvisibility=default -fsanitize=cfi -fno-sanitize=cfi-nvcall,cfi-icall -mbranch-protection=pac-ret")
-endif()
+# if("${BUILDING_STAGE}" STREQUAL "publish")
+#     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto -fvisibility=default -fsanitize=cfi -fno-sanitize=cfi-nvcall,cfi-icall -mbranch-protection=pac-ret")
+#     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto -fvisibility=default -fsanitize=cfi -fno-sanitize=cfi-nvcall,cfi-icall -mbranch-protection=pac-ret")
+# endif()
 
 # compile flags for debug version only
 if("${BUILDING_STAGE}" STREQUAL "asan")
@@ -90,7 +90,6 @@ else()
 endif()
 
 # compile flags for release version only
-# todo: check -D_FORTIFY_SOURCE=2
 set(CMAKE_C_FLAGS_RELEASE "-D_FORTIFY_SOURCE=2 -O2")
 set(CMAKE_CXX_FLAGS_RELEASE "-D_FORTIFY_SOURCE=2 -O2")
 
