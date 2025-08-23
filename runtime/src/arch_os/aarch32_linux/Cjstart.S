@@ -28,12 +28,12 @@ __CJ_Init_Start:                        // @__CJ_Init_Start
 #endif
     bx      lr
 .Lfunc_end12:
-    .size   __CJ_Init_Start, .Lf unc_end12-__CJ_Init_Start
+    .size   __CJ_Init_Start, .Lfunc_end12-__CJ_Init_Start
     .cfi_endproc
 
-    .section        .init_array.0,"aw",@init_array
+    .section        .init_array.0,"aw",%init_array
     .p2align        2
-    .xword  __CJ_Init_Start
+    .word  __CJ_Init_Start
 
     .text
     .p2align        2               // -- Begin function __CJ_Fini_End
@@ -60,12 +60,12 @@ __CJ_Fini_End:                        // @__CJ_Fini_End
     .size   __CJ_Fini_End, .Lfunc_end-__CJ_Fini_End
     .cfi_endproc
 
-    .section        .fini_array.0,"aw",@fini_array
+    .section        .fini_array.0,"aw",%fini_array
     .p2align        2
-    .xword  __CJ_Fini_End
+    .word  __CJ_Fini_End
 
     .section  .cjmetadata.rw.header
-    .p2align  2
+    .p2align  4
     .long 0x12345678
     .long 0x80000000
     .long 0

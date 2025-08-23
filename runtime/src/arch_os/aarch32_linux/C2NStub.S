@@ -223,17 +223,17 @@ unwindPCForC2NStub:
     mov  r1, r6
     mov  r2, r7
     mov  r3, r8
-    ldr  r12, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
-    blx  r12
+    ldr  r6, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
+    blx  r6
 
     // keep potential return value
     mov  r6, r0
     mov  r7, r1
 
-    str  d0, [r11, #StubCalleeSaveAreaSize+32]
-    str  d1, [r11, #StubCalleeSaveAreaSize+40]
-    cfi_rel_offset(d0, #StubCalleeSaveAreaSize+32)
-    cfi_rel_offset(d1, #StubCalleeSaveAreaSize+40)
+    vstr  d0, [r11, #StubCalleeSaveAreaSize+32]
+    vstr  d1, [r11, #StubCalleeSaveAreaSize+40]
+    cfi_rel_offset(d0, StubCalleeSaveAreaSize+32)
+    cfi_rel_offset(d1, StubCalleeSaveAreaSize+40)
 
     // restoring the SP Value. the stack which extended for invoking c method is useless now.
 #ifdef __OHOS__
@@ -249,8 +249,7 @@ unwindPCForC2NStub:
     bl  MRT_LeaveSaferegion
 .L_none_leave:
     bl  MRT_GetThreadLocalData
-    str  r0, [#StubCalleeSaveAreaSize+24]
-    bl  MRT_DeleteC2NContext
+    str  r0, [sp, #StubCalleeSaveAreaSize+24]
     bl  MRT_DeleteC2NContext
 
     mov r0, #0
@@ -265,8 +264,8 @@ unwindPCForC2NStubExceptionReturn:
     mov  r0, r6
     mov  r1, r7
 
-    ldr  d0, [sp, #StubCalleeSaveAreaSize+32]
-    str  d1, [sp, #StubCalleeSaveAreaSize+40]
+    vldr  d0, [sp, #StubCalleeSaveAreaSize+32]
+    vldr  d1, [sp, #StubCalleeSaveAreaSize+40]
     cfi_restore (d0)
     cfi_restore (d1)
 

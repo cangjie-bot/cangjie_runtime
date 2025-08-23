@@ -372,7 +372,11 @@ bool TracingCollector::MarkSatbBuffer(WorkStack& workStack)
     if (!workStack.empty()) {
         workStack.clear();
     }
+#ifdef __arm__
+    uint64_t maxIterationTime = 120ULL * 1000 * 1000 * 1000; // 2 mins.
+#else
     constexpr size_t maxIterationTime = 120ULL * 1000 * 1000 * 1000; // 2 mins.
+#endif
     constexpr size_t maxIterationLoopNum = 1000;
     auto visitSatbObj = [this, &workStack]() {
         WorkStack remarkStack;

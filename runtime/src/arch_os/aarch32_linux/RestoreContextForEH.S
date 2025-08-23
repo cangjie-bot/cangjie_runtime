@@ -82,6 +82,6 @@ RestoreContextForEH:
     // unsupport
 #endif
 
-    br  r0
+    bx  r0
     .cfi_endproc
     .size RestoreContextForEH, .-RestoreContextForEH
