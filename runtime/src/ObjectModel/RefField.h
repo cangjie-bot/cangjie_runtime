@@ -129,11 +129,13 @@ public:
     uint16_t GetTagID() const { return tagID; }
 
     ~RefField() = default;
+
     explicit RefField(MAddress val) : fieldVal(val) {}
     RefField(const RefField& ref) : fieldVal(ref.fieldVal) {}
     explicit RefField(const BaseObject* obj) : fieldVal(0) { address = reinterpret_cast<MAddress>(obj); }
     RefField(const BaseObject* obj, uint16_t tagged, uint16_t tagid)
-        : address(reinterpret_cast<MAddress>(obj)), isTagged(tagged), tagID(tagid) {
+        : address(reinterpret_cast<MAddress>(obj)), isTagged(tagged), tagID(tagid)
+        {
 #ifdef __arm__
             paddingLow = 0;
             paddingHigh = 0;
@@ -165,8 +167,8 @@ private:
         };
         RefFieldValue fieldVal;
     };
+
 #else
-#endif
     union {
         struct {
             MAddress address : 48;
@@ -176,7 +178,9 @@ private:
         };
         RefFieldValue fieldVal;
     };
+#endif
 };
+
 
 using RefFieldVisitor = std::function<void(RefField<>&)>;
 } // namespace MapleRuntime

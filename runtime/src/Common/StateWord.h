@@ -106,7 +106,7 @@ public:
     {
         uintptr_t address = reinterpret_cast<uintptr_t>(typeInfo);
 #ifdef __arm__
-        type->typeInfoLow32 = reinterpret_cast<uint32_t>(address);
+        this->typeInfoLow32 = reinterpret_cast<uint32_t>(address);
 #else
         this->typeInfoLow32 = (address >> LOW_ADDRESS_SHIFT) & LOW_ADDRESS_MASK;
         this->typeInfoHigh16 = (address >> HIGH_ADDRESS_SHIFT) & HIGH_ADDRESS_MASK;
