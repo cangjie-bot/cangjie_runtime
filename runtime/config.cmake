@@ -191,7 +191,7 @@ if (OHOS_FLAG MATCHES 3)
     message("set CMAKE_SYSTEM_PROCESSOR arm")
     set(CMAKE_SYSTEM_PROCESSOR "arm" CACHE FILEPATH "" FORCE)
     set(OHOS_SDK_OUT_PATH "sdk")
-    set(OHOS_COMPILE_OPTION "")
+    set(OHOS_COMPILE_OPTION "-Wno-atomic-alignment -mfpu=neon -mfloat-abi=softfp -march=armv7-a")
 endif()
 
 # Detect operating system and host processor

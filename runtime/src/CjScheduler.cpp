@@ -329,7 +329,7 @@ void* WrapperTask(void* arg, unsigned int len)
     TypeInfo* typeInfo = future->GetTypeInfo();
 #if defined(__aarch64__)
     ExecuteCangjieStub(future, typeInfo, 0, execute, reinterpret_cast<void*>(threadData), &g_ut);
-#if defined(__arm__)
+#elif defined(__arm__)
     ExecuteCangjieStub(&g_ut, future, typeInfo, execute, threadData);
 #elif defined(__x86_64__)
     ExecuteCangjieStub(&g_ut, future, typeInfo, execute, threadData);
@@ -518,7 +518,7 @@ static RuntimeParam InitRuntimeParam()
                 150 * MILLI_SECOND_TO_NANO_SECOND)),
             // Default backup GC interval is 240s.
             .backupGCInterval = static_cast<uint64_t>(InitTimeParameter("cjBackupGCInterval", 0,
-                240 * SECOND_TO_NANO_SECOND)),
+                static_cast<size_t>(240 * SECOND_TO_NANO_SECOND))),
             // Default GC thread factor is 2.
             .gcThreads = 2,
         },

@@ -150,7 +150,7 @@ CJThreadMcallNosave:
     .size CJThreadMcallNosave,.-CJThreadMcallNosave
 
 .global _CJ_CJThreadExecute
-_CJ_CJThreadExecute:
+CJ_CJThreadExecute:
     ldr r12, [r1]
     ldr r3, [r12, #ARM32_CJTHREAD_THREAD_OFFSET]
     CJThreadRebind r12, r0, r3, r1

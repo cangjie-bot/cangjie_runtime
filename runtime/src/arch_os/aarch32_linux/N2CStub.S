@@ -238,10 +238,10 @@ unwindPCForN2CStub:
     mov  r6, r0
     mov  r7, r1
 
-    str  d0, [r11, #StubCalleeSaveAreaSize+32]
-    str  d1, [r11, #StubCalleeSaveAreaSize+40]
-    cfi_rel_offset(d0, #StubCalleeSaveAreaSize+32)
-    cfi_rel_offset(d1, #StubCalleeSaveAreaSize+40)
+    vstr  d0, [r11, #StubCalleeSaveAreaSize+32]
+    vstr  d1, [r11, #StubCalleeSaveAreaSize+40]
+    cfi_rel_offset(d0, StubCalleeSaveAreaSize+32)
+    cfi_rel_offset(d1, StubCalleeSaveAreaSize+40)
 
     // Restore the value od rsp before copy arg8, arg9, arg10...
     mov  sp, r11
@@ -270,8 +270,8 @@ unwindPCForN2CStub:
     mov  r0, r6
     mov  r1, r7
 
-    ldr  d0, [sp, #StubCalleeSaveAreaSize+32]
-    str  d1, [sp, #StubCalleeSaveAreaSize+40]
+    vldr  d0, [sp, #StubCalleeSaveAreaSize+32]
+    vldr  d1, [sp, #StubCalleeSaveAreaSize+40]
     cfi_restore (d0)
     cfi_restore (d1)
 
@@ -425,7 +425,8 @@ ApplyCangjieMethodStubFloat64:
     // unsupport
 #endif
     sub  sp, sp, #StubFrameContextSize
-    str  r11, lr, [sp]
+    str  r11, [sp]
+    str  lr, [sp, #4]
     cfi_adjust_cfa_offset (StubFrameContextSize)
     cfi_rel_offset (r11, 0)
     cfi_rel_offset (lr, 4)
@@ -521,17 +522,17 @@ ApplyCangjieMethodStubFloat64:
     mov  r6, r0
     mov  r7, r1
     
-    str  d0, [r11, #StubCalleeSaveAreaSize+32]
-    str  d1, [r11, #StubCalleeSaveAreaSize+40]
-    cfi_rel_offset(d0, #StubCalleeSaveAreaSize+32)
-    cfi_rel_offset(d1, #StubCalleeSaveAreaSize+40)
+    vstr  d0, [r11, #StubCalleeSaveAreaSize+32]
+    vstr  d1, [r11, #StubCalleeSaveAreaSize+40]
+    cfi_rel_offset(d0, StubCalleeSaveAreaSize+32)
+    cfi_rel_offset(d1, StubCalleeSaveAreaSize+40)
 
     /* set potential return value */
     mov  r0, r6
     mov  r1, r7
 
-    ldr  d0, [r11, #StubCalleeSaveAreaSize+32]
-    ldr  d1, [r11, #StubCalleeSaveAreaSize+40]
+    vldr  d0, [r11, #StubCalleeSaveAreaSize+32]
+    vldr  d1, [r11, #StubCalleeSaveAreaSize+40]
     cfi_restore (d0)
     cfi_restore (d1)
 
