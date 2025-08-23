@@ -6,7 +6,7 @@
 
     .text
     .p2align        2               // -- Begin function __CJ_Init_Start
-    .type   __CJ_Init_Start,@function
+    .type   __CJ_Init_Start,%function
 __CJ_Init_Start:                        // @__CJ_Init_Start
     .cfi_startproc
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
@@ -37,7 +37,7 @@ __CJ_Init_Start:                        // @__CJ_Init_Start
 
     .text
     .p2align        2               // -- Begin function __CJ_Fini_End
-    .type   __CJ_Fini_End,@function
+    .type   __CJ_Fini_End,%function
 __CJ_Fini_End:                        // @__CJ_Fini_End
     .cfi_startproc
 // %bb.0:

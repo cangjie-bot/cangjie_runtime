@@ -16,7 +16,7 @@ constexpr U32 kDregSize = 8;
 constexpr U32 kXregSize = 4;
 constexpr U32 kDregSize = 8;
 #elif defined(__arm__)
-constexpr U32 kXregSize = 8;  // todo
+constexpr U32 kXregSize = 4;
 constexpr U32 kDregSize = 8;
 #elif defined(_WIN64)
 constexpr U32 kXregSize = 4;
@@ -130,7 +130,7 @@ public:
     U32 GetStackSize()
     {
         // 8: means the size of each type in stack
-#ifdef (__arm__)
+#ifdef __arm__
         return (stackIdx - kRegArgsSize) * 4;
 #else
         return (stackIdx - kRegArgsSize) * 8;

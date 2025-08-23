@@ -92,18 +92,25 @@ public:
 
     TypeInfo* GetTypeInfo() const
     {
+#ifdef __arm__
+        uintptr_t address = this->typeInfoLow32;
+#else
         uintptr_t low = this->typeInfoLow32;
         uintptr_t high = this->typeInfoHigh16;
         uintptr_t address = (high << HIGH_ADDRESS_SHIFT) | low;
+#endif
         return reinterpret_cast<TypeInfo*>(address);
     }
 
     void SetTypeInfo(TypeInfo* typeInfo)
     {
         uintptr_t address = reinterpret_cast<uintptr_t>(typeInfo);
-
+#ifdef __arm__
+        type->typeInfoLow32 = reinterpret_cast<uint32_t>(address);
+#else
         this->typeInfoLow32 = (address >> LOW_ADDRESS_SHIFT) & LOW_ADDRESS_MASK;
         this->typeInfoHigh16 = (address >> HIGH_ADDRESS_SHIFT) & HIGH_ADDRESS_MASK;
+#endif
     }
 
     bool IsValidStateWord() const { return GetTypeInfo() != nullptr; }
@@ -142,7 +149,7 @@ private:
         : typeInfoLow32(low32), typeInfoHigh16(hi16), objectState(state)
     {}
 
-    // for type info.
+    // for type info. arm32 only use typeInfoLow32 and typeInfoHigh16 is 0
     uint32_t typeInfoLow32;
     uint16_t typeInfoHigh16;
     ObjectState objectState;

@@ -39,7 +39,7 @@ CalleeSavedStubFrameSize:
     .text
     .p2align 2
     .global \funcNameStub
-    .type \funcNameStub, @function
+    .type \funcNameStub, %function
 \funcNameStub:
     .cfi_startproc
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
@@ -111,7 +111,7 @@ CalleeSavedStubFrameSize:
     .text
     .p2align 2
     .global \funcNameStub
-    .type \funcNameStub, @function
+    .type \funcNameStub, %function
 \funcNameStub:
     .cfi_startproc
     ldr  lr, [sp], #8
