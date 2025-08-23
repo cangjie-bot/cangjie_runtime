@@ -94,7 +94,7 @@
     .text
     .align 2
     .global CJ_MCC_N2CStub
-    .type CJ_MCC_N2CStub, @function
+    .type CJ_MCC_N2CStub, %function
 CJ_MCC_N2CStub:
     .cfi_startproc
     add  lr, lr, #2 // todo? why?
@@ -312,7 +312,7 @@ unwindPCForN2CStub:
 .text
 .align 2
 .global  ExecuteCangjieStub
-.type    ExecuteCangjieStub, @function
+.type    ExecuteCangjieStub, %function
 ExecuteCangjieStub:
     .cfi_startproc
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
@@ -343,7 +343,7 @@ ExecuteCangjieStub:
 .text
 .align 2
 .global  InitCJLibraryStub
-.type    InitCJLibraryStub, @function
+.type    InitCJLibraryStub, %function
 InitCJLibraryStub:
     .cfi_startproc
     sub  sp, sp, #8
@@ -376,7 +376,7 @@ InitCJLibraryStub:
 .text
 .align 2
 .global  CJ_MRT_ARKTS_CreateEngineStub
-.type    CJ_MRT_ARKTS_CreateEngineStub, @function
+.type    CJ_MRT_ARKTS_CreateEngineStub, %function
 CJ_MRT_ARKTS_CreateEngineStub:
     .cfi_startproc
     sub  sp, sp, #8
@@ -412,11 +412,11 @@ CJ_MRT_ARKTS_CreateEngineStub:
 .text
 .align 2
 .global  ApplyCangjieMethodStub
-.type    ApplyCangjieMethodStub, @function
+.type    ApplyCangjieMethodStub, %function
 .global  ApplyCangjieMethodStubFloat32
-.type    ApplyCangjieMethodStubFloat32, @function
+.type    ApplyCangjieMethodStubFloat32, %function
 .global  ApplyCangjieMethodStubFloat64
-.type    ApplyCangjieMethodStubFloat64, @function
+.type    ApplyCangjieMethodStubFloat64, %function
 ApplyCangjieMethodStub:
 ApplyCangjieMethodStubFloat32:
 ApplyCangjieMethodStubFloat64:

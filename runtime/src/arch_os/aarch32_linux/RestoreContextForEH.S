@@ -16,7 +16,7 @@
     .text
     .align 2
     .global   RestoreContextForEH
-    .type     RestoreContextForEH, @function
+    .type     RestoreContextForEH, %function
 RestoreContextForEH:
     .cfi_startproc
     // Current sp point to the top managed method.

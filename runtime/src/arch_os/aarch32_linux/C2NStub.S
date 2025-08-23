@@ -91,7 +91,7 @@ C2NStubFrameSize:
     .text
     .align 2
     .global CJ_MCC_C2NStub
-    .type CJ_MCC_C2NStub, @function
+    .type CJ_MCC_C2NStub, %function
 CJ_MCC_C2NStub:
     .cfi_startproc
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)

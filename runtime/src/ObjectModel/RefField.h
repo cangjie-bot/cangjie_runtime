@@ -131,40 +131,24 @@ public:
     ~RefField() = default;
     explicit RefField(MAddress val) : fieldVal(val) {}
     RefField(const RefField& ref) : fieldVal(ref.fieldVal) {}
-    RefField(RefField&& ref) : fieldVal(ref.fieldVal) {}
-
-#ifdef __arm__
-    explicit RefField(const BaseObject* obj)
-    {
-        fieldVal = 0;
-        MAddress ptr = reinterpret_cast<MAddress>(obj);
-        if ((ptr & ARM32_MARKED_FLAG_MASK) != 0) {
-            LOG(RTLOG_FATAL, "low 3 bits of BaseObject %p are not zero", obj);
-        }
-        address = ptr >> ARM32_MARKED_FLAG_BITS;
-    }
-    RefField(const BaseObject* obj, uint16_t tagged, uint16_t tagid)
-    {
-        MAddress ptr = reinterpret_cast<MAddress>(obj);
-        if ((ptr & ARM32_MARKED_FLAG_MASK) != 0) {
-            LOG(RTLOG_FATAL, "low 3 bits of BaseObject %p are not zero", obj);
-        }
-        address = ptr >> ARM32_MARKED_FLAG_BITS;
-        isTagged = tagged;
-        tagID = tagid;
-    }
-#else
     explicit RefField(const BaseObject* obj) : fieldVal(0) { address = reinterpret_cast<MAddress>(obj); }
     RefField(const BaseObject* obj, uint16_t tagged, uint16_t tagid)
-        : address(reinterpret_cast<MAddress>(obj)), isTagged(tagged), tagID(tagid), padding(0) {}
+        : address(reinterpret_cast<MAddress>(obj)), isTagged(tagged), tagID(tagid) {
+#ifdef __arm__
+            paddingLow = 0;
+            paddingHigh = 0;
+#else
+            padding = 0;
 #endif
+        }
     
+    RefField(RefField&& ref) : fieldVal(ref.fieldVal) {}
     RefField() = delete;
     RefField& operator=(const RefField&) = delete;
     RefField& operator=(const RefField&&) = delete;
 
 private:
-#ifdef __arm__
+#ifdef USE_32BIT_REF
     using RefFieldValue = U32;
 #else
     using RefFieldValue = MAddress;
@@ -172,12 +156,15 @@ private:
 
 #ifdef __arm__
     union {
-        MAddress tagID : 1,
-        MAddress isTagged : 1;
-        MAddress padding : 1;
-        MAddress address : 29;
+        struct {
+            MAddress address : 32;
+            MAddress paddingLow : 16;
+            MAddress isTagged : 1;
+            MAddress tagID : 1;
+            MAddress paddingHigh : 14;
+        };
+        RefFieldValue fieldVal;
     };
-    RefFieldValue fieldVal;
 #else
 #endif
     union {

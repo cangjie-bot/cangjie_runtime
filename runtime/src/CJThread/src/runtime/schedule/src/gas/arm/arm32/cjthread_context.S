@@ -30,15 +30,16 @@
     str sp, [\context, #CONTEXT_R13SP]
 
 #ifndef SCHEDULE_SOFT_FLOAT
-    str d8, [\context, #CONTEXT_ARM32_D8]
-    str d9, [\context, #CONTEXT_ARM32_D9]
-    str d10, [\context, #CONTEXT_ARM32_D10]
-    str d11, [\context, #CONTEXT_ARM32_D11]
-    str d12, [\context, #CONTEXT_ARM32_D12]
-    str d13, [\context, #CONTEXT_ARM32_D13]
-    str d15, [\context, #CONTEXT_ARM32_D15]
+    vstr  d8, [\context, #CONTEXT_ARM32_D8]
+    vstr  d9, [\context, #CONTEXT_ARM32_D9]
+    vstr  d10, [\context, #CONTEXT_ARM32_D10]
+    vstr  d11, [\context, #CONTEXT_ARM32_D11]
+    vstr  d12, [\context, #CONTEXT_ARM32_D12]
+    vstr  d13, [\context, #CONTEXT_ARM32_D13]
+    vstr  d14, [\context, #CONTEXT_ARM32_D14]
+    vstr  d15, [\context, #CONTEXT_ARM32_D15]
 
-    mrs r12, fpscr
+    vmrs r12, fpscr
     str r12, [\context, #CONTEXT_FPSCR]
 #endif
 .endm
@@ -57,38 +58,42 @@
     ldr sp, [\context, #CONTEXT_R13SP]
 
 #ifndef SCHEDULE_SOFT_FLOAT
-    str r12, [\context, #CONTEXT_FPSCR]
-    mrs fpscr, r12
+    ldr r12, [\context, #CONTEXT_FPSCR]
+    vmsr fpscr, r12
 
-    ldr d8, [\context, #CONTEXT_ARM32_D8]
-    ldr d9, [\context, #CONTEXT_ARM32_D9]
-    ldr d10, [\context, #CONTEXT_ARM32_D10]
-    ldr d11, [\context, #CONTEXT_ARM32_D11]
-    ldr d12, [\context, #CONTEXT_ARM32_D12]
-    ldr d13, [\context, #CONTEXT_ARM32_D13]
-    ldr d15, [\context, #CONTEXT_ARM32_D15]
+    vldr d8, [\context, #CONTEXT_ARM32_D8]
+    vldr d9, [\context, #CONTEXT_ARM32_D9]
+    vldr d10, [\context, #CONTEXT_ARM32_D10]
+    vldr d11, [\context, #CONTEXT_ARM32_D11]
+    vldr d12, [\context, #CONTEXT_ARM32_D12]
+    vldr d13, [\context, #CONTEXT_ARM32_D13]
+    vldr d14, [\context, #CONTEXT_ARM32_D14]
+    vldr d15, [\context, #CONTEXT_ARM32_D15]
 #endif
 
-    br r3
+    bx r3
 .endm
 
 .macro Context0Reset context
     ldr sp, [\context, #CONTEXT_R13SP]
 
-    mov lr, xzr
+    mov lr, #0
 
 #ifndef SCHEDULE_SOFT_FLOAT
     ldr r12, [\context, #CONTEXT_FPSCR]
-    msr fpscr, r12
+    vmsr fpscr, r12
 #endif
 .endm
 
 /* Rebind the cjthread to the thread */
 .macro CJThreadRebind curCJThread, dstCJThread, thread, g_cjthread
-    str xzr, [\curCJThread, #ARM32_CJTHREAD_THREAD_OFFSET]             /* curCJThread->thread = nullptr */
+    push {r9}
+    mov r9, #0
+    str r9, [\curCJThread, #ARM32_CJTHREAD_THREAD_OFFSET]             /* curCJThread->thread = nullptr */
     str \thread, [\dstCJThread, #ARM32_CJTHREAD_THREAD_OFFSET]         /* dstCJThread->thread = thread */
     str \dstCJThread, [\thread, #ARM32_THREAD_CJTHREAD_OFFSET]         /* thread->cjthread = dstCJThread */
-    str \dstCJThread, [\g_cjthread]                              /* g_cjthread = dstCJThread */
+    str \dstCJThread, [\g_cjthread]                                    /* g_cjthread = dstCJThread */
+    pop {r9}
 .endm
 
 /* Go to cjthread0 and run the func function.
@@ -114,9 +119,9 @@ CJThreadMcall:
     ldr r3, [sp, #0]
     add sp, sp, #8
 
-    br r3
+    bx r3
 
-    .type CJThreadMcall,@function
+    .type CJThreadMcall,%function
     .size CJThreadMcall,.-CJThreadMcall
 
 /* Go to cjthread0 and execute the func function. Unlike the mcall function, this interface
@@ -139,9 +144,9 @@ CJThreadMcallNosave:
 
     ldr r3, [sp, #0]
     add sp, sp, #8
-    br r3
+    bx r3
 
-    .type CJThreadMcallNosave,@function
+    .type CJThreadMcallNosave,%function
     .size CJThreadMcallNosave,.-CJThreadMcallNosave
 
 .global _CJ_CJThreadExecute
@@ -153,7 +158,7 @@ _CJ_CJThreadExecute:
     add r2, r0, #ARM32_CJTHREAD_CONTEXT_OFFSET
     ContextResume r2
 
-    .type CJThreadExecute,@function
+    .type CJThreadExecute,%function
     .size CJThreadExecute,.-CJThreadExecute
 
 #ifdef __OHOS__
@@ -169,7 +174,7 @@ SingleCJThreadStoreSP:
     bl StoreNativeSPForUIThread
     pop {r11, pc}
 
-    .type SingleCJThreadStoreSP,@function
+    .type SingleCJThreadStoreSP,%function
     .size SingleCJThreadStoreSP,.-SingleCJThreadStoreSP
 
 #endif
@@ -183,11 +188,11 @@ CJThreadContextInit:
     str r2, [r0, #CONTEXT_R13SP]
 
 #ifndef SCHEDULE_SOFT_FLOAT
-    mrs r3, fpscr
+    vmrs r3, fpscr
     str r3, [r0, #CONTEXT_FPSCR]
 #endif
     bx lr
-    .type CJThreadContextInit,@function
+    .type CJThreadContextInit,%function
     .size CJThreadContextInit,.-CJThreadContextInit
 
 /* Obtains the current context.
@@ -198,7 +203,7 @@ CJThreadContextGet:
     ContextSave r0
     bx lr
 
-    .type CJThreadContextGet,@function
+    .type CJThreadContextGet,%function
     .size CJThreadContextGet,.-CJThreadContextGet
 
 /* Set the current context.
@@ -208,5 +213,5 @@ CJThreadContextGet:
 CJThreadContextSet:
     ContextResume r0
 
-    .type CJThreadContextSet,@function
+    .type CJThreadContextSet,%function
     .size CJThreadContextSet,.-CJThreadContextSet
