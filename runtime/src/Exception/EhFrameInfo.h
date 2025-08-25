@@ -210,7 +210,7 @@ private:
     static constexpr int64_t SLOT_SIZE_FACTOR = 8;
 #elif defined(__arm__)
     static constexpr size_t CALLEE_SAVE_NUMBERS = 18;
-    static constexpr int64_t SLOT_SIZE_FACTOR = 4;
+    static constexpr int64_t SLOT_SIZE_FACTOR = -4;
 #elif defined(__linux__) && defined(__aarch64__)
     static constexpr size_t CALLEE_SAVE_NUMBERS = 20;
     static constexpr int64_t SLOT_SIZE_FACTOR = 8;
