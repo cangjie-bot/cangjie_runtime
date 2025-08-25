@@ -369,11 +369,6 @@ FuncPtr* TypeInfo::GetMTable(TypeInfo* itf)
 
 bool TypeInfo::IsSubType(TypeInfo* typeInfo)
 {
-    // All types are subtypes of the Any type.
-    TypeInfo* anyTi = TypeInfoManager::GetInstance()->GetAnyTypeInfo();
-    if (anyTi != nullptr && typeInfo == anyTi) {
-        return true;
-    }
     if (GetUUID() == typeInfo->GetUUID()) {
         return true;
     }
@@ -439,6 +434,10 @@ bool TypeInfo::IsSubType(TypeInfo* typeInfo)
     } else if (typeInfo->IsInterface()) {
         if (IsTempEnum() && GetSuperTypeInfo()) {
             return GetSuperTypeInfo()->IsSubType(typeInfo);
+        }
+        // All types are subtypes of the Any type.
+        if (typeInfo == TypeInfoManager::GetInstance()->GetAnyTypeInfo()) {
+            return true;
         }
         TryInitMTable();
         U32 targetID = typeInfo->GetUUID();
