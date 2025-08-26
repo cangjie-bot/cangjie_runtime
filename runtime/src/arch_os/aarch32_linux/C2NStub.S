@@ -249,7 +249,6 @@ unwindPCForC2NStub:
     bl  MRT_LeaveSaferegion
 .L_none_leave:
     bl  MRT_GetThreadLocalData
-    str  r0, [sp, #StubCalleeSaveAreaSize+24]
     bl  MRT_DeleteC2NContext
 
     mov r0, #0
@@ -299,8 +298,6 @@ unwindPCForC2NStubExceptionReturn:
 
 .L_stack_check_fail:
     bl  MCC_ThrowStackOverflowError
-    bl  MRT_GetThreadLocalData
-    str  r0, [sp, #StubCalleeSaveAreaSize+24]
     b   .L_stack_restore
     .cfi_endproc
     .size CJ_MCC_C2NStub, .-CJ_MCC_C2NStub

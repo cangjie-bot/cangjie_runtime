@@ -93,7 +93,7 @@ public:
     TypeInfo* GetTypeInfo() const
     {
 #ifdef __arm__
-        uintptr_t address = this->typeInfoLow32;
+        uint32_t address = this->typeInfo;
 #else
         uintptr_t low = this->typeInfoLow32;
         uintptr_t high = this->typeInfoHigh16;
@@ -106,7 +106,7 @@ public:
     {
         uintptr_t address = reinterpret_cast<uintptr_t>(typeInfo);
 #ifdef __arm__
-        this->typeInfoLow32 = reinterpret_cast<uint32_t>(address);
+        this->typeInfo = reinterpret_cast<uint32_t>(address);
 #else
         this->typeInfoLow32 = (address >> LOW_ADDRESS_SHIFT) & LOW_ADDRESS_MASK;
         this->typeInfoHigh16 = (address >> HIGH_ADDRESS_SHIFT) & HIGH_ADDRESS_MASK;
@@ -114,7 +114,14 @@ public:
     }
 
     bool IsValidStateWord() const { return GetTypeInfo() != nullptr; }
-    StateWord GetStateWord() const { return StateWord(typeInfoLow32, typeInfoHigh16, GetObjectState()); }
+    StateWord GetStateWord() const
+    {
+#ifdef __arm__
+        return StateWord(typeInfo, GetObjectState());
+#else
+        return StateWord(typeInfoLow32, typeInfoHigh16, GetObjectState());
+#endif
+    }
 
     ObjectState GetObjectState() const { return objectState.AtomicGetObjectState(); }
     ObjectState::ObjectStateCode GetStateCode() const { return objectState.GetStateCode(); }
@@ -145,16 +152,28 @@ public:
     }
 
 private:
+#ifdef __arm__
+    explicit StateWord(uint32_t typeInfo, ObjectState state)
+        : typeInfo(typeInfo), objectState(state)
+    {}
+#else
     explicit StateWord(uint32_t low32, uint16_t hi16, ObjectState state)
         : typeInfoLow32(low32), typeInfoHigh16(hi16), objectState(state)
     {}
+#endif
 
-    // for type info. arm32 only use typeInfoLow32 and typeInfoHigh16 is 0
+    // for type info.
+#ifdef __arm__
+    uint32_t typeInfo;
+#else
     uint32_t typeInfoLow32;
     uint16_t typeInfoHigh16;
+#endif
     ObjectState objectState;
 };
 
+#ifndef __arm__
 static_assert(sizeof(StateWord) == sizeof(uint64_t), "illegal size of StateBits");
+#endif
 } // namespace MapleRuntime
 #endif // MRT_STATE_WORD_H

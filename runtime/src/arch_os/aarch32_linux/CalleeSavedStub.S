@@ -74,9 +74,6 @@ CalleeSavedStubFrameSize:
     bl  \funcName
     str  r0, [sp, StubCalleeSaveAreaSize+24]
 
-    bl  MRT_GetThreadLocalData
-    mov  r10, r0
-
     // restore all used callee-saved registers.
     ldr  r4, [sp, #StubCalleeSaveAreaSize]
     ldr  r5, [sp, #StubCalleeSaveAreaSize+4]
@@ -84,84 +81,14 @@ CalleeSavedStubFrameSize:
     ldr  r7, [sp, #StubCalleeSaveAreaSize+12]
     ldr  r8, [sp, #StubCalleeSaveAreaSize+16]
     ldr  r9, [sp, #StubCalleeSaveAreaSize+20]
-    ldr  r0, [sp, #StubCalleeSaveAreaSize+24]
+    ldr  r10, [sp, #StubCalleeSaveAreaSize+24]
     cfi_restore(r4)
     cfi_restore(r5)
     cfi_restore(r6)
     cfi_restore(r7)
     cfi_restore(r8)
     cfi_restore(r9)
-    cfi_restore(r0)
-
-    ldr  r11, [sp]
-    ldr  lr, [sp, #4]
-    add  sp, sp, #StubFrameContextSize
-    cfi_adjust_cfa_offset (-StubFrameContextSize)
-    cfi_restore(r11)
-    cfi_restore(lr)
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
-    bx lr
-    .cfi_endproc
-    .size \funcNameStub, .-\funcNameStub
-    .endm
-
-    .macro CalleeSavedRegistersStubNew, funcName, funcNameStub
-    .text
-    .p2align 2
-    .global \funcNameStub
-    .type \funcNameStub, %function
-\funcNameStub:
-    .cfi_startproc
-    ldr  lr, [sp], #8
-    sub  sp, sp, #StubFrameContextSize
-    str  r11, [sp]
-    str  lr, [sp, #4]
-    cfi_adjust_cfa_offset (StubFrameContextSize)
-    cfi_rel_offset (r11, 0)
-    cfi_rel_offset (lr, 4)
-
-    mov  r11, sp
-    cfi_def_cfa_register (sp)
-
-    // save all used callee-saved registers.
-    str  r4, [sp, #StubCalleeSaveAreaSize]
-    str  r5, [sp, #StubCalleeSaveAreaSize+4]
-    str  r6, [sp, #StubCalleeSaveAreaSize+8]
-    str  r7, [sp, #StubCalleeSaveAreaSize+12]
-    str  r8, [sp, #StubCalleeSaveAreaSize+16]
-    str  r9, [sp, #StubCalleeSaveAreaSize+20]
-    str  r10, [sp, #StubCalleeSaveAreaSize+24]
-    cfi_rel_offset(r4, StubCalleeSaveAreaSize)
-    cfi_rel_offset(r5, StubCalleeSaveAreaSize+4)
-    cfi_rel_offset(r6, StubCalleeSaveAreaSize+8)
-    cfi_rel_offset(r7, StubCalleeSaveAreaSize+12)
-    cfi_rel_offset(r8, StubCalleeSaveAreaSize+16)
-    cfi_rel_offset(r9, StubCalleeSaveAreaSize+20)
-    cfi_rel_offset(r10, StubCalleeSaveAreaSize+24)
-
-    bl  \funcName
-    str  r0, [sp, StubCalleeSaveAreaSize+24]
-
-    bl  MRT_GetThreadLocalData
-    mov  r10, r0
-
-    // restore all used callee-saved registers.
-    ldr  r4, [sp, #StubCalleeSaveAreaSize]
-    ldr  r5, [sp, #StubCalleeSaveAreaSize+4]
-    ldr  r6, [sp, #StubCalleeSaveAreaSize+8]
-    ldr  r7, [sp, #StubCalleeSaveAreaSize+12]
-    ldr  r8, [sp, #StubCalleeSaveAreaSize+16]
-    ldr  r9, [sp, #StubCalleeSaveAreaSize+20]
-    ldr  r0, [sp, #StubCalleeSaveAreaSize+24]
-    cfi_restore(r4)
-    cfi_restore(r5)
-    cfi_restore(r6)
-    cfi_restore(r7)
-    cfi_restore(r8)
-    cfi_restore(r9)
-    cfi_restore(r0)
+    cfi_restore(r10)
 
     ldr  r11, [sp]
     ldr  lr, [sp, #4]
@@ -179,10 +106,10 @@ CalleeSavedStubFrameSize:
 
     .global unwindPCForC2RStubStart
 unwindPCForC2RStubStart:
-    CalleeSavedRegistersStubNew MCC_NewObject CJ_MCC_NewObject
+    CalleeSavedRegistersStub MCC_NewObject CJ_MCC_NewObject
     CalleeSavedRegistersStub MCC_NewWeakRefObject CJ_MCC_NewWeakRefObject
     CalleeSavedRegistersStub MCC_NewObjArray CJ_MCC_NewObjArray
-    CalleeSavedRegistersStubNew MCC_NewFinalizer CJ_MCC_NewFinalizer
+    CalleeSavedRegistersStub MCC_NewFinalizer CJ_MCC_NewFinalizer
     CalleeSavedRegistersStub MCC_NewArray CJ_MCC_NewArray
     CalleeSavedRegistersStub MCC_NewArray8 CJ_MCC_NewArray8
     CalleeSavedRegistersStub MCC_NewArray16 CJ_MCC_NewArray16

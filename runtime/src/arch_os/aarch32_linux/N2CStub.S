@@ -324,10 +324,10 @@ ExecuteCangjieStub:
     cfi_adjust_cfa_offset (8)
     cfi_rel_offset (r10, 0)
     cfi_rel_offset (lr, 4)
-    ldr  r10, [sp, #8]
+    // ldr  r10, [sp, #8]  // no need for arm32
     blx  r3
-    str  r10, [sp]
-    str  lr, [sp, #4]
+    ldr  r10, [sp]
+    ldr  lr, [sp, #4]
     add  sp, sp, #8
     cfi_adjust_cfa_offset (-8)
     cfi_restore (r10)
