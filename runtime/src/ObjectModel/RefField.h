@@ -22,9 +22,7 @@
 namespace MapleRuntime {
 #ifdef __arm__
 #define ARM32_MARKED_FLAG_BITS  3
-#define ARM32_MARKED_FLAG_MASK  0x7
 #endif
-
 class BaseObject;
 
 /* there are several similar terms about object address:
@@ -129,45 +127,49 @@ public:
     uint16_t GetTagID() const { return tagID; }
 
     ~RefField() = default;
-
     explicit RefField(MAddress val) : fieldVal(val) {}
     RefField(const RefField& ref) : fieldVal(ref.fieldVal) {}
-    explicit RefField(const BaseObject* obj) : fieldVal(0) { address = reinterpret_cast<MAddress>(obj); }
-    RefField(const BaseObject* obj, uint16_t tagged, uint16_t tagid)
-        : address(reinterpret_cast<MAddress>(obj)), isTagged(tagged), tagID(tagid)
-        {
+    explicit RefField(const BaseObject* obj) : fieldVal(0)
+    {
 #ifdef __arm__
-            paddingLow = 0;
-            paddingHigh = 0;
+        address = reinterpret_cast<MAddress>(obj) >> ARM32_MARKED_FLAG_BITS;
 #else
-            padding = 0;
+        address = reinterpret_cast<MAddress>(obj);
 #endif
-        }
-    
+    }
+#ifdef __arm__
+    RefField(const BaseObject* obj, uint16_t tagged, uint16_t tagid) : isTagged(tagged), tagID(tagid), padding(0)
+    {
+        address = reinterpret_cast<MAddress>(obj) >> ARM32_MARKED_FLAG_BITS;
+    }
+#else
+    RefField(const BaseObject* obj, uint16_t tagged, uint16_t tagid)
+        : address(reinterpret_cast<MAddress>(obj)), isTagged(tagged), tagID(tagid), padding(0) {}
+#endif
+
     RefField(RefField&& ref) : fieldVal(ref.fieldVal) {}
     RefField() = delete;
     RefField& operator=(const RefField&) = delete;
     RefField& operator=(const RefField&&) = delete;
 
 private:
-#ifdef USE_32BIT_REF
+#ifdef __arm__
     using RefFieldValue = U32;
 #else
     using RefFieldValue = MAddress;
 #endif
 
+
 #ifdef __arm__
     union {
         struct {
-            MAddress address : 32;
-            MAddress paddingLow : 16;
             MAddress isTagged : 1;
             MAddress tagID : 1;
-            MAddress paddingHigh : 14;
+            MAddress padding : 1;
+            MAddress address : 29;
         };
         RefFieldValue fieldVal;
     };
-
 #else
     union {
         struct {
@@ -180,7 +182,6 @@ private:
     };
 #endif
 };
-
 
 using RefFieldVisitor = std::function<void(RefField<>&)>;
 } // namespace MapleRuntime
