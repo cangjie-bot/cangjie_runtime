@@ -164,7 +164,11 @@ extern "C" void MCC_WriteStructField(ObjectPtr obj, MAddress dst, size_t dstLen,
                      "memcpy_s failed");
         return;
     }
+#ifdef __arm__
+    CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dst), dstLen, reinterpret_cast<void*>(src), srcLen) == EOK, "memcpy_s failed on arm32");
+#else
     Heap::GetBarrier().WriteStruct(obj, dst, dstLen, src, srcLen);
+#endif
 }
 
 extern "C" void MCC_WriteStaticRef(const ObjectPtr ref, RefField<false>* field)
@@ -175,7 +179,11 @@ extern "C" void MCC_WriteStaticRef(const ObjectPtr ref, RefField<false>* field)
 extern "C" void MCC_WriteStaticStruct(MAddress dst, size_t dstLen, MAddress src, size_t srcLen, const GCTib gcTib)
 {
     CHECK_DETAIL((dst != 0u && src != 0u), "MCC_WriteStaticStruct wrong parameter, dst: %p src: %p", dst, src);
+#ifdef __arm__
+    CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dst), dstLen, reinterpret_cast<void*>(src), srcLen) == EOK, "memcpy_s failed on arm32");
+#else
     Heap::GetBarrier().WriteStaticStruct(dst, dstLen, src, srcLen, gcTib);
+#endif
 }
 
 extern "C" TypeInfo* MCC_GetObjClass(const ObjectPtr obj)
@@ -929,7 +937,12 @@ extern "C" void CJ_MCC_ReadStructField(MAddress dstPtr, ObjectPtr obj, MAddress 
     if (size == 0) {
         return;
     }
+#ifdef __arm__
+    (void)obj;
+    CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dstPtr), size, reinterpret_cast<void*>(srcField), size) == EOK, "memcpy_s failed on arm32");
+#else
     Heap::GetHeap().GetBarrier().ReadStruct(dstPtr, obj, srcField, size);
+#endif
 }
 extern "C" ObjectPtr CJ_MCC_ReadStaticRef(RefField<false>* field)
 {
@@ -937,7 +950,11 @@ extern "C" ObjectPtr CJ_MCC_ReadStaticRef(RefField<false>* field)
 }
 extern "C" void CJ_MCC_ReadStaticStruct(MAddress dstPtr, size_t dstSize, MAddress srcPtr, size_t srcSize, GCTib gctib)
 {
+#ifdef __arm__
+    CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dstPtr), dstSize, reinterpret_cast<void*>(srcPtr), srcSize) == EOK, "memcpy_s failed on arm32");
+#else
     Heap::GetHeap().GetBarrier().ReadStaticStruct(dstPtr, srcPtr, dstSize, gctib);
+#endif
 }
 extern "C" void* MCC_GetTypeInfoAnnotations(TypeInfo* cls, TypeInfo* arrayTi) { return cls->GetAnnotations(arrayTi); }
 

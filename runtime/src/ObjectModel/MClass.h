@@ -29,26 +29,23 @@ constexpr U16 INVALID_INHERIT_NUM = (1 << 15) - 1;
 
 #ifdef __arm__
 #define SIGN_BIT  SIGN_BIT_32
+using BIT_TYPE = U32;
 #else
 #define SIGN_BIT  SIGN_BIT_64
+using BIT_TYPE = U64;
 #endif
 
 union MTableBitmap {
     using LargeBitmap = std::pair<U32, U8[]>;
-#ifdef __arm__
-    U32 shortBitmap;
+    BIT_TYPE shortBitmap;
     LargeBitmap* largeBitmap;
-    U32 tag;
-#else
-    U64 shortBitmap;
-    LargeBitmap* largeBitmap;
-    U64 tag;
-#endif
+    BIT_TYPE tag;
+    
     void ForEachBit(const std::function<void(ExtensionData*)>& visitor, ExtensionData** vExtensionPtr)
     {
         bool isSmallBitmap = tag & SIGN_BIT;
         if (isSmallBitmap) {
-            U64 bitInfo = shortBitmap & (~SIGN_BIT);
+            BIT_TYPE bitInfo = shortBitmap & (~SIGN_BIT);
             while (LIKELY(bitInfo != 0)) {
                 if (bitInfo & 0x1) {
                     visitor(*vExtensionPtr);
@@ -77,21 +74,17 @@ struct MTableDesc {
     MTableBitmap mTableBitmap;
     std::recursive_mutex mTableMutex;
     bool pending = false;
-    explicit MTableDesc(U64 bitmap_) { mTableBitmap.tag = bitmap_; }
+    explicit MTableDesc(BIT_TYPE bitmap_) { mTableBitmap.tag = bitmap_; }
     MTableDesc() = delete;
 };
 
 typedef TypeInfo* (*GenericFunc)(TypeInfo**);
 struct ShortGCTib {
-#ifdef __arm__
-    U32 bitmap; // lower 32 bits are valid, each bit indicates 4-byte width, 1:ref, 0:no-ref
-#else
-    U64 bitmap; // lower 63 bits are valid, each bit indicates 8-byte width, 1:ref, 0:no-ref
-#endif
+    BIT_TYPE bitmap; // lower 63 bits are valid, each bit indicates 8-byte width, 1:ref, 0:no-ref
 
     void ForEachBitmapWord(MAddress fieldAddr, const RefFieldVisitor& visitor) const
     {
-        U64 gcInfo = bitmap & (~SIGN_BIT);
+        BIT_TYPE gcInfo = bitmap & (~SIGN_BIT);
         while (LIKELY(gcInfo != 0)) {
             if (gcInfo & REF_BIT_MASK) {
                 visitor(*reinterpret_cast<RefField<>*>(fieldAddr));
@@ -103,7 +96,7 @@ struct ShortGCTib {
     void ForEachBitmapWordInRange(MAddress baseAddr, const RefFieldVisitor& visitor, MAddress rangeStart,
                                   MAddress rangeEnd) const
     {
-        U64 gcInfo = bitmap & (~SIGN_BIT);
+        BIT_TYPE gcInfo = bitmap & (~SIGN_BIT);
         U32 startPos = (rangeStart - baseAddr) / sizeof(RefField<>);
         gcInfo >>= startPos;
 
@@ -203,18 +196,15 @@ struct StdGCTib {
 };
 
 union GCTib {
-#ifdef __arm__
-    U32 tag;
-#else
-    U64 tag;           // 1: bitmap, 0: gctib
-#endif
+    BIT_TYPE tag;           // 1: bitmap, 0: gctib
     ShortGCTib bitmap; // each bit indicates 8-byte width, 1:ref, 0:no-ref
     StdGCTib* gctib;   // valid only when highest bit is 0.
 
     bool IsGCTibWord() const
     {
 #ifdef __arm__
-        return static_cast<bool>(tag & SIGN_BIT_32); // 32: Use 32-bit sign bit as flag.
+        // arm32 only use gctib pointer.
+        return false;
 #else
         return static_cast<bool>(tag & SIGN_BIT_64); // 63: Use 64-bit sign bit as flag.
 #endif

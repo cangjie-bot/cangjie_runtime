@@ -221,16 +221,15 @@ CJ_MCC_N2CStub:
     str  r2, [sp, #4]
     b .L_copy
 .L_copy_end:
-    // mov  x19, x10  why?
-    mov  r10, r0
+    // mov  r10, r0
 
     // prepare arguments for invoking target method
     mov  r0, r5
     mov  r1, r6
     mov  r2, r7
     mov  r3, r8
-    ldr  r12, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
-    blx  r12
+    ldr  r9, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
+    blx  r9
     .global unwindPCForN2CStub
 unwindPCForN2CStub:
 
@@ -319,18 +318,17 @@ ExecuteCangjieStub:
     // unsupport
 #endif
     sub  sp, sp, #8
-    str  r10, [sp]
+    str  r11, [sp]
     str  lr, [sp, #4]
     cfi_adjust_cfa_offset (8)
-    cfi_rel_offset (r10, 0)
+    cfi_rel_offset (r11, 0)
     cfi_rel_offset (lr, 4)
-    // ldr  r10, [sp, #8]  // no need for arm32
     blx  r3
-    ldr  r10, [sp]
+    ldr  r11, [sp]
     ldr  lr, [sp, #4]
     add  sp, sp, #8
     cfi_adjust_cfa_offset (-8)
-    cfi_restore (r10)
+    cfi_restore (r11)
     cfi_restore (lr)
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
     // unsupport
@@ -354,8 +352,8 @@ InitCJLibraryStub:
     cfi_rel_offset (lr, 4)
 
     mov  r11, sp
-    sub  sp, sp, #8
     mov  r12, r0
+    sub  sp, sp, #8
     str  r12, [sp]
     mov  r12, #0
     str  r12, [sp, #4]
@@ -363,6 +361,7 @@ InitCJLibraryStub:
     
     ldr  r11, [sp]
     ldr  lr, [sp, #4]
+    add  sp, sp, #8
     cfi_adjust_cfa_offset (8)
     cfi_restore (r11)
     cfi_restore (lr)
@@ -515,7 +514,6 @@ ApplyCangjieMethodStubFloat64:
     vldr  d6, [r5, #48]
     vldr  d7, [r5, #56]
 
-    mov  r10, r8
     blx  r7
 
     // keep potential return value

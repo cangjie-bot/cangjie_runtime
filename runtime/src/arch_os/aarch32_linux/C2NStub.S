@@ -155,7 +155,7 @@ CJ_MCC_C2NStub:
     mov  r6, r1
     mov  r7, r2
     mov  r8, r3
-    ldr  r4, [sp, #20]  // cpStackSize
+    ldr  r4, [sp, #FuncAddrAndCpStacksizeOffset+4]  // cpStackSize
 
     bl CJ_CJThreadStackGuardGet
     add  r0, r4, r0
@@ -163,7 +163,8 @@ CJ_MCC_C2NStub:
     cmp  r1, r0
     ble  .L_stack_check_fail
 
-    mov  r2, r10
+    bl   MRT_GetThreadLocalData
+    mov  r2, r0
 
     // r10 <- previous sp
     add  r10, sp, #StubFrameContextSize
@@ -223,8 +224,8 @@ unwindPCForC2NStub:
     mov  r1, r6
     mov  r2, r7
     mov  r3, r8
-    ldr  r6, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
-    blx  r6
+    ldr  r9, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
+    blx  r9
 
     // keep potential return value
     mov  r6, r0

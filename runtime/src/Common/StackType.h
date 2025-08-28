@@ -285,6 +285,9 @@ public:
     {
 #if defined(_WIN64)
         return startProc;
+#elif defined(__arm__)
+        return reinterpret_cast<const uint32_t*>(*(reinterpret_cast<uint32_t*>(mFrame.fa) - 1) -
+                                                 START_PC_OFFSET_IN_STACK);
 #else
         return reinterpret_cast<const uint32_t*>(*(reinterpret_cast<uint64_t*>(mFrame.fa) - 1) -
                                                  START_PC_OFFSET_IN_STACK);

@@ -18,7 +18,9 @@ __CJ_Init_Start:                        // @__CJ_Init_Start
     .cfi_offset lr, -4
     .cfi_offset r4, -8
 
-    ldr     r0, =__CJMetadataStart
+    ldr     r0, .LCJMetadataStart_0
+.LPC_0:
+    ldr     r0, [pc, r0]
     mov     r1, #1
     bl      MRT_LibraryOnLoad
 
@@ -27,6 +29,9 @@ __CJ_Init_Start:                        // @__CJ_Init_Start
     // autiasp
 #endif
     bx      lr
+
+.LCJMetadataStart_0:
+    .word  __CJMetadataStart(GOT_PREL)-((.LPC_0+8)-.LCJMetadataStart_0)
 .Lfunc_end12:
     .size   __CJ_Init_Start, .Lfunc_end12-__CJ_Init_Start
     .cfi_endproc
@@ -49,13 +54,18 @@ __CJ_Fini_End:                        // @__CJ_Fini_End
     .cfi_offset lr, -4
     .cfi_offset r4, -8
 
-    ldr     r0, =__CJMetadataStart
+    ldr     r0, .LCJMetadataStart_1
+.LPC_1:
+    ldr     r0, [pc, r0]
     bl      MRT_LibraryUnLoad
     pop     {r4, lr}
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
     // autiasp
 #endif
     bx      lr
+
+.LCJMetadataStart_1:
+    .word  __CJMetadataStart(GOT_PREL)-((.LPC_1+8)-.LCJMetadataStart_1)
 .Lfunc_end:
     .size   __CJ_Fini_End, .Lfunc_end-__CJ_Fini_End
     .cfi_endproc
