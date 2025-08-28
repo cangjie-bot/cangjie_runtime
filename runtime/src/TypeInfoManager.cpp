@@ -520,6 +520,9 @@ void TypeInfoManager::CreatedTypeInfo(GenericTiDesc* &tiDesc, TypeTemplate* tt, 
 
 void TypeInfoManager::ParseEnumInfo(TypeTemplate* tt, U32 argSize, TypeInfo* args[], TypeInfo* ti)
 {
+#ifdef __arm__
+    return;
+#endif
     EnumInfo* ttEi = tt->GetEnumInfo();
     if (ttEi == nullptr || (ti->GetEnumInfo() != nullptr && ti->GetEnumInfo()->IsParsed())) {
         return;
@@ -568,6 +571,33 @@ void TypeInfoManager::AddMTable(TypeTemplate* tt, TypeInfo* newTypeInfo, U32 arg
         }, tt);
 }
 
+#ifdef __arm__
+void TypeInfoManager::CalculateGCTib(TypeInfo* typeInfo)
+{
+    CString gcTibStr = typeGCInfo.GetGCTibStr(typeInfo);
+    size_t len = gcTibStr.Length();
+    GCTib gcTib;
+    constexpr uint8_t alignSize = sizeof(uint32_t);
+    // create StdGCTib
+    U16 num = gcTibStr.Length() / alignSize;
+    U16 needSpace = sizeof(U32) + sizeof(U8) * num;
+    StdGCTib* stdGCTib = reinterpret_cast<StdGCTib*>(Allocate(needSpace));
+    stdGCTib->nBitmapWords = num;
+    U8 value = 0;
+    size_t curIdx = 0;
+    for (size_t idx = 0; idx < len; ++idx) {
+        if (gcTibStr[idx] == '1') {
+            value |= 1 << (idx % alignSize);
+        }
+        if ((idx + 1) % alignSize == 0) {
+            stdGCTib->bitmapWords[curIdx++] = value;
+            value = 0;
+        }
+    }
+    gcTib.gctib = stdGCTib;
+    typeInfo->SetGCTib(gcTib);
+}
+#else
 void TypeInfoManager::CalculateGCTib(TypeInfo* typeInfo)
 {
     CString gcTibStr = typeGCInfo.GetGCTibStr(typeInfo);
@@ -606,6 +636,7 @@ void TypeInfoManager::CalculateGCTib(TypeInfo* typeInfo)
         typeInfo->SetGCTib(gcTib);
     }
 }
+#endif
 
 void TypeInfoManager::FillOffsets(TypeInfo* newTypeInfo, TypeTemplate* tt, U32 argSize, TypeInfo* args[])
 {

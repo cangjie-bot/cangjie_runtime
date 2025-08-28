@@ -60,6 +60,7 @@ SECTIONS
     *(SORT(.text.*Monitor*))
     *(.text_thread)
     g_runtimeStaticEnd = .;
+    *(SORT(.text.*))
     /* .cjinit_function sections follows the text section. */
     *(.cjinit_function .cjinit_function.*)
     /* .gnu.warning sections are handled specially by elf32.em.  */
@@ -72,6 +73,7 @@ SECTIONS
   PROVIDE (__etext = .);
   PROVIDE (_etext = .);
   PROVIDE (etext = .);
+  . = . + 0x1000; /* move to a new page in memory, necessary for arm32 */
   .rodata         : { *(.rodata .rodata.* .gnu.linkonce.r.*) }
   .rodata1        : { *(.rodata1) }
   . = . + 0x1000; /* move to a new page in memory */

@@ -144,6 +144,5 @@ unwindPCForC2RStubStart:
     CalleeSavedRegistersStub MCC_ThrowException CJ_MCC_ThrowException
     CalleeSavedRegistersStub MCC_ThrowStackOverflowError CJ_MCC_ThrowStackOverflowError
 #endif
-    CalleeSavedRegistersStub MCC_HandleSafepointForArm CJ_MCC_HandleSafepointForArm
     .global unwindPCForC2RStubEnd
 unwindPCForC2RStubEnd:

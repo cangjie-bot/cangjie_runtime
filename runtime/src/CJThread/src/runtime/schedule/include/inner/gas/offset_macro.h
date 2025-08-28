@@ -21,7 +21,7 @@
 #define THREAD_CJTHREAD0_OFFSET 0x18
 
 /* ARM32 offset of the context field in the cjthread structure */
-#define ARM32_CJTHREAD_CONTEXT_OFFSET 0xc
+#define ARM32_CJTHREAD_CONTEXT_OFFSET 0x10
 
 /* ARM32 offset of the thread field in the cjthread structure */
 #define ARM32_CJTHREAD_THREAD_OFFSET 0x8

@@ -487,6 +487,10 @@ BaseFile* CJFileLoader::GetBaseFile(CString fileName) const
 
 bool CJFileLoader::CheckPackageCompatibility(BaseFile* file)
 {
+#ifdef __arm__
+    // arm32 don't support package check
+    return true;
+#endif
     if (file == nullptr) {
         return false;
     }
