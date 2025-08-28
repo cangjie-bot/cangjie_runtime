@@ -250,7 +250,7 @@ output
 
 #### Usage Instructions
 
-The standard library build artifacts need to be used with the cjc compiler and runtime, etc. For specific integration methods, please see the [Cangjie SDK Integration Build Guide](https://gitcode.com/Cangjie/cangjie_build)
+The standard library build artifacts need to be used with the cjc compiler and runtime, etc. For specific integration methods, please see the [Cangjie Programming Language Standard Library API](./std/doc/libs/summary_cjnative_EN.md)
 
 #### More Build Options
 
@@ -299,3 +299,7 @@ For integration building, please refer to the [Cangjie SDK Integration Build Gui
 [cangjie_build](https://gitcode.com/Cangjie/cangjie_build)
 
 [cangjie_test](https://gitcode.com/Cangjie/cangjie_test)
+
+## Contribution Guide
+
+Welcome all developers to contribute code, documentation, and more. For specific contribution processes and methods, please refer to the [Contribution Guide](https://gitcode.com/openharmony/docs/blob/master/en/contribute/contribution-guide.md)
