@@ -176,22 +176,6 @@ public func provider(configuration: Configuration): DataProvider<T>
 
 - [DataProvider](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-dataprovider)\<T> - 提供测试数据的组件对象。
 
-#### func shrinker(Configuration)
-
-```cangjie
-func shrinker(configuration: Configuration): DataShrinker<T>
-```
-
-功能：获取缩减测试数据的组件。
-
-参数：
-
-- configuration: [Configuration](unittest_common_package_classes.md#class-configuration) - 配置信息。
-
-返回值：
-
-- [DataShrinker](#interface-datashrinkert)\<T> - 缩减测试数据的组件对象。
-
 ### extend\<T> Range\<T> <: DataStrategy\<T>
 
 ```cangjie
@@ -225,22 +209,6 @@ public func provider(configuration: Configuration): DataProvider<T>
 返回值：
 
 - [DataProvider](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-dataprovider)\<T> - 提供测试数据的组件对象。
-
-#### func shrinker(Configuration)
-
-```cangjie
-func shrinker(configuration: Configuration): DataShrinker<T>
-```
-
-功能：获取缩减测试数据的组件。
-
-参数：
-
-- configuration: [Configuration](unittest_common_package_classes.md#class-configuration) - 配置信息。
-
-返回值：
-
-- [DataShrinker](#interface-datashrinkert)\<T> - 缩减测试数据的组件对象。
 
 ## interface PrettyPrintable
 
