@@ -145,6 +145,8 @@ function(add_cangjie_library target_name)
         list(APPEND cangjie_compile_flags "--output-type=staticlib")
     endif()
 
+    list(APPEND cangjie_compile_flags "--disable-reflection")
+
     # set compiler path
     if(CMAKE_CROSSCOMPILING)
         set(CANGJIE_NATIVE_CANGJIE_TOOLS_PATH ${CMAKE_BINARY_DIR}/../build/bin)
@@ -205,9 +207,9 @@ function(add_cangjie_library target_name)
         ${output_lto_bc_full_name})
     set(COMPILE_CMD ${COMPILE_CMD} ${output_argument} ${output_full_name})
     if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
-        list(APPEND COMPILE_CMD "$<IF:$<CONFIG:MinSizeRel>,-Os,-O2>")
+        list(APPEND COMPILE_CMD "$<IF:$<CONFIG:MinSizeRel>,-Os,-O0>")
         # .bc files is for LTO mode and LTO mode does not support -Os and -Oz.
-        list(APPEND COMPILE_BC_CMD "-O2")
+        list(APPEND COMPILE_BC_CMD "-O0")
     endif()
 
     set(ENV{LD_LIBRARY_PATH} $ENV{LD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/lib)

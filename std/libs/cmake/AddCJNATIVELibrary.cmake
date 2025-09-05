@@ -523,6 +523,7 @@ make_cangjie_lib(
     OBJECTS ${output_cj_object_dir}/std/ast.o
     FLAGS
         -lcangjie-std-astFFI
+        -L $ENV{CANGJIE_HOME}/lib/linux_ohos_arm_cjnative
         -lcangjie-ast-support
         ${STDCPP_FLAG}
         ${GCC_S_FLAG}
