@@ -35,6 +35,35 @@ public prop first: ?T
 
 类型：?T
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addLast(1)
+    deque.addLast(2)
+    
+    let first = deque.first
+    println("队列头部元素: ${first}")  // Some(1)
+    
+    let emptyDeque = ArrayDeque<String>()
+    let noneFirst = emptyDeque.first
+    println("空队列头部元素: ${noneFirst}")  // None
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+队列头部元素: Some(1)
+空队列头部元素: None
+```
+
 ### prop last
 
 ```cangjie
@@ -44,6 +73,35 @@ public prop last: ?T
 功能：获取双端队列的尾部元素。如果双端队列为空，返回 None。
 
 类型：?T
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addLast(1)
+    deque.addLast(2)
+    
+    let last = deque.last
+    println("队列尾部元素: ${last}")  // Some(2)
+    
+    let emptyDeque = ArrayDeque<String>()
+    let noneLast = emptyDeque.last
+    println("空队列尾部元素: ${noneLast}")  // None
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+队列尾部元素: Some(2)
+空队列尾部元素: None
+```
 
 ### prop size
 
@@ -55,6 +113,35 @@ public prop size: Int64
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    println("初始大小: ${deque.size}")  // 0
+    
+    deque.addLast(1)
+    deque.addLast(2)
+    println("添加2个元素后大小: ${deque.size}")  // 2
+    
+    deque.removeFirst()
+    println("删除1个元素后大小: ${deque.size}")  // 1
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始大小: 0
+添加2个元素后大小: 2
+删除1个元素后大小: 1
+```
+
 ### init()
 
 ```cangjie
@@ -62,6 +149,29 @@ public init()
 ```
 
 功能：构造一个空的双端队列，其容量大小为默认值 8。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    println("初始大小: ${deque.size}")      // 0
+    println("初始容量: ${deque.capacity}")  // 8
+    println("是否为空: ${deque.isEmpty()}") // true
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始大小: 0
+初始容量: 8
+是否为空: true
+```
 
 ### init(Int64)
 
@@ -79,6 +189,32 @@ public init(capacity: Int64)
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果参数的大小小于 0 则抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    // 指定容量大于默认容量
+    let deque1 = ArrayDeque<Int64>(16)
+    println("指定容量16的初始容量: ${deque1.capacity}")  // 16
+    
+    // 指定容量小于默认容量
+    let deque2 = ArrayDeque<Int64>(4)
+    println("指定容量4的初始容量: ${deque2.capacity}")   // 8
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+指定容量16的初始容量: 16
+指定容量4的初始容量: 8
+```
+
 ### func addFirst(T)
 
 ```cangjie
@@ -90,6 +226,26 @@ public func addFirst(element: T): Unit
 参数：
 
 - element: T - 被插入到此双端队列的元素。
+
+示例：
+
+```
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addFirst(1)
+    deque.addFirst(0)
+    println(deque)  // [0, 1]
+    return 0
+}
+```
+
+运行结果：
+
+```text
+[0, 1]
+```
 
 ### func addLast(T)
 
@@ -103,6 +259,27 @@ public func addLast(element: T): Unit
 
 - element: T - 被插入到此双端队列的元素。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addLast(1)
+    deque.addLast(2)
+    println(deque)  // [1, 2]
+    return 0
+}
+```
+
+运行结果：
+
+```text
+[1, 2]
+```
+
 ### func clear()
 
 ```cangjie
@@ -110,6 +287,28 @@ public func clear(): Unit
 ```
 
 功能：清空此双端队列中的所有元素。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>(4)
+    deque.addLast(1)
+    deque.addLast(2)
+    deque.clear()
+    println("队列是否为空: ${deque.isEmpty()}")  // true
+    return 0
+}
+```
+
+运行结果：
+
+```text
+队列是否为空: true
+```
 
 ### func iterator()
 
@@ -123,6 +322,34 @@ public func iterator(): Iterator<T>
 
 - [Iterator](../../core/core_package_api/core_package_classes.md#class-iteratort)\<T> - 元素的迭代器。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addLast(1)
+    deque.addLast(2)
+    deque.addLast(3)
+    
+    // 使用for循环遍历
+    for (element in deque) {
+        println(element)
+    }
+    return 0
+}
+```
+
+运行结果：
+
+```text
+1
+2
+3
+```
+
 ### func isEmpty()
 
 ```cangjie
@@ -134,6 +361,30 @@ public func isEmpty(): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果为空，则返回 `true`，否则，返回 `false`。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque1 = ArrayDeque<Int64>()
+    let deque2 = ArrayDeque<Int64>()
+    deque2.addLast(1)
+    
+    println("deque1是否为空: ${deque1.isEmpty()}")  // true
+    println("deque2是否为空: ${deque2.isEmpty()}")  // false
+    return 0
+}
+```
+
+运行结果：
+
+```text
+deque1是否为空: true
+deque2是否为空: false
+```
 
 ### func removeFirst()
 
@@ -147,6 +398,36 @@ public func removeFirst(): ?T
 
 - ?T - 被删除的头部元素。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addLast(1)
+    deque.addLast(2)
+    
+    let first = deque.removeFirst()
+    println("删除的元素: ${first}")  // Some(1)
+    println("删除后的队列: ${deque}")  // [2]
+    
+    let emptyDeque = ArrayDeque<Int64>()
+    let noneElement = emptyDeque.removeFirst()
+    println("从空队列删除的元素: ${noneElement}")  // None
+    return 0
+}
+```
+
+运行结果：
+
+```text
+删除的元素: Some(1)
+删除后的队列: [2]
+从空队列删除的元素: None
+```
+
 ### func removeLast()
 
 ```cangjie
@@ -158,6 +439,36 @@ public func removeLast(): ?T
 返回值：
 
 - ?T - 被删除的尾部元素。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addLast(1)
+    deque.addLast(2)
+    
+    let last = deque.removeLast()
+    println("删除的元素: ${last}")  // Some(2)
+    println("删除后的队列: ${deque}")  // [1]
+    
+    let emptyDeque = ArrayDeque<Int64>()
+    let noneElement = emptyDeque.removeLast()
+    println("从空队列删除的元素: ${noneElement}")  // None
+    return 0
+}
+```
+
+运行结果：
+
+```text
+删除的元素: Some(2)
+删除后的队列: [1]
+从空队列删除的元素: None
+```
 
 ### func reserve(Int64)
 
@@ -173,6 +484,42 @@ public func reserve(additional: Int64): Unit
 
 - additional: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 将要扩容的大小。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    
+    // 初始容量为8
+    println("初始容量: ${deque.capacity}")  // 8
+    
+    // 预留空间
+    deque.reserve(10)
+    println("预留10个元素后的容量: ${deque.capacity}")  // 12
+    
+    // 添加元素
+    for (i in 0..5) {
+        deque.addLast(i)
+    }
+    println("添加5个元素后容量: ${deque.capacity}")   // 12
+    println("添加5个元素后大小: ${deque.size}")       // 5
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始容量: 8
+预留10个元素后的容量: 12
+添加5个元素后容量: 12
+添加5个元素后大小: 5
+```
+
 ### func toArray()
 
 ```cangjie
@@ -184,6 +531,30 @@ public func toArray(): Array<T>
 返回值：
 
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - T 类型数组。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addLast(1)
+    deque.addLast(2)
+    deque.addLast(3)
+    
+    let array = deque.toArray()
+    println(array)  // [1, 2, 3]
+    return 0
+}
+```
+
+运行结果：
+
+```text
+[1, 2, 3]
+```
 
 ### extend\<T> ArrayDeque\<T> <: ToString where T <: ToString
 
@@ -210,6 +581,29 @@ public func toString(): String
 返回值：
 
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 转换得到的字符串。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let deque = ArrayDeque<Int64>()
+    deque.addLast(1)
+    deque.addLast(2)
+    deque.addLast(3)
+    println(deque.toString())  // [1, 2, 3]
+    return 0
+}
+```
+
+运行结果：
+
+```text
+队列: [1, 2, 3]
+字符串: [1, 2, 3]
+```
 
 ## class ArrayList\<T>
 
@@ -246,6 +640,31 @@ public prop size: Int64
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    println("初始大小: ${list.size}")  // 0
+    
+    list.add(1)
+    list.add(2)
+    println("添加2个元素后大小: ${list.size}")  // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始大小: 0
+添加2个元素后大小: 2
+```
+
 ### prop capacity
 
 ```cangjie
@@ -255,6 +674,33 @@ public prop capacity: Int64
 功能：返回此 [ArrayList](collection_package_class.md#class-arraylistt) 的容量大小。
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    println("初始容量: ${list.capacity}")  // 16
+    
+    // 添加元素直到扩容
+    for (i in 0..17) {
+        list.add(i)
+    }
+    println("添加17个元素后容量: ${list.capacity}")  // 24
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始容量: 16
+添加17个元素后容量: 24
+```
 
 ### prop first
 
@@ -266,6 +712,35 @@ public prop first: ?T
 
 类型：?T
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    
+    let first = list.first
+    println("第一个元素: ${first}")  // Some(1)
+    
+    let emptyList = ArrayList<String>()
+    let noneFirst = emptyList.first
+    println("空列表第一个元素: ${noneFirst}")  // None
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+第一个元素: Some(1)
+空列表第一个元素: None
+```
+
 ### prop last
 
 ```cangjie
@@ -276,6 +751,35 @@ public prop last: ?T
 
 类型：?T
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    
+    let last = list.last
+    println("最后一个元素: ${last}")  // Some(2)
+    
+    let emptyList = ArrayList<String>()
+    let noneLast = emptyList.last
+    println("空列表最后一个元素: ${noneLast}")  // None
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+最后一个元素: Some(2)
+空列表最后一个元素: None
+```
+
 ### init()
 
 ```cangjie
@@ -283,6 +787,29 @@ public init()
 ```
 
 功能：构造一个初始容量大小为默认值`16`的[ArrayList](collection_package_class.md#class-arraylistt)。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    println("初始大小: ${list.size}")      // 0
+    println("初始容量: ${list.capacity}")  // 16
+    println("是否为空: ${list.isEmpty()}") // true
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始大小: 0
+初始容量: 16
+是否为空: true
+```
 
 ### init(Collection\<T>)
 
@@ -295,6 +822,28 @@ public init(elements: Collection<T>)
 参数：
 
 - elements: [Collection](../../core/core_package_api/core_package_interfaces.md#interface-collectiont)\<T> - 传入集合。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let array = [1, 2, 3]
+    let list = ArrayList<Int64>(array)
+    println("列表内容: ${list}")  // [1, 2, 3]
+    println("列表大小: ${list.size}")  // 3
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表内容: [1, 2, 3]
+列表大小: 3
+```
 
 ### init(Int64)
 
@@ -311,6 +860,32 @@ public init(capacity: Int64)
 异常：
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果参数的大小小于 0 则抛出异常。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    // 指定容量大于默认容量
+    let list1 = ArrayList<Int64>(32)
+    println("指定容量32的初始容量: ${list1.capacity}")  // 32
+    
+    // 指定容量小于默认容量
+    let list2 = ArrayList<Int64>(8)
+    println("指定容量8的初始容量: ${list2.capacity}")   // 16
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+指定容量32的初始容量: 32
+指定容量8的初始容量: 16
+```
 
 ### init(Int64, (Int64) -> T)
 
@@ -329,6 +904,33 @@ public init(size: Int64, initElement: (Int64) -> T)
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果 size 小于 0 则抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    // 创建一个包含5个元素的列表，每个元素的值为其索引的平方
+    let list = ArrayList<Int64>(5, {
+        index: Int64 => 
+        index * index
+    })
+    
+    println("列表内容: ${list}")  // [0, 1, 4, 9, 16]
+    println("列表大小: ${list.size}")  // 5
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表内容: [0, 1, 4, 9, 16]
+列表大小: 5
+```
+
 ### static func of(Array\<T>)
 
 ```cangjie
@@ -345,6 +947,32 @@ public static func of(elements: Array<T>): ArrayList<T>
 
 - [ArrayList](#class-arraylistt)\<T> - 元素为 T 类型的 ArrayList。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let array = [1, 2, 3, 4, 5]
+    let list = ArrayList<Int64>.of(array)
+    
+    println("数组: ${array}")      // [1, 2, 3, 4, 5]
+    println("列表: ${list}")       // [1, 2, 3, 4, 5]
+    println("列表大小: ${list.size}")  // 5
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+数组: [1, 2, 3, 4, 5]
+列表: [1, 2, 3, 4, 5]
+列表大小: 5
+```
+
 ### func add(T)
 
 ```cangjie
@@ -359,7 +987,29 @@ public func add(element: T): Unit
 
 示例：
 
-使用示例见 [ArrayList 的 add 函数](../collection_package_samples/sample_arraylist_add.md)。
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    println("列表内容: ${list}")  // [1, 2, 3]
+    println("列表大小: ${list.size}")  // 3
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表内容: [1, 2, 3]
+列表大小: 3
+```
 
 ### func add(Collection\<T>)
 
@@ -374,6 +1024,40 @@ public func add(all!: Collection<T>): Unit
 参数：
 
 - all!: [Collection](../../core/core_package_api/core_package_interfaces.md#interface-collectiont)\<T> - 需要插入的元素的集合。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    
+    // 创建另一个列表作为Collection使用
+    let newElements = ArrayList<Int64>()
+    newElements.add(3)
+    newElements.add(4)
+    newElements.add(5)
+    
+    // 将新元素添加到原列表末尾
+    list.add(all: newElements)
+    
+    println("列表内容: ${list}")  // [1, 2, 3, 4, 5]
+    println("列表大小: ${list.size}")  // 5
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表内容: [1, 2, 3, 4, 5]
+列表大小: 5
+```
 
 ### func add(T, Int64)
 
@@ -394,7 +1078,31 @@ public func add(element: T, at!: Int64): Unit
 
 示例：
 
-使用示例见 [ArrayList 的 add 函数](../collection_package_samples/sample_arraylist_add.md)。
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(3)
+    
+    // 在索引1处插入元素2
+    list.add(2, at: 1)
+    
+    println("列表内容: ${list}")  // [1, 2, 3]
+    println("列表大小: ${list.size}")  // 3
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表内容: [1, 2, 3]
+列表大小: 3
+```
 
 ### func add(Collection\<T>, Int64)
 
@@ -417,7 +1125,35 @@ public func add(all!: Collection<T>, at!: Int64): Unit
 
 示例：
 
-使用示例见 [ArrayList 的 add 函数](../collection_package_samples/sample_arraylist_add.md)。
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(5)
+    
+    // 在索引1处插入集合[2, 3, 4]
+    let elements = ArrayList<Int64>()
+    elements.add(2)
+    elements.add(3)
+    elements.add(4)
+    list.add(all: elements, at: 1)
+    
+    println("列表内容: ${list}")  // [1, 2, 3, 4, 5]
+    println("列表大小: ${list.size}")  // 5
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表内容: [1, 2, 3, 4, 5]
+列表大小: 5
+```
 
 ### func clear()
 
@@ -429,7 +1165,38 @@ public func clear(): Unit
 
 示例：
 
-使用示例见 [ArrayList 的 remove/clear/slice 函数](../collection_package_samples/sample_arraylist_remove_clear_slice.md)。
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    println("清空前列表内容: ${list}")  // [1, 2, 3]
+    println("清空前列表大小: ${list.size}")  // 3
+    
+    list.clear()
+    
+    println("清空后列表内容: ${list}")  // []
+    println("清空后列表大小: ${list.size}")  // 0
+    println("列表是否为空: ${list.isEmpty()}")  // true
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+清空前列表内容: [1, 2, 3]
+清空前列表大小: 3
+清空后列表内容: []
+清空后列表大小: 0
+列表是否为空: true
+```
 
 ### func clone()
 
@@ -442,6 +1209,42 @@ public func clone(): ArrayList<T>
 返回值：
 
 - [ArrayList](collection_package_class.md#class-arraylistt)\<T> - 返回新 [ArrayList](collection_package_class.md#class-arraylistt)\<T>。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let originalList = ArrayList<Int64>()
+    originalList.add(1)
+    originalList.add(2)
+    originalList.add(3)
+    
+    // 克隆列表
+    let clonedList = originalList.clone()
+    
+    println("原始列表: ${originalList}")  // [1, 2, 3]
+    println("克隆列表: ${clonedList}")    // [1, 2, 3]
+    
+    // 修改原始列表不会影响克隆列表
+    originalList.add(4)
+    println("修改后的原始列表: ${originalList}")  // [1, 2, 3, 4]
+    println("克隆列表保持不变: ${clonedList}")    // [1, 2, 3]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原始列表: [1, 2, 3]
+克隆列表: [1, 2, 3]
+修改后的原始列表: [1, 2, 3, 4]
+克隆列表保持不变: [1, 2, 3]
+```
 
 ### func get(Int64)
 
@@ -461,7 +1264,34 @@ public func get(index: Int64): ?T
 
 示例：
 
-使用示例见 [ArrayList 的 get/set 函数](../collection_package_samples/sample_arraylist_get_set.md)。
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(10)
+    list.add(20)
+    list.add(30)
+    
+    // 获取有效索引的元素
+    let element = list.get(1)
+    println("索引1处的元素: ${element}")  // Some(20)
+    
+    // 获取无效索引的元素
+    let noneElement = list.get(5)
+    println("索引5处的元素: ${noneElement}")  // None
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+索引1处的元素: Some(20)
+索引5处的元素: None
+```
 
 ### func getRawArray()
 
@@ -481,6 +1311,66 @@ public unsafe func getRawArray(): Array<T>
 
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - [ArrayList](collection_package_class.md#class-arraylistt) 的底层原始数据。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    // 获取原始数组
+    unsafe {
+        let rawArray = list.getRawArray()
+        println("原始数组: ${rawArray}")
+        println("原始数组大小: ${rawArray.size}")  // 可能大于列表大小
+    }
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原始数组: [1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+原始数组大小: 16
+```
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    // 获取原始数组
+    unsafe {
+        let rawArray = list.getRawArray()
+        println("原始数组: ${rawArray}")
+        println("原始数组大小: ${rawArray.size}")  // 可能大于列表大小
+    }
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原始数组: [1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+原始数组大小: 16
+```
+
 ### func isEmpty()
 
 ```cangjie
@@ -493,6 +1383,31 @@ public func isEmpty(): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果为空，则返回 `true`，否则，返回 `false`。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let emptyList = ArrayList<Int64>()
+    let nonEmptyList = ArrayList<Int64>()
+    nonEmptyList.add(1)
+    
+    println("空列表是否为空: ${emptyList.isEmpty()}")      // true
+    println("非空列表是否为空: ${nonEmptyList.isEmpty()}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+空列表是否为空: true
+非空列表是否为空: false
+```
+
 ### func iterator()
 
 ```cangjie
@@ -504,6 +1419,36 @@ public func iterator(): Iterator<T>
 返回值：
 
 - [Iterator](../../core/core_package_api/core_package_classes.md#class-iteratort)\<T> - [ArrayList](collection_package_class.md#class-arraylistt) 中元素的迭代器。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    // 使用迭代器遍历列表
+    let iter = list.iterator()
+    while (iter.has_next()) {
+        println(iter.next())
+    }
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+1
+2
+3
+```
 
 ### func remove(Int64)
 
@@ -527,7 +1472,34 @@ public func remove(at!: Int64): T
 
 示例：
 
-使用示例见 [ArrayList 的 remove/clear/slice 函数](../collection_package_samples/sample_arraylist_remove_clear_slice.md)。
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    // 删除索引为1的元素
+    let removedElement = list.remove(at: 1)
+    
+    println("删除的元素: ${removedElement}")  // 2
+    println("删除后的列表: ${list}")         // [1, 3]
+    println("删除后的列表大小: ${list.size}") // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+删除的元素: 2
+删除后的列表: [1, 3]
+删除后的列表大小: 2
+```
 
 ### func remove(Range\<Int64>)
 
@@ -550,6 +1522,37 @@ public func remove(range: Range<Int64>): Unit
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 range 的 [step](collection_package_function.md#func-steptint64) 不等于 1 时抛出异常。
 - [IndexOutOfBoundsException](../../core/core_package_api/core_package_exceptions.md#class-indexoutofboundsexception) - 当 range 的 start 或 end 小于 0，或 end 大于 [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt) 的长度时抛出。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..5) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4, 5]
+    
+    // 删除索引1到3的元素(不包括3)
+    let range = Range<Int64>(1, 3)
+    list.remove(range)
+    
+    println("删除元素后的列表: ${list}")      // [0, 3, 4, 5]
+    println("删除后的列表大小: ${list.size}") // 4
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+删除元素后的列表: [0, 3, 4, 5]
+删除后的列表大小: 4
+```
+
 ### func removeIf((T) -> Bool)
 
 ```cangjie
@@ -565,6 +1568,38 @@ public func removeIf(predicate: (T) -> Bool): Unit
 异常：
 
 - [ConcurrentModificationException](./collection_package_exception.md#class-concurrentmodificationexception) - 当 `predicate` 中增删或者修改 [ArrayList](collection_package_class.md#class-arraylistt) 内元素时，抛出异常。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..5) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4, 5]
+    
+    // 删除所有偶数元素
+    list.removeIf((element: Int64) -> Bool {
+        return element % 2 == 0
+    })
+    
+    println("删除偶数后的列表: ${list}")      // [1, 3, 5]
+    println("删除后的列表大小: ${list.size}") // 3
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+删除偶数后的列表: [1, 3, 5]
+删除后的列表大小: 3
+```
 
 ### func reserve(Int64)
 
@@ -584,6 +1619,42 @@ public func reserve(additional: Int64): Unit
 
 - [OverflowException](../../core/core_package_api/core_package_exceptions.md#class-overflowexception) - 当additional + 已使用容量超过Int64.Max时，抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    
+    // 初始容量为16
+    println("初始容量: ${list.capacity}")  // 16
+    
+    // 预留额外空间
+    list.reserve(20)
+    println("预留20个元素后的容量: ${list.capacity}")  // 32 (扩容到接近36的合适大小)
+    
+    // 添加元素
+    for (i in 0..9) {
+        list.add(i)
+    }
+    println("添加10个元素后容量: ${list.capacity}")   // 32
+    println("添加10个元素后大小: ${list.size}")       // 10
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始容量: 16
+预留20个元素后的容量: 32
+添加10个元素后容量: 32
+添加10个元素后大小: 10
+```
+
 ### func reverse()
 
 ```cangjie
@@ -591,6 +1662,36 @@ public func reverse(): Unit
 ```
 
 功能：反转此 [ArrayList](collection_package_class.md#class-arraylistt) 中元素的顺序。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..4) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4]
+    println("反转前: ${list}")  // [0, 1, 2, 3, 4]
+    
+    // 反转列表
+    list.reverse()
+    
+    println("反转后: ${list}")  // [4, 3, 2, 1, 0]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+反转前: [0, 1, 2, 3, 4]
+反转后: [4, 3, 2, 1, 0]
+```
 
 ### func slice(Range\<Int64>)
 
@@ -622,7 +1723,37 @@ public func slice(range: Range<Int64>): ArrayList<T>
 
 示例：
 
-使用示例见 [ArrayList 的 remove/clear/slice 函数](../collection_package_samples/sample_arraylist_remove_clear_slice.md)。
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..5) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4, 5]
+    
+    println("原列表: ${list}")  // [0, 1, 2, 3, 4, 5]
+    
+    // 通过范围操作符切片
+    let range = Range<Int64>(1, 4)
+    let sliceList = list[range]
+    
+    println("切片列表: ${sliceList}")     // [1, 2, 3]
+    println("切片列表大小: ${sliceList.size}") // 3
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [0, 1, 2, 3, 4, 5]
+切片列表: [1, 2, 3]
+切片列表大小: 3
+```
 
 ### func sortBy((T, T) -> Ordering) <sup>(deprecated)</sup>
 
@@ -640,6 +1771,46 @@ public func sortBy(comparator!: (T, T) -> Ordering): Unit
 参数：
 
 - comparator!: (T, T) -> [Ordering](../../core/core_package_api/core_package_enums.md#enum-ordering) - (T, T) -> [Ordering](../../core/core_package_api/core_package_enums.md#enum-ordering) 类型。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+import std.core.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(3)
+    list.add(1)
+    list.add(4)
+    list.add(2)
+    // list现在是[3, 1, 4, 2]
+    println("排序前: ${list}")  // [3, 1, 4, 2]
+    
+    // 按降序排序
+    list.sortBy((a: Int64, b: Int64) -> Ordering {
+        if (a > b) {
+            return Ordering.GT
+        } else if (a < b) {
+            return Ordering.LT
+        } else {
+            return Ordering.EQ
+        }
+    })
+    
+    println("排序后: ${list}")  // [4, 3, 2, 1]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+排序前: [3, 1, 4, 2]
+排序后: [4, 3, 2, 1]
+```
 
 ### func sortBy(Bool, (T, T) -> Ordering) <sup>(deprecated)</sup>
 
@@ -660,6 +1831,46 @@ public func sortBy(stable!: Bool, comparator!: (T, T) -> Ordering): Unit
 - stable!: [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 是否使用稳定排序。
 - comparator!: (T, T) -> [Ordering](../../core/core_package_api/core_package_enums.md#enum-ordering) - (T, T) -> [Ordering](../../core/core_package_api/core_package_enums.md#enum-ordering) 类型。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+import std.core.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(3)
+    list.add(1)
+    list.add(4)
+    list.add(2)
+    // list现在是[3, 1, 4, 2]
+    println("排序前: ${list}")  // [3, 1, 4, 2]
+    
+    // 使用稳定排序按降序排序
+    list.sortBy(stable: true, (a: Int64, b: Int64) -> Ordering {
+        if (a > b) {
+            return Ordering.GT
+        } else if (a < b) {
+            return Ordering.LT
+        } else {
+            return Ordering.EQ
+        }
+    })
+    
+    println("稳定排序后: ${list}")  // [4, 3, 2, 1]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+排序前: [3, 1, 4, 2]
+稳定排序后: [4, 3, 2, 1]
+```
+
 ### func toArray()
 
 ```cangjie
@@ -671,6 +1882,38 @@ public func toArray(): Array<T>
 返回值：
 
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - T 类型数组。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..4) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4]
+    println("列表: ${list}")  // [0, 1, 2, 3, 4]
+    
+    // 转换为数组
+    let array = list.toArray()
+    
+    println("数组: ${array}")      // [0, 1, 2, 3, 4]
+    println("数组大小: ${array.size}") // 5
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表: [0, 1, 2, 3, 4]
+数组: [0, 1, 2, 3, 4]
+数组大小: 5
+```
 
 ### operator func \[](Int64)
 
@@ -692,6 +1935,39 @@ public operator func [](index: Int64): T
 
 - [IndexOutOfBoundsException](../../core/core_package_api/core_package_exceptions.md#class-indexoutofboundsexception) - 当 index 超出范围时，抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(10)
+    list.add(20)
+    list.add(30)
+    
+    // 通过索引访问元素
+    let element = list[1]
+    println("索引1处的元素: ${element}")  // 20
+    
+    // 修改索引处的元素
+    list[1] = 25
+    println("修改后索引1处的元素: ${list[1]}")  // 25
+    println("修改后的列表: ${list}")           // [10, 25, 30]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+索引1处的元素: 20
+修改后索引1处的元素: 25
+修改后的列表: [10, 25, 30]
+```
+
 ### operator func \[](Int64, T)
 
 ```cangjie
@@ -708,6 +1984,38 @@ public operator func [](index: Int64, value!: T): Unit
 异常：
 
 - [IndexOutOfBoundsException](../../core/core_package_api/core_package_exceptions.md#class-indexoutofboundsexception) - 当 index 超出范围时，抛出异常。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(10)
+    list.add(20)
+    list.add(30)
+    
+    println("修改前的列表: ${list}")  // [10, 20, 30]
+    
+    // 通过索引修改元素
+    list[1] = 25
+    
+    println("修改后的列表: ${list}")  // [10, 25, 30]
+    println("索引1处的元素: ${list[1]}") // 25
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+修改前的列表: [10, 20, 30]
+修改后的列表: [10, 25, 30]
+索引1处的元素: 25
+```
 
 ### operator func \[](Range\<Int64>)
 
@@ -737,6 +2045,39 @@ public operator func [](range: Range<Int64>): ArrayList<T>
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 range.[step](collection_package_function.md#func-steptint64) 不等于 1 时，抛出异常。
 - [IndexOutOfBoundsException](../../core/core_package_api/core_package_exceptions.md#class-indexoutofboundsexception) - 当 range 无效时，抛出异常。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..5) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4, 5]
+    
+    println("原列表: ${list}")  // [0, 1, 2, 3, 4, 5]
+    
+    // 通过范围操作符切片
+    let sliceList = list[1..4]
+    
+    println("切片列表: ${sliceList}")        // [1, 2, 3]
+    println("切片列表大小: ${sliceList.size}") // 3
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [0, 1, 2, 3, 4, 5]
+切片列表: [1, 2, 3]
+切片列表大小: 3
+```
 
 ### extend\<T> ArrayList\<T> <: Equatable\<ArrayList\<T>> where T <: Equatable\<T>
 
@@ -768,6 +2109,41 @@ public operator func ==(that: ArrayList<T>): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果相等，则返回 true，否则返回 false。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list1 = ArrayList<Int64>()
+    list1.add(1)
+    list1.add(2)
+    list1.add(3)
+    
+    let list2 = ArrayList<Int64>()
+    list2.add(1)
+    list2.add(2)
+    list2.add(3)
+    
+    let list3 = ArrayList<Int64>()
+    list3.add(1)
+    list3.add(2)
+    
+    println("list1 == list2: ${list1 == list2}")  // true
+    println("list1 == list3: ${list1 == list3}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+list1 == list2: true
+list1 == list3: false
+```
+
 #### operator func !=(ArrayList\<T>)
 
 ```cangjie
@@ -784,6 +2160,41 @@ public operator func !=(that: ArrayList<T>): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果不等，则返回 true，否则返回 false。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list1 = ArrayList<Int64>()
+    list1.add(1)
+    list1.add(2)
+    list1.add(3)
+    
+    let list2 = ArrayList<Int64>()
+    list2.add(1)
+    list2.add(2)
+    
+    let list3 = ArrayList<Int64>()
+    list3.add(1)
+    list3.add(2)
+    list3.add(3)
+    
+    println("list1 != list2: ${list1 != list2}")  // true
+    println("list1 != list3: ${list1 != list3}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+list1 != list2: true
+list1 != list3: false
+```
+
 #### func contains(T)
 
 ```cangjie
@@ -799,6 +2210,32 @@ public func contains(element: T): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果数组中包含指定元素，返回 true，否则返回 false。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    println("列表包含元素2: ${list.contains(2)}")  // true
+    println("列表包含元素5: ${list.contains(5)}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表包含元素2: true
+列表包含元素5: false
+```
 
 ### extend\<T> ArrayList\<T> <: SortExtension where T <: Comparable\<T> <sup>(deprecated)</sup>
 
@@ -828,6 +2265,37 @@ public func sort(): Unit
 >
 > 未来版本即将废弃，使用 [sort](../../sort/sort_package_api/sort_package_funcs.md#func-sorttlistt-bool-bool-where-t--comparablet) 替代。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(3)
+    list.add(1)
+    list.add(4)
+    list.add(2)
+    // list现在是[3, 1, 4, 2]
+    println("排序前: ${list}")  // [3, 1, 4, 2]
+    
+    // 升序排序
+    list.sort()
+    
+    println("排序后: ${list}")  // [1, 2, 3, 4]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+排序前: [3, 1, 4, 2]
+排序后: [1, 2, 3, 4]
+```
+
 #### func sort(Bool) <sup>(deprecated)</sup>
 
 ```cangjie
@@ -844,6 +2312,37 @@ public func sort(stable!: Bool): Unit
 >
 > 未来版本即将废弃，使用 [sort](../../sort/sort_package_api/sort_package_funcs.md#func-sorttlistt-bool-bool-where-t--comparablet) 替代。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(3)
+    list.add(1)
+    list.add(4)
+    list.add(2)
+    // list现在是[3, 1, 4, 2]
+    println("排序前: ${list}")  // [3, 1, 4, 2]
+    
+    // 使用稳定排序升序排序
+    list.sort(stable: true)
+    
+    println("稳定排序后: ${list}")  // [1, 2, 3, 4]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+排序前: [3, 1, 4, 2]
+稳定排序后: [1, 2, 3, 4]
+```
+
 #### func sortDescending() <sup>(deprecated)</sup>
 
 ```cangjie
@@ -855,6 +2354,37 @@ public func sortDescending(): Unit
 > **注意：**
 >
 > 未来版本即将废弃，使用 [sort](../../sort/sort_package_api/sort_package_funcs.md#func-sorttlistt-bool-bool-where-t--comparablet) 替代。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(3)
+    list.add(1)
+    list.add(4)
+    list.add(2)
+    // list现在是[3, 1, 4, 2]
+    println("排序前: ${list}")  // [3, 1, 4, 2]
+    
+    // 降序排序
+    list.sortDescending()
+    
+    println("降序排序后: ${list}")  // [4, 3, 2, 1]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+排序前: [3, 1, 4, 2]
+降序排序后: [4, 3, 2, 1]
+```
 
 #### func sortDescending(Bool) <sup>(deprecated)</sup>
 
@@ -871,6 +2401,37 @@ public func sortDescending(stable!: Bool): Unit
 > **注意：**
 >
 > 未来版本即将废弃，使用 [sort](../../sort/sort_package_api/sort_package_funcs.md#func-sorttlistt-bool-bool-where-t--comparablet) 替代。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(3)
+    list.add(1)
+    list.add(4)
+    list.add(2)
+    // list现在是[3, 1, 4, 2]
+    println("排序前: ${list}")  // [3, 1, 4, 2]
+    
+    // 使用稳定排序降序排序
+    list.sortDescending(stable: true)
+    
+    println("稳定降序排序后: ${list}")  // [4, 3, 2, 1]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+排序前: [3, 1, 4, 2]
+稳定降序排序后: [4, 3, 2, 1]
+```
 
 ### extend\<T> ArrayList\<T> <: ToString where T <: ToString
 
@@ -898,6 +2459,36 @@ public func toString(): String
 
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 转换得到的字符串。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    let str = list.toString()
+    
+    println("列表: ${list}")     // [1, 2, 3]
+    println("字符串: ${str}")    // [1, 2, 3]
+    println("字符串长度: ${str.size}") // 9
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表: [1, 2, 3]
+字符串: [1, 2, 3]
+字符串长度: 9
+```
+
 ## class ArrayQueue\<T>
 
 ```cangjie
@@ -923,6 +2514,33 @@ public prop capacity: Int64
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 初始容量为8
+    println("初始容量: ${queue.capacity}")  // 8
+    
+    // 指定容量构造
+    let queue2 = ArrayQueue<Int64>(16)
+    println("指定容量: ${queue2.capacity}")  // 16
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始容量: 8
+指定容量: 16
+```
+
 ### prop size
 
 ```cangjie
@@ -933,6 +2551,34 @@ public prop size: Int64
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 初始大小为0
+    println("初始大小: ${queue.size}")  // 0
+    
+    // 添加元素后大小变化
+    queue.add(1)
+    queue.add(2)
+    println("添加元素后大小: ${queue.size}")  // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始大小: 0
+添加元素后大小: 2
+```
+
 ### init()
 
 ```cangjie
@@ -940,6 +2586,32 @@ public init()
 ```
 
 功能：构造一个空的队列，其容量大小为默认值 8。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    // 使用默认构造函数创建队列
+    let queue = ArrayQueue<Int64>()
+    
+    println("初始大小: ${queue.size}")      // 0
+    println("初始容量: ${queue.capacity}")  // 8
+    println("是否为空: ${queue.isEmpty()}") // true
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始大小: 0
+初始容量: 8
+是否为空: true
+```
 
 ### init(Int64)
 
@@ -957,6 +2629,38 @@ public init(capacity: Int64)
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果参数的大小小于 0 则抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    // 指定容量大于默认容量
+    let queue1 = ArrayQueue<Int64>(16)
+    println("指定容量16的队列容量: ${queue1.capacity}")  // 16
+    
+    // 指定容量小于默认容量
+    let queue2 = ArrayQueue<Int64>(4)
+    println("指定容量4的队列容量: ${queue2.capacity}")   // 8
+    
+    // 添加元素测试
+    queue2.add(1)
+    queue2.add(2)
+    println("添加元素后大小: ${queue2.size}")  // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+指定容量16的队列容量: 16
+指定容量4的队列容量: 8
+添加元素后大小: 2
+```
+
 ### func add(T)
 
 ```cangjie
@@ -969,6 +2673,39 @@ public func add(element: T): Unit
 
 - element: T - 被插入到此双端队列的元素。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 添加元素到队列尾部
+    queue.add(1)
+    queue.add(2)
+    queue.add(3)
+    
+    println("队列大小: ${queue.size}")      // 3
+    println("队列容量: ${queue.capacity}")  // 8
+    
+    // 查看队列头部元素
+    let head = queue.peek()
+    println("队列头部元素: ${head}")  // Some(1)
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+队列大小: 3
+队列容量: 8
+队列头部元素: Some(1)
+```
+
 ### func clear()
 
 ```cangjie
@@ -976,6 +2713,42 @@ public func clear(): Unit
 ```
 
 功能：清空此队列中的所有元素。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 添加一些元素
+    queue.add(1)
+    queue.add(2)
+    queue.add(3)
+    
+    println("清空前大小: ${queue.size}")      // 3
+    println("清空前是否为空: ${queue.isEmpty()}") // false
+    
+    // 清空队列
+    queue.clear()
+    
+    println("清空后大小: ${queue.size}")      // 0
+    println("清空后是否为空: ${queue.isEmpty()}") // true
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+清空前大小: 3
+清空前是否为空: false
+清空后大小: 0
+清空后是否为空: true
+```
 
 ### func iterator()
 
@@ -989,6 +2762,38 @@ public func iterator(): Iterator<T>
 
 - [Iterator](../../core/core_package_api/core_package_classes.md#class-iteratort)\<T> - 元素的迭代器。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 添加元素
+    queue.add(1)
+    queue.add(2)
+    queue.add(3)
+    
+    // 使用迭代器遍历队列
+    let iter = queue.iterator()
+    println(iter.next())
+    println(iter.next())
+    println(iter.next())
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+Some(1)
+Some(2)
+Some(3)
+```
+
 ### func isEmpty()
 
 ```cangjie
@@ -1000,6 +2805,38 @@ public func isEmpty(): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果为空，则返回 `true`，否则，返回 `false`。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 空队列
+    println("空队列是否为空: ${queue.isEmpty()}")  // true
+    
+    // 添加元素后
+    queue.add(1)
+    println("添加元素后是否为空: ${queue.isEmpty()}")  // false
+    
+    // 移除所有元素后
+    queue.remove()
+    println("移除元素后是否为空: ${queue.isEmpty()}")  // true
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+空队列是否为空: true
+添加元素后是否为空: false
+移除元素后是否为空: true
+```
 
 ### func peek()
 
@@ -1013,6 +2850,40 @@ public func peek():?T
 
 - ?T - 队列的头部元素，如果队列为空，返回`None`。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 查看空队列的头部元素
+    let emptyPeek = queue.peek()
+    println("空队列头部元素: ${emptyPeek}")  // None
+    
+    // 添加元素后查看头部元素
+    queue.add(10)
+    queue.add(20)
+    let peekValue = queue.peek()
+    println("队列头部元素: ${peekValue}")  // Some(10)
+    
+    // 查看头部元素不会移除元素
+    println("查看后队列大小: ${queue.size}")  // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+空队列头部元素: None
+队列头部元素: Some(10)
+查看后队列大小: 2
+```
+
 ### func remove()
 
 ```cangjie
@@ -1024,6 +2895,40 @@ public func remove(): ?T
 返回值：
 
 - ?T - 被删除的头部元素。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 从空队列移除元素
+    let emptyRemove = queue.remove()
+    println("从空队列移除元素: ${emptyRemove}")  // None
+    
+    // 添加元素后移除
+    queue.add(10)
+    queue.add(20)
+    queue.add(30)
+    
+    let removedElement = queue.remove()
+    println("移除的元素: ${removedElement}")  // Some(10)
+    println("移除后队列大小: ${queue.size}")   // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+从空队列移除元素: None
+移除的元素: Some(10)
+移除后队列大小: 2
+```
 
 ### func reserve(Int64)
 
@@ -1039,6 +2944,42 @@ public func reserve(additional: Int64): Unit
 
 - additional: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 将要扩容的大小。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 初始容量
+    println("初始容量: ${queue.capacity}")  // 8
+    
+    // 预留额外空间
+    queue.reserve(10)
+    println("预留空间后容量: ${queue.capacity}")  // 16 (扩容到接近18的合适大小)
+    
+    // 添加元素测试
+    for (i in 0..15) {
+        queue.add(i)
+    }
+    println("添加16个元素后容量: ${queue.capacity}")  // 16
+    println("添加16个元素后大小: ${queue.size}")    // 16
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始容量: 8
+预留空间后容量: 12
+添加16个元素后容量: 18
+添加16个元素后大小: 15
+```
+
 ### func toArray()
 
 ```cangjie
@@ -1050,6 +2991,40 @@ public func toArray(): Array<T>
 返回值：
 
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - T 类型数组。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 添加元素
+    queue.add(1)
+    queue.add(2)
+    queue.add(3)
+    
+    println("队列: ${queue}")  // [1, 2, 3]
+    
+    // 转换为数组
+    let array = queue.toArray()
+    
+    println("数组: ${array}")      // [1, 2, 3]
+    println("数组大小: ${array.size}") // 3
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+队列: [1, 2, 3]
+数组: [1, 2, 3]
+数组大小: 3
+```
 
 ### extend\<T> ArrayQueue\<T> <: ToString where T <: ToString
 
@@ -1076,6 +3051,41 @@ public func toString(): String
 返回值：
 
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 转换得到的字符串。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let queue = ArrayQueue<Int64>()
+    
+    // 空队列转字符串
+    let emptyStr = queue.toString()
+    println("空队列字符串: ${emptyStr}")  // []
+    
+    // 添加元素后转字符串
+    queue.add(1)
+    queue.add(2)
+    queue.add(3)
+    
+    let str = queue.toString()
+    println("队列字符串: ${str}")      // [1, 2, 3]
+    println("字符串长度: ${str.size}")  // 9
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+空队列字符串: []
+队列字符串: [1, 2, 3]
+字符串长度: 9
+```
+
 
 ## class ArrayStack\<T>
 
@@ -1104,6 +3114,33 @@ public prop capacity: Int64
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 初始容量为8
+    println("初始容量: ${stack.capacity}")  // 8
+    
+    // 指定容量构造
+    let stack2 = ArrayStack<Int64>(16)
+    println("指定容量: ${stack2.capacity}")  // 16
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始容量: 8
+指定容量: 16
+```
+
 ### prop size
 
 ```cangjie
@@ -1114,6 +3151,34 @@ public prop size: Int64
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 初始大小为0
+    println("初始大小: ${stack.size}")  // 0
+    
+    // 添加元素后大小变化
+    stack.add(1)
+    stack.add(2)
+    println("添加元素后大小: ${stack.size}")  // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始大小: 0
+添加元素后大小: 2
+```
+
 ### func init()
 
 ```cangjie
@@ -1121,6 +3186,32 @@ public init()
 ```
 
 功能：构造一个空的 [ArrayStack](#class-arraystackt)，其初始容量为 8。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    // 使用默认构造函数创建栈
+    let stack = ArrayStack<Int64>()
+    
+    println("初始大小: ${stack.size}")      // 0
+    println("初始容量: ${stack.capacity}")  // 8
+    println("是否为空: ${stack.isEmpty()}") // true
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始大小: 0
+初始容量: 8
+是否为空: true
+```
 
 ### func init(Int64)
 
@@ -1138,6 +3229,38 @@ public init(capacity: Int64)
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当入参为负数时，抛出此异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    // 指定容量大于默认容量
+    let stack1 = ArrayStack<Int64>(16)
+    println("指定容量16的栈容量: ${stack1.capacity}")  // 16
+    
+    // 指定容量小于默认容量
+    let stack2 = ArrayStack<Int64>(4)
+    println("指定容量4的栈容量: ${stack2.capacity}")   // 8
+    
+    // 添加元素测试
+    stack2.add(1)
+    stack2.add(2)
+    println("添加元素后大小: ${stack2.size}")  // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+指定容量16的栈容量: 16
+指定容量4的栈容量: 8
+添加元素后大小: 2
+```
+
 ### func add(T)
 
 ```cangjie
@@ -1150,6 +3273,39 @@ public func add(element: T): Unit
 
 - element: T - 添加的元素。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 添加元素到栈顶
+    stack.add(1)
+    stack.add(2)
+    stack.add(3)
+    
+    println("栈大小: ${stack.size}")      // 3
+    println("栈容量: ${stack.capacity}")  // 8
+    
+    // 查看栈顶元素
+    let top = stack.peek()
+    println("栈顶元素: ${top}")  // Some(3)
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+栈大小: 3
+栈容量: 8
+栈顶元素: Some(3)
+```
+
 ### func clear()
 
 ```cangjie
@@ -1157,6 +3313,42 @@ public func clear(): Unit
 ```
 
 功能：清空当前的 [ArrayStack](#class-arraystackt)。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 添加一些元素
+    stack.add(1)
+    stack.add(2)
+    stack.add(3)
+    
+    println("清空前大小: ${stack.size}")      // 3
+    println("清空前是否为空: ${stack.isEmpty()}") // false
+    
+    // 清空栈
+    stack.clear()
+    
+    println("清空后大小: ${stack.size}")      // 0
+    println("清空后是否为空: ${stack.isEmpty()}") // true
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+清空前大小: 3
+清空前是否为空: false
+清空后大小: 0
+清空后是否为空: true
+```
 
 ### func isEmpty()
 
@@ -1170,6 +3362,38 @@ public func isEmpty(): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果为空，返回 true，否则返回 false。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 空栈
+    println("空栈是否为空: ${stack.isEmpty()}")  // true
+    
+    // 添加元素后
+    stack.add(1)
+    println("添加元素后是否为空: ${stack.isEmpty()}")  // false
+    
+    // 移除所有元素后
+    stack.remove()
+    println("移除元素后是否为空: ${stack.isEmpty()}")  // true
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+空栈是否为空: true
+添加元素后是否为空: false
+移除元素后是否为空: true
+```
+
 ### func iterator()
 
 ```cangjie
@@ -1181,6 +3405,38 @@ public func iterator(): Iterator<T>
 返回值：
 
 - [Iterator](../../core/core_package_api/core_package_classes.md#class-iteratort)\<T> - 栈中元素的迭代器。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 添加元素
+    stack.add(1)
+    stack.add(2)
+    stack.add(3)
+    
+    // 使用迭代器遍历栈
+    let iter = stack.iterator()
+    println(iter.next())
+    println(iter.next())
+    println(iter.next())
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+Some(3)
+Some(2)
+Some(1)
+```
 
 ### func peek()
 
@@ -1194,6 +3450,40 @@ public func peek(): ?T
 
 - ?T - 栈顶的元素。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 查看空栈的栈顶元素
+    let emptyPeek = stack.peek()
+    println("空栈栈顶元素: ${emptyPeek}")  // None
+    
+    // 添加元素后查看栈顶元素
+    stack.add(10)
+    stack.add(20)
+    let peekValue = stack.peek()
+    println("栈顶元素: ${peekValue}")  // Some(20)
+    
+    // 查看栈顶元素不会移除元素
+    println("查看后栈大小: ${stack.size}")  // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+空栈栈顶元素: None
+栈顶元素: Some(20)
+查看后栈大小: 2
+```
+
 ### func remove()
 
 ```cangjie
@@ -1205,6 +3495,40 @@ public func remove(): ?T
 返回值：
 
 - ?T - 被删除的栈顶元素。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 从空栈移除元素
+    let emptyRemove = stack.remove()
+    println("从空栈移除元素: ${emptyRemove}")  // None
+    
+    // 添加元素后移除
+    stack.add(10)
+    stack.add(20)
+    stack.add(30)
+    
+    let removedElement = stack.remove()
+    println("移除的元素: ${removedElement}")  // Some(30)
+    println("移除后栈大小: ${stack.size}")   // 2
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+从空栈移除元素: None
+移除的元素: Some(30)
+移除后栈大小: 2
+```
 
 ### func reserve(Int64)
 
@@ -1218,6 +3542,42 @@ public func reserve(additional: Int64): Unit
 
 - additional: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 将要扩容的大小。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 初始容量
+    println("初始容量: ${stack.capacity}")  // 8
+    
+    // 预留额外空间
+    stack.reserve(10)
+    println("预留空间后容量: ${stack.capacity}")  // 12 (扩容到接近18的合适大小)
+    
+    // 添加元素测试
+    for (i in 0..15) {
+        stack.add(i)
+    }
+    println("添加16个元素后容量: ${stack.capacity}")  // 18
+    println("添加16个元素后大小: ${stack.size}")    // 16
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+初始容量: 8
+预留空间后容量: 12
+添加16个元素后容量: 18
+添加16个元素后大小: 15
+```
+
 ### func toArray()
 
 ```cangjie
@@ -1229,6 +3589,40 @@ public func toArray(): Array<T>
 返回值：
 
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - T 类型数组。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 添加元素
+    stack.add(1)
+    stack.add(2)
+    stack.add(3)
+    
+    println("栈: ${stack}")  // [3, 2, 1]
+    
+    // 转换为数组
+    let array = stack.toArray()
+    
+    println("数组: ${array}")      // [3, 2, 1]
+    println("数组大小: ${array.size}") // 3
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+栈: [3, 2, 1]
+数组: [3, 2, 1]
+数组大小: 3
+```
 
 ### extend\<T> ArrayStack\<T> <: ToString where T <: ToString
 
@@ -1255,6 +3649,41 @@ public func toString(): String
 返回值：
 
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 当前栈的字符串表示。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let stack = ArrayStack<Int64>()
+    
+    // 空栈转字符串
+    let emptyStr = stack.toString()
+    println("空栈字符串: ${emptyStr}")  // []
+    
+    // 添加元素后转字符串
+    stack.add(1)
+    stack.add(2)
+    stack.add(3)
+    
+    let str = stack.toString()
+    println("栈字符串: ${str}")      // [3, 2, 1]
+    println("字符串长度: ${str.size}")  // 9
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+空栈字符串: []
+栈字符串: [3, 2, 1]
+字符串长度: 9
+```
+
 
 ## class HashMapIterator\<K, V> where K <: Hashable & Equatable\<K>
 
