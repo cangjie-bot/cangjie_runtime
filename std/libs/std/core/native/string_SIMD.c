@@ -198,6 +198,21 @@ inline __attribute__((always_inline)) static int64_t StrStrN(const uint8_t* org,
 }
 #endif
 
+#ifdef __arm__
+inline __attribute__((always_inline)) static int64_t StrStrN(const uint8_t* org, int64_t ol, const uint8_t* sub,
+    int64_t sl, _Bool memcmpFunc(const uint8_t*, const uint8_t*, int64_t))
+{
+    for (int64_t i = 0; i <= ol - sl; i++) {
+        if (org[i] == sub[0] && org[i + sl - 1] == sub[sl - 1]) {
+            if (memcmpFunc(org + i + 1, sub + 1, sl - 2)) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+#endif
+
 // instruction set acceleration
 int64_t FastStrstr(const uint8_t* org, int64_t ol, const uint8_t* sub, int64_t sl)
 {
@@ -324,6 +339,21 @@ inline __attribute__((always_inline)) static int64_t StringSize(const uint8_t* s
     return size;
 }
 
+#endif
+
+#ifdef __arm__
+inline __attribute__((always_inline)) static int64_t StringSize(const uint8_t* str, int64_t len)
+{
+    int64_t size = 0;
+    uint8_t* tmp = (uint8_t*)str;
+    uint8_t* end = (uint8_t*)str + len;
+ 
+    for (; tmp < end; ++tmp) {
+        size += ((*tmp & 0xc0) != 0x80);
+    }
+    return size;
+}
+ 
 #endif
 
 int64_t FastSize(const uint8_t* str, int64_t len)

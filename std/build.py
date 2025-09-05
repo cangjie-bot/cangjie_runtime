@@ -69,6 +69,8 @@ def generate_cmake_defs(args):
     if args.target:
         if args.target == "aarch64-linux-ohos":
             toolchain_file = "ohos_aarch64_clang_toolchain.cmake"
+        if args.target == "aarch32-linux-ohos":
+            toolchain_file = "ohos_aarch32_clang_toolchain.cmake"
         elif args.target == "x86_64-linux-ohos":
             toolchain_file = "ohos_x86_64_clang_toolchain.cmake"
         elif args.target == "x86_64-w64-mingw32":
@@ -97,7 +99,8 @@ def generate_cmake_defs(args):
         "-DCANGJIE_TARGET_TOOLCHAIN=" + (args.target_toolchain if args.target_toolchain else ""),
         "-DCANGJIE_ENABLE_HWASAN=" + bool_to_opt(args.hwasan),
         "-DCANGJIE_TARGET_SYSROOT=" + (args.target_sysroot if args.target_sysroot else ""),
-        "-DCANGJIE_BUILD_ARGS=" + (";".join(args.build_args) if args.build_args else "")]
+        "-DCANGJIE_BUILD_ARGS=" + (";".join(args.build_args) if args.build_args else ""),
+        "-DCANGJIE_INCLUDE=" + (";".join(args.include) if args.include else "")]
     return result
 
 def build(args):
@@ -106,6 +109,8 @@ def build(args):
         args.target = None
     elif args.target == "ohos-aarch64":
         args.target = "aarch64-linux-ohos"
+    elif args.target == "ohos-aarch32":
+        args.target = "aarch32-linux-ohos"
     elif args.target == "ohos-x86_64":
         args.target = "x86_64-linux-ohos"
     elif args.target == "windows-x86_64":
@@ -116,7 +121,7 @@ def build(args):
     """build cangjie compiler"""
     LOG.info("begin build...")
 
-    if args.target == "aarch64-linux-ohos" or args.target == "x86_64-linux-ohos":
+    if args.target == "aarch64-linux-ohos" or args.target == "x86_64-linux-ohos" or args.target == "aarch32-linux-ohos":
         # Frontend supports cross compilation in a general way by asking path to required tools
         # and libraries. However, Runtime supports cross compilation in a speific way, which asks
         # for the root path of OHOS toolchain. Since we asked for a path to tools, the root path of
@@ -321,6 +326,7 @@ class BuildType(Enum):
 SupportedTarget = [
     "native",
     "ohos-aarch64",
+    "ohos-aarch32",
     "ohos-x86_64",
     "windows-x86_64"
 ]
@@ -356,6 +362,10 @@ def main():
     parser_build.add_argument(
         "--target-toolchain", dest="target_toolchain", type=str,
         help="use the tools under the given path to cross-compile stdlib"
+    )
+    parser_build.add_argument(
+        "--include", "-I", dest="include", type=str, action='append', default=[],
+        help="search header files in given paths"
     )
     parser_build.add_argument(
         "--target-sysroot", dest="target_sysroot", type=str,
