@@ -77,11 +77,8 @@ enum class AllocType {
 extern "C" {
 #endif
 /* Get the aligned value. */
-#ifdef __arm__
-#define MRT_ALIGN(x, a) (((x) + ((a) < 8 ? 8 : (a)) - 1) & ~(((a) < 8 ? 8 : (a)) - 1))
-#else
+#define MRT_ALIGN_8(x, a) (((x) + ((a) < 8 ? 8 : (a)) - 1) & ~(((a) < 8 ? 8 : (a)) - 1))
 #define MRT_ALIGN(x, a) (((x) + (a)-1) & ~((a)-1))
-#endif
 #ifdef __cplusplus
 }
 #endif

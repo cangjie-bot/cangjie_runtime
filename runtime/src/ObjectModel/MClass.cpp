@@ -514,8 +514,12 @@ static void* GetAnnotations(Uptr annotationMethod, TypeInfo* arrayTi)
 {
     CHECK_DETAIL(arrayTi != nullptr, "arrayTi is nullptr");
     U32 size = arrayTi->GetInstanceSize();
-    MObject* obj = ObjectManager::NewObject(arrayTi, MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*)),
-        AllocType::RAW_POINTER_OBJECT);
+#ifdef __arm__
+    MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
+    MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
+    MObject* obj = ObjectManager::NewObject(arrayTi, objSize, AllocType::RAW_POINTER_OBJECT);
     if (obj == nullptr) {
         ExceptionManager::OutOfMemory();
         return nullptr;
