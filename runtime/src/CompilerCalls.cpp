@@ -600,8 +600,12 @@ extern "C" ObjectPtr MCC_GetSubPackages(PackageInfo* packageInfo, TypeInfo* arra
         rawArrayObj->SetPrimitiveElement(idx, reinterpret_cast<int64_t>(subPackages[idx]));
     }
     U32 size = arrayTi->GetInstanceSize();
-    MObject* obj = ObjectManager::NewObject(arrayTi, MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*)),
-        AllocType::RAW_POINTER_OBJECT);
+#ifdef __arm__
+    MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
+    MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
+    MObject* obj = ObjectManager::NewObject(arrayTi, objSize, AllocType::RAW_POINTER_OBJECT);
     // set rawArray
     Heap::GetBarrier().WriteReference(obj, obj->GetRefField(sizeof(TypeInfo*)), static_cast<BaseObject*>(rawArrayObj));
     CJArray* cjArray = reinterpret_cast<CJArray*>(reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*));

@@ -49,7 +49,11 @@ void* InstanceFieldInfo::GetValue(TypeInfo* declaringTi, ObjRef instanceObj)
         return Heap::GetBarrier().ReadReference(instanceObj,
             instanceObj->GetRefField(GetOffset(declaringTi) + sizeof(TypeInfo*)));
     } else if (fieldTi->IsStruct() || fieldTi->IsTuple()) {
+#ifdef __arm__
+        MSize size = MRT_ALIGN_8(fieldTi->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
         MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
         MSize fieldSize = fieldTi->GetInstanceSize();
         MObject* obj = ObjectManager::NewObject(fieldTi, size);
         void* tmp = malloc(fieldSize);
@@ -59,7 +63,11 @@ void* InstanceFieldInfo::GetValue(TypeInfo* declaringTi, ObjRef instanceObj)
         free(tmp);
         return obj;
     } else if (fieldTi->IsPrimitiveType()) {
+#ifdef __arm__
+        MSize size = MRT_ALIGN_8(fieldTi->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
         MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
         MObject* obj = ObjectManager::NewObject(fieldTi, size);
         if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*)),
                      fieldTi->GetInstanceSize(),
@@ -72,7 +80,11 @@ void* InstanceFieldInfo::GetValue(TypeInfo* declaringTi, ObjRef instanceObj)
         // VArray is only used to store value types,
         // so we can copy the memory directly
         MSize vArraySize = fieldTi->GetFieldNum() * fieldTi->GetComponentTypeInfo()->GetInstanceSize();
+#ifdef __arm__
+        MSize size = MRT_ALIGN_8(vArraySize + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
         MSize size = MRT_ALIGN(vArraySize + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
         MObject* obj = ObjectManager::NewObject(fieldTi, size);
         if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*)), vArraySize,
                      reinterpret_cast<void*>(fieldAddr), vArraySize) != EOK) {
@@ -124,8 +136,12 @@ void* InstanceFieldInfo::GetAnnotations(TypeInfo* arrayTi)
 {
     CHECK_DETAIL(arrayTi != nullptr, "arrayTi is nullptr");
     U32 size = arrayTi->GetInstanceSize();
-    MObject* obj = ObjectManager::NewObject(arrayTi, MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*)),
-        AllocType::RAW_POINTER_OBJECT);
+#ifdef __arm__
+    MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
+    MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
+    MObject* obj = ObjectManager::NewObject(arrayTi, objSize, AllocType::RAW_POINTER_OBJECT);
     if (obj == nullptr) {
         ExceptionManager::OutOfMemory();
         return nullptr;
@@ -159,14 +175,22 @@ void* StaticFieldInfo::GetValue()
         RefField<false>* refField = reinterpret_cast<RefField<false>*>(addr);
         return Heap::GetBarrier().ReadStaticRef(*refField);
     } else if (fieldTi->IsStruct() || fieldTi->IsTuple()) {
+#ifdef __arm__
+        MSize size = MRT_ALIGN_8(fieldTi->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
         MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
         MSize fieldSize = fieldTi->GetInstanceSize();
         MObject* obj = ObjectManager::NewObject(fieldTi, size);
         Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*),
             fieldSize, addr, fieldSize);
         return obj;
     } else if (fieldTi->IsPrimitiveType()) {
+#ifdef __arm__
+        MSize size = MRT_ALIGN_8(fieldTi->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
         MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
         MObject* obj = ObjectManager::NewObject(fieldTi, size);
         if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*)),
                      fieldTi->GetInstanceSize(),
@@ -179,7 +203,11 @@ void* StaticFieldInfo::GetValue()
         // VArray is only used to store value types,
         // so we can copy the memory directly
         MSize vArraySize = fieldTi->GetFieldNum() * fieldTi->GetComponentTypeInfo()->GetInstanceSize();
+#ifdef __arm__
+        MSize size = MRT_ALIGN_8(fieldTi->GetInstanceSize() + vArraySize, sizeof(TypeInfo*));
+#else
         MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + vArraySize, sizeof(TypeInfo*));
+#endif
         MObject* obj = ObjectManager::NewObject(fieldTi, size);
         if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*)), vArraySize,
                      reinterpret_cast<void*>(addr), vArraySize) != EOK) {
@@ -226,8 +254,12 @@ void* StaticFieldInfo::GetAnnotations(TypeInfo* arrayTi)
 {
     CHECK_DETAIL(arrayTi != nullptr, "arrayTi is nullptr");
     U32 size = arrayTi->GetInstanceSize();
-    MObject* obj = ObjectManager::NewObject(arrayTi, MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*)),
-        AllocType::RAW_POINTER_OBJECT);
+#ifdef __arm__
+    MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#else
+    MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
+#endif
+    MObject* obj = ObjectManager::NewObject(arrayTi, objSize, AllocType::RAW_POINTER_OBJECT);
     if (obj == nullptr) {
         ExceptionManager::OutOfMemory();
         return nullptr;
