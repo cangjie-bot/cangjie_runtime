@@ -125,6 +125,9 @@ public struct FileInfo <: Equatable<FileInfo> {
         return callNativeFunc(CJ_FS_IsReadOnly)
     }
 
+    /**
+     * @throws FSException if FileName is empty
+     */
     public func isHidden(): Bool {
         let fileName = canonicalize(_path).fileName
         if (fileName.isEmpty()) {

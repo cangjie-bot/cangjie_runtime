@@ -174,8 +174,8 @@ public class LinkedBlockingQueue<E> {
      *
      * A successful 'dequeue' will await blocked threads calling 'enqueue'.
      *
-     * @return:
-     * - e: e is the element at the head of the queue.
+     * @return e: e is the element at the head of the queue.
+     * @throws Exception in unreachable code path (should never occur).
      */
     @Deprecated[message: "Use member function `public func remove(): E` instead."]
     public func dequeue(): E {

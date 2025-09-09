@@ -165,6 +165,10 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if length is invalid
+     * @throws FSException if failed to truncate the file
+     */
     public func setLength(length: Int64): Unit {
         if (length < 0) {
             throw IllegalArgumentException("Invalid length: ${length}.")
@@ -301,6 +305,9 @@ public class File <: Resource & IOStream & Seekable {
      * @throws FSException while path is empty.
      * @throws IllegalArgumentException while path contains null character.
      */
+    /**
+     * @throws FSException if file already exists
+     */
     public static func create(path: Path): File {
         return create(path.toString())
     }
@@ -308,6 +315,9 @@ public class File <: Resource & IOStream & Seekable {
     /**
      * @throws FSException while path is empty.
      * @throws IllegalArgumentException while path contains null character.
+     */
+    /**
+     * @throws FSException if file already exists
      */
     public static func create(path: String): File {
         if (exists(path)) {
@@ -320,6 +330,9 @@ public class File <: Resource & IOStream & Seekable {
      * @throws FSException if failed to create the temporary file or directoryPath is invalid.
      * @throws IllegalArgumentException while path contains null character or path is empty.
      */
+    /**
+     * @throws FSException if failed to create the temporary file
+     */
     public static func createTemp(directoryPath: String): File {
         return createTemp(Path(directoryPath))
     }
@@ -327,6 +340,9 @@ public class File <: Resource & IOStream & Seekable {
     /**
      * @throws FSException if failed to create the temporary file or directoryPath is invalid.
      * @throws IllegalArgumentException while path contains null character or path is empty.
+     */
+    /**
+     * @throws FSException if failed to create the temporary file
      */
     public static func createTemp(directoryPath: Path): File {
         var utf8View = unsafe { canonicalize(directoryPath).toString().rawData() }

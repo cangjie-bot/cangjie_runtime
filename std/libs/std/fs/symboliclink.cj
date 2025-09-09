@@ -14,10 +14,18 @@ package std.fs
 public class SymbolicLink {
     private init() {}
 
+    /**
+     * @throws IllegalArgumentException if link or to is empty or contains null character
+     * @throws FSException if failed to create symbolic link
+     */
     public static func create(link: Path, to!: Path): Unit {
         SymbolicLink.create(link._rawPath, to: to._rawPath)
     }
 
+    /**
+     * @throws IllegalArgumentException if link or to is empty or contains null character
+     * @throws FSException if failed to create symbolic link
+     */
     public static func create(link: String, to!: String): Unit {
         if (link.isEmpty() || to.isEmpty()) {
             throw IllegalArgumentException("The path 'link' or 'to' cannot be empty!")
@@ -46,10 +54,18 @@ public class SymbolicLink {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if path is empty, contains null character, or is not a symbolic link
+     * @throws FSException if failed to read symbolic link
+     */
     public static func readFrom(path: String, recursive!: Bool = false): Path {
         return SymbolicLink.readFrom(Path(path), recursive: recursive)
     }
 
+    /**
+     * @throws IllegalArgumentException if path is empty, contains null character, or is not a symbolic link
+     * @throws FSException if failed to read symbolic link
+     */
     public static func readFrom(path: Path, recursive!: Bool = false): Path {
         if (path._rawPath.isEmpty()) {
             throw IllegalArgumentException("The path cannot be empty!")

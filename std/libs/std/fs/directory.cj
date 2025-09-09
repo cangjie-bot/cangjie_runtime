@@ -48,6 +48,9 @@ public class Directory {
      * @throws FSException while path is not exist or failed to create temporary directory
      * @throws IllegalArgumentException while path is empty or path contains null character
      */
+    /**
+     * @throws FSException if failed to create the temporary directory
+     */
     public static func createTemp(directoryPath: String): Path {
         createTemp(Path(directoryPath))
     }
@@ -55,6 +58,9 @@ public class Directory {
     /*
      * @throws FSException while path is not exist or failed to create temporary directory.
      * @throws IllegalArgumentException while path is empty or path contains null character
+     */
+    /**
+     * @throws FSException if failed to create the temporary directory
      */
     public static func createTemp(directoryPath: Path): Path {
         var directoryPathArr = unsafe { canonicalize(directoryPath).toString().rawData() }
@@ -75,10 +81,16 @@ public class Directory {
         return Path(String.fromUtf8(tempArr.slice(0, tempArr.size - 1)))
     }
 
+    /**
+     * @throws FSException if failed to check whether the directory is empty
+     */
     public static func isEmpty(path: Path): Bool {
         isEmpty(path.toString())
     }
 
+    /**
+     * @throws FSException if failed to check whether the directory is empty
+     */
     public static func isEmpty(path: String): Bool {
         unsafe {
             let absPath = checkDirectoryPath(Path(path))
@@ -92,6 +104,9 @@ public class Directory {
         }
     }
 
+    /**
+     * @throws FSException if failed to get file info
+     */
     public static func readFrom(path: Path): Array<FileInfo> {
         let fileInfos = ArrayList<FileInfo>()
         walk(path) {
@@ -102,10 +117,16 @@ public class Directory {
         return fileInfos.toArray()
     }
 
+    /**
+     * @throws FSException if failed to get file info
+     */
     public static func readFrom(path: String): Array<FileInfo> {
         readFrom(Path(path))
     }
 
+    /**
+     * @throws FSException if failed to get file info
+     */
     public static func walk(path: Path, f: (FileInfo) -> Bool): Unit {
         let absPath = checkDirectoryPath(path)
         let (subData, subSize) = getSubData(absPath.toString())
@@ -125,6 +146,9 @@ public class Directory {
         }
     }
 
+    /**
+     * @throws FSException if failed to get file info
+     */
     public static func walk(path: String, f: (FileInfo) -> Bool): Unit {
         walk(Path(path), f)
     }
@@ -142,6 +166,10 @@ public class Directory {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if name contains null character
+     * @throws FSException if name contains path information or directory already exists
+     */
     private static func createSubDirectory(parent: String, name: String): String {
         if (name.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The name cannot contain null character.")
@@ -175,6 +203,9 @@ public class Directory {
         return 0
     }
 
+    /**
+     * @throws FSException if file name is empty or copy operation fails
+     */
     private static func walkAndCopy(srcQueue: ArrayList<String>, destQueue: ArrayList<String>, index: Int64,
         fail: Box<Bool>): Unit {
         let (curSrcDir, curDestDir) = (srcQueue[index], destQueue[index])
@@ -318,6 +349,9 @@ public class Directory {
     }
 }
 
+/**
+ * @throws FSException if path is not a directory
+ */
 func checkDirectoryPath(path: Path): Path {
     let info = FileInfo(path)
     if (!info.isDirectory()) {

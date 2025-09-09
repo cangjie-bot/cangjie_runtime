@@ -10,6 +10,9 @@ package std.net
 
 import std.binary.*
 
+/**
+ * @throws IllegalArgumentException if path size is too long (> 108)
+ */
 func findLastNoneZeroIdx(path: Array<Byte>): Int64 {
     let len = path.size
     if (len > 108) {
@@ -32,6 +35,9 @@ public class UnixSocketAddress <: SocketAddress & Equatable<UnixSocketAddress> {
     public init(path: Array<Byte>) {
         this(unsafe { String.fromUtf8Unchecked(path[..findLastNoneZeroIdx(path)]) })
     }
+    /**
+     * @throws IllegalArgumentException if path size is too long or contains interior null bytes
+     */
     public init(path: String) {
         _len = path.size
         if (_len > 108) {

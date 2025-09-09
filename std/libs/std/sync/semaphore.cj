@@ -16,7 +16,7 @@ public class Semaphore {
 
     /**
      * Construct a semephore with an initial value.
-     * Throw IllegalArgumentException, if `count` is negative.
+     * @throws IllegalArgumentException if count is negative
      */
     public init(count: Int64) {
         if (count < 0) {
@@ -41,7 +41,7 @@ public class Semaphore {
      * If there is no sufficient available counts,
      * the current thread will be blocked until enough counts become available.
      * The acquisition is atomic, which means it will never acquire partial counts before blocked.
-     * Throw IllegalArgumentException, if `amount` is negative or larger than the initial value.
+     * @throws IllegalArgumentException if amount is negative or larger than the initial value
      * The acquisition order is not guranteed under contention.
      */
     public func acquire(amount!: Int64 = 1): Unit {
@@ -60,7 +60,7 @@ public class Semaphore {
      * Try to acquire `amount` from the semaphore.
      * If there is no sufficient available counts, return false;
      * otherwise, return true.
-     * Throw IllegalArgumentException, if `amount` is negative or larger than the initial value.
+     * @throws IllegalArgumentException if amount is negative or larger than the initial value
      */
     public func tryAcquire(amount!: Int64 = 1): Bool {
         if (amount < 0 || amount > initValue) {
@@ -80,7 +80,7 @@ public class Semaphore {
      * Release `amount` to the semaphore.
      * Wake blocked threads if there are enough counts for them.
      * The number of accumulated counts will never exceed the initial value.
-     * Throw IllegalArgumentException, if `amount` is negative or larger than the initial value.
+     * @throws IllegalArgumentException if amount is negative or larger than the initial value
      * All events before `release()` happens-before events after `acquire/tryAcquire()`.
      */
     public func release(amount!: Int64 = 1): Unit {

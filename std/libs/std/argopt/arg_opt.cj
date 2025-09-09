@@ -483,6 +483,9 @@ public enum ArgumentSpec {
         }
     }
 
+    /**
+     * @throws NoneValueException when called on NonOptions variant
+     */
     prop mode: ArgumentMode {
         get() {
             match (this) {
@@ -552,11 +555,17 @@ class ArgParser {
     var _nonOptionSpecs: ?ArgumentSpec = None
     var _index = 0
 
+    /**
+     * @throws IllegalArgumentException if option is duplicated
+     */
     func checkDuplicateShortOption(r: Rune) {
         if (_shortOptionSpecs.contains(r) || _longOptionSpecs.contains(String(r))) {
             throw IllegalArgumentException("Duplicated option ${r} founded.")
         }
     }
+    /**
+     * @throws IllegalArgumentException if option is duplicated
+     */
     func checkDuplicateLongOption(s: String) {
         if (_longOptionSpecs.contains(s) || (s.size == 1 && _shortOptionSpecs.contains(Rune(s[0])))) {
             throw IllegalArgumentException("Duplicated option: ${s} founded.")
@@ -596,6 +605,9 @@ class ArgParser {
         spec.optionAction?(val)
     }
 
+    /**
+     * @throws ArgumentParseException if missing required option value or unexpected value for NoValue option
+     */
     func parseLongOption(arg: String, next: ?String): Bool {
         let splited: Array<String> = arg.split("=", 2) // if `=` not exist in arg, [arg] will get, else [option, value] get.
 
@@ -632,6 +644,9 @@ class ArgParser {
         }
         arr
     }
+    /**
+     * @throws ArgumentParseException if unknown option or missing required option value
+     */
     func parseNoValueForShortOption(runeArray: Array<Rune>, next: ?String) {
         let noValueSpecs = generateNoValueSpecForShortOption(runeArray)
 
@@ -667,6 +682,9 @@ class ArgParser {
         }
     }
 
+    /**
+     * @throws ArgumentParseException if unknown option or missing required option value
+     */
     func parseShortOption(arg: String, next: ?String) {
         let runeArray = arg.toRuneArray()
         let runeSize = runeArray.size
@@ -696,6 +714,9 @@ class ArgParser {
         }
     }
 
+    /**
+     * @throws ArgumentParseException if option is empty or unknown
+     */
     // '-' or '--' should be removed before this function called.
     func parseOption(arg: String, next: ?String, longOptionOnly!: Bool = false) {
         if (arg.size == 0) {
@@ -710,6 +731,9 @@ class ArgParser {
         }
     }
 
+    /**
+     * @throws ArgumentParseException if illegal option format or other parsing errors
+     */
     func parse(args: Array<String>, specs: Array<ArgumentSpec>): ParsedArguments {
         specs |> forEach(addSpec)
 

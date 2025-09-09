@@ -486,6 +486,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
      *
      * @throws ArithmeticException if the result of year in UTC is outside the range [-999,999,999, 999,999,999].
      */
+    /**
+     * @throws ArithmeticException if the result of year is outside the range
+     */
     public func inUTC(): DateTime {
         checkResultYear(d.sec)
         return this.toUTC()
@@ -509,6 +512,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
      * @return a DateTime with the time zone set to Local.
      *
      * @throws ArithmeticException if the result of year in Local is outside the range [-999,999,999, 999,999,999]
+     */
+    /**
+     * @throws ArithmeticException if the result of year is outside the range
      */
     public func inTimeZone(timeZone: TimeZone): DateTime {
         let offset = timeZone.lookup(d.sec + SECS_OF_UNIX_TO_AD1)[1]
@@ -1203,12 +1209,18 @@ func isSumOverflow(left: Int64, right: Int64): Bool {
     return (right > 0 && left > Int64.Max - right) || (right < 0 && left < Int64.Min - right)
 }
 
+/**
+ * @throws ArithmeticException if the result of year is outside the range
+ */
 func checkSecAdd(left: Int64, right: Int64): Unit {
     if ((right > 0 && left > MAX_UTC_SECS - right) || (right < 0 && left < MIN_UTC_SECS - right)) {
         throw ArithmeticException(YEAR_OUT_OF_RANGE)
     }
 }
 
+/**
+ * @throws ArithmeticException if the result of year is outside the range
+ */
 func checkMul(left: Int64, right: Int64): Unit {
     if ((right > Int64.Max / left) || (right < Int64.Min / left)) {
         throw ArithmeticException(YEAR_OUT_OF_RANGE)
@@ -1289,6 +1301,9 @@ func toYearAndSecond(sec: Int64): (Int64, Int64) {
 /**
  * Calculate unix second of year and second in year.
  * The exception only used by addFuncs.
+ */
+/**
+ * @throws ArithmeticException if the result of year is outside the range
  */
 func toEpochSeconds(year: Int64, sec: UInt32): Int64 {
     try {

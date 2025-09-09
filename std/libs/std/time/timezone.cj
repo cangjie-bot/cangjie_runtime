@@ -53,6 +53,9 @@ class ZoneRule {
     var rMon: Int64 = 0 /* month number of rule */
     var rTime: Int64 = 0 /* transition time of rule */
 
+    /**
+     * @throws InvalidDataException if failed to parse the timezone data
+     */
     func parse(footer: String): String {
         if (footer[0] == b'J') {
             let (jday, rest) = getNum(footer[1..])
@@ -301,7 +304,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
                 return loadTimeZone(id, tzpath)
             }
         }
-        throw InvalidDataException("No valid timezone file is found.")
+        /**
+         * @throws InvalidDataException if no valid timezone file is found
+         */
     }
 
     /**

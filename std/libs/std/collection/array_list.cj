@@ -412,6 +412,7 @@ public class ArrayList<T> <: List<T> {
      * Removes all of the elements of this ArrayList that satisfy the given predicate.
      *
      * @param predicate transfer the condition for determining the deletion.
+     * @throws ConcurrentModificationException if the predicate modifies the ArrayList during iteration.
      *
      * @since 0.18.2
      */
@@ -643,6 +644,7 @@ public class ArrayList<T> <: List<T> {
      *
      * @param index Index value to be set.
      * @param value the T type of element.
+     * @throws IndexOutOfBoundsException if index is out of range.
      *
      * @since 0.18.2
      */

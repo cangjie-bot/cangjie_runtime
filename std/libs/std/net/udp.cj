@@ -202,6 +202,7 @@ public class UdpSocket <: DatagramSocket {
      *
      * @throws SocketException if payload size is larger than allowed by platform.
      * @throws SocketException if connect was preliminary called and abnormal ICMP was received.
+     * @throws IllegalArgumentException if recipient address is invalid
      */
     public override func sendTo(recipient: SocketAddress, payload: Array<Byte>): Unit {
         throwIfIPv4ZeroOnWindows(
@@ -436,6 +437,9 @@ public class UdpSocket <: DatagramSocket {
         "UdpSocket(${impl.toString()})"
     }
 
+    /**
+     * @throws IllegalArgumentException if address is not IPv4 or IPv6
+     */
     private static func checkAddress(address: SocketAddress, name: String): SocketAddress {
         if (!(address is IPSocketAddress)) {
             throw IllegalArgumentException(

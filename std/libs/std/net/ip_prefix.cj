@@ -20,6 +20,9 @@ sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
     public prop prefixLength: UInt8
 
     // Parse the IP address prefix from the character string. If the IP address prefix is invalid, IllegalFormatException is thrown.
+    /**
+     * @throws IllegalFormatException if IP address prefix is invalid
+     */
     public static func parse(s: String): IPPrefix {
         match (tryParse(s)) {
             case Some(prefix) => return prefix
@@ -65,6 +68,9 @@ sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws Exception if unexpected case
+     */
     public open func netmask(): IPAddress {
         match (this) {
             case v4: IPv4Prefix => return v4.netmask()
@@ -72,6 +78,9 @@ sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
             case _ => throw Exception()
         }
     }
+    /**
+     * @throws Exception if unexpected case
+     */
     public open func hostmask(): IPAddress {
         match (this) {
             case v4: IPv4Prefix => return v4.hostmask()
@@ -79,6 +88,9 @@ sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
             case _ => throw Exception()
         }
     }
+    /**
+     * @throws Exception if unexpected case
+     */
     public open func broadcast(): IPAddress {
         match (this) {
             case v4: IPv4Prefix => return v4.broadcast()
@@ -86,6 +98,9 @@ sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
             case _ => throw Exception()
         }
     }
+    /**
+     * @throws Exception if unexpected case
+     */
     public open func network(): IPAddress {
         match (this) {
             case v4: IPv4Prefix => return v4.network()
@@ -93,6 +108,9 @@ sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
             case _ => throw Exception()
         }
     }
+    /**
+     * @throws Exception if unexpected case
+     */
     public open func masked(): IPPrefix {
         match (this) {
             case v4: IPv4Prefix => return v4.masked()
@@ -117,6 +135,9 @@ class IPv4Prefix <: IPPrefix & Equatable<IPv4Prefix> & Hashable & ToString {
     let _ip: IPv4Address
     let _prefixLength: UInt8
 
+    /**
+     * @throws IllegalArgumentException if IPv4 prefix length is invalid
+     */
     init(ip: IPv4Address, prefixLength: UInt8) {
         if (prefixLength > 32) {
             throw IllegalArgumentException("IPv4 prefix length must be >= 0 and <= 32.")
@@ -192,6 +213,9 @@ class IPv6Prefix <: IPPrefix & Equatable<IPv6Prefix> & Hashable & ToString {
     let _ip: IPv6Address
     let _prefixLength: UInt8
 
+    /**
+     * @throws IllegalFormatException if IPv6 prefix length is invalid
+     */
     init(ip: IPv6Address, prefixLength: UInt8) {
         if (prefixLength > 128) {
             throw IllegalFormatException("IPv6 prefix length must be >= 0 and <= 128.")

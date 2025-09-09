@@ -157,6 +157,7 @@ public class TcpServerSocket <: ServerSocket {
      * Configure incoming connections backlog size. This only works before binding socket.
      * Changing this value is not guaranteed to be actually applied since the operating system may decide to
      * change or bump it, or simply ignore.
+     * @throws IllegalArgumentException if backlog size is not positive
      **/
     public mut prop backlogSize: Int64 {
         get() {

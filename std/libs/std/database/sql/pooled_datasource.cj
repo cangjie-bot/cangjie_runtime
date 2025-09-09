@@ -153,7 +153,8 @@ public class PooledDatasource <: Datasource {
     /**
      * Returns an available connection.
      *
-     * @return a datasource connection instance.
+     * @return a datasource connection instance
+     * @throws SqlException if unable to acquire connection within timeout
      *
      * @since 0.40.1
      */
