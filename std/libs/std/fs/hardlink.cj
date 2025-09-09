@@ -14,10 +14,18 @@ package std.fs
 public class HardLink {
     private init() {}
 
+    /**
+     * @throws IllegalArgumentException if link or to is empty or contains null character
+     * @throws FSException if failed to create link
+     */
     public static func create(link: Path, to!: Path): Unit {
         HardLink.create(link._rawPath, to: to._rawPath)
     }
 
+    /**
+     * @throws IllegalArgumentException if link or to is empty or contains null character
+     * @throws FSException if failed to create link
+     */
     public static func create(link: String, to!: String): Unit {
         if (link.isEmpty() || to.isEmpty()) {
             throw IllegalArgumentException("The path 'link' or 'to' cannot be empty!")

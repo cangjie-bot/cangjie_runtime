@@ -97,6 +97,9 @@ class TestOutputReporter {
         fromConfiguration(defaultConfiguration())
     }
 
+    /**
+     * @throws UnittestCliOptionsFormatException if inconsistent options are used
+     */
     private static func reportInconsistentOptions(first: String, second: String): Nothing {
         throw UnittestCliOptionsFormatException(
             "Should not use both ${first} and ${second} options at once."

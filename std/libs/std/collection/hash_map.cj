@@ -653,6 +653,7 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
      * Transfer a lambda expression and delete the corresponding key value if the condition is met.
      *
      * @param predicate transfer a lambda expression for judgment.
+     * @throws ConcurrentModificationException if the predicate modifies the HashMap during iteration.
      *
      * @since 0.18.4
      */

@@ -229,6 +229,12 @@ private class ArrayDequeIterator<T> <: Iterator<T> {
         myIndex = data._head
     }
 
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return Option<T> the next element or None if no more elements
+     * @throws ConcurrentModificationException if the deque is modified during iteration
+     */
     @Frozen
     public func next(): ?T {
         if (myData._version != lockVersion) {

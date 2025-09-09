@@ -49,6 +49,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
      * @param r duration to add.
      * @return a MonoTime based on this MonoTime with the specified @r added.
      */
+    /**
+     * @throws ArithmeticException if the result exceeds the range of MonoTime
+     */
     public operator func +(r: Duration): MonoTime {
         if (r > Duration.Max - d || r < Duration.Zero - d) {
             throw ArithmeticException("The result exceeds the range of 'MonoTime'.")
@@ -61,6 +64,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
      *
      * @param r duration to subtract.
      * @return a MonoTime based on this MonoTime with the specified @r subtracted.
+     */
+    /**
+     * @throws ArithmeticException if the result exceeds the range of MonoTime
      */
     public operator func -(r: Duration): MonoTime {
         if (d - Duration.Max > r || d < r) {

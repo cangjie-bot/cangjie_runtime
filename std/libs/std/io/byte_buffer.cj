@@ -180,6 +180,9 @@ public class ByteBuffer <: IOStream & Seekable {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if length is less than 0
+     */
     public func setLength(length: Int64): Unit {
         if (length < 0) {
             throw IllegalArgumentException("The length must be greater than or equal to 0.")
@@ -269,6 +272,9 @@ public class ByteBuffer <: IOStream & Seekable {
         myData = itemData
     }
 
+    /**
+     * @throws OverflowException if capacity expansion exceeds maximum Int64 value
+     */
     private func checkGrowSize(oldSize: Int64, addition: Int64): Int64 {
         try {
             return oldSize + addition

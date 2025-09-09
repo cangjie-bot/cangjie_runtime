@@ -23,7 +23,8 @@ public class DriverManager {
     init() {}
     /**
      * makes a database driver available by the provided name. This method is thread safe.
-     * SqlException - the driverName already registered.
+     * 
+     * @throws SqlException if the driverName is already registered
      *
      * @since 0.40.1
      */

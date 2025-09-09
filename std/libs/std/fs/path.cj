@@ -13,6 +13,9 @@
  */
 package std.fs
 
+/**
+ * @throws FSException if the path may not exist or permission denied
+ */
 public func canonicalize(path: String): Path {
     Path(path).checkPath()
     if (!exists(path)) {
@@ -21,6 +24,9 @@ public func canonicalize(path: String): Path {
     return Path(processPathHeader(path, Path.canonicalizePath(path)))
 }
 
+/**
+ * @throws FSException if the path may not exist or permission denied
+ */
 public func canonicalize(path: Path): Path {
     path.checkPath()
     let rawPath = path.toString()
@@ -127,6 +133,9 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         return !isAbsolutePath(_rawPath)
     }
 
+    /**
+     * @throws IllegalArgumentException if Path contains special prefix
+     */
     private func checkWindowsSpecialPrefix(path: String) {
         if (!isWindows) {
             return
@@ -328,6 +337,9 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
     /**
      * @throws FSException if cPath is invalid
      */
+    /**
+     * @throws FSException if failed to canonical
+     */
     static func canonicalizePath(pathStr: String): Array<Byte> {
         unsafe {
             var realPathArr = Array<Byte>(PATH_MAX_SIZE, repeat: 0)
@@ -354,6 +366,9 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if rawPath is empty or contains null character
+     */
     func checkPath(): Unit {
         if (_rawPath.isEmpty()) {
             throw IllegalArgumentException("The `rawPath` cannot be an empty string!")

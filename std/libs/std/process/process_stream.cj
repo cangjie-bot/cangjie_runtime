@@ -60,6 +60,9 @@ class PipeOutputStream <: OutputStream & Resource {
         this._fileDescriptor = fileDescriptor
     }
 
+    /**
+     * @throws ProcessException if stream is not opened or write fails
+     */
     public func write(buffer: Array<Byte>): Unit {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw ProcessException("The stream not opened, can not be written.")
@@ -76,6 +79,9 @@ class PipeOutputStream <: OutputStream & Resource {
         return !isHandleValid(_fileDescriptor._fileHandle)
     }
 
+    /**
+     * @throws ProcessException if failed to close stream
+     */
     public func close(): Unit {
         if (isClosed()) {
             return
@@ -122,6 +128,11 @@ class PipeInputStream <: InputStream & Resource {
         this._fileDescriptor = fileDescriptor
     }
 
+    /**
+     * @throws ProcessException if stream is not opened
+     * @throws IllegalArgumentException if buffer is empty
+     * @throws ProcessException if read fails
+     */
     public func read(buffer: Array<Byte>): Int64 {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw ProcessException("The stream not opened, can not to read.")
@@ -142,6 +153,9 @@ class PipeInputStream <: InputStream & Resource {
         return !isHandleValid(_fileDescriptor._fileHandle)
     }
 
+    /**
+     * @throws ProcessException if failed to close stream
+     */
     public func close(): Unit {
         if (isClosed()) {
             return
@@ -187,6 +201,9 @@ class NullProcessStream <: IOStream & Resource {
         }
     }
 
+    /**
+     * @throws ProcessException if output stream is invalid
+     */
     public func write(_: Array<Byte>): Unit {
         throw ProcessException("Invaild outputStream.")
     }
