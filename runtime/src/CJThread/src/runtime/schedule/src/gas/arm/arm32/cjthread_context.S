@@ -87,13 +87,13 @@
 
 /* Rebind the cjthread to the thread */
 .macro CJThreadRebind curCJThread, dstCJThread, thread, g_cjthread
-    push {r9}
+    push {r8, r9}
     mov r9, #0
     str r9, [\curCJThread, #ARM32_CJTHREAD_THREAD_OFFSET]             /* curCJThread->thread = nullptr */
     str \thread, [\dstCJThread, #ARM32_CJTHREAD_THREAD_OFFSET]         /* dstCJThread->thread = thread */
     str \dstCJThread, [\thread, #ARM32_THREAD_CJTHREAD_OFFSET]         /* thread->cjthread = dstCJThread */
     str \dstCJThread, [\g_cjthread]                                    /* g_cjthread = dstCJThread */
-    pop {r9}
+    pop {r8, r9}
 .endm
 
 /* Go to cjthread0 and run the func function.
@@ -102,8 +102,8 @@
  */
 .global CJThreadMcall
 CJThreadMcall:
-    sub sp, sp, #8
-    str r0, [sp, #0]
+    push {r4, r11}
+    mov r4, r0
     ldr r0, [r1]
 
     add r2, r0, #ARM32_CJTHREAD_CONTEXT_OFFSET
@@ -116,9 +116,8 @@ CJThreadMcall:
     add r2, r12, #ARM32_CJTHREAD_CONTEXT_OFFSET
     Context0Reset r2
 
-    ldr r3, [sp, #0]
-    add sp, sp, #8
-
+    mov r3, r4
+    pop {r4, r11}
     bx r3
 
     .type CJThreadMcall,%function
@@ -131,8 +130,8 @@ CJThreadMcall:
  */
 .global CJThreadMcallNosave
 CJThreadMcallNosave:
-    sub sp, sp, #8
-    str r0, [sp, #0]
+    push {r4, r11}
+    mov r4, r0
     ldr r0, [r1]
 
     ldr r3, [r0, #ARM32_CJTHREAD_THREAD_OFFSET]
@@ -142,8 +141,8 @@ CJThreadMcallNosave:
     add r2, r12, #ARM32_CJTHREAD_CONTEXT_OFFSET
     Context0Reset r2
 
-    ldr r3, [sp, #0]
-    add sp, sp, #8
+    mov r3, r4
+    pop {r4, r11}
     bx r3
 
     .type CJThreadMcallNosave,%function
