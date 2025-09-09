@@ -16,11 +16,19 @@
 #include <windows.h>
 #endif
 
-static const char * const NEW_LINE = "\n";
+#ifdef __OHOS__
+#include "hilog/log.h"
+static const char * const OHOS_TAG = "Cangjie-Log";
+static const char * const OHOS_STR_FMT = "%{public}s";
+static const unsigned int OHOS_DOMAIN = 0xD003901;
+#endif
 
 #ifndef INT32_MAX
 #define INT32_MAX 2147483647
 #endif // INT32_MAX
+
+#ifndef __OHOS__
+static const char * const NEW_LINE = "\n";
 
 static int64_t PrintUtf8(FILE* handle, const uint8_t* str, int64_t len, bool newLine)
 {
@@ -31,6 +39,7 @@ static int64_t PrintUtf8(FILE* handle, const uint8_t* str, int64_t len, bool new
     }
     return 0;
 }
+#endif
 
 #ifdef WIN32
 // WIN32
@@ -84,13 +93,28 @@ extern int64_t CJ_CORE_PrintUTF8(const uint8_t* str, int64_t len, bool newLine, 
     } else {
         ret = PrintUtf8(stdout, str, len, newLine);
     }
+#elif __OHOS__
+    uint8_t* s = (uint8_t*)malloc(sizeof(uint8_t) * (len + 1));
+    if (s == NULL) {
+        return 0;
+    }
+    for (int64_t i = 0; i < len; i++) {
+        s[i] = str[i];
+    }
+    s[len] = '\0';
+    if (OH_LOG_IsLoggable(OHOS_DOMAIN, OHOS_TAG, LOG_INFO)) {
+        ret = OH_LOG_Print(LOG_APP, LOG_INFO, OHOS_DOMAIN, OHOS_TAG, OHOS_STR_FMT, s);
+    }
+    free(s);
 #else
     ret = PrintUtf8(stdout, str, len, newLine);
 #endif
 
+#ifndef __OHOS__
     if (flush) {
         (void)fflush(stdout);
     }
+#endif
     return ret;
 }
 
@@ -105,18 +129,34 @@ extern int64_t CJ_CORE_ErrorPrintUTF8(const uint8_t* str, int64_t len, bool newL
     } else {
         ret = PrintUtf8(stderr, str, len, newLine);
     }
+#elif __OHOS__
+    uint8_t* s = (uint8_t*)malloc(sizeof(uint8_t) * (len + 1));
+    if (s == NULL) {
+        return 0;
+    }
+    for (int64_t i = 0; i < len; i++) {
+        s[i] = str[i];
+    }
+    s[len] = '\0';
+    if (OH_LOG_IsLoggable(OHOS_DOMAIN, OHOS_TAG, LOG_ERROR)) {
+        ret = OH_LOG_Print(LOG_APP, LOG_ERROR, OHOS_DOMAIN, OHOS_TAG, OHOS_STR_FMT, s);
+    }
+    free(s);
 #else
     ret = PrintUtf8(stderr, str, len, newLine);
 #endif
 
+#ifndef __OHOS__
     if (flush) {
         (void)fflush(stderr);
     }
+#endif
     return ret;
 }
 
 extern void CJ_CORE_PrintBool(bool b, bool newLine, bool flush)
 {
+#ifndef __OHOS__
     if (b) {
         (void)fwrite("true", 1, 4, stdout); // the number of bytes of true is 4.
     } else {
@@ -128,11 +168,21 @@ extern void CJ_CORE_PrintBool(bool b, bool newLine, bool flush)
     if (flush) {
         (void)fflush(stdout);
     }
+#else
+    if (OH_LOG_IsLoggable(OHOS_DOMAIN, OHOS_TAG, LOG_INFO)) {
+        if (b) {
+            OH_LOG_Print(LOG_APP, LOG_INFO, OHOS_DOMAIN, OHOS_TAG, OHOS_STR_FMT, "true");
+        } else {
+            OH_LOG_Print(LOG_APP, LOG_INFO, OHOS_DOMAIN, OHOS_TAG, OHOS_STR_FMT, "false");
+        }
+    }
+#endif
 }
 
 extern void CJ_CORE_PrintChar(uint32_t c, bool newLine, bool flush)
 {
     uint8_t out[16] = {0};
+#ifndef __OHOS__
     /*
      * CJ_CORE_FromCharToUtf8 can't return -1. because The value
      * of Cangjie Rune is a Unicode scalar value.
@@ -143,10 +193,17 @@ extern void CJ_CORE_PrintChar(uint32_t c, bool newLine, bool flush)
     if (flush) {
         (void)fflush(stdout);
     }
+#else
+    CJ_CORE_FromCharToUtf8(c, out);
+    if (OH_LOG_IsLoggable(OHOS_DOMAIN, OHOS_TAG, LOG_INFO)) {
+        OH_LOG_Print(LOG_APP, LOG_INFO, OHOS_DOMAIN, OHOS_TAG, OHOS_STR_FMT, out);
+    }
+#endif
 }
 
 extern void CJ_CORE_PrintSigned(int64_t i, bool newLine, bool flush)
 {
+#ifndef __OHOS__
     (void)printf("%" PRId64, i);
     if (newLine) {
         (void)fwrite(NEW_LINE, 1, 1, stdout);
@@ -154,10 +211,16 @@ extern void CJ_CORE_PrintSigned(int64_t i, bool newLine, bool flush)
     if (flush) {
         (void)fflush(stdout);
     }
+#else
+    if (OH_LOG_IsLoggable(OHOS_DOMAIN, OHOS_TAG, LOG_INFO)) {
+        OH_LOG_Print(LOG_APP, LOG_INFO, OHOS_DOMAIN, OHOS_TAG, "%{public}" PRId64, i);
+    }
+#endif
 }
 
 extern void CJ_CORE_PrintUnsigned(uint64_t u, bool newLine, bool flush)
 {
+#ifndef __OHOS__
     (void)printf("%" PRIu64, u);
     if (newLine) {
         (void)fwrite(NEW_LINE, 1, 1, stdout);
@@ -165,10 +228,16 @@ extern void CJ_CORE_PrintUnsigned(uint64_t u, bool newLine, bool flush)
     if (flush) {
         (void)fflush(stdout);
     }
+#else
+    if (OH_LOG_IsLoggable(OHOS_DOMAIN, OHOS_TAG, LOG_INFO)) {
+        OH_LOG_Print(LOG_APP, LOG_INFO, OHOS_DOMAIN, OHOS_TAG, "%{public}" PRIu64, u);
+    }
+#endif
 }
 
 extern void CJ_CORE_PrintFloat(double f, bool newLine, bool flush)
 {
+#ifndef __OHOS__
     if (isnan(f)) {
         // Nan doesn't have a sign in cangjie. So, we should always print nan.
         (void)printf("nan");
@@ -181,6 +250,16 @@ extern void CJ_CORE_PrintFloat(double f, bool newLine, bool flush)
     if (flush) {
         (void)fflush(stdout);
     }
+#else
+    if (OH_LOG_IsLoggable(OHOS_DOMAIN, OHOS_TAG, LOG_INFO)) {
+        if (isnan(f)) {
+            // Nan doesn't have a sign in cangjie. So, we should always print nan.
+            OH_LOG_Print(LOG_APP, LOG_INFO, OHOS_DOMAIN, OHOS_TAG, OHOS_STR_FMT, "nan");
+        } else {
+            OH_LOG_Print(LOG_APP, LOG_INFO, OHOS_DOMAIN, OHOS_TAG, "%{public}f", f);
+        }
+    }
+#endif
 }
 
 extern void CJ_CORE_PrintOomHint(void)

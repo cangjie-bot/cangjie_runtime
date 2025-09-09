@@ -19,6 +19,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/${output_triple_name}
 set(output_cj_object_dir ${CMAKE_BINARY_DIR}/modules/${output_cj_object_dir})
 # file(MAKE_DIRECTORY ${output_cj_object_dir}/std)
 
+if(OHOS)
+    set(ohos_flag -L $ENV{OHOS_ROOT}/prebuilts/ohos-sdk/linux/11/native/sysroot/usr/lib/${TRIPLE} -llibhilog_ndk.z.so)
+else()
+    set(ohos_flag)
+endif()
+
 make_cangjie_lib(
     std-core IS_SHARED
     DEPENDS cangjie${BACKEND_TYPE}Core cangjie-std-coreFFI
@@ -26,7 +32,7 @@ make_cangjie_lib(
     FORCE_LINK_ARCHIVES
         cangjie-std-coreFFI
     FLAGS
-        ${MAKE_SO_STACK_PROTECTOR_OPTION})
+        ${MAKE_SO_STACK_PROTECTOR_OPTION} ${ohos_flag})
 
 add_library(cangjie-std-core STATIC ${CORE_FFI_OBJECTS_LIST} ${output_cj_object_dir}/std/core.o)
 add_dependencies(cangjie-std-core modify_typetemplate_object)

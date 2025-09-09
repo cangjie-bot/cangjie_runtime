@@ -43,6 +43,9 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64" AND (NOT NDEBUG))
     target_compile_options(${libmath}-objs PRIVATE -O1)
     target_compile_options(${libprint}-objs PRIVATE -O1)
     target_compile_options(${libstring}-objs PRIVATE -O1)
+    if(OHOS)
+        include_directories($ENV{OHOS_ROOT}/prebuilts/ohos-sdk/linux/11/native/sysroot/usr/include)
+    endif()
 endif()
 
 set(CANGJIE_CORE_OTHER_FFI_SRC
