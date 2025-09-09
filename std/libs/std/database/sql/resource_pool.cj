@@ -89,6 +89,9 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         }
     }
 
+    /**
+     * @throws SqlException if acquired entries exceed maxSize
+     */
     func getIdleEntry(timeout: Duration): Entry<T> {
         var item = idleEntry.remove(timeout)
 
@@ -98,6 +101,9 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         }
     }
 
+    /**
+     * @throws SqlException if constructor entry failed
+     */
     public func acquire(timeout: Duration): Option<Entry<T>> {
         mux.lock()
         if (idleEntry.size == 0 && entryCount < options.maxSize) {
@@ -115,6 +121,9 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         return getIdleEntry(timeout)
     }
 
+    /**
+     * @throws SqlException if the entry is owned by another pool or not owned by any pool
+     */
     public func release(entry: Entry<T>): Option<Unit> {
         match (entry.pool as ResourcePool<T>) {
             case Some(p) =>
@@ -132,6 +141,9 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         return
     }
 
+    /**
+     * @throws SqlException if the entry is owned by another pool or not owned by any pool
+     */
     public func discard(entry: Entry<T>): Option<Unit> {
         match (entry.pool as ResourcePool<T>) {
             case Some(p) =>

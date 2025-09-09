@@ -33,6 +33,9 @@ public class IPv4Address <: IPAddress & ToString & Equatable<IPv4Address> & Less
     }
 
     // into in_addr
+    /**
+     * @throws IllegalArgumentException if buffer size is too small
+     */
     public func writeBigEndian(buffer: Array<Byte>): Int64 {
         if (buffer.size < 4) {
             throw IllegalArgumentException("Buffer size(${buffer.size}) is too small.")
@@ -42,6 +45,9 @@ public class IPv4Address <: IPAddress & ToString & Equatable<IPv4Address> & Less
         }
         return 4
     }
+    /**
+     * @throws IllegalArgumentException if buffer size is too small
+     */
     public static func readBigEndian(buffer: Array<Byte>): IPv4Address {
         if (buffer.size < 4) {
             throw IllegalArgumentException("Buffer size(${buffer.size}) is too small.")

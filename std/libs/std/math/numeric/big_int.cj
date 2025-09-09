@@ -97,7 +97,7 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
      * @param certainty: a measure of a probability that the result is not a prime;
      * @param rand: source of randomness to construct the BigInt.
      *
-     * @throw IllegalArgumentException, if @p bitLen <= 1.
+     * @throws IllegalArgumentException if bitLen <= 1
      */
     public static func randomProbablePrime(bitLen: Int64, certainty: UInt64, rand!: Random = Random()): BigInt {
         if (bitLen <= 1) {
@@ -117,7 +117,7 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
      *
      * @param bytes: a binary number to construct the BigInt.
      *
-     * @throw IllegalArgumentException if the size of @p bytes is zero.
+     * @throws IllegalArgumentException if the size of bytes is zero
      */
     public init(bytes: Array<Byte>) {
         if (bytes.size == 0) {
@@ -150,7 +150,7 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
      * @param sign: signum of the number, false for negitive and true for non-negtive;
      * @param magnitude: big-endian binary representation of the magnitude of the number
      *
-     * @throw IllegalArgumentException if the value of @p magnitude is 0 and @p sign = false.
+     * @throws IllegalArgumentException if the value of magnitude is 0 and sign = false
      */
     public init(sign: Bool, magnitude: Array<Byte>) {
         this.negSign = !sign

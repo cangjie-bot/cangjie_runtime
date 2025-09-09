@@ -15,7 +15,7 @@ public class SyncCounter {
 
     /**
      * Construct a counter with an initial value.
-     * @throw IllegalArgumentException, if `count` is negative.
+     * @throws IllegalArgumentException if count is negative
      */
     public init(count: Int64) {
         if (count < 0) {

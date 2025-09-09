@@ -23,6 +23,9 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
         bits.writeBigEndian(_octets)
         _scopeId = scopeId
     }
+    /**
+     * @throws IllegalArgumentException if octets size is less than 16
+     */
     public init(octets: Array<Byte>, scopeId!: ?UInt32 = None) {
         if (octets.size < 16) {
             throw IllegalArgumentException("Octets size[${octets.size}] must be at least 16.")
@@ -96,6 +99,9 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
         }
         return IPv6Address(_octets, scopeId: scopeId)
     }
+    /**
+     * @throws IllegalArgumentException if buffer size is too small
+     */
     public func writeBigEndian(buffer: Array<Byte>): Int64 {
         if (buffer.size < 16) {
             throw IllegalArgumentException("Buffer size(${buffer.size}) is too small.")
@@ -105,6 +111,9 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
         }
         return 16
     }
+    /**
+     * @throws IllegalArgumentException if buffer size is too small
+     */
     public static func readBigEndian(buffer: Array<Byte>): IPv6Address {
         if (buffer.size < 16) {
             throw IllegalArgumentException("Buffer size(${buffer.size}) is too small.")

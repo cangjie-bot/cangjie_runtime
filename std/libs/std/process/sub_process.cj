@@ -102,6 +102,7 @@ public class SubProcess <: Process {
      * If you need to deal with big size within output or error stream, please use stdOut or stdErr prop and wait func.
      *
      * @return (exitCode: Int64, out: Array<Byte>, err: Array<Byte>)
+     * @throws ProcessException if OutputStream or ErrorStream is invalid
      */
     public func waitOutput(): (Int64, Array<Byte>, Array<Byte>) {
         let outStreamFuture: Future<Array<Byte>> = spawn {
@@ -200,6 +201,9 @@ func getWaitExitCode(timeout: Duration, pid: Int32, handle: IntNative): Int64 {
     }
 }
 
+/**
+ * @throws ProcessException if waiting for subprocess fails
+ */
 @When[os == "Windows"]
 func parseExitInfoPointer(waitExitInfo_cp: CPointer<ExitInfo>, pid: Int32): Int64 {
     if (waitExitInfo_cp.isNull()) {

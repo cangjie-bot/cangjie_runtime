@@ -99,7 +99,7 @@ public class Timer <: Equatable<Timer> & Hashable {
      * @param task Associated task that are scheduled to run by the timer.
      * @param style The catchup style, default is Burst.
      *
-     * @throw IllegalArgumentException if @p interval is less than or equal to `Duration.Zero`.
+     * @throws IllegalArgumentException if interval is less than or equal to Duration.Zero
      */
     public static func repeat(delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst): Timer {
         if (interval <= Duration.Zero) {
@@ -128,8 +128,7 @@ public class Timer <: Equatable<Timer> & Hashable {
      * @param task Associated task that are scheduled to run by the timer.
      * @param style The catchup style, default is Burst.
      *
-     * @throw IllegalArgumentException when the @p period is less than or equal to `Duration.Zero`,
-     *                                 or @p interval is less than or equal to `Duration.Zero`.
+     * @throws IllegalArgumentException when the period is less than or equal to Duration.Zero, or interval is less than or equal to Duration.Zero
      */
     public static func repeatDuring(period: Duration, delay: Duration, interval: Duration, task: () -> Unit,
         style!: CatchupStyle = Burst): Timer {
@@ -163,8 +162,7 @@ public class Timer <: Equatable<Timer> & Hashable {
      * @param task Associated task that are scheduled to run by the timer.
      * @param style The catchup style, default is Burst.
      *
-     * @throw IllegalArgumentException when @p count is less than or equal to 0,
-     *                                 or @p interval is less than or equal to `Duration.Zero`.
+     * @throws IllegalArgumentException when count is less than or equal to 0, or interval is less than or equal to Duration.Zero
      */
     public static func repeatTimes(count: Int64, delay: Duration, interval: Duration, task: () -> Unit,
         style!: CatchupStyle = Burst): Timer {

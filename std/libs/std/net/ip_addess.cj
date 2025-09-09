@@ -25,6 +25,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
+    /**
+     * @throws UnsupportedException if operation is not supported
+     */
     public prop hostName: ?String {
         get() {
             throw UnsupportedException("Current not supported.")
@@ -32,6 +35,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
     }
 
     // parse a address string into IPAddress
+    /**
+     * @throws IllegalFormatException if missing IPv6 address or unable to parse IP
+     */
     public static func parse(s: String): IPAddress {
         for (b in s) {
             match (b) {
@@ -94,6 +100,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
     }
 
     // is ipv4 addr
+    /**
+     * @throws Exception if unexpected case
+     */
     public func isIPv4(): Bool {
         match (this) {
             case v4: IPv4Address => true
@@ -102,6 +111,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
     // is ipv6 addr
+    /**
+     * @throws Exception if unexpected case
+     */
     public func isIPv6(): Bool {
         match (this) {
             case v4: IPv4Address => false
@@ -142,6 +154,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
     public open func isGlobalUnicast(): Bool
 
     // Obtains the IP prefix object based on the prefix length.
+    /**
+     * @throws Exception if unexpected case
+     */
     public open func getPrefix(prefixLen: UInt8): IPPrefix {
         match (this) {
             case v4: IPv4Address => v4.getPrefix(prefixLen)
@@ -150,6 +165,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
+    /**
+     * @throws Exception if unexpected case
+     */
     public open func writeBigEndian(buffer: Array<Byte>): Int64 {
         match (this) {
             case v4: IPv4Address => v4.writeBigEndian(buffer)
@@ -158,6 +176,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if buffer size is not 4 or 16
+     */
     public static func readBigEndian(buffer: Array<Byte>): IPAddress {
         if (buffer.size == 4) {
             return IPv4Address(buffer[0], buffer[1], buffer[2], buffer[3])
@@ -179,6 +200,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         return !(this == rhs)
     }
 
+    /**
+     * @throws Exception if unexpected case
+     */
     public func hashCode(): Int64 {
         var df = DefaultHasher()
         match (this) {

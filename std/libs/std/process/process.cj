@@ -76,12 +76,18 @@ public open class Process {
         }
     }
 
+    /**
+     * @throws ProcessException if cannot get process name
+     */
     public prop name: String {
         get() {
             this._name ?? throw ProcessException("Can not get process name.")
         }
     }
 
+    /**
+     * @throws ProcessException if cannot get process command
+     */
     public prop command: String {
         get() {
             this._command ?? throw ProcessException("Can not get process command.")
@@ -116,6 +122,9 @@ public open class Process {
         }
     }
 
+    /**
+     * @throws ProcessException if cannot get process arguments
+     */
     @Deprecated
     public open prop arguments: Array<String> {
         get() {
@@ -123,6 +132,9 @@ public open class Process {
         }
     }
 
+    /**
+     * @throws ProcessException if cannot get process command line
+     */
     @Deprecated[message: "Use global function `public func getCommandLine(): Array<String>` in std.env instead."]
     public prop commandLine: Array<String> {
         get() {
@@ -130,6 +142,9 @@ public open class Process {
         }
     }
 
+    /**
+     * @throws ProcessException if cannot get process working directory
+     */
     @Deprecated[message: "Use global function `public func getHomeDirectory(): Path` in std.env instead."]
     public prop workingDirectory: Path {
         get() {
@@ -137,6 +152,9 @@ public open class Process {
         }
     }
 
+    /**
+     * @throws ProcessException if cannot get process environment
+     */
     @Deprecated[message: "Use global function `public func getVariables(): Array<(String, String)>` in std.env instead."]
     public prop environment: Map<String, String> {
         get() {
@@ -148,6 +166,7 @@ public open class Process {
      * return a process instance for an existing process which pid is giving by user.
      * The process instance can used to find processInfo and terminate the process.
      * We can not get stdio for any pid process, so that do not provide the stream attribute to operate stdio.
+     * @throws IllegalArgumentException if pid is invalid
      */
     @Deprecated[message: "Use global function `public func findProcess(pid: Int64): Process` instead."]
     public static func of(pid: Int64): Process {
@@ -170,6 +189,7 @@ public open class Process {
      * @param stdErr - stdErr redirect mode.
      *
      * @return SubProcess - a new subProcess instance.
+     * @throws IllegalArgumentException if command, arguments, or working directory are invalid
      */
     @Deprecated[message: "Use global function `public func launch(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit, stdErr!: ProcessRedirect = Inherit): SubProcess` instead."]
     public static func start(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
@@ -231,6 +251,7 @@ public open class Process {
     /**
      * func run is combine the start and wait.
      * provide a convenient way for user, which want start a subprocess and wait the command exec return code.
+     * @throws IllegalArgumentException if command, arguments, or working directory are invalid
      */
     @Deprecated[message: "Use global function `public func execute(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit, stdErr!: ProcessRedirect = Inherit, timeout!: ?Duration = None): Int64` instead."]
     public static func run(command: String, arguments: Array<String>, 
@@ -249,6 +270,7 @@ public open class Process {
     /**
      * func runOutput is combine the start and waitOutput.
      * provide a convenient way for user, which want start a subprocess and wait the command exec output and err result.
+     * @throws IllegalArgumentException if command, arguments, or working directory are invalid
      */
     @Deprecated[message: "Use global function `public func executeWithOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Pipe, stdErr!: ProcessRedirect = Pipe): (Int64, Array<Byte>, Array<Byte>)` instead."]
     public static func runOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
@@ -263,6 +285,7 @@ public open class Process {
      * buildCurrentProcess
      *
      * @return CurrentProcess
+     * @throws ProcessException if failed to initialize current process
      */
     static func buildCurrentProcess(): CurrentProcess {
         let current_pid: Int32 = unsafe { CJ_OS_GetCurrentPid() }
@@ -289,6 +312,7 @@ public open class Process {
      * @param pid - process instance id
      *
      * @return Process
+     * @throws ProcessException if process is not alive
      */
     static func buildProcess(pid: Int32): Process {
         let processInfo_cp: CPointer<ProcessInfo> = unsafe { CJ_OS_GetProcessInfoByPid(pid) }
@@ -334,6 +358,7 @@ public open class Process {
      *                false terminated normally
      *
      * @throws ProcessException - if the pid invaild
+     * @throws IllegalArgumentException if pid is invalid
      * @return Unit
      */
     public func terminate(force!: Bool = false): Unit {
@@ -498,6 +523,9 @@ func searchExecutableInWindowsDirectory(command: String): ?Path {
  *
  * NOTE: For safe reason, we don't search current directory and 16-bit windows system directory.
  */
+/**
+ * @throws ProcessException if command is empty
+ */
 @When[os == "Windows"]
 func resolveExecutable(command: String, environment: ?Map<String, String>, workingDir: CString): ?Path {
     if (command.size == 0) {
@@ -552,6 +580,9 @@ func resolveExecutable(command: String, environment: ?Map<String, String>, worki
     return None
 }
 
+/**
+ * @throws ProcessException if command line is too long
+ */
 @When[os == "Windows"]
 func checkCommandLineLength(command: String, arguments: Array<String>) {
     // MAX_PATH check: refer from chapter: maximum-file-path-limitation
@@ -569,6 +600,9 @@ func checkCommandLineLength(command: String, arguments: Array<String>) {
     }
 }
 
+/**
+ * @throws ProcessException if failed to create process
+ */
 @When[os == "Windows"]
 func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CString, environment: ?Map<String, String>,
     std_redirects: Array<ProcessRedirect>): SubProcess {
@@ -772,6 +806,10 @@ func initStdStream(processRtnData: ProcessRtnData): (OutputStream, InputStream, 
     return (stdInStream, stdOutStream, stdErrStream)
 }
 
+/**
+ * @throws ProcessException if failed to create process
+ * @throws IllegalMemoryException if memory allocation fails
+ */
 @When[os != "Windows"]
 func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CString, environment: ?Map<String, String>,
     std_redirects: Array<ProcessRedirect>): SubProcess {
@@ -883,6 +921,7 @@ func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CS
  * @param stdio    - stdio type, include stdin, stdout and stderr
  *
  * @return IntNative
+ * @throws ProcessException if failed to open null file or redirect file is invalid
  */
 func matchRedirectFileHandle(redirect: ProcessRedirect, stdio: StdIO): IntNative {
     return match (redirect) {
@@ -906,6 +945,9 @@ func matchRedirectFileHandle(redirect: ProcessRedirect, stdio: StdIO): IntNative
     }
 }
 
+/**
+ * @throws IllegalArgumentException if pid is invalid
+ */
 public func findProcess(pid: Int64): Process {
     if (pid > Int64(Int32.Max) || pid < 0) {
         throw IllegalArgumentException("Invaild pid: \"${pid}\", can not get process.")
@@ -925,6 +967,7 @@ public func findProcess(pid: Int64): Process {
  * @param stdErr - stdErr redirect mode.
  *
  * @return SubProcess - a new subProcess instance.
+ * @throws IllegalArgumentException if command, arguments, working directory are invalid
  */
 public func launch(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit,
@@ -985,6 +1028,7 @@ public func launch(command: String, arguments: Array<String>, workingDirectory!:
 /**
  * func execute is combine the launch and wait.
  * provide a convenient way for user, which want start a subprocess and wait the command exec return code.
+ * @throws IllegalArgumentException if command, arguments, working directory are invalid
  */
 public func execute(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit,
@@ -997,6 +1041,7 @@ public func execute(command: String, arguments: Array<String>, workingDirectory!
 /**
  * func executeWithOutput is combine the start and waitOutput.
  * provide a convenient way for user, which want start a subprocess and wait the command exec output and err result.
+ * @throws IllegalArgumentException if command, arguments, working directory are invalid
  */
 public func executeWithOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Pipe,

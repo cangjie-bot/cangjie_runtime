@@ -43,6 +43,9 @@ class ProxyConnection <: Connection {
         poolEntry.release()
     }
 
+    /**
+     * @throws SqlException if connection is closed
+     */
     public func prepareStatement(sql: String): Statement {
         if (isClosed()) {
             throw SqlException("Connection closed")
@@ -50,6 +53,9 @@ class ProxyConnection <: Connection {
         return delegate.prepareStatement(sql)
     }
 
+    /**
+     * @throws SqlException if connection is closed
+     */
     public func createTransaction(): Transaction {
         if (isClosed()) {
             throw SqlException("Connection closed")

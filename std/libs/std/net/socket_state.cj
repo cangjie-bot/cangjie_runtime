@@ -78,6 +78,9 @@ struct SocketState {
         }
     }
 
+    /**
+     * @throws OverflowException if socket usage counter overflow
+     */
     private static func incrementFailed(): Nothing {
         throw OverflowException("Socket usage couter overflow")
     }

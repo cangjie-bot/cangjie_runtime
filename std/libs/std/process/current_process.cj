@@ -103,6 +103,9 @@ public class CurrentProcess <: Process {
         transOp(transOp(transOp(opt1, opt2), opt3), opt4)
     }
 
+    /**
+     * @throws IllegalArgumentException if key contains null character
+     */
     public func getEnv(key: String): Option<String> {
         if (key.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")
@@ -120,6 +123,9 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if k or v contains null character
+     */
     public func setEnv(k: String, v: String): Unit {
         if (k.contains(NULL_BYTE) || v.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")
@@ -134,6 +140,9 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if k contains null character
+     */
     public func removeEnv(k: String): Unit {
         if (k.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")

@@ -25,6 +25,10 @@ private func checkCopy(sourcePath: Path, to: Path): Unit {
     }
 }
 
+/**
+ * @throws IllegalArgumentException if sourcePath or to is empty or contains null character
+ * @throws FSException if paths are the same, destination exists without overwrite, or file type conflicts
+ */
 public func copy(sourcePath: Path, to!: Path, overwrite!: Bool = false): Unit {
     checkCopy(sourcePath, to)
 
@@ -70,10 +74,18 @@ public func copy(sourcePath: Path, to!: Path, overwrite!: Bool = false): Unit {
     throw FSException("Unsupported file type.")
 }
 
+/**
+ * @throws IllegalArgumentException if sourcePath or to is empty or contains null character
+ * @throws FSException if paths are the same, destination exists without overwrite, or file type conflicts
+ */
 public func copy(sourcePath: String, to!: String, overwrite!: Bool = false): Unit {
     copy(Path(sourcePath), to: Path(to), overwrite: overwrite)
 }
 
+/**
+ * @throws IllegalArgumentException if path is empty or contains null character
+ * @throws FSException if failed to remove file or directory
+ */
 public func remove(path: Path, recursive!: Bool = false): Unit {
     remove(path._rawPath, recursive: recursive)
 }
@@ -87,6 +99,10 @@ private func checkRemove(path: String): Unit {
     }
 }
 
+/**
+ * @throws IllegalArgumentException if path is empty or contains null character
+ * @throws FSException if failed to remove file or directory
+ */
 public func remove(path: String, recursive!: Bool = false): Unit {
     checkRemove(path)
     unsafe {
@@ -110,10 +126,16 @@ public func remove(path: String, recursive!: Bool = false): Unit {
     }
 }
 
+/**
+ * @throws IllegalArgumentException if path is empty or contains null character
+ */
 public func exists(path: Path): Bool {
     exists(path._rawPath)
 }
 
+/**
+ * @throws IllegalArgumentException if path is empty or contains null character
+ */
 public func exists(path: String): Bool {
     if (path.isEmpty()) {
         throw IllegalArgumentException("The path cannot be empty!")
@@ -129,6 +151,10 @@ public func exists(path: String): Bool {
     }
 }
 
+/**
+ * @throws IllegalArgumentException if sourcePath or to is empty or contains null character
+ * @throws FSException if paths are the same, destination exists without overwrite, or rename operation fails
+ */
 public func rename(sourcePath: String, to!: String, overwrite!: Bool = false): Unit {
     if (sourcePath.isEmpty() || to.isEmpty()) {
         throw IllegalArgumentException("The path cannot be empty!")
@@ -165,10 +191,18 @@ public func rename(sourcePath: String, to!: String, overwrite!: Bool = false): U
     }
 }
 
+/**
+ * @throws IllegalArgumentException if sourcePath or to is empty or contains null character
+ * @throws FSException if paths are the same, destination exists without overwrite, or rename operation fails
+ */
 public func rename(sourcePath: Path, to!: Path, overwrite!: Bool = false): Unit {
     rename(sourcePath._rawPath, to: to._rawPath, overwrite: overwrite)
 }
 
+/**
+ * @throws IllegalArgumentException if path is empty or contains null character
+ * @throws FSException if failed to remove file or directory
+ */
 public func removeIfExists(path: Path, recursive!: Bool = false): Bool {
     if (exists(path)) {
         remove(path, recursive: recursive)
@@ -177,6 +211,10 @@ public func removeIfExists(path: Path, recursive!: Bool = false): Bool {
     return false
 }
 
+/**
+ * @throws IllegalArgumentException if path is empty or contains null character
+ * @throws FSException if failed to remove file or directory
+ */
 public func removeIfExists(path: String, recursive!: Bool = false): Bool {
     removeIfExists(Path(path), recursive: recursive)
 }
