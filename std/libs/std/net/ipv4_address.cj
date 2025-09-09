@@ -32,8 +32,8 @@ public class IPv4Address <: IPAddress & ToString & Equatable<IPv4Address> & Less
         return UInt32.readBigEndian(_octets)
     }
 
-    // into in_addr
     /**
+     * into in_addr
      * @throws IllegalArgumentException if buffer size is too small
      */
     public func writeBigEndian(buffer: Array<Byte>): Int64 {

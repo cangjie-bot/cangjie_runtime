@@ -597,9 +597,6 @@ class ArgParser {
         spec.optionAction?(val)
     }
 
-    /**
-     * @throws ArgumentParseException if missing required option value or unexpected value for NoValue option
-     */
     func parseLongOption(arg: String, next: ?String): Bool {
         let splited: Array<String> = arg.split("=", 2) // if `=` not exist in arg, [arg] will get, else [option, value] get.
 

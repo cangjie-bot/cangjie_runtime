@@ -34,8 +34,8 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
-    // parse a address string into IPAddress
     /**
+     * parse a address string into IPAddress
      * @throws IllegalFormatException if missing IPv6 address or unable to parse IP
      */
     public static func parse(s: String): IPAddress {
@@ -99,8 +99,8 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
-    // is ipv4 addr
     /**
+     * is ipv4 addr
      * @throws Exception if unexpected case
      */
     public func isIPv4(): Bool {
@@ -110,8 +110,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => throw Exception()
         }
     }
-    // is ipv6 addr
+
     /**
+     * is ipv6 addr
      * @throws Exception if unexpected case
      */
     public func isIPv6(): Bool {
@@ -153,8 +154,8 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
     // Whether the address is a global unicast IPv6 address or a public IPv4 address
     public open func isGlobalUnicast(): Bool
 
-    // Obtains the IP prefix object based on the prefix length.
     /**
+     * Obtains the IP prefix object based on the prefix length.
      * @throws Exception if unexpected case
      */
     public open func getPrefix(prefixLen: UInt8): IPPrefix {

@@ -32,6 +32,7 @@ public class UnixSocketAddress <: SocketAddress & Equatable<UnixSocketAddress> {
     public init(path: Array<Byte>) {
         this(unsafe { String.fromUtf8Unchecked(path[..findLastNoneZeroIdx(path)]) })
     }
+    
     /**
      * @throws IllegalArgumentException if path size is too long or contains interior null bytes
      */

@@ -301,6 +301,7 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
                 return loadTimeZone(id, tzpath)
             }
         }
+        throw InvalidDataException("No valid timezone file is found.")
     }
 
     /**
