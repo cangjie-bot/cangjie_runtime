@@ -48,9 +48,6 @@ public class Directory {
      * @throws FSException while path is not exist or failed to create temporary directory
      * @throws IllegalArgumentException while path is empty or path contains null character
      */
-    /**
-     * @throws FSException if failed to create the temporary directory
-     */
     public static func createTemp(directoryPath: String): Path {
         createTemp(Path(directoryPath))
     }
@@ -58,9 +55,6 @@ public class Directory {
     /*
      * @throws FSException while path is not exist or failed to create temporary directory.
      * @throws IllegalArgumentException while path is empty or path contains null character
-     */
-    /**
-     * @throws FSException if failed to create the temporary directory
      */
     public static func createTemp(directoryPath: Path): Path {
         var directoryPathArr = unsafe { canonicalize(directoryPath).toString().rawData() }
@@ -203,9 +197,6 @@ public class Directory {
         return 0
     }
 
-    /**
-     * @throws FSException if file name is empty or copy operation fails
-     */
     private static func walkAndCopy(srcQueue: ArrayList<String>, destQueue: ArrayList<String>, index: Int64,
         fail: Box<Bool>): Unit {
         let (curSrcDir, curDestDir) = (srcQueue[index], destQueue[index])
@@ -349,9 +340,6 @@ public class Directory {
     }
 }
 
-/**
- * @throws FSException if path is not a directory
- */
 func checkDirectoryPath(path: Path): Path {
     let info = FileInfo(path)
     if (!info.isDirectory()) {

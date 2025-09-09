@@ -10,9 +10,6 @@ package std.net
 
 import std.binary.*
 
-/**
- * @throws IllegalArgumentException if path size is too long (> 108)
- */
 func findLastNoneZeroIdx(path: Array<Byte>): Int64 {
     let len = path.size
     if (len > 108) {

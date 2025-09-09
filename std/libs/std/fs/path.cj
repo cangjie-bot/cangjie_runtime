@@ -337,9 +337,6 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
     /**
      * @throws FSException if cPath is invalid
      */
-    /**
-     * @throws FSException if failed to canonical
-     */
     static func canonicalizePath(pathStr: String): Array<Byte> {
         unsafe {
             var realPathArr = Array<Byte>(PATH_MAX_SIZE, repeat: 0)
@@ -366,9 +363,6 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         }
     }
 
-    /**
-     * @throws IllegalArgumentException if rawPath is empty or contains null character
-     */
     func checkPath(): Unit {
         if (_rawPath.isEmpty()) {
             throw IllegalArgumentException("The `rawPath` cannot be an empty string!")

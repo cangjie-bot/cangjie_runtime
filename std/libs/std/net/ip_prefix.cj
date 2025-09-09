@@ -19,8 +19,8 @@ sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
     // prefix length
     public prop prefixLength: UInt8
 
-    // Parse the IP address prefix from the character string. If the IP address prefix is invalid, IllegalFormatException is thrown.
     /**
+     * Parse the IP address prefix from the character string.
      * @throws IllegalFormatException if IP address prefix is invalid
      */
     public static func parse(s: String): IPPrefix {
@@ -135,9 +135,6 @@ class IPv4Prefix <: IPPrefix & Equatable<IPv4Prefix> & Hashable & ToString {
     let _ip: IPv4Address
     let _prefixLength: UInt8
 
-    /**
-     * @throws IllegalArgumentException if IPv4 prefix length is invalid
-     */
     init(ip: IPv4Address, prefixLength: UInt8) {
         if (prefixLength > 32) {
             throw IllegalArgumentException("IPv4 prefix length must be >= 0 and <= 32.")
@@ -213,9 +210,6 @@ class IPv6Prefix <: IPPrefix & Equatable<IPv6Prefix> & Hashable & ToString {
     let _ip: IPv6Address
     let _prefixLength: UInt8
 
-    /**
-     * @throws IllegalFormatException if IPv6 prefix length is invalid
-     */
     init(ip: IPv6Address, prefixLength: UInt8) {
         if (prefixLength > 128) {
             throw IllegalFormatException("IPv6 prefix length must be >= 0 and <= 128.")

@@ -272,9 +272,6 @@ public class ByteBuffer <: IOStream & Seekable {
         myData = itemData
     }
 
-    /**
-     * @throws OverflowException if capacity expansion exceeds maximum Int64 value
-     */
     private func checkGrowSize(oldSize: Int64, addition: Int64): Int64 {
         try {
             return oldSize + addition

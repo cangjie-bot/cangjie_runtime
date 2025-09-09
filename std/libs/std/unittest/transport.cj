@@ -43,9 +43,7 @@ private class ExecutionResultPartIterator <: Iterator<ExecutionResultPart> {
         }
 
         if (pointer == 0) { return None }
-        /**
-         * @throws Exception if premature end of stream
-         */
+
         if (pointer != size) { throw Exception("Premature end of the stream") }
         return buffer
     }
@@ -231,9 +229,6 @@ struct WorkerOutput {
         }
     }
 
-    /**
-     * @throws IllegalStateException if stdout and stderr sizes don't match
-     */
     prop captured: Array<CapturedOutput> {
         get() {
             let outs = stdouts

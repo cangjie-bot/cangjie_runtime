@@ -91,9 +91,6 @@ public func cbrt(x: Float16): Float16 {
  *
  * @since 0.17.4
  */
-/**
- * @throws IllegalArgumentException if x or base is not positive, or base is 1.0
- */
 public func logBase(x: Float32, base: Float32): Float32 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -121,9 +118,6 @@ public func logBase(x: Float32, base: Float32): Float32 {
  *
  * @since 0.17.4
  */
-/**
- * @throws IllegalArgumentException if x or base is not positive, or base is 1.0
- */
 public func logBase(x: Float64, base: Float64): Float64 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -150,9 +144,6 @@ public func logBase(x: Float64, base: Float64): Float64 {
  * @throws IllegalArgumentException if the argument `x` or `base` is not positive, or the `base` is 1.0
  *
  * @since 0.17.4
- */
-/**
- * @throws IllegalArgumentException if x or base is not positive, or base is 1.0
  */
 public func logBase(x: Float16, base: Float16): Float16 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {

@@ -10,7 +10,6 @@ package std.net
 
 /**
  * Package-private function that checks unix domain socket address for validity (to connect or bind)
- * @throws IllegalArgumentException if address is not a Unix socket address
  */
 func checkUnixSocketAddress(address: SocketAddress, name: String): SocketAddress {
     if (!(address is UnixSocketAddress)) {

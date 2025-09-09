@@ -201,9 +201,6 @@ func getWaitExitCode(timeout: Duration, pid: Int32, handle: IntNative): Int64 {
     }
 }
 
-/**
- * @throws ProcessException if waiting for subprocess fails
- */
 @When[os == "Windows"]
 func parseExitInfoPointer(waitExitInfo_cp: CPointer<ExitInfo>, pid: Int32): Int64 {
     if (waitExitInfo_cp.isNull()) {

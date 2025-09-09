@@ -31,9 +31,6 @@ public enum DayOfWeek <: ToString & Equatable<DayOfWeek> {
      *
      * @since 0.18.4
      */
-    /**
-     * @throws IllegalArgumentException if the input parameter is out of range [0, 6]
-     */
     public static func of(dayOfWeek: Int64): DayOfWeek {
         return match (dayOfWeek) {
             case 0 => Sunday

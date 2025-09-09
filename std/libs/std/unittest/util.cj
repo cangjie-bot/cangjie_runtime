@@ -121,9 +121,6 @@ extend DataModelStruct {
 }
 
 extend DataModel {
-    /**
-     * @throws Exception if this data is not DataModelStruct
-     */
     func asStruct(): DataModelStruct {
         (this as DataModelStruct) ?? throw Exception("this data is not DataModelStruct")
     }

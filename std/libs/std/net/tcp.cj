@@ -54,8 +54,6 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
      * Specifying localAddress does also configure SO_REUSEADDR by default for convenience ortherwise spurious "address already in use" may occur.
      * Use setSocketOptionBool(SocketOptions.SOL_SOCKET, SocketOptions.SO_REUSEADDR, false) to eliminate this option if needed.
      * Also note that local and remote address should always have the same address family: for example, both IPv4.
-     */
-    /**
      * @throws IllegalArgumentException if remote and local address have different address families
      */
     public init(address: SocketAddress, localAddress!: ?SocketAddress) {

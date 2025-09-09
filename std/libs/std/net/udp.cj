@@ -437,9 +437,6 @@ public class UdpSocket <: DatagramSocket {
         "UdpSocket(${impl.toString()})"
     }
 
-    /**
-     * @throws IllegalArgumentException if address is not IPv4 or IPv6
-     */
     private static func checkAddress(address: SocketAddress, name: String): SocketAddress {
         if (!(address is IPSocketAddress)) {
             throw IllegalArgumentException(
