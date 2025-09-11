@@ -26,8 +26,10 @@
     str r8, [\context, #CONTEXT_R8]
     str r9, [\context, #CONTEXT_R9]
     str r10, [\context, #CONTEXT_R10]
-    str lr, [\context, #CONTEXT_R14LR]
+    str r11, [\context, #CONTEXT_R11FP]
     str sp, [\context, #CONTEXT_R13SP]
+    str lr, [\context, #CONTEXT_R14LR]
+    str lr, [\context, #CONTEXT_R15PC]
 
 #ifndef SCHEDULE_SOFT_FLOAT
     vstr  d8, [\context, #CONTEXT_ARM32_D8]
@@ -52,6 +54,7 @@
     ldr r8, [\context, #CONTEXT_R8]
     ldr r9, [\context, #CONTEXT_R9]
     ldr r10, [\context, #CONTEXT_R10]
+    ldr r11, [\context, #CONTEXT_R11FP]
     ldr lr, [\context, #CONTEXT_R14LR]
     ldr r3, [\context, #CONTEXT_R15PC]
 
@@ -87,13 +90,13 @@
 
 /* Rebind the cjthread to the thread */
 .macro CJThreadRebind curCJThread, dstCJThread, thread, g_cjthread
-    push {r8, r9}
+    push {r9}
     mov r9, #0
     str r9, [\curCJThread, #ARM32_CJTHREAD_THREAD_OFFSET]             /* curCJThread->thread = nullptr */
     str \thread, [\dstCJThread, #ARM32_CJTHREAD_THREAD_OFFSET]         /* dstCJThread->thread = thread */
     str \dstCJThread, [\thread, #ARM32_THREAD_CJTHREAD_OFFSET]         /* thread->cjthread = dstCJThread */
     str \dstCJThread, [\g_cjthread]                                    /* g_cjthread = dstCJThread */
-    pop {r8, r9}
+    pop {r9}
 .endm
 
 /* Go to cjthread0 and run the func function.
@@ -102,22 +105,20 @@
  */
 .global CJThreadMcall
 CJThreadMcall:
-    push {r4, r11}
-    mov r4, r0
+    mov r3, r0
     ldr r0, [r1]
-
     add r2, r0, #ARM32_CJTHREAD_CONTEXT_OFFSET
     ContextSave r2
 
-    ldr r3, [r0, #ARM32_CJTHREAD_THREAD_OFFSET]    /* cjthread = cjthread-> thread*/
-    ldr r12, [r3, #ARM32_THREAD_CJTHREAD0_OFFSET]    /*  cjthread0 = cjthread->cjthread0 */
-    CJThreadRebind r0, r12, r3, r1
+    push {r4}
+    ldr r4, [r0, #ARM32_CJTHREAD_THREAD_OFFSET]    /* thread = cjthread-> thread*/
+    ldr r12, [r4, #ARM32_THREAD_CJTHREAD0_OFFSET]    /*  cjthread0 = thread->cjthread0 */
+    CJThreadRebind r0, r12, r4, r1
+    pop {r4}
 
     add r2, r12, #ARM32_CJTHREAD_CONTEXT_OFFSET
     Context0Reset r2
 
-    mov r3, r4
-    pop {r4, r11}
     bx r3
 
     .type CJThreadMcall,%function
@@ -130,19 +131,16 @@ CJThreadMcall:
  */
 .global CJThreadMcallNosave
 CJThreadMcallNosave:
-    push {r4, r11}
-    mov r4, r0
+    mov r3, r0
     ldr r0, [r1]
 
-    ldr r3, [r0, #ARM32_CJTHREAD_THREAD_OFFSET]
-    ldr r12, [r3, #ARM32_THREAD_CJTHREAD0_OFFSET]
-    CJThreadRebind r0, r12, r3, r1
+    ldr r2, [r0, #ARM32_CJTHREAD_THREAD_OFFSET]
+    ldr r12, [r2, #ARM32_THREAD_CJTHREAD0_OFFSET]
+    CJThreadRebind r0, r12, r2, r1
 
     add r2, r12, #ARM32_CJTHREAD_CONTEXT_OFFSET
     Context0Reset r2
 
-    mov r3, r4
-    pop {r4, r11}
     bx r3
 
     .type CJThreadMcallNosave,%function
