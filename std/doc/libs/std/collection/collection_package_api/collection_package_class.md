@@ -1870,7 +1870,6 @@ public func sortBy(stable!: Bool, comparator!: (T, T) -> Ordering): Unit
 <!-- verify -->
 ```cangjie
 import std.collection.*
-import std.core.*
 
 main() {
     let list = ArrayList<Int64>()
@@ -5023,16 +5022,10 @@ main() {
     println("值的数量: ${values.size}")  // 3
     
     // 遍历所有值
-    let iterator = values.iterator()
     println("所有值: ")
-    while (true) {
-        let value = iterator.next()
-        if (value.isNone()) {
-            break
-        }
-        println("${value.getOrThrow()}")
+    for (i in values) {
+        println(i)
     }
-    
     return 0
 }
 ```
@@ -11589,6 +11582,8 @@ public prop first: ?T
 
 类型：?T - 如果存在第一个元素，用 [Option](../../core/core_package_api/core_package_enums.md#enum-optiont) 封装该元素并返回；否则返回 [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<T>.None。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -11626,6 +11621,8 @@ public prop last: ?T
 功能：获取 [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet) 的最后一个元素。
 
 类型：?T - 如果存在最后一个元素，用 [Option](../../core/core_package_api/core_package_enums.md#enum-optiont) 封装该元素并返回；否则返回 [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<T>.None。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -11665,6 +11662,8 @@ public prop size: Int64
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -11700,6 +11699,8 @@ public init()
 ```
 
 功能：构造一个空的 [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet)。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -11739,6 +11740,8 @@ public init(elements: Collection<T>)
 参数：
 
 - elements: [Collection](../../core/core_package_api/core_package_interfaces.md#interface-collectiont)\<T> - 初始化该 [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet) 的元素集合。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -11781,6 +11784,8 @@ public init(size: Int64, initElement: (Int64) -> T)
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果 size 小于 0 则抛出异常。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -11819,6 +11824,8 @@ public static func of(elements: Array<T>): TreeSet<T>
 返回值：
 
 - [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet)\<T> - 元素为 T 类型的 [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet)。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -11860,6 +11867,8 @@ public func add(element: T): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果添加成功，则返回 true；否则，返回 false。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -11909,6 +11918,8 @@ public func add(all!: Collection<T>): Unit
 
 - all!: [Collection](../../core/core_package_api/core_package_interfaces.md#interface-collectiont)\<T> - 需要被添加的元素的集合。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -11953,6 +11964,8 @@ public func backward(mark: T, inclusive!: Bool = true): Iterator<T>
 返回值：
 
 - [Iterator](../../core/core_package_api/core_package_classes.md#class-iteratort)\<T> - 对应元素的迭代器。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12005,6 +12018,8 @@ public func clear(): Unit
 
 功能：清除所有元素。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -12050,6 +12065,8 @@ public func clone(): TreeSet<T>
 返回值：
 
 - [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet)\<T> - 返回一个 [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet) 实例。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12103,6 +12120,8 @@ public func contains(element: T): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果包含指定元素，则返回 true；否则，返回 false。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -12152,6 +12171,8 @@ public func contains(all!: Collection<T>): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果此 [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet) 包含 [Collection](../../core/core_package_api/core_package_interfaces.md#interface-collectiont) 中的所有元素，则返回 true；否则，返回 false。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12204,6 +12225,8 @@ public func forward(mark: T, inclusive!: Bool = true): Iterator<T>
 返回值：
 
 - [Iterator](../../core/core_package_api/core_package_classes.md#class-iteratort)\<T> - 对应元素的迭代器。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12260,6 +12283,8 @@ public func isEmpty(): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果为空，返回 true，否则返回 false。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -12301,6 +12326,8 @@ public func iterator(): Iterator<T>
 返回值：
 
 - [Iterator](../../core/core_package_api/core_package_classes.md#class-iteratort)\<T> - [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet) 的迭代器。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12347,6 +12374,8 @@ public func removeFirst(): ?T
 返回值：
 
 - ?T - 如果存在第一个元素，那么删除该元素，用 [Option](../../core/core_package_api/core_package_enums.md#enum-optiont) 封装该元素并返回；否则返回 [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<T>.None。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12396,6 +12425,8 @@ public func removeLast(): ?T
 返回值：
 
 - ?T - 如果存在最后一个元素，那么删除该元素，用 [Option](../../core/core_package_api/core_package_enums.md#enum-optiont) 封装该元素并返回；否则返回 [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<T>.None。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12450,6 +12481,8 @@ public func remove(element: T): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - true，表示移除成功；false，表示移除失败。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -12497,6 +12530,8 @@ public func remove(all!: Collection<T>): Unit
 参数：
 
 - all!: [Collection](../../core/core_package_api/core_package_interfaces.md#interface-collectiont)\<T> - 需要从此[TreeSet](collection_package_class.md#class-treesett-where-t--comparablet) 中移除的元素的集合。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12547,6 +12582,8 @@ public func removeIf(predicate: (T) -> Bool): Unit
 
 - [ConcurrentModificationException](./collection_package_exception.md#class-concurrentmodificationexception) - 当 `predicate` 中增删或者修改 [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet) 内元素时，抛出异常。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -12588,6 +12625,8 @@ public func retain(all!: Set<T>): Unit
 参数：
 
 - all!: [Set](collection_package_interface.md#interface-sett)\<T> - 需要保留的 [Set](collection_package_interface.md#interface-sett)。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12637,6 +12676,8 @@ public func subsetOf(other: ReadOnlySet<T>): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果该 [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet) 是指定 [ReadOnlySet](collection_package_interface.md#interface-readonlysett) 的子集，则返回 true；否则返回 false。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12694,6 +12735,8 @@ public func toArray(): Array<T>
 返回值：
 
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - T 类型数组。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12753,6 +12796,8 @@ public operator func &(other: ReadOnlySet<T>): TreeSet<T>
 
 - [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet)\<T> - T 类型集合。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -12805,6 +12850,8 @@ public operator func |(other: ReadOnlySet<T>): TreeSet<T>
 
 - [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet)\<T> - T 类型集合。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -12856,6 +12903,8 @@ public operator func -(other: ReadOnlySet<T>): TreeSet<T>
 返回值：
 
 - [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet)\<T> - T 类型集合。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -12929,6 +12978,8 @@ public operator func ==(that: TreeSet<T>): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果相等，则返回 true，否则返回 false。
 
+示例：
+
 <!-- verify -->
 ```cangjie
 import std.collection.*
@@ -12995,6 +13046,8 @@ public operator func !=(that: TreeSet<T>): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果不等，则返回 true，否则返回 false。
+
+示例：
 
 <!-- verify -->
 ```cangjie
@@ -13072,6 +13125,8 @@ public func toString(): String
 返回值：
 
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 转换得到的字符串。
+
+示例：
 
 <!-- verify -->
 ```cangjie
