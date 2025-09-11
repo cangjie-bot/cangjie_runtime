@@ -467,7 +467,7 @@ Parameters:
 
 Return Value:
 
-- ([Array](./core_package_structs.md#struct-arrayt)\<T>, [Array](./core_package_structs.md#struct-arrayt)\<T>) - The two slices obtained by splitting the original array.
+- ([Array](core_package_structs.md#struct-arrayt)\<T>, [Array](core_package_structs.md#struct-arrayt)\<T>) - The two slices obtained by splitting the original array.
 
 Exceptions:
 
@@ -905,14 +905,7 @@ Parameters:
 
 Return Value:
 
-- [Option](core_package_enums.md#enum-optiont)\<[Int64](core_package_intrinsics.md#int64)> - The last occurrence position of `elements` starting from `fromIndex`. Returns None if the array does not contain this subarray.Parameters:
-
-- `elements`: [Array](core_package_structs.md#struct-arrayt)\<T> - The target array to locate.
-- `fromIndex`: [Int64](core_package_intrinsics.md#int64) - The starting position for the search.
-
-Return Value:
-
-- [Option](core_package_enums.md#enum-optiont)\<[Int64](core_package_intrinsics.md#int64)> - The last occurrence position of the subarray `elements` in the array when searching backward from `fromIndex`. Returns None if the subarray does not exist in the array.
+- [Option](core_package_enums.md#enum-optiont)\<[Int64](core_package_intrinsics.md#int64)> - The last occurrence position of `elements` starting from `fromIndex`. Returns None if the array does not contain this subarray.
 
 #### func lastIndexOf(T)
 
