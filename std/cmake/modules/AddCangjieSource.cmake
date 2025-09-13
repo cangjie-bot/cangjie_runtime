@@ -212,8 +212,9 @@ function(add_cangjie_library target_name)
     else()
         set(temp_files_dir "${CMAKE_BINARY_DIR}/${output_dir}/${CANGJIELIB_PACKAGE_NAME}-temp-files")
     endif()
-
-    set(COMPILE_CMD ${COMPILE_CMD} "-j1 --save-temps=${temp_files_dir}")
+    
+    set(COMPILE_CMD ${COMPILE_CMD} "-j1")
+    set(COMPILE_CMD ${COMPILE_CMD} "--save-temps=${temp_files_dir}")
     set(MKDIR_TEMP_FILES_CMD COMMAND ${CMAKE_COMMAND} -E make_directory ${temp_files_dir})
 
     if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
