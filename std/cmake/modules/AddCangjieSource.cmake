@@ -206,6 +206,16 @@ function(add_cangjie_library target_name)
         ${output_argument}
         ${output_lto_bc_full_name})
     set(COMPILE_CMD ${COMPILE_CMD} ${output_argument} ${output_full_name})
+
+    if(NOT ("${CANGJIELIB_MODULE_NAME}" STREQUAL ""))
+        set(temp_files_dir "${CMAKE_BINARY_DIR}/${output_dir}/${CANGJIELIB_MODULE_NAME}.${CANGJIELIB_PACKAGE_NAME}-temp-files")
+    else()
+        set(temp_files_dir "${CMAKE_BINARY_DIR}/${output_dir}/${CANGJIELIB_PACKAGE_NAME}-temp-files")
+    endif()
+
+    set(COMPILE_CMD ${COMPILE_CMD} "-j1 --save-temps=${temp_files_dir}")
+    set(MKDIR_TEMP_FILES_CMD COMMAND ${CMAKE_COMMAND} -E make_directory ${temp_files_dir})
+
     if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
         list(APPEND COMPILE_CMD "$<IF:$<CONFIG:MinSizeRel>,-Os,-O0>")
         # .bc files is for LTO mode and LTO mode does not support -Os and -Oz.

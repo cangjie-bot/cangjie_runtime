@@ -199,13 +199,36 @@ inline __attribute__((always_inline)) static int64_t StrStrN(const uint8_t* org,
 #endif
 
 #ifdef __arm__
-inline __attribute__((always_inline)) static int64_t StrStrN(const uint8_t* org, int64_t ol, const uint8_t* sub,
-    int64_t sl, _Bool memcmpFunc(const uint8_t*, const uint8_t*, int64_t))
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+
+int64_t StrStrN(const uint8_t* org, int64_t ol, const uint8_t* sub,
+                       int64_t sl, bool (*memcmpFunc)(const uint8_t*, const uint8_t*, int64_t))
 {
-    for (int64_t i = 0; i <= ol - sl; i++) {
-        if (org[i] == sub[0] && org[i + sl - 1] == sub[sl - 1]) {
-            if (memcmpFunc(org + i + 1, sub + 1, sl - 2)) {
-                return i;
+
+    if (!org || !sub || !memcmpFunc || ol < 0 || sl < 0) {
+        return -1;
+    }
+    if (sl == 0) {
+        return 0;
+    }
+    if (sl > ol) {
+        return -1;
+    }
+    if (sl == 1) {
+        const uint8_t* result = (const uint8_t*)memchr(org, sub[0], ol);
+        return result ? (int64_t)(result - org) : -1;
+    }
+    const int64_t search_limit = ol - sl;
+    const uint8_t sub_first = sub[0];
+    const uint8_t sub_last = sub[sl - 1];
+    const int64_t cmp_len_middle = sl - 2;
+
+    for (int64_t i = 0; i <= search_limit; ++i) {
+        if (org[i] == sub_first && org[i + sl - 1] == sub_last) {
+            if (cmp_len_middle <= 0 || memcmpFunc(org + i + 1, sub + 1, cmp_len_middle)) {
+                return i; 
             }
         }
     }
