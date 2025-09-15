@@ -13,7 +13,7 @@ func invokeGC(heavy: Bool): Unit
 
 @When[backend == "cjnative"]
 @Intrinsic
-func getCjGCCount(): Int64
+func getCjGCCount(): UIntNative
 
 @When[backend == "cjnative"]
 @Intrinsic
@@ -21,7 +21,7 @@ func getCjGCTime(): Int64
 
 @When[backend == "cjnative"]
 @Intrinsic
-func getCjGCFreedSize(): Int64
+func getCjGCFreedSize(): UIntNative
 
 @When[backend == "cjnative"]
 @Intrinsic
@@ -51,7 +51,7 @@ public func setGCThreshold(value: UInt64): Unit {
 }
 
 @When[backend == "cjnative"]
-public func getGCCount(): Int64 {
+public func getGCCount(): UIntNative {
     return getCjGCCount()
 }
 
@@ -61,6 +61,6 @@ public func getGCTime(): Int64 {
 }
 
 @When[backend == "cjnative"]
-public func getGCFreedSize(): Int64 {
+public func getGCFreedSize(): UIntNative {
     return getCjGCFreedSize()
 }

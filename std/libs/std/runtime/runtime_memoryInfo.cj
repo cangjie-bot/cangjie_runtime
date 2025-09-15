@@ -12,13 +12,13 @@ package std.runtime
 import std.fs.*
 
 @Intrinsic
-func getMaxCjHeapSize(): Int64
+func getMaxCjHeapSize(): UIntNative
 
 @Intrinsic
-func getAllocatedCjHeapSize(): Int64
+func getAllocatedCjHeapSize(): UIntNative
 
 @Intrinsic
-func getRealHeapSize(): Int64
+func getRealHeapSize(): UIntNative
 
 @When[backend == "cjnative"]
 @Intrinsic
@@ -39,7 +39,7 @@ public struct MemoryInfo {
     /**
      * Get the maximum heap size that can be used.
      */
-    public static prop maxHeapSize: Int64 {
+    public static prop maxHeapSize: UIntNative {
         get() {
             getMaxHeapSize()
         }
@@ -48,7 +48,7 @@ public struct MemoryInfo {
     /**
      * Get the heap size that is allocated.
      */
-    public static prop allocatedHeapSize: Int64 {
+    public static prop allocatedHeapSize: UIntNative {
         get() {
             getAllocatedHeapSize()
         }
@@ -64,16 +64,16 @@ public struct MemoryInfo {
     }
 }
 
-public func getMaxHeapSize(): Int64 {
+public func getMaxHeapSize(): UIntNative {
     return getMaxCjHeapSize()
 }
 
-public func getAllocatedHeapSize(): Int64 {
+public func getAllocatedHeapSize(): UIntNative {
     return getAllocatedCjHeapSize()
 }
 
 public func getUsedHeapSize(): Int64 {
-    var ret = getRealHeapSize()
+    var ret = Int64(getRealHeapSize())
     match {
         case ret >= 0 => return ret
         case ret == -1 => throw MemoryInfoException("Failed to open the smaps file.")
