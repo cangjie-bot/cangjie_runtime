@@ -80,7 +80,7 @@ public:
 #elif defined(__aarch64__)
             context.x29 = *reinterpret_cast<uint64_t*>(calleeFrameAddress);
 #elif defined(__arm__)
-            context.sp = *reinterpret_cast<uint64_t*>(calleeFrameAddress);
+            context.r11 = *reinterpret_cast<uint64_t*>(calleeFrameAddress);
 #endif
             return;
         }
