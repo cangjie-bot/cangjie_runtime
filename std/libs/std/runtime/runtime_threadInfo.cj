@@ -10,15 +10,15 @@ package std.runtime
 
 @When[backend == "cjnative"]
 @Intrinsic
-func getThreadNumber(): Int64
+func getThreadNumber(): UIntNative
 
 @When[backend == "cjnative"]
 @Intrinsic
-func getBlockingThreadNumber(): Int64
+func getBlockingThreadNumber(): UIntNative
 
 @When[backend == "cjnative"]
 @Intrinsic
-func getNativeThreadNumber(): Int64
+func getNativeThreadNumber(): UIntNative
 
 @When[backend == "cjnative"]
 @Deprecated[message: "All static Properties are converted to public functions."]
@@ -26,7 +26,7 @@ public struct ThreadInfo {
     /**
      * Get current number of threads.
      */
-    public static prop threadCount: Int64 {
+    public static prop threadCount: UIntNative {
         get() {
             getThreadCount()
         }
@@ -34,7 +34,7 @@ public struct ThreadInfo {
     /**
      * Get the number of blocked threads.
      */
-    public static prop blockingThreadCount: Int64 {
+    public static prop blockingThreadCount: UIntNative {
         get() {
             getBlockingThreadCount()
         }
@@ -42,7 +42,7 @@ public struct ThreadInfo {
     /**
      * Get the actual number of physical threads.
      */
-    public static prop nativeThreadCount: Int64 {
+    public static prop nativeThreadCount: UIntNative {
         get() {
             getNativeThreadCount()
         }
@@ -50,16 +50,16 @@ public struct ThreadInfo {
 }
 
 @When[backend == "cjnative"]
-public func getThreadCount(): Int64 {
+public func getThreadCount(): UIntNative {
     return getThreadNumber()
 }
 
 @When[backend == "cjnative"]
-public func getBlockingThreadCount(): Int64 {
+public func getBlockingThreadCount(): UIntNative {
     return getBlockingThreadNumber()
 }
 
 @When[backend == "cjnative"]
-public func getNativeThreadCount(): Int64 {
+public func getNativeThreadCount(): UIntNative {
     return getNativeThreadNumber()
 }
