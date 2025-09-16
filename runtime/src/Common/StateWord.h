@@ -79,6 +79,18 @@ public:
 
 class StateWord {
 public:
+#ifdef __arm__
+    static constexpr size_t ADDRESS_BIT_COUNT = 32;
+    static constexpr uint64_t ADDRESS_ALIGN_MASK = 8 - 1;
+
+    static constexpr size_t LOW_ADDRESS_BIT_COUNT = 16;
+    static constexpr uint64_t LOW_ADDRESS_SHIFT = 0;
+    static constexpr uint64_t LOW_ADDRESS_MASK = (1ull << LOW_ADDRESS_BIT_COUNT) - 1;
+
+    static constexpr size_t HIGH_ADDRESS_BIT_COUNT = 16;
+    static constexpr uint64_t HIGH_ADDRESS_SHIFT = 16;
+    static constexpr uint64_t HIGH_ADDRESS_MASK = (1ull << HIGH_ADDRESS_BIT_COUNT) - 1;
+#else
     static constexpr size_t ADDRESS_BIT_COUNT = 48;
     static constexpr uint64_t ADDRESS_ALIGN_MASK = 8 - 1;
 
@@ -89,16 +101,17 @@ public:
     static constexpr size_t HIGH_ADDRESS_BIT_COUNT = 16;
     static constexpr uint64_t HIGH_ADDRESS_SHIFT = 32;
     static constexpr uint64_t HIGH_ADDRESS_MASK = (1ull << HIGH_ADDRESS_BIT_COUNT) - 1;
+#endif
 
     TypeInfo* GetTypeInfo() const
     {
 #ifdef __arm__
-        uint32_t address = this->typeInfo;
+        uintptr_t low = this->typeInfoLow16;
 #else
         uintptr_t low = this->typeInfoLow32;
+#endif
         uintptr_t high = this->typeInfoHigh16;
         uintptr_t address = (high << HIGH_ADDRESS_SHIFT) | low;
-#endif
         return reinterpret_cast<TypeInfo*>(address);
     }
 
@@ -106,18 +119,18 @@ public:
     {
         uintptr_t address = reinterpret_cast<uintptr_t>(typeInfo);
 #ifdef __arm__
-        this->typeInfo = reinterpret_cast<uint32_t>(address);
+        this->typeInfoLow16 = (address >> LOW_ADDRESS_SHIFT) & LOW_ADDRESS_MASK;
 #else
         this->typeInfoLow32 = (address >> LOW_ADDRESS_SHIFT) & LOW_ADDRESS_MASK;
-        this->typeInfoHigh16 = (address >> HIGH_ADDRESS_SHIFT) & HIGH_ADDRESS_MASK;
 #endif
+        this->typeInfoHigh16 = (address >> HIGH_ADDRESS_SHIFT) & HIGH_ADDRESS_MASK;
     }
 
     bool IsValidStateWord() const { return GetTypeInfo() != nullptr; }
     StateWord GetStateWord() const
     {
 #ifdef __arm__
-        return StateWord(typeInfo, GetObjectState());
+        return StateWord(typeInfoLow16, typeInfoHigh16, GetObjectState());
 #else
         return StateWord(typeInfoLow32, typeInfoHigh16, GetObjectState());
 #endif
@@ -153,8 +166,8 @@ public:
 
 private:
 #ifdef __arm__
-    explicit StateWord(uint32_t typeInfo, ObjectState state)
-        : typeInfo(typeInfo), objectState(state)
+    explicit StateWord(uint16_t low16, uint16_t hi16, ObjectState state)
+        : typeInfoLow16(low16), typeInfoHigh16(hi16), objectState(state), padding(0)
     {}
 #else
     explicit StateWord(uint32_t low32, uint16_t hi16, ObjectState state)
@@ -164,12 +177,15 @@ private:
 
     // for type info.
 #ifdef __arm__
-    uint32_t typeInfo;
+    ObjectState objectState;
+    uint16_t padding;
+    uint16_t typeInfoLow16;
+    uint16_t typeInfoHigh16;
 #else
     uint32_t typeInfoLow32;
     uint16_t typeInfoHigh16;
-#endif
     ObjectState objectState;
+#endif
 };
 
 #ifndef __arm__

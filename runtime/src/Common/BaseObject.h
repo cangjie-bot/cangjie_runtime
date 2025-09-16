@@ -56,14 +56,24 @@ public:
     void DumpObject(int logtype, bool isSimple = false) const;
 #endif
 
-    StateWord GetStateWord() const { return stateWord.GetStateWord(); }
-    ObjectState GetObjectState() const { return stateWord.GetObjectState(); }
+    StateWord GetStateWord() const
+    {
+#ifdef __arm__
+        StateWord tempStateWord = stateWord.GetStateWord();
+        U32 offset = 4;
+        return *(reinterpret_cast<StateWord*>(tempStateWord - offset));
+
+#else
+        return stateWord.GetStateWord();
+#endif
+    }
+    ObjectState GetObjectState() const{ return GetStateWord().GetObjectState(); }
 
     bool IsForwarding() const { return GetStateWord().IsLockedWord(); }
     bool IsForwarded() const { return GetStateWord().IsForwardedState(); }
 
-    void SetClassInfo(TypeInfo* klassRef) { stateWord.SetTypeInfo(klassRef); }
-    void SetStateCode(ObjectState::ObjectStateCode state) { stateWord.SetStateCode(state); }
+    void SetClassInfo(TypeInfo* klassRef) { GetStateWord().SetTypeInfo(klassRef); }
+    void SetStateCode(ObjectState::ObjectStateCode state) { GetStateWord().SetStateCode(state); }
 
     bool IsInTraceRegion() const;
 
@@ -71,9 +81,9 @@ public:
     // because forwaring object can only be executed by only one thread,
     // so we don't need to worry aboout concurrent competetion
 
-    bool TryLockObject(const StateWord curWord) { return stateWord.TryLockStateWord(curWord.GetObjectState()); }
+    bool TryLockObject(const StateWord curWord) { return GetStateWord().TryLockStateWord(curWord.GetObjectState()); }
 
-    void UnlockObject(const ObjectState newState) { stateWord.UnlockStateWord(newState); }
+    void UnlockObject(const ObjectState newState) { GetStateWord().UnlockStateWord(newState); }
 
     void OnFinalizerCreated();
 
@@ -89,7 +99,7 @@ protected:
     static inline BaseObject* SetClassInfo(MAddress address, TypeInfo* klass)
     {
         auto ref = reinterpret_cast<BaseObject*>(address);
-        ref->stateWord.SetTypeInfo(klass);
+        ref->GetStateWord().SetTypeInfo(klass);
         return ref;
     }
 
