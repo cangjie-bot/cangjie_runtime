@@ -42,7 +42,11 @@ public:
     using CjHeapDataStackFrameId = CjHeapDataID;
     using CjHeapDataStackTraceSerialNumber = CjHeapDataID;
     static constexpr CjHeapDataStackTraceSerialNumber kCjHeapDataNullStackTrace = 0;
+#ifdef __arm__
+    const static size_t alignment = 4;
+#else
     const static size_t alignment = 8;
+#endif
     enum CjHeapDataTag {
         TAG_STRING_IN_UTF8 = 0x01,
         TAG_CLASS_LOAD = 0x02,
