@@ -305,7 +305,7 @@ protected:
 #if defined(__x86_64__)
     static constexpr uint32_t START_PC_OFFSET_IN_STACK = 9;
 #elif defined(__arm__)
-    static constexpr uint32_t START_PC_OFFSET_IN_STACK = 8;
+    static constexpr uint32_t START_PC_OFFSET_IN_STACK = 12;
 #else
     static constexpr uint32_t START_PC_OFFSET_IN_STACK = 0;
 #endif
