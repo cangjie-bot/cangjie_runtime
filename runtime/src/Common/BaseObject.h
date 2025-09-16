@@ -23,7 +23,7 @@ public:
 
     inline bool IsWeakRef() const { return GetTypeInfo()->IsWeakRefType(); }
 
-    inline bool IsValidObject() const { return stateWord.IsValidStateWord(); }
+    inline bool IsValidObject() const { return GetStateWord().IsValidStateWord(); }
 
     inline bool IsRawArray() const { return GetTypeInfo()->IsRawArray(); }
 
@@ -61,10 +61,7 @@ public:
     StateWord GetStateWord() const
     {
 #ifdef __arm__
-        StateWord tempStateWord = stateWord.GetStateWord();
-        U32 offset = 4;
-        return *(reinterpret_cast<StateWord*>(tempStateWord - offset));
-
+        return *reinterpret_cast<StateWord*>(reinterpret_cast<uintptr_t>(this) - 4);
 #else
         return stateWord.GetStateWord();
 #endif
