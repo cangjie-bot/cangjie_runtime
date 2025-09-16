@@ -23,7 +23,7 @@ public:
 
     inline bool IsWeakRef() const { return GetTypeInfo()->IsWeakRefType(); }
 
-    inline bool IsValidObject() const { return GetStateWord().IsValidStateWord(); }
+    inline bool IsValidObject() const { return GetStateWordPtr()->IsValidStateWord(); }
 
     inline bool IsRawArray() const { return GetTypeInfo()->IsRawArray(); }
 
@@ -60,18 +60,23 @@ public:
 
     StateWord GetStateWord() const
     {
+        return GetStateWordPtr()->GetStateWord();
+    }
+    StateWord* GetStateWordPtr() const
+    {
 #ifdef __arm__
-        return *reinterpret_cast<StateWord*>(reinterpret_cast<uintptr_t>(this) - 4);
+        return reinterpret_cast<StateWord*>(reinterpret_cast<uintptr_t>(this) - 4);
 #else
-        return stateWord.GetStateWord();
+        return &stateWord;
 #endif
     }
-    ObjectState GetObjectState() const{ return GetStateWord().GetObjectState(); }
+
+    ObjectState GetObjectState() const{ return GetStateWordPtr()->GetObjectState(); }
 
     bool IsForwarded() const { return GetObjectState().IsForwardedState(); }
 
-    void SetClassInfo(TypeInfo* klassRef) { GetStateWord().SetTypeInfo(klassRef); }
-    void SetStateCode(ObjectState::ObjectStateCode state) { GetStateWord().SetStateCode(state); }
+    void SetClassInfo(TypeInfo* klassRef) { GetStateWordPtr()->SetTypeInfo(klassRef); }
+    void SetStateCode(ObjectState::ObjectStateCode state) { GetStateWordPtr()->SetStateCode(state); }
 
     bool IsInTraceRegion() const;
 
@@ -79,9 +84,9 @@ public:
     // because forwaring object can only be executed by only one thread,
     // so we don't need to worry aboout concurrent competetion
 
-    bool TryLockObject(const StateWord curWord) { return GetStateWord().TryLockStateWord(curWord.GetObjectState()); }
+    bool TryLockObject(const StateWord curWord) { return GetStateWordPtr()->TryLockStateWord(curWord.GetObjectState()); }
 
-    void UnlockObject(const ObjectState newState) { GetStateWord().UnlockStateWord(newState); }
+    void UnlockObject(const ObjectState newState) { GetStateWordPtr()->UnlockStateWord(newState); }
 
     void OnFinalizerCreated();
 
@@ -97,7 +102,7 @@ protected:
     static inline BaseObject* SetClassInfo(MAddress address, TypeInfo* klass)
     {
         auto ref = reinterpret_cast<BaseObject*>(address);
-        ref->GetStateWord().SetTypeInfo(klass);
+        ref->GetStateWordPtr()->SetTypeInfo(klass);
         return ref;
     }
 
