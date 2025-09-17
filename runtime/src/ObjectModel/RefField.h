@@ -21,7 +21,7 @@
 
 namespace MapleRuntime {
 #ifdef __arm__
-#define ARM32_MARKED_FLAG_BITS  3
+#define ARM32_MARKED_FLAG_BITS  2
 #endif
 class BaseObject;
 
@@ -138,7 +138,7 @@ public:
 #endif
     }
 #ifdef __arm__
-    RefField(const BaseObject* obj, uint16_t tagged, uint16_t tagid) : isTagged(tagged), tagID(tagid), padding(0)
+    RefField(const BaseObject* obj, uint16_t tagged, uint16_t tagid) : isTagged(tagged), tagID(tagid)
     {
         address = reinterpret_cast<MAddress>(obj) >> ARM32_MARKED_FLAG_BITS;
     }
@@ -165,8 +165,7 @@ private:
         struct {
             MAddress isTagged : 1;
             MAddress tagID : 1;
-            MAddress padding : 1;
-            MAddress address : 29;
+            MAddress address : 30;
         };
         RefFieldValue fieldVal;
     };
