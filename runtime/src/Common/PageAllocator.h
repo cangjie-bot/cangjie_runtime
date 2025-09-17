@@ -47,11 +47,7 @@ public:
     AllocatorUtils& operator=(AllocatorUtils&&) = delete;
     ~AllocatorUtils() = delete;
     static const size_t ALLOC_PAGE_SIZE;
-#ifdef __arm__
-    static constexpr uint32_t LOG_ALLOC_ALIGNMENT = 2;
-#else
     static constexpr uint32_t LOG_ALLOC_ALIGNMENT = 3;
-#endif
     static constexpr uint32_t ALLOC_ALIGNMENT = 1 << LOG_ALLOC_ALIGNMENT;
 };
 
