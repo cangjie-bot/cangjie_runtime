@@ -17,12 +17,11 @@ namespace MapleRuntime {
 class Allocator {
 public:
 #ifdef __arm__
-    static constexpr size_t ALLOC_ALIGN = 4;
     static constexpr size_t HEADER_SIZE = 4;
 #else
-    static constexpr size_t ALLOC_ALIGN = 8;
     static constexpr size_t HEADER_SIZE = 0; // no header for cangjie object
 #endif
+    static constexpr size_t ALLOC_ALIGN = 8;
 
     static Allocator* NewAllocator();
 
