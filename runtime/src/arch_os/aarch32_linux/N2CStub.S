@@ -299,6 +299,9 @@ unwindPCForN2CStub:
     cfi_adjust_cfa_offset (-StubFrameContextSize)
     cfi_restore (r11)
     cfi_restore (lr)
+    // restore for calleeAddr and cpStackSize slot in stack
+    add  sp, sp, #8
+    cfi_adjust_cfa_offset (-8)
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
     // unsupport
 #endif
