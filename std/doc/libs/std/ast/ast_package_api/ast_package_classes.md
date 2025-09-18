@@ -1104,6 +1104,30 @@ public init(inputs: Tokens)
 
 - [ASTException](ast_package_exceptions.md#class-astexception) — 如果输入的标记无法解析为有效的 `CommandTypePattern` 节点，则抛出异常。
 
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+功能：将当前语法树节点转化为 [Tokens](ast_package_classes.md#class-tokens) 类型。
+
+返回值：
+
+- [Tokens](ast_package_classes.md#class-tokens) - 转化后的 [Tokens](ast_package_classes.md#class-tokens) 类型节点。
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+功能：遍历当前语法树节点及其子节点。若提前终止遍历子节点的行为，可重写 `visit` 函数并调用 `breakTraverse` 函数提前终止遍历行为，请参见[自定义访问函数遍历 AST 对象示例](../ast_samples/traverse.md)。
+
+参数：
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - [Visitor](ast_package_classes.md#class-visitor) 类型的实例。
+
 ## class ConstPattern
 
 ```cangjie
@@ -3283,6 +3307,10 @@ public class ImportContent <: Node {
     public init()
 }
 ```
+
+功能：表示包导入节点。
+
+一个 [ImportContent](ast_package_classes.md#class-importcontent) 节点：`import pkgA`，`import pkgA.subB as ab` 或者 `internal import pkgA`。
 
 父类型：
 
@@ -6297,6 +6325,30 @@ public init(inputs: Tokens)
 
 - [ASTException](ast_package_exceptions.md#class-astexception) — 当输入的 [Tokens](ast_package_classes.md#class-tokens) 无法解析为 [PerformExpr](ast_package_classes.md#class-performexpr) 节点时抛出。
 
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+功能：将当前语法树节点转化为 [Tokens](ast_package_classes.md#class-tokens) 类型。
+
+返回值：
+
+- [Tokens](ast_package_classes.md#class-tokens) - 转化后的 [Tokens](ast_package_classes.md#class-tokens) 类型节点。
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+功能：遍历当前语法树节点及其子节点。若提前终止遍历子节点的行为，可重写 `visit` 函数并调用 `breakTraverse` 函数提前终止遍历行为，请参见[自定义访问函数遍历 AST 对象示例](../ast_samples/traverse.md)。
+
+参数：
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - [Visitor](ast_package_classes.md#class-visitor) 类型的实例。
+
 ## class PrefixType
 
 ```cangjie
@@ -7713,6 +7765,30 @@ public init(inputs: Tokens)
 异常：
 
 - [ASTException](ast_package_exceptions.md#class-astexception) — 当输入的 [Tokens](ast_package_classes.md#class-tokens) 无法解析为 [ResumeExpr](ast_package_classes.md#class-resumeexpr) 节点时抛出。
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+功能：将当前语法树节点转化为 [Tokens](ast_package_classes.md#class-tokens) 类型。
+
+返回值：
+
+- [Tokens](ast_package_classes.md#class-tokens) - 转化后的 [Tokens](ast_package_classes.md#class-tokens) 类型节点。
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+功能：遍历当前语法树节点及其子节点。若提前终止遍历子节点的行为，可重写 `visit` 函数并调用 `breakTraverse` 函数提前终止遍历行为，请参见[自定义访问函数遍历 AST 对象示例](../ast_samples/traverse.md)。
+
+参数：
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - [Visitor](ast_package_classes.md#class-visitor) 类型的实例。
 
 ## class ResumptionTypePattern
 
@@ -10374,7 +10450,7 @@ public init(identifier: Token)
 
 异常：
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - 当输入的 [Tokens](ast_package_classes.md#class-tokens) 类型无法构造为 [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern) 节点时，抛出异常。
+- [ASTException](ast_package_exceptions.md#class-astexception) - 当输入的 [Token](ast_package_structs.md#struct-token) 类型不是 [IDENTIFIER](ast_package_enums.md#identifier) 标识符时，抛出异常。
 
 ### func toTokens()
 
@@ -10449,7 +10525,7 @@ public init(identifier: Token)
 
 异常：
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - 当输入的 [Tokens](ast_package_classes.md#class-tokens) 类型无法构造为 [VarPattern](ast_package_classes.md#class-varpattern) 节点时，抛出异常。
+- [ASTException](ast_package_exceptions.md#class-astexception) - 当输入的 [Token](ast_package_structs.md#struct-token) 类型不是 [IDENTIFIER](ast_package_enums.md#identifier) 标识符时，抛出异常。
 
 ### func toTokens()
 
@@ -10626,6 +10702,18 @@ protected open func visit(_: ClassDecl): Unit
 参数：
 
 - _: [ClassDecl](ast_package_classes.md#class-classdecl) - [ClassDecl](ast_package_classes.md#class-classdecl) 类型的被遍历节点。
+
+### func visit(CommandTypePattern)
+
+```cangjie
+protected open func visit(_: CommandTypePattern): Unit
+```
+
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [CommandTypePattern](ast_package_classes.md#class-commandtypepattern) - [CommandTypePattern](ast_package_classes.md#class-commandtypepattern) 类型的被遍历节点。
 
 ### func visit(ConstPattern)
 
@@ -11095,6 +11183,18 @@ protected open func visit(_: Pattern): Unit
 
 - _: [Pattern](ast_package_classes.md#class-pattern) - [Pattern](ast_package_classes.md#class-pattern) 类型的被遍历节点。
 
+### func visit(PerformExpr)
+
+```cangjie
+protected open func visit(_: PerformExpr): Unit
+```
+
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [PerformExpr](ast_package_classes.md#class-performexpr) - [PerformExpr](ast_package_classes.md#class-performexpr) 类型的被遍历节点。
+
 ### func visit(PrefixType)
 
 ```cangjie
@@ -11226,6 +11326,18 @@ protected open func visit(_: RefType): Unit
 参数：
 
 - _: [RefType](ast_package_classes.md#class-reftype) - [RefType](ast_package_classes.md#class-reftype) 类型的被遍历节点。
+
+### func visit(ResumeExpr)
+
+```cangjie
+protected open func visit(_: ResumeExpr): Unit
+```
+
+功能：定义访问节点时的操作，需要重写。
+
+参数：
+
+- _: [ResumeExpr](ast_package_classes.md#class-resumeexpr) - [ResumeExpr](ast_package_classes.md#class-resumeexpr) 类型的被遍历节点。
 
 ### func visit(ReturnExpr)
 
