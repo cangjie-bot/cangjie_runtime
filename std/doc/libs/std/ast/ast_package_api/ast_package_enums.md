@@ -260,10 +260,14 @@ public enum TokenKind <: ToString {
     ANNOTATION|               /*  e.g. "@When"       */
     AT_EXCL|                  /*  e.g. "@!"          */
     ILLEGAL|
+    COMMON|                   /*  "common"           */
+    PLATFORM|                 /*  "platform"         */
     HANDLE|                   /*  "handle"           */
     PERFORM|                  /*  "perform"          */
     RESUME|                   /*  "resume"           */
     THROWING|                 /*  "throwing"         */
+    DOUBLE_COLON|             /*  "::"               */
+    FEATURES|                 /*  "features"         */
     ...
 }
 ```
@@ -514,6 +518,14 @@ COMMENT
 
 功能：构造一个表示*注释*的枚举实例。
 
+### COMMON
+
+```cangjie
+COMMON
+```
+
+功能：构造一个表示 `common` 的枚举实例。
+
 ### COMPOSITION
 
 ```cangjie
@@ -602,6 +614,14 @@ DOUBLE_ARROW
 
 功能：构造一个表示 `=>` 的枚举实例。
 
+### DOUBLE_COLON
+
+```cangjie
+DOUBLE_COLON
+```
+
+功能：构造一个表示 `::` 的枚举实例。
+
 ### ELLIPSIS
 
 ```cangjie
@@ -665,6 +685,14 @@ EXTEND
 ```
 
 功能：构造一个表示 `extend` 的枚举实例。
+
+### FEATURES
+
+```cangjie
+FEATURES
+```
+
+功能：构造一个表示 `features` 的枚举实例。
 
 ### FINALLY
 
@@ -769,14 +797,6 @@ IDENTIFIER
 ```
 
 功能：构造一个表示*标识符*的枚举实例。
-
-### PACKAGE_IDENTIFIER
-
-```cangjie
-PACKAGE_IDENTIFIER
-```
-
-功能：构造一个表示*包标识符*的枚举实例。
 
 ### IF
 
@@ -1146,6 +1166,14 @@ PACKAGE
 
 功能：构造一个表示 `package` 的枚举实例。
 
+### PACKAGE_IDENTIFIER
+
+```cangjie
+PACKAGE_IDENTIFIER
+```
+
+功能：构造一个表示*包标识符*的枚举实例。
+
 ### PERFORM
 
 ```cangjie
@@ -1161,6 +1189,14 @@ PIPELINE
 ```
 
 功能：构造一个表示 `|>` 的枚举实例。
+
+### PLATFORM
+
+```cangjie
+PLATFORM
+```
+
+功能：构造一个 `platform` 的枚举实例
 
 ### PRIVATE
 
