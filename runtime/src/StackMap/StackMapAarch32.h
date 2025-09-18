@@ -44,7 +44,7 @@ public:
         constexpr Uptr slotLength = 4;
         constexpr Uptr calleeSavedAreaOffset = 4 * 4;
         Uptr slotAddr = fp + calleeSavedAreaOffset;
-        static constexpr RegisterId calleeSavedRegiser[] = { R4, R5, R6, R7, R8, R9, R10, R11};
+        static constexpr RegisterId calleeSavedRegiser[] = { R4, R5, R6, R7, R8, R9, R10};
         for (auto reg : calleeSavedRegiser) {
             regSlotsMap.Insert(reg, reinterpret_cast<SlotAddress>(slotAddr));
             slotAddr += slotLength;
