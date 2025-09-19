@@ -47,6 +47,9 @@ struct CJMutex {
 
 struct CJMonitor {
     void* klass;
+#ifdef __arm__
+    uint32_t padding;
+#endif
     CJMutex* mutexPtr;
     bool isWaitQueueInit;
     Waitqueue wq;
@@ -54,12 +57,18 @@ struct CJMonitor {
 
 struct CJWaitQueue {
     void* klass;
+#ifdef __arm__
+    uint32_t padding;
+#endif
     bool isWaitQueueInit;
     Waitqueue wq;
 };
 
 struct CJMultiConditionMonitor {
     void* klass;
+#ifdef __arm__
+    uint32_t padding;
+#endif
     CJMutex* mutexPtr;
 };
 
