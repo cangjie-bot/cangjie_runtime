@@ -318,7 +318,7 @@ public class ArrayList<T> <: List<T> {
         if (cSize <= 0) {
             return
         }
-        
+
         if (mySize + cSize > myData.size) {
             var newCapacity: Int64 = max(mySize + (mySize >> 1), mySize + cSize)
             let newArray: Array<T> = Array<T>(newCapacity, repeat: unsafe { zeroValue<T>() })
@@ -460,6 +460,173 @@ public class ArrayList<T> <: List<T> {
             mySize = 0
         }
         myVersion++
+    }
+
+    public func step(count: Int64): ArrayList<T> {
+        if (count <= 0) {
+            throw IllegalArgumentException("Step count must be greater than 0!")
+        }
+
+        if (mySize > 0) {
+            let newSize: Int64 = (mySize + count - 1) / count
+            var newData: Array<T> = Array<T>(newSize, repeat: unsafe { zeroValue<T>() })
+            let oldLastIndex: Int64 = (newSize - 1) * count
+            var j: Int64 = newSize - 1
+            for (i in oldLastIndex..=0 : -count) {
+                newData[j] = myData[i]
+                j--
+            }
+            return ArrayList<T>(newData)
+        }
+        return ArrayList<T>()
+    }
+
+    public func take(count: Int64): ArrayList<T> {
+        if (count == 0) {
+            return ArrayList<T>()
+        }
+
+        if (count < 0) {
+            throw IllegalArgumentException("take count must be greater than 0!")
+        }
+        var newSize = min(count,mySize)
+
+        var newData: Array<T> = Array<T>(newSize, repeat: unsafe { zeroValue<T>() })
+        myData.copyTo(newData, 0, 0, newSize)
+        return ArrayList<T>(newData)
+    }
+
+    public func skip(count: Int64): ArrayList<T> {
+        if (count < 0) {
+            throw IllegalArgumentException("skip count must be greater than 0!")
+        }
+        if (count == 0) {
+            var newData: Array<T> = myData.clone()
+            return ArrayList<T>(newData)
+        }
+        if (mySize - count <= 0) {
+            return ArrayList<T>()
+        }
+
+        var newData: Array<T> = Array<T>(mySize - count, repeat: unsafe { zeroValue<T>() })
+        myData.copyTo(newData, count, 0, mySize - count)
+        return ArrayList<T>(newData)
+    }
+
+    public func filter(predicate: (T) -> Bool): ArrayList<T> {
+        if (mySize == 0) {
+            return ArrayList<T>()
+        }
+        var newData: Array<T> = Array<T>(mySize, repeat: unsafe { zeroValue<T>() })
+        var j = 0;
+        for (i in 0..mySize) {
+            if (predicate(myData[i])) {
+                newData[j] = myData[i]
+                j++
+            }
+        }
+        return ArrayList<T>(newData)
+    }
+
+    public func map<R>(transform: (T) -> R): ArrayList<R> {
+        if (mySize == 0) {
+            return ArrayList<R>()
+        }
+        var newData: Array<R> = Array<R>(mySize, repeat: unsafe { zeroValue<R>() })
+        for (i in mySize - 1..=0 : -1) {
+            newData[i] = transform(myData[i])
+        }
+        return ArrayList<R>(newData)
+    }
+
+    public func filterMap<R>(transform: (T) -> ?R): ArrayList<R> {
+        if (mySize == 0) {
+            return ArrayList<R>()
+        }
+        var newData: Array<R> = Array<R>(mySize, repeat: unsafe { zeroValue<R>() })
+        var j = 0;
+        for (i in 0..mySize) {
+            match (transform(myData[i])) {
+                case Some(v) =>
+                    newData[j] = v
+                    j++
+                case None => continue
+            }
+        }
+        return ArrayList<R>(newData)
+    }
+
+    public func intersperse(separator: T): ArrayList<T> {
+        if (mySize < 2) {
+            var newData: Array<T> = myData.clone()
+            return ArrayList<T>(newData)
+        }
+        var newSize: Int64 = 2 * mySize - 1
+        var newData: Array<T> = Array<T>(newSize, repeat: unsafe { zeroValue<T>() })
+        for (i in 0..mySize - 1) {
+            newData[2 * i] = myData[i]
+            newData[2 * i + 1] = separator
+        }
+        newData[newSize - 1] = myData[mySize - 1]
+        return ArrayList<T>(newData)
+    }
+
+    public func forEach(action: (T) -> Unit): Unit {
+        for (i in 0..mySize) {
+            action(myData[i])
+        }
+    }
+
+    public func all(predicate: (T) -> Bool): Bool {
+        for (i in 0..mySize) {
+            if (predicate(myData[i])) {
+                continue
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+
+    public func any(predicate: (T) -> Bool): Bool {
+        for (i in 0..mySize) {
+            if (predicate(myData[i])) {
+                return true
+            } else {
+                continue
+            }
+        }
+        return false
+    }
+
+    public func none(predicate: (T) -> Bool): Bool {
+        for (i in 0..mySize) {
+            if (predicate(myData[i])) {
+                return false
+            } else {
+                continue
+            }
+        }
+        return true
+    }
+
+    public func fold<R>(initial: R, operation: (R, T) -> R): R{
+        var result:R = initial
+        for (i in 0 .. mySize){
+            result = operation(result,myData[i])
+        }
+        return result
+    }
+
+    public func reduce(operation: (T, T) -> T):?T{
+        if(mySize == 0){
+            return None
+        }
+        var result:T = myData[0]
+        for (i in 0 .. mySize){
+            result = operation(result,myData[i]) // todo
+        }
+        return Some(result)
     }
 
     /**
@@ -836,6 +1003,31 @@ extend<T> ArrayList<T> <: ToString where T <: ToString {
     @Frozen
     public func toString(): String {
         return collectionToString<ArrayList<T>, T>(this)
+    }
+}
+
+extend<T> ArrayList<T> {
+    public func zip<R>(other: ArrayList<R>): ArrayList<(T, R)> {
+        var newSize: Int64 = min(mySize, other.size)
+        if (newSize == 0) {
+            return ArrayList<(T, R)>()
+        }
+        var newData: Array<(T, R)> = Array<(T, R)>(newSize, repeat: unsafe { zeroValue<(T, R)>() })
+        for (i in newSize - 1..=0 : -1) {
+            newData[i] = (myData[i], other[i])
+        }
+        return ArrayList<(T, R)>(newData)
+    }
+
+    public func enumerate(): ArrayList<(Int64, T)> {
+        if (mySize == 0) {
+            return ArrayList<(Int64, T)>()
+        }
+        var newData: Array<(Int64, T)> = Array<(Int64, T)>(mySize, repeat: unsafe { zeroValue<(Int64, T)>() })
+        for (i in mySize - 1..=0 : -1) {
+            newData[i] = (i, myData[i])
+        }
+        return ArrayList<(Int64, T)>(newData)
     }
 }
 
