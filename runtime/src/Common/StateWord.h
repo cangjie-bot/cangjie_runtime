@@ -154,7 +154,7 @@ public:
 private:
 #ifdef __arm__
     explicit StateWord(uint32_t typeInfo, ObjectState state)
-        : objectState(state), padding(0), typeInfo(typeInfo)
+        : typeInfo(typeInfo), padding(0), objectState(state)
     {
         (void)padding;
     }
@@ -166,9 +166,9 @@ private:
 
     // for type info.
 #ifdef __arm__
-    ObjectState objectState;
-    uint16_t padding;
     uint32_t typeInfo;
+    uint16_t padding;
+    ObjectState objectState;
 #else
     uint32_t typeInfoLow32;
     uint16_t typeInfoHigh16;
