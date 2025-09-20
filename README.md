@@ -12,6 +12,10 @@ The Cangjie standard library (std) is built on a lower layer based on compiler f
 
 ![](runtime/figures/cangjie_runtime.png)
 
+> Usage of third-party libraries
+> - `libboundscheck` is consumed by the Cangjie runtime via source-level dependency and is compiled into the distributed binary package.
+> - `OpenSSL` is consumed by the Cangjie runtime through dynamic linking to the system-shared library; no source dependency is required.
+
 **Cangjie Runtime Architecture**
 
 - **Garbage Collection** uses a low-latency, fully concurrent memory compact algorithm, with the core goal of achieving lower latency and lower memory overhead, helping developers focus better on the programming itself.
@@ -140,10 +144,10 @@ $ python3 build.py clean
 
 ### Usage
 
-The standalone build outputs must be used together with the `cjc` compiler and the standard library.
+The standalone build outputs must be used together with the `cjc` compiler and the standard library. The complete bundle runs out-of-the-box on Linux, macOS, Windows, and OpenHarmony systems.
 For integration details, please refer to the [Cangjie SDK Integration and Build Guide](https://gitcode.com/Cangjie/cangjie_build).
 
-## Cangjie Programming Language Library
+## Cangjie Programming Language - Standard Library (std)
 
 ### Introduction
 
@@ -159,6 +163,11 @@ The Cangjie Standard Library has three key characteristics and goals:
 For a detailed introduction and usage of the standard library, please refer to the [official standard library documentation](https://cangjie-lang.cn/docs?url=%2F1.0.0%2Flibs%2Fstd%2Fstd_module_overview.html).
 
 ![](std/figures/cangjie_std.png)
+
+> Usage of Third-Party Libraries
+> - `flatbuffers` is used in the standard library `ast`. It is used as a source code dependency and will be compiled and integrated into the binary release package.
+> - `libboundscheck` is used in the standard libraries `core`, `collection`, `convert`, `env`, `fs`, `net`, `posix`, `process`, and `time`. It is used as a source code dependency and will be compiled and integrated into the binary release package.
+> - `PCRE2` is used in the standard library `regex`. It is used as a source code dependency and will be compiled and integrated into the binary release package.
 
 ### Directory
 
@@ -233,7 +242,6 @@ Before building the standard library, you need to first build the runtime in thi
    ```
 
    Enter the std directory, compile the standard library source code by executing the `build.py` script, which supports three functions: build, clean, and install.
-
 
    ```
    cd std

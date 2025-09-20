@@ -1,6 +1,6 @@
 # 仓颉运行时与仓颉编程语言标准库
 
-在仓颉编程语言中，程序执行依赖于运行时和标准库的能力。​仓颉运行时作为轻量高效的基础引擎，负责程序运行时的内存、线程等核心资源管理；标准库提供了常用的功能和工具，为开发者构建应用功能奠定了坚实基础。
+仓颉语言运行时库主要提供仓颉运行时和标准库的源码。仓颉运行时负责程序运行时的内存、线程等核心资源管理；标准库提供业务常用功能。下面分别进行详细介绍。
 
 ## 仓颉运行时
 
@@ -9,6 +9,10 @@
 仓颉运行时是仓颉 Native 后端（CJNative）的核心组件之一，以高性能和轻量化为设计目标，为仓颉语言在全场景下的高性能表现提供有力支持。仓颉运行时作为仓颉程序运行的基础引擎，提供了自动内存管理、线程管理、包管理等基础驱动功能。
 
 ![](runtime/figures/cangjie_runtime_zh.png)
+
+> 三方库的使用方式
+> - `libboundscheck` 的使用主体是仓颉运行时，使用方式是源码依赖，会编译集成到二进制发布包中。
+> - `OpenSSL` 的使用主体是仓颉运行时，使用方式是动态链接系统中动态库，不依赖源码。
 
 **仓颉运行时架构图说明**
 
@@ -31,7 +35,7 @@
 
 - **仓颉对象模型**包含仓颉对象元数据、成员信息、方法信息和方法表。为仓颉对象的创建、管理、调用和释放提供支持。
 
-- **跨语言调用**通过外部函数接口实现仓颉语言和 `C`、`ArkTs` 之间的函数调用和数据交互。
+- **跨语言调用**通过外部函数接口实现仓颉语言和 `C` 语言、`ArkTs` 语言之间的函数调用和数据交互。
 
 - **DFX**提供日志打印、`CPU` 采集、堆快照导出等调试调优功能，支持运行时状态检测和故障排查。
 
@@ -134,7 +138,7 @@ $ python3 build.py clean
 
 ### 使用说明
 
-运行时独立构建产物需要配合cjc编译器及标准库等使用，具体集成方式请查看[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)。
+运行时独立构建产物需要配合cjc编译器及标准库等使用，整体可在 Linux、macOS、Windows 与 OpenHarmony 系统上直接运行。具体集成方式请查看[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)。
 
 ##### 下载源码：
 
@@ -142,7 +146,7 @@ $ python3 build.py clean
 $ git clone https://gitcode.com/Cangjie/cangjie_runtime.git;
 ```
 
-## 仓颉编程语言标准库
+## 仓颉编程语言 - 标准库（std）
 
 ### 简介
 
@@ -157,6 +161,11 @@ $ git clone https://gitcode.com/Cangjie/cangjie_runtime.git;
 标准库的详细介绍和使用可以参见[仓颉编程语言标准库 API](./std/doc/libs/summary_cjnative.md)。
 
 ![](std/figures/cangjie_std_zh.png)
+
+> 三方库的使用方式
+> - `flatbuffers` 的使用主体是标准库 `ast`，使用方式是源码依赖，会编译集成到二进制发布包中。
+> - `libboundscheck` 的使用主体是标准库 `core`、`collection`、`convert`、`env`、`fs`、`net`、`posix`、`process` 和 `time`，使用方式是源码依赖，会编译集成到二进制发布包中。
+> - `PCRE2` 的使用主体是标准库 `regex`，使用方式是源码依赖，会编译集成到二进制发布包中。
 
 ### 目录
 
@@ -256,7 +265,7 @@ output
 
 #### 使用说明
 
-标准库构建产物需要配合 cjc 编译器及运行时等使用，具体集成方式请查看[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)。
+标准库构建产物需要配合 cjc 编译器及运行时等使用，整体可在 Linux、macOS、Windows 与 OpenHarmony 系统上直接运行。具体集成方式请查看[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)。
 
 #### 更多构建选项
 
@@ -293,8 +302,6 @@ python3 build.py install --help
 ## 相关仓
 
 [cangjie_compiler](https://gitcode.com/Cangjie/cangjie_compiler)
-
-[cangjie_runtime](https://gitcode.com/Cangjie/cangjie_runtime)
 
 [cangjie_tools](https://gitcode.com/Cangjie/cangjie_tools)
 
