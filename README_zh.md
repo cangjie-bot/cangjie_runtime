@@ -10,6 +10,10 @@
 
 ![](runtime/figures/cangjie_runtime_zh.png)
 
+> 三方库的使用方式
+> - `libboundscheck` 的使用主体是仓颉运行时，使用方式是源码依赖，会编译集成到二进制发布包中。
+> - `OpenSSL` 的使用主体是仓颉运行时，使用方式是动态链接系统中动态库，不依赖源码。
+
 **仓颉运行时架构图说明**
 
 - **自动内存管理**使用了低时延的全并发内存整理算法，其核心目标是追求更低的业务时延与更低的内存开销，帮助开发者更好地聚焦业务本身。
@@ -31,7 +35,7 @@
 
 - **仓颉对象模型**包含仓颉对象元数据、成员信息、方法信息和方法表。为仓颉对象的创建、管理、调用和释放提供支持。
 
-- **跨语言调用**通过外部函数接口实现仓颉语言和 `C`、`ArkTs` 之间的函数调用和数据交互。
+- **跨语言调用**通过外部函数接口实现仓颉语言和 `C` 语言、`ArkTs` 语言之间的函数调用和数据交互。
 
 - **DFX**提供日志打印、`CPU` 采集、堆快照导出等调试调优功能，支持运行时状态检测和故障排查。
 
@@ -134,7 +138,7 @@ $ python3 build.py clean
 
 ### 使用说明
 
-运行时独立构建产物需要配合cjc编译器及标准库等使用，具体集成方式请查看[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)。
+运行时独立构建产物需要配合cjc编译器及标准库等使用，整体可在 Linux、macOS、Windows 与 OpenHarmony 系统上直接运行。具体集成方式请查看[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)。
 
 ##### 下载源码：
 
@@ -142,7 +146,7 @@ $ python3 build.py clean
 $ git clone https://gitcode.com/Cangjie/cangjie_runtime.git;
 ```
 
-## 仓颉编程语言标准库
+## 仓颉编程语言 - 标准库（std）
 
 ### 简介
 
@@ -157,6 +161,11 @@ $ git clone https://gitcode.com/Cangjie/cangjie_runtime.git;
 标准库的详细介绍和使用可以参见[仓颉编程语言标准库 API](./std/doc/libs/summary_cjnative.md)。
 
 ![](std/figures/cangjie_std_zh.png)
+
+> 三方库的使用方式
+> - `flatbuffers` 的使用主体是标准库 `ast`，使用方式是源码依赖，会编译集成到二进制发布包中。
+> - `libboundscheck` 的使用主体是标准库 `core`、`collection`、`convert`、`env`、`fs`、`net`、`posix`、`process` 和 `time`，使用方式是源码依赖，会编译集成到二进制发布包中。
+> - `PCRE2` 的使用主体是标准库 `regex`，使用方式是源码依赖，会编译集成到二进制发布包中。
 
 ### 目录
 
@@ -256,7 +265,7 @@ output
 
 #### 使用说明
 
-标准库构建产物需要配合 cjc 编译器及运行时等使用，具体集成方式请查看[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)。
+标准库构建产物需要配合 cjc 编译器及运行时等使用，整体可在 Linux、macOS、Windows 与 OpenHarmony 系统上直接运行。具体集成方式请查看[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)。
 
 #### 更多构建选项
 
@@ -293,8 +302,6 @@ python3 build.py install --help
 ## 相关仓
 
 [cangjie_compiler](https://gitcode.com/Cangjie/cangjie_compiler)
-
-[cangjie_runtime](https://gitcode.com/Cangjie/cangjie_runtime)
 
 [cangjie_tools](https://gitcode.com/Cangjie/cangjie_tools)
 
