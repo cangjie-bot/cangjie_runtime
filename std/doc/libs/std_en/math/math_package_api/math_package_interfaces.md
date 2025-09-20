@@ -16,7 +16,7 @@ public interface FloatingPoint<T> <: Number<T> {
 }
 ```
 
-Function: This interface provides floating-point number related methods.
+Functionality: This interface provides methods related to floating-point numbers.
 
 Parent Types:
 
@@ -28,7 +28,7 @@ Parent Types:
 static func getE(): T
 ```
 
-Function: Gets the natural constant of type T.
+Functionality: Gets the natural constant of type T.
 
 Return Value:
 
@@ -40,7 +40,7 @@ Return Value:
 static func getInf(): T
 ```
 
-Function: Gets the infinity value of floating-point numbers.
+Functionality: Gets the infinity value of floating-point numbers.
 
 Return Value:
 
@@ -52,7 +52,7 @@ Return Value:
 static func getPI(): T
 ```
 
-Function: Gets the pi constant of type T.
+Functionality: Gets the pi constant of type T.
 
 Return Value:
 
@@ -64,7 +64,7 @@ Return Value:
 static func getMinDenormal(): T
 ```
 
-Function: Gets the minimum denormal number of single-precision floating-point numbers.
+Functionality: Gets the minimum denormal number of single-precision floating-point numbers.
 
 Return Value:
 
@@ -76,7 +76,7 @@ Return Value:
 static func getMinNormal(): T
 ```
 
-Function: Gets the minimum normal number of single-precision floating-point numbers.
+Functionality: Gets the minimum normal number of single-precision floating-point numbers.
 
 Return Value:
 
@@ -88,7 +88,7 @@ Return Value:
 static func getNaN(): T
 ```
 
-Function: Gets the Not-a-Number (NaN) value of floating-point numbers.
+Functionality: Gets the Not-a-Number (NaN) value of floating-point numbers.
 
 Return Value:
 
@@ -100,7 +100,7 @@ Return Value:
 func isInf(): Bool
 ```
 
-Function: Determines whether the floating-point number is infinite.
+Functionality: Determines whether the floating-point number is infinite.
 
 Return Value:
 
@@ -112,7 +112,7 @@ Return Value:
 func isNaN(): Bool
 ```
 
-Function: Determines whether the floating-point number is Not-a-Number (NaN).
+Functionality: Determines whether the floating-point number is Not-a-Number (NaN).
 
 Return Value:
 
@@ -124,7 +124,7 @@ Return Value:
 func isNormal(): Bool
 ```
 
-Function: Determines whether the floating-point number is normal.
+Functionality: Determines whether the floating-point number is normal.
 
 Return Value:
 
@@ -136,7 +136,7 @@ Return Value:
 extend Float16 <: FloatingPoint<Float16>
 ```
 
-Function: Extends the [FloatingPoint\<Float16>](#interface-floatingpointt) interface for the [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
+Functionality: Extends the [FloatingPoint\<Float16>](#interface-floatingpointt) interface for the [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
 
 Parent Types:
 
@@ -148,7 +148,7 @@ Parent Types:
 public static func getE(): Float16
 ```
 
-Function: Gets the natural constant of the half-precision floating-point type.
+Functionality: Gets the natural constant of the half-precision floating-point type.
 
 Return Value:
 
@@ -160,7 +160,7 @@ Return Value:
 public static func getInf(): Float16
 ```
 
-Function: Gets the infinity value of the half-precision floating-point type.
+Functionality: Gets the infinity value of the half-precision floating-point type.
 
 Return Value:
 
@@ -172,7 +172,7 @@ Return Value:
 public static func getPI(): Float16
 ```
 
-Function: Gets the pi constant of the half-precision floating-point type.
+Functionality: Gets the pi constant of the half-precision floating-point type.
 
 Return Value:
 
@@ -184,7 +184,7 @@ Return Value:
 public static func getMinDenormal(): Float16
 ```
 
-Function: Gets the minimum denormal number of the half-precision floating-point type.
+Functionality: Gets the minimum denormal number of the half-precision floating-point type.
 
 Return Value:
 
@@ -196,7 +196,7 @@ Return Value:
 public static func getMinNormal(): Float16
 ```
 
-Function: Gets the minimum normal number of the half-precision floating-point type.
+Functionality: Gets the minimum normal number of the half-precision floating-point type.
 
 Return Value:
 
@@ -208,7 +208,7 @@ Return Value:
 public static func getNaN(): Float16
 ```
 
-Function: Gets the Not-a-Number (NaN) value of the half-precision floating-point type.
+Functionality: Gets the Not-a-Number (NaN) value of the half-precision floating-point type.
 
 Return Value:
 
@@ -220,7 +220,7 @@ Return Value:
 extend Float32 <: FloatingPoint<Float32>
 ```
 
-Function: Extends the [FloatingPoint\<Float32>](#interface-floatingpointt) interface for the [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
+Functionality: Extends the [FloatingPoint\<Float32>](#interface-floatingpointt) interface for the [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
 
 Parent Types:
 
@@ -232,7 +232,7 @@ Parent Types:
 public static func getE(): Float32
 ```
 
-Function: Gets the natural constant of the single-precision floating-point type.
+Functionality: Gets the natural constant of the single-precision floating-point type.
 
 Return Value:
 
@@ -244,7 +244,7 @@ Return Value:
 public static func getInf(): Float32
 ```
 
-Function: Gets the infinity value of the single-precision floating-point type.
+Functionality: Gets the infinity value of the single-precision floating-point type.
 
 Return Value:
 
@@ -256,7 +256,7 @@ Return Value:
 public static func getPI(): Float32
 ```
 
-Function: Gets the pi constant of the single-precision floating-point type.
+Functionality: Gets the pi constant of the single-precision floating-point type.
 
 Return Value:
 
@@ -268,7 +268,7 @@ Return Value:
 public static func getMinDenormal(): Float32
 ```
 
-Function: Gets the minimum denormal number of the single-precision floating-point type.
+Functionality: Gets the minimum denormal number of the single-precision floating-point type.
 
 Return Value:
 
@@ -280,7 +280,7 @@ Return Value:
 public static func getMinNormal(): Float32
 ```
 
-Function: Gets the minimum normal number of the single-precision floating-point type.
+Functionality: Gets the minimum normal number of the single-precision floating-point type.
 
 Return Value:
 
@@ -292,17 +292,19 @@ Return Value:
 public static func getNaN(): Float32
 ```
 
-Function: Gets the Not-a-Number (NaN) value of the single-precision floating-point type.
+Functionality: Gets the Not-a-Number (NaN) value of the single-precision floating-point type.
 
 Return Value:
 
-- [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) - The NaN value of the single-precision floating-point type.### extend Float64 <: FloatingPoint\<Float64>
+- [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) - The NaN value of the single-precision floating-point type.
+
+### extend Float64 <: FloatingPoint\<Float64>
 
 ```cangjie
 extend Float64 <: FloatingPoint<Float64>
 ```
 
-Function: Extends the [FloatingPoint\<Float64>](#interface-floatingpointt) interface for the [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
+Functionality: Extends the [FloatingPoint\<Float64>](#interface-floatingpointt) interface for the [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
 
 Parent Types:
 
@@ -314,11 +316,11 @@ Parent Types:
 public static func getE(): Float64
 ```
 
-Function: Gets the natural constant for the double-precision floating-point type.
+Functionality: Gets the natural constant of the double-precision floating-point type.
 
 Return Value:
 
-- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The natural constant for the double-precision floating-point type.
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The natural constant of the double-precision floating-point type.
 
 #### static func getInf()
 
@@ -326,11 +328,11 @@ Return Value:
 public static func getInf(): Float64
 ```
 
-Function: Gets the infinity value for the double-precision floating-point type.
+Functionality: Gets the infinity value of the double-precision floating-point type.
 
 Return Value:
 
-- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The infinity value for the double-precision floating-point type.
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The infinity value of the double-precision floating-point type.
 
 #### static func getPI()
 
@@ -338,11 +340,11 @@ Return Value:
 public static func getPI(): Float64
 ```
 
-Function: Gets the pi constant for the double-precision floating-point type.
+Functionality: Gets the pi constant of the double-precision floating-point type.
 
 Return Value:
 
-- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The pi constant for the double-precision floating-point type.
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The pi constant of the double-precision floating-point type.
 
 #### static func getMinDenormal()
 
@@ -350,11 +352,11 @@ Return Value:
 public static func getMinDenormal(): Float64
 ```
 
-Function: Gets the minimum denormal number for the double-precision floating-point type.
+Functionality: Gets the minimum denormal number of the double-precision floating-point type.
 
 Return Value:
 
-- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The minimum denormal number for the double-precision floating-point type.
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The minimum denormal number of the double-precision floating-point type.
 
 #### static func getMinNormal()
 
@@ -362,11 +364,11 @@ Return Value:
 public static func getMinNormal(): Float64
 ```
 
-Function: Gets the minimum normal number for the double-precision floating-point type.
+Functionality: Gets the minimum normal number of the double-precision floating-point type.
 
 Return Value:
 
-- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The minimum normal number for the double-precision floating-point type.
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The minimum normal number of the double-precision floating-point type.
 
 #### static func getNaN()
 
@@ -374,11 +376,11 @@ Return Value:
 public static func getNaN(): Float64
 ```
 
-Function: Gets the Not-a-Number (NaN) value for the double-precision floating-point type.
+Functionality: Gets the Not-a-Number (NaN) value of the double-precision floating-point type.
 
 Return Value:
 
-- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The NaN value for the double-precision floating-point type.
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The NaN value of the double-precision floating-point type.
 
 ## interface Integer\<T>
 
@@ -395,13 +397,11 @@ public interface Integer<T> <: Number<T> {
 }
 ```
 
-Function: This interface provides methods related to integer types.
+Functionality: This interface provides methods related to integer types.
 
 Parent Types:
 
-- [Number\<T>](#interface-numbert)
-
-### static func isSigned()
+- [Number\<T>](#interface-numbert)### static func isSigned()
 
 ```cangjie
 static func isSigned(): Bool
@@ -419,7 +419,7 @@ Return Value:
 operator func %(rhs: T): T
 ```
 
-Function: Arithmetic operator for calculating the remainder.
+Function: Arithmetic operator that calculates the remainder.
 
 Parameters:
 
@@ -443,7 +443,7 @@ Parameters:
 
 Return Value:
 
-- T - The calculated result.
+- T - The computed result.
 
 ### operator func |(T)
 
@@ -459,7 +459,7 @@ Parameters:
 
 Return Value:
 
-- T - The calculated result.
+- T - The computed result.
 
 ### operator func ^(T)
 
@@ -475,7 +475,7 @@ Parameters:
 
 Return Value:
 
-- T - The calculated result.
+- T - The computed result.
 
 ### operator func !()
 
@@ -487,7 +487,7 @@ Function: Bitwise NOT operator.
 
 Return Value:
 
-- T - The calculated result.
+- T - The computed result.
 
 ### operator func >>(Int64)
 
@@ -503,7 +503,7 @@ Parameters:
 
 Return Value:
 
-- T - The calculated result.
+- T - The computed result.
 
 ### operator func <<(Int64)
 
@@ -519,7 +519,7 @@ Parameters:
 
 Return Value:
 
-- T - The calculated result.
+- T - The computed result.
 
 ### extend Int16 <: Integer\<Int16>
 
@@ -527,9 +527,9 @@ Return Value:
 extend Int16 <: Integer<Int16>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
+Function: Extends the [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[Int16](../../core/core_package_api/core_package_intrinsics.md#int16)>
 
@@ -551,9 +551,9 @@ Return Value:
 extend Int32 <: Integer<Int32>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
+Function: Extends the [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[Int32](../../core/core_package_api/core_package_intrinsics.md#int32)>
 
@@ -575,9 +575,9 @@ Return Value:
 extend Int64 <: Integer<Int64>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
+Function: Extends the [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)>
 
@@ -599,9 +599,9 @@ Return Value:
 extend Int8 <: Integer<Int8>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
+Function: Extends the [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[Int8](../../core/core_package_api/core_package_intrinsics.md#int8)>
 
@@ -623,9 +623,9 @@ Return Value:
 extend IntNative <: Integer<IntNative>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
+Function: Extends the [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative)>
 
@@ -647,9 +647,9 @@ Return Value:
 extend UInt16 <: Integer<UInt16>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
+Function: Extends the [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16)>
 
@@ -671,9 +671,9 @@ Return Value:
 extend UInt32 <: Integer<UInt32>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
+Function: Extends the [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32)>
 
@@ -695,9 +695,9 @@ Return Value:
 extend UInt64 <: Integer<UInt64>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
+Function: Extends the [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64)>
 
@@ -719,9 +719,9 @@ Return Value:
 extend UInt8 <: Integer<UInt8>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
+Function: Extends the [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8)>
 
@@ -743,9 +743,9 @@ Return Value:
 extend UIntNative <: Integer<UIntNative>
 ```
 
-Function: Extends the [Integer\<T>](#interface-integert) interface for the [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
+Function: Extends the [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type to implement the [Integer\<T>](#interface-integert) interface.
 
-Parent Types:
+Parent Type:
 
 - [Integer](#interface-integert)\<[UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative)>
 
@@ -770,11 +770,11 @@ public interface MathExtension<T> {
 }
 ```
 
-Function: This interface provides unified methods to obtain certain mathematical constants.
+Function: Provides unified methods to obtain mathematical constants.
 
 > **Note:**
 >
-> Will be deprecated in future versions. Use [FloatingPoint\<T>](#interface-floatingpointt) instead.
+> This interface will be deprecated in future versions. Use [FloatingPoint\<T>](#interface-floatingpointt) instead.
 
 ### static func GetPI()
 
@@ -782,11 +782,11 @@ Function: This interface provides unified methods to obtain certain mathematical
 static func GetPI(): T
 ```
 
-Function: Retrieves the pi constant of type T.
+Function: Retrieves the π constant for type T.
 
 Return Value:
 
-- T - The pi constant of type T.
+- T - The π constant of type T.
 
 ### static func GetE()
 
@@ -794,11 +794,11 @@ Return Value:
 static func GetE(): T
 ```
 
-Function: Retrieves the natural constant of type T.
+Function: Retrieves the natural constant e for type T.
 
 Return Value:
 
-- T - The natural constant of type T.
+- T - The natural constant e of type T.
 
 ### extend Float16 <: MathExtension\<Float16>
 
@@ -806,11 +806,11 @@ Return Value:
 extend Float16 <: MathExtension<Float16>
 ```
 
-Function: Extends half-precision floating-point numbers to support certain mathematical constants.
+Function: Extends half-precision floating-point numbers to support mathematical constants.
 
-Parent Types:
+Parent Type:
 
-- [MathExtension <sup>(deprecated)</sup>](#interface-mathextensiont-deprecated)\<[Float16](../../../std_en/core/core_package_api/core_package_intrinsics.md#float16)>
+- [MathExtension <sup>(deprecated)</sup>](#interface-mathextensiont-deprecated)\<[Float16](../../core/core_package_api/core_package_intrinsics.md#float16)>
 
 #### static func GetPI()
 
@@ -818,11 +818,11 @@ Parent Types:
 public static func GetPI(): Float16
 ```
 
-Function: Retrieves the pi constant for half-precision floating-point numbers.
+Function: Retrieves the π constant for half-precision floating-point numbers.
 
 Return Value:
 
-- [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) - The pi constant of type Float16.
+- [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) - The π constant of type Float16.
 
 #### static func GetE()
 
@@ -830,11 +830,11 @@ Return Value:
 public static func GetE(): Float16
 ```
 
-Function: Retrieves the natural constant for half-precision floating-point numbers.
+Function: Retrieves the natural constant e for half-precision floating-point numbers.
 
 Return Value:
 
-- [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) - The natural constant of type Float16.
+- [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) - The natural constant e of type Float16.
 
 ### extend Float32 <: MathExtension\<Float32>
 
@@ -842,11 +842,11 @@ Return Value:
 extend Float32 <: MathExtension<Float32>
 ```
 
-Function: Extends single-precision floating-point numbers to support certain mathematical constants.
+Function: Extends single-precision floating-point numbers to support mathematical constants.
 
-Parent Types:
+Parent Type:
 
-- [MathExtension <sup>(deprecated)</sup>](#interface-mathextensiont-deprecated)\<[Float32](../../../std_en/core/core_package_api/core_package_intrinsics.md#float32)>
+- [MathExtension <sup>(deprecated)</sup>](#interface-mathextensiont-deprecated)\<[Float32](../../core/core_package_api/core_package_intrinsics.md#float32)>
 
 #### static func GetPI()
 
@@ -854,11 +854,11 @@ Parent Types:
 public static func GetPI(): Float32
 ```
 
-Function: Retrieves the pi constant for single-precision floating-point numbers.
+Function: Retrieves the π constant for single-precision floating-point numbers.
 
 Return Value:
 
-- [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) - The pi constant of type Float32.
+- [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) - The π constant of type Float32.
 
 #### static func GetE()
 
@@ -866,11 +866,11 @@ Return Value:
 public static func GetE(): Float32
 ```
 
-Function: Retrieves the natural constant for single-precision floating-point numbers.
+Function: Retrieves the natural constant e for single-precision floating-point numbers.
 
 Return Value:
 
-- [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) - The natural constant of type Float32.
+- [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) - The natural constant e of type Float32.
 
 ### extend Float64 <: MathExtension\<Float64>
 
@@ -878,11 +878,11 @@ Return Value:
 extend Float64 <: MathExtension<Float64>
 ```
 
-Function: Extends double-precision floating-point numbers to support certain mathematical constants.
+Function: Extends double-precision floating-point numbers to support mathematical constants.
 
-Parent Types:
+Parent Type:
 
-- [MathExtension <sup>(deprecated)</sup>](#interface-mathextensiont-deprecated)\<[Float64](../../../std_en/core/core_package_api/core_package_intrinsics.md#float64)>
+- [MathExtension <sup>(deprecated)</sup>](#interface-mathextensiont-deprecated)\<[Float64](../../core/core_package_api/core_package_intrinsics.md#float64)>
 
 #### static func GetPI()
 
@@ -890,11 +890,11 @@ Parent Types:
 public static func GetPI(): Float64
 ```
 
-Function: Retrieves the pi constant for double-precision floating-point numbers.
+Function: Retrieves the π constant for double-precision floating-point numbers.
 
 Return Value:
 
-- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The pi constant of type Float64.
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The π constant of type Float64.
 
 #### static func GetE()
 
@@ -902,13 +902,11 @@ Return Value:
 public static func GetE(): Float64
 ```
 
-Function: Retrieves the natural constant for double-precision floating-point numbers.
+Function: Retrieves the natural constant e for double-precision floating-point numbers.
 
 Return Value:
 
-- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The natural constant of type Float64.
-
-## interface MaxMinValue\<T>
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The natural constant e of type Float64.## interface MaxMinValue\<T>
 
 ```cangjie
 public interface MaxMinValue<T> {
@@ -917,7 +915,7 @@ public interface MaxMinValue<T> {
 }
 ```
 
-Function: Provides methods to retrieve maximum and minimum values.
+Function: Provides methods to get maximum and minimum values.
 
 ### static func getMax()
 
@@ -925,9 +923,9 @@ Function: Provides methods to retrieve maximum and minimum values.
 static func getMax(): T
 ```
 
-Function: Retrieves the maximum value.
+Function: Gets the maximum value.
 
-Return Value:
+Return value:
 
 - T - The maximum value.
 
@@ -937,9 +935,9 @@ Return Value:
 static func getMin(): T
 ```
 
-Function: Retrieves the minimum value.
+Function: Gets the minimum value.
 
-Return Value:
+Return value:
 
 - T - The minimum value.
 
@@ -951,7 +949,7 @@ extend Float16 <: MaxMinValue<Float16>
 
 Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
 
-Parent Type:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[Float16](../../core/core_package_api/core_package_intrinsics.md#float16)>
 
@@ -961,9 +959,9 @@ Parent Type:
 public static func getMax(): Float16
 ```
 
-Function: Retrieves the maximum value of [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
+Function: Gets the maximum value of [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
 
-Return Value:
+Return value:
 
 - [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) - The maximum value of half-precision floating-point type.
 
@@ -973,9 +971,9 @@ Return Value:
 public static func getMin(): Float16
 ```
 
-Function: Retrieves the minimum value of [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
+Function: Gets the minimum value of [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
 
-Return Value:
+Return value:
 
 - [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) - The minimum value of half-precision floating-point type.
 
@@ -987,7 +985,7 @@ extend Float32 <: MaxMinValue<Float32>
 
 Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
 
-Parent Type:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[Float32](../../core/core_package_api/core_package_intrinsics.md#float32)>
 
@@ -997,9 +995,9 @@ Parent Type:
 public static func getMax(): Float32
 ```
 
-Function: Retrieves the maximum value of [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
+Function: Gets the maximum value of [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
 
-Return Value:
+Return value:
 
 - [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) - The maximum value of single-precision floating-point type.
 
@@ -1009,9 +1007,9 @@ Return Value:
 public static func getMin(): Float32
 ```
 
-Function: Retrieves the minimum value of [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
+Function: Gets the minimum value of [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
 
-Return Value:
+Return value:
 
 - [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) - The minimum value of single-precision floating-point type.
 
@@ -1023,7 +1021,7 @@ extend Float64 <: MaxMinValue<Float64>
 
 Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
 
-Parent Type:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[Float64](../../core/core_package_api/core_package_intrinsics.md#float64)>
 
@@ -1033,9 +1031,9 @@ Parent Type:
 public static func getMax(): Float64
 ```
 
-Function: Retrieves the maximum value of [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
+Function: Gets the maximum value of [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
 
-Return Value:
+Return value:
 
 - [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The maximum value of double-precision floating-point type.
 
@@ -1045,9 +1043,9 @@ Return Value:
 public static func getMin(): Float64
 ```
 
-Function: Retrieves the minimum value of [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
+Function: Gets the minimum value of [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
 
-Return Value:
+Return value:
 
 - [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The minimum value of double-precision floating-point type.
 
@@ -1059,7 +1057,7 @@ extend Int16 <: MaxMinValue<Int16>
 
 Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
 
-Parent Type:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[Int16](../../core/core_package_api/core_package_intrinsics.md#int16)>
 
@@ -1069,9 +1067,9 @@ Parent Type:
 public static func getMax(): Int16
 ```
 
-Function: Retrieves the maximum value of [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
+Function: Gets the maximum value of [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
 
-Return Value:
+Return value:
 
 - [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) - The maximum value of [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
 
@@ -1081,9 +1079,9 @@ Return Value:
 public static func getMin(): Int16
 ```
 
-Function: Retrieves the minimum value of [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
+Function: Gets the minimum value of [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
 
-Return Value:
+Return value:
 
 - [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) - The minimum value of [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
 
@@ -1095,7 +1093,7 @@ extend Int32 <: MaxMinValue<Int32>
 
 Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
 
-Parent Type:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[Int32](../../core/core_package_api/core_package_intrinsics.md#int32)>
 
@@ -1105,9 +1103,9 @@ Parent Type:
 public static func getMax(): Int32
 ```
 
-Function: Retrieves the maximum value of [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
+Function: Gets the maximum value of [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
 
-Return Value:
+Return value:
 
 - [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - The maximum value of [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
 
@@ -1117,9 +1115,9 @@ Return Value:
 public static func getMin(): Int32
 ```
 
-Function: Retrieves the minimum value of [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
+Function: Gets the minimum value of [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
 
-Return Value:
+Return value:
 
 - [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - The minimum value of [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
 
@@ -1131,7 +1129,7 @@ extend Int64 <: MaxMinValue<Int64>
 
 Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
 
-Parent Type:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)>
 
@@ -1141,9 +1139,9 @@ Parent Type:
 public static func getMax(): Int64
 ```
 
-Function: Retrieves the maximum value of [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
+Function: Gets the maximum value of [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
 
-Return Value:
+Return value:
 
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - The maximum value of [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
 
@@ -1153,9 +1151,9 @@ Return Value:
 public static func getMin(): Int64
 ```
 
-Function: Retrieves the minimum value of [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
+Function: Gets the minimum value of [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
 
-Return Value:
+Return value:
 
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - The minimum value of [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
 
@@ -1167,7 +1165,7 @@ extend Int8 <: MaxMinValue<Int8>
 
 Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
 
-Parent Type:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[Int8](../../core/core_package_api/core_package_intrinsics.md#int8)>
 
@@ -1177,9 +1175,9 @@ Parent Type:
 public static func getMax(): Int8
 ```
 
-Function: Retrieves the maximum value of [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
+Function: Gets the maximum value of [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
 
-Return Value:
+Return value:
 
 - [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) - The maximum value of [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
 
@@ -1189,9 +1187,9 @@ Return Value:
 public static func getMin(): Int8
 ```
 
-Function: Retrieves the minimum value of [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
+Function: Gets the minimum value of [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
 
-Return Value:
+Return value:
 
 - [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) - The minimum value of [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
 
@@ -1201,9 +1199,9 @@ Return Value:
 extend IntNative <: MaxMinValue<IntNative>
 ```
 
-Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for the [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
+Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
 
-Parent Types:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative)>
 
@@ -1213,11 +1211,11 @@ Parent Types:
 public static func getMax(): IntNative
 ```
 
-Function: Gets the maximum value of the [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
+Function: Gets the maximum value of [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
 
-Return Value:
+Return value:
 
-- [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) - The maximum value of the [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
+- [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) - The maximum value of [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
 
 #### static func getMin()
 
@@ -1225,11 +1223,11 @@ Return Value:
 public static func getMin(): IntNative
 ```
 
-Function: Gets the minimum value of the [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
+Function: Gets the minimum value of [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
 
-Return Value:
+Return value:
 
-- [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) - The minimum value of the [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
+- [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) - The minimum value of [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
 
 ### extend UInt16 <: MaxMinValue\<UInt16>
 
@@ -1237,9 +1235,9 @@ Return Value:
 extend UInt16 <: MaxMinValue<UInt16>
 ```
 
-Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for the [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
+Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
 
-Parent Types:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16)>
 
@@ -1249,11 +1247,11 @@ Parent Types:
 public static func getMax(): UInt16
 ```
 
-Function: Gets the maximum value of the [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
+Function: Gets the maximum value of [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
 
-Return Value:
+Return value:
 
-- [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The maximum value of the [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
+- [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The maximum value of [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
 
 #### static func getMin()
 
@@ -1261,11 +1259,11 @@ Return Value:
 public static func getMin(): UInt16
 ```
 
-Function: Gets the minimum value of the [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
+Function: Gets the minimum value of [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
 
-Return Value:
+Return value:
 
-- [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The minimum value of the [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
+- [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The minimum value of [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
 
 ### extend UInt32 <: MaxMinValue\<UInt32>
 
@@ -1273,9 +1271,9 @@ Return Value:
 extend UInt32 <: MaxMinValue<UInt32>
 ```
 
-Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for the [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
+Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
 
-Parent Types:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32)>
 
@@ -1285,11 +1283,11 @@ Parent Types:
 public static func getMax(): UInt32
 ```
 
-Function: Gets the maximum value of the [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
+Function: Gets the maximum value of [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
 
-Return Value:
+Return value:
 
-- [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) - The maximum value of the [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
+- [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) - The maximum value of [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
 
 #### static func getMin()
 
@@ -1297,11 +1295,11 @@ Return Value:
 public static func getMin(): UInt32
 ```
 
-Function: Gets the minimum value of the [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
+Function: Gets the minimum value of [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
 
-Return Value:
+Return value:
 
-- [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) - The minimum value of the [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
+- [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) - The minimum value of [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
 
 ### extend UInt64 <: MaxMinValue\<UInt64>
 
@@ -1309,9 +1307,9 @@ Return Value:
 extend UInt64 <: MaxMinValue<UInt64>
 ```
 
-Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for the [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
+Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
 
-Parent Types:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64)>
 
@@ -1321,11 +1319,11 @@ Parent Types:
 public static func getMax(): UInt64
 ```
 
-Function: Gets the maximum value of the [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
+Function: Gets the maximum value of [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
 
-Return Value:
+Return value:
 
-- [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - The maximum value of the [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
+- [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - The maximum value of [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
 
 #### static func getMin()
 
@@ -1333,11 +1331,11 @@ Return Value:
 public static func getMin(): UInt64
 ```
 
-Function: Gets the minimum value of the [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
+Function: Gets the minimum value of [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
 
-Return Value:
+Return value:
 
-- [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - The minimum value of the [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
+- [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - The minimum value of [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
 
 ### extend UInt8 <: MaxMinValue\<UInt8>
 
@@ -1345,9 +1343,9 @@ Return Value:
 extend UInt8 <: MaxMinValue<UInt8>
 ```
 
-Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for the [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
+Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
 
-Parent Types:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8)>
 
@@ -1357,11 +1355,11 @@ Parent Types:
 public static func getMax(): UInt8
 ```
 
-Function: Gets the maximum value of the [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
+Function: Gets the maximum value of [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
 
-Return Value:
+Return value:
 
-- [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) - The maximum value of the [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
+- [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) - The maximum value of [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
 
 #### static func getMin()
 
@@ -1369,11 +1367,11 @@ Return Value:
 public static func getMin(): UInt8
 ```
 
-Function: Gets the minimum value of the [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
+Function: Gets the minimum value of [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
 
-Return Value:
+Return value:
 
-- [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) - The minimum value of the [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
+- [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) - The minimum value of [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
 
 ### extend UIntNative <: MaxMinValue\<UIntNative>
 
@@ -1381,9 +1379,9 @@ Return Value:
 extend UIntNative <: MaxMinValue<UIntNative>
 ```
 
-Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for the [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
+Function: Extends the [MaxMinValue](#interface-maxminvaluet) interface for [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
 
-Parent Types:
+Parent type:
 
 - [MaxMinValue](#interface-maxminvaluet)\<[UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative)>
 
@@ -1393,11 +1391,11 @@ Parent Types:
 public static func getMax(): UIntNative
 ```
 
-Function: Gets the maximum value of the [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
+Function: Gets the maximum value of [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
 
-Return Value:
+Return value:
 
-- [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) - The maximum value of the [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
+- [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) - The maximum value of [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
 
 #### static func getMin()
 
@@ -1405,11 +1403,7 @@ Return Value:
 public static func getMin(): UIntNative
 ```
 
-Function: Gets the minimum value of the [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
-
-Return Value:
-
-- [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) - The minimum value of the [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
+Function: Gets the minimum value of [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
 
 ## interface Number\<T>
 
@@ -1495,7 +1489,9 @@ Return Value:
 operator func -(): T
 ```
 
-Function: Arithmetic operator for negation.Return Value:
+Function: Arithmetic operator for negation.
+
+Return Value:
 
 - T - The negated value.
 
@@ -1505,7 +1501,7 @@ Function: Arithmetic operator for negation.Return Value:
 extend Float16 <: Number<Float16> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [Float16](../../core/core_package_api/core_package_intrinsics.md#float16) type.
 
 Parent Type:
 
@@ -1517,7 +1513,7 @@ Parent Type:
 extend Float32 <: Number<Float32> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [Float32](../../core/core_package_api/core_package_intrinsics.md#float32) type.
 
 Parent Type:
 
@@ -1529,7 +1525,7 @@ Parent Type:
 extend Float64 <: Number<Float64> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) type.
 
 Parent Type:
 
@@ -1541,7 +1537,7 @@ Parent Type:
 extend Int16 <: Number<Int16> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) type.
 
 Parent Type:
 
@@ -1553,7 +1549,7 @@ Parent Type:
 extend Int32 <: Number<Int32> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) type.
 
 Parent Type:
 
@@ -1565,7 +1561,7 @@ Parent Type:
 extend Int64 <: Number<Int64> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type.
 
 Parent Type:
 
@@ -1577,7 +1573,7 @@ Parent Type:
 extend Int8 <: Number<Int8> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [Int8](../../core/core_package_api/core_package_intrinsics.md#int8) type.
 
 Parent Type:
 
@@ -1589,7 +1585,7 @@ Parent Type:
 extend IntNative <: Number<IntNative> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [IntNative](../../core/core_package_api/core_package_intrinsics.md#intnative) type.
 
 Parent Type:
 
@@ -1601,7 +1597,7 @@ Parent Type:
 extend UInt16 <: Number<UInt16> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) type.
 
 Parent Type:
 
@@ -1613,7 +1609,7 @@ Parent Type:
 extend UInt32 <: Number<UInt32> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) type.
 
 Parent Type:
 
@@ -1625,7 +1621,7 @@ Parent Type:
 extend UInt64 <: Number<UInt64> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) type.
 
 Parent Type:
 
@@ -1637,7 +1633,7 @@ Parent Type:
 extend UInt8 <: Number<UInt8> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8) type.
 
 Parent Type:
 
@@ -1649,7 +1645,7 @@ Parent Type:
 extend UIntNative <: Number<UIntNative> {}
 ```
 
-Function: Extends the [Number\<T>](#interface-numbert) interface for the [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
+Function: Extends the [Number\<T>](#interface-numbert) interface for [UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative) type.
 
 Parent Type:
 

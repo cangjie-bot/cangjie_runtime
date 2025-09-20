@@ -1,4 +1,4 @@
-# Class
+# Classes
 
 ## class Annotation
 
@@ -9,7 +9,7 @@ public class Annotation <: Node {
 }
 ```
 
-Function: Represents compiler-built-in annotation nodes.
+Function: Represents a compiler-built-in annotation node.
 
 An [Annotation](ast_package_classes.md#class-annotation) node: `@CallingConv[xxx]`, `@Attribute[xxx]`, `@When[condition]`, etc.
 
@@ -33,13 +33,13 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop at: Token
 ```
 
-Function: Gets or sets the `@` operator or `@!` operator in the [Annotation](ast_package_classes.md#class-annotation) node.
+Function: Gets or sets the `@` or `@!` operator in the [Annotation](ast_package_classes.md#class-annotation) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not an `@` or `@!` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not an `@` or `@!` operator.
 
 ### prop attributes
 
@@ -63,7 +63,7 @@ Type: [Expr](ast_package_classes.md#class-expr)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when there is no conditional expression in the [Annotation](ast_package_classes.md#class-annotation) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when there is no conditional expression in the [Annotation](ast_package_classes.md#class-annotation) node.
 
 ### prop identifier
 
@@ -89,7 +89,7 @@ Function: Constructs a default [Annotation](ast_package_classes.md#class-annotat
 public init(inputs: Tokens)
 ```
 
-Function: Constructs an [Annotation](ast_package_classes.md#class-annotation) object based on input tokens.
+Function: Constructs an [Annotation](ast_package_classes.md#class-annotation) object from input tokens.
 
 Parameters:
 
@@ -97,7 +97,31 @@ Parameters:
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [Annotation](ast_package_classes.md#class-annotation) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [Annotation](ast_package_classes.md#class-annotation) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class Argument
 
@@ -107,7 +131,7 @@ public class Argument <: Node {
 }
 ```
 
-Function: Represents function call argument nodes.
+Function: Represents a function call argument node.
 
 For example, `arg:value` in `foo(arg:value)`.
 
@@ -127,7 +151,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a ":" operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a ":" operator.
 
 ### prop expr
 
@@ -151,7 +175,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the get/set [Token](ast_package_structs.md#struct-token) type is not an [IDENTIFIER](ast_package_enums.md#identifier) identifier or when the literal value of [Token](ast_package_structs.md#struct-token) is empty.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the get/set [Token](ast_package_structs.md#struct-token) type is not an [IDENTIFIER](ast_package_enums.md#identifier) or the token's literal value is empty.
 
 ### prop keyword
 
@@ -159,7 +183,7 @@ Exceptions:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the keyword `inout` in the [Argument](ast_package_classes.md#class-argument) node, which may be a lexical unit of [ILLEGAL](ast_package_enums.md#illegal).
+Function: Gets or sets the `inout` keyword in the [Argument](ast_package_classes.md#class-argument) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) token.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -170,6 +194,30 @@ public init()
 ```
 
 Function: Constructs a default [Argument](ast_package_classes.md#class-argument) object.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ArrayLiteral
 
@@ -182,7 +230,7 @@ public class ArrayLiteral <: Expr {
 
 Function: Represents an [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt) literal node.
 
-[ArrayLiteral](ast_package_classes.md#class-arrayliteral) node: Represented in the format `[element1, element2, ... , elementN]`, where each `element` is an expression.
+[ArrayLiteral](ast_package_classes.md#class-arrayliteral) node: Expressed in the format `[element1, element2, ... , elementN]`, where each `element` is an expression.
 
 Parent Type:
 
@@ -194,7 +242,7 @@ Parent Type:
 public mut prop elements: ArrayList<Expr>
 ```
 
-Function: Gets or sets the list of expressions in [ArrayLiteral](ast_package_classes.md#class-arrayliteral).
+Function: Gets or sets the expression list in [ArrayLiteral](ast_package_classes.md#class-arrayliteral).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Expr](ast_package_classes.md#class-expr)>
 
@@ -208,9 +256,9 @@ Function: Gets or sets the "[" in [ArrayLiteral](ast_package_classes.md#class-ar
 
 Type: [Token](ast_package_structs.md#struct-token)
 
-Exception:
+Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "[".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a "[".
 
 ### prop rSquare
 
@@ -222,9 +270,9 @@ Function: Gets or sets the "]" in [ArrayLiteral](ast_package_classes.md#class-ar
 
 Type: [Token](ast_package_structs.md#struct-token)
 
-Exception:
+Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "]".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a "]".
 
 ### init()
 
@@ -244,11 +292,35 @@ Function: Constructs an [ArrayLiteral](ast_package_classes.md#class-arrayliteral
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) to construct the [ArrayLiteral](ast_package_classes.md#class-arrayliteral) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ArrayLiteral](ast_package_classes.md#class-arrayliteral) type.
 
-Exception:
+Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [ArrayLiteral](ast_package_classes.md#class-arrayliteral) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [ArrayLiteral](ast_package_classes.md#class-arrayliteral) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class AsExpr
 
@@ -261,7 +333,7 @@ public class AsExpr <: Expr {
 
 Function: Represents a type-checking expression.
 
-An [AsExpr](ast_package_classes.md#class-asexpr) expression: `e as T`, with type [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<T>. Here, e can be any type of expression, and T can be any type.
+An [AsExpr](ast_package_classes.md#class-asexpr) expression: `e as T`, of type [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<T>. Here, `e` can be any type of expression, and `T` can be any type.
 
 Parent Type:
 
@@ -273,7 +345,7 @@ Parent Type:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the expression node in [AsExpr](ast_package_classes.md#class-asexpr).
+Function: Gets or sets the expression node in the [AsExpr](ast_package_classes.md#class-asexpr) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -283,13 +355,13 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the `as` operator in [AsExpr](ast_package_classes.md#class-asexpr).
+Function: Gets or sets the `as` operator in the [AsExpr](ast_package_classes.md#class-asexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
-Exception:
+Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `as` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not an `as` operator.
 
 ### prop shiftType
 
@@ -297,7 +369,9 @@ Exception:
 public mut prop shiftType: TypeNode
 ```
 
-Function: Gets or sets the target type in [AsExpr](ast_package_classes.md#class-asexpr).Type: [TypeNode](ast_package_classes.md#class-typenode)
+Function: Gets or sets the target type in the [AsExpr](ast_package_classes.md#class-asexpr) node.
+
+Type: [TypeNode](ast_package_classes.md#class-typenode)
 
 ### init()
 
@@ -317,13 +391,35 @@ Function: Constructs an [AsExpr](ast_package_classes.md#class-asexpr) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [AsExpr](ast_package_classes.md#class-asexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [AsExpr](ast_package_classes.md#class-asexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into an [AsExpr](ast_package_classes.md#class-asexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [AsExpr](ast_package_classes.md#class-asexpr) node.
 
-## class AssignExpr
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.## class AssignExpr
 
 ```cangjie
 public class AssignExpr <: Expr {
@@ -352,7 +448,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not an assignment operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not an assignment operator.
 
 ### prop leftExpr
 
@@ -392,11 +488,35 @@ Function: Constructs an [AssignExpr](ast_package_classes.md#class-assignexpr) ob
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [AssignExpr](ast_package_classes.md#class-assignexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [AssignExpr](ast_package_classes.md#class-assignexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into an [AssignExpr](ast_package_classes.md#class-assignexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [AssignExpr](ast_package_classes.md#class-assignexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class BinaryExpr
 
@@ -421,7 +541,7 @@ Parent Type:
 public mut prop leftExpr: Expr
 ```
 
-Function: Gets or sets the left-hand expression node of the operator in the [BinaryExpr](ast_package_classes.md#class-binaryexpr) node.
+Function: Gets or sets the expression node on the left side of the operator in the [BinaryExpr](ast_package_classes.md#class-binaryexpr) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -441,7 +561,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop rightExpr: Expr
 ```
 
-Function: Gets or sets the right-hand expression node of the operator in the [BinaryExpr](ast_package_classes.md#class-binaryexpr) node.
+Function: Gets or sets the expression node on the right side of the operator in the [BinaryExpr](ast_package_classes.md#class-binaryexpr) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -463,11 +583,35 @@ Function: Constructs a [BinaryExpr](ast_package_classes.md#class-binaryexpr) obj
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [BinaryExpr](ast_package_classes.md#class-binaryexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [BinaryExpr](ast_package_classes.md#class-binaryexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [BinaryExpr](ast_package_classes.md#class-binaryexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [BinaryExpr](ast_package_classes.md#class-binaryexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class Block
 
@@ -479,7 +623,7 @@ public class Block <: Expr {
 
 Function: Represents a block node.
 
-[Block](ast_package_classes.md#class-block) is a structure composed of a matched pair of curly braces and an optional sequence of expression declarations within them, referred to as a "block".
+A [Block](ast_package_classes.md#class-block) is a structure consisting of a pair of matching curly braces and an optional sequence of expression declarations within them, referred to as a "block."
 
 Parent Type:
 
@@ -491,7 +635,7 @@ Parent Type:
 public mut prop lBrace: Token
 ```
 
-Function: Gets or sets the "{" for the [Block](ast_package_classes.md#class-block).
+Function: Gets or sets the "{" in the [Block](ast_package_classes.md#class-block).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -515,7 +659,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop rBrace: Token
 ```
 
-Function: Gets or sets the "}" for the [Block](ast_package_classes.md#class-block).
+Function: Gets or sets the "}" in the [Block](ast_package_classes.md#class-block).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -533,7 +677,31 @@ Function: Constructs a default [Block](ast_package_classes.md#class-block) objec
 
 > **Note:**
 >
-> A [Block](ast_package_classes.md#class-block) node cannot exist independently without expression or declaration nodes, hence no additional constructors are provided.
+> A [Block](ast_package_classes.md#class-block) node cannot exist independently of expression or declaration nodes, so no other constructors are provided.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class Body
 
@@ -544,7 +712,7 @@ public class Body <: Node {
 }
 ```
 
-Function: Represents the structure composed of `{}` and an internal set of declaration nodes within Class types, Struct types, Interface types, and extensions.
+Function: Represents the structure composed of `{}` and a set of internal declaration nodes within Class types, Struct types, Interface types, and extensions.
 
 Parent Type:
 
@@ -566,13 +734,13 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop lBrace: Token
 ```
 
-Function: Gets or sets the `{` lexical token.
+Function: Gets or sets the `{` lexical unit.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `{` lexical token.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `{` lexical unit.
 
 ### prop rBrace
 
@@ -580,13 +748,13 @@ Exceptions:
 public mut prop rBrace: Token
 ```
 
-Function: Gets or sets the `}` lexical token.
+Function: Gets or sets the `}` lexical unit.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `}` lexical token.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `}` lexical unit.
 
 ### init()
 
@@ -606,7 +774,31 @@ Function: Constructs a [Body](ast_package_classes.md#class-body) object.
 
 Parameters:
 
-- decls: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Decl](ast_package_classes.md#class-decl)> - The list of declarations to construct a [Body](ast_package_classes.md#class-body) type.
+- decls: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Decl](ast_package_classes.md#class-decl)> - The declaration list to construct the [Body](ast_package_classes.md#class-body) type.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class CallExpr
 
@@ -619,7 +811,7 @@ public class CallExpr <: Expr {
 
 Function: Represents a function call node.
 
-A [CallExpr](ast_package_classes.md#class-callexpr) node consists of an expression followed by an argument list, e.g., `foo(100)`.
+A [CallExpr](ast_package_classes.md#class-callexpr) node includes an expression followed by a parameter list, e.g., `foo(100)`.
 
 Parent Type:
 
@@ -631,7 +823,7 @@ Parent Type:
 public mut prop arguments: ArrayList<Argument>
 ```
 
-Function: Gets or sets the function arguments in the [CallExpr](ast_package_classes.md#class-callexpr) node.
+Function: Gets or sets the function parameters in the [CallExpr](ast_package_classes.md#class-callexpr) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Argument](ast_package_classes.md#class-argument)>
 
@@ -651,13 +843,13 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" token in the [CallExpr](ast_package_classes.md#class-callexpr) node.
+Function: Gets or sets the "(" in the [CallExpr](ast_package_classes.md#class-callexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -665,13 +857,13 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" token in the [CallExpr](ast_package_classes.md#class-callexpr) node.
+Function: Gets or sets the ")" in the [CallExpr](ast_package_classes.md#class-callexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -691,13 +883,35 @@ Function: Constructs a [CallExpr](ast_package_classes.md#class-callexpr) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [CallExpr](ast_package_classes.md#class-callexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [CallExpr](ast_package_classes.md#class-callexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [CallExpr](ast_package_classes.md#class-callexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [CallExpr](ast_package_classes.md#class-callexpr) node.
 
-## class ClassDecl
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.## class ClassDecl
 
 ```cangjie
 public class ClassDecl <: Decl {
@@ -706,9 +920,9 @@ public class ClassDecl <: Decl {
 }
 ```
 
-Function: Class declaration node.
+Function: Class definition node.
 
-A class definition uses the `class` keyword, followed by (in order): optional modifiers, the `class` keyword, the class name, optional type parameters, optional parent class or interface specification, optional generic constraints, and the class body definition.
+Class definitions use the `class` keyword, consisting of: optional modifiers, the `class` keyword, class name, optional type parameters, optional parent class or interface specification, optional generic constraints, and class body definition.
 
 Parent Type:
 
@@ -744,7 +958,7 @@ Exceptions:
 public mut prop superTypes: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the parent class or interfaces of the [ClassDecl](ast_package_classes.md#class-classdecl) node.
+Function: Gets or sets the parent class or interface of the [ClassDecl](ast_package_classes.md#class-classdecl) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -760,7 +974,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `<:` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not the `<:` operator.
 
 ### init()
 
@@ -780,11 +994,35 @@ Function: Constructs a [ClassDecl](ast_package_classes.md#class-classdecl) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into a [ClassDecl](ast_package_classes.md#class-classdecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ClassDecl](ast_package_classes.md#class-classdecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [ClassDecl](ast_package_classes.md#class-classdecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [ClassDecl](ast_package_classes.md#class-classdecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ConstPattern
 
@@ -797,7 +1035,7 @@ public class ConstPattern <: Pattern {
 
 Function: Represents a constant pattern node.
 
-A constant pattern can be an integer literal, character byte literal, floating-point literal, character literal, boolean literal, string literal, or other literals, such as `1` in `case 1 => 0`.
+A constant pattern can be an integer literal, character/byte literal, floating-point literal, character literal, boolean literal, string literal, etc., such as `1` in `case 1 => 0`.
 
 Parent Type:
 
@@ -831,11 +1069,35 @@ Function: Constructs a [ConstPattern](ast_package_classes.md#class-constpattern)
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into a [ConstPattern](ast_package_classes.md#class-constpattern) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ConstPattern](ast_package_classes.md#class-constpattern) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [ConstPattern](ast_package_classes.md#class-constpattern) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [ConstPattern](ast_package_classes.md#class-constpattern) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class Constructor
 
@@ -847,7 +1109,7 @@ public class Constructor <: Node {
 
 Function: Represents a [Constructor](ast_package_classes.md#class-constructor) node in an `enum` type.
 
-A [Constructor](ast_package_classes.md#class-constructor) node: Year and Month([Float32](../../core/core_package_api/core_package_intrinsics.md#float32), [Float32](../../core/core_package_api/core_package_intrinsics.md#float32)) in enum TimeUnit { Year | Month([Float32](../../core/core_package_api/core_package_intrinsics.md#float32), [Float32](../../core/core_package_api/core_package_intrinsics.md#float32))}.
+A [Constructor](ast_package_classes.md#class-constructor) node: In `enum TimeUnit { Year | Month([Float32](../../core/core_package_api/core_package_intrinsics.md#float32), [Float32](../../core/core_package_api/core_package_intrinsics.md#float32))}`, `Year` and `Month([Float32](../../core/core_package_api/core_package_intrinsics.md#float32), [Float32](../../core/core_package_api/core_package_intrinsics.md#float32))` are constructors.
 
 > **Note:**
 >
@@ -856,6 +1118,16 @@ A [Constructor](ast_package_classes.md#class-constructor) node: Year and Month([
 Parent Type:
 
 - [Node](#class-node)
+
+### prop annotations
+
+```cangjie
+public mut prop annotations: ArrayList<Annotation>
+```
+
+Function: Gets or sets the list of annotations applied to the [Constructor](ast_package_classes.md#class-constructor) node.
+
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Annotation](ast_package_classes.md#class-annotation)>
 
 ### prop identifier
 
@@ -879,7 +1151,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -893,7 +1165,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop typeArguments
 
@@ -901,7 +1173,7 @@ Exceptions:
 public mut prop typeArguments: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the collection of optional parameter type nodes for the [Constructor](ast_package_classes.md#class-constructor) node.
+Function: Gets or sets the optional collection of parameter type nodes for the [Constructor](ast_package_classes.md#class-constructor) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -913,6 +1185,30 @@ public init()
 
 Function: Constructs a default [Constructor](ast_package_classes.md#class-constructor) object.
 
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
+
 ## class Decl
 
 ```cangjie
@@ -923,11 +1219,51 @@ Function: The parent class of all declaration nodes, inheriting from the [Node](
 
 > **Note:**
 >
-> Class definitions, interface definitions, function definitions, variable definitions, enum definitions, struct definitions, extension definitions, type alias definitions, macro definitions, etc., all belong to [Decl](ast_package_classes.md#class-decl) nodes.
+> Class definitions, interface definitions, function definitions, variable definitions, enum definitions, struct definitions, extension definitions, type alias definitions, macro definitions, etc., all belong to the [Decl](ast_package_classes.md#class-decl) node.
 
-Parent Types:
+Parent Type:
 
 - [Node](#class-node)
+
+### var identifier_
+
+```cangjie
+protected var identifier_: Token
+```
+
+Function: Gets or sets the identifier of the declaration node, such as `foo` in `class foo {}`.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+### var keyword_
+
+```cangjie
+protected var keyword_: Token
+```
+
+Function: Gets or sets the keyword of the declaration node.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+### var modifiers_
+
+```cangjie
+protected var modifiers_: ArrayList<Modifier>
+```
+
+Function: Gets or sets the modifier list of the node.
+
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Modifier](ast_package_classes.md#class-modifier)>
+
+### var node
+
+```cangjie
+protected var node: Node
+```
+
+Function: Gets or sets the parameter node of the [Decl](ast_package_classes.md#class-decl) node.
+
+Type: [Node](ast_package_classes.md#class-node)
 
 ### prop annotations
 
@@ -951,7 +1287,7 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexical units.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexical units.
 
 ### prop genericConstraint
 
@@ -959,7 +1295,7 @@ Exceptions:
 public mut prop genericConstraint: ArrayList<GenericConstraint>
 ```
 
-Function: Gets or sets the generic constraints of the definition node, which may be empty, such as `where T <: Comparable<T>` in `func foo<T>() where T <: Comparable<T> {}`.
+Function: Gets or sets the generic constraints of the declaration node, which may be empty, such as `where T <: Comparable<T>` in `func foo<T>() where T <: Comparable<T> {}`.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[GenericConstraint](ast_package_classes.md#class-genericconstraint)>
 
@@ -975,7 +1311,7 @@ Type: [GenericParam](ast_package_classes.md#class-genericparam)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the node does not define a type parameter list.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the node does not define a type parameter list.
 
 ### prop identifier
 
@@ -983,7 +1319,7 @@ Exceptions:
 public mut open prop identifier: Token
 ```
 
-Function: Gets or sets the identifier of the definition node, such as `foo` in `class foo {}`.
+Function: Gets or sets the identifier of the declaration node, such as `foo` in `class foo {}`.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -993,9 +1329,9 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop isGenericDecl: Bool
 ```
 
-Function: Determines whether it is a generic node.
+Function: Determines whether the node is a generic node.
 
-Type: [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if it is a generic node; otherwise, returns false.
+Type: [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if it is a generic node; otherwise, false.
 
 ### prop keyword
 
@@ -1003,7 +1339,7 @@ Type: [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Retu
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the keyword of the definition node.
+Function: Gets or sets the keyword of the declaration node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -1013,9 +1349,31 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop modifiers: ArrayList<Modifier>
 ```
 
-Function: Gets or sets the list of modifiers for the modified node.
+Function: Gets or sets the modifier list of the node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Modifier](ast_package_classes.md#class-modifier)>
+
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(indent: UInt16): String
+```
+
+Function: Converts the current syntax tree node into a tree structure and prints it. The tree structure of the syntax tree node will be output in the following format:
+
+- `-` string: Represents the public attributes of the current node, such as `-keyword`, `-identifier`.
+- The node attribute is followed by the specific type of the node, such as `-declType: PrimitiveType` indicating the node type is a [PrimitiveType](ast_package_classes.md#class-primitivetype) node.
+- Each type uses braces to denote its scope.
+
+For detailed syntax tree output format, see [Syntax Tree Node Printing](../ast_samples/dump.md).
+
+Parameters:
+
+- indent: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The number of indentation spaces for formatted output.
+
+Return Value:
+
+- [String](../../core/core_package_api/core_package_structs.md#struct-string) - The formatted output content.
 
 ### func getAttrs()
 
@@ -1023,7 +1381,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public func getAttrs(): Tokens
 ```
 
-Function: Gets the attributes of the current node (generally set via the built-in `Attribute` to assign attribute values to a declaration).
+Function: Gets the attributes of the current node (typically set via the built-in `Attribute` to assign attribute values to a declaration).
 
 Return Value:
 
@@ -1035,17 +1393,39 @@ Return Value:
 public func hasAttr(attr: String): Bool
 ```
 
-Function: Determines whether the current node has a specific attribute (generally set via the built-in `Attribute` to assign attribute values to a declaration).
+Function: Determines whether the current node has a specific attribute (typically set via the built-in `Attribute` to assign attribute values to a declaration).
 
 Parameters:
 
-- attr: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The attribute to check for existence in the node.
+- attr: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The attribute to check for presence in the current node.
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if the current node has the attribute; otherwise, returns false.
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if the current node has the attribute; otherwise, false.
 
-## class DoWhileExpr
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.## class DoWhileExpr
 
 ```cangjie
 public class DoWhileExpr <: Expr {
@@ -1056,7 +1436,7 @@ public class DoWhileExpr <: Expr {
 
 Function: Represents a `do-while` expression.
 
-Parent Types:
+Parent Type:
 
 - [Expr](#class-expr)
 
@@ -1076,7 +1456,7 @@ Type: [Block](ast_package_classes.md#class-block)
 public mut prop condition: Expr
 ```
 
-Function: Gets or sets the conditional expression in the [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) keyword.
+Function: Gets or sets the conditional expression within the [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) keyword.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -1114,7 +1494,7 @@ Exceptions:
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" following the `while` keyword in [DoWhileExpr](ast_package_classes.md#class-dowhileexpr).
+Function: Gets or sets the "(" after the `while` keyword in [DoWhileExpr](ast_package_classes.md#class-dowhileexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -1128,7 +1508,7 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" following the `while` keyword in [DoWhileExpr](ast_package_classes.md#class-dowhileexpr).
+Function: Gets or sets the ")" after the `while` keyword in [DoWhileExpr](ast_package_classes.md#class-dowhileexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -1154,11 +1534,35 @@ Function: Constructs a [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) o
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) type.
 
 Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class EnumDecl
 
@@ -1169,11 +1573,11 @@ public class EnumDecl <: Decl {
 }
 ```
 
-Function: Represents an `Enum` declaration node.
+Function: Represents an `Enum` definition node.
 
-Enum declarations use the `enum` keyword, defined in sequence as: optional modifiers, the enum keyword, enum name, optional type parameters, optional parent interface specification, optional generic constraints, and enum body definition.
+Enum definitions use the `enum` keyword, defined in order as: optional modifiers, enum keyword, enum name, optional type parameters, whether to specify parent interfaces, optional generic constraints, and enum body definitions.
 
-Parent Types:
+Parent Type:
 
 - [Decl](#class-decl)
 
@@ -1187,23 +1591,13 @@ Function: Gets or sets the constructor members within the [EnumDecl](ast_package
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Constructor](ast_package_classes.md#class-constructor)>
 
-### prop annotations
-
-```cangjie
-public mut prop annotations: ArrayList<Annotation>
-```
-
-Function: Gets or sets the list of annotations applied to the [EnumDecl](ast_package_classes.md#class-enumdecl) node.
-
-Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Annotation](ast_package_classes.md#class-annotation)>
-
 ### prop decls
 
 ```cangjie
 public mut prop decls: ArrayList<Decl>
 ```
 
-Function: Gets or sets members within an [EnumDecl](ast_package_classes.md#class-enumdecl) node excluding the constructor.
+Function: Gets or sets other members within the [EnumDecl](ast_package_classes.md#class-enumdecl) node excluding constructors.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Decl](ast_package_classes.md#class-decl)>
 
@@ -1213,13 +1607,13 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop ellipsis: Token
 ```
 
-Function: Gets or sets the optional `...` lexical token in an [EnumDecl](ast_package_classes.md#class-enumdecl) node, which may be of type [ILLEGAL](ast_package_enums.md#illegal).
+Function: Gets or sets the optional `...` lexical unit in the [EnumDecl](ast_package_classes.md#class-enumdecl) node, which may be of the [ILLEGAL](ast_package_enums.md#illegal) lexical unit type.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `...` lexical token.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `...` lexical unit.
 
 ### prop lBrace
 
@@ -1227,13 +1621,13 @@ Exceptions:
 public mut prop lBrace: Token
 ```
 
-Function: Gets or sets the `{` lexical token type for an [EnumDecl](ast_package_classes.md#class-enumdecl) node.
+Function: Gets or sets the `{` lexical unit type in the [EnumDecl](ast_package_classes.md#class-enumdecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `{` lexical token type.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `{` lexical unit type.
 
 ### prop rBrace
 
@@ -1241,13 +1635,13 @@ Exceptions:
 public mut prop rBrace: Token
 ```
 
-Function: Gets or sets the `}` lexical token type for an [EnumDecl](ast_package_classes.md#class-enumdecl) node.
+Function: Gets or sets the `}` lexical unit type in the [EnumDecl](ast_package_classes.md#class-enumdecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `}` lexical token type.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `}` lexical unit type.
 
 ### prop superTypeBitAnds
 
@@ -1255,13 +1649,13 @@ Exceptions:
 public mut prop superTypeBitAnds: Tokens
 ```
 
-Function: Gets or sets the sequence of `&` operator lexical tokens in the parent interface declaration of an [EnumDecl](ast_package_classes.md#class-enumdecl) node, which may be empty.
+Function: Gets or sets the sequence of `&` operator lexical units in the parent interface declaration of the [EnumDecl](ast_package_classes.md#class-enumdecl) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` lexical tokens.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Tokens](ast_package_classes.md#class-tokens) is not the `&` lexical unit sequence.
 
 ### prop superTypes
 
@@ -1269,7 +1663,7 @@ Exceptions:
 public mut prop superTypes: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the parent interfaces of an [EnumDecl](ast_package_classes.md#class-enumdecl) node.
+Function: Gets or sets the parent interfaces of the [EnumDecl](ast_package_classes.md#class-enumdecl) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -1285,7 +1679,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `<:` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `<:` operator.
 
 ### init()
 
@@ -1305,11 +1699,35 @@ Function: Constructs an [EnumDecl](ast_package_classes.md#class-enumdecl) object
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [EnumDecl](ast_package_classes.md#class-enumdecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [EnumDecl](ast_package_classes.md#class-enumdecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into an [EnumDecl](ast_package_classes.md#class-enumdecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [EnumDecl](ast_package_classes.md#class-enumdecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class EnumPattern
 
@@ -1322,7 +1740,7 @@ public class EnumPattern <: Pattern {
 
 Function: Represents an enum pattern node.
 
-Used to match enum `constructor`, such as `Year(n)` in `case Year(n) => 1`.
+Used to match enum `constructors`, such as `Year(n)` in `case Year(n) => 1`.
 
 Parent Type:
 
@@ -1334,13 +1752,13 @@ Parent Type:
 public mut prop commas: Tokens
 ```
 
-Function: Gets or sets the sequence of "," lexical tokens in an [EnumPattern](ast_package_classes.md#class-enumpattern) node, which may be empty.
+Function: Gets or sets the "," lexical unit sequence in the [EnumPattern](ast_package_classes.md#class-enumpattern) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexical tokens.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Tokens](ast_package_classes.md#class-tokens) is not the "," lexical unit sequence.
 
 ### prop constructor
 
@@ -1348,7 +1766,7 @@ Exceptions:
 public mut prop constructor: Expr
 ```
 
-Function: Gets or sets the constructor expression node within an [EnumPattern](ast_package_classes.md#class-enumpattern) node.
+Function: Gets or sets the constructor expression node in the [EnumPattern](ast_package_classes.md#class-enumpattern) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -1358,13 +1776,13 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the lexical token for "(" in an [EnumPattern](ast_package_classes.md#class-enumpattern) node.
+Function: Gets or sets the "(" lexical unit in the [EnumPattern](ast_package_classes.md#class-enumpattern) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop patterns
 
@@ -1372,7 +1790,7 @@ Exceptions:
 public mut prop patterns: ArrayList<Pattern>
 ```
 
-Function: Gets or sets the list of pattern nodes within the parameterized constructor of an [EnumPattern](ast_package_classes.md#class-enumpattern) node.
+Function: Gets or sets the list of pattern nodes within the parameterized constructor in the [EnumPattern](ast_package_classes.md#class-enumpattern) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Pattern](ast_package_classes.md#class-pattern)>
 
@@ -1382,13 +1800,13 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the lexical token for ")" in an [EnumPattern](ast_package_classes.md#class-enumpattern) node.
+Function: Gets or sets the ")" lexical unit in the [EnumPattern](ast_package_classes.md#class-enumpattern) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -1408,13 +1826,35 @@ Function: Constructs an [EnumPattern](ast_package_classes.md#class-enumpattern) 
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [EnumPattern](ast_package_classes.md#class-enumpattern) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [EnumPattern](ast_package_classes.md#class-enumpattern) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into an [EnumPattern](ast_package_classes.md#class-enumpattern) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [EnumPattern](ast_package_classes.md#class-enumpattern) node.
 
-## class ExceptTypePattern
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.## class ExceptTypePattern
 
 ```cangjie
 public class ExceptTypePattern <: Pattern {
@@ -1427,7 +1867,7 @@ Function: Represents a node for exception pattern states.
 
 Example: `e: Exception1 | Exception2`.
 
-Parent Type:
+Parent Types:
 
 - [Pattern](#class-pattern)
 
@@ -1437,13 +1877,13 @@ Parent Type:
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the lexical token for the ":" operator in an [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) node.
+Function: Gets or sets the ":" operator lexical unit in the [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a ":" operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a ":" operator.
 
 ### prop pattern
 
@@ -1451,7 +1891,7 @@ Exceptions:
 public mut prop pattern: Pattern
 ```
 
-Function: Gets or sets the pattern node within an [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) node.
+Function: Gets or sets the pattern node in the [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) node.
 
 Type: [Pattern](ast_package_classes.md#class-pattern)
 
@@ -1461,7 +1901,7 @@ Type: [Pattern](ast_package_classes.md#class-pattern)
 public mut prop types: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the type list within an [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) node.
+Function: Gets or sets the type list in the [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -1483,11 +1923,35 @@ Function: Constructs an [ExceptTypePattern](ast_package_classes.md#class-exceptt
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into an [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class Expr
 
@@ -1495,11 +1959,65 @@ Exceptions:
 public open class Expr <: Node
 ```
 
-Function: The parent class for all expression nodes, inheriting from the [Node](ast_package_classes.md#class-node) node.The `toTokens` method of expression nodes adds parentheses based on operator precedence. For example, given an existing [BinaryExpr](ast_package_classes.md#class-binaryexpr) node `a * b`, if the user modifies the left expression `a` to `a + 1`, the `toTokens` method will add parentheses to the left expression, resulting in the output `(a + 1) * b`.
+Function: The parent class of all expression nodes, inheriting from the [Node](ast_package_classes.md#class-node) node.
 
-Parent Type:
+The `toTokens` method of expression nodes adds parentheses based on operator precedence. For example, given a [BinaryExpr](ast_package_classes.md#class-binaryexpr) node a \* b, if the left expression a is modified to a + 1, the `toTokens` method will add parentheses to the left expression, outputting (a + 1) \* b.
+
+Parent Types:
 
 - [Node](#class-node)
+
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(_: UInt16): String
+```
+
+Function: Converts the current syntax tree node into a tree structure format and prints it. Must be overridden by subclasses.
+
+Parameters:
+
+- _: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The number of indentation spaces for formatted output.
+
+Return Value:
+
+- [String](../../core/core_package_api/core_package_structs.md#struct-string) - The formatted output content.
+
+### func precedence()
+
+```cangjie
+protected open func precedence(): Int64
+```
+
+Function: Returns the precedence of the current expression node.
+
+Return Value:
+
+- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ExtendDecl
 
@@ -1510,11 +2028,11 @@ public class ExtendDecl <: Decl {
 }
 ```
 
-Function: Represents an extension declaration node.
+Function: Represents an extension definition node.
 
-The extension definition uses the `extend` keyword, followed by: the `extend` keyword, the type being extended, optional parent interface specification, optional generic constraints, and the extension body definition.
+Extension definitions use the `extend` keyword, followed by the extended type, optional parent interface specification, optional generic constraints, and the extension body definition.
 
-Parent Type:
+Parent Types:
 
 - [Decl](#class-decl)
 
@@ -1544,13 +2062,13 @@ Type: [TypeNode](ast_package_classes.md#class-typenode)
 public mut override prop identifier: Token
 ```
 
-Function: The [ExtendDecl](ast_package_classes.md#class-extenddecl) node inherits from [Decl](ast_package_classes.md#class-decl), but does not support the `identifier` property. An exception will be thrown when attempting to use it.
+Function: The [ExtendDecl](ast_package_classes.md#class-extenddecl) node inherits from the [Decl](ast_package_classes.md#class-decl) node but does not support the `identifier` property. An exception is thrown when used.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when attempting to use the `identifier` property.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the `identifier` property is used.
 
 ### prop superTypeBitAnds
 
@@ -1558,13 +2076,13 @@ Exceptions:
 public mut prop superTypeBitAnds: Tokens
 ```
 
-Function: Gets or sets the sequence of `&` operator tokens in the parent interface declaration of the [ExtendDecl](ast_package_classes.md#class-extenddecl) node, which may be empty.
+Function: Gets or sets the sequence of `&` operator lexical units in the parent interface declaration of the [ExtendDecl](ast_package_classes.md#class-extenddecl) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` operator tokens.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` lexical units.
 
 ### prop superTypes
 
@@ -1588,7 +2106,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `<:` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `<:` operator.
 
 ### init()
 
@@ -1608,11 +2126,35 @@ Function: Constructs an [ExtendDecl](ast_package_classes.md#class-extenddecl) ob
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ExtendDecl](ast_package_classes.md#class-extenddecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [ExtendDecl](ast_package_classes.md#class-extenddecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into an [ExtendDecl](ast_package_classes.md#class-extenddecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [ExtendDecl](ast_package_classes.md#class-extenddecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ForInExpr
 
@@ -1625,9 +2167,9 @@ public class ForInExpr <: Expr {
 
 Function: Represents a `for-in` expression.
 
-In the [ForInExpr](ast_package_classes.md#class-forinexpr) type, the `for` keyword is followed by a [Pattern](ast_package_classes.md#class-pattern), then an `in` keyword and an expression node, and finally the loop body [Block](ast_package_classes.md#class-block).
+In the [ForInExpr](ast_package_classes.md#class-forinexpr) type, the keyword `for` is followed by a [Pattern](ast_package_classes.md#class-pattern), then an `in` keyword and an expression node, and finally a loop body [Block](ast_package_classes.md#class-block).
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -1663,7 +2205,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `for` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `for` keyword.
 
 ### prop keywordI
 
@@ -1677,7 +2219,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not an `in` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not an `in` keyword.
 
 ### prop keywordW
 
@@ -1691,7 +2233,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `where` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `where` keyword.
 
 ### prop lParen
 
@@ -1699,13 +2241,13 @@ Exceptions:
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" following the `for` keyword in [ForInExpr](ast_package_classes.md#class-forinexpr).
+Function: Gets or sets the "(" after the `for` keyword in [ForInExpr](ast_package_classes.md#class-forinexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a "(".
 
 ### prop pattern
 
@@ -1729,7 +2271,7 @@ Type: [Expr](ast_package_classes.md#class-expr)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [ForInExpr](ast_package_classes.md#class-forinexpr) node does not contain a `patternGuard` expression.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the `patternGuard` expression does not exist in the [ForInExpr](ast_package_classes.md#class-forinexpr) node.
 
 ### prop rParen
 
@@ -1743,7 +2285,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a ")".
 
 ### init()
 
@@ -1763,11 +2305,35 @@ Function: Constructs a [ForInExpr](ast_package_classes.md#class-forinexpr) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ForInExpr](ast_package_classes.md#class-forinexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [ForInExpr](ast_package_classes.md#class-forinexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [ForInExpr](ast_package_classes.md#class-forinexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ForInExpr](ast_package_classes.md#class-forinexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class FuncDecl
 
@@ -1778,9 +2344,9 @@ public class FuncDecl <: Decl {
 }
 ```
 
-Function: Represents a function declaration node.
+Purpose: Represents a function declaration node.
 
-Defined by optional function modifiers, the `func` keyword, function name, optional type parameter list, function parameters, and an optional return type. A function declaration must include a function body, which is a block.
+Defined by optional function modifiers, the `func` keyword, function name, optional type parameter list, function parameters, and optional return type. A function declaration must include a function body, which is a block.
 
 Parent Type:
 
@@ -1792,7 +2358,9 @@ Parent Type:
 public mut prop block: Block
 ```
 
-Function: Gets or sets the function body of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.Type: [Block](ast_package_classes.md#class-block)
+Purpose: Gets or sets the function body of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
+
+Type: [Block](ast_package_classes.md#class-block)
 
 ### prop colon
 
@@ -1800,13 +2368,13 @@ Function: Gets or sets the function body of the [FuncDecl](ast_package_classes.m
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the colon token of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
+Purpose: Gets or sets the colon token of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a colon.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a colon.
 
 ### prop declType
 
@@ -1814,7 +2382,7 @@ Exceptions:
 public mut prop declType: TypeNode
 ```
 
-Function: Gets or sets the return type of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
+Purpose: Gets or sets the return type of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
 
 Type: [TypeNode](ast_package_classes.md#class-typenode)
 
@@ -1828,7 +2396,7 @@ Exceptions:
 public mut prop funcParams: ArrayList<FuncParam>
 ```
 
-Function: Gets or sets the function parameters of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
+Purpose: Gets or sets the function parameters of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[FuncParam](ast_package_classes.md#class-funcparam)>
 
@@ -1838,13 +2406,13 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" token of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
+Purpose: Gets or sets the "(" token of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop overloadOp
 
@@ -1852,7 +2420,7 @@ Exceptions:
 public mut prop overloadOp: Tokens
 ```
 
-Function: Gets or sets the overload operator of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
+Purpose: Gets or sets the overload operator of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -1862,13 +2430,13 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" token of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
+Purpose: Gets or sets the ")" token of the [FuncDecl](ast_package_classes.md#class-funcdecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -1876,7 +2444,7 @@ Exceptions:
 public init()
 ```
 
-Function: Constructs a default [FuncDecl](ast_package_classes.md#class-funcdecl) object.
+Purpose: Constructs a default [FuncDecl](ast_package_classes.md#class-funcdecl) object.
 
 ### init(Tokens)
 
@@ -1884,11 +2452,11 @@ Function: Constructs a default [FuncDecl](ast_package_classes.md#class-funcdecl)
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [FuncDecl](ast_package_classes.md#class-funcdecl) object.
+Purpose: Constructs a [FuncDecl](ast_package_classes.md#class-funcdecl) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [FuncDecl](ast_package_classes.md#class-funcdecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [FuncDecl](ast_package_classes.md#class-funcdecl) type.
 
 Exceptions:
 
@@ -1900,11 +2468,35 @@ Exceptions:
 public func isConst(): Bool
 ```
 
-Function: Determines whether this is a `Const` type node.
+Purpose: Determines whether the node is of `Const` type.
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if it is a `Const` type node; otherwise, returns false.
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns `true` if it is a `Const` type node; otherwise, returns `false`.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To terminate traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor).
 
 ## class FuncParam
 
@@ -1915,9 +2507,9 @@ public open class FuncParam <: Decl {
 }
 ```
 
-Function: Represents a function parameter node, including both unnamed and named parameters.
+Purpose: Represents a function parameter node, including both named and unnamed parameters.
 
-A [FuncParam](ast_package_classes.md#class-funcparam) node: In `func foo(a: Int64, b: Float64) {...}`, these would be `a: Int64` and `b: Float64`.
+A [FuncParam](ast_package_classes.md#class-funcparam) node: In `func foo(a: Int64, b: Float64) {...}`, `a: Int64` and `b: Float64` are [FuncParam](ast_package_classes.md#class-funcparam) nodes.
 
 Parent Type:
 
@@ -1929,13 +2521,13 @@ Parent Type:
 public mut prop assign: Token
 ```
 
-Function: Gets or sets the `=` token for function parameters with default values.
+Purpose: Gets or sets the `=` token for function parameters with default values.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not `=`.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not `=`.
 
 ### prop colon
 
@@ -1943,13 +2535,13 @@ Exceptions:
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the ":" in the shape parameter.
+Purpose: Gets or sets the ":" token in the parameter.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ":".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ":".
 
 ### prop expr
 
@@ -1957,13 +2549,13 @@ Exceptions:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the variable initialization node for function parameters with default values.
+Purpose: Gets or sets the variable initialization node for function parameters with default values.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the function parameter is not initialized.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the function parameter is not initialized.
 
 ### prop not
 
@@ -1971,13 +2563,13 @@ Exceptions:
 public mut prop not: Token
 ```
 
-Function: Gets or sets the `!` in named parameters.
+Purpose: Gets or sets the `!` token for named parameters.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not `!`.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not `!`.
 
 ### prop paramType
 
@@ -1985,7 +2577,7 @@ Exceptions:
 public mut prop paramType: TypeNode
 ```
 
-Function: Gets or sets the type of the function parameter.
+Purpose: Gets or sets the type of the function parameter.
 
 Type: [TypeNode](ast_package_classes.md#class-typenode)
 
@@ -1995,7 +2587,7 @@ Type: [TypeNode](ast_package_classes.md#class-typenode)
 public init()
 ```
 
-Function: Constructs a default [FuncParam](ast_package_classes.md#class-funcparam) object.
+Purpose: Constructs a default [FuncParam](ast_package_classes.md#class-funcparam) object.
 
 ### init(Tokens)
 
@@ -2003,15 +2595,31 @@ Function: Constructs a default [FuncParam](ast_package_classes.md#class-funcpara
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [FuncParam](ast_package_classes.md#class-funcparam) object.
+Purpose: Constructs a [FuncParam](ast_package_classes.md#class-funcparam) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [FuncParam](ast_package_classes.md#class-funcparam) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [FuncParam](ast_package_classes.md#class-funcparam) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [FuncParam](ast_package_classes.md#class-funcparam) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [FuncParam](ast_package_classes.md#class-funcparam) node.
+
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(indent: UInt16): String
+```
+
+Purpose: Converts the current syntax tree node into a tree-structured format and prints it.
+
+Parameters:
+
+- indent: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The number of indentation spaces for formatted output.
+
+Return Value:
+
+- [String](../../core/core_package_api/core_package_structs.md#struct-string) - The formatted output content.
 
 ### func isMemberParam()
 
@@ -2019,11 +2627,35 @@ Exceptions:
 public func isMemberParam(): Bool
 ```
 
-Function: Determines whether the current function parameter is a parameter in the primary constructor.
+Purpose: Determines whether the current function parameter is a parameter in the primary constructor.
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Boolean type, returns `true` if it is a parameter in the primary constructor.
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns `true` if it is a parameter in the primary constructor.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To terminate traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor).
 
 ## class FuncType
 
@@ -2034,9 +2666,9 @@ public class FuncType <: TypeNode {
 }
 ```
 
-Function: Represents a function type node.
+Purpose: Represents a function type node.
 
-Composed of the function's parameter types and return type, separated by `->`, e.g., `(Int32) -> Unit`.
+Composed of function parameter types and return type, separated by `->`, e.g., `(Int32) -> Unit`.
 
 Parent Type:
 
@@ -2048,13 +2680,13 @@ Parent Type:
 public mut prop arrow: Token
 ```
 
-Function: Gets or sets the `->` lexical unit between the parameter types and return type in the [FuncType](ast_package_classes.md#class-functype) node.
+Purpose: Gets or sets the `->` token between parameter types and return type in the [FuncType](ast_package_classes.md#class-functype) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `->` lexical unit.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not `->`.
 
 ### prop commas
 
@@ -2062,13 +2694,13 @@ Exceptions:
 public mut prop commas: Tokens
 ```
 
-Function: Gets or sets the sequence of "," lexical units in the [FuncType](ast_package_classes.md#class-functype) node, which may be empty.
+Purpose: Gets or sets the sequence of "," tokens in the [FuncType](ast_package_classes.md#class-functype) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexical units.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," tokens.
 
 ### prop keyword
 
@@ -2076,7 +2708,7 @@ Exceptions:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the lexical unit of the keyword `CFunc` in the [FuncType](ast_package_classes.md#class-functype) node. If it is not a `CFunc` type, gets an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
+Purpose: Gets or sets the `CFunc` keyword token in the [FuncType](ast_package_classes.md#class-functype) node. If it is not a `CFunc` type, returns an [ILLEGAL](ast_package_enums.md#illegal) token.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -2086,13 +2718,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" lexical unit in the [FuncType](ast_package_classes.md#class-functype) node.
+Purpose: Gets or sets the "(" token in the [FuncType](ast_package_classes.md#class-functype) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -2100,13 +2732,13 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the lexical unit of ")" for the [FuncType](ast_package_classes.md#class-functype) node.
+Purpose: Gets or sets the ")" token in the [FuncType](ast_package_classes.md#class-functype) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop returnType
 
@@ -2114,7 +2746,7 @@ Exceptions:
 public mut prop returnType: TypeNode
 ```
 
-Function: Gets or sets the return type node of [FuncType](ast_package_classes.md#class-functype).
+Purpose: Gets or sets the return type node of the [FuncType](ast_package_classes.md#class-functype) node.
 
 Type: [TypeNode](ast_package_classes.md#class-typenode)
 
@@ -2124,7 +2756,7 @@ Type: [TypeNode](ast_package_classes.md#class-typenode)
 public mut prop types: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the parameter type list of the function in the [FuncType](ast_package_classes.md#class-functype) node.
+Purpose: Gets or sets the list of parameter types in the [FuncType](ast_package_classes.md#class-functype) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -2134,7 +2766,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public init()
 ```
 
-Function: Constructs a default [FuncType](ast_package_classes.md#class-functype) object.
+Purpose: Constructs a default [FuncType](ast_package_classes.md#class-functype) object.
 
 ### init(Tokens)
 
@@ -2142,17 +2774,40 @@ Function: Constructs a default [FuncType](ast_package_classes.md#class-functype)
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [FuncType](ast_package_classes.md#class-functype) object.
+Purpose: Constructs a [FuncType](ast_package_classes.md#class-functype) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [FuncType](ast_package_classes.md#class-functype) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [FuncType](ast_package_classes.md#class-functype) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [FuncType](ast_package_classes.md#class-functype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [FuncType](ast_package_classes.md#class-functype) node.
 
-## class GenericConstraint
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To terminate traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor).
+```## class GenericConstraint
 
 ```cangjie
 public class GenericConstraint <: Node {
@@ -2178,13 +2833,13 @@ Parent Type:
 public mut prop bitAnds: Tokens
 ```
 
-Function: Gets or sets the sequence of `&` operator lexical units in the [GenericConstraint](ast_package_classes.md#class-genericconstraint) node, which may be empty.
+Function: Gets or sets the sequence of `&` operator lexemes in the [GenericConstraint](ast_package_classes.md#class-genericconstraint) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` lexical units.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` lexemes.
 
 ### prop keyword
 
@@ -2192,13 +2847,13 @@ Exceptions:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the `where` keyword lexical unit in the [GenericConstraint](ast_package_classes.md#class-genericconstraint) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
+Function: Gets or sets the `where` keyword lexeme in the [GenericConstraint](ast_package_classes.md#class-genericconstraint) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) lexeme.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `where` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `where` keyword.
 
 ### prop typeArgument
 
@@ -2222,7 +2877,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `<:` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `<:` operator.
 
 ### prop upperBounds
 
@@ -2230,7 +2885,7 @@ Exceptions:
 public mut prop upperBounds: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the collection of [TypeNode](ast_package_classes.md#class-typenode) type nodes for the constraint's upper bounds in the [GenericConstraint](ast_package_classes.md#class-genericconstraint) node.
+Function: Gets or sets the collection of [TypeNode](ast_package_classes.md#class-typenode) type nodes representing the constraint's upper bounds in the [GenericConstraint](ast_package_classes.md#class-genericconstraint) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -2241,6 +2896,30 @@ public init()
 ```
 
 Function: Constructs a default [GenericConstraint](ast_package_classes.md#class-genericconstraint) object.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class GenericParam
 
@@ -2269,7 +2948,7 @@ Parent Type:
 public mut prop lAngle: Token
 ```
 
-Function: Gets or sets the left angle bracket lexical unit in the [GenericParam](ast_package_classes.md#class-genericparam) node.
+Function: Gets or sets the left angle bracket lexeme in the [GenericParam](ast_package_classes.md#class-genericparam) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -2283,7 +2962,7 @@ Exceptions:
 public mut prop parameters: Tokens
 ```
 
-Function: Gets or sets the [Tokens](ast_package_classes.md#class-tokens) type of type parameters in the [GenericParam](ast_package_classes.md#class-genericparam) node, which may be empty, such as `T1`, `T2`, and `T3` in `<T1, T2, T3>`.
+Function: Gets or sets the [Tokens](ast_package_classes.md#class-tokens) type representing the type parameters in the [GenericParam](ast_package_classes.md#class-genericparam) node, which may be empty, such as `T1`, `T2`, and `T3` in `<T1, T2, T3>`.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -2293,7 +2972,7 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 public mut prop rAngle: Token
 ```
 
-Function: Gets or sets the right angle bracket lexical unit in the [GenericParam](ast_package_classes.md#class-genericparam) node.
+Function: Gets or sets the right angle bracket lexeme in the [GenericParam](ast_package_classes.md#class-genericparam) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -2319,7 +2998,31 @@ Function: Constructs a [GenericParam](ast_package_classes.md#class-genericparam)
 
 Parameters:
 
-- parameters: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) of type parameters to construct the [GenericParam](ast_package_classes.md#class-genericparam).
+- parameters: [Tokens](ast_package_classes.md#class-tokens) - The lexeme collection ([Tokens](ast_package_classes.md#class-tokens)) of type parameters to construct the [GenericParam](ast_package_classes.md#class-genericparam).
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class IfExpr
 
@@ -2332,7 +3035,7 @@ public class IfExpr <: Expr {
 
 Function: Represents a conditional expression.
 
-Determines which code branch to execute based on whether the condition is met. In an [IfExpr](ast_package_classes.md#class-ifexpr) node, `if` is a keyword, followed by parentheses containing either an expression or a destructuring match declared with `let`, then a [Block](ast_package_classes.md#class-block), followed by an optional `else` branch. The `else` branch starts with the `else` keyword, followed by a new `if` expression or a [Block](ast_package_classes.md#class-block).
+Determines which code branch to execute based on whether the condition is met. In an [IfExpr](ast_package_classes.md#class-ifexpr) node, `if` is a keyword, followed by parentheses containing either an expression or a `let` declaration for destructuring matching, then a [Block](ast_package_classes.md#class-block), followed by an optional `else` branch. The `else` branch starts with the `else` keyword, followed by a new `if` expression or a [Block](ast_package_classes.md#class-block).
 
 Parent Type:
 
@@ -2344,7 +3047,7 @@ Parent Type:
 public mut prop condition: Expr
 ```
 
-Function: Gets or sets the condition expression following `if` in the [IfExpr](ast_package_classes.md#class-ifexpr) node.
+Function: Gets or sets the condition expression after `if` in the [IfExpr](ast_package_classes.md#class-ifexpr) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -2360,7 +3063,7 @@ Type: [Expr](ast_package_classes.md#class-expr)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the current [IfExpr](ast_package_classes.md#class-ifexpr) node has no else branch node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the current [IfExpr](ast_package_classes.md#class-ifexpr) node has no `else` branch node.
 
 ### prop ifBlock
 
@@ -2368,7 +3071,7 @@ Exceptions:
 public mut prop ifBlock: Block
 ```
 
-Function: Gets or sets the block node following `if` in the [IfExpr](ast_package_classes.md#class-ifexpr) node.
+Function: Gets or sets the `block` node after `if` in the [IfExpr](ast_package_classes.md#class-ifexpr) node.
 
 Type: [Block](ast_package_classes.md#class-block)
 
@@ -2384,7 +3087,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not an `else` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `else` keyword.
 
 ### prop keywordI
 
@@ -2392,13 +3095,13 @@ Exceptions:
 public mut prop keywordI: Token
 ```
 
-Function: Gets or sets the `if` keyword in an [IfExpr](ast_package_classes.md#class-ifexpr) node.
+Function: Gets or sets the `if` keyword in the [IfExpr](ast_package_classes.md#class-ifexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not an `if` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `if` keyword.
 
 ### prop lParen
 
@@ -2406,7 +3109,7 @@ Exceptions:
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" after `if` in an [IfExpr](ast_package_classes.md#class-ifexpr) node.
+Function: Gets or sets the "(" after `if` in the [IfExpr](ast_package_classes.md#class-ifexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -2420,7 +3123,7 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" after `if` in an [IfExpr](ast_package_classes.md#class-ifexpr) node.
+Function: Gets or sets the ")" after `if` in the [IfExpr](ast_package_classes.md#class-ifexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -2446,11 +3149,35 @@ Function: Constructs an [IfExpr](ast_package_classes.md#class-ifexpr) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [IfExpr](ast_package_classes.md#class-ifexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexeme collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [IfExpr](ast_package_classes.md#class-ifexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into an [IfExpr](ast_package_classes.md#class-ifexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [IfExpr](ast_package_classes.md#class-ifexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ImportContent
 
@@ -2466,39 +3193,19 @@ Parent Type:
 
 - [Node](#class-node)
 
-### prop importKind
+### prop commas
 
 ```cangjie
-public mut prop importKind: ImportKind
+public mut prop commas: Tokens
 ```
 
-Function: Gets or sets the import type in an [ImportContent](ast_package_classes.md#class-importcontent) node.
-
-Type: [ImportKind](ast_package_enums.md#enum-importkind)
-
-### prop prefixPaths
-
-```cangjie
-public mut prop prefixPaths: Tokens
-```
-
-Function: Gets or sets the lexical unit sequence of the prefix part of the full package name in an [ImportContent](ast_package_classes.md#class-importcontent) node, which may be empty. For example, `a` and `b` in `import a.b.c`.
-
-Type: [Tokens](ast_package_classes.md#class-tokens)
-
-### prop prefixDots
-
-```cangjie
-public mut prop prefixDots: Tokens
-```
-
-Function: Gets or sets the lexical unit sequence of the dots separating each subpackage in the full package name in an [ImportContent](ast_package_classes.md#class-importcontent) node, which may be empty. For example, the two "." in `import a.b.c`.
+Function: Gets or sets the sequence of "," lexemes in the [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Multi`.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "." lexical units.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexemes.
 
 ### prop identifier
 
@@ -2506,7 +3213,7 @@ Exceptions:
 public mut prop identifier: Token
 ```
 
-Function: Gets or sets the imported item in an [ImportContent](ast_package_classes.md#class-importcontent) node, which may be a top-level definition or declaration in the package or the name of a subpackage.
+Function: Gets or sets the imported item in the [ImportContent](ast_package_classes.md#class-importcontent) node, which may be a top-level definition or declaration in the package or the name of a subpackage.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -2516,23 +3223,19 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop importAlias: Tokens
 ```
 
-Function: Gets or sets the alias lexical unit sequence of the imported definition or declaration in an [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Alias`. For example, `as yyy` in `import packageName.xxx as yyy`.
+Function: Gets or sets the sequence of lexemes representing the alias of the imported definition or declaration in the [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Alias`. For example, `as yyy` in `import packageName.xxx as yyy`.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
-### prop lBrace
+### prop importKind
 
 ```cangjie
-public mut prop lBrace: Token
+public mut prop importKind: ImportKind
 ```
 
-Function: Gets or sets the "{" operator lexical unit in an [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Multi`.
+Function: Gets or sets the import type in the [ImportContent](ast_package_classes.md#class-importcontent) node.
 
-Type: [Token](ast_package_structs.md#struct-token)
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a "{" operator.
+Type: [ImportKind](ast_package_enums.md#enum-importkind)
 
 ### prop items
 
@@ -2540,21 +3243,47 @@ Exceptions:
 public mut prop items: ArrayList<ImportContent>
 ```
 
-Function: Gets or sets all imported items in an [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Multi`.Type: ArrayList\<[ImportContent](ast_package_classes.md#class-importcontent)>
+Function: Gets or sets all imported items in the [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Multi`.
 
-### prop commas
+Type: ArrayList\<[ImportContent](ast_package_classes.md#class-importcontent)>
+
+### prop lBrace
 
 ```cangjie
-public mut prop commas: Tokens
+public mut prop lBrace: Token
 ```
 
-Function: Gets or sets the sequence of "," lexical tokens in the [ImportContent](ast_package_classes.md#class-importcontent) node. Only non-empty when `importKind` is `ImportKind.Multi`.
+Function: Gets or sets the "{" operator lexeme in the [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Multi`.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "{" operator.
+
+### prop prefixPaths
+
+```cangjie
+public mut prop prefixPaths: Tokens
+```
+
+Function: Gets or sets the sequence of lexemes representing the prefix part of the full package name in the [ImportContent](ast_package_classes.md#class-importcontent) node, which may be empty. For example, `a` and `b` in `import a.b.c`.
+
+Type: [Tokens](ast_package_classes.md#class-tokens)
+
+### prop prefixDots
+
+```cangjie
+public mut prop prefixDots: Tokens
+```
+
+Function: Gets or sets the sequence of lexemes used to separate each subpackage level in the full package name in the [ImportContent](ast_package_classes.md#class-importcontent) node, which may be empty. For example, the two "." in `import a.b.c`.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexical tokens.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "." lexemes.
 
 ### prop rBrace
 
@@ -2562,13 +3291,13 @@ Exceptions:
 public mut prop rBrace: Token
 ```
 
-Function: Gets or sets the `}` operator token in the [ImportContent](ast_package_classes.md#class-importcontent) node. Only non-empty when `importKind` is `ImportKind.Multi`.
+Function: Gets or sets the "}" operator lexeme in the [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Multi`.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `}` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "}" operator.
 
 ### init()
 
@@ -2588,45 +3317,7 @@ Function: Determines whether the [ImportContent](ast_package_classes.md#class-im
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Whether the [ImportContent](ast_package_classes.md#class-importcontent) node has an alias for the imported item.
-
-### func isImportAll()
-
-```cangjie
-public func isImportAll(): Bool
-```
-
-Function: Determines whether the [ImportContent](ast_package_classes.md#class-importcontent) node represents a wildcard import.
-
-Return Value:
-
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Whether the [ImportContent](ast_package_classes.md#class-importcontent) node represents a wildcard import.
-
-### func isImportMulti()
-
-```cangjie
-public func isImportMulti(): Bool
-```
-
-Function: Determines whether the [ImportContent](ast_package_classes.md#class-importcontent) node imports multiple top-level definitions or declarations.
-
-Return Value:
-
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Whether the [ImportContent](ast_package_classes.md#class-importcontent) node imports multiple top-level definitions or declarations.
-
-### func isImportSingle()
-
-```cangjie
-public func isImportSingle(): Bool
-```
-
-Function: Determines whether the [ImportContent](ast_package_classes.md#class-importcontent) node represents a single import.
-
-Return Value:
-
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Whether the [ImportContent](ast_package_classes.md#class-importcontent) node represents a single import.
-
-## class ImportList
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Whether the [ImportContent](ast_package_classes.md#class-importcontent) node has an alias for## class ImportList
 
 ```cangjie
 public class ImportList <: Node {
@@ -2641,31 +3332,11 @@ An [ImportList](ast_package_classes.md#class-importlist) node: `import moduleNam
 
 > **Note:**
 >
-> Import nodes begin with an optional accessibility modifier (`public/protected/internal/private`) followed by the `import` keyword. For example, in `import pkga.pkgb.item`, `pkga.pkgb` is the package name containing the top-level definition or declaration being imported, and `item` is the top-level definition or declaration itself.
+> An import node begins with an optional accessibility modifier (`public/protected/internal/private`) followed by the `import` keyword. Taking `import pkga.pkgb.item` as an example, `pkga.pkgb` is the package name containing the top-level definition or declaration being imported, and `item` is the top-level definition or declaration being imported.
 
 Parent Type:
 
 - [Node](#class-node)
-
-### prop modifier
-
-```cangjie
-public mut prop modifier: Token
-```
-
-Function: Gets or sets the modifier in the [ImportList](ast_package_classes.md#class-importlist) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) token.
-
-Type: [Token](ast_package_structs.md#struct-token)
-
-### prop keywordI
-
-```cangjie
-public mut prop keywordI: Token
-```
-
-Function: Gets or sets the `import` keyword token in the [ImportList](ast_package_classes.md#class-importlist) node, where `I` is the initial letter of the keyword.
-
-Type: [Token](ast_package_structs.md#struct-token)
 
 ### prop content
 
@@ -2673,9 +3344,29 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop content: ImportContent
 ```
 
-Function: Gets or sets the specific imported item in the [ImportList](ast_package_classes.md#class-importlist) node. For example, the `a.b.c` part in `import a.b.c`.
+Function: Gets or sets the specific item being imported in the [ImportList](ast_package_classes.md#class-importlist) node. For example, the `a.b.c` part in `import a.b.c`.
 
 Type: [ImportContent](ast_package_classes.md#class-importcontent)
+
+### prop keywordI
+
+```cangjie
+public mut prop keywordI: Token
+```
+
+Function: Gets or sets the lexical unit of the `import` keyword in the [ImportList](ast_package_classes.md#class-importlist) node, where `I` is the first letter of the keyword.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+### prop modifier
+
+```cangjie
+public mut prop modifier: Token
+```
+
+Function: Gets or sets the modifier in the [ImportList](ast_package_classes.md#class-importlist) node, which may be a lexical unit of [ILLEGAL](ast_package_enums.md#illegal).
+
+Type: [Token](ast_package_structs.md#struct-token)
 
 ### init()
 
@@ -2691,15 +3382,15 @@ Function: Constructs a default [ImportList](ast_package_classes.md#class-importl
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a default [ImportList](ast_package_classes.md#class-importlist) object.
+Function: Constructs an [ImportList](ast_package_classes.md#class-importlist) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - A sequence of lexical unit collections ([Tokens](ast_package_classes.md#class-tokens)) to construct the [ImportList](ast_package_classes.md#class-importlist) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The sequence of lexical unit collections ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into an [ImportList](ast_package_classes.md#class-importlist) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [ImportList](ast_package_classes.md#class-importlist) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into an [ImportList](ast_package_classes.md#class-importlist) node.
 
 ### func isImportMulti()
 
@@ -2711,7 +3402,31 @@ Function: Determines whether the [ImportList](ast_package_classes.md#class-impor
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns `true` if the [ImportList](ast_package_classes.md#class-importlist) node imports multiple top-level definitions or declarations; otherwise, returns `false`.
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if the [ImportList](ast_package_classes.md#class-importlist) node imports multiple top-level definitions or declarations; otherwise, returns false.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class IncOrDecExpr
 
@@ -2722,7 +3437,7 @@ public class IncOrDecExpr <: Expr {
 }
 ```
 
-Function: Represents an expression containing increment (`++`) or decrement (`--`) operators.
+Function: Represents an expression containing the increment operator (`++`) or decrement operator (`--`).
 
 Parent Type:
 
@@ -2734,7 +3449,7 @@ Parent Type:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the expression within the [IncOrDecExpr](ast_package_classes.md#class-incordecexpr).
+Function: Gets or sets the expression in the [IncOrDecExpr](ast_package_classes.md#class-incordecexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -2744,7 +3459,7 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop op: Token
 ```
 
-Function: Gets or sets the operator within the [IncOrDecExpr](ast_package_classes.md#class-incordecexpr).
+Function: Gets or sets the operator in the [IncOrDecExpr](ast_package_classes.md#class-incordecexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -2766,11 +3481,35 @@ Function: Constructs an [IncOrDecExpr](ast_package_classes.md#class-incordecexpr
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - A lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [IncOrDecExpr](ast_package_classes.md#class-incordecexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into an [IncOrDecExpr](ast_package_classes.md#class-incordecexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [IncOrDecExpr](ast_package_classes.md#class-incordecexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into an [IncOrDecExpr](ast_package_classes.md#class-incordecexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class InterfaceDecl
 
@@ -2783,7 +3522,7 @@ public class InterfaceDecl <: Decl {
 
 Function: Represents an interface definition node.
 
-Interface definitions use the `interface` keyword and consist of: optional modifiers, the `interface` keyword, the interface name, optional type parameters, optional parent interface specifications, optional generic constraints, and the interface body definition.
+An interface definition uses the `interface` keyword. The interface definition consists of: an optional modifier, the `interface` keyword, the interface name, optional type parameters, optional parent interface specification, optional generic constraints, and the interface body definition.
 
 Parent Type:
 
@@ -2811,7 +3550,7 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` lexical units.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` lexical units.
 
 ### prop superTypes
 
@@ -2835,7 +3574,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not the `<:` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `<:` operator.
 
 ### init()
 
@@ -2855,11 +3594,35 @@ Function: Constructs an [InterfaceDecl](ast_package_classes.md#class-interfacede
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [InterfaceDecl](ast_package_classes.md#class-interfacedecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into an [InterfaceDecl](ast_package_classes.md#class-interfacedecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [InterfaceDecl](ast_package_classes.md#class-interfacedecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into an [InterfaceDecl](ast_package_classes.md#class-interfacedecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class IsExpr
 
@@ -2872,7 +3635,7 @@ public class IsExpr <: Expr {
 
 Function: Represents a type-checking expression.
 
-An [IsExpr](ast_package_classes.md#class-isexpr) expression: `e is T`, with type [Bool](../../core/core_package_api/core_package_intrinsics.md#bool). Here, `e` can be any expression, and `T` can be any type.
+An [IsExpr](ast_package_classes.md#class-isexpr) expression: `e is T`, with type [Bool](../../core/core_package_api/core_package_intrinsics.md#bool). Here, `e` can be any type of expression, and `T` can be any type.
 
 Parent Type:
 
@@ -2884,7 +3647,7 @@ Parent Type:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the expression node within the [IsExpr](ast_package_classes.md#class-isexpr) node.
+Function: Gets or sets the expression node in the [IsExpr](ast_package_classes.md#class-isexpr) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -2900,7 +3663,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `is` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `is` operator.
 
 ### prop shiftType
 
@@ -2930,13 +3693,35 @@ Function: Constructs an [IsExpr](ast_package_classes.md#class-isexpr) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [IsExpr](ast_package_classes.md#class-isexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into an [IsExpr](ast_package_classes.md#class-isexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [IsExpr](ast_package_classes.md#class-isexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into an [IsExpr](ast_package_classes.md#class-isexpr) node.
 
-## class JumpExpr
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.## class JumpExpr
 
 ```cangjie
 public class JumpExpr <: Expr {
@@ -2945,9 +3730,9 @@ public class JumpExpr <: Expr {
 }
 ```
 
-Function: Represents `break` and `continue` statements within loop expression bodies.
+Purpose: Represents `break` and `continue` statements within loop expression bodies.
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -2957,7 +3742,7 @@ Parent Type:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the keyword.
+Purpose: Gets or sets the keyword.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -2967,7 +3752,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 public init()
 ```
 
-Function: Constructs a default [JumpExpr](ast_package_classes.md#class-jumpexpr) object.
+Purpose: Constructs a default [JumpExpr](ast_package_classes.md#class-jumpexpr) object.
 
 ### init(Tokens)
 
@@ -2975,15 +3760,39 @@ Function: Constructs a default [JumpExpr](ast_package_classes.md#class-jumpexpr)
 public init(kind: Tokens)
 ```
 
-Function: Constructs a [JumpExpr](ast_package_classes.md#class-jumpexpr) object.
+Purpose: Constructs a [JumpExpr](ast_package_classes.md#class-jumpexpr) object.
 
 Parameters:
 
-- kind: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [JumpExpr](ast_package_classes.md#class-jumpexpr) type.
+- kind: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [JumpExpr](ast_package_classes.md#class-jumpexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [JumpExpr](ast_package_classes.md#class-jumpexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [JumpExpr](ast_package_classes.md#class-jumpexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To prematurely terminate traversal of child nodes, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor).
 
 ## class LambdaExpr
 
@@ -2994,11 +3803,11 @@ public class LambdaExpr <: Expr {
 }
 ```
 
-Function: Represents a `Lambda` expression, which is an anonymous function.
+Purpose: Represents a `Lambda` expression, which is an anonymous function.
 
-A [LambdaExpr](ast_package_classes.md#class-lambdaexpr) node has two forms: one with parameters, such as `{a: Int64 => e1; e2 }`, and another without parameters, such as `{ => e1; e2 }`.
+A [LambdaExpr](ast_package_classes.md#class-lambdaexpr) node has two forms: one with parameters (e.g., `{a: Int64 => e1; e2 }`) and one without (e.g., `{ => e1; e2 }`).
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -3008,7 +3817,7 @@ Parent Type:
 public mut prop doubleArrow: Token
 ```
 
-Function: Gets or sets the `=>` in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
+Purpose: Gets or sets the `=>` in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -3019,10 +3828,10 @@ Exceptions:
 ### prop funcParams
 
 ```cangjie
-public mut prop funcParams:  ArrayList<FuncParam>
+public mut prop funcParams: ArrayList<FuncParam>
 ```
 
-Function: Gets or sets the parameter list in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
+Purpose: Gets or sets the parameter list in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[FuncParam](ast_package_classes.md#class-funcparam)>
 
@@ -3032,7 +3841,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop lBrace: Token
 ```
 
-Function: Gets or sets the "{" in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
+Purpose: Gets or sets the "{" in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -3046,7 +3855,7 @@ Exceptions:
 public mut prop nodes: ArrayList<Node>
 ```
 
-Function: Gets or sets the expression or declaration nodes in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
+Purpose: Gets or sets the expression or declaration nodes in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Node](ast_package_classes.md#class-node)>
 
@@ -3056,7 +3865,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop rBrace: Token
 ```
 
-Function: Gets or sets the "}" in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
+Purpose: Gets or sets the "}" in [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -3070,7 +3879,7 @@ Exceptions:
 public init()
 ```
 
-Function: Constructs a default [LambdaExpr](ast_package_classes.md#class-lambdaexpr) object.
+Purpose: Constructs a default [LambdaExpr](ast_package_classes.md#class-lambdaexpr) object.
 
 ### init(Tokens)
 
@@ -3078,15 +3887,39 @@ Function: Constructs a default [LambdaExpr](ast_package_classes.md#class-lambdae
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [LambdaExpr](ast_package_classes.md#class-lambdaexpr) object.
+Purpose: Constructs a [LambdaExpr](ast_package_classes.md#class-lambdaexpr) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [LambdaExpr](ast_package_classes.md#class-lambdaexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [LambdaExpr](ast_package_classes.md#class-lambdaexpr) type.
 
 Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [LambdaExpr](ast_package_classes.md#class-lambdaexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To prematurely terminate traversal of child nodes, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor).
 
 ## class LetPatternExpr
 
@@ -3097,11 +3930,11 @@ public class LetPatternExpr <: Expr {
 }
 ```
 
-Function: Represents a destructuring pattern matching node in a `let` declaration.
+Purpose: Represents a destructuring pattern matching node in a `let` declaration.
 
 A [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) node: `let Some(v) <- x` in `if (let Some(v) <- x)`.
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -3111,7 +3944,7 @@ Parent Type:
 public mut prop backArrow: Token
 ```
 
-Function: Gets or sets the `<-` operator in the [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) node.
+Purpose: Gets or sets the `<-` operator in [LetPatternExpr](ast_package_classes.md#class-letpatternexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -3125,7 +3958,7 @@ Exceptions:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the expression following the `<-` operator in the [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) node.
+Purpose: Gets or sets the expression following the `<-` operator in [LetPatternExpr](ast_package_classes.md#class-letpatternexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -3135,13 +3968,13 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the `let` keyword in the [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) node.
+Purpose: Gets or sets the `let` keyword in [LetPatternExpr](ast_package_classes.md#class-letpatternexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `let` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `let` keyword.
 
 ### prop pattern
 
@@ -3149,7 +3982,7 @@ Exceptions:
 public mut prop pattern: Pattern
 ```
 
-Function: Gets or sets the pattern following `let` in the [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) node.
+Purpose: Gets or sets the pattern following `let` in [LetPatternExpr](ast_package_classes.md#class-letpatternexpr).
 
 Type: [Pattern](ast_package_classes.md#class-pattern)
 
@@ -3159,7 +3992,7 @@ Type: [Pattern](ast_package_classes.md#class-pattern)
 public init()
 ```
 
-Function: Constructs a default [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) object.
+Purpose: Constructs a default [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) object.
 
 ### init(Tokens)
 
@@ -3167,15 +4000,39 @@ Function: Constructs a default [LetPatternExpr](ast_package_classes.md#class-let
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) object.
+Purpose: Constructs a [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into a [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To prematurely terminate traversal of child nodes, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor).
 
 ## class LitConstExpr
 
@@ -3186,11 +4043,11 @@ public class LitConstExpr <: Expr {
 }
 ```
 
-Function: Represents a constant expression node.
+Purpose: Represents a constant expression node.
 
 A [LitConstExpr](ast_package_classes.md#class-litconstexpr) expression: `"abc"`, `123`, etc.
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -3200,7 +4057,7 @@ Parent Type:
 public mut prop literal: Token
 ```
 
-Function: Gets or sets the literal in the [LitConstExpr](ast_package_classes.md#class-litconstexpr) node.
+Purpose: Gets or sets the literal in [LitConstExpr](ast_package_classes.md#class-litconstexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -3210,7 +4067,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 public init()
 ```
 
-Function: Constructs a default [LitConstExpr](ast_package_classes.md#class-litconstexpr) object.
+Purpose: Constructs a default [LitConstExpr](ast_package_classes.md#class-litconstexpr) object.
 
 ### init(Tokens)
 
@@ -3218,130 +4075,39 @@ Function: Constructs a default [LitConstExpr](ast_package_classes.md#class-litco
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [LitConstExpr](ast_package_classes.md#class-litconstexpr) object.
+Purpose: Constructs a [LitConstExpr](ast_package_classes.md#class-litconstexpr) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into a [LitConstExpr](ast_package_classes.md#class-litconstexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [LitConstExpr](ast_package_classes.md#class-litconstexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [ParenExpr](ast_package_classes.md#class-parenexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ParenExpr](ast_package_classes.md#class-parenexpr) node.
 
-## class MacroDecl
-
-```cangjie
-public class MacroDecl <: Decl {
-    public init()
-    public init(inputs: Tokens)
-}
-```
-
-Function: Represents a macro definition node.
-
-A [MacroDecl](ast_package_classes.md#class-macrodecl) node: `public macro M(input: Tokens): Tokens {...}`.
-
-Parent Type:
-
-- [Decl](#class-decl)
-
-### prop block
+### func toTokens()
 
 ```cangjie
-public mut prop block: Block
+public func toTokens(): Tokens
 ```
 
-Function: Gets or sets the function body of the [MacroDecl](ast_package_classes.md#class-macrodecl) node.
+Purpose: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
 
-Type: [Block](ast_package_classes.md#class-block)
+Return Value:
 
-### prop colon
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
 
 ```cangjie
-public mut prop colon: Token
+public func traverse(v: Visitor): Unit
 ```
 
-Function: Gets or sets the colon in the [MacroDecl](ast_package_classes.md#class-macrodecl) node.
-
-Type: [Token](ast_package_structs.md#struct-token)
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a colon.
-
-### prop declType
-
-```cangjie
-public mut prop declType: TypeNode
-```
-
-Function: Gets or sets the function return type of the [MacroDecl](ast_package_classes.md#class-macrodecl) node.
-
-Type: [TypeNode](ast_package_classes.md#class-typenode)
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the function return type of the [MacroDecl](ast_package_classes.md#class-macrodecl) node is a default value.
-
-### prop funcParams
-
-```cangjie
-public mut prop funcParams: ArrayList<FuncParam>
-```
-
-Function: Gets or sets the parameters of the [MacroDecl](ast_package_classes.md#class-macrodecl) node.Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[FuncParam](ast_package_classes.md#class-funcparam)>
-
-### prop lParen
-
-```cangjie
-public mut prop lParen: Token
-```
-
-Function: Gets or sets the "(" token of the [MacroDecl](ast_package_classes.md#class-macrodecl) node.
-
-Type: [Token](ast_package_structs.md#struct-token)
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
-
-### prop rParen
-
-```cangjie
-public mut prop rParen: Token
-```
-
-Function: Gets or sets the ")" token of the [MacroDecl](ast_package_classes.md#class-macrodecl) node.
-
-Type: [Token](ast_package_structs.md#struct-token)
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
-
-### init()
-
-```cangjie
-public init()
-```
-
-Function: Constructs a default [MacroDecl](ast_package_classes.md#class-macrodecl) object.
-
-### init(Tokens)
-
-```cangjie
-public init(inputs: Tokens)
-```
-
-Function: Constructs a [MacroDecl](ast_package_classes.md#class-macrodecl) object.
+Purpose: Traverses the current syntax tree node and its child nodes. To prematurely terminate traversal of child nodes, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md)
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [MacroDecl](ast_package_classes.md#class-macrodecl) type.
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [MacroDecl](ast_package_classes.md#class-macrodecl) node.
+- v: [Visitor](ast_package_classes.md#class-visitor) - [Visitor](ast_package_classes.md#class-visitor) Instance of a type.
 
 ## class MacroExpandDecl
 
@@ -3352,9 +4118,9 @@ public class MacroExpandDecl <: Decl {
 }
 ```
 
-Function: Represents a macro invocation node.
+Function: Represents a macro expansion node.
 
-A [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) node example: `@M class A {}`.
+A [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) node: `@M class A {}`.
 
 Parent Type:
 
@@ -3366,7 +4132,7 @@ Parent Type:
 public mut prop fullIdentifier: Token
 ```
 
-Function: Gets or sets the full identifier of the macro invocation node.
+Function: Gets or sets the full identifier of the macro expansion node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -3376,13 +4142,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" token of the [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) macro invocation.
+Function: Gets or sets the "(" token for [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop lSquare
 
@@ -3390,13 +4156,13 @@ Exceptions:
 public mut prop lSquare: Token
 ```
 
-Function: Gets or sets the "[" token of the [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) attribute macro invocation.
+Function: Gets or sets the "[" token for [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) attribute macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "[".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "[".
 
 ### prop macroAttrs
 
@@ -3404,7 +4170,7 @@ Exceptions:
 public mut prop macroAttrs: Tokens
 ```
 
-Function: Gets or sets the input of the [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) attribute macro invocation.
+Function: Gets or sets the input for [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) attribute macro invocation.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -3414,13 +4180,13 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 public mut prop macroInputDecl: Decl
 ```
 
-Function: Gets or sets the declaration node within the [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl).
+Function: Gets or sets the declaration node within [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl).
 
 Type: [Decl](ast_package_classes.md#class-decl)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when there is no declaration node in the [MacroExpandDecl](ast_package_classes.md#class-macrodecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when no declaration node exists in the [MacroExpandDecl](ast_package_classes.md#class-macrodecl) node.
 
 ### prop macroInputs
 
@@ -3428,7 +4194,7 @@ Exceptions:
 public mut prop macroInputs: Tokens
 ```
 
-Function: Gets or sets the input of the [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) macro invocation.
+Function: Gets or sets the input for [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) macro invocation.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -3438,13 +4204,13 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" for [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) macro invocation.
+Function: Gets or sets the ")" token for [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop rSquare
 
@@ -3452,13 +4218,13 @@ Exceptions:
 public mut prop rSquare: Token
 ```
 
-Function: Gets or sets the "]" for [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) attribute macro invocation.
+Function: Gets or sets the "]" token for [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) attribute macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws when the set [Token](ast_package_structs.md#struct-token) is not "]".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "]".
 
 ### init()
 
@@ -3478,11 +4244,35 @@ Function: Constructs a [MacroExpandDecl](ast_package_classes.md#class-macroexpan
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed as a [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to terminate traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class MacroExpandExpr
 
@@ -3493,7 +4283,7 @@ public class MacroExpandExpr <: Expr {
 }
 ```
 
-Function: Represents a macro invocation node.
+Function: Represents a macro expansion node.
 
 A [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) node: `@M (a is Int64)`.
 
@@ -3513,7 +4303,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws when the set [Token](ast_package_structs.md#struct-token) is not the `@` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not the `@` operator.
 
 ### prop identifier
 
@@ -3521,7 +4311,7 @@ Exceptions:
 public mut prop identifier: Token
 ```
 
-Function: Gets or sets the identifier of the macro invocation node.
+Function: Gets or sets the identifier of the macro expansion node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -3531,13 +4321,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" for [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) macro invocation.
+Function: Gets or sets the "(" token for [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop lSquare
 
@@ -3545,13 +4335,13 @@ Exceptions:
 public mut prop lSquare: Token
 ```
 
-Function: Gets or sets the "[" for [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) attribute macro invocation.
+Function: Gets or sets the "[" token for [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) attribute macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws when the set [Token](ast_package_structs.md#struct-token) is not "[".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "[".
 
 ### prop macroAttrs
 
@@ -3579,13 +4369,13 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" for [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) macro invocation.
+Function: Gets or sets the ")" token for [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop rSquare
 
@@ -3593,13 +4383,13 @@ Exceptions:
 public mut prop rSquare: Token
 ```
 
-Function: Gets or sets the "]" for the attribute macro invocation of [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr).
+Function: Gets or sets the "]" token for [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) attribute macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "]".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "]".
 
 ### init()
 
@@ -3619,11 +4409,35 @@ Function: Constructs a [MacroExpandExpr](ast_package_classes.md#class-macroexpan
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed as a [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to terminate traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class MacroExpandParam
 
@@ -3633,9 +4447,9 @@ public class MacroExpandParam <: FuncParam {
 }
 ```
 
-Function: Represents a macro invocation node.
+Function: Represents a macro expansion node.
 
-A [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) node: `@M a: Int64` in `func foo (@M a: Int64)`.
+A [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) node: `@M a: Int64` within `func foo (@M a: Int64)`.
 
 Parent Type:
 
@@ -3647,7 +4461,7 @@ Parent Type:
 public mut prop fullIdentifier: Token
 ```
 
-Function: Gets or sets the full identifier of the macro invocation node.
+Function: Gets or sets the full identifier of the macro expansion node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -3657,13 +4471,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" for the [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) macro invocation.
+Function: Gets or sets the "(" token for [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop lSquare
 
@@ -3671,13 +4485,13 @@ Exceptions:
 public mut prop lSquare: Token
 ```
 
-Function: Gets or sets the "[" for the attribute macro invocation of [MacroExpandParam](ast_package_classes.md#class-macroexpandparam).
+Function: Gets or sets the "[" token for [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) attribute macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "[".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "[".
 
 ### prop macroAttrs
 
@@ -3685,7 +4499,7 @@ Exceptions:
 public mut prop macroAttrs: Tokens
 ```
 
-Function: Gets or sets the input for the attribute macro invocation of [MacroExpandParam](ast_package_classes.md#class-macroexpandparam).
+Function: Gets or sets the input for [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) attribute macro invocation.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -3695,13 +4509,13 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 public mut prop macroInputDecl: Decl
 ```
 
-Function: Gets or sets the declaration node in [MacroExpandParam](ast_package_classes.md#class-macroexpandparam).
+Function: Gets or sets the declaration node within [MacroExpandParam](ast_package_classes.md#class-macroexpandparam).
 
 Type: [Decl](ast_package_classes.md#class-decl)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when there is no declaration node in the [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when no declaration node exists in the [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) node.
 
 ### prop macroInputs
 
@@ -3709,7 +4523,7 @@ Exceptions:
 public mut prop macroInputs: Tokens
 ```
 
-Function: Gets or sets the input for the [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) macro invocation.
+Function: Gets or sets the input for [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) macro invocation.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -3719,13 +4533,13 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" for the [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) macro invocation.
+Function: Gets or sets the ")" token for [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop rSquare
 
@@ -3733,11 +4547,13 @@ Exceptions:
 public mut prop rSquare: Token
 ```
 
-Function: Gets or sets the "]" for the attribute macro invocation of [MacroExpandParam](ast_package_classes.md#class-macroexpandparam).
+Function: Gets or sets the "]" token for [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) attribute macro invocation.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
-Exceptions:- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "]".
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "]".
 
 ### init()
 
@@ -3747,7 +4563,29 @@ public init()
 
 Function: Constructs a default [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) object.
 
-## class MacroMessage
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to terminate traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.## class MacroMessage
 
 ```cangjie
 public class MacroMessage
@@ -3761,19 +4599,19 @@ Function: Records messages sent by inner macros.
 public func getBool(key: String): Bool
 ```
 
-Function: Retrieves [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) type information corresponding to the given key value.
+Function: Retrieves the [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) type information corresponding to the given key.
 
 Parameters:
 
-- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The keyword name used for retrieval.
+- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The name of the keyword used for retrieval.
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns the [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) type information corresponding to the existing key value.
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns the [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) type information corresponding to the given key.
 
 Exceptions:
 
-- [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - Throws an exception when no [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) type information corresponds to the key value.
+- [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - Throws an exception when no [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) type information corresponds to the given key.
 
 ### func getInt64(String)
 
@@ -3781,19 +4619,19 @@ Exceptions:
 public func getInt64(key: String): Int64
 ```
 
-Function: Retrieves [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type information corresponding to the given key value.
+Function: Retrieves the [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type information corresponding to the given key.
 
 Parameters:
 
-- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The keyword name used for retrieval.
+- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The name of the keyword used for retrieval.
 
 Return Value:
 
-- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - Returns the [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type information corresponding to the existing key value.
+- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - Returns the [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type information corresponding to the given key.
 
 Exceptions:
 
-- [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - Throws an exception when no [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type information corresponds to the key value.
+- [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - Throws an exception when no [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) type information corresponds to the given key.
 
 ### func getString(String)
 
@@ -3801,19 +4639,19 @@ Exceptions:
 public func getString(key: String): String
 ```
 
-Function: Retrieves [String](../../core/core_package_api/core_package_structs.md#struct-string) type information corresponding to the given key value.
+Function: Retrieves the [String](../../core/core_package_api/core_package_structs.md#struct-string) type information corresponding to the given key.
 
 Parameters:
 
-- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The keyword name used for retrieval.
+- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The name of the keyword used for retrieval.
 
 Return Value:
 
-- [String](../../core/core_package_api/core_package_structs.md#struct-string) - Returns the [String](../../core/core_package_api/core_package_structs.md#struct-string) type information corresponding to the existing key value.
+- [String](../../core/core_package_api/core_package_structs.md#struct-string) - Returns the [String](../../core/core_package_api/core_package_structs.md#struct-string) type information corresponding to the given key.
 
 Exceptions:
 
-- [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - Throws an exception when no [String](../../core/core_package_api/core_package_structs.md#struct-string) type information corresponds to the key value.
+- [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - Throws an exception when no [String](../../core/core_package_api/core_package_structs.md#struct-string) type information corresponds to the given key.
 
 ### func getTokens(String)
 
@@ -3821,19 +4659,19 @@ Exceptions:
 public func getTokens(key: String): Tokens
 ```
 
-Function: Retrieves [Tokens](ast_package_classes.md#class-tokens) type information corresponding to the given key value.
+Function: Retrieves the [Tokens](ast_package_classes.md#class-tokens) type information corresponding to the given key.
 
 Parameters:
 
-- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The keyword name used for retrieval.
+- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The name of the keyword used for retrieval.
 
 Return Value:
 
-- [Tokens](ast_package_classes.md#class-tokens) - Returns the [Tokens](ast_package_classes.md#class-tokens) type information corresponding to the existing key value.
+- [Tokens](ast_package_classes.md#class-tokens) - Returns the [Tokens](ast_package_classes.md#class-tokens) type information corresponding to the given key.
 
 Exceptions:
 
-- [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - Throws an exception when no [Tokens](ast_package_classes.md#class-tokens) type information corresponds to the key value.
+- [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - Throws an exception when no [Tokens](ast_package_classes.md#class-tokens) type information corresponds to the given key.
 
 ### func hasItem(String)
 
@@ -3841,15 +4679,15 @@ Exceptions:
 public func hasItem(key: String): Bool
 ```
 
-Function: Checks whether there is information corresponding to the given key value.
+Function: Checks whether there is information corresponding to the given key.
 
 Parameters:
 
-- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The keyword name used for retrieval.
+- key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - The name of the keyword used for retrieval.
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if information corresponding to the key value exists; otherwise, returns false.
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if information corresponding to the key exists; otherwise, returns false.
 
 ## class MainDecl
 
@@ -3884,11 +4722,13 @@ Type: [Block](ast_package_classes.md#class-block)
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the colon of the [MainDecl](ast_package_classes.md#class-maindecl) node.Type: [Token](ast_package_structs.md#struct-token)
+Function: Gets or sets the colon of the [MainDecl](ast_package_classes.md#class-maindecl) node.
+
+Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a colon.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a colon.
 
 ### prop declType
 
@@ -3896,13 +4736,13 @@ Exceptions:
 public mut prop declType: TypeNode
 ```
 
-Function: Gets or sets the function return type of the [MainDecl](ast_package_classes.md#class-maindecl) node.
+Function: Gets or sets the return type of the [MainDecl](ast_package_classes.md#class-maindecl) node's function.
 
 Type: [TypeNode](ast_package_classes.md#class-typenode)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the function return type of the [MainDecl](ast_package_classes.md#class-maindecl) node is a default value.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the return type of the [MainDecl](ast_package_classes.md#class-maindecl) node's function is a default value.
 
 ### prop funcParams
 
@@ -3920,13 +4760,13 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" token of the [MainDecl](ast_package_classes.md#class-maindecl) node.
+Function: Gets or sets the "(" of the [MainDecl](ast_package_classes.md#class-maindecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -3934,13 +4774,13 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" token of the [MainDecl](ast_package_classes.md#class-maindecl) node.
+Function: Gets or sets the ")" of the [MainDecl](ast_package_classes.md#class-maindecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -3960,11 +4800,35 @@ Function: Constructs a [MainDecl](ast_package_classes.md#class-maindecl) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [MainDecl](ast_package_classes.md#class-maindecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [MainDecl](ast_package_classes.md#class-maindecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [MainDecl](ast_package_classes.md#class-maindecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [MainDecl](ast_package_classes.md#class-maindecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class MatchCase
 
@@ -3974,13 +4838,13 @@ public class MatchCase <: Node {
 }
 ```
 
-Function: Represents a `case` node in a `match` expression.
+Function: Represents a `case` node within a `match` expression.
 
-A [MatchCase](ast_package_classes.md#class-matchcase) node example: `case failScore where score > 0 => 0`.
+A [MatchCase](ast_package_classes.md#class-matchcase) node: `case failScore where score > 0 => 0`.
 
 > **Note:**
 >
-> - [MatchCase](ast_package_classes.md#class-matchcase) starts with the keyword `case`, followed by [Expr](ast_package_classes.md#class-expr) or one or more `pattern`s of the same kind separated by `|`, an optional `patternguard`, a `=>`, and a series of declarations or expressions.
+> - [MatchCase](ast_package_classes.md#class-matchcase) starts with the keyword `case`, followed by an [Expr](ast_package_classes.md#class-expr) or one or more `patterns` of the same kind separated by `|`, an optional `patternguard`, a `=>`, and a series of declarations or expressions.
 > - This node has a strong binding relationship with [MatchExpr](ast_package_classes.md#class-matchexpr).
 
 Parent Type:
@@ -3993,13 +4857,13 @@ Parent Type:
 public mut prop arrow: Token
 ```
 
-Function: Gets or sets the `=>` operator token in [MatchCase](ast_package_classes.md#class-matchcase).
+Function: Gets or sets the `=>` operator lexical unit in [MatchCase](ast_package_classes.md#class-matchcase).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `=>` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `=>` operator.
 
 ### prop bitOrs
 
@@ -4007,13 +4871,13 @@ Exceptions:
 public mut prop bitOrs: Tokens
 ```
 
-Function: Gets or sets the sequence of `|` operator tokens in [MatchCase](ast_package_classes.md#class-matchcase), which may be empty.
+Function: Gets or sets the sequence of `|` operator lexical units in [MatchCase](ast_package_classes.md#class-matchcase), which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `|` tokens.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `|` lexical units.
 
 ### prop block
 
@@ -4033,9 +4897,11 @@ public mut prop expr: Expr
 
 Function: Gets or sets the expression node following `case` in [MatchCase](ast_package_classes.md#class-matchcase).
 
-Type: [Expr](ast_package_classes.md#class-expr)Exceptions:
+Type: [Expr](ast_package_classes.md#class-expr)
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when there is no expression node in the [MatchCase](ast_package_classes.md#class-matchcase) node.
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when no expression node exists in the [MatchCase](ast_package_classes.md#class-matchcase) node.
 
 ### prop keywordC
 
@@ -4043,13 +4909,13 @@ Type: [Expr](ast_package_classes.md#class-expr)Exceptions:
 public mut prop keywordC: Token
 ```
 
-Function: Gets or sets the lexical token for the `case` keyword within [MatchCase](ast_package_classes.md#class-matchcase).
+Function: Gets or sets the `case` keyword lexical unit within [MatchCase](ast_package_classes.md#class-matchcase).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `case` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `case` keyword.
 
 ### prop keywordW
 
@@ -4057,13 +4923,13 @@ Exceptions:
 public mut prop keywordW: Token
 ```
 
-Function: Gets or sets the optional `where` keyword token in [MatchCase](ast_package_classes.md#class-matchcase), which may be an [ILLEGAL](ast_package_enums.md#illegal) token.
+Function: Gets or sets the optional `where` keyword lexical unit in [MatchCase](ast_package_classes.md#class-matchcase), which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `where` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `where` keyword.
 
 ### prop patternGuard
 
@@ -4077,7 +4943,7 @@ Type: [Expr](ast_package_classes.md#class-expr)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when there is no pattern guard expression in the [MatchCase](ast_package_classes.md#class-matchcase) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when no pattern guard expression exists in the [MatchCase](ast_package_classes.md#class-matchcase) node.
 
 ### prop patterns
 
@@ -4085,7 +4951,7 @@ Exceptions:
 public mut prop patterns: ArrayList<Pattern>
 ```
 
-Function: Gets or sets the list of `pattern`s following the `case` keyword in [MatchCase](ast_package_classes.md#class-matchcase).
+Function: Gets or sets the list of `patterns` following `case` in [MatchCase](ast_package_classes.md#class-matchcase).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Pattern](ast_package_classes.md#class-pattern)>
 
@@ -4096,6 +4962,30 @@ public init()
 ```
 
 Function: Constructs a default [MatchCase](ast_package_classes.md#class-matchcase) object.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate traversal early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class MatchExpr
 
@@ -4108,7 +4998,7 @@ public class MatchExpr <: Expr {
 
 Function: Represents a pattern matching expression that implements pattern matching.
 
-Pattern matching expressions are divided into `match` expressions with selectors and those without selectors.
+Pattern matching expressions are divided into `match` expressions with a selector and those without a selector.
 
 Parent Type:
 
@@ -4162,7 +5052,7 @@ Exceptions:
 public mut prop matchCases: ArrayList<MatchCase>
 ```
 
-Function: Gets or sets the `matchCase` within [MatchExpr](ast_package_classes.md#class-matchexpr). A `matchCase` starts with the `case` keyword, followed by one or more [Pattern](ast_package_classes.md#class-pattern) or [Expr](ast_package_classes.md#class-expr) nodes. For details, see [MatchCase](ast_package_classes.md#class-matchcase).
+Function: Gets or sets the `matchCase` within the [MatchExpr](ast_package_classes.md#class-matchexpr). A `matchCase` starts with the `case` keyword, followed by one or more [Pattern](ast_package_classes.md#class-pattern) or [Expr](ast_package_classes.md#class-expr) nodes. For details, see [MatchCase](ast_package_classes.md#class-matchcase).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[MatchCase](ast_package_classes.md#class-matchcase)>
 
@@ -4186,13 +5076,13 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the closing parenthesis ")" following a [MatchExpr](ast_package_classes.md#class-matchexpr).
+Function: Gets or sets the ")" following the [MatchExpr](ast_package_classes.md#class-matchexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the assigned [Token](ast_package_structs.md#struct-token) is not a ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop selector
 
@@ -4226,11 +5116,35 @@ Function: Constructs a [MatchExpr](ast_package_classes.md#class-matchexpr) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [MatchExpr](ast_package_classes.md#class-matchexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [MatchExpr](ast_package_classes.md#class-matchexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [MatchExpr](ast_package_classes.md#class-matchexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [MatchExpr](ast_package_classes.md#class-matchexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class MemberAccess
 
@@ -4243,7 +5157,7 @@ public class MemberAccess <: Expr {
 
 Function: Represents a member access expression.
 
-Can be used to access members of classes, interfaces, structs, etc. A [MemberAccess](ast_package_classes.md#class-memberaccess) node takes the form `T.a`, where `T` is the base expression of the member access, and `a` represents the member name.
+Can be used to access members of types such as class, interface, and struct. A [MemberAccess](ast_package_classes.md#class-memberaccess) node takes the form `T.a`, where `T` is the subject of the member access expression, and `a` represents the name of the member.
 
 Parent Type:
 
@@ -4255,7 +5169,7 @@ Parent Type:
 public mut prop baseExpr: Expr
 ```
 
-Function: Gets or sets the base expression of the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
+Function: Gets or sets the subject of the member access expression in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -4265,13 +5179,13 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop commas: Tokens
 ```
 
-Function: Gets or sets the sequence of "," tokens in the [MemberAccess](ast_package_classes.md#class-memberaccess) node, which may be empty.
+Function: Gets or sets the sequence of "," lexical units in the [MemberAccess](ast_package_classes.md#class-memberaccess) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the assigned [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," tokens.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexical units.
 
 ### prop dot
 
@@ -4279,13 +5193,13 @@ Exceptions:
 public mut prop dot: Token
 ```
 
-Function: Gets or sets the "." token in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
+Function: Gets or sets the "." in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the assigned [Token](ast_package_structs.md#struct-token) is not a "." token type.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a "." lexical unit type.
 
 ### prop field
 
@@ -4293,7 +5207,7 @@ Exceptions:
 public mut prop field: Token
 ```
 
-Function: Gets or sets the member name token in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
+Function: Gets or sets the name of the member in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -4303,13 +5217,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop lAngle: Token
 ```
 
-Function: Gets or sets the left angle bracket token in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
+Function: Gets or sets the left angle bracket in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the assigned [Token](ast_package_structs.md#struct-token) is not a left angle bracket.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a left angle bracket.
 
 ### prop rAngle
 
@@ -4317,13 +5231,13 @@ Exceptions:
 public mut prop rAngle: Token
 ```
 
-Function: Gets or sets the right angle bracket token in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
+Function: Gets or sets the right angle bracket in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the assigned [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
 
 ### prop typeArguments
 
@@ -4331,7 +5245,9 @@ Exceptions:
 public mut prop typeArguments: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the instantiation types in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
+Function: Gets or sets the instantiation type in the [MemberAccess](ast_package_classes.md#class-memberaccess) node.
+
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
 ### init()
 
@@ -4355,7 +5271,31 @@ Parameters:
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [MemberAccess](ast_package_classes.md#class-memberaccess) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [MemberAccess](ast_package_classes.md#class-memberaccess) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class Modifier
 
@@ -4366,9 +5306,9 @@ public class Modifier <: Node {
 }
 ```
 
-Function: Represents that the definition possesses certain characteristics, typically placed at the forefront of the definition.
+Function: Indicates that a definition possesses certain characteristics, typically placed at the forefront of the definition.
 
-A [Modifier](ast_package_classes.md#class-modifier) node: The `public` in `public func foo()`.
+A [Modifier](ast_package_classes.md#class-modifier) node: `public func foo()` where `public` is the modifier.
 
 Parent Type:
 
@@ -4404,13 +5344,37 @@ Parameters:
 
 - keyword: [Token](ast_package_structs.md#struct-token) - The lexical unit used to construct the [Modifier](ast_package_classes.md#class-modifier) type.
 
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
+
 ## class Node
 
 ```cangjie
 abstract sealed class Node <: ToTokens
 ```
 
-Function: The parent class of all Cangjie Abstract Syntax Tree (AST) nodes.
+Function: The parent class of all Cangjie syntax tree nodes.
 
 This class provides common operation interfaces for all data types.
 
@@ -4448,11 +5412,11 @@ Function: Converts the current syntax tree node into a tree structure and prints
 
 The tree structure of the syntax tree node will be output in the following format:
 
-- `-` string: Represents common attributes of the current node, such as `-keyword`, `-identifier`.
-- Node attributes are immediately followed by the specific type of the node, e.g., `-declType: PrimitiveType` indicates the node type is a [PrimitiveType](ast_package_classes.md#class-primitivetype) node.
-- Each type uses curly braces to denote its scope.
+- `-` string: Represents the public attributes of the current node, such as `-keyword`, `-identifier`.
+- The node attribute is immediately followed by the specific type of the node, such as `-declType: PrimitiveType`, indicating the node type is a [PrimitiveType](ast_package_classes.md#class-primitivetype) node.
+- Each type uses braces to denote the scope of the type.
 
-For detailed syntax tree output format, refer to [Syntax Tree Node Printing](../ast_samples/dump.md).
+For detailed syntax tree output format, see [Syntax Tree Node Printing](../ast_samples/dump.md).
 
 ### func toTokens()
 
@@ -4460,7 +5424,7 @@ For detailed syntax tree output format, refer to [Syntax Tree Node Printing](../
 public func toTokens(): Tokens
 ```
 
-Function: Converts the syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+Function: Converts the syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
 
 Return Value:
 
@@ -4472,13 +5436,12 @@ Return Value:
 public func traverse(v: Visitor): Unit
 ```
 
-Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. Refer to [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
 
 Parameters:
 
 - v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
-
-## class OptionalExpr
+```## class OptionalExpr
 
 ```cangjie
 public class OptionalExpr <: Expr {
@@ -4489,7 +5452,7 @@ public class OptionalExpr <: Expr {
 
 Function: Represents an expression node with a question mark operator.
 
-An [OptionalExpr](ast_package_classes.md#class-optionalexpr) node: The `a?` in expressions like `a?.b, a?(b), a?[b]`.
+An [OptionalExpr](ast_package_classes.md#class-optionalexpr) node: The `a?` in expressions like `a?.b`, `a?(b)`, `a?[b]`.
 
 Parent Type:
 
@@ -4517,7 +5480,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a question mark operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a question mark operator.
 
 ### init()
 
@@ -4537,11 +5500,35 @@ Function: Constructs an [OptionalExpr](ast_package_classes.md#class-optionalexpr
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [OptionalExpr](ast_package_classes.md#class-optionalexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [OptionalExpr](ast_package_classes.md#class-optionalexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into an [OptionalExpr](ast_package_classes.md#class-optionalexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as an [OptionalExpr](ast_package_classes.md#class-optionalexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class PackageHeader
 
@@ -4580,13 +5567,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop keywordM: Token
 ```
 
-Function: Gets or sets the `macro` keyword lexical unit in the [PackageHeader](ast_package_classes.md#class-packageheader) node (`M` stands for the first letter of the keyword, same below), which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
+Function: Gets or sets the `macro` keyword lexical unit in the [PackageHeader](ast_package_classes.md#class-packageheader) node (`M` is the first letter of the keyword, same below), which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `macro` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `macro` keyword.
 
 ### prop keywordP
 
@@ -4600,7 +5587,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `package` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `package` keyword.
 
 ### prop prefixPaths
 
@@ -4608,7 +5595,7 @@ Exceptions:
 public mut prop prefixPaths: Tokens
 ```
 
-Function: Gets or sets the sequence of lexical units representing the prefix part of the full package name in the [PackageHeader](ast_package_classes.md#class-packageheader) node, which may be empty. For example, `a` and `b` in `package a.b.c`.
+Function: Gets or sets the lexical unit sequence of the prefix part of the full package name in the [PackageHeader](ast_package_classes.md#class-packageheader) node, which may be empty. For example, `a` and `b` in `package a.b.c`.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -4618,13 +5605,13 @@ Type: [Tokens](ast_package_classes.md#class-tokens)
 public mut prop prefixDots: Tokens
 ```
 
-Function: Gets or sets the sequence of lexical units representing the separators between sub-package levels in the full package name within the [PackageHeader](ast_package_classes.md#class-packageheader) node, which may be empty. For example, the two "." in `package a.b.c`.
+Function: Gets or sets the lexical unit sequence of the dots separating each subpackage in the full package name in the [PackageHeader](ast_package_classes.md#class-packageheader) node, which may be empty. For example, the two "." in `package a.b.c`.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) are not a sequence of "." lexical units.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "." lexical units.
 
 ### prop packageIdentifier
 
@@ -4632,7 +5619,7 @@ Exceptions:
 public mut prop packageIdentifier: Token
 ```
 
-Function: Gets or sets the name of the current package in the [PackageHeader](ast_package_classes.md#class-packageheader) node. If the current package is the root package, it returns the full package name; if it is a subpackage, it returns the name after the last ".".
+Function: Gets or sets the name of the current package in the [PackageHeader](ast_package_classes.md#class-packageheader) node. If the current package is the root package, this is the full package name; if it is a subpackage, it is the name after the last ".".
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -4654,11 +5641,35 @@ Function: Constructs a [PackageHeader](ast_package_classes.md#class-packageheade
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The sequence of lexical unit collections ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into a [PackageHeader](ast_package_classes.md#class-packageheader) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) sequence used to construct the [PackageHeader](ast_package_classes.md#class-packageheader) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [PackageHeader](ast_package_classes.md#class-packageheader) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [PackageHeader](ast_package_classes.md#class-packageheader) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ParenExpr
 
@@ -4671,7 +5682,7 @@ public class ParenExpr <: Expr {
 
 Function: Represents a parenthesized expression node, which is an expression enclosed in parentheses.
 
-Example of a [ParenExpr](ast_package_classes.md#class-parenexpr) node: `(1 + 2)`.
+A [ParenExpr](ast_package_classes.md#class-parenexpr) node: `(1 + 2)`.
 
 Parent Type:
 
@@ -4683,13 +5694,13 @@ Parent Type:
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" token in the [ParenExpr](ast_package_classes.md#class-parenexpr) node.
+Function: Gets or sets the "(" in the [ParenExpr](ast_package_classes.md#class-parenexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop parenthesizedExpr
 
@@ -4697,7 +5708,7 @@ Exceptions:
 public mut prop parenthesizedExpr: Expr
 ```
 
-Function: Gets or sets the subexpression enclosed in parentheses within the [ParenExpr](ast_package_classes.md#class-parenexpr) node.
+Function: Gets or sets the subexpression enclosed in parentheses in the [ParenExpr](ast_package_classes.md#class-parenexpr) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -4707,13 +5718,13 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" token in the [ParenExpr](ast_package_classes.md#class-parenexpr) node.
+Function: Gets or sets the ")" in the [ParenExpr](ast_package_classes.md#class-parenexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -4733,11 +5744,35 @@ Function: Constructs a [ParenExpr](ast_package_classes.md#class-parenexpr) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into a [ParenExpr](ast_package_classes.md#class-parenexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ParenExpr](ast_package_classes.md#class-parenexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [ParenExpr](ast_package_classes.md#class-parenexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ParenExpr](ast_package_classes.md#class-parenexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ParenType
 
@@ -4750,7 +5785,7 @@ public class ParenType <: TypeNode {
 
 Function: Represents a parenthesized type node.
 
-Example: `(Int64)` in `var a: (Int64)`.
+For example, `(Int64)` in `var a: (Int64)`.
 
 Parent Type:
 
@@ -4762,13 +5797,13 @@ Parent Type:
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" token in the [ParenType](ast_package_classes.md#class-parentype) node.
+Function: Gets or sets the "(" lexical unit in the [ParenType](ast_package_classes.md#class-parentype) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop parenthesizedType
 
@@ -4786,13 +5821,13 @@ Type: [TypeNode](ast_package_classes.md#class-typenode)
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" token in a [ParenType](ast_package_classes.md#class-parentype) node.
+Function: Gets or sets the ")" lexical unit in the [ParenType](ast_package_classes.md#class-parentype) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -4812,23 +5847,85 @@ Function: Constructs a [ParenType](ast_package_classes.md#class-parentype) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ParenType](ast_package_classes.md#class-parentype) node.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ParenType](ast_package_classes.md#class-parentype) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [ParenType](ast_package_classes.md#class-parentype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ParenType](ast_package_classes.md#class-parentype) node.
 
-## class Pattern
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.## class Pattern
 
 ```cangjie
 public open class Pattern <: Node
 ```
 
-Function: The parent class of all pattern matching nodes, inherits from [Node](ast_package_classes.md#class-node).
+Function: The parent class of all pattern matching nodes, inherits from the [Node](ast_package_classes.md#class-node) class.
 
 Parent Type:
 
 - [Node](#class-node)
+
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(_: UInt16): String
+```
+
+Function: Converts the current syntax tree node into a tree structure format and prints it. Needs to be overridden by subclasses.
+
+Parameters:
+
+- _: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The number of indentation spaces for formatted output.
+
+Return Value:
+
+- [String](../../core/core_package_api/core_package_structs.md#struct-string) - The formatted output content.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class PrefixType
 
@@ -4841,7 +5938,7 @@ public class PrefixType <: TypeNode {
 
 Function: Represents a prefix type node with a question mark.
 
-Example: `?A` in `var a : ?A`.
+For example, `?A` in `var a : ?A`.
 
 Parent Type:
 
@@ -4853,7 +5950,7 @@ Parent Type:
 public mut prop baseType: TypeNode
 ```
 
-Function: Gets or sets the type node in a [PrefixType](ast_package_classes.md#class-prefixtype) node, such as `A` in `var a: ?A`.
+Function: Gets or sets the type node within the [PrefixType](ast_package_classes.md#class-prefixtype) node, such as `A` in `var a: ?A`.
 
 Type: [TypeNode](ast_package_classes.md#class-typenode)
 
@@ -4863,7 +5960,7 @@ Type: [TypeNode](ast_package_classes.md#class-typenode)
 public mut prop prefixOps: Tokens
 ```
 
-Function: Gets or sets the collection of prefix operators in a [PrefixType](ast_package_classes.md#class-prefixtype) node.
+Function: Gets or sets the collection of prefix operators in the [PrefixType](ast_package_classes.md#class-prefixtype) node.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -4885,11 +5982,35 @@ Function: Constructs a [PrefixType](ast_package_classes.md#class-prefixtype) obj
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [PrefixType](ast_package_classes.md#class-prefixtype) node.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [PrefixType](ast_package_classes.md#class-prefixtype) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [PrefixType](ast_package_classes.md#class-prefixtype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [PrefixType](ast_package_classes.md#class-prefixtype) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class PrimaryCtorDecl
 
@@ -4902,7 +6023,7 @@ public class PrimaryCtorDecl <: Decl {
 
 Function: Represents a primary constructor node.
 
-A primary constructor node consists of modifiers, primary constructor name, parameter list, and primary constructor body.
+A primary constructor node consists of modifiers, the primary constructor name, parameter list, and constructor body.
 
 Parent Type:
 
@@ -4914,7 +6035,7 @@ Parent Type:
 public mut prop block: Block
 ```
 
-Function: Gets or sets the primary constructor body in a [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
+Function: Gets or sets the constructor body of the [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
 
 Type: [Block](ast_package_classes.md#class-block)
 
@@ -4924,7 +6045,7 @@ Type: [Block](ast_package_classes.md#class-block)
 public mut prop funcParams: ArrayList<FuncParam>
 ```
 
-Function: Gets or sets the parameters in a [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
+Function: Gets or sets the parameters of the [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[FuncParam](ast_package_classes.md#class-funcparam)>
 
@@ -4934,13 +6055,13 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" token for the [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
+Function: Gets or sets the "(" token of the [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -4948,13 +6069,13 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" token for the [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
+Function: Gets or sets the ")" token of the [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -4974,11 +6095,11 @@ Function: Constructs a [PrimaryCtorDecl](ast_package_classes.md#class-primarycto
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) node.
 
 ### func isConst()
 
@@ -4992,6 +6113,30 @@ Return Value:
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if the current node is of `Const` type; otherwise, returns false.
 
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
+
 ## class PrimitiveType
 
 ```cangjie
@@ -5003,7 +6148,7 @@ public class PrimitiveType <: TypeNode {
 
 Function: Represents a primitive type node.
 
-Examples include numeric types, [Rune](../../core/core_package_api/core_package_intrinsics.md#rune) type, boolean type, etc.
+For example, numeric types, [Rune](../../core/core_package_api/core_package_intrinsics.md#rune) type, boolean type, etc.
 
 Parent Type:
 
@@ -5015,7 +6160,7 @@ Parent Type:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the keyword used to construct the [PrimitiveType](ast_package_classes.md#class-primitivetype), such as [Int8](../../core/core_package_api/core_package_intrinsics.md#int8).
+Function: Gets or sets the keyword used to construct the [PrimitiveType](ast_package_classes.md#class-primitivetype) type, such as [Int8](../../core/core_package_api/core_package_intrinsics.md#int8).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5037,11 +6182,35 @@ Function: Constructs a [PrimitiveType](ast_package_classes.md#class-primitivetyp
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [PrimitiveType](ast_package_classes.md#class-primitivetype).
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [PrimitiveType](ast_package_classes.md#class-primitivetype) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [PrimitiveType](ast_package_classes.md#class-primitivetype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [PrimitiveType](ast_package_classes.md#class-primitivetype) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class PrimitiveTypeExpr
 
@@ -5054,7 +6223,7 @@ public class PrimitiveTypeExpr <: Expr {
 
 Function: Represents a primitive type expression node.
 
-[PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) node: Compiler-built-in primitive types appear as expressions in nodes. For example, [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) in [Int64](../../core/core_package_api/core_package_intrinsics.md#int64).toSting().
+[PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) node: Compiler-built primitive types appear as expressions in the node. For example, [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) in [Int64](../../core/core_package_api/core_package_intrinsics.md#int64).toSting().
 
 Parent Type:
 
@@ -5066,7 +6235,7 @@ Parent Type:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the primitive type keyword in [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr).
+Function: Gets or sets the primitive type keyword in the [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5088,13 +6257,35 @@ Function: Constructs a [PrimitiveTypeExpr](ast_package_classes.md#class-primitiv
 
 Parameters:
 
-- kind: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) type.
+- kind: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) node.
 
-## class Program
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.## class Program
 
 ```cangjie
 public class Program <: Node {
@@ -5163,11 +6354,35 @@ Function: Constructs a [Program](ast_package_classes.md#class-program) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The sequence of lexical token collections ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [Program](ast_package_classes.md#class-program) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The sequence of lexical unit collections ([Tokens](ast_package_classes.md#class-tokens)) to construct the [Program](ast_package_classes.md#class-program) type.
 
 Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a file node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class PropDecl
 
@@ -5180,7 +6395,7 @@ public class PropDecl <: Decl {
 
 Function: Represents a property declaration node.
 
-A [PropDecl](ast_package_classes.md#class-propdecl) node example: `prop X: Int64 { get() { 0 } }`.
+A [PropDecl](ast_package_classes.md#class-propdecl) node: `prop X: Int64 { get() { 0 } }`.
 
 Parent Type:
 
@@ -5192,7 +6407,7 @@ Parent Type:
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the colon token in the [PropDecl](ast_package_classes.md#class-propdecl) node.
+Function: Gets or sets the colon in the [PropDecl](ast_package_classes.md#class-propdecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5230,7 +6445,7 @@ Exceptions:
 public mut prop lBrace: Token
 ```
 
-Function: Gets or sets the "{" for a [PropDecl](ast_package_classes.md#class-propdecl) node.
+Function: Gets or sets the "{" in the [PropDecl](ast_package_classes.md#class-propdecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5244,7 +6459,7 @@ Exceptions:
 public mut prop rBrace: Token
 ```
 
-Function: Gets or sets the "}" for a [PropDecl](ast_package_classes.md#class-propdecl) node.
+Function: Gets or sets the "}" in the [PropDecl](ast_package_classes.md#class-propdecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5258,7 +6473,7 @@ Exceptions:
 public mut prop setter: FuncDecl
 ```
 
-Function: Gets or sets the setter function for a [PropDecl](ast_package_classes.md#class-propdecl) node.
+Function: Gets or sets the setter function of the [PropDecl](ast_package_classes.md#class-propdecl) node.
 
 Type: [FuncDecl](ast_package_classes.md#class-funcdecl)
 
@@ -5288,7 +6503,31 @@ Parameters:
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [PropDecl](ast_package_classes.md#class-propdecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [PropDecl](ast_package_classes.md#class-propdecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class QualifiedType
 
@@ -5313,7 +6552,7 @@ Parent Type:
 public mut prop baseType: TypeNode
 ```
 
-Function: Gets or sets the member access type subject of the [QualifiedType](ast_package_classes.md#class-qualifiedtype) node, such as `T` in `var a : T.a`.
+Function: Gets or sets the member access type subject in the [QualifiedType](ast_package_classes.md#class-qualifiedtype) node, such as `T` in `var a : T.a`.
 
 Type: [TypeNode](ast_package_classes.md#class-typenode)
 
@@ -5379,7 +6618,9 @@ Function: Gets or sets the right angle bracket lexical unit in the [QualifiedTyp
 
 Type: [Token](ast_package_structs.md#struct-token)
 
-Exceptions:- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
 
 ### prop typeArguments
 
@@ -5409,112 +6650,29 @@ Function: Constructs a [QualifiedType](ast_package_classes.md#class-qualifiedtyp
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed as a [QualifiedType](ast_package_classes.md#class-qualifiedtype) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [QualifiedType](ast_package_classes.md#class-qualifiedtype) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [QualifiedType](ast_package_classes.md#class-qualifiedtype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [QualifiedType](ast_package_classes.md#class-qualifiedtype) node.
 
-## class QuoteExpr
-
-```cangjie
-public class QuoteExpr <: Expr {
-    public init()
-    public init(inputs: Tokens)
-}
-```
-
-Function: Represents a `quote` expression node.
-
-A [QuoteExpr](ast_package_classes.md#class-quoteexpr) node: `quote(var ident = 0)`.
-
-Parent Type:
-
-- [Expr](#class-expr)
-
-### prop exprs
+### func toTokens()
 
 ```cangjie
-public mut prop exprs: ArrayList<Expr>
+public func toTokens(): Tokens
 ```
 
-Function: Gets or sets the internal quoted expression nodes enclosed by `()` in the [QuoteExpr](ast_package_classes.md#class-quoteexpr).
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) is a leading technology education company in China, dedicated to providing high-quality IT training and knowledge services. Established in 2016, the company has quickly grown to become a trusted name in the tech education space, offering a wide range of courses, workshops, and certification programs designed to help professionals stay ahead in the rapidly evolving technology landscape.
 
-Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Expr](ast_package_classes.md#class-expr)>
+Geekbang's platform features content from top industry experts, covering areas such as software development, artificial intelligence, cloud computing, data science, and more. The company is known for its practical, hands-on approach to learning, ensuring that students gain real-world skills that can be immediately applied in their careers.
 
-### prop keyword
-
-```cangjie
-public mut prop keyword: Token
-```
-
-Function: Gets or sets the `quote` keyword in the [QuoteExpr](ast_package_classes.md#class-quoteexpr).
-
-Type: [Token](ast_package_structs.md#struct-token)
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a `quote` keyword.
-
-### prop lParen
-
-```cangjie
-public mut prop lParen: Token
-```
-
-Function: Gets or sets the "(" in the [QuoteExpr](ast_package_classes.md#class-quoteexpr).
-
-Type: [Token](ast_package_structs.md#struct-token)
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
-
-### prop rParen
-
-```cangjie
-public mut prop rParen: Token
-```
-
-Function: Gets or sets the ")" in the [QuoteExpr](ast_package_classes.md#class-quoteexpr).
-
-Type: [Token](ast_package_structs.md#struct-token)
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
-
-### init()
-
-```cangjie
-public init()
-```
-
-Function: Constructs a default [QuoteExpr](ast_package_classes.md#class-quoteexpr) object.
-
-### init(Tokens)
-
-```cangjie
-public init(inputs: Tokens)
-```
-
-Function: Constructs a [QuoteExpr](ast_package_classes.md#class-quoteexpr) object.
-
-Parameters:
-
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed as a [QuoteExpr](ast_package_classes.md#class-quoteexpr) type.
-
-Exceptions:
-
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [QuoteExpr](ast_package_classes.md#class-quoteexpr) node.
-
-## class QuoteToken
+In addition to its online learning platform, Geekbang also organizes tech conferences, meetups, and other community events to foster knowledge sharing and networking among tech enthusiasts and professionals. With a strong commitment to innovation and excellence, Geekbang continues to empower individuals and organizations to thrive in the digital age.## class QuoteToken
 
 ```cangjie
 public class QuoteToken <: Expr
 ```
 
-Function: Represents any legal `token` within a `quote` expression node.
+Purpose: Represents any valid `token` within a `quote` expression node.
 
 Parent Type:
 
@@ -5526,7 +6684,33 @@ Parent Type:
 public mut prop tokens: Tokens
 ```
 
-Function: Gets the [Tokens](ast_package_classes.md#class-tokens) within the [QuoteToken](ast_package_classes.md#class-quotetoken).Type: [Tokens](ast_package_classes.md#class-tokens)
+Purpose: Retrieves the [Tokens](ast_package_classes.md#class-tokens) contained within a [QuoteToken](ast_package_classes.md#class-quotetoken).
+
+Type: [Tokens](ast_package_classes.md#class-tokens)
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted node of [Tokens](ast_package_classes.md#class-tokens) type.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to halt traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class RangeExpr
 
@@ -5537,11 +6721,11 @@ public class RangeExpr <: Expr {
 }
 ```
 
-Function: Represents an expression containing range operators.
+Purpose: Represents an expression containing range operators.
 
-[RangeExpr](ast_package_classes.md#class-rangeexpr) Node: There are two types of [Range](../../core/core_package_api/core_package_structs.md#struct-ranget-where-t--countablet--comparablet--equatablet) operators: `..` and `..=`, used to create left-closed-right-open and left-closed-right-closed [Range](../../core/core_package_api/core_package_structs.md#struct-ranget-where-t--countablet--comparablet--equatablet) instances respectively. Their usage formats are `start..end:step` and `start..=end:step`.
+[RangeExpr](ast_package_classes.md#class-rangeexpr) Node: There are two [Range](../../core/core_package_api/core_package_structs.md#struct-ranget-where-t--countablet--comparablet--equatablet) operators: `..` and `..=`, used to create left-closed-right-open and left-closed-right-closed [Range](../../core/core_package_api/core_package_structs.md#struct-ranget-where-t--countablet--comparablet--equatablet) instances, respectively. Their usage formats are `start..end:step` and `start..=end:step`.
 
-Parent Types:
+Parent Type:
 
 - [Expr](#class-expr)
 
@@ -5551,7 +6735,7 @@ Parent Types:
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the ":" operator in [RangeExpr](ast_package_classes.md#class-rangeexpr).
+Purpose: Gets or sets the ":" operator in [RangeExpr](ast_package_classes.md#class-rangeexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5565,7 +6749,7 @@ Exceptions:
 public mut prop end: Expr
 ```
 
-Function: Gets or sets the end value in [RangeExpr](ast_package_classes.md#class-rangeexpr).
+Purpose: Gets or sets the end value in [RangeExpr](ast_package_classes.md#class-rangeexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -5579,7 +6763,7 @@ Exceptions:
 public mut prop op: Token
 ```
 
-Function: Gets or sets the [Range](../../core/core_package_api/core_package_structs.md#struct-ranget-where-t--countablet--comparablet--equatablet) operator in [RangeExpr](ast_package_classes.md#class-rangeexpr).
+Purpose: Gets or sets the [Range](../../core/core_package_api/core_package_structs.md#struct-ranget-where-t--countablet--comparablet--equatablet) operator in [RangeExpr](ast_package_classes.md#class-rangeexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5589,7 +6773,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop start: Expr
 ```
 
-Function: Gets or sets the start value in [RangeExpr](ast_package_classes.md#class-rangeexpr).
+Purpose: Gets or sets the start value in [RangeExpr](ast_package_classes.md#class-rangeexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -5603,13 +6787,13 @@ Exceptions:
 public mut prop step: Expr
 ```
 
-Function: Gets or sets the difference between consecutive elements in the sequence within [RangeExpr](ast_package_classes.md#class-rangeexpr).
+Purpose: Gets or sets the difference between consecutive elements in the sequence within [RangeExpr](ast_package_classes.md#class-rangeexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the difference between consecutive elements in the sequence is not set in [RangeExpr](ast_package_classes.md#class-rangeexpr).
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the step value between sequence elements is not set in [RangeExpr](ast_package_classes.md#class-rangeexpr).
 
 ### init()
 
@@ -5617,7 +6801,7 @@ Exceptions:
 public init()
 ```
 
-Function: Constructs a default [RangeExpr](ast_package_classes.md#class-rangeexpr) object.
+Purpose: Constructs a default [RangeExpr](ast_package_classes.md#class-rangeexpr) object.
 
 ### init(Tokens)
 
@@ -5625,7 +6809,7 @@ Function: Constructs a default [RangeExpr](ast_package_classes.md#class-rangeexp
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [RangeExpr](ast_package_classes.md#class-rangeexpr) object.
+Purpose: Constructs a [RangeExpr](ast_package_classes.md#class-rangeexpr) object.
 
 Parameters:
 
@@ -5633,7 +6817,31 @@ Parameters:
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [RangeExpr](ast_package_classes.md#class-rangeexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [RangeExpr](ast_package_classes.md#class-rangeexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted node of [Tokens](ast_package_classes.md#class-tokens) type.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to halt traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class RefExpr
 
@@ -5644,11 +6852,11 @@ public class RefExpr <: Expr {
 }
 ```
 
-Function: Represents an expression node that references a declaration.
+Purpose: Represents an expression node that references a declaration.
 
 A [RefExpr](ast_package_classes.md#class-refexpr) node: In `var b = a + 1`, `a` is a [RefExpr](ast_package_classes.md#class-refexpr).
 
-Parent Types:
+Parent Type:
 
 - [Expr](#class-expr)
 
@@ -5658,7 +6866,7 @@ Parent Types:
 public mut prop commas: Tokens
 ```
 
-Function: Gets or sets the sequence of "," lexical units in [RefExpr](ast_package_classes.md#class-refexpr) node, which may be empty.
+Purpose: Gets or sets the sequence of "," lexical units in [RefExpr](ast_package_classes.md#class-refexpr) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
@@ -5672,7 +6880,7 @@ Exceptions:
 public mut prop identifier: Token
 ```
 
-Function: Gets or sets the identifier of the custom type in [RefExpr](ast_package_classes.md#class-refexpr) node.
+Purpose: Gets or sets the identifier of a custom type in [RefExpr](ast_package_classes.md#class-refexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5682,13 +6890,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop lAngle: Token
 ```
 
-Function: Gets or sets the left angle bracket in a [RefExpr](ast_package_classes.md#class-refexpr) node.
+Purpose: Gets or sets the left angle bracket in [RefExpr](ast_package_classes.md#class-refexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a left angle bracket.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a left angle bracket.
 
 ### prop rAngle
 
@@ -5696,13 +6904,13 @@ Exceptions:
 public mut prop rAngle: Token
 ```
 
-Function: Gets or sets the right angle bracket in a [RefExpr](ast_package_classes.md#class-refexpr) node.
+Purpose: Gets or sets the right angle bracket in [RefExpr](ast_package_classes.md#class-refexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
 
 ### prop typeArguments
 
@@ -5710,7 +6918,7 @@ Exceptions:
 public mut prop typeArguments: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the instantiation types in a [RefExpr](ast_package_classes.md#class-refexpr) node.
+Purpose: Gets or sets the instantiation types in [RefExpr](ast_package_classes.md#class-refexpr) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -5720,7 +6928,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public init()
 ```
 
-Function: Constructs a default [RefExpr](ast_package_classes.md#class-refexpr) object.
+Purpose: Constructs a default [RefExpr](ast_package_classes.md#class-refexpr) object.
 
 ### init(Tokens)
 
@@ -5728,7 +6936,7 @@ Function: Constructs a default [RefExpr](ast_package_classes.md#class-refexpr) o
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [RefExpr](ast_package_classes.md#class-refexpr) object.
+Purpose: Constructs a [RefExpr](ast_package_classes.md#class-refexpr) object.
 
 Parameters:
 
@@ -5737,6 +6945,30 @@ Parameters:
 Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [RefExpr](ast_package_classes.md#class-refexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted node of [Tokens](ast_package_classes.md#class-tokens) type.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to halt traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class RefType
 
@@ -5747,9 +6979,9 @@ public class RefType <: TypeNode {
 }
 ```
 
-Function: Represents a non-primitive type node.
+Purpose: Represents a non-primitive type node.
 
-For example, user-defined types declared via `class`, `struct`, `enum`, etc., as well as built-in types like [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt) and [String](../../core/core_package_api/core_package_structs.md#struct-string), can be represented using [RefType](ast_package_classes.md#class-reftype). For instance, `A` in `var a : A`.
+For example, user-defined types via `class`, `struct`, `enum`, etc., as well as built-in types like [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt) and [String](../../core/core_package_api/core_package_structs.md#struct-string) can be represented using [RefType](ast_package_classes.md#class-reftype). Example: `A` in `var a : A`.
 
 Parent Type:
 
@@ -5761,13 +6993,13 @@ Parent Type:
 public mut prop commas: Tokens
 ```
 
-Function: Gets or sets the sequence of "," lexical units in a [RefType](ast_package_classes.md#class-reftype) node, which may be empty.
+Purpose: Gets or sets the sequence of "," lexical units in [RefType](ast_package_classes.md#class-reftype) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexical units.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "," lexical units.
 
 ### prop identifier
 
@@ -5775,7 +7007,7 @@ Exceptions:
 public mut prop identifier: Token
 ```
 
-Function: Gets or sets the keyword used to construct the [RefType](ast_package_classes.md#class-reftype), such as `A` in `var a : A = A()`.
+Purpose: Gets or sets the keyword used to construct [RefType](ast_package_classes.md#class-reftype), such as `A` in `var a : A = A()`.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -5785,13 +7017,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop lAngle: Token
 ```
 
-Function: Gets or sets the left angle bracket lexical unit in a [RefType](ast_package_classes.md#class-reftype) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
+Purpose: Gets or sets the left angle bracket lexical unit in [RefType](ast_package_classes.md#class-reftype) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a left angle bracket.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a left angle bracket.
 
 ### prop rAngle
 
@@ -5799,13 +7031,13 @@ Exceptions:
 public mut prop rAngle: Token
 ```
 
-Function: Gets or sets the right angle bracket lexical unit in a [RefType](ast_package_classes.md#class-reftype) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
+Purpose: Gets or sets the right angle bracket lexical unit in [RefType](ast_package_classes.md#class-reftype) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
 
 ### prop typeArguments
 
@@ -5813,7 +7045,7 @@ Exceptions:
 public mut prop typeArguments: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the list of instantiation types in a [RefType](ast_package_classes.md#class-reftype) node, which may be empty. For example, [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) in `var a : Array<Int32>`.
+Purpose: Gets or sets the list of instantiation types in [RefType](ast_package_classes.md#class-reftype) node, which may be empty. Example: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) in `var a : Array<Int32>`.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -5823,7 +7055,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public init()
 ```
 
-Function: Constructs a default [RefType](ast_package_classes.md#class-reftype) object.
+Purpose: Constructs a default [RefType](ast_package_classes.md#class-reftype) object.
 
 ### init(Tokens)
 
@@ -5831,17 +7063,39 @@ Function: Constructs a default [RefType](ast_package_classes.md#class-reftype) o
 public init(inputs: Tokens)
 ```
 
-Function: Constructs a [RefType](ast_package_classes.md#class-reftype) object.
+Purpose: Constructs a [RefType](ast_package_classes.md#class-reftype) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [RefType](ast_package_classes.md#class-reftype) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [RefType](ast_package_classes.md#class-reftype) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [RefType](ast_package_classes.md#class-reftype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [RefType](ast_package_classes.md#class-reftype) node.
 
-## class ReturnExpr
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted node of [Tokens](ast_package_classes.md#class-tokens) type.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to halt traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.## class ReturnExpr
 
 ```cangjie
 public class ReturnExpr <: Expr {
@@ -5852,7 +7106,7 @@ public class ReturnExpr <: Expr {
 
 Function: Represents a `return` expression node.
 
-A [ReturnExpr](ast_package_classes.md#class-returnexpr) node example: `return 1`.
+A [ReturnExpr](ast_package_classes.md#class-returnexpr) node: `return 1`.
 
 Parent Type:
 
@@ -5878,13 +7132,13 @@ Exceptions:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the keyword within the [ReturnExpr](ast_package_classes.md#class-returnexpr) node.
+Function: Gets or sets the keyword in the [ReturnExpr](ast_package_classes.md#class-returnexpr) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `return` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `return` keyword.
 
 ### init()
 
@@ -5904,11 +7158,35 @@ Function: Constructs a [ReturnExpr](ast_package_classes.md#class-returnexpr) obj
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [ReturnExpr](ast_package_classes.md#class-returnexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [ReturnExpr](ast_package_classes.md#class-returnexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ReturnExpr](ast_package_classes.md#class-returnexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [ReturnExpr](ast_package_classes.md#class-returnexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class SpawnExpr
 
@@ -5933,13 +7211,13 @@ Parent Type:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the `spawn` keyword within the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
+Function: Gets or sets the `spawn` keyword in the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a `spawn` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `spawn` keyword.
 
 ### prop lParen
 
@@ -5947,13 +7225,13 @@ Exceptions:
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" within the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
+Function: Gets or sets the "(" in the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop lambdaExpr
 
@@ -5961,7 +7239,7 @@ Exceptions:
 public mut prop lambdaExpr: LambdaExpr
 ```
 
-Function: Gets or sets the parameterless closure within the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
+Function: Gets or sets the parameterless closure in the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
 
 Type: [LambdaExpr](ast_package_classes.md#class-lambdaexpr)
 
@@ -5971,11 +7249,13 @@ Type: [LambdaExpr](ast_package_classes.md#class-lambdaexpr)
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" within the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
+Function: Gets or sets the ")" in the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
-Exceptions:- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop threadContext
 
@@ -5983,13 +7263,13 @@ Exceptions:- [ASTException](ast_package_exceptions.md#class-astexception) - Thro
 public mut prop threadContext: Expr
 ```
 
-Function: Gets or sets the thread context environment expression in [SpawnExpr](ast_package_classes.md#class-spawnexpr).
+Function: Gets or sets the thread context environment expression in the [SpawnExpr](ast_package_classes.md#class-spawnexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when [SpawnExpr](ast_package_classes.md#class-spawnexpr) lacks a context expression.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [SpawnExpr](ast_package_classes.md#class-spawnexpr) lacks a context expression.
 
 ### init()
 
@@ -6009,11 +7289,35 @@ Function: Constructs a [SpawnExpr](ast_package_classes.md#class-spawnexpr) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [SpawnExpr](ast_package_classes.md#class-spawnexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [SpawnExpr](ast_package_classes.md#class-spawnexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [SpawnExpr](ast_package_classes.md#class-spawnexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [SpawnExpr](ast_package_classes.md#class-spawnexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class StructDecl
 
@@ -6026,7 +7330,7 @@ public class StructDecl <: Decl {
 
 Function: Represents a `Struct` node.
 
-Struct definitions use the `struct` keyword, with the following components in order: optional modifiers, the struct keyword, struct name, optional type parameters, optional parent interface specification, optional generic constraints, and struct body definition.
+Struct definitions use the `struct` keyword, followed by: optional modifiers, the `struct` keyword, the struct name, optional type parameters, optional parent interface specification, optional generic constraints, and the struct body definition.
 
 Parent Type:
 
@@ -6048,13 +7352,13 @@ Type: [Body](ast_package_classes.md#class-body)
 public mut prop superTypeBitAnds: Tokens
 ```
 
-Function: Gets or sets the sequence of `&` operator lexical units in the parent interface declaration of the [StructDecl](ast_package_classes.md#class-structdecl) node, which may be empty.
+Function: Gets or sets the sequence of `&` operator lexical tokens in the parent interface declaration of the [StructDecl](ast_package_classes.md#class-structdecl) node, which may be empty.
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` lexical units.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Tokens](ast_package_classes.md#class-tokens) is not a sequence of `&` lexical tokens.
 
 ### prop superTypes
 
@@ -6078,7 +7382,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `<:` operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `<:` operator.
 
 ### init()
 
@@ -6098,11 +7402,35 @@ Function: Constructs a [StructDecl](ast_package_classes.md#class-structdecl) obj
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [StructDecl](ast_package_classes.md#class-structdecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [StructDecl](ast_package_classes.md#class-structdecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [StructDecl](ast_package_classes.md#class-structdecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [StructDecl](ast_package_classes.md#class-structdecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class SubscriptExpr
 
@@ -6115,7 +7443,7 @@ public class SubscriptExpr <: Expr {
 
 Function: Represents an index access expression.
 
-[SubscriptExpr](ast_package_classes.md#class-subscriptexpr) node: Used for types that support index access (including [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt) type and `Tuple` type) to access elements at specific positions via subscripts, such as `arr[0]`.
+[SubscriptExpr](ast_package_classes.md#class-subscriptexpr) node: Used for types that support index access (including [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt) types and `Tuple` types) to access elements at specific positions via subscripts, e.g., `arr[0]`.
 
 Parent Type:
 
@@ -6127,17 +7455,17 @@ Parent Type:
 public mut prop baseExpr: Expr
 ```
 
-Function: Gets or sets the expression within the [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
+Function: Gets or sets the expression in the [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
 ### prop indexList
 
 ```cangjie
-public mut prop indexList: ArrayList<Expr>
+public mut prop indexList: ArrayList<Expr
 ```
 
-Function: Gets or sets the sequence of index expressions within the [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
+Function: Gets or sets the sequence of index expressions in the [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Expr](ast_package_classes.md#class-expr)>
 
@@ -6147,7 +7475,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop lSquare: Token
 ```
 
-Function: Gets or sets the "[" token within the [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
+Function: Gets or sets the "[" in the [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -6161,7 +7489,7 @@ Exceptions:
 public mut prop rSquare: Token
 ```
 
-Function: Gets or sets the "]" token within the [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
+Function: Gets or sets the "]" in the [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -6191,9 +7519,31 @@ Parameters:
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed as a [SubscriptExpr](ast_package_classes.md#class-subscriptexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [SubscriptExpr](ast_package_classes.md#class-subscriptexpr) node.
 
-## class SynchronizedExpr
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.## class SynchronizedExpr
 
 ```cangjie
 public class SynchronizedExpr <: Expr {
@@ -6204,9 +7554,9 @@ public class SynchronizedExpr <: Expr {
 
 Function: Represents a `synchronized` expression.
 
-A [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr) node consists of the `synchronized` keyword, a `StructuredMutex` pair, and a following code block, e.g., `synchronized(m) { foo() }`.
+A [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr) node consists of the `synchronized` keyword, a `StructuredMutex` pair, and the following code block, e.g., `synchronized(m) { foo() }`.
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -6216,7 +7566,7 @@ Parent Type:
 public mut prop block: Block
 ```
 
-Function: Gets or sets the code block modified by the [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
+Function: Gets or sets the code block modified by [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
 
 Type: [Block](ast_package_classes.md#class-block)
 
@@ -6226,13 +7576,13 @@ Type: [Block](ast_package_classes.md#class-block)
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the `synchronized` keyword within the [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
+Function: Gets or sets the `synchronized` keyword in [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not the `synchronized` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `synchronized` keyword.
 
 ### prop lParen
 
@@ -6240,13 +7590,13 @@ Exceptions:
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" token within the [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
+Function: Gets or sets the "(" in [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -6254,13 +7604,13 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" token within the [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
+Function: Gets or sets the ")" in [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop structuredMutex
 
@@ -6268,7 +7618,7 @@ Exceptions:
 public mut prop structuredMutex: Expr
 ```
 
-Function: Gets or sets the `StructuredMutex` object within the [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
+Function: Gets or sets the `StructuredMutex` object in [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -6294,7 +7644,31 @@ Parameters:
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ThisType
 
@@ -6307,7 +7681,7 @@ public class ThisType <: TypeNode {
 
 Function: Represents a `This` type node.
 
-Parent Type:
+Parent Types:
 
 - [TypeNode](#class-typenode)
 
@@ -6317,7 +7691,7 @@ Parent Type:
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the lexical unit for the `This` keyword in the [ThisType](ast_package_classes.md#class-thistype) node.
+Function: Gets or sets the lexical unit of the `This` keyword in the [ThisType](ast_package_classes.md#class-thistype) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -6343,7 +7717,31 @@ Parameters:
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ThisType](ast_package_classes.md#class-thistype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ThisType](ast_package_classes.md#class-thistype) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class ThrowExpr
 
@@ -6356,9 +7754,9 @@ public class ThrowExpr <: Expr {
 
 Function: Represents a `throw` expression node.
 
-A [ThrowExpr](ast_package_classes.md#class-throwexpr) node example: `throw Exception()`.
+A [ThrowExpr](ast_package_classes.md#class-throwexpr) node: `throw Exception()`.
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -6368,7 +7766,7 @@ Parent Type:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the expression node within the [ThrowExpr](ast_package_classes.md#class-throwexpr) node.
+Function: Gets or sets the expression node in the [ThrowExpr](ast_package_classes.md#class-throwexpr) node.
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -6384,7 +7782,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a `throw` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `throw` keyword.
 
 ### init()
 
@@ -6408,7 +7806,31 @@ Parameters:
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ThrowExpr](ast_package_classes.md#class-throwexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [ThrowExpr](ast_package_classes.md#class-throwexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate early. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class Tokens
 
@@ -6420,12 +7842,23 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
 }
 ```
 
-Function: A wrapper type for sequences of [Token](ast_package_structs.md#struct-token).
+Function: A type that encapsulates a sequence of [Token](ast_package_structs.md#struct-token).
 
-Parent Types:- [ToString](../../core/core_package_api/core_package_interfaces.md#interface-tostring)
+Parent Types:
 
+- [ToString](../../core/core_package_api/core_package_interfaces.md#interface-tostring)
 - [Iterable](../../core/core_package_api/core_package_interfaces.md#interface-iterablee)\<[Token](ast_package_structs.md#struct-token)>
 - [ToBytes](ast_package_interfaces.md#interface-tobytes)
+
+### var tokens
+
+```cangjie
+protected var tokens: ArrayList<Token>
+```
+
+Function: Gets or sets all [Token](ast_package_structs.md#struct-token) stored internally in [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Token](ast_package_structs.md#struct-token)> format.
+
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Token](ast_package_structs.md#struct-token)>
 
 ### prop size
 
@@ -6433,7 +7866,7 @@ Parent Types:- [ToString](../../core/core_package_api/core_package_interfaces.md
 public open prop size: Int64
 ```
 
-Function: Gets the count of [Token](ast_package_structs.md#struct-token) objects within the [Tokens](ast_package_classes.md#class-tokens) object.
+Function: Gets the number of [Token](ast_package_structs.md#struct-token) types in the [Tokens](ast_package_classes.md#class-tokens) object.
 
 Type: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
@@ -6455,7 +7888,7 @@ Function: Constructs a [Tokens](ast_package_classes.md#class-tokens) object.
 
 Parameters:
 
-- tokArray: [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Token](ast_package_structs.md#struct-token)> - An array containing [Token](ast_package_structs.md#struct-token) objects of type [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt).
+- tokArray: [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Token](ast_package_structs.md#struct-token)> - An [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt) containing a group of [Token](ast_package_structs.md#struct-token).
 
 ### init(ArrayList\<Token>)
 
@@ -6467,7 +7900,7 @@ Function: Constructs a [Tokens](ast_package_classes.md#class-tokens) object.
 
 Parameters:
 
-- tokArrayList: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Token](ast_package_structs.md#struct-token)> - A collection containing [Token](ast_package_structs.md#struct-token) objects of type [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt).
+- tokArrayList: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Token](ast_package_structs.md#struct-token)> - An [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt) containing a group of [Token](ast_package_structs.md#struct-token).
 
 ### func append(Node)
 
@@ -6483,7 +7916,7 @@ Parameters:
 
 Return Value:
 
-- [Tokens](ast_package_classes.md#class-tokens) - The concatenated [Tokens](ast_package_classes.md#class-tokens) object.
+- [Tokens](ast_package_classes.md#class-tokens) - The concatenated [Tokens](ast_package_classes.md#class-tokens) type.
 
 ### func append(Token)
 
@@ -6499,7 +7932,7 @@ Parameters:
 
 Return Value:
 
-- [Tokens](ast_package_classes.md#class-tokens) - The concatenated [Tokens](ast_package_classes.md#class-tokens) object.
+- [Tokens](ast_package_classes.md#class-tokens) - The concatenated [Tokens](ast_package_classes.md#class-tokens) type.
 
 ### func append(Tokens)
 
@@ -6515,7 +7948,7 @@ Parameters:
 
 Return Value:
 
-- [Tokens](ast_package_classes.md#class-tokens) - The concatenated [Tokens](ast_package_classes.md#class-tokens) object.
+- [Tokens](ast_package_classes.md#class-tokens) - The concatenated [Tokens](ast_package_classes.md#class-tokens) type.
 
 ### func concat(Tokens)
 
@@ -6531,7 +7964,7 @@ Parameters:
 
 Return Value:
 
-- [Tokens](ast_package_classes.md#class-tokens) - The concatenated [Tokens](ast_package_classes.md#class-tokens) object.
+- [Tokens](ast_package_classes.md#class-tokens) - The concatenated [Tokens](ast_package_classes.md#class-tokens).
 
 ### func dump()
 
@@ -6539,7 +7972,7 @@ Return Value:
 public func dump(): Unit
 ```
 
-Function: Prints all [Token](ast_package_structs.md#struct-token) information within the [Tokens](ast_package_classes.md#class-tokens) object.
+Function: Prints the information of all [Token](ast_package_structs.md#struct-token) in [Tokens](ast_package_classes.md#class-tokens).
 
 ### func get(Int64)
 
@@ -6547,11 +7980,11 @@ Function: Prints all [Token](ast_package_structs.md#struct-token) information wi
 public open func get(index: Int64): Token
 ```
 
-Function: Retrieves a [Token](ast_package_structs.md#struct-token) element by index.
+Function: Gets a [Token](ast_package_structs.md#struct-token) element by index.
 
 Parameters:
 
-- index: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - The index value to query.
+- index: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - The index value.
 
 Return Value:
 
@@ -6571,7 +8004,7 @@ Function: Gets an iterator object for the [Tokens](ast_package_classes.md#class-
 
 Return Value:
 
-- [TokensIterator](ast_package_classes.md#class-tokensiterator) - The iterator object for the [Tokens](ast_package_classes.md#class-tokens) object.
+- [TokensIterator](ast_package_classes.md#class-tokensiterator) - The iterator object of the [Tokens](ast_package_classes.md#class-tokens) object.
 
 ### func remove(Int64)
 
@@ -6587,7 +8020,7 @@ Parameters:
 
 Return Value:
 
-- [Tokens](ast_package_classes.md#class-tokens) - The [Tokens](ast_package_classes.md#class-tokens) object after removing the specified [Token](ast_package_structs.md#struct-token).
+- [Tokens](ast_package_classes.md#class-tokens) - The [Tokens](ast_package_classes.md#class-tokens) object after removing the [Token](ast_package_structs.md#struct-token) at the specified position.
 
 ### func toBytes()
 
@@ -6607,7 +8040,7 @@ Return Value:
 public func toString(): String
 ```
 
-Function: Converts [Tokens](ast_package_classes.md#class-tokens) to [String](../../core/core_package_api/core_package_structs.md#struct-string) type.
+Function: Converts [Tokens](ast_package_classes.md#class-tokens) to the [String](../../core/core_package_api/core_package_structs.md#struct-string) type.
 
 Return Value:
 
@@ -6619,74 +8052,15 @@ Return Value:
 public operator func +(r: Token): Tokens
 ```
 
-Function: Concatenates the current [Tokens](ast_package_classes.md#class-tokens) with another [Token](ast_package_structs.md#struct-token) to obtain a new [Tokens](ast_package_classes.md#class-tokens).
+Function: Operator overload to obtain a new [Tokens](ast_package_classes.md#class-tokens) by adding the current [Tokens](ast_package_classes.md#class-tokens) with another [Token](ast_package_structs.md#struct-token).
 
 Parameters:
 
-- r: [Token](ast_package_structs.md#struct-token) - Another [Token](ast_package_structs.md#struct-token) object to be operated on.
+- r: [Token](ast_package_structs.md#struct-token) - The other [Token](ast_package_structs.md#struct-token) object to be operated on.
 
 Return Value:
 
-- [Tokens](ast_package_classes.md#class-tokens) - The new lexical unit collection after concatenation.
-
-### operator func +(Tokens)
-
-```cangjie
-public operator func +(r: Tokens): Tokens
-```
-
-Function: Concatenates the current [Tokens](ast_package_classes.md#class-tokens) with another [Tokens](ast_package_classes.md#class-tokens) to obtain a new [Tokens](ast_package_classes.md#class-tokens) type.
-
-Parameters:
-
-- r: [Tokens](ast_package_classes.md#class-tokens) - Another set of [Tokens](ast_package_classes.md#class-tokens) objects to be operated on.
-
-Return Value:
-
-- [Tokens](ast_package_classes.md#class-tokens) - The new lexical unit collection after concatenation.
-
-### operator func [](Int64)
-
-```cangjie
-public operator func [](index: Int64): Token
-```
-
-Function: Operator overload to retrieve the corresponding [Token](ast_package_structs.md#struct-token) by index value.
-
-Parameters:
-
-- index: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - The index value to be queried.
-
-Return Value:
-
-- [Token](ast_package_structs.md#struct-token) - The [Token](ast_package_structs.md#struct-token) corresponding to the index.
-
-Exceptions:
-
-- [IndexOutOfBoundsException](../../core/core_package_api/core_package_exceptions.md#class-indexoutofboundsexception) - Thrown when `index` is invalid.
-
-### operator func [](Range<Int64>)
-
-```cangjie
-public open operator func [](range: Range<Int64>): Tokens
-```
-
-Function: Operator overload to retrieve the corresponding [Tokens](ast_package_classes.md#class-tokens) slice by `range`.
-
-Parameters:
-
-- range: [Range](../../core/core_package_api/core_package_structs.md#struct-ranget-where-t--countablet--comparablet--equatablet)\<[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)> - The slice range to be indexed.
-
-Return Value:
-
-- [Tokens](ast_package_classes.md#class-tokens) - The [Tokens](ast_package_classes.md#class-tokens) corresponding to the slice index.
-
-Exceptions:
-
-- [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - Thrown when `range.step` is not equal to 1.
-- [IndexOutOfBoundsException](../../core/core_package_api/core_package_exceptions.md#class-indexoutofboundsexception) - Thrown when the range is invalid.
-
-## class TokensIterator
+- [Tokens](ast_package_classes.md### class TokensIterator
 
 ```cangjie
 public class TokensIterator <: Iterator<Token> {
@@ -6696,7 +8070,7 @@ public class TokensIterator <: Iterator<Token> {
 
 Function: Implements iterator functionality for [Tokens](ast_package_classes.md#class-tokens).
 
-Parent Type:
+Parent Types:
 
 - [Iterator](../../core/core_package_api/core_package_classes.md#class-iteratort)\<[Token](ast_package_structs.md#struct-token)>
 
@@ -6710,7 +8084,7 @@ Function: Constructs a [TokensIterator](ast_package_classes.md#class-tokensitera
 
 Parameters:
 
-- tokens: [Tokens](ast_package_classes.md#class-tokens) - The input [Tokens](ast_package_classes.md#class-tokens).
+- tokens: [Tokens](ast_package_classes.md#class-tokens) - Input [Tokens](ast_package_classes.md#class-tokens).
 
 ### func next()
 
@@ -6718,11 +8092,11 @@ Parameters:
 public func next(): Option<Token>
 ```
 
-Function: Retrieves the next value in the iterator.
+Function: Gets the next value in the iterator.
 
 Return Value:
 
-- [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)> - Returns [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)>. Returns None when traversal is complete.
+- [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)> - Returns [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)> type. Returns None when iteration completes.
 
 ### func peek()
 
@@ -6730,11 +8104,11 @@ Return Value:
 public func peek(): Option<Token>
 ```
 
-Function: Retrieves the current value in the iterator.
+Function: Gets the current value in the iterator.
 
 Return Value:
 
-- [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)> - Returns the [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)> type. Returns None when iteration is complete.
+- [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)> - Returns [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)> type. Returns None when iteration completes.
 
 ### func seeing(TokenKind)
 
@@ -6746,11 +8120,11 @@ Function: Determines whether the current node's [Token](ast_package_structs.md#s
 
 Parameters:
 
-- kind: [TokenKind](ast_package_enums.md#enum-tokenkind) - The [TokenKind](ast_package_enums.md#enum-tokenkind) type to be checked.
+- kind: [TokenKind](ast_package_enums.md#enum-tokenkind) - The [TokenKind](ast_package_enums.md#enum-tokenkind) type to compare.
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if the current node's [TokenKind](ast_package_enums.md#enum-tokenkind) matches the input type; otherwise, returns false.
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if the current node's [TokenKind](ast_package_enums.md#enum-tokenkind) matches the input type, otherwise returns false.
 
 ## class TrailingClosureExpr
 
@@ -6763,9 +8137,9 @@ public class TrailingClosureExpr <: Expr {
 
 Function: Represents a trailing `Lambda` node.
 
-A [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) node places the lambda expression at the tail of a function call, outside the parentheses, e.g., `f(a){ i => i * i }`.
+A [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) node places the lambda expression at the end of a function call, outside parentheses, e.g., `f(a){ i => i * i }`.
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -6775,7 +8149,7 @@ Parent Type:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the expression within the [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr).
+Function: Gets or sets the expression within [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -6785,7 +8159,7 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop lambdaExpr: LambdaExpr
 ```
 
-Function: Gets or sets the trailing lambda within the [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr).
+Function: Gets or sets the trailing lambda in [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr).
 
 Type: [LambdaExpr](ast_package_classes.md#class-lambdaexpr)
 
@@ -6807,11 +8181,35 @@ Function: Constructs a [TrailingClosureExpr](ast_package_classes.md#class-traili
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed into a [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed as a [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class TryExpr
 
@@ -6824,9 +8222,9 @@ public class TryExpr <: Expr {
 
 Function: Represents a `try` expression node.
 
-A `try` expression consists of three parts: the `try` block, `catch` block(s), and `finally` block.
+A `try` expression consists of three parts: `try` block, `catch` block, and `finally` block.
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -6836,7 +8234,7 @@ Parent Type:
 public mut prop catchBlocks: ArrayList<Block>
 ```
 
-Function: Gets or sets the Catch block(s) within the [TryExpr](ast_package_classes.md#class-tryexpr).
+Function: Gets or sets the Catch blocks in [TryExpr](ast_package_classes.md#class-tryexpr).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Block](ast_package_classes.md#class-block)>
 
@@ -6846,7 +8244,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop catchPatterns: ArrayList<Pattern>
 ```
 
-Function: Gets or sets the sequence of exceptions to be caught via pattern matching in the [TryExpr](ast_package_classes.md#class-tryexpr).
+Function: Gets or sets the sequence of patterns to match exceptions to be caught in [TryExpr](ast_package_classes.md#class-tryexpr).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Pattern](ast_package_classes.md#class-pattern)>
 
@@ -6856,13 +8254,13 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 public mut prop finallyBlock: Block
 ```
 
-Function: Gets or sets the `Finally` keyword block within the [TryExpr](ast_package_classes.md#class-tryexpr).
+Function: Gets or sets the `Finally` block in [TryExpr](ast_package_classes.md#class-tryexpr).
 
 Type: [Block](ast_package_classes.md#class-block)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [TryExpr](ast_package_classes.md#class-tryexpr) node lacks a `Finally` block node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [TryExpr](ast_package_classes.md#class-tryexpr) node has no `Finally` block.
 
 ### prop keywordF
 
@@ -6870,13 +8268,13 @@ Exceptions:
 public mut prop keywordF: Token
 ```
 
-Function: Gets or sets the `finally` keyword within the [TryExpr](ast_package_classes.md#class-tryexpr).
+Function: Gets or sets the `finally` keyword in [TryExpr](ast_package_classes.md#class-tryexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `finally` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `finally` keyword.
 
 ### prop keywordT
 
@@ -6890,7 +8288,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `try` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `try` keyword.
 
 ### prop keywordsC
 
@@ -6898,13 +8296,13 @@ Exceptions:
 public mut prop keywordsC: Tokens
 ```
 
-Function: Gets or sets the `catch` keyword in [TryExpr](ast_package_classes.md#class-tryexpr).
+Function: Gets or sets the `catch` keywords in [TryExpr](ast_package_classes.md#class-tryexpr).
 
 Type: [Tokens](ast_package_classes.md#class-tokens)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the `catch` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `catch` keyword.
 
 ### prop resourceSpec
 
@@ -6912,7 +8310,7 @@ Exceptions:
 public mut prop resourceSpec: ArrayList<VarDecl>
 ```
 
-Function: Gets or sets the sequence of instantiated objects for Try-with-resources type expressions in [TryExpr](ast_package_classes.md#class-tryexpr).
+Function: Gets or sets the sequence of instantiated objects in Try-with-resources expressions in [TryExpr](ast_package_classes.md#class-tryexpr).
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[VarDecl](ast_package_classes.md#class-vardecl)>
 
@@ -6944,11 +8342,35 @@ Function: Constructs a [TryExpr](ast_package_classes.md#class-tryexpr) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [TryExpr](ast_package_classes.md#class-tryexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [TryExpr](ast_package_classes.md#class-tryexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [TryExpr](ast_package_classes.md#class-tryexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed as a [TryExpr](ast_package_classes.md#class-tryexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class TupleLiteral
 
@@ -6961,9 +8383,9 @@ public class TupleLiteral <: Expr {
 
 Function: Represents a tuple literal node.
 
-[TupleLiteral](ast_package_classes.md#class-tupleliteral) node: Uses the format `(expr1, expr2, ... , exprN)` where each `expr` is an expression.
+[TupleLiteral](ast_package_classes.md#class-tupleliteral) node: Expressed in the format `(expr1, expr2, ... , exprN)`, where each `expr` is an expression.
 
-Parent Type:
+Parent Types:
 
 - [Expr](#class-expr)
 
@@ -6989,7 +8411,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -7003,7 +8425,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -7021,13 +8443,37 @@ public init(inputs: Tokens)
 
 Function: Constructs a [TupleLiteral](ast_package_classes.md#class-tupleliteral) object.
 
-Parameters:- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into a [TupleLiteral](ast_package_classes.md#class-tupleliteral) type.
+Parameters:
+
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [TupleLiteral](ast_package_classes.md#class-tupleliteral) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [TupleLiteral](ast_package_classes.md#class-tupleliteral) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed as a [TupleLiteral](ast_package_classes.md#class-tupleliteral) node.
 
-## class TuplePattern
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.## class TuplePattern
 
 ```cangjie
 public class TuplePattern <: Pattern {
@@ -7036,7 +8482,7 @@ public class TuplePattern <: Pattern {
 }
 ```
 
-Function: Represents a Tuple pattern node.
+Function: Represents a tuple pattern node.
 
 Used for matching `tuple` values, such as `("Bob", age)` in `case ("Bob", age) => 1`.
 
@@ -7114,11 +8560,35 @@ Function: Constructs a [TuplePattern](ast_package_classes.md#class-tuplepattern)
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) to be constructed into a [TuplePattern](ast_package_classes.md#class-tuplepattern) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) to construct the [TuplePattern](ast_package_classes.md#class-tuplepattern) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [TuplePattern](ast_package_classes.md#class-tuplepattern) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [TuplePattern](ast_package_classes.md#class-tuplepattern) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class TupleType
 
@@ -7171,7 +8641,7 @@ Exceptions:
 public mut prop types: ArrayList<TypeNode>
 ```
 
-Function: Gets or sets the list of type nodes in a [TupleType](ast_package_classes.md#class-tupletype) node.
+Function: Gets or sets the list of type nodes in the [TupleType](ast_package_classes.md#class-tupletype) node.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
@@ -7193,11 +8663,35 @@ Function: Constructs a [TupleType](ast_package_classes.md#class-tupletype) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [TupleType](ast_package_classes.md#class-tupletype).
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) to construct the [TupleType](ast_package_classes.md#class-tupletype) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [TupleType](ast_package_classes.md#class-tupletype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [TupleType](ast_package_classes.md#class-tupletype) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class TypeAliasDecl
 
@@ -7210,11 +8704,11 @@ public class TypeAliasDecl <: Decl {
 
 Function: Represents a type alias node.
 
-A [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl) node example: `type Point2D = Float64`.
+A [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl) node: `type Point2D = Float64`.
 
 > **Note:**
 >
-> In this node, `type` serves as a keyword followed by any valid identifier. The subsequent `type` can be any top-level visible type, with the identifier and `type` connected by `=`.
+> In this node, `type` is a keyword followed by any valid identifier. The subsequent `type` is any top-level visible type, connected to the identifier by `=`.
 
 Parent Type:
 
@@ -7242,7 +8736,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not `=`.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not `=`.
 
 ### init()
 
@@ -7262,11 +8756,35 @@ Function: Constructs a [TypeAliasDecl](ast_package_classes.md#class-typealiasdec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl).
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) to construct the [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class TypeConvExpr
 
@@ -7279,7 +8797,7 @@ public class TypeConvExpr <: Expr {
 
 Function: Represents a type conversion expression.
 
-Used to implement conversions between various numeric types. A [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) node example: `Int8(32)`.
+Used to implement conversions between several numeric types. A [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) node: `Int8(32)`.
 
 Parent Type:
 
@@ -7291,7 +8809,7 @@ Parent Type:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the original expression to be type-converted in [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
+Function: Gets or sets the original expression for type conversion in the [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -7301,13 +8819,13 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" in [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
+Function: Gets or sets the "(" in the [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -7315,11 +8833,13 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" in [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
+Function: Gets or sets the ")" in the [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
-Exceptions:- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop targetType
 
@@ -7327,7 +8847,7 @@ Exceptions:- [ASTException](ast_package_exceptions.md#class-astexception) - Thro
 public mut prop targetType: PrimitiveType
 ```
 
-Function: Gets or sets the target type to be converted to in [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
+Function: Gets or sets the target type to convert to in the [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
 
 Type: [PrimitiveType](ast_package_classes.md#class-primitivetype)
 
@@ -7349,13 +8869,35 @@ Function: Constructs a [TypeConvExpr](ast_package_classes.md#class-typeconvexpr)
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical units ([Tokens](ast_package_classes.md#class-tokens)) to construct the [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) node.
 
-## class TypeNode
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate the traversal of child nodes early, override the `visit` function and call the `breakTraverse` function to terminate the traversal behavior. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.## class TypeNode
 
 ```cangjie
 public open class TypeNode <: Node
@@ -7363,19 +8905,9 @@ public open class TypeNode <: Node
 
 Function: The parent class of all type nodes, inherits from [Node](ast_package_classes.md#class-node).
 
-Parent Type:
+Parent Types:
 
 - [Node](#class-node)
-
-### prop typeParameterName
-
-```cangjie
-public mut prop typeParameterName: Token
-```
-
-Function: Gets or sets the parameters of the type node, such as `p1` and `p2` in `(p1:Int64, p2:Int64)`, which may be [ILLEGAL](ast_package_enums.md#illegal) lexical units.
-
-Type: [Token](ast_package_structs.md#struct-token)
 
 ### prop colon
 
@@ -7383,13 +8915,63 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the operator ":" in the [TypeNode](ast_package_classes.md#class-typenode) node, which may be an [ILLEGAL](ast_package_enums.md#illegal) lexical unit.
+Function: Gets or sets the operator ":" in the [TypeNode](ast_package_classes.md#class-typenode), which may be a lexical unit of [ILLEGAL](ast_package_enums.md#illegal).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the ":" operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the ":" operator.
+
+### prop typeParameterName
+
+```cangjie
+public mut prop typeParameterName: Token
+```
+
+Function: Gets or sets the parameters of the type node, such as `p1` and `p2` in `(p1:Int64, p2:Int64)`, which may be a lexical unit of [ILLEGAL](ast_package_enums.md#illegal).
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
+
+### func dump(UInt16)
+
+```cangjie
+protected open func dump(indent: UInt16): String
+```
+
+Function: Converts the current syntax tree node into a tree structure and prints it.
+
+Parameters:
+
+- indent: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - The number of indentation spaces for formatted output.
+
+Return Value:
+
+- [String](../../core/core_package_api/core_package_structs.md#struct-string) - The formatted output content.
 
 ## class TypePattern
 
@@ -7404,7 +8986,7 @@ Function: Represents a type pattern node.
 
 Used to determine whether the runtime type of a value is a subtype of a certain type, such as `b: Base` in `case b: Base => 0`.
 
-Parent Type:
+Parent Types:
 
 - [Pattern](#class-pattern)
 
@@ -7414,13 +8996,13 @@ Parent Type:
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the lexical unit node of the ":" operator in the [TypePattern](ast_package_classes.md#class-typepattern) node.
+Function: Gets or sets the ":" operator lexical unit node in the [TypePattern](ast_package_classes.md#class-typepattern).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not the ":" operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the ":" operator.
 
 ### prop pattern
 
@@ -7428,7 +9010,7 @@ Exceptions:
 public mut prop pattern: Pattern
 ```
 
-Function: Gets or sets the pattern node in the [TypePattern](ast_package_classes.md#class-typepattern) node.
+Function: Gets or sets the pattern node in the [TypePattern](ast_package_classes.md#class-typepattern).
 
 Type: [Pattern](ast_package_classes.md#class-pattern)
 
@@ -7438,7 +9020,7 @@ Type: [Pattern](ast_package_classes.md#class-pattern)
 public mut prop patternType: TypeNode
 ```
 
-Function: Gets or sets the pattern type node to be matched in the [TypePattern](ast_package_classes.md#class-typepattern) node.
+Function: Gets or sets the pattern type node to be matched in the [TypePattern](ast_package_classes.md#class-typepattern).
 
 Type: [TypeNode](ast_package_classes.md#class-typenode)
 
@@ -7460,11 +9042,35 @@ Function: Constructs a [TypePattern](ast_package_classes.md#class-typepattern) o
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [TypePattern](ast_package_classes.md#class-typepattern) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [TypePattern](ast_package_classes.md#class-typepattern) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [TypePattern](ast_package_classes.md#class-typepattern) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [TypePattern](ast_package_classes.md#class-typepattern) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class UnaryExpr
 
@@ -7487,7 +9093,7 @@ Parent Types:
 public mut prop expr: Expr
 ```
 
-Function: Gets or sets the operand in the [UnaryExpr](ast_package_classes.md#class-unaryexpr) node.
+Function: Gets or sets the operand in the [UnaryExpr](ast_package_classes.md#class-unaryexpr).
 
 Type: [Expr](ast_package_classes.md#class-expr)
 
@@ -7497,7 +9103,7 @@ Type: [Expr](ast_package_classes.md#class-expr)
 public mut prop op: Token
 ```
 
-Function: Gets or sets the unary operator in the [UnaryExpr](ast_package_classes.md#class-unaryexpr) node.
+Function: Gets or sets the unary operator in the [UnaryExpr](ast_package_classes.md#class-unaryexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -7519,11 +9125,35 @@ Function: Constructs a [UnaryExpr](ast_package_classes.md#class-unaryexpr) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [UnaryExpr](ast_package_classes.md#class-unaryexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [UnaryExpr](ast_package_classes.md#class-unaryexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [UnaryExpr](ast_package_classes.md#class-unaryexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [UnaryExpr](ast_package_classes.md#class-unaryexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class VArrayExpr
 
@@ -7536,7 +9166,7 @@ public class VArrayExpr <: Expr {
 
 Function: Represents a `VArray` instance node.
 
-A [VArrayExpr](ast_package_classes.md#class-varrayexpr) node: The `VArray<Int64, $5>({ i => i })` in `let arr: VArray<Int64, $5> = VArray<Int64, $5>({ i => i })`.
+A [VArrayExpr](ast_package_classes.md#class-varrayexpr) node: `VArray<Int64, $5>({ i => i })` in `let arr: VArray<Int64, $5> = VArray<Int64, $5>({ i => i })`.
 
 Parent Types:
 
@@ -7564,7 +9194,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -7578,7 +9208,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### prop vArrayType
 
@@ -7608,11 +9238,35 @@ Function: Constructs a [VArrayExpr](ast_package_classes.md#class-varrayexpr) obj
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [VArrayExpr](ast_package_classes.md#class-varrayexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [VArrayExpr](ast_package_classes.md#class-varrayexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [VArrayExpr](ast_package_classes.md#class-varrayexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [VArrayExpr](ast_package_classes.md#class-varrayexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class VArrayType
 
@@ -7625,9 +9279,9 @@ public class VArrayType <: TypeNode {
 
 Function: Represents a `VArray` type node.
 
-Uses generics `VArray<T, size: Int64>` to denote the `VArray` type.
+Uses the generic `VArray<T, size: Int64>` to represent the `VArray` type.
 
-Parent Type:
+Parent Types:
 
 - [TypeNode](#class-typenode)
 
@@ -7637,13 +9291,13 @@ Parent Type:
 public mut prop dollar: Token
 ```
 
-Function: Gets or sets the lexical token for the operator `$` in the [VArrayType](ast_package_classes.md#class-varraytype) node.
+Function: Gets or sets the `$` operator lexical unit in the [VArrayType](ast_package_classes.md#class-varraytype).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a `$` lexical token.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `$` lexical unit.
 
 ### prop elementTy
 
@@ -7651,7 +9305,7 @@ Exceptions:
 public mut prop elementTy: TypeNode
 ```
 
-Function: Gets or sets the type argument node in the [VArrayType](ast_package_classes.md#class-varraytype) node, such as [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) in `VArray<Int16, $0>`.
+Function: Gets or sets the type parameter node in the [VArrayType](ast_package_classes.md#class-varraytype), such as [Int16](../../core/core_package_api/core_package_intrinsics.md#int16) in `VArray<Int16, $0>`.
 
 Type: [TypeNode](ast_package_classes.md#class-typenode)
 
@@ -7661,7 +9315,7 @@ Type: [TypeNode](ast_package_classes.md#class-typenode)
 public mut prop keyword: Token
 ```
 
-Function: Gets or sets the lexical token for the keyword `VArray` in the [VArrayType](ast_package_classes.md#class-varraytype) node.
+Function: Gets or sets the `VArray` keyword lexical unit in the [VArrayType](ast_package_classes.md#class-varraytype).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -7671,13 +9325,13 @@ Type: [Token](ast_package_structs.md#struct-token)
 public mut prop lAngle: Token
 ```
 
-Function: Gets or sets the lexical token for the left angle bracket in the [VArrayType](ast_package_classes.md#class-varraytype) node.
+Function: Gets or sets the left angle bracket lexical unit in the [VArrayType](ast_package_classes.md#class-varraytype).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a left angle bracket.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a left angle bracket.
 
 ### prop rAngle
 
@@ -7685,13 +9339,13 @@ Exceptions:
 public mut prop rAngle: Token
 ```
 
-Function: Gets or sets the lexical token for the right angle bracket in the [VArrayType](ast_package_classes.md#class-varraytype) node.
+Function: Gets or sets the right angle bracket lexical unit in the [VArrayType](ast_package_classes.md#class-varraytype).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not a right angle bracket.
 
 ### prop size
 
@@ -7699,7 +9353,7 @@ Exceptions:
 public mut prop size: Token
 ```
 
-Function: Gets or sets the lexical token for the type length in the [VArrayType](ast_package_classes.md#class-varraytype) node.
+Function: Gets or sets the lexical unit representing the type length in the [VArrayType](ast_package_classes.md#class-varraytype).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -7721,11 +9375,35 @@ Function: Constructs a [VArrayType](ast_package_classes.md#class-varraytype) obj
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The collection of lexical tokens ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [VArrayType](ast_package_classes.md#class-varraytype) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [VArrayType](ast_package_classes.md#class-varraytype) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [VArrayType](ast_package_classes.md#class-varraytype) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [VArrayType](ast_package_classes.md#class-varraytype) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class VarDecl
 
@@ -7742,7 +9420,7 @@ A [VarDecl](ast_package_classes.md#class-vardecl) node: `var a: String`, `var b:
 
 > **Note:**
 >
-> Variable declarations mainly include the following components: modifiers, keywords, patternsMaybeIrrefutable, variable types, and variable initial values.
+> Variable declaration mainly consists of the following parts: modifiers, keywords, patternsMaybeIrrefutable, variable type, and initial value.
 
 Parent Type:
 
@@ -7754,13 +9432,13 @@ Parent Type:
 public mut prop assign: Token
 ```
 
-Function: Gets or sets the position information for the assignment operator in the [VarDecl](ast_package_classes.md#class-vardecl) node.
+Function: Gets or sets the position information of the assignment operator in the [VarDecl](ast_package_classes.md#class-vardecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Throws an exception when the set [Token](ast_package_structs.md#struct-token) is not an assignment operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not an assignment operator.
 
 ### prop colon
 
@@ -7768,7 +9446,7 @@ Exceptions:
 public mut prop colon: Token
 ```
 
-Function: Gets or sets the position information for the colon in the [VarDecl](ast_package_classes.md#class-vardecl) node.
+Function: Gets or sets the position information of the colon in the [VarDecl](ast_package_classes.md#class-vardecl) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -7788,7 +9466,7 @@ Type: [TypeNode](ast_package_classes.md#class-typenode)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [VarDecl](ast_package_classes.md#class-vardecl) node has no declared variable type.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [VarDecl](ast_package_classes.md#class-vardecl) node does not declare a variable type.
 
 ### prop expr
 
@@ -7802,7 +9480,7 @@ Type: [Expr](ast_package_classes.md#class-expr)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [VarDecl](ast_package_classes.md#class-vardecl) node has no variable initialization.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [VarDecl](ast_package_classes.md#class-vardecl) node does not initialize the variable.
 
 ### prop pattern
 
@@ -7816,7 +9494,7 @@ Type: [Pattern](ast_package_classes.md#class-pattern)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [VarDecl](ast_package_classes.md#class-vardecl) node has no declared pattern node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the [VarDecl](ast_package_classes.md#class-vardecl) node does not declare a pattern node.
 
 ### init()
 
@@ -7836,7 +9514,7 @@ Function: Constructs a [VarDecl](ast_package_classes.md#class-vardecl) object.
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to construct the [VarDecl](ast_package_classes.md#class-vardecl) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [VarDecl](ast_package_classes.md#class-vardecl) type.
 
 Exceptions:
 
@@ -7854,6 +9532,30 @@ Return Value:
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if it is a `Const` type node; otherwise, returns false.
 
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
+
 ## class VarOrEnumPattern
 
 ```cangjie
@@ -7863,7 +9565,7 @@ public class VarOrEnumPattern <: Pattern {
 }
 ```
 
-Function: Represents the node when the pattern identifier is an `Enum` constructor.
+Function: Represents a node where the pattern identifier is an `Enum` constructor.
 
 For example, `RED` in `case RED` is an `Enum` constructor.
 
@@ -7889,7 +9591,7 @@ public init()
 
 Function: Constructs a default [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern) object.
 
-### init(Tokens)
+### init(Token)
 
 ```cangjie
 public init(identifier: Token)
@@ -7899,11 +9601,35 @@ Function: Constructs a [VarOrEnumPattern](ast_package_classes.md#class-varorenum
 
 Parameters:
 
-- identifier: [Token](ast_package_structs.md#struct-token) - The lexical unit to construct the [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern) type.
+- identifier: [Token](ast_package_structs.md#struct-token) - The lexical unit used to construct the [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern) type.
 
 Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class VarPattern
 
@@ -7918,7 +9644,9 @@ Function: Represents a binding pattern node.
 
 Expressed using a valid identifier, such as `i` in `for (i in 1..10)`.
 
-Parent Type:- [Pattern](#class-pattern)
+Parent Type:
+
+- [Pattern](#class-pattern)
 
 ### prop identifier
 
@@ -7926,7 +9654,7 @@ Parent Type:- [Pattern](#class-pattern)
 public mut prop identifier: Token
 ```
 
-Function: Gets or sets the lexical token for the identifier in a [VarPattern](ast_package_classes.md#class-varpattern) node.
+Function: Gets or sets the lexical unit of the identifier in the [VarPattern](ast_package_classes.md#class-varpattern) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
@@ -7938,7 +9666,7 @@ public init()
 
 Function: Constructs a default [VarPattern](ast_package_classes.md#class-varpattern) object.
 
-### init(Tokens)
+### init(Token)
 
 ```cangjie
 public init(identifier: Token)
@@ -7948,11 +9676,35 @@ Function: Constructs a [VarPattern](ast_package_classes.md#class-varpattern) obj
 
 Parameters:
 
-- identifier: [Token](ast_package_structs.md#struct-token) - The lexical token to construct the [VarPattern](ast_package_classes.md#class-varpattern) type.
+- identifier: [Token](ast_package_structs.md#struct-token) - The lexical unit used to construct the [VarPattern](ast_package_classes.md#class-varpattern) type.
 
 Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [VarPattern](ast_package_classes.md#class-varpattern) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class Visitor
 
@@ -7964,8 +9716,8 @@ Function: An abstract class that internally defines default `visit` functions fo
 
 > **Note:**
 >
-> - The `visit` functions are used in conjunction with `traverse` to enable node access and modification. All `visit` functions have empty implementations by default, allowing selective implementation as needed.
-> - This class must be inherited and allows subclasses to redefine the visit functions.
+> - The `visit` function is used in conjunction with `traverse` to enable node access and modification. All `visit` functions have empty default implementations and can be implemented as needed.
+> - This class must be inherited and allows subclasses to redefine visitor functions.
 
 ### func breakTraverse()
 
@@ -7973,9 +9725,1036 @@ Function: An abstract class that internally defines default `visit` functions fo
 public func breakTraverse(): Unit
 ```
 
-Function: Used within overridden `visit` functions to terminate further traversal of child nodes by calling this function.
+Function: Used in overridden `visit` functions to terminate further traversal of child nodes by calling this function.
 
-## class WhileExpr
+### func needBreakTraverse()
+
+```cangjie
+protected func needBreakTraverse(): Bool
+```
+
+Function: Determines whether traversal should be stopped.
+
+Return Value:
+
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool)
+
+### func visit(Annotation)
+
+```cangjie
+protected open func visit(_: Annotation): Unit
+```
+
+Function: Defines operations during node access and requires overriding.
+
+Parameters:
+
+- _: [Annotation](ast_package_classes.md#class-annotation) - The traversed node of type [Annotation](ast_package_classes.md#class-annotation).
+
+### func visit(Argument)
+
+```cangjie
+protected open func visit(_: Argument): Unit
+```
+
+Function: Defines operations during node access and requires overriding.
+
+Parameters:
+
+- _: [Argument](ast_package_classes.md#class-argument) - The traversed node of type [Argument](ast_package_classes.md#class-argument).
+
+### func visit(ArrayLiteral)
+
+```cangjie
+protected open func visit(_: ArrayLiteral): Unit
+```
+
+Function: Defines operations during node access and requires overriding.
+
+Parameters:
+
+- _: [ArrayLiteral](ast_package_classes.md#class-arrayliteral) - The traversed node of type [ArrayLiteral](ast_package_classes.md#class-arrayliteral).
+
+### func visit(AsExpr)
+
+```cangjie
+protected open func visit(_: AsExpr): Unit
+```
+
+Function: Defines operations during node access and requires overriding.
+
+Parameters:
+
+- _: [AsExpr](ast_package_classes.md#class-asexpr) - The traversed node of type [AsExpr](ast_package_classes.md#class-asexpr).
+
+### func visit(AssignExpr)
+
+```cangjie
+protected open func visit(_: AssignExpr): Unit
+```
+
+Function: Defines operations during node access and requires overriding.
+
+Parameters:
+
+- _: [AssignExpr](ast_package_classes.md#class-assignexpr) - The traversed node of type [AssignExpr](ast_package_classes.md#class-assignexpr).
+
+### func visit(BinaryExpr)
+
+```cangjie
+protected open func visit(_: BinaryExpr): Unit
+```
+
+Function: Defines operations during node access and requires overriding.
+
+Parameters:
+
+- _: [BinaryExpr](ast_package_classes.md#class-binaryexpr) - The traversed node of type [BinaryExpr](ast_package_classes.md#class-binaryexpr).
+```### func visit(Block)
+
+```cangjie
+protected open func visit(_: Block): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Block](ast_package_classes.md#class-block) - The node being traversed of type [Block](ast_package_classes.md#class-block).
+
+### func visit(Body)
+
+```cangjie
+protected open func visit(_: Body): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Body](ast_package_classes.md#class-body) - The node being traversed of type [Body](ast_package_classes.md#class-body).
+
+### func visit(CallExpr)
+
+```cangjie
+protected open func visit(_: CallExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [CallExpr](ast_package_classes.md#class-callexpr) - The node being traversed of type [CallExpr](ast_package_classes.md#class-callexpr).
+
+### func visit(ClassDecl)
+
+```cangjie
+protected open func visit(_: ClassDecl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ClassDecl](ast_package_classes.md#class-classdecl) - The node being traversed of type [ClassDecl](ast_package_classes.md#class-classdecl).
+
+### func visit(ConstPattern)
+
+```cangjie
+protected open func visit(_: ConstPattern): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ConstPattern](ast_package_classes.md#class-constpattern) - The node being traversed of type [ConstPattern](ast_package_classes.md#class-constpattern).
+
+### func visit(Constructor)
+
+```cangjie
+protected open func visit(_: Constructor): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Constructor](ast_package_classes.md#class-constructor) - The node being traversed of type [Constructor](ast_package_classes.md#class-constructor).
+
+### func visit(Decl)
+
+```cangjie
+protected open func visit(_: Decl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Decl](ast_package_classes.md#class-decl) - The node being traversed of type [Decl](ast_package_classes.md#class-decl).
+
+### func visit(DoWhileExpr)
+
+```cangjie
+protected open func visit(_: DoWhileExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [DoWhileExpr](ast_package_classes.md#class-dowhileexpr) - The node being traversed of type [DoWhileExpr](ast_package_classes.md#class-dowhileexpr).
+
+### func visit(EnumDecl)
+
+```cangjie
+protected open func visit(_: EnumDecl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [EnumDecl](ast_package_classes.md#class-enumdecl) - The node being traversed of type [EnumDecl](ast_package_classes.md#class-enumdecl).
+
+### func visit(EnumPattern)
+
+```cangjie
+protected open func visit(_: EnumPattern): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [EnumPattern](ast_package_classes.md#class-enumpattern) - The node being traversed of type [EnumPattern](ast_package_classes.md#class-enumpattern).
+
+### func visit(ExceptTypePattern)
+
+```cangjie
+protected open func visit(_: ExceptTypePattern): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern) - The node being traversed of type [ExceptTypePattern](ast_package_classes.md#class-excepttypepattern).
+
+### func visit(Expr)
+
+```cangjie
+protected open func visit(_: Expr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Expr](ast_package_classes.md#class-expr) - The node being traversed of type [Expr](ast_package_classes.md#class-expr).
+
+### func visit(ExtendDecl)
+
+```cangjie
+protected open func visit(_: ExtendDecl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ExtendDecl](ast_package_classes.md#class-extenddecl) - The node being traversed of type [ExtendDecl](ast_package_classes.md#class-extenddecl).
+
+### func visit(ForInExpr)
+
+```cangjie
+protected open func visit(_: ForInExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ForInExpr](ast_package_classes.md#class-forinexpr) - The node being traversed of type [ForInExpr](ast_package_classes.md#class-forinexpr).
+
+### func visit(FuncDecl)
+
+```cangjie
+protected open func visit(_: FuncDecl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [FuncDecl](ast_package_classes.md#class-funcdecl) - The node being traversed of type [FuncDecl](ast_package_classes.md#class-funcdecl).
+
+### func visit(FuncParam)
+
+```cangjie
+protected open func visit(_: FuncParam): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [FuncParam](ast_package_classes.md#class-funcparam) - The node being traversed of type [FuncParam](ast_package_classes.md#class-funcparam).
+
+### func visit(FuncType)
+
+```cangjie
+protected open func visit(_: FuncType): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [FuncType](ast_package_classes.md#class-functype) - The node being traversed of type [FuncType](ast_package_classes.md#class-functype).
+
+### func visit(GenericConstraint)
+
+```cangjie
+protected open func visit(_: GenericConstraint): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [GenericConstraint](ast_package_classes.md#class-genericconstraint) - The node being traversed of type [GenericConstraint](ast_package_classes.md#class-genericconstraint).
+
+### func visit(GenericParam)
+
+```cangjie
+protected open func visit(_: GenericParam): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [GenericParam](ast_package_classes.md#class-genericparam) - The node being traversed of type [GenericParam](ast_package_classes.md#class-genericparam).
+
+### func visit(IfExpr)
+
+```cangjie
+protected open func visit(_: IfExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [IfExpr](ast_package_classes.md#class-ifexpr) - The node being traversed of type [IfExpr](ast_package_classes.md#class-ifexpr).
+
+### func visit(ImportContent)
+
+```cangjie
+protected open func visit(_: ImportContent): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ImportContent](ast_package_classes.md#class-importcontent) - The node being traversed of type [ImportContent](ast_package_classes.md#class-importcontent).
+
+### func visit(ImportList)
+
+```cangjie
+protected open func visit(_: ImportList): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ImportList](ast_package_classes.md#class-importlist) - The node being traversed of type [ImportList](ast_package_classes.md#class-importlist).
+
+### func visit(IncOrDecExpr)
+
+```cangjie
+protected open func visit(_: IncOrDecExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [IncOrDecExpr](ast_package_classes.md#class-incordecexpr) - The node being traversed of type [IncOrDecExpr](ast_package_classes.md#class-incordecexpr).
+
+### func visit(InterfaceDecl)
+
+```cangjie
+protected open func visit(_: InterfaceDecl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [InterfaceDecl](ast_package_classes.md#class-interfacedecl) - The node being traversed of type [InterfaceDecl](ast_package_classes.md#class-interfacedecl).
+
+### func visit(IsExpr)
+
+```cangjie
+protected open func visit(_: IsExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [IsExpr](ast_package_classes.md#class-isexpr) - The node being traversed of type [IsExpr](ast_package_classes.md#class-isexpr).
+
+### func visit(JumpExpr)
+
+```cangjie
+protected open func visit(_: JumpExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [JumpExpr](ast_package_classes.md#class-jumpexpr) - The node being traversed of type [JumpExpr](ast_package_classes.md#class-jumpexpr).
+
+### func visit(LambdaExpr)
+
+```cangjie
+protected open func visit(_: LambdaExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [LambdaExpr](ast_package_classes.md#class-lambdaexpr) - The node being traversed of type [LambdaExpr](ast_package_classes.md#class-lambdaexpr).
+
+### func visit(LetPatternExpr)
+
+```cangjie
+protected open func visit(_: LetPatternExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [LetPatternExpr](ast_package_classes.md#class-letpatternexpr) - The node being traversed of type [LetPatternExpr](ast_package_classes.md#class-letpatternexpr).
+
+### func visit(LitConstExpr)
+
+```cangjie
+protected open func visit(_: LitConstExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [LitConstExpr](ast_package_classes.md#class-litconstexpr) - The node being traversed of type [LitConstExpr](ast_package_classes.md#class-litconstexpr).
+
+### func visit(MacroDecl)
+
+```cangjie
+protected open func visit(_: MacroDecl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [MacroDecl](ast_package_classes.md#class-macrodecl) - The node being traversed of type [MacroDecl](ast_package_classes.md#class-macrodecl).
+
+### func visit(MacroExpandDecl)
+
+```cangjie
+protected open func visit(_: MacroExpandDecl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) - The node being traversed of type [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl).
+
+### func visit(MacroExpandExpr)
+
+```cangjie
+protected open func visit(_: MacroExpandExpr): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr) - The node being traversed of type [MacroExpandExpr](ast_package_classes.md#class-macroexpandexpr).
+
+### func visit(MainDecl)
+
+```cangjie
+protected open func visit(_: MainDecl): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [MainDecl](ast_package_classes.md#class-maindecl) - The node being traversed of type [MainDecl](ast_package_classes.md#class-maindecl).
+
+### func visit(MatchCase)
+
+```cangjie
+protected open func visit(_: MatchCase): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [MatchCase](ast_package_classes.md#class-matchcase) - The node being traversed of type [MatchCase](ast_package_classes.md#class-matchcase).### func visit(MatchExpr)
+
+```cangjie
+protected open func visit(_: MatchExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [MatchExpr](ast_package_classes.md#class-matchexpr) - The node being traversed of type [MatchExpr](ast_package_classes.md#class-matchexpr).
+
+### func visit(MemberAccess)
+
+```cangjie
+protected open func visit(_: MemberAccess): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [MemberAccess](ast_package_classes.md#class-memberaccess) - The node being traversed of type [MemberAccess](ast_package_classes.md#class-memberaccess).
+
+### func visit(Modifier)
+
+```cangjie
+protected open func visit(_: Modifier): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Modifier](ast_package_classes.md#class-modifier) - The node being traversed of type [Modifier](ast_package_classes.md#class-modifier).
+
+### func visit(Node)
+
+```cangjie
+protected open func visit(_: Node): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Node](ast_package_classes.md#class-node) - The node being traversed of type [Node](ast_package_classes.md#class-node).
+
+### func visit(OptionalExpr)
+
+```cangjie
+protected open func visit(_: OptionalExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [OptionalExpr](ast_package_classes.md#class-optionalexpr) - The node being traversed of type [OptionalExpr](ast_package_classes.md#class-optionalexpr).
+
+### func visit(PackageHeader)
+
+```cangjie
+protected open func visit(_: PackageHeader): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [PackageHeader](ast_package_classes.md#class-packageheader) - The node being traversed of type [PackageHeader](ast_package_classes.md#class-packageheader).
+
+### func visit(ParenExpr)
+
+```cangjie
+protected open func visit(_: ParenExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ParenExpr](ast_package_classes.md#class-parenexpr) - The node being traversed of type [ParenExpr](ast_package_classes.md#class-parenexpr).
+
+### func visit(ParenType)
+
+```cangjie
+protected open func visit(_: ParenType): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ParenType](ast_package_classes.md#class-parentype) - The node being traversed of type [ParenType](ast_package_classes.md#class-parentype).
+
+### func visit(Pattern)
+
+```cangjie
+protected open func visit(_: Pattern): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Pattern](ast_package_classes.md#class-pattern) - The node being traversed of type [Pattern](ast_package_classes.md#class-pattern).
+
+### func visit(PrefixType)
+
+```cangjie
+protected open func visit(_: PrefixType): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [PrefixType](ast_package_classes.md#class-prefixtype) - The node being traversed of type [PrefixType](ast_package_classes.md#class-prefixtype).
+
+### func visit(PrimaryCtorDecl)
+
+```cangjie
+protected open func visit(_: PrimaryCtorDecl): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl) - The node being traversed of type [PrimaryCtorDecl](ast_package_classes.md#class-primaryctordecl).
+
+### func visit(PrimitiveType)
+
+```cangjie
+protected open func visit(_: PrimitiveType): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [PrimitiveType](ast_package_classes.md#class-primitivetype) - The node being traversed of type [PrimitiveType](ast_package_classes.md#class-primitivetype).
+
+### func visit(PrimitiveTypeExpr)
+
+```cangjie
+protected open func visit(_: PrimitiveTypeExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr) - The node being traversed of type [PrimitiveTypeExpr](ast_package_classes.md#class-primitivetypeexpr).
+
+### func visit(Program)
+
+```cangjie
+protected open func visit(_: Program): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [Program](ast_package_classes.md#class-program) - The node being traversed of type [Program](ast_package_classes.md#class-program).
+
+### func visit(PropDecl)
+
+```cangjie
+protected open func visit(_: PropDecl): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [PropDecl](ast_package_classes.md#class-propdecl) - The node being traversed of type [PropDecl](ast_package_classes.md#class-propdecl).
+
+### func visit(QualifiedType)
+
+```cangjie
+protected open func visit(_: QualifiedType): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [QualifiedType](ast_package_classes.md#class-qualifiedtype) - The node being traversed of type [QualifiedType](ast_package_classes.md#class-qualifiedtype).
+
+### func visit(QuoteExpr)
+
+```cangjie
+protected open func visit(_: QuoteExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [QuoteExpr](ast_package_classes.md#class-quoteexpr) - The node being traversed of type [QuoteExpr](ast_package_classes.md#class-quoteexpr).
+
+### func visit(RangeExpr)
+
+```cangjie
+protected open func visit(_: RangeExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [RangeExpr](ast_package_classes.md#class-rangeexpr) - The node being traversed of type [RangeExpr](ast_package_classes.md#class-rangeexpr).
+
+### func visit(RefExpr)
+
+```cangjie
+protected open func visit(_: RefExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [RefExpr](ast_package_classes.md#class-refexpr) - The node being traversed of type [RefExpr](ast_package_classes.md#class-refexpr).
+
+### func visit(RefType)
+
+```cangjie
+protected open func visit(_: RefType): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [RefType](ast_package_classes.md#class-reftype) - The node being traversed of type [RefType](ast_package_classes.md#class-reftype).
+
+### func visit(ReturnExpr)
+
+```cangjie
+protected open func visit(_: ReturnExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ReturnExpr](ast_package_classes.md#class-returnexpr) - The node being traversed of type [ReturnExpr](ast_package_classes.md#class-returnexpr).
+
+### func visit(SpawnExpr)
+
+```cangjie
+protected open func visit(_: SpawnExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [SpawnExpr](ast_package_classes.md#class-spawnexpr) - The node being traversed of type [SpawnExpr](ast_package_classes.md#class-spawnexpr).
+
+### func visit(StructDecl)
+
+```cangjie
+protected open func visit(_: StructDecl): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [StructDecl](ast_package_classes.md#class-structdecl) - The node being traversed of type [StructDecl](ast_package_classes.md#class-structdecl).
+
+### func visit(SubscriptExpr)
+
+```cangjie
+protected open func visit(_: SubscriptExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [SubscriptExpr](ast_package_classes.md#class-subscriptexpr) - The node being traversed of type [SubscriptExpr](ast_package_classes.md#class-subscriptexpr).
+
+### func visit(SynchronizedExpr)
+
+```cangjie
+protected open func visit(_: SynchronizedExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr) - The node being traversed of type [SynchronizedExpr](ast_package_classes.md#class-synchronizedexpr).
+
+### func visit(ThisType)
+
+```cangjie
+protected open func visit(_: ThisType): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ThisType](ast_package_classes.md#class-thistype) - The node being traversed of type [ThisType](ast_package_classes.md#class-thistype).
+
+### func visit(ThrowExpr)
+
+```cangjie
+protected open func visit(_: ThrowExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ThrowExpr](ast_package_classes.md#class-throwexpr) - The node being traversed of type [ThrowExpr](ast_package_classes.md#class-throwexpr).
+
+### func visit(TrailingClosureExpr)
+
+```cangjie
+protected open func visit(_: TrailingClosureExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr) - The node being traversed of type [TrailingClosureExpr](ast_package_classes.md#class-trailingclosureexpr).
+
+### func visit(TryExpr)
+
+```cangjie
+protected open func visit(_: TryExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TryExpr](ast_package_classes.md#class-tryexpr) - The node being traversed of type [TryExpr](ast_package_classes.md#class-tryexpr).
+
+### func visit(TupleLiteral)
+
+```cangjie
+protected open func visit(_: TupleLiteral): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TupleLiteral](ast_package_classes.md#class-tupleliteral) - The node being traversed of type [TupleLiteral](ast_package_classes.md#class-tupleliteral).
+
+### func visit(TuplePattern)
+
+```cangjie
+protected open func visit(_: TuplePattern): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TuplePattern](ast_package_classes.md#class-tuplepattern) - The node being traversed of type [TuplePattern](ast_package_classes.md#class-tuplepattern).
+
+### func visit(TupleType)
+
+```cangjie
+protected open func visit(_: TupleType): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TupleType](ast_package_classes.md#class-tupletype) - The node being traversed of type [TupleType](ast_package_classes.md#class-tupletype).
+
+### func visit(TypeAliasDecl)
+
+```cangjie
+protected open func visit(_: TypeAliasDecl): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl) - The node being traversed of type [TypeAliasDecl](ast_package_classes.md#class-typealiasdecl).
+
+### func visit(TypeConvExpr)
+
+```cangjie
+protected open func visit(_: TypeConvExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TypeConvExpr](ast_package_classes.md#class-typeconvexpr) - The node being traversed of type [TypeConvExpr](ast_package_classes.md#class-typeconvexpr).
+
+### func visit(TypeNode)
+
+```cangjie
+protected open func visit(_: TypeNode): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TypeNode](ast_package_classes.md#class-typenode) - The node being traversed of type [TypeNode](ast_package_classes.md#class-typenode).
+
+### func visit(TypePattern)
+
+```cangjie
+protected open func visit(_: TypePattern): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [TypePattern](ast_package_classes.md#class-typepattern) - The node being traversed of type [TypePattern](ast_package_classes.md#class-typepattern).
+
+### func visit(UnaryExpr)
+
+```cangjie
+protected open func visit(_: UnaryExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [UnaryExpr](ast_package_classes.md#class-unaryexpr) - The node being traversed of type [UnaryExpr](ast_package_classes.md#class-unaryexpr).
+
+### func visit(VArrayExpr)
+
+```cangjie
+protected open func visit(_: VArrayExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [VArrayExpr](ast_package_classes.md#class-varrayexpr) - The node being traversed of type [VArrayExpr](ast_package_classes.md#class-varrayexpr).
+
+### func visit(VArrayType)
+
+```cangjie
+protected open func visit(_: VArrayType): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [VArrayType](ast_package_classes.md#class-varraytype) - The node being traversed of type [VArrayType](ast_package_classes.md#class-varraytype).
+
+### func visit(VarDecl)
+
+```cangjie
+protected open func visit(_: VarDecl): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [VarDecl](ast_package_classes.md#class-vardecl) - The node being traversed of type [VarDecl](ast_package_classes.md#class-vardecl).
+
+### func visit(VarOrEnumPattern)
+
+```cangjie
+protected open func visit(_: VarOrEnumPattern): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern) - The node being traversed of type [VarOrEnumPattern](ast_package_classes.md#class-varorenumpattern).
+
+### func visit(VarPattern)
+
+```cangjie
+protected open func visit(_: VarPattern): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [VarPattern](ast_package_classes.md#class-varpattern) - The node being traversed of type [VarPattern](ast_package_classes.md#class-varpattern).
+
+### func visit(WhileExpr)
+
+```cangjie
+protected open func visit(_: WhileExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [WhileExpr](ast_package_classes.md#class-whileexpr) - The node being traversed of type [WhileExpr](ast_package_classes.md#class-whileexpr).
+
+### func visit(WildcardExpr)
+
+```cangjie
+protected open func visit(_: WildcardExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [WildcardExpr](ast_package_classes.md#class-wildcardexpr) - The node being traversed of type [WildcardExpr](ast_package_classes.md#class-wildcardexpr).
+
+### func visit(WildcardPattern)
+
+```cangjie
+protected open func visit(_: WildcardPattern): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [WildcardPattern](ast_package_classes.md#class-wildcardpattern) - The node being traversed of type [WildcardPattern](ast_package_classes.md#class-wildcardpattern).## class WhileExpr
 
 ```cangjie
 public class WhileExpr <: Expr {
@@ -7986,7 +10765,7 @@ public class WhileExpr <: Expr {
 
 Function: Represents a `while` expression.
 
-`while` is a keyword, followed by parentheses containing either an expression or a destructuring `let` declaration, then a [Block](ast_package_classes.md#class-block) node.
+`while` is a keyword, followed by parentheses which may contain either an expression or a destructuring `let` declaration, then a [Block](ast_package_classes.md#class-block) node.
 
 Parent Type:
 
@@ -7998,7 +10777,7 @@ Parent Type:
 public mut prop block: Block
 ```
 
-Function: Gets or sets the block node in [WhileExpr](ast_package_classes.md#class-whileexpr).
+Function: Gets or sets the block node within [WhileExpr](ast_package_classes.md#class-whileexpr).
 
 Type: [Block](ast_package_classes.md#class-block)
 
@@ -8024,7 +10803,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `while` keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a `while` keyword.
 
 ### prop lParen
 
@@ -8032,13 +10811,13 @@ Exceptions:
 public mut prop lParen: Token
 ```
 
-Function: Gets or sets the "(" following the `while` keyword in [WhileExpr](ast_package_classes.md#class-whileexpr).
+Function: Gets or sets the "(" token following the `while` keyword in [WhileExpr](ast_package_classes.md#class-whileexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not "(".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not "(".
 
 ### prop rParen
 
@@ -8046,13 +10825,13 @@ Exceptions:
 public mut prop rParen: Token
 ```
 
-Function: Gets or sets the ")" following the `while` keyword in [WhileExpr](ast_package_classes.md#class-whileexpr).
+Function: Gets or sets the ")" token following the `while` keyword in [WhileExpr](ast_package_classes.md#class-whileexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not ")".
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not ")".
 
 ### init()
 
@@ -8072,11 +10851,35 @@ Function: Constructs a [WhileExpr](ast_package_classes.md#class-whileexpr) objec
 
 Parameters:
 
-- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed as a [WhileExpr](ast_package_classes.md#class-whileexpr) type.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [WhileExpr](ast_package_classes.md#class-whileexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [WhileExpr](ast_package_classes.md#class-whileexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [WhileExpr](ast_package_classes.md#class-whileexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class WildcardExpr
 
@@ -8099,13 +10902,13 @@ Parent Type:
 public mut prop keyword: Token
 ```
 
-Function: Gets the "_" keyword of [WildcardExpr](ast_package_classes.md#class-wildcardexpr).
+Function: Gets the "_" keyword in [WildcardExpr](ast_package_classes.md#class-wildcardexpr).
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "_" keyword.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not a "_" keyword.
 
 ### init()
 
@@ -8125,11 +10928,35 @@ Function: Constructs a [WildcardExpr](ast_package_classes.md#class-wildcardexpr)
 
 Parameters:
 
-- keyword: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed as a [WildcardExpr](ast_package_classes.md#class-wildcardexpr) type.
+- keyword: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [WildcardExpr](ast_package_classes.md#class-wildcardexpr) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [WildcardExpr](ast_package_classes.md#class-wildcardexpr) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [WildcardExpr](ast_package_classes.md#class-wildcardexpr) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
 
 ## class WildcardPattern
 
@@ -8142,7 +10969,7 @@ public class WildcardPattern <: Pattern {
 
 Function: Represents a wildcard pattern node.
 
-Denoted by the underscore "_", which can match any value.
+Denoted by underscore "_", which can match any value.
 
 Parent Type:
 
@@ -8154,13 +10981,13 @@ Parent Type:
 public mut prop wildcard: Token
 ```
 
-Function: Gets or sets the lexical unit of the "_" operator in the [WildcardPattern](ast_package_classes.md#class-wildcardpattern) node.
+Function: Gets or sets the "_" operator token in the [WildcardPattern](ast_package_classes.md#class-wildcardpattern) node.
 
 Type: [Token](ast_package_structs.md#struct-token)
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "_" operator.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the provided [Token](ast_package_structs.md#struct-token) is not an "_" operator.
 
 ### init()
 
@@ -8180,8 +11007,32 @@ Function: Constructs a [WildcardPattern](ast_package_classes.md#class-wildcardpa
 
 Parameters:
 
-- keyword: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) to be constructed as a [WildcardPattern](ast_package_classes.md#class-wildcardpattern) type.
+- keyword: [Tokens](ast_package_classes.md#class-tokens) - The lexical token collection ([Tokens](ast_package_classes.md#class-tokens)) used to construct the [WildcardPattern](ast_package_classes.md#class-wildcardpattern) type.
 
 Exceptions:
 
-- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [WildcardPattern](ast_package_classes.md#class-wildcardpattern) node.
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be constructed into a [WildcardPattern](ast_package_classes.md#class-wildcardpattern) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.

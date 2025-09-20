@@ -327,7 +327,16 @@ public enum TokenKind <: ToString {
         AT_EXCL
     | /*  "@!"               */
         ILLEGAL
-    | ...
+    |
+        HANDLE
+    | /*  "handle"           */
+        PERFORM
+    | /*  "perform"          */
+         RESUME
+    | /*  "resume"           */
+        THROWING
+    | /*  "throwing"         */
+      ...
 
     public operator func ==(right: TokenKind): Bool {
         match ((this, right)) {
@@ -488,6 +497,10 @@ public enum TokenKind <: ToString {
             case (DOLLAR_IDENTIFIER, DOLLAR_IDENTIFIER) => true
             case (ANNOTATION, ANNOTATION) => true
             case (AT_EXCL, AT_EXCL) => true
+            case (HANDLE, HANDLE) => true
+            case (PERFORM, PERFORM) => true
+            case (RESUME, RESUME) => true
+            case (THROWING, THROWING) => true
             case (ILLEGAL, ILLEGAL) => true
             case _ => false
         }
@@ -656,6 +669,10 @@ public enum TokenKind <: ToString {
             case UNIT_LITERAL => return "UNIT_LITERAL"
             case DOLLAR_IDENTIFIER => return "DOLLAR_IDENTIFIER"
             case ANNOTATION => return "ANNOTATION"
+            case HANDLE => return "HANDLE"
+            case PERFORM => return "PERFORM"
+            case RESUME => return "RESUME"
+            case THROWING => return "THROWING"
             case ILLEGAL => return "ILLEGAL"
             case _ => return "INVALID_TOKENKIND"
         }
@@ -855,6 +872,10 @@ let PATTERNS: Array<(TokenKind, String, String)> = [
     (TokenKind.DOLLAR_IDENTIFIER, "dollar_identifier", ""),
     (TokenKind.ANNOTATION, "annotation", ""),
     (TokenKind.AT_EXCL, "at_exclamation", "@!"),
+    (TokenKind.PERFORM, "perform", "perform"),
+    (TokenKind.RESUME, "resume", "resume"),
+    (TokenKind.THROWING, "throwing", "throwing"),
+    (TokenKind.HANDLE, "handle", "handle"),
     (TokenKind.ILLEGAL, "illegal", "")
 ]
 
@@ -1020,7 +1041,11 @@ func getTokenID(tk: TokenKind): UInt16 {
         case TokenKind.DOLLAR_IDENTIFIER => return 153
         case TokenKind.ANNOTATION => return 154
         case TokenKind.AT_EXCL => return 155
-        case _ => return 156
+        case TokenKind.PERFORM => return 156
+        case TokenKind.RESUME => return 157
+        case TokenKind.THROWING => return 158
+        case TokenKind.HANDLE => return 159
+        case _ => return 160
     }
 }
 
