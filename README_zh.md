@@ -31,7 +31,7 @@
 
 - **仓颉对象模型**包含仓颉对象元数据、成员信息、方法信息和方法表。为仓颉对象的创建、管理、调用和释放提供支持。
 
-- **跨语言调用**通过外部函数接口实现仓颉语言和 `C`、`ArkTs` 之间的函数调用和数据交互。
+- **跨语言调用**通过外部函数接口实现仓颉语言和 `C` 语言、`ArkTs` 语言之间的函数调用和数据交互。
 
 - **DFX**提供日志打印、`CPU` 采集、堆快照导出等调试调优功能，支持运行时状态检测和故障排查。
 
@@ -293,8 +293,6 @@ python3 build.py install --help
 ## 相关仓
 
 [cangjie_compiler](https://gitcode.com/Cangjie/cangjie_compiler)
-
-[cangjie_runtime](https://gitcode.com/Cangjie/cangjie_runtime)
 
 [cangjie_tools](https://gitcode.com/Cangjie/cangjie_tools)
 
