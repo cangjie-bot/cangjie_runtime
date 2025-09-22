@@ -50,7 +50,7 @@ namespace MapleRuntime {
 
 extern "C" ObjRef MCC_NewObject(const TypeInfo* klass, MSize size)
 {
-    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + sizeof(TypeInfo*))); // 8-byte alignment
+    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + TYPEINFO_PTR_SIZE)); // 8-byte alignment
     ObjRef obj = ObjectManager::NewObject(klass, size);
     if (obj == nullptr) {
         ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewObject return nullptr");
@@ -60,7 +60,7 @@ extern "C" ObjRef MCC_NewObject(const TypeInfo* klass, MSize size)
 
 extern "C" ObjRef MCC_NewWeakRefObject(const TypeInfo* klass, MSize size)
 {
-    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + sizeof(TypeInfo*))); // 8-byte alignment
+    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + TYPEINFO_PTR_SIZE)); // 8-byte alignment
     ObjRef obj = ObjectManager::NewWeakRefObject(klass, size);
     if (obj == nullptr) {
         ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewWeakRefObject return nullptr");
@@ -70,7 +70,7 @@ extern "C" ObjRef MCC_NewWeakRefObject(const TypeInfo* klass, MSize size)
 
 extern "C" ObjRef MCC_NewPinnedObject(const TypeInfo* klass, MSize size, bool isFinalizer)
 {
-    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + sizeof(TypeInfo*))); // 8-byte alignment
+    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + TYPEINFO_PTR_SIZE)); // 8-byte alignment
     ObjRef obj = ObjectManager::NewPinnedObject(klass, size, isFinalizer);
     if (obj == nullptr) {
         ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewPinnedObject return nullptr");
@@ -80,7 +80,7 @@ extern "C" ObjRef MCC_NewPinnedObject(const TypeInfo* klass, MSize size, bool is
 
 extern "C" ObjRef MCC_NewFinalizer(const TypeInfo* klass, MSize size)
 {
-    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + sizeof(TypeInfo*))); // 8-byte alignment
+    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + TYPEINFO_PTR_SIZE)); // 8-byte alignment
     ObjRef obj = ObjectManager::NewFinalizer(klass, size);
     if (obj == nullptr) {
         ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewFinalizer return nullptr");
@@ -600,15 +600,11 @@ extern "C" ObjectPtr MCC_GetSubPackages(PackageInfo* packageInfo, TypeInfo* arra
         rawArrayObj->SetPrimitiveElement(idx, reinterpret_cast<int64_t>(subPackages[idx]));
     }
     U32 size = arrayTi->GetInstanceSize();
-#ifdef __arm__
-    MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-    MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+    MSize objSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     MObject* obj = ObjectManager::NewObject(arrayTi, objSize, AllocType::RAW_POINTER_OBJECT);
     // set rawArray
-    Heap::GetBarrier().WriteReference(obj, obj->GetRefField(sizeof(TypeInfo*)), static_cast<BaseObject*>(rawArrayObj));
-    CJArray* cjArray = reinterpret_cast<CJArray*>(reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*));
+    Heap::GetBarrier().WriteReference(obj, obj->GetRefField(TYPEINFO_PTR_SIZE), static_cast<BaseObject*>(rawArrayObj));
+    CJArray* cjArray = reinterpret_cast<CJArray*>(reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE);
     cjArray->start = 0;
     cjArray->length = subPkgCnt;
     AllocBuffer* buffer = AllocBuffer::GetAllocBuffer();
@@ -775,10 +771,10 @@ extern "C" TypeInfo* MCC_GetOrCreateTypeInfoForReflect(TypeTemplate* tt, void* a
     }
 
     Uptr base = reinterpret_cast<Uptr>(&(cjArray->rawPtr->data));
-    void* mem = calloc(len, sizeof(TypeInfo*));
+    void* mem = calloc(len, TYPEINFO_PTR_SIZE);
     TypeInfo** typeInfos = static_cast<TypeInfo**>(mem);
     for (U64 idx = 0; idx < len; ++idx) {
-        typeInfos[idx] = *reinterpret_cast<TypeInfo**>(base + idx * sizeof(TypeInfo*));
+        typeInfos[idx] = *reinterpret_cast<TypeInfo**>(base + idx * TYPEINFO_PTR_SIZE);
     }
     TypeInfo* ti = TypeInfoManager::GetInstance()->GetOrCreateTypeInfo(tt, len, typeInfos);
     free(mem);
@@ -1051,13 +1047,13 @@ extern "C" void CJ_MCC_AssignGeneric(ObjectPtr dst, ObjectPtr src, TypeInfo* typ
         return;
     }
     if (!typeInfo->HasRefField()) {
-        CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(dst) + sizeof(TypeInfo*)),
+        CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(dst) + TYPEINFO_PTR_SIZE),
                               instanceSize,
-                              reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(src) + sizeof(TypeInfo*)),
+                              reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(src) + TYPEINFO_PTR_SIZE),
                               instanceSize) == EOK,
                      "MCC_AssignGeneric memcpy_s failed");
     } else {
-        MAddress dstAddr = reinterpret_cast<MAddress>(dst) + sizeof(TypeInfo*);
+        MAddress dstAddr = reinterpret_cast<MAddress>(dst) + TYPEINFO_PTR_SIZE;
         Heap::GetBarrier().WriteGeneric(dst, reinterpret_cast<void*>(dstAddr), src, instanceSize);
     }
 }
@@ -1069,13 +1065,13 @@ extern "C" void CJ_MCC_WriteGenericPayload(ObjectPtr dst, MAddress srcField, siz
         return;
     }
     if (!typeInfo->HasRefField()) {
-        CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(dst) + sizeof(TypeInfo*)),
+        CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(dst) + TYPEINFO_PTR_SIZE),
                               GENERIC_PAYLOAD_SIZE,
                               reinterpret_cast<void*>(srcField),
                               srcSize) == EOK,
                      "MCC_WriteGenericPayload memcpy_s failed");
     } else {
-        MAddress dstAddr = reinterpret_cast<MAddress>(dst) + sizeof(TypeInfo*);
+        MAddress dstAddr = reinterpret_cast<MAddress>(dst) + TYPEINFO_PTR_SIZE;
         Heap::GetBarrier().WriteStruct(dst, dstAddr, srcSize, srcField, srcSize);
     }
 }

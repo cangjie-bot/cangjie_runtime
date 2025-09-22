@@ -26,6 +26,12 @@
 namespace MapleRuntime {
 typedef void *(*GenericiFn)(U32 size, TypeInfo* args[]);
 
+#ifdef __arm__
+const size_t TYPEINFO_PTR_SIZE = sizeof(TypeInfo*) + 4;
+#else
+const size_t TYPEINFO_PTR_SIZE = sizeof(TypeInfo*);
+#endif
+
 CString TypeTemplate::GetTypeInfoName(U32 argSize, TypeInfo *args[])
 {
     U32 startIter;
@@ -513,11 +519,7 @@ static void* GetAnnotations(Uptr annotationMethod, TypeInfo* arrayTi)
 {
     CHECK_DETAIL(arrayTi != nullptr, "arrayTi is nullptr");
     U32 size = arrayTi->GetInstanceSize();
-#ifdef __arm__
-    MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-    MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+    MSize objSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     MObject* obj = ObjectManager::NewObject(arrayTi, objSize, AllocType::RAW_POINTER_OBJECT);
     if (obj == nullptr) {
         ExceptionManager::OutOfMemory();
@@ -536,7 +538,7 @@ static void* GetAnnotations(Uptr annotationMethod, TypeInfo* arrayTi)
 #else
     ApplyCangjieMethodStub(values.GetData(), values.GetStackSize(), annotationMethod, threadData);
 #endif
-    Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*),
+    Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE,
         size, reinterpret_cast<Uptr>(structRet), size);
     AllocBuffer* buffer = AllocBuffer::GetAllocBuffer();
     if (buffer != nullptr) {

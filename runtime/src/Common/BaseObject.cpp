@@ -53,7 +53,7 @@ static void ForEachRefFieldInNonArrayObject(ObjectPtr obj, const RefFieldVisitor
 {
     GCTib gcTib = obj->GetGCTib();
     // gcTib record payload data, skip the TypeInfo
-    MAddress objAddr = reinterpret_cast<MAddress>(obj) + sizeof(TypeInfo*);
+    MAddress objAddr = reinterpret_cast<MAddress>(obj) + TYPEINFO_PTR_SIZE;
     gcTib.ForEachBitmapWord(objAddr, visitor);
 }
 
@@ -134,7 +134,7 @@ void BaseObject::ForEachAggRefFieldInArray(const RefFieldVisitor& visitor, MAddr
 void BaseObject::ForEachAggRefFieldInNonArray(const RefFieldVisitor& visitor, MAddress aggStart, MAddress aggEnd) const
 {
     // gcTib record payload data, skip the TypeInfo
-    GetGCTib().ForEachBitmapWordInRange(reinterpret_cast<MAddress>(this) + sizeof(TypeInfo*), visitor, aggStart,
+    GetGCTib().ForEachBitmapWordInRange(reinterpret_cast<MAddress>(this) + TYPEINFO_PTR_SIZE, visitor, aggStart,
                                         aggEnd);
 }
 
@@ -146,7 +146,7 @@ size_t BaseObject::GetSize() const
         size_t size = mArray->GetMArraySize();
         return MapleRuntime::AlignUp<size_t>(size, AllocatorUtils::ALLOC_ALIGNMENT);
     } else {
-        return MapleRuntime::AlignUp<size_t>(kls->GetInstanceSize() + sizeof(TypeInfo*),
+        return MapleRuntime::AlignUp<size_t>(kls->GetInstanceSize() + TYPEINFO_PTR_SIZE,
                                              AllocatorUtils::ALLOC_ALIGNMENT);
     }
 }

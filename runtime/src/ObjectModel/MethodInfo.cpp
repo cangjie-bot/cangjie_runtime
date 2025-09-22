@@ -23,11 +23,7 @@ void* ParameterInfo::GetAnnotations(TypeInfo* arrayTi)
     ScopedAllocBuffer scopedAllocBuffer;
     CHECK_DETAIL(arrayTi != nullptr, "arrayTi is nullptr");
     U32 size = arrayTi->GetInstanceSize();
-#ifdef __arm__
-    MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-    MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+    MSize objSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     MObject* obj = ObjectManager::NewObject(arrayTi, objSize, AllocType::RAW_POINTER_OBJECT);
     if (obj == nullptr) {
         ExceptionManager::OutOfMemory();
@@ -47,7 +43,7 @@ void* ParameterInfo::GetAnnotations(TypeInfo* arrayTi)
     ApplyCangjieMethodStub(values.GetData(), values.GetStackSize(), annotationMethod, threadData);
 #endif
 
-    Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*),
+    Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE,
         size, reinterpret_cast<Uptr>(structRet), size);
     return obj;
 }
@@ -98,11 +94,7 @@ void* MethodInfo::GetAnnotations(TypeInfo* arrayTi)
     ScopedAllocBuffer scopedAllocBuffer;
     CHECK_DETAIL(arrayTi != nullptr, "arrayTi is nullptr");
     U32 size = arrayTi->GetInstanceSize();
-#ifdef __arm__
-    MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-    MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+    MSize objSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     MObject* obj = ObjectManager::NewObject(arrayTi, objSize, AllocType::RAW_POINTER_OBJECT);
     if (obj == nullptr) {
         ExceptionManager::OutOfMemory();
@@ -122,7 +114,7 @@ void* MethodInfo::GetAnnotations(TypeInfo* arrayTi)
     ApplyCangjieMethodStub(values.GetData(), values.GetStackSize(), annotationMethod, threadData);
 #endif
 
-    Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*),
+    Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE,
         size, reinterpret_cast<Uptr>(structRet), size);
     return obj;
 }
@@ -228,7 +220,7 @@ TypeInfo* MethodInfo::GetActualTypeFromGenericTypeImpl(GenericTypeInfo* genericT
 {
     TypeTemplate* tt = genericTi->GetSourceGeneric();
     U8 argsCnt = genericTi->GetGenericArgsNum();
-    void* tmp = MemoryAlloc(argsCnt, sizeof(TypeInfo*));
+    void* tmp = MemoryAlloc(argsCnt, TYPEINFO_PTR_SIZE);
     TypeInfo** args = static_cast<TypeInfo**>(tmp);
     for (U8 idx = 0; idx < argsCnt; ++idx) {
         TypeInfo* ti = reinterpret_cast<TypeInfo*>(genericTi->GetGenericArg(idx));
@@ -269,7 +261,7 @@ TypeInfo* MethodInfo::GetActualTypeFromGenericType(GenericTypeInfo* genericTi, v
             if (genericTi == genericParamType) {
                 CJArray* genericArgsArray = static_cast<CJArray*>(genericArgs);
                 Uptr base = reinterpret_cast<Uptr>(&(genericArgsArray->rawPtr->data));
-                TypeInfo* ti = *reinterpret_cast<TypeInfo**>(base + idx * sizeof(TypeInfo*));
+                TypeInfo* ti = *reinterpret_cast<TypeInfo**>(base + idx * TYPEINFO_PTR_SIZE);
                 return ti;
             }
         }
@@ -350,7 +342,7 @@ void MethodInfo::AddCJArg(ArgValue *argValues, TypeInfo *argType, ObjRef argObj)
         case TypeKind::TYPE_KIND_TUPLE:
         case TypeKind::TYPE_KIND_STRUCT:
         case TypeKind::TYPE_KIND_VARRAY: {
-            argValues->AddInt64(reinterpret_cast<Uptr>(reinterpret_cast<Uptr>(argObj) + sizeof(TypeInfo*)));
+            argValues->AddInt64(reinterpret_cast<Uptr>(reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE));
             break;
         }
         default:
@@ -387,7 +379,7 @@ void MethodInfo::PrepareCJMethodGenericArgs(ArgValue* argValues, void* genericAr
     Uptr base = reinterpret_cast<Uptr>(&(genericArgs->rawPtr->data));
     U64 genericArgCnt = genericArgs->rawPtr->len;
     for (U64 idx = 0; idx < genericArgCnt; ++idx) {
-        TypeInfo* ti = *reinterpret_cast<TypeInfo**>(base + idx * sizeof(TypeInfo*));
+        TypeInfo* ti = *reinterpret_cast<TypeInfo**>(base + idx * TYPEINFO_PTR_SIZE);
         argValues->AddInt64(reinterpret_cast<Uptr>(ti));
     }
 }
@@ -398,34 +390,26 @@ void* MethodInfo::RetValueToAny(Value ret, void* sret, TypeInfo* retType)
         return ret.ref;
     } else if (retType->IsStruct() || retType->IsTuple()) {
         MSize typeSize = retType->GetInstanceSize();
-#ifdef __arm__
-        MSize size = MRT_ALIGN_8(typeSize + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-        MSize size = MRT_ALIGN(typeSize + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+        MSize size = MRT_ALIGN(typeSize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
         MObject* obj = ObjectManager::NewObject(retType, size, AllocType::RAW_POINTER_OBJECT);
         if (typeSize == 0) {
             return obj;
         }
         if (HasSRetNotGeneric()) {
-            Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*),
+            Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE,
                                            typeSize, reinterpret_cast<Uptr>(sret), typeSize);
         } else {
-            Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*),
+            Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE,
                                            typeSize, reinterpret_cast<Uptr>(ret.ref), typeSize);
         }
         return obj;
     } else if (retType->IsPrimitiveType()) {
-#ifdef __arm__
-        MSize size = MRT_ALIGN_8(retType->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-        MSize size = MRT_ALIGN(retType->GetInstanceSize() + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+        MSize size = MRT_ALIGN(retType->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
         MObject* obj = ObjectManager::NewObject(retType, size, AllocType::RAW_POINTER_OBJECT);
         if (retType->IsUnit()) {
             return obj;
         }
-        if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*)),
+        if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE),
                      retType->GetInstanceSize(), &ret, retType->GetInstanceSize()) != EOK) {
             LOG(RTLOG_ERROR, "RetValueToAny memcpy_s fail");
         }
@@ -434,13 +418,9 @@ void* MethodInfo::RetValueToAny(Value ret, void* sret, TypeInfo* retType)
         // VArray is only used to store value types,
         // so we can copy the memory directly
         MSize vArraySize = retType->GetFieldNum() * retType->GetComponentTypeInfo()->GetInstanceSize();
-#ifdef __arm__
-        MSize size = MRT_ALIGN_8(vArraySize + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-        MSize size = MRT_ALIGN(vArraySize + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+        MSize size = MRT_ALIGN(vArraySize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
         MObject* obj = ObjectManager::NewObject(retType, size, AllocType::RAW_POINTER_OBJECT);
-        if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + sizeof(TypeInfo*)), vArraySize,
+        if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE), vArraySize,
             reinterpret_cast<void*>(ret.ref), vArraySize) != EOK) {
             LOG(RTLOG_ERROR, "RetValueToAny memcpy_s fail");
         }
@@ -500,11 +480,7 @@ void MethodInfo::PrepareSRet(ArgValue* argValues, void* &sret, TypeInfo* retType
 #endif
         return;
     } else if (HasSRetWithGeneric()) {
-#ifdef __arm__
-        U32 objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-        U32 objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+        U32 objSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
         sret = ObjectManager::NewObject(retType, objSize, AllocType::RAW_POINTER_OBJECT);
 #if defined(__aarch64__)
 #else
@@ -512,11 +488,7 @@ void MethodInfo::PrepareSRet(ArgValue* argValues, void* &sret, TypeInfo* retType
 #endif
         return;
     } else if (HasSRetWithUnknowGenericStruct()) {
-#ifdef __arm__
-        U32 objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-        U32 objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+        U32 objSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
         sret = ObjectManager::NewObject(retType, objSize, AllocType::RAW_POINTER_OBJECT);
 #if defined(__aarch64__)
 #else
@@ -547,11 +519,7 @@ void* MethodInfo::ApplyCJMethod(ObjRef instanceObj, void* genericArgs, void* act
         TypeInfo* ti = declaringTi;
         if (IsInitializer() && ti->IsClass()) {
             U32 size = ti->GetInstanceSize();
-#ifdef __arm__
-        MSize objSize = MRT_ALIGN_8(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#else
-        MSize objSize = MRT_ALIGN(size + sizeof(TypeInfo*), sizeof(TypeInfo*));
-#endif
+            MSize objSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
             instanceObj = ObjectManager::NewObject(declaringTi, objSize, AllocType::RAW_POINTER_OBJECT);
             argValues.AddReference(instanceObj);
         } else if (IsInitializer() && ti->IsStruct()) {
