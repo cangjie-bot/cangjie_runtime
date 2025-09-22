@@ -35,6 +35,8 @@ using BIT_TYPE = U32;
 using BIT_TYPE = U64;
 #endif
 
+extern const size_t TYPEINFO_PTR_SIZE;
+
 union MTableBitmap {
     using LargeBitmap = std::pair<U32, U8[]>;
     BIT_TYPE shortBitmap;

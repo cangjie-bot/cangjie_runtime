@@ -359,7 +359,7 @@ void TypeInfoManager::CreatedTypeInfoImpl(GenericTiDesc* &tiDesc, TypeTemplate* 
     newTypeInfo->SetvExtensionDataStart(tt->GetvExtensionDataStart());
     newTypeInfo->SetSourceGeneric(tt);
     // genericArgs
-    size_t genericArgsSize = argSize * sizeof(TypeInfo*);
+    size_t genericArgsSize = argSize * TYPEINFO_PTR_SIZE;
     uintptr_t genericArgsAddr = Allocate(genericArgsSize);
     MapleRuntime::MemoryCopy(genericArgsAddr, genericArgsSize, reinterpret_cast<uintptr_t>(args), genericArgsSize);
     newTypeInfo->SetGenericArgs(reinterpret_cast<TypeInfo**>(genericArgsAddr));
@@ -386,7 +386,7 @@ void TypeInfoManager::CreatedTypeInfoImpl(GenericTiDesc* &tiDesc, TypeTemplate* 
     }
     U32* offsets = reinterpret_cast<U32*>(Allocate(fieldNum * sizeof(U32)));
     newTypeInfo->SetOffsets(offsets);
-    newTypeInfo->SetFieldAddr(reinterpret_cast<TypeInfo**>(Allocate(fieldNum * sizeof(TypeInfo*))));
+    newTypeInfo->SetFieldAddr(reinterpret_cast<TypeInfo**>(Allocate(fieldNum * TYPEINFO_PTR_SIZE)));
 }
 
 void TypeInfoManager::FillRemainingField(GenericTiDesc* &tiDesc, TypeTemplate* tt, U32 argSize, TypeInfo* args[])
@@ -685,7 +685,7 @@ void TypeInfoManager::FillOffsets(TypeInfo* newTypeInfo, TypeTemplate* tt, U32 a
         newTypeInfo->SetFlagHasRefField();
     }
     if (newTypeInfo->IsRef()) {
-        newTypeInfo->SetAlign(sizeof(TypeInfo*));
+        newTypeInfo->SetAlign(TYPEINFO_PTR_SIZE);
     } else {
         newTypeInfo->SetAlign(align);
     }
