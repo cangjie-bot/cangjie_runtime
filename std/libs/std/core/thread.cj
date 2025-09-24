@@ -55,6 +55,7 @@ public enum ThreadState <: ToString {
             case Running => "Running"
             case Pending => "Pending"
             case Terminated => "Terminated"
+            case _ => "Unknown"
         }
     }
 
@@ -82,7 +83,7 @@ public enum ThreadState <: ToString {
 struct ThreadSnapshotInfo {
     let name: RawArray<UInt8> = EMPTY_UINT8_RAW_ARRAY
     let id: Int64 = 0
-    let stackTrace: RawArray<stackTraceData> = RawArray<stackTraceData>()
+    let stackTrace: RawArray<StackTraceData> = RawArray<StackTraceData>()
     let state: Int64 = 0
 }
 
@@ -91,10 +92,10 @@ struct ThreadSnapshotInfo {
  * Provides functionality for retrieving and printing thread information.
  */
 public class ThreadSnapshot {
-    let id: Int64
-    let name: String
-    let state: ThreadState
-    let stackTrace: Array<StackTraceElement>
+    public let id: Int64
+    public let name: String
+    public let state: ThreadState
+    public let stackTrace: Array<StackTraceElement>
 
     /**
      * Constructor for ThreadSnapshot.
@@ -158,7 +159,7 @@ public class ThreadSnapshot {
      * Retrieves snapshots of all currently active threads.
      * @return Array of ThreadSnapshot objects
      */
-    public static func getAllThreadSnapshots(): Array<ThreadSnapshot> {
+    public static func dumpAllThreads(): Array<ThreadSnapshot> {
         let dumpInfo: RawArray<ThreadSnapshotInfo> = dumpAllThreadsInfo()
         let threadNum = arraySize(dumpInfo)
         let emptySnapshot = ThreadSnapshot(0, "", Terminated, [])
@@ -173,8 +174,8 @@ public class ThreadSnapshot {
      * Retrieves a snapshot of the current thread.
      * @return ThreadSnapshot of the current thread
      */
-    public static func getCurrentThreadSnapshot(): ThreadSnapshot {
-        let dumpInfo = dumpCurrentThreadInfo()
+    public static func dumpCurrentThread(): ThreadSnapshot {
+        let dumpInfo: ThreadSnapshotInfo = dumpCurrentThreadInfo()
         return parseThreadInfo(dumpInfo)
     }
 
