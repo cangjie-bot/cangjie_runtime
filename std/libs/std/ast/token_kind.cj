@@ -295,45 +295,45 @@ public enum TokenKind <: ToString {
         FLOAT_LITERAL
     | 
         COMMENT
-    | " */
+    |
         NL
-    | /*  newline         */
+    |
         END
-    | /*  end of file     */
+    |
         SENTINEL
-    | /*  ";"             */
+    |
         RUNE_LITERAL
-    | /*  e.g. "r'x'"      */
+    |
         STRING_LITERAL
-    | /*  e.g. ""xx""     */
+    |
         SINGLE_QUOTED_STRING_LITERAL
-    | /*  e.g. "'xx'"     */
+    |
         JSTRING_LITERAL
-    | /*  e.g. "J"xx""     */
+    |
         MULTILINE_STRING
-    | /*  e.g. """"aaa""""   */
+    |
         MULTILINE_RAW_STRING
-    | /*  e.g. "#"aaa"#"     */
+    |
         BOOL_LITERAL
-    | /*  "true" or "false"  */
+    |
         UNIT_LITERAL
-    | /*  "()"               */
+    |
         DOLLAR_IDENTIFIER
-    | /*  e.g. "$x"          */
+    |
         ANNOTATION
-    | /*  e.g. "@When"       */
+    |
         AT_EXCL
-    | /*  "@!"               */
+    |
         ILLEGAL
     |
         HANDLE
-    | /*  "handle"           */
+    |
         PERFORM
-    | /*  "perform"          */
+    |
          RESUME
-    | /*  "resume"           */
+    |
         THROWING
-    | /*  "throwing"         */
+    |
       ...
 
     public operator func ==(right: TokenKind): Bool {
@@ -1194,11 +1194,11 @@ public enum TokenKind <: ToString {
     }
 }
 
-/**
- * PATTERNS is a Look-up Table for TokenKind, TokenKindValue, TokenLiteral.
- * XXX: To add TokenPrecedence? Use map if map can solve the problem.
- * The ORDER MUST be the SAME as the ones in Tokens.inc.
- */
+
+
+
+
+
 let PATTERNS: Array<(TokenKind, String, String)> = [
     (TokenKind.DOT, "dot", "."),
     (TokenKind.COMMA, "comma", ","),
@@ -1363,9 +1363,9 @@ let PATTERNS: Array<(TokenKind, String, String)> = [
     (TokenKind.ILLEGAL, "illegal", "")
 ]
 
-/**
- * Conversion function for Enum to UInt16
- */
+
+
+
 func getTokenID(tk: TokenKind): UInt16 {
     match (tk) {
         case TokenKind.DOT => return 0
@@ -1533,14 +1533,14 @@ func getTokenID(tk: TokenKind): UInt16 {
     }
 }
 
-/**
- * Conversion function for UInt16 to Enum
- */
+
+
+
 public func getTokenKind(no: UInt16): TokenKind {
     let maxSize = PATTERNS.size
     let index = Int64(no)
     if (index >= maxSize) {
-        /* Return ILLEGAL Token. */
+       
         return PATTERNS[maxSize - 1][0]
     }
     return PATTERNS[index][0];
@@ -1572,11 +1572,11 @@ func getTokenLiteral(tk: TokenKind): String {
     return PATTERNS[no][2]
 }
 
-/**
- * A helper class for querying TokenKind information.
- */
+
+
+
 class TokenKindHelper {
-    /* See 'enum class LitConstKind' in Node.h */
+   
     static let LIT_CONST_KIND_TO_TOKEN_KIND: Array<TokenKind> = [
         TokenKind.INTEGER_LITERAL,
         TokenKind.RUNE_BYTE_LITERAL,
@@ -1588,7 +1588,7 @@ class TokenKindHelper {
         TokenKind.UNIT_LITERAL
     ]
 
-    /* see 'enum class StringKind' in Node.h */
+   
     static let STRING_KIND_TO_TOKEN_KIND: Array<TokenKind> = [
         TokenKind.STRING_LITERAL,
         TokenKind.JSTRING_LITERAL,
@@ -1596,17 +1596,17 @@ class TokenKindHelper {
         TokenKind.MULTILINE_RAW_STRING
     ]
 
-    /* PrimitiveTypeKind. */
-    /* The ORDER MUST be the SAME as the ones defined in 'enum class TypeKind' in Types.h. */
+   
+   
     static let PRIMITIVE_TYPE_KIND_TO_TOKEN_KIND: Array<TokenKind> = [
-        TokenKind.ILLEGAL, /* TYPE_INVALID */
+        TokenKind.ILLEGAL,
         TokenKind.UNIT,
         TokenKind.INT8,
         TokenKind.INT16,
         TokenKind.INT32,
         TokenKind.INT64,
         TokenKind.INTNATIVE,
-        TokenKind.ILLEGAL, /* Placeholder for TYPE_IDEAL_INT */
+        TokenKind.ILLEGAL,
         TokenKind.UINT8,
         TokenKind.UINT16,
         TokenKind.UINT32,
@@ -1615,7 +1615,7 @@ class TokenKindHelper {
         TokenKind.FLOAT16,
         TokenKind.FLOAT32,
         TokenKind.FLOAT64,
-        TokenKind.ILLEGAL, /* Placeholder for TYPE_IDEAL_FLOAT */
+        TokenKind.ILLEGAL,
         TokenKind.RUNE,
         TokenKind.NOTHING,
         TokenKind.BOOLEAN
