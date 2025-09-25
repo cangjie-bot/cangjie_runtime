@@ -11,6 +11,7 @@
 #include "StackMap/StackMapTypeDef.h"
 #include "CangjieRuntime.h"
 #include "Base/LogFile.h"
+
 namespace MapleRuntime {
 using VarValue = U32;
 using BitLen = U32;
@@ -206,6 +207,8 @@ struct PrologueRegisterClosure {
     constexpr static intptr_t COEF = -8;
 #elif defined(__aarch64__)
     constexpr static intptr_t COEF = 8;
+#elif defined(__arm__)
+    constexpr static intptr_t COEF = -4;
 #else
     constexpr static intptr_t COEF = -8;
 #endif
