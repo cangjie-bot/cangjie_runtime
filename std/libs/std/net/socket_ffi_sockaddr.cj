@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -31,11 +31,11 @@ unsafe func readFamily(ptr: CPointer<Unit>): Int16 {
 @C
 struct SockAddr {
     let ptr: CPointer<Unit>
-    let len: UInt32 // warning: this will never work as intended as the type in C is socklen_t
+    let len: UInt32
 
-    private static const socket_address_in_len: UInt32 = 16 // sizeof(SockAddrIn)
-    private static const socket_address_in6_len: UInt32 = 28 // sizeof(SockAddrIn6)
-    private static const socket_address_un_len: UInt32 = 110 // sizeof(SockAddrUn)
+    private static const socket_address_in_len: UInt32 = 16
+    private static const socket_address_in6_len: UInt32 = 28
+    private static const socket_address_un_len: UInt32 = 110
     private static const socket_address_all_len: Int64 = 120
 
     init(buffer: CPointer<Unit>, length: Int64) {
@@ -57,10 +57,8 @@ struct SockAddr {
         this.len = UInt32(socket_address_all_len)
     }
 
-    /**
-     * Construct a SockAddr that stores address from SocketAddress instance
-     * Malloc inside, should call free().
-     */
+
+
     @When[backend == "cjnative"]
     init(sa: SocketAddress) {
         unsafe {
@@ -100,7 +98,7 @@ struct SockAddr {
     @When[backend == "cjnative"]
     @OverflowWrapping
     private unsafe func setPort(port: UInt16) {
-        CPointer<UInt8>(ptr).write(2, UInt8(port >> 8)) // skip family
+        CPointer<UInt8>(ptr).write(2, UInt8(port >> 8))
         CPointer<UInt8>(ptr).write(3, UInt8(port))
     }
 
@@ -118,16 +116,14 @@ struct SockAddr {
     private unsafe func setIpv6(addr: Array<UInt8>, port: UInt16) {
         setFamily(ptr, AF_INET6)
         setPort(port)
-        CPointer<UInt32>(ptr).write(1, UInt32(0)) // sin6_flowinfo
+        CPointer<UInt32>(ptr).write(1, UInt32(0))
         for (i in 0..SOCK_ADDR_IPV6_LEN) {
             CPointer<UInt8>(ptr).write(8 + i, addr[i])
         }
-        CPointer<UInt32>(ptr).write(6, UInt32(0)) // sin6_scope_id
+        CPointer<UInt32>(ptr).write(6, UInt32(0))
     }
 
-    /*
-     * No windows.
-     */
+
     @When[backend == "cjnative"]
     private unsafe func setUnix(addr: Array<UInt8>) {
         setFamily(ptr, AF_UNIX)
@@ -143,24 +139,24 @@ struct SockAddr {
 
     @When[backend == "cjnative"]
     private unsafe func getIpv4(): Array<UInt8> {
-        return Array<UInt8>(SOCK_ADDR_IPV4_LEN, {i => CPointer<UInt8>(ptr).read(4 + i)}) // skip family, port.
+        return Array<UInt8>(SOCK_ADDR_IPV4_LEN, {i => CPointer<UInt8>(ptr).read(4 + i)})
     }
 
     @When[backend == "cjnative"]
     private unsafe func getIpv6(): Array<UInt8> {
-        return Array<UInt8>(SOCK_ADDR_IPV6_LEN, {i => CPointer<UInt8>(ptr).read(8 + i)}) // skip family, port, sin6_flowinfo.
+        return Array<UInt8>(SOCK_ADDR_IPV6_LEN, {i => CPointer<UInt8>(ptr).read(8 + i)})
     }
 
     @When[backend == "cjnative"]
     private unsafe func getPort(): UInt16 {
-        let high = CPointer<UInt8>(ptr).read(2) // skip family
+        let high = CPointer<UInt8>(ptr).read(2)
         let low = CPointer<UInt8>(ptr).read(3)
         return UInt16(high) << 8 | UInt16(low)
     }
 
     @When[backend == "cjnative"]
     private unsafe func getDomain(): Array<UInt8> {
-        return Array<UInt8>(SOCK_ADDR_DOMAIN_LEN, {i => CPointer<UInt8>(ptr).read(2 + i)}) // skip family.
+        return Array<UInt8>(SOCK_ADDR_DOMAIN_LEN, {i => CPointer<UInt8>(ptr).read(2 + i)})
     }
 
     @When[backend == "cjnative"]

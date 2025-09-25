@@ -1,19 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.impl
 
 import std.deriving.api.*
 import std.ast.*
 import std.collection.*
 
-/**
- * Represent parsed option passed to the @Derive macro for specific interface. It is parsed but not analyzed/resolved.
- */
+
 public struct DeriveInterfaceOption <: ToTokens & ToString {
     public DeriveInterfaceOption(
         public let interfaceName: Identifier,
@@ -185,7 +183,6 @@ public struct DeriveInputParser {
     }
 
     private func recoverAfterBrokenInterfaceName() {
-        // skip until generic constraints or the next interface name beginning
         while (let Some(next) <- it.next()) {
             if (next.kind == TokenKind.WHERE || next.kind == TokenKind.COMMA) {
                 break
@@ -278,8 +275,6 @@ public struct DeriveInputParser {
         if (!reported) {
             logger.error(it.peek() ?? id, "Expected upper bound operator '<:'")
         }
-
-        // recovery
         while (let Some(next) <- it.next()) {
             if (next.kind == TokenKind.COMMA) {
                 break
@@ -370,7 +365,6 @@ public struct DeriveInputParser {
         let ref = RefType()
         ref.identifier = id
         if (it.seeing(TokenKind.LT)) {
-            // generics
             let opening = it.next()
             let (args, ending) = parseSeq(close: TokenKind.GT)
             ref.typeArguments = args
@@ -391,8 +385,6 @@ public struct DeriveInputParser {
         reportEof("Expected type identifier but got end")
         return None
     }
-
-    // ~ std.ast.parseTypeFragment
     private func parseType(): ?TypeNode {
         match (it.next()) {
             case Some(lParen) where lParen.kind == TokenKind.LPAREN =>
@@ -424,7 +416,6 @@ public struct DeriveInputParser {
     private func parseFuncOrTupleType(lParen: Token): ?TypeNode {
         let (seq, rParen) = parseSeq(close: TokenKind.RPAREN)
         if (it.seeing(TokenKind.ARROW)) {
-            // function type
             let arrow = it.next()
             let returnType = parseType() ?? return None
             return createFuncType(seq, returnType, arrow, lParen, rParen)
@@ -451,7 +442,6 @@ public struct DeriveInputParser {
             q.typeArguments = next.typeArguments
             current = q
         }
-        // note: we don't need to handle generics here because it's already done in parseRef
         return current
     }
 

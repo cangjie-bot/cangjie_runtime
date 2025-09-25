@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.diff
 
 import std.collection.*
@@ -130,8 +130,6 @@ extend<T> HashSet<T> <: AssertPrintableCollection<HashSet<T>> where T <: Equatab
     }
 }
 
-// AssertPrintableMap couldn't be used directly in extend for maps due to CHIR-related bug in the compiler
-// (in this case CHIR reports "chir checker error")
 interface AssertPrintableMap<C, K, V> where C <: Map<K, V>, K <: Equatable<K> & Hashable, V <: Equatable<V> {
     static func prepareKey(k: K) {
         runIfToStringOrPlaceholder(k) { kStr =>
@@ -242,8 +240,6 @@ extend PrettyPrinter {
 
         let isShortString = leftValue is String && rightValue is String &&
             max(leftStr.size, rightStr.size) <= 5
-
-        // The same code below should be extracted to local func, but for now it cannot be done due to bug in CJVM
         let leftPrintable = leftValue as AssertPrintable<T> ??
             return append(" ").pprintNotEqual(leftStr, rightStr, needToQuote: isShortString).newLine()
         let rightPrintable = rightValue as AssertPrintable<T> ??
@@ -261,9 +257,7 @@ extend PrettyPrinter {
         }
     }
 
-    /*
-     * Format the given value as String: if it implements ToString, call toString(), if it does not, return "<value not printable>"
-     */
+
     func pprintKeysDiff<T>(
         keyKind: String, collectionWithMissedKeys: String,
         keys: ArrayList<T>, maxSize: Int64, maxOneLineSize: Int64

@@ -1,23 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines ArrayDeque and related classes.
- */
+
+
+
+
+
+
+
+
 package std.collection
 
 public class ArrayDeque<T> <: Deque<T> {
-    // The array used to store the elements of the queue.
     var _data: Array<T>
-
-    // The default capacity of the array.
     private static const DEFAULT_CAPACITY: Int64 = 8
 
     protected var _version: Int64 = 0

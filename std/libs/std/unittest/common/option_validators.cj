@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.common
 
 import std.collection.*
@@ -27,14 +27,12 @@ public class UnittestOptionValidationException <: Exception {
 public enum OptionValidity {
     | UnknownOptionType
     | InvalidOption(String)
-    | ValidOption(ConfigurationKey) // with correct type key
+    | ValidOption(ConfigurationKey)
 }
 
 type Validator = (Any) -> OptionValidity
 
 public var unittestOptionsRegistryClosed = false
-
-// validators registry is closed when defaultConfiguration is created
 let VALIDATORS: HashMap<String, ArrayList<Validator>> = HashMap()
 
 public struct OptionInfo {
@@ -42,7 +40,7 @@ public struct OptionInfo {
         public let name: String,
         public let userDefined: Bool,
         public let description: ?String,
-        public let types!: HashMap<String, ?String> = HashMap() // type to it's optional description
+        public let types!: HashMap<String, ?String> = HashMap()
     ) {}
 }
 
@@ -66,13 +64,11 @@ func checkOptionValueByNameAndGetConfigurationKey<T>(name: String, value: T): Co
             let status = validator(value)
             match (status) {
                 case UnknownOptionType => continue
-                case ValidOption(configurationKey) => return configurationKey // valid, exit
+                case ValidOption(configurationKey) => return configurationKey
                 case InvalidOption(message) => throw UnittestOptionValidationException(
                     "${option} is invalid. ${message}")
             }
         }
-
-        // no one fit
         throw UnittestOptionValidationException("${option} type is not valid.")
     }
 

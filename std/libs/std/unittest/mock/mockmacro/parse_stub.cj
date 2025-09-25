@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.mock.mockmacro
 
 import std.ast.*
@@ -14,11 +14,10 @@ class Stub {
     Stub(
         let originalCall: Expr,
         let matchers: Array<Matcher>,
-        /*
-         * Object ref token for mocks on members of classes/interfaces,
-         * Type ref token for mocks on static declarations,
-         * `None` for top-level declarations
-         */
+
+
+
+
         let prefixReference: Option<Token>,
         let declarationName: String,
         let kind: StubKind

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.*
@@ -19,38 +19,27 @@ func runTestStep(
         MockFramework.openSession("test case ${caseId.caseName}", Verifiable)
         f()
     }
-
-    // there is no point in additionally showing mock verification errors here
-    // because they most likely will be just a consequence of existing errors
     Framework.withCurrentContext { ctx => ctx.suppressIfHasFailures() }
     MockFramework.closeSession()
 }
 
-/**
- * None of these configuration parameters are intended as public API for now.
- */
+
 extend Configuration {
-    // enable the coverage-guided algorithm
     prop coverageGuided: Bool {
         get(){ get(KeyCoverageGuided.coverageGuided) ?? false }
     }
-    // number of initial seeds generated without coverage information
     prop coverageGuidedInitialSeeds: Int64 {
         get(){ get(KeyCoverageGuidedInitialSeeds.coverageGuidedInitialSeeds) ?? 20 }
     }
-    // maximum number of candidates in queue
     prop coverageGuidedMaxCandidates: Int64 {
         get(){ get(KeyCoverageGuidedMaxCandidates.coverageGuidedMaxCandidates) ?? 200 }
     }
-    // score given to any new trace in queue
     prop coverageGuidedBaselineScore: Int64 {
         get(){ get(KeyCoverageGuidedBaselineScore.coverageGuidedBaselineScore) ?? 2000 }
     }
-    // score given to any "good" new trace in queue
     prop coverageGuidedNewCoverageScore: Int64 {
         get(){ get(KeyCoverageGuidedNewCoverageScore.coverageGuidedNewCoverageScore) ?? 4000 }
     }
-    // bonus to score given to traces that spawn new coverage through mutation
     prop coverageGuidedNewCoverageBonus: Int64 {
         get(){ get(KeyCoverageGuidedNewCoverageBonus.coverageGuidedNewCoverageBonus) ?? 500 }
     }
@@ -70,10 +59,8 @@ class TestCaseExecutor<T> <: Executor {
         private let body: (T) -> Unit
     ) {}
 
-    /*
-     * start new strategy iteration or stop
-     * @returns false to stop, true to continue
-     */
+
+
     private func nextIterationOrBreak(
         currentResult: TestCaseResult,
         configuration: Configuration
@@ -106,7 +93,7 @@ class TestCaseExecutor<T> <: Executor {
     }
 
     private func popFromQue(que: ArrayList<(CovRandomSource, Int64)>): (CovRandomSource, Int64) {
-        let last = que.remove(at: que.size - 1) // last element is the maximum
+        let last = que.remove(at: que.size - 1)
         last
     }
 
@@ -177,10 +164,6 @@ class TestCaseExecutor<T> <: Executor {
             body(v)
             unsafe { CJ_MICROFUZZ_DISABLE_TRACE() }
         }
-
-        // This should be a priority queue, but we don't have a priority queue implementation
-        // so instead we sort an ArrayList after adding each element
-        // This is not an algorithmic complexity problem, because the que is typically < 100 elements
         let que = ArrayList<(CovRandomSource, Int64)>()
 
         progress.verboseLine("Seeding initial generation")
@@ -250,9 +233,6 @@ class TestCaseExecutor<T> <: Executor {
                 case _ =>
                     throw Exception("Unexpected shrinking result")
             }
-
-            // It was decided that we should print full number of reduction steps
-            // instead of reduction step number on which we found latest shrinked failure
             result.add(failure.withUpdatedStep(CaseStep(argDescription(lastInput.value))))
 
             if (strategy.isInfinite) {
@@ -265,7 +245,6 @@ class TestCaseExecutor<T> <: Executor {
 
     public func execute(_: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
         generationStep = 0
-        // assume that we have data in the beginning
         hasMoreParameters = true
         randomSeed = configuration.get(KeyRandomSeed.randomSeed)
 
@@ -280,8 +259,6 @@ class TestCaseExecutor<T> <: Executor {
                 executeFiniteSubstrategy(tcase, configuration, body)
             } while (nextIterationOrBreak(tcase, configuration))
         }
-
-        // notify user that there were no steps executed
         if (generationStep == 0) {
             tcase.add(RunStepResult.simpleError(Skip, NoParametersProvidedResult()))
         }
@@ -310,21 +287,17 @@ extend RunStepResult {
 extend Exception {
     func asCheckResult(): ?CheckResult {
         match (this) {
-            // relying that mock framework exception are the only ones that are pretty printable
             case mockException: PrettyException => MockFrameworkCheckResult(PrettyText.of(mockException))
             case e: AssertIntermediateException =>
                 PowerAssertExceptionCheckResult(e.expression, e.getOriginalStackTrace(), e.diagram)
             case e: AssertException =>
                 match (e.cause) {
-                    // should have been already reported when thrown originally
                     case Some(_) => None
                     case None => ExceptionThrownCheckResult(
                         PrettyText(e.toString()), renderException(e, None)
                     )
                 }
-            // error will be reported by a watchdog thread
             case e: UnittestTimeoutException => None
-            // should have been already reported when thrown originally
             case _: BenchmarkStoppedError => None
             case anyOther: Exception => ExceptionThrownCheckResult(
                 PrettyText(anyOther.toString()), renderException(anyOther, None)
@@ -336,15 +309,11 @@ extend Exception {
 func strategyErrorAsResult(e: Exception, descr: ArgumentDescription): RunStepResult {
     let existingChecks = Framework.collectUnattachedFailures()
     let errorCheckResults = e.asCheckResult() ??
-        // this part can only happen if we caught exception caused by
-        // @Fail / @Assert etc inside the strategy processor itself
         existingChecks.get(0) ??
-        // this should never happen
         ExceptionThrownCheckResult(
         PrettyText("Unhandled exception inside strategy: ${e.toString()}"),
         renderException(e, None)
     )
-    // losing information about duration here
     let kind = CaseStep(descr)
     RunStepResult.simpleError(kind, errorCheckResults)
 }

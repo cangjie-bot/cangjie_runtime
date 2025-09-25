@@ -1,40 +1,34 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.collection.concurrent
 
 import std.sync.*
 import std.collection.MapEntryView
 
-/**
- * The type of key-value. It is a tuple including:
- * - Int64: the hashcode of the K;
- * - K: the type of key;
- * - V: the type of value.
- */
+
+
+
+
 type KeyValue<K, V> = (Int64, K, V)
 
-/**
- * KVList represent a list of KeyValue type instances.
- * It is used to handle key's hash conflictions.
- */
+
+
 class KVList<K, V> where K <: Equatable<K> {
     var myData: Array<KeyValue<K, V>>
     var mySize: Int64
 
-    /**
-     * INIT_ARRAY_SIZE:
-     * records the initial size of the arraylist in the bucket.
-     * We set INIT_ARRAY_SIZE = 2,
-     * since each bucket will not store too many key-value pairs,
-     * and the size of the arraylist is extensible to handle the extraordinary condition.
-     * Allocating an arraylist whose size is small is efficient.
-     */
+
+
+
+
+
+
     static const INIT_ARRAY_SIZE = 2
 
     init() {
@@ -143,27 +137,20 @@ class KVList<K, V> where K <: Equatable<K> {
         fn(entryView)
 
         match ((i == -1, entryView.value)) {
-            // nothing to do
             case (true, None) => return (this, None, None)
-            // add
             case (true, Some(v)) => return (copyInsert(hash, key, v), v, 1)
-            // remove
             case (false, None) => return (copyRemoveUnChecked(i), None, -1)
             case (false, Some(v)) =>
-                // nothing to do
                 if (!entryView.update) {
                     return (this, v, None)
                 }
-                // replace
                 let copyList = KVList<K, V>(this)
                 copyList.myData[i] = (hash, key, v)
                 return (copyList, v, None)
         }
     }
 
-    /**
-     * Migrate the elements, whose hash % (mask + 1) == index, of the current bucket into a new KVList.
-     */
+
     @OverflowWrapping
     func migrate(mask: Int64, index: Int64): KVList<K, V> {
         let copyList = KVList<K, V>()
@@ -225,12 +212,10 @@ class KVList<K, V> where K <: Equatable<K> {
     }
 }
 
-/**
- * FindKey<V> Type defines the result of searching a key-value pair in a bucket:
- * - FIND(v): finds the specified key-value pair whose value is r'v'
- * - NotFind: does not find the specified key-value pair
- * - NotMigrate: means that the key-value pairs in such bucket are waiting for migration
- */
+
+
+
+
 enum FindKey<V> {
     | FIND(V)
     | NotFind
@@ -238,14 +223,11 @@ enum FindKey<V> {
 }
 
 struct Bucket<K, V> where K <: Equatable<K> {
-    /**
-     * The reference of the arraylist in the bucket.
-     */
+
+
     let atomic_ref_entries = AtomicOptionReference(None<KVList<K, V>>)
 
-    /**
-     * Returns the value associated with @p key.
-     */
+
     @Frozen
     func find(hash: Int64, key: K): FindKey<V> {
         if (let Some(entries) <- refList()) {
@@ -314,9 +296,7 @@ struct Bucket<K, V> where K <: Equatable<K> {
         return (value, resize)
     }
 
-    /**
-     * Migrate the the elements, whose hash % (mask + 1) == index, of @p optEntries into the current bucket.
-     */
+
     func migrate(optEntries: ?KVList<K, V>, mask: Int64, index: Int64): Unit {
         if (refList().isSome()) {
             return
@@ -324,7 +304,7 @@ struct Bucket<K, V> where K <: Equatable<K> {
 
         if (let Some(entries) <- optEntries) {
             let copyEntries = entries.migrate(mask, index)
-            atomic_ref_entries.store(copyEntries) // substitute the arraylist of the bucket to 'copyEntries'
+            atomic_ref_entries.store(copyEntries)
         }
     }
 
@@ -333,9 +313,7 @@ struct Bucket<K, V> where K <: Equatable<K> {
     }
 }
 
-/**
- * MutexLockGroup is a set of reentrant mutexes for bucket updating in ConcurrentHashMap.
- */
+
 class MutexLockGroup {
     let mutexes: Array<Mutex>
     private let mod: Int64
@@ -358,23 +336,20 @@ class MutexLockGroup {
     }
 }
 
-/**
- * HNode is the definition of the hash table,
- * which is a core component of the ConcurrentHashMap.
- */
+
+
 class HNode<K, V> where K <: Hashable & Equatable<K> {
-    /* The collection of the buckets of the hash table */
+    
     let buckets: Array<Bucket<K, V>>
-    /* Freeze flags mark whether the corresponding bucket is frozen */
+    
     var freezeFlags: Array<Bool>
     let lockG: MutexLockGroup
     let version: Int64
     let migratingIndex = AtomicInt64(0)
     let migratedIndex = AtomicInt64(0)
-    /**
-     * The reference of the previous hash table,
-     * which is the current hash table before the latest size extension.
-     */
+
+
+
     let pre: AtomicOptionReference<HNode<K, V>>
 
     init(capacity: Int64, refPre: ?HNode<K, V>, lockG: MutexLockGroup, version: Int64) {
@@ -395,22 +370,18 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
         lockG.unlock(index)
     }
 
-    /**
-     * Gets the value associated with @p key from the hash table.
-     */
+
     @OverflowWrapping
     @Frozen
     func getValue(hash: Int64, key: K): Option<V> {
         let index = hash & (buckets.size - 1)
 
-        /*
-         * Finds the key-value, where key = @p key, from the current hash table firstly, where
-         * - FIND(v): the value associated with @p key is r'v'
-         * - NotFind: @p key does not exist in the current hash table
-         * - NotMigrate: the elements of the bucket have not been migrated from the previous hash table.
-         *
-         * For NotMigrate condition, we search @p key from the previous hash table, if it exists.
-         */
+
+
+
+
+
+
         match (buckets[index].find(hash, key)) {
             case FIND(v) => return Some(v)
             case NotFind => return None<V>
@@ -425,9 +396,7 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Migrates the elements from the previous hash table to buckets[@p index] of the current hash table.
-     */
+
     @OverflowWrapping
     func migrate(start: Int64, end: Int64, step: Int64): Unit {
         if (let Some(preHT) <- pre.load()) {
@@ -436,7 +405,7 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
                 if (buckets[index].refList().isSome()) {
                     continue
                 }
-                let preIndex = index & (preHT.buckets.size - 1) // Index of bucket remains to be migrated
+                let preIndex = index & (preHT.buckets.size - 1)
                 preHT.freeze(preIndex)
                 buckets[index].migrate(preHT.buckets[preIndex].refList(), buckets.size - 1, index)
             }
@@ -456,7 +425,7 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
         }
 
         if (let Some(preHT) <- pre.load()) {
-            let preIndex = index & (preHT.buckets.size - 1) // Index of bucket remains to be migrated
+            let preIndex = index & (preHT.buckets.size - 1)
             preHT.freeze(preIndex)
             buckets[index].migrate(preHT.buckets[preIndex].refList(), buckets.size - 1, index)
         }
@@ -492,62 +461,53 @@ class ConcurrentHashMapEntryView<K, V> <: MapEntryView<K, V> {
     }
 }
 
-/**
- * The definition of the ConcurrentHashMap with load factor 1.
- * Load factor is 1, indicating that the number of buckets in the ConcurrentHashMap equals to
- * the number of key-value pairs usually.
- * And if the number of key-value pairs is greater than the number of buckets in the ConcurrentHashMap,
- * capacity expansion will occur.
- */
+
+
+
+
+
 public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)> where K <: Hashable & Equatable<K> {
-    /* default number of the buckets */
+    
     private static const DEFAULT_CAPACITY: Int64 = 16
 
-    /* Max size of buckets and concurrencyLevel */
+    
     private static const MAX_SIZE: Int64 = 4611686018427387904
 
-    /**
-     * By default, we use 16 reentrant mutexes to synchronize
-     * different threads modifying the same bucket.
-     * It means that up to 16 threads are allowed to update ConcurrentHashMap concurrently.
-     */
+
+
+
     private static const DEFAULT_CONCUR_LEVEL: Int64 = 16
 
-    /* counts: using 16 atomic uint64 variables to count the number of key-value pairs in concurrent hashmap */
+    
     private let counts = Array<AtomicInt64>(1 << COUNT_SIZE, {_ => AtomicInt64(0)})
-    /* COUNT_SIZE: the bits of the size of 'counts' array, counts.size = 1 << COUNT_SIZE */
+    
     private static const COUNT_SIZE = 4
 
-    /* version number of the current HNode */
+    
     let curHNodeVersion = AtomicInt64(0)
 
-    /* head: points to the current HNode */
+    
     let head: AtomicReference<HNode<K, V>>
 
-    /* group of locks to avoid two threads modifying the same bucket */
+    
     let lockG: Array<MutexLockGroup>
 
-    /**
-     * concurrencyLevel is the number of reentrant mutexes to synchronize
-     * different threads updating the same bucket.
-     * It indicates the maximum number of threads allowed to update ConcurrentHashMap concurrently.
-     * Two threads updating bucket[i] is synchronized by reentrant mutex j,
-     * if and only if (i % concurrencyLevel == j).
-     *
-     * It does not mean that a greater concurrencyLevel is better.
-     * The concurrencyLevel specifies the number of reentrant mutexes for updating ConcurrentHashMap concurrently.
-     * A greater concurrencyLevel will cause greater memory overhead.
-     */
+
+
+
+
+
+
+
+
+
     let concurrencyLevel: Int64
 
-    /************************ Public Methods *******************************/
-    /**
-     * Create a ConcurrentHashMap, whose initial capacity is DEFAULT_CAPACITY (=16) and
-     * concurrencyLevel is @p concurrencyLevel.
-     * The default concurrencyLevel is DEFAULT_CONCUR_LEVEL (=16).
-     *
-     * @param concurrencyLevel: the number of reentrant mutexes for synchronization.
-     */
+
+
+
+
+
     public init(concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL) {
         let lockCnt = tableSizeFor(concurrencyLevel)
         this.lockG = Array<MutexLockGroup>(2, {_ => MutexLockGroup(lockCnt)})
@@ -555,16 +515,14 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         this.head = AtomicReference(HNode<K, V>(DEFAULT_CAPACITY, None, lockG[0], 0))
     }
 
-    /**
-     * Create a ConcurrentHashMap, whose initial capacity is @p capacity and
-     * concurrencyLevel is @p concurrencyLevel.
-     * The default concurrencyLevel is DEFAULT_CONCUR_LEVEL (=16).
-     *
-     * @param capacity: initial capacity of the ConcurrentHashMap;
-     * @param concurrencyLevel: the number of reentrant mutexes for synchronization.
-     *
-     * @throws IllegalArgumentException if capacity is less than zero.
-     */
+
+
+
+
+
+
+
+
     public init(capacity: Int64, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL) {
         if (capacity < 0) {
             throw IllegalArgumentException("Invalid size of Concurrent HashMap: ${capacity}.")
@@ -576,12 +534,10 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         this.head = AtomicReference(HNode<K, V>(tableSizeFor(capacity), None, lockG[0], 0))
     }
 
-    /**
-     * Create a ConcurrentHashMap with an incoming list for initialization.
-     *
-     * @param elements: an incoming list is initialized;
-     * @param concurrencyLevel: the number of reentrant mutexes for synchronization.
-     */
+
+
+
+
     public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL) {
         let lockCnt = tableSizeFor(concurrencyLevel)
         this.lockG = Array<MutexLockGroup>(2, {_ => MutexLockGroup(lockCnt)})
@@ -592,12 +548,10 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         }
     }
 
-    /**
-     * Create a ConcurrentHashMap with an incoming list for initialization.
-     *
-     * @param elements: an incoming list is initialized;
-     * @param concurrencyLevel: the number of reentrant mutexes for synchronization.
-     */
+
+
+
+
     public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL) {
         if (size < 0) {
             throw IllegalArgumentException("Invalid size of Concurrent HashMap: ${size}.")
@@ -613,24 +567,20 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         }
     }
 
-    /**
-     * Returns the value associated with @p key.
-     *
-     * @param key: transfer key to obtain the value.
-     * @return: the value corresponding to the return key is encapsulated with option.
-     */
+
+
+
+
     @Frozen
     public func get(key: K): ?V {
         let hash = key.hashCode()
         return head.load().getValue(hash, key)
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the specified key exists in this mapping.
-     *
-     * @param key: transfers the key to be judged.
-     * @return: returns true if exists; otherwise, false.
-     */
+
+
+
+
     @Frozen
     public func contains(key: K): Bool {
         return match (get(key)) {
@@ -639,17 +589,15 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         }
     }
 
-    /**
-     * Add a new key value to the map. If the key already exists,
-     * the value will be overwritten and the overwritten value will be returned.
-     *
-     * @param key: the key to put;
-     * @param value: the value to put.
-     *
-     * @return:
-     * - None: if @p key does not exist before putting;
-     * - Some(v): if @p key associated with v before putting.
-     */
+
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public func add(key: K, value: V): ?V` instead."]
     public func put(key: K, value: V): ?V {
         return addInternal(key, value)
@@ -660,20 +608,18 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         return addInternal(key, value)
     }
 
-    /**
-     * Associates the specified @p value with the specified @p key in this concurrent map,
-     * if @p key does not in the concurrent map, before calling this method.
-     * Otherwise, just returns the value that @p key maps to and does nothing.
-     *
-     * Such method is atomic (linearizable) in concurrency.
-     *
-     * @param key: the key to put.
-     * @param value: the value to assign.
-     *
-     * @return:
-     * - Some(v): if the pair of @p key and v exists before putting;
-     * - None: if @p key does not exist in the concurrent map.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public func addIfAbsent(key: K, value: V): ?V` instead."]
     public func putIfAbsent(key: K, value: V): ?V {
         addIfAbsent(key, value)
@@ -705,87 +651,77 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         return ret
     }
 
-    /**
-     * Removes the key-value pair corresponding to @p key from this mapping, if one exists.
-     *
-     * @param key: pass in the key to be deleted.
-     *
-     * @return:
-     * - Some(v): where the pair of @p key and v is the removed element;
-     * - None: where @p key does not exist in the concurrent map.
-     */
+
+
+
+
+
+
+
     public func remove(key: K): ?V {
         return removeInternal(key, {_ => true})
     }
 
-    /**
-     * Removes the pair of @p key and value, where predicate(value) = true holds,
-     * from this concurrent map.
-     * Otherwise, just returns 'false' and does nothing.
-     *
-     * @param key: the key of the key-value pair to be deleted.
-     * @param predicate: the function justifies whether the pair of @p key and value should be removed.
-     *
-     * @return:
-     * - Some(v): if exists the pair of @p key and v in concurrent map;
-     * - None: if @p key does not in this concurrent map.
-     */
+
+
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public func entryView(K, (MapEntryView<K, V>) -> Unit)` instead."]
     public func remove(key: K, predicate: (V) -> Bool): ?V {
         return removeInternal(key, predicate)
     }
 
-    /**
-     * Replaces the value associated with @p key to @p value,
-     * if there exists a pair of @p key and some value v in the concurrent hashmap.
-     * Otherwise, just returns 'Option<V>.None' and does nothing.
-     *
-     * @param key: the key of the key-value pair, whose value needs to be replaced.
-     * @param value: the value to be replaced.
-     *
-     * @return:
-     * - Some(v): if the pair of @p key and v exists in concurrent map before invoking this method.
-     * - None: if @p key is not in the concurrent map.
-     */
+
+
+
+
+
+
+
+
+
+
     @Frozen
     public func replace(key: K, value: V): ?V {
         return replaceInternel(key, {_ => true}, {_ => value})
     }
 
-    /**
-     * Replaces the value associated with @p key to eval(v),
-     * if there exists a pair of @p key and v in the concurrent hashmap.
-     * Otherwise, just returns 'Option<V>.None' and does nothing.
-     *
-     * Such method is atomic (linearizable) in concurrency.
-     *
-     * @param key: the key to put.
-     * @param eval: function to evaluate the value to put.
-     * @p eval evaluates the value according to the old value v.
-     *
-     * @return:
-     * - Some(v): if the pair of @p key and v exists in concurrent map before invoking this method.
-     * - None: if @p key is not in the concurrent map.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public func entryView(key: K, fn: (MapEntryView<K, V>)->Unit): ?V` instead."]
     public func replace(key: K, eval: (V) -> V): ?V {
         return replaceInternel(key, {_ => true}, eval)
     }
 
-    /**
-     * Replaces the value associated with @p key to eval(v),
-     * if the pair of @p key and v in the concurrent map, and @p predicate(v) holds.
-     *
-     * Such method is atomic (linearizable) in concurrency.
-     *
-     * @param key: the key of the key-value pair, whose value needs to be replaced.
-     * @param predicate: the function justifies whether @p key-v pair in the concurrent map should be replaced.
-     * @param eval: the function evaluates the new value to replace the old value.
-     *
-     * @return:
-     * - Some(v): if the pair of @p key and v exists in concurrent map before replacing;
-     * - None: if @p key does not exist in concurrent map.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public func entryView(key: K, fn: (MapEntryView<K, V>)->Unit): ?V` instead."]
     public func replace(key: K, predicate: (V) -> Bool, eval: (V) -> V): ?V {
         return replaceInternel(key, predicate, eval)
@@ -795,14 +731,12 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         return entryViewInternal(key, fn)
     }
 
-    /**
-     * An exception is reported when the get operator is overloaded and the key does not exist.
-     *
-     * @param key: transfers the value for judgment.
-     * @return: the value corresponding to the key.
-     *
-     * @throws NoneValueException if @p key does not exist.
-     */
+
+
+
+
+
+
     public operator func [](key: K): V {
         return match (this.get(key)) {
             case None => throw NoneValueException("Value does not exist!\n")
@@ -810,21 +744,17 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         }
     }
 
-    /**
-     * The operator overloads the set. If the key does not exist, an exception is reported.
-     *
-     * @param key: transfers the value for judgment.
-     * @param value: transfers the value to be set.
-     */
+
+
+
+
     public operator func [](key: K, value!: V): Unit {
         this.add(key, value)
     }
 
-    /**
-     * Returns sizes of key-value.
-     *
-     * @return: size of key-value.
-     */
+
+
+
     public prop size: Int64 {
         get() {
             var cnt: Int64 = 0
@@ -835,26 +765,22 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         }
     }
 
-    /**
-     * Check whether the size is empty. If yes, true is returned. Otherwise, false is returned.
-     *
-     * @return: if yes, true is returned. Otherwise, false is returned.
-     */
+
+
+
     public func isEmpty(): Bool {
         return (size == 0)
     }
 
-    /**
-     * Returns iterator of Concurrent Hashmap.
-     *
-     * @return: iterator of Concurrent Hashmap.
-     */
+
+
+
     @Frozen
     public func iterator(): ConcurrentHashMapIterator<K, V> {
         return ConcurrentHashMapIterator<K, V>(this)
     }
 
-    /************************ Private Methods *******************************/
+    
     @OverflowWrapping
     private func addInternal(key: K, value: V): ?V {
         let hash = key.hashCode()
@@ -916,7 +842,7 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
     func entryViewInternal(key: K, fn: (MapEntryView<K, V>) -> Unit): ?V {
         let hash = key.hashCode()
-        tryResize(hash) // maybe add
+        tryResize(hash)
         var ret = None<V>
         var resize = None<Int64>
         var curHT = head.load()
@@ -945,7 +871,7 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         if ((counts[hash & (counts.size - 1)].load() << COUNT_SIZE) < sz) {
             return
         }
-        /* Migrate all elements in previous hashtable, before resizing */
+        
         var i = curHT.migratingIndex.fetchAdd(1)
         var migrateCnt = 0
         while (i < concurrencyLevel) {
@@ -956,21 +882,19 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         curHT.migratedIndex.fetchAdd(migrateCnt)
         let newVersion = curHT.version + 1
         if (!curHNodeVersion.compareAndSwap(curHT.version, newVersion)) {
-            return // There exists a thread allocating new hashtable, returns
+            return
         }
         while (curHT.migratedIndex.load() < concurrencyLevel) {}
-        /* Allocate new hashtable */
+        
         curHT.pre.store(None<HNode<K, V>>)
         head.store(HNode<K, V>(sz << 1, Some(curHT), lockG[newVersion & 1], newVersion))
     }
 
-    /*
-     * Returns a power of two size for the given target capacity.
-     *
-     * @return target capacity.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     private static func tableSizeFor(cap: Int64): Int64 {
         if (cap <= DEFAULT_CAPACITY) {
             return DEFAULT_CAPACITY
@@ -996,40 +920,33 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
     }
 }
 
-/**
- * The Iterator of the ConcurrentHashMap.
- * It is not atomic and does not ensure to iterator a snapshot of the ConcurrentHashMap in concurrency.
- * The best way to iterate the ConcurrentHashMap is in the condition, where there is no other threads executing concurrently.
- */
+
+
+
 public class ConcurrentHashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equatable<K> {
-    /* The reference of the current hash table */
+    
     private let curHT: HNode<K, V>
 
-    /* The index of buckets array in the current iteration */
+    
     private var curBucketIndex: Int64 = 0
-
-    /* The reference of the bucket in the current iteration */
-    // private var curEntries: Option<ArrayList<KeyValue<K, V>>> = None
     private var curEntries: ?KVList<K, V> = None
 
-    /* The index of the arraylist in the 'curEntries' in the current iteration */
+    
     private var entriesIndex: Int64 = 0
 
     public init(cmap: ConcurrentHashMap<K, V>) {
         curHT = cmap.head.load()
-        latestValidBucket(0) // Sets the cursor to the next element
+        latestValidBucket(0)
     }
 
-    /**
-     * Returns the current element, and sets pointer to the next element.
-     * - Some(val): if the current element is val;
-     * - None: if there is no element in the collection.
-     */
+
+
+
     @Frozen
     public func next(): Option<(K, V)> {
         if (let Some(entries) <- curEntries) {
-            let val = entries[entriesIndex] // Gets the current element
-            nextElement() // Sets the cursor to the next element
+            let val = entries[entriesIndex]
+            nextElement()
             return Some((val[1], val[2]))
         }
         return None<(K, V)>

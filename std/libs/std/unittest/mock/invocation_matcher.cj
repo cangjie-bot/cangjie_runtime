@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.collection.*
@@ -14,8 +14,8 @@ enum MatchStatus {
     Ok
     | FuncMismatch
     | ReceiverMismatch
-    | ArgumentMismatch( /*mismatchedPositions: */ Array<Int64>)
-    | TypeArgMismatch( /*mismatchedPositions: */ Array<Int64>)
+    | ArgumentMismatch(  Array<Int64>)
+    | TypeArgMismatch(  Array<Int64>)
 }
 
 struct StubDescription {
@@ -25,8 +25,6 @@ struct StubDescription {
         let location: Location
     ) {}
 }
-
-// NOTE: VerifyStatement and StubChain classes are basically wrappers around InvocationMatcher
 class InvocationMatcher {
     let positionalMatchers = ArrayList<ArgumentMatcher>()
 

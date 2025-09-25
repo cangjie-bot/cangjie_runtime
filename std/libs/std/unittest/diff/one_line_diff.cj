@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.diff
 
 import std.collection.*
@@ -15,19 +15,15 @@ struct ColorChunk {
 }
 
 type DiffBuilderResult = (ArrayList<Rune>, ArrayList<Rune>, ArrayList<ColorChunk>, Option<ArrayList<Rune>>)
-
-// It implements Needleman-Wunsch algorithm
 class OneLineDiffBuilder {
     private init() {}
 
     private static let missPenalty: Float64 = 1.0
     private static let gapPenalty: Float64 = 1.0
     private static let skewPenalty: Float64 = 0.5
-
-    // Criteria below is to show detailed diff
     private static let minSize = 4
-    private static let minSimilarity = 0.5 // minimal similirity of whole strings
-    private static let prefixSuffixFactor = 0.25 // which part of the string is considered as a prefix/suffix
+    private static let minSimilarity = 0.5
+    private static let prefixSuffixFactor = 0.25
     private static let minPrefixSuffixSimilarity = 0.75
 
     private static func recordMarkedChar(
@@ -213,8 +209,6 @@ class OneLineDiffBuilder {
 
         var (sampledLeft, sampledRight) = sampleStrings(left, right)
         let diff = computeDiff(sampledLeft, sampledRight)
-
-        // If two strings don't satisfy similarity creteria, then don't show detailed diff
         if (!areStringsSimilar(diff) && !isPrefixSimilar(diff) && !isSuffixSimilar(diff)) {
             let leftSampledStr = ArrayList(sampledLeft.sampledStr.toRuneArray())
             let rightSampledStr = ArrayList(sampledRight.sampledStr.toRuneArray())
@@ -227,13 +221,7 @@ class OneLineDiffBuilder {
         var bout: ArrayList<Rune> = ArrayList()
         var colors: ArrayList<ColorChunk> = ArrayList()
 
-        // If one value matches to another with some misses and the length of strings is more than 150,
-        // we should additionally allign the endings of strings by trimming non-proper insertions of removals
-        // appeared because of the different length of sampled strings
-
         let removalsOrInsertionsToTrim = fillOutputByMarkedChars(diff, aout, bout, colors)
-
-        // Do additional allignment at endings
         if (removalsOrInsertionsToTrim > 0) {
             aout = aout[..aout.size - removalsOrInsertionsToTrim]
             bout = bout[..bout.size - removalsOrInsertionsToTrim]

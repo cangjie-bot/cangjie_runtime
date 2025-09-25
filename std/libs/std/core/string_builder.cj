@@ -1,40 +1,35 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines StringBuilder.
- */
+
+
+
+
+
+
+
+
 package std.core
 
 let digits100: Array<Byte> = [
-    b'0',b'0',b'0',b'1',b'0',b'2',b'0',b'3',b'0',b'4',b'0',b'5',b'0',b'6',b'0',b'7',b'0',b'8',b'0',b'9', //00 ~ 09
-    b'1',b'0',b'1',b'1',b'1',b'2',b'1',b'3',b'1',b'4',b'1',b'5',b'1',b'6',b'1',b'7',b'1',b'8',b'1',b'9', //10 ~ 19
-    b'2',b'0',b'2',b'1',b'2',b'2',b'2',b'3',b'2',b'4',b'2',b'5',b'2',b'6',b'2',b'7',b'2',b'8',b'2',b'9', //20 ~ 29
-    b'3',b'0',b'3',b'1',b'3',b'2',b'3',b'3',b'3',b'4',b'3',b'5',b'3',b'6',b'3',b'7',b'3',b'8',b'3',b'9', //30 ~ 39
-    b'4',b'0',b'4',b'1',b'4',b'2',b'4',b'3',b'4',b'4',b'4',b'5',b'4',b'6',b'4',b'7',b'4',b'8',b'4',b'9', //40 ~ 49
-    b'5',b'0',b'5',b'1',b'5',b'2',b'5',b'3',b'5',b'4',b'5',b'5',b'5',b'6',b'5',b'7',b'5',b'8',b'5',b'9', //50 ~ 59
-    b'6',b'0',b'6',b'1',b'6',b'2',b'6',b'3',b'6',b'4',b'6',b'5',b'6',b'6',b'6',b'7',b'6',b'8',b'6',b'9', //60 ~ 69
-    b'7',b'0',b'7',b'1',b'7',b'2',b'7',b'3',b'7',b'4',b'7',b'5',b'7',b'6',b'7',b'7',b'7',b'8',b'7',b'9', //70 ~ 79
-    b'8',b'0',b'8',b'1',b'8',b'2',b'8',b'3',b'8',b'4',b'8',b'5',b'8',b'6',b'8',b'7',b'8',b'8',b'8',b'9', //80 ~ 89
-    b'9',b'0',b'9',b'1',b'9',b'2',b'9',b'3',b'9',b'4',b'9',b'5',b'9',b'6',b'9',b'7',b'9',b'8',b'9',b'9'] //90 ~ 99
+    b'0',b'0',b'0',b'1',b'0',b'2',b'0',b'3',b'0',b'4',b'0',b'5',b'0',b'6',b'0',b'7',b'0',b'8',b'0',b'9',
+    b'1',b'0',b'1',b'1',b'1',b'2',b'1',b'3',b'1',b'4',b'1',b'5',b'1',b'6',b'1',b'7',b'1',b'8',b'1',b'9',
+    b'2',b'0',b'2',b'1',b'2',b'2',b'2',b'3',b'2',b'4',b'2',b'5',b'2',b'6',b'2',b'7',b'2',b'8',b'2',b'9',
+    b'3',b'0',b'3',b'1',b'3',b'2',b'3',b'3',b'3',b'4',b'3',b'5',b'3',b'6',b'3',b'7',b'3',b'8',b'3',b'9',
+    b'4',b'0',b'4',b'1',b'4',b'2',b'4',b'3',b'4',b'4',b'4',b'5',b'4',b'6',b'4',b'7',b'4',b'8',b'4',b'9',
+    b'5',b'0',b'5',b'1',b'5',b'2',b'5',b'3',b'5',b'4',b'5',b'5',b'5',b'6',b'5',b'7',b'5',b'8',b'5',b'9',
+    b'6',b'0',b'6',b'1',b'6',b'2',b'6',b'3',b'6',b'4',b'6',b'5',b'6',b'6',b'6',b'7',b'6',b'8',b'6',b'9',
+    b'7',b'0',b'7',b'1',b'7',b'2',b'7',b'3',b'7',b'4',b'7',b'5',b'7',b'6',b'7',b'7',b'7',b'8',b'7',b'9',
+    b'8',b'0',b'8',b'1',b'8',b'2',b'8',b'3',b'8',b'4',b'8',b'5',b'8',b'6',b'8',b'7',b'8',b'8',b'8',b'9',
+    b'9',b'0',b'9',b'1',b'9',b'2',b'9',b'3',b'9',b'4',b'9',b'5',b'9',b'6',b'9',b'7',b'9',b'8',b'9',b'9']
 
 public class StringBuilder <: ToString {
     private var data: Array<UInt8>
     private var endIndex: Int64
 
-    /* defines the buffer defaultCapacity */
+    
     private static const defaultCapacity: Int64 = 32
 
-    /**
-     * Constructors
-     */
+
     @Frozen
     public init() {
         this.data = Array<UInt8>(defaultCapacity, repeat: 0)
@@ -87,9 +82,7 @@ public class StringBuilder <: ToString {
         this.endIndex = 0
     }
 
-    /**
-     * Get UTF-8 code unit size.
-     */
+
     @Frozen
     public prop size: Int64 {
         get() {
@@ -97,9 +90,7 @@ public class StringBuilder <: ToString {
         }
     }
 
-    /**
-     * Get capacity of this instance.
-     */
+
     @Frozen
     public prop capacity: Int64 {
         get() {
@@ -107,19 +98,15 @@ public class StringBuilder <: ToString {
         }
     }
 
-    /**
-     * Return a String managed by StringBuilder.
-     *
-     * @return a String managed by StringBuilder.
-     */
+
+
+
     @Frozen
     public func toString(): String {
         return String(this.data[0..this.endIndex])
     }
 
-    /**
-     * @throws IllegalMemoryException if there are some system errors.
-     */
+
     @Frozen
     public func reset(capacity!: Option<Int64> = None): Unit {
         let newCapacity = if (let Some(v) <- capacity) {
@@ -175,10 +162,8 @@ public class StringBuilder <: ToString {
         this.endIndex += itemLen
     }
 
-    /*
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array "arr[i]".
-     */
+
+
     @OverflowWrapping
     @Frozen
     public func appendFromUtf8(arr: Array<Byte>): Unit {
@@ -367,10 +352,8 @@ public class StringBuilder <: ToString {
         this.data = itemData
     }
 
-    /**
-     * To use this method, ensure that the input complies with the UTF-8 code.
-     * Otherwise, an error occurs.
-     */
+
+
     @Frozen
     private unsafe func append(cp: CPointer<UInt8>): Unit {
         let cpSize = Int64(strlen(cp))
@@ -405,7 +388,6 @@ func calcNumLen(num: UInt64): Int64 {
 
 @OverflowWrapping
 func numberToString(number: UInt64, endIndex: Int64, buffer: Array<Byte>): Unit {
-    //make sure endindex is smaller then buffer.size
     var next = endIndex - 1
     var value = number
     var i = 0

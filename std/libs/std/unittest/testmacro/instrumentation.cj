@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -104,7 +104,6 @@ open class InstrumentedFunction {
         this.types = loadTypesDSL(original)
 
         this.dataDSL.add(all: parseDSLMacro(original.loadSingle(TESTCASE_MACRO)))
-        // @Bench contains DSL if benchmarking
         this.dataDSL.add(all: parseDSLMacro(original.loadSingle(BENCH_MACRO)))
     }
 
@@ -194,13 +193,11 @@ open class InstrumentedFunction {
         ))
     }
 
-    /**
-     * @param funIdent: Tokens -- function name with full suffix (e.g. type arguments): id, foo<String>
-     * @param funIdentName: String -- unique identifier for test case (new for each set of type parameters)
-     * @param caseName: String -- displayable name for report
-     * @param typeArgs: Collection<Tokens> -- type arguments for function, empty if function is not generic
-     * @param tb: TokensBuilder -- builder to write code to
-     */
+
+
+
+
+
     func initSingleCaseCode(
         funIdent: Tokens, funIdentName: String, caseName: String,
         typeArgs!: Collection<Tokens> = [], tb!: TokensBuilder = TokensBuilder()
@@ -240,8 +237,6 @@ open class InstrumentedFunction {
                 initSingleCaseCode(funCode, caseId, typesToString(funCode), typeArgs: combination, tb: tb)
                 counter.value++
             }
-            // we first walk the type arguments, and then check type substitution
-            // because if there are problems with both, missing arguments are more important
             checkTypeSubstitution(genericArgsArray, typeSubst)
             tb
         }
@@ -278,7 +273,7 @@ struct ClassDescriptor {
         let result = ArrayList<Token>()
         for (modifier in modifiers) {
             match (modifier.kind) {
-                case PUBLIC => () // XXX: this is current behaviour, we just mimic that
+                case PUBLIC => ()
                 case _ => result.add(modifier)
             }
         }
@@ -319,8 +314,6 @@ class InstrumentedClass {
 
         this.configuration = loadFuncConfiguration(original)
         this.measurements = loadMeasurements(original)
-
-        // a generic @Test-annotated function will produce a non-generic class with a generic function inside
         this.genericConstraints = ArrayList<GenericConstraint>()
         this.typeParameters = Tokens()
         this.types = []
@@ -361,13 +354,6 @@ class InstrumentedClass {
     }
 
     static func fromDecl(macroKey: MacroKey, decl: Decl, originalTokens: Tokens): InstrumentedClass {
-        // checking that 'annotation style' macros are applied correctly, in particular:
-        //     - they have correct target
-        //     - are not repeated unless it is allowed
-        //     - they are combined correctly
-        // the following is checked separately:
-        //     - everything related to @Test and @TestTemplate macros
-        //     - particular DSLs in corresponding macros
         let dslTokensList = decl.loadRepeatable(macroKey)
         let dslTokens: Tokens = match (dslTokensList.size) {
             case 0 => throw MacroException("No ${macroKey} macro used with ${decl.identifier.value}")
@@ -430,8 +416,6 @@ class InstrumentedClass {
                 ))
                 tb.append(NL)
             }
-            // we first walk the type arguments, and then check type substitution
-            // because if there are problems with both, missing arguments are more important
             checkTypeSubstitution(arrayArg, typeSubst)
             tb.append(quote(
                     }
@@ -455,7 +439,6 @@ class InstrumentedClass {
     }
 
     private func buildCheckInheritingTemplate(superTypes: Array<Tokens>, tb: TokensBuilder): TokensBuilder {
-        // Naming instructs user to place @TestTemplate.
         tb.append(quote(private func inheritedFromClassAnnotatedByTestTemplate<T>(): TestSuite where T <: TestClass)).curlyBraces { tb =>
             if (!superTypes.isEmpty()) {
                 tb.append(quote(super.asTestSuite())).append(NL)
@@ -529,7 +512,6 @@ class InstrumentedClass {
                 buildConstructor(tb, modifiers + quote(init), paramList, body)
                 numConstructors.value++
             case funcDecl: FuncDecl => LifecycleStages.transformFunction(funcDecl, tb)
-            // temporary solution until insideParentContext("Test") is fixed on cjvm
             case varDecl: VarDecl where varDecl.getAttrs().size >= 1 && varDecl.getAttrs()[0].value == "Strategy" =>
                 tb.append(quote(
                     $(varDecl.modifiers) prop $(varDecl.identifier) : $(varDecl.declType) { get() {
@@ -587,10 +569,6 @@ class InstrumentedClass {
         for (inj in original.inject) {
             tb.append(inj).append(NL)
         }
-
-        // registration mechanism only applies to test classes that have default constructors
-        // --test also checks this, so the only case where the opposite can happen is
-        // when users manually construct test classes, in which case auto-registration doesn't apply
         if (hasDefaultConstructor.value && !this.original.isTestTemplate) {
             tb.append(NL)
             buildRegistrationFunction(tb, ident)
@@ -653,7 +631,6 @@ func loadClassConfiguration(original: Decl): Array<(Token, Expr)> {
 func loadFuncConfiguration(original: FuncDecl) {
     let configs = ArrayList<(Token, Expr)>()
     loadConfiguration(original, configs)
-    // Encountered top-level @Test function
     if (original.loadRepeatable(TEST_MACRO).size == 1) {
         let token = Token(TokenKind.IDENTIFIER, "fromTopLevel")
         configs.add((token, parseExpr(quote(true))))

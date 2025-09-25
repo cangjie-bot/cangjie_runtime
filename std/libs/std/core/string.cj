@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -31,11 +31,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     public static const empty: String = String()
 
-    /**
-     * Constructors
-     */
-
-    // Create an empty string which is an empty sequence of character.
     @Frozen
     public const init() {
         (myData, start, length) = (EMPTY_UINT8_RAW_ARRAY, 0u32, 0u32)
@@ -83,9 +78,7 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         (this.myData, this.start, this.length) = (value, start, len)
     }
 
-    /**
-     * @throws IllegalMemoryException if memory alloc fails.
-     */
+
     @Frozen
     init(ptr: CPointer<UInt8>, cSize: Int64) {
         if (cSize > Int64(UInt32.Max)) {
@@ -119,8 +112,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         (myData, start, length) = (value.rawptr, UInt32(value.start), UInt32(value.len))
     }
-
-    // Returns the byte at the specified index.
     @Frozen
     @OverflowWrapping
     public func get(index: Int64): Option<Byte> {
@@ -142,11 +133,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         unsafe { releaseRawData<UInt8>(this.myData, ptr - Int64(start)) }
     }
 
-    /**
-     * Returns the sequence of characters in this string in the form of an array of characters.
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `this.myData`.
-     */
+
+
+
     @Frozen
     @OverflowWrapping
     public func toRuneArray(): Array<Rune> {
@@ -190,32 +179,25 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     public func lines(): Iterator<String> {
         return StringLineIterator(StringIteratorData(unsafe { rawData() }))
     }
-
-    // Returns the byte counts of this string.
     @Frozen
     public prop size: Int64 {
         get() {
             Int64(length)
         }
     }
-
-    // Returns true if and only if this string is an empty string.
     @Frozen
     public func isEmpty(): Bool {
         return length == 0
     }
 
-    /**
-     * Determine if the string is an Ascii string,
-     * return true if there are no characters other than Ascii in the string,
-     * return true if the string is empty.
-     */
+
+
+
     @Frozen
     public func isAscii(): Bool {
-        /* Back-to-front traversal can reduce boundary checks and improve performance */
+        
         for (i in size - 1..=0 : -1) {
             let b = arrayGetUnchecked(this.myData, Int64(start) + i)
-            // ascii rune's most significant bit (MSB) is zero
             if ((b >> 7) == 1) {
                 return false
             }
@@ -225,7 +207,7 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     public func isAsciiBlank(): Bool {
-        /* Back-to-front traversal can reduce boundary checks and improve performance */
+        
         for (i in size - 1..=0 : -1) {
             if (!arrayGetUnchecked(this.myData, Int64(start) + i).isAsciiWhiteSpace()) {
                 return false
@@ -241,21 +223,17 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return String(newRawPtr, 0, length)
     }
 
-    /**
-     * Use wyhash to generate a hash value for a string.
-     */
+
     @Frozen
     @OverflowWrapping
     public func hashCode(): Int64 {
         return Int64(wyhash(myData, Int64(start), Int64(length), 0))
     }
 
-    /**
-     * Construct a string from a utf8-compliant bytecode sequence
-     * @Param utf8Data - UTF8 bytecode sequence
-     * @throws IllegalArgumentException If the array is an invalid UTF8 sequence
-     * @return a String
-     */
+
+
+
+
     @Frozen
     public static func fromUtf8(utf8Data: Array<UInt8>): String {
         checkInvalid(utf8Data.rawptr, utf8Data.start, utf8Data.start + utf8Data.size)
@@ -271,9 +249,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     public unsafe static func fromUtf8Unchecked(utf8Data: Array<UInt8>): String {
         return String(utf8Data.clone())
     }
-
-    // Returns the index of the first occurrence of the specified byte.
-    // Return `Option<Int64>.None` if the specified byte is absent.
     @Frozen
     public func indexOf(b: Byte): Option<Int64> {
         return match (indexOfImpl(b, 0)) {
@@ -281,9 +256,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             case val => Some(val)
         }
     }
-
-    // Returns the index of the first occurrence of the specified byte at or after the specified index.
-    // Returns `Option<Int64>.None` if the specified byte is absent at or after the specified index.
     @Frozen
     public func indexOf(b: Byte, fromIndex: Int64): Option<Int64> {
         if (fromIndex >= size) {
@@ -295,9 +267,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             case val => Some(val)
         }
     }
-
-    // The parameter `fromIndex` should be [0..size) and will not be checked
-    // Returns -1 if the specified byte is absent
     @Frozen
     private func indexOfImpl(b: Byte, fromIndex: Int64): Int64 {
         return if (IS_SIMD_SUPPORTED) {
@@ -326,7 +295,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         var begin = Int64(this.start) + i
         while (i + VECTOR_OFFSET_32 <= size) {
             let vecCmpRes: Int64 = vectorIndexByte32(rawptr, begin, b)
-            // when any position byte is matched, return a value different from 32
             if (vecCmpRes != 32) {
                 return i + vecCmpRes
             }
@@ -341,9 +309,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return -1
     }
-
-    // Returns the index of the first occurrence of the specified substring `str`.
-    // Return `Option<Int64>.None` if `str` is absent.
     @Frozen
     public func indexOf(str: String): Option<Int64> {
         if (str.isEmpty()) {
@@ -358,9 +323,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return Option<Int64>.Some(index)
     }
-
-    // Returns the index of the first occurrence of the specified substring `str` at or after the specified index.
-    // Return `Option<Int64>.None` if the specified string is absent at or after the specified index.
     @Frozen
     public func indexOf(str: String, fromIndex: Int64): Option<Int64> {
         if (str.length == 0) {
@@ -386,16 +348,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return Option<Int64>.Some(index)
     }
-
-    // Returns the index of the last occurrence of the specified byte.
-    // Return `Option<Int64>.None` if specified byte is absent.
     @Frozen
     public func lastIndexOf(b: Byte): Option<Int64> {
         return lastIndexOf(b, 0)
     }
-
-    // Returns the index of the last occurrence of the specified byte at or after the specified index.
-    // Return `Option<Int64>.None` if specified byte is absent at or after the specified index.
     @Frozen
     @OverflowWrapping
     public func lastIndexOf(b: Byte, fromIndex: Int64): Option<Int64> {
@@ -411,9 +367,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return None
     }
-
-    // Returns the index of the last occurrence of the specified substring `str`.
-    // Return `Option<Int64>.None` if specified substring is absent.
     @Frozen
     public func lastIndexOf(str: String): Option<Int64> {
         if (str.isEmpty()) {
@@ -425,10 +378,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return Option<Int64>.Some(index)
     }
-
-    // Returns the index of the last occurrence of the specified substring `str` at or after the specified index.
-    // Return `Option<Int64>.None` if specified substring is absent at or after the specified index.
-    // Search last substring from the beginning when 'fromIndex' is less than 0.
     @Frozen
     public func lastIndexOf(str: String, fromIndex: Int64): Option<Int64> {
         if (str.isEmpty()) {
@@ -449,9 +398,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return Option<Int64>.Some(index)
     }
-
-    // Returns the number of non-overlapping occurrences of the given substring `str` in the string.
-    // If `str` is an empty string, returns the number of Unicode code points in this string + 1.
     @Frozen
     @OverflowWrapping
     public func count(str: String): Int64 {
@@ -468,13 +414,11 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
     }
 
-    /**
-     * @return an array of strings which are the result of separating this string using the specified
-     *         separator. If the separator is not empty and is absent in this string, returns an array
-     *         which only contains this string. If the separator is empty, split after each character.
-     *         If both this string and separator are empty, returns an empty array.
-     * @throws OutOfMemoryError if failed to call `this.splitOfString`.
-     */
+
+
+
+
+
     @Frozen
     public func split(str: String, removeEmpty!: Bool = false): Array<String> {
         if (size == 0) {
@@ -483,11 +427,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return this.splitOfString(str, -1, removeEmpty)
     }
 
-    /**
-     * @return an array of strings which are the result of separating this string using the specified
-     *         separator with maximum split number `maxSplits`.
-     * @throws OutOfMemoryError if failed to call `this.splitOfString`.
-     */
+
+
+
     @Frozen
     public func split(str: String, maxSplits: Int64, removeEmpty!: Bool = false): Array<String> {
         if (size == 0 || maxSplits == 0) {
@@ -610,7 +552,7 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     @OverflowWrapping
     public func toAsciiLower(): String {
         let newRawPtr = RawArray<UInt8>(this.size, repeat: 0)
-        /* Back-to-front traversal can reduce boundary checks and improve performance */
+        
         for (i in Int64(length) - 1..=0 : -1) {
             var c: UInt8 = arrayGetUnchecked(this.myData, i + Int64(start))
             if (ASCII_A <= c && c <= ASCII_Z) {
@@ -626,7 +568,7 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     @OverflowWrapping
     public func toAsciiUpper(): String {
         let newRawPtr = RawArray<UInt8>(this.size, repeat: 0)
-        /* Back-to-front traversal can reduce boundary checks and improve performance */
+        
         for (i in Int64(length) - 1..=0 : -1) {
             var c: UInt8 = arrayGetUnchecked(this.myData, i + Int64(start))
             if (ASCII_a <= c && c <= ASCII_z) {
@@ -790,8 +732,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             case _ => true
         }
     }
-
-    // Returns true if and only if this string starts with the given `prefix`.
     @Frozen
     @OverflowWrapping
     public func startsWith(prefix: String): Bool {
@@ -821,8 +761,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return res == 0
     }
-
-    // Returns true if and only if this string ends with the given `suffix`.
     @Frozen
     @OverflowWrapping
     public func endsWith(suffix: String): Bool {
@@ -855,10 +793,8 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return res == 0
     }
 
-    /**
-     * @return a new string which is the result of padding zero or more `padding` to this string on the left.
-     * @throws IllegalArgumentException if `totalWidth` < 0.
-     */
+
+
     @Frozen
     public func padStart(totalWidth: Int64, padding!: String = " "): String {
         if (totalWidth < 0) {
@@ -880,10 +816,8 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return String(itemBytes)
     }
 
-    /**
-     * @return a new string which is the result of padding zero or more `padding` to this string on the right.
-     * @throws IllegalArgumentException if `totalWidth` < 0.
-     */
+
+
     @Frozen
     public func padEnd(totalWidth: Int64, padding!: String = " "): String {
         if (totalWidth < 0) {
@@ -930,7 +864,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         if (b1 == b2) {
             return true
         }
-        // b1 in 'A' ~ 'Z', and the lower case of b1 equals to b2
         if (b1 >= b'A' && b1 <= b'Z' && (b1 + ASCII_UPPER_TO_LOWER_DIFF) == b2) {
             return true
         }
@@ -939,10 +872,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return false
     }
-
-    // compare `num` bytes of ptr1[start1..] to ptr2[start2..],
-    // returning zero if they are all equal
-    // or a positive value representing ptr1[start1..] is greater
     @Frozen
     static const func compareBytes(ptr1: RawArray<Byte>, start1: Int64, ptr2: RawArray<Byte>, start2: Int64, num: Int64): Int64 {
         return if (IS_SIMD_SUPPORTED) {
@@ -979,7 +908,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         var offset2 = start2
         while (i + VECTOR_OFFSET_32 <= num) {
             let vecCmpRes: Int64 = vectorCompare32(ptr1, offset1, ptr2, offset2)
-            // If any byte is not matched, return a value different from 32
             if (vecCmpRes != 32) {
                 let b1 = arrayGetUnchecked(ptr1, offset1 + vecCmpRes)
                 let b2 = arrayGetUnchecked(ptr2, offset2 + vecCmpRes)
@@ -1002,17 +930,15 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return 0
     }
 
-    /**
-     * Compare the relationship between two instance of String, lexically byte-wise.
-     *
-     * @param str Instance of String compared with this.
-     * @return Value indicating the relationship between two instance of String.
-     *
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `arr1` or `arr2`.
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
+
+
+
+
     @Frozen
     public func compare(str: String): Ordering {
         var minSize: Int64 = if (this.size < str.size) {
@@ -1037,8 +963,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
         return Ordering.EQ
     }
-
-    // Return a string which is the result of concatenating `left` and `right`.
     @Frozen
     @OverflowWrapping
     public operator const func +(right: String): String {
@@ -1075,8 +999,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return String(newData, 0, UInt32(newLen))
     }
-
-    // Returns true if and only if string `left` is less than `right` with the lexicographical order.
     @Frozen
     public operator const func <(right: String): Bool {
         return match (this.compare(right)) {
@@ -1084,8 +1006,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             case _ => return false
         }
     }
-
-    // Returns true if and only if string `left` is less than or equal to `right` with the lexicographical order.
     @Frozen
     public operator const func <=(right: String): Bool {
         return match (this.compare(right)) {
@@ -1093,8 +1013,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             case _ => return true
         }
     }
-
-    // Returns true if and only if string `left` is greater than `right` with the lexicographical order.
     @Frozen
     public operator const func >(right: String): Bool {
         return match (this.compare(right)) {
@@ -1102,8 +1020,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             case _ => return false
         }
     }
-
-    // Returns true if and only if string `left` is greater than or equal to `right` with the lexicographical order.
     @Frozen
     public operator const func >=(right: String): Bool {
         return match (this.compare(right)) {
@@ -1111,8 +1027,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             case _ => return true
         }
     }
-
-    // Returns true if and only if the two string are identical.
     @Frozen
     public operator const func ==(right: String): Bool {
         if (this.length != right.length) {
@@ -1123,17 +1037,13 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return compareBytes(this.myData, Int64(this.start), right.myData, Int64(right.start), Int64(this.length)) == 0
     }
-
-    // Returns true if and only if the two string are not identical.
     @Frozen
     public operator const func !=(right: String): Bool {
         return !(this == right)
     }
 
-    /**
-     * @return the `Byte` value at the specified index.
-     * @throws IndexOutOfBoundsException if `index` is out of bounds.
-     */
+
+
     @Frozen
     @OverflowWrapping
     public operator const func [](index: Int64): Byte {
@@ -1142,20 +1052,15 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         return arrayGetUnchecked(myData, index + Int64(start))
     }
-
-    // Considering the performance，this method do not check the parameters.
-    // Use this method only with valid parameters.
     @Frozen
     private func sliceUnchecked(startIndex: Int64, len: Int64) {
         return String(Array<Byte>(myData, Int64(this.start) + startIndex, len))
     }
 
-    /**
-     * @return the `String` value at the specified range.
-     * @throws IllegalArgumentException if `step` is not equal to one.
-     * @throws IndexOutOfBoundsException if `range` is out of bounds.
-     * @throws IllegalArgumentException if the start or end point of the range is not the code point boundary.
-     */
+
+
+
+
     @OverflowWrapping
     @Frozen
     public operator const func [](range: Range<Int64>): String {
@@ -1171,7 +1076,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         if (isClosed) {
             end += 1
         }
-        // If end is omitted, end = size of array.
         if (!range.hasEnd) {
             end = size
         }
@@ -1180,11 +1084,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             throw IndexOutOfBoundsException("Invalid range start: ${start} or end: ${end}")
         }
         if (start < size && (arrayGetUnchecked(myData, start + Int64(this.start)) >> 6) == 0b10) {
-            // 0b10 means the start position is not the code point boundary
             throw IllegalArgumentException("Invalid utf8 byte sequence.")
         }
         if (end < size && (arrayGetUnchecked(myData, end + Int64(this.start)) >> 6) == 0b10) {
-            // 0b10 means the end position is not the code point boundary
             throw IllegalArgumentException("Invalid utf8 byte sequence.")
         }
         if (end - start == 0) {
@@ -1201,7 +1103,7 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             return String.empty
         }
         var sizeOfBytes: Int64 = 0
-        /* Back-to-front traversal can reduce boundary checks and improve performance */
+        
         for (i in strArraySize - 1..=0 : -1) {
             sizeOfBytes += strArray[i].size
         }
@@ -1216,16 +1118,13 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         let sizeOfDelimiterByte: Int64 = delimiterBytes.size
         let bytes: Array<UInt8> = Array<UInt8>(sizeOfBytes, repeat: 0)
         var cursor: Int64 = 0
-        // Concatenate strings and delimiters except the last string
         for (i in 0..(strArraySize - 1)) {
             let sz: Int64 = strArray[i].size
             bytes[cursor..(cursor + sz)] = unsafe { strArray[i].rawData() }
             cursor += sz
-            // Append the delimiter
             bytes[cursor..(cursor + sizeOfDelimiterByte)] = delimiterBytes
             cursor += sizeOfDelimiterByte
         }
-        // Append the last string
         let lastStr: String = strArray[strArraySize - 1]
         bytes[cursor..(cursor + lastStr.size)] = unsafe { lastStr.rawData() }
         return String(bytes)
@@ -1253,9 +1152,7 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return index
     }
 
-    /**
-     * @throws OutOfMemoryError if failed to call CJ_CORE_CountAndIndexString.
-     */
+
     @Frozen
     @OverflowWrapping
     private func splitOfString(str: String, maxSplits: Int64, removeEmpty: Bool): Array<String> {
@@ -1292,10 +1189,8 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
     }
 
-    /**
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `this.myData`.
-     */
+
+
     @Frozen
     @OverflowWrapping
     private func splitOfStringForOneRune(maxSplits: Int64): Array<String> {
@@ -1388,7 +1283,6 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
             j++
             itemStart = index + separatorLen
         }
-        // Special Processing Last String
         if (removeEmpty && i < total) {
             while (i < total) {
                 index = unsafe { indexes.read(i) }
@@ -1469,7 +1363,7 @@ struct RunesToUtf8Bytes {
     @OverflowWrapping
     public static func getSize(runes: Array<Rune>): Int64 {
         var size: Int64 = 0
-        /* Back-to-front traversal can reduce boundary checks and improve performance */
+        
         for (i in runes.size - 1..=0 : -1) {
             size += Rune.utf8Size(runes[i])
         }

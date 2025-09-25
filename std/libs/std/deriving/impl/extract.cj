@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.impl
 
 import std.deriving.api.*
@@ -23,10 +23,8 @@ extend Decl {
             } |> collectArray
     }
 
-    /*
-     * Returns all named fields and property decls including constructor parameters
-     * and possibly static
-     */
+
+
     func allNamedDecls(): Iterator<Decl> {
         match (this) {
             case c: ClassDecl => c.allNamedDeclsImpl()

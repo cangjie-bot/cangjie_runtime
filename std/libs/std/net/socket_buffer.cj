@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -14,8 +14,8 @@ struct SocketBuffer {
     let wBufSize: Int32 = 0
     let rBuf: CPointer<Byte> = CPointer<Byte>()
     let wBuf: CPointer<Byte> = CPointer<Byte>()
-    var handle: Int64 = -1 // sizeof atomic_llong is 8
-    let count: Int32 = 1 // sizeof atomic_int is 4
+    var handle: Int64 = -1
+    let count: Int32 = 1
 }
 
 foreign {

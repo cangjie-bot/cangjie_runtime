@@ -1,19 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
 
 import std.collection.*
 import std.sync.*
 
-/**
- * Contains reflective information about classes.
- */
+
 const constructorName = "init"
 
 public class ClassTypeInfo <: TypeInfo {
@@ -52,11 +50,8 @@ public class ClassTypeInfo <: TypeInfo {
         }
     }
 
-    /**
-     * Returns the collection of public constructors of type info.
-     */
+
     public prop constructors: Collection<ConstructorInfo> {
-        // find from instanceFunctions
         get() {
             match (_constructors) {
                 case Some(res) => res
@@ -67,9 +62,7 @@ public class ClassTypeInfo <: TypeInfo {
         }
     }
 
-    /**
-     * Returns the collection of public instance variables of type info.
-     */
+
     public prop instanceVariables: Collection<InstanceVariableInfo> {
         get() {
             match (_instanceVariables) {
@@ -93,9 +86,7 @@ public class ClassTypeInfo <: TypeInfo {
         }
     }
 
-    /**
-     * Returns the collection of public static variables of type info.
-     */
+
     public prop staticVariables: Collection<StaticVariableInfo> {
         get() {
             match (_staticVariables) {
@@ -119,9 +110,7 @@ public class ClassTypeInfo <: TypeInfo {
         }
     }
 
-    /**
-     * Returns the super class of type info.
-     */
+
     public prop superClass: Option<ClassTypeInfo> {
         get() {
             match (_superClass) {
@@ -143,9 +132,7 @@ public class ClassTypeInfo <: TypeInfo {
         }
     }
 
-    /**
-     * Returns the collection of sealed subclasses of type info.
-     */
+
     public prop sealedSubclasses: Collection<ClassTypeInfo> {
         get() {
             match (_sealedSubclasses) {
@@ -162,15 +149,13 @@ public class ClassTypeInfo <: TypeInfo {
         }
     }
 
-    /**
-     * Creates a new instance of class with corresponding type for incoming args.
-     *
-     * @param args parameter list.
-     *
-     * @throw IllegalTypeException, if this class ia abstract.
-     * @throw MisMatchException, if no public constructor is found to construct new instance.
-     * @throw InvocationTargetException, if an exception is thrown when the constructor is called to construct the instance.
-     */
+
+
+
+
+
+
+
     public func construct(args: Array<Any>): Any {
         if (this.isAbstract()) {
             throw InvocationTargetException("Constructing abstract classes is not allowed.")
@@ -182,48 +167,36 @@ public class ClassTypeInfo <: TypeInfo {
         getConstructor(parameterTypes.toArray()).apply(args)
     }
 
-    /**
-     * Returns true if type info is 'public', false otherwise.
-     */
+
     public func isOpen(): Bool {
         containsModifier(modifiers, ModifierInfo.Open)
     }
 
-    /**
-     * Returns true if type info is 'abstract', false otherwise.
-     */
+
     public func isAbstract(): Bool {
         containsModifier(modifiers, ModifierInfo.Abstract)
     }
 
-    /**
-     * Returns true if type info is 'sealed', false otherwise.
-     */
+
     public func isSealed(): Bool {
         containsModifier(modifiers, ModifierInfo.Sealed)
     }
 
-    /**
-     * Searches the type info's public constructor by incoming parameter types.
-     */
+
     public func getConstructor(parameterTypes: Array<TypeInfo>): ConstructorInfo {
         getByNameAndParamTypes(constructors, constructorName, parameterTypes, "Can not find the specified constructor") {
             constructor => (constructorName, constructor.parameters)
         }
     }
 
-    /**
-     * Searches the type info's public instance variable by incoming name.
-     */
+
     public func getInstanceVariable(name: String): InstanceVariableInfo {
         getByName(instanceVariables, name, "instance variable '${name}' in class ${qualifiedName} not found") {
             instanceVariable => instanceVariable.name
         }
     }
 
-    /**
-     * Searches the type info's public static variable by incoming name.
-     */
+
     public func getStaticVariable(name: String): StaticVariableInfo {
         getByName(staticVariables, name, "static variable '${name}' in class ${qualifiedName} not found") {
             staticVariable => staticVariable.name

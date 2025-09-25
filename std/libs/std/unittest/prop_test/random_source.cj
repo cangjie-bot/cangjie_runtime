@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.prop_test
 
 public interface RandomSource {
@@ -111,22 +111,22 @@ public interface RandomSource {
         UIntNative(this.nextUInt64())
     }
 
-    func suggestUInt8(): UInt8 // { nextUInt8() }
-    func suggestUInt16(): UInt16 // { nextUInt16() }
-    func suggestUInt32(): UInt32 // { nextUInt32() }
-    func suggestUInt64(): UInt64 // { nextUInt64() }
+    func suggestUInt8(): UInt8
+    func suggestUInt16(): UInt16
+    func suggestUInt32(): UInt32
+    func suggestUInt64(): UInt64
 
     @OverflowWrapping
     func suggestUIntNative(): UIntNative { UIntNative(suggestUInt64()) }
-    func suggestInt8(): Int8 // { nextInt8() }
-    func suggestInt16(): Int16 // { nextInt16() }
-    func suggestInt32(): Int32 // { nextInt32() }
-    func suggestInt64(): Int64 // { nextInt64() }
+    func suggestInt8(): Int8
+    func suggestInt16(): Int16
+    func suggestInt32(): Int32
+    func suggestInt64(): Int64
     @OverflowWrapping
     func suggestIntNative(): IntNative { IntNative(suggestInt64()) }
-    func suggestFloat16(): Float16 // { nextFloat16() }
-    func suggestFloat32(): Float32 // { nextFloat32() }
-    func suggestFloat64(): Float64 // { nextFloat64() }
+    func suggestFloat16(): Float16
+    func suggestFloat32(): Float32
+    func suggestFloat64(): Float64
     func suggestBool(): Bool { suggestUInt8() == 0 }
 
     func suggestRune(): Rune { randomSuggestedRune(this) }

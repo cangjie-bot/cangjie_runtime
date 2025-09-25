@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.database.sql
 
@@ -12,30 +12,24 @@ import std.io.InputStream
 import std.math.numeric.Decimal
 import std.time.DateTime
 
-/**
- * SqlDbType is the base class of all Sql data types. To extend user-defined types, inherit SqlDbType or SqlNullableDbType.
- * All implementation types must have a public value property.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated
 public interface SqlDbType {
     prop name: String
 }
 
-/**
- * Base class of the type that allows null values. If the value is null, the value field value is Option.None.
- *
- * @since 0.40.1
- */
+
+
+
 @Deprecated
 public interface SqlNullableDbType <: SqlDbType {}
 
-/**
- * Fixed-length character string, corresponding to the Cangjie String type.
- *
- * @since 0.40.1
- */
+
+
+
 @Deprecated[message: "Use `String` instead."]
 public class SqlChar <: SqlDbType {
     var _value: String
@@ -56,11 +50,10 @@ public class SqlChar <: SqlDbType {
         }
     }
 }
-/**
- * Fixed-length character string, corresponding to the Cangjie String type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?String` instead."]
 public class SqlNullableChar <: SqlNullableDbType {
     var _value: ?String
@@ -81,11 +74,10 @@ public class SqlNullableChar <: SqlNullableDbType {
         }
     }
 }
-/**
- * Variable-length character string, corresponding to the Cangjie String type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `String` instead."]
 public class SqlVarchar <: SqlDbType {
     var _value: String
@@ -106,11 +98,10 @@ public class SqlVarchar <: SqlDbType {
         }
     }
 }
-/**
- * Variable-length character string, corresponding to the Cangjie String type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?String` instead."]
 public class SqlNullableVarchar <: SqlNullableDbType {
     var _value: ?String
@@ -131,11 +122,10 @@ public class SqlNullableVarchar <: SqlNullableDbType {
         }
     }
 }
-/**
- * Fixed-length binary string, corresponding to the Cangjie Array<Byte> type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Array<Byte>` instead."]
 public class SqlBinary <: SqlDbType {
     var _value: Array<Byte>
@@ -156,11 +146,10 @@ public class SqlBinary <: SqlDbType {
         }
     }
 }
-/**
- * Fixed-length binary character string corresponding to the Array<Byte> type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Array<Byte>` instead."]
 public class SqlNullableBinary <: SqlNullableDbType {
     var _value: ?Array<Byte>
@@ -181,11 +170,10 @@ public class SqlNullableBinary <: SqlNullableDbType {
         }
     }
 }
-/**
- * Variable-length binary character string, corresponding to the Cangjie Array<Byte> type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Array<Byte>` instead."]
 public class SqlVarBinary <: SqlDbType {
     var _value: Array<Byte>
@@ -206,11 +194,10 @@ public class SqlVarBinary <: SqlDbType {
         }
     }
 }
-/**
- * Variable-length binary character string, corresponding to the Array<Byte> type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Array<Byte>` instead."]
 public class SqlNullableVarBinary <: SqlNullableDbType {
     var _value: ?Array<Byte>
@@ -231,11 +218,10 @@ public class SqlNullableVarBinary <: SqlNullableDbType {
         }
     }
 }
-/**
- * Variable-length character data (character large object), corresponding to the Cangjie InputStream type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `InputStream` instead."]
 public class SqlClob <: SqlDbType {
     var _value: InputStream
@@ -256,11 +242,10 @@ public class SqlClob <: SqlDbType {
         }
     }
 }
-/**
- * Variable-length character data (character large object), corresponding to the Cangjie InputStream type, which can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?InputStream` instead."]
 public class SqlNullableClob <: SqlNullableDbType {
     var _value: ?InputStream
@@ -281,11 +266,10 @@ public class SqlNullableClob <: SqlNullableDbType {
         }
     }
 }
-/**
- * Variable-length binary character data (Binary Large Object), corresponding to the Cangjie InputStream type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `InputStream` instead."]
 public class SqlBlob <: SqlDbType {
     var _value: InputStream
@@ -306,11 +290,10 @@ public class SqlBlob <: SqlDbType {
         }
     }
 }
-/**
- * Variable-length binary character data (Binary Large Object), corresponding to the Cangjie InputStream type, which can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?InputStream` instead."]
 public class SqlNullableBlob <: SqlNullableDbType {
     var _value: ?InputStream
@@ -331,11 +314,10 @@ public class SqlNullableBlob <: SqlNullableDbType {
         }
     }
 }
-/**
- * Boolean type, corresponding to the Cangjie Bool type
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Bool` instead."]
 public class SqlBool <: SqlDbType {
     var _value: Bool
@@ -356,11 +338,10 @@ public class SqlBool <: SqlDbType {
         }
     }
 }
-/**
- * Boolean type, corresponding to the warehouse Bool type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Bool` instead."]
 public class SqlNullableBool <: SqlNullableDbType {
     var _value: ?Bool
@@ -381,11 +362,10 @@ public class SqlNullableBool <: SqlNullableDbType {
         }
     }
 }
-/**
- * Byte, corresponding to the Cangjie Int8 type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Int8` instead."]
 public class SqlByte <: SqlDbType {
     var _value: Int8
@@ -406,11 +386,10 @@ public class SqlByte <: SqlDbType {
         }
     }
 }
-/**
- * Byte, corresponding to the warehouse Int8 type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Int8` instead."]
 public class SqlNullableByte <: SqlNullableDbType {
     var _value: ?Int8
@@ -431,11 +410,10 @@ public class SqlNullableByte <: SqlNullableDbType {
         }
     }
 }
-/**
- * Small integer, corresponding to the Cangjie Int16 type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Int16` instead."]
 public class SqlSmallInt <: SqlDbType {
     var _value: Int16
@@ -456,11 +434,10 @@ public class SqlSmallInt <: SqlDbType {
         }
     }
 }
-/**
- * Small integer, corresponding to the Cangjie Int16 type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Int16` instead."]
 public class SqlNullableSmallInt <: SqlNullableDbType {
     var _value: ?Int16
@@ -481,11 +458,10 @@ public class SqlNullableSmallInt <: SqlNullableDbType {
         }
     }
 }
-/**
- * Medium integer, corresponding to Cangjie Int32 type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Int32` instead."]
 public class SqlInteger <: SqlDbType {
     var _value: Int32
@@ -506,11 +482,10 @@ public class SqlInteger <: SqlDbType {
         }
     }
 }
-/**
- * Medium integer, corresponding to Cangjie Int32 type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Int32` instead."]
 public class SqlNullableInteger <: SqlNullableDbType {
     var _value: ?Int32
@@ -531,11 +506,10 @@ public class SqlNullableInteger <: SqlNullableDbType {
         }
     }
 }
-/**
- * Large integer, corresponding to the Cangjie Int64 type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Int64` instead."]
 public class SqlBigInt <: SqlDbType {
     var _value: Int64
@@ -556,11 +530,10 @@ public class SqlBigInt <: SqlDbType {
         }
     }
 }
-/**
- * Large integer, corresponding to the Cangjie Int64 type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Int64` instead."]
 public class SqlNullableBigInt <: SqlNullableDbType {
     var _value: ?Int64
@@ -581,11 +554,10 @@ public class SqlNullableBigInt <: SqlNullableDbType {
         }
     }
 }
-/**
- * Floating point number, corresponding to the Cangjie Float32 type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Float32` instead."]
 public class SqlReal <: SqlDbType {
     var _value: Float32
@@ -606,11 +578,10 @@ public class SqlReal <: SqlDbType {
         }
     }
 }
-/**
- * Floating point number, corresponding to the Cangjie Float32 type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Float32` instead."]
 public class SqlNullableReal <: SqlNullableDbType {
     var _value: ?Float32
@@ -631,11 +602,10 @@ public class SqlNullableReal <: SqlNullableDbType {
         }
     }
 }
-/**
- * Double-precision number, corresponding to the Cangjie Float64 type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Float64` instead."]
 public class SqlDouble <: SqlDbType {
     var _value: Float64
@@ -656,11 +626,10 @@ public class SqlDouble <: SqlDbType {
         }
     }
 }
-/**
- * Double-precision number, corresponding to the Cangjie Float64 type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Float64` instead."]
 public class SqlNullableDouble <: SqlNullableDbType {
     var _value: ?Float64
@@ -681,11 +650,10 @@ public class SqlNullableDouble <: SqlNullableDbType {
         }
     }
 }
-/**
- * Date, which is valid only for the year, month, and day. It corresponds to the Cangjie DateTime type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `DateTime` instead."]
 public class SqlDate <: SqlDbType {
     var _value: DateTime
@@ -706,11 +674,10 @@ public class SqlDate <: SqlDbType {
         }
     }
 }
-/**
- * Date, which is valid only for the year, month, and day. It corresponds to the Cangjie DateTime type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?DateTime` instead."]
 public class SqlNullableDate <: SqlNullableDbType {
     var _value: ?DateTime
@@ -731,11 +698,10 @@ public class SqlNullableDate <: SqlNullableDbType {
         }
     }
 }
-/**
- * Time, which is valid only for hour, minute, second, and millisecond. It corresponds to the Cangjie DateTime type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `DateTime` instead."]
 public class SqlTime <: SqlDbType {
     var _value: DateTime
@@ -756,11 +722,10 @@ public class SqlTime <: SqlDbType {
         }
     }
 }
-/**
- * Time, which is valid only for hour, minute, second, and millisecond. It corresponds to the Cangjie DateTime type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?DateTime` instead."]
 public class SqlNullableTime <: SqlNullableDbType {
     var _value: ?DateTime
@@ -781,11 +746,10 @@ public class SqlNullableTime <: SqlNullableDbType {
         }
     }
 }
-/**
- * Time with a time zone, which is valid only for the hour, minute, second, and millisecond and timezone. It corresponds to the Cangjie DateTime type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `DateTime` instead."]
 public class SqlTimeTz <: SqlDbType {
     var _value: DateTime
@@ -806,11 +770,10 @@ public class SqlTimeTz <: SqlDbType {
         }
     }
 }
-/**
- * Time with a time zone, which is valid only for the hour, minute, second, and millisecond and timezone. It corresponds to the Cangjie DateTime type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?DateTime` instead."]
 public class SqlNullableTimeTz <: SqlNullableDbType {
     var _value: ?DateTime
@@ -831,11 +794,10 @@ public class SqlNullableTimeTz <: SqlNullableDbType {
         }
     }
 }
-/**
- * Timestamp, corresponding to the Cangjie DateTime type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `DateTime` instead."]
 public class SqlTimestamp <: SqlDbType {
     var _value: DateTime
@@ -856,11 +818,10 @@ public class SqlTimestamp <: SqlDbType {
         }
     }
 }
-/**
- * Timestamp, corresponding to the Cangjie DateTime type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?DateTime` instead."]
 public class SqlNullableTimestamp <: SqlNullableDbType {
     var _value: ?DateTime
@@ -881,11 +842,10 @@ public class SqlNullableTimestamp <: SqlNullableDbType {
         }
     }
 }
-/**
- * Interval, corresponding to the Cangjie Duration type.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `Duration` instead."]
 public class SqlInterval <: SqlDbType {
     var _value: Duration
@@ -906,11 +866,10 @@ public class SqlInterval <: SqlDbType {
         }
     }
 }
-/**
- * Interval, corresponding to the Cangjie Duration type. The value can be null.
- *
- * @since 0.40.1
- */
+
+
+
+
 @Deprecated[message: "Use `?Duration` instead."]
 public class SqlNullableInterval <: SqlNullableDbType {
     var _value: ?Duration
@@ -932,11 +891,9 @@ public class SqlNullableInterval <: SqlNullableDbType {
     }
 }
 
-/**
- * SqlDecimal, corresponding to the Cangjie Decimal type.
- *
- * @since 0.50.2
- */
+
+
+
 @Deprecated[message: "Use `Decimal` instead."]
 public class SqlDecimal <: SqlDbType {
     var _value: Decimal
@@ -958,11 +915,9 @@ public class SqlDecimal <: SqlDbType {
     }
 }
 
-/**
- * SqlNullableDecimal, corresponding to the Cangjie Decimal type. The value can be null.
- *
- * @since 0.50.2
- */
+
+
+
 @Deprecated[message: "Use `?Decimal` instead."]
 public class SqlNullableDecimal <: SqlNullableDbType {
     var _value: ?Decimal

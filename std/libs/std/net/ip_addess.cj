@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -30,8 +30,6 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             throw UnsupportedException("Current not supported.")
         }
     }
-
-    // parse a address string into IPAddress
     public static func parse(s: String): IPAddress {
         for (b in s) {
             match (b) {
@@ -61,8 +59,6 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
         return None
     }
-
-    // resolve domain
     public static func resolve(family: AddressFamily, domain: String): Array<IPAddress> {
         match (IPAddress.tryParse(domain)) {
             case Some(ip) => return [ip]
@@ -77,8 +73,6 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
     public static func resolve(domain: String): Array<IPAddress> {
         return IPAddress.resolve(AddressFamily.UNSPEC, domain)
     }
-
-    // get addr bytes
     public func getAddressBytes(): Array<Byte> {
         match (this) {
             case v4: IPv4Address =>
@@ -92,8 +86,6 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => return Array<Byte>()
         }
     }
-
-    // is ipv4 addr
     public func isIPv4(): Bool {
         match (this) {
             case v4: IPv4Address => true
@@ -101,7 +93,6 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => throw Exception()
         }
     }
-    // is ipv6 addr
     public func isIPv6(): Bool {
         match (this) {
             case v4: IPv4Address => false
@@ -109,8 +100,6 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => throw Exception()
         }
     }
-
-    // either the IPv4 address "0.0.0.0" or the IPv6 address "::".
     public open func isUnspecified(): Bool {
         match (this) {
             case v4: IPv4Address => v4.isUnspecified()
@@ -118,9 +107,6 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => false
         }
     }
-
-    // Requirements for Internet Hosts -- Communication Layers (3.2.1.3 Addressing)
-    // https://www.rfc-editor.org/rfc/rfc1122.html#section-3.2.1.3
     public open func isLoopback(): Bool {
         match (this) {
             case v4: IPv4Address => v4.isLoopback()
@@ -128,20 +114,10 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => false
         }
     }
-
-    // Host Extensions for IP Multicasting (4. HOST GROUP ADDRESSES)
-    // https://www.rfc-editor.org/rfc/rfc1112.html#section-4
     public open func isMulticast(): Bool
-    // RFC 1918 allocates 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16 as
-    // private IPv4 address subnets.
     public open func isPrivate(): Bool
-    // Dynamic Configuration of IPv4 Link-Local Addresses
-    // https://www.rfc-editor.org/rfc/rfc3927.html#section-2.1
     public open func isLinkLocal(): Bool
-    // Whether the address is a global unicast IPv6 address or a public IPv4 address
     public open func isGlobalUnicast(): Bool
-
-    // Obtains the IP prefix object based on the prefix length.
     public open func getPrefix(prefixLen: UInt8): IPPrefix {
         match (this) {
             case v4: IPv4Address => v4.getPrefix(prefixLen)
@@ -225,7 +201,6 @@ func parseIPv4(address: String, origin: String): Result<IPv4Address> {
                 if (s[0] != b'.') {
                     return Err(IllegalFormatException("Parse (${origin}): unexpected character."))
                 }
-                // skip the dot
                 s = s[1..]
             case Err(e) => return Err(e)
         }
@@ -239,8 +214,6 @@ func parseIPv4(address: String, origin: String): Result<IPv4Address> {
 
     return Ok(IPv4Address(ip[0], ip[1], ip[2], ip[3]))
 }
-
-// result, bytes_read
 func parseNumber(part: String, radix: UInt32, minDigits: UInt8, maxDigits: UInt8, allowZeroPrefix: Bool, origin: String): Result<(UInt32, 
     Int64)> {
     if (part.size == 0) {
@@ -279,7 +252,6 @@ func parseIPv6(src: String, origin: String): Result<IPv6Address> {
     }
     var scopeId: ?UInt32 = None
     var s = src
-    // parse scopeId
     if (let Some(v) <- origin.indexOf(b'%')) {
         let zone = s[v + 1..]
         scopeId = UInt32.tryParse(zone) ?? return Err(
@@ -351,7 +323,6 @@ func innerParseIPv6(src: String, origin: String, e: ?Int64): Result<(Bool, Int64
                 return Err(IllegalFormatException("Parse (${origin}): an IPv6 address can only have one ellipsis."))
             }
             ellipsis = i
-            // the colon
             s = s[1..]
             if (s.size == 0) {
                 break
@@ -366,7 +337,6 @@ func innerParseIPv6(src: String, origin: String, e: ?Int64): Result<(Bool, Int64
 
         match (s[0]) {
             case ':' => s = s[1..]
-            // if next byte is '.', may be is mapped-ipv4 addr
             case '.' =>
                 if (ellipsis.isNone() && i != 12) {
                     return Err(IllegalFormatException("Parse (${origin}): expect hex digits but got IPv4 address."))

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
@@ -205,7 +205,6 @@ public open class Decl <: Node {
     }
 
     protected open func dump(indent: UInt16): String {
-        // Keep the same indentation as the caller:
         var ret: String = ""
         for (i in 0..annotations_.size) {
             ret += getIndent(indent) + "-annotations: ${i}, "
@@ -1472,16 +1471,14 @@ public class PrimaryCtorDecl <: Decl {
 }
 
 public class VarDecl <: Decl {
-    /**
-     * The following two constructors are used to parse token streams and are not exposed externally.
-     */
+
+
     init(decl: Decl, colon: Token, declType: Option<TypeNode>, assign: Token, expr: Option<Expr>) {
         super(decl)
         this.declType_ = declType
         this.expr_ = expr
         this.colon_ = colon
         this.assign_ = assign
-        // const is a keyword, not a modifier
         if (this.keyword.kind == TokenKind.CONST) {
             modifiers.removeIf {mod => mod.keyword.kind == TokenKind.CONST}
         }
@@ -1671,7 +1668,6 @@ public open class FuncParam <: Decl {
     public init(inputs: Tokens) {
         super()
         var params = ArrayList<FuncParam>()
-        // a:Int64 -> func tmp(a:Int64)/tmp(a:Int64)
         try {
             let tokens = Tokens()
             tokens

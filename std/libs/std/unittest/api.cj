@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.ArrayList
@@ -297,11 +297,6 @@ public class Benchmark {
     ): Benchmark {
         Benchmark(name, configuration, BenchExecutor<T>(strategy, optLambda))
     }
-
-    // Creates parameterized benchmark with provided data strategy.
-    //
-    // Note: this api is inferior to @Bench macro because it uses lambda which can cause undesired overhead.
-    // It should not be used for micro benchmarks.
     public static func createParameterized<T>(
         name: String,
         strategy: DataStrategy<T>,
@@ -312,11 +307,6 @@ public class Benchmark {
         createParameterized(name, DataStrategyProcessor.start(strategy, "args"), configuration: configuration,
             measurement: measurement, body: body)
     }
-
-    // Creates parameterized benchmark with provided data strategy processor.
-    //
-    // Note: this api is inferior to @Bench macro because it uses lambda which can cause undesired overhead.
-    // It should not be used for micro benchmarks.
     public static func createParameterized<T>(
         name: String,
         strategy: DataStrategyProcessor<T>,
@@ -327,11 +317,6 @@ public class Benchmark {
         configuration.set(KeyMeasurementInfo.measurementInfo, measurement.info)
         createWithExplicitLoop<T>(name, strategy, configuration, createBenchmarkLoop<T>(measurement, body))
     }
-
-    // Creates parameterized benchmark from given lambda.
-    //
-    // Note: this api is inferior to @Bench macro because it uses lambda which can cause undesired overhead.
-    // It should not be used for micro benchmarks.
     public static func create(
         name: String,
         configuration!: Configuration = Configuration(),
@@ -341,10 +326,6 @@ public class Benchmark {
         createParameterized<Unit>(name, noArgsProcessor(), configuration: configuration, measurement: measurement,
             body: {_ => body()})
     }
-
-    // macros generate lambdas that minimizes overhead
-    // however users can use more convenient APIs for macrobenchmarks
-    // this is how we transform one into the other
     private static func createBenchmarkLoop<T>(
         measurement: Measurement,
         singleRun: (T) -> Unit
@@ -427,8 +408,6 @@ public class BenchReport <: Report {
 public interface TestClass {
     func asTestSuite(): TestSuite
 }
-
-// NOTE: this class is used internally by the compiler and is considered implementation details
 public class TestPackage {
     private let builder: TestGroupBuilder
 

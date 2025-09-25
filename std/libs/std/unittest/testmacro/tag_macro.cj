@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -15,7 +15,7 @@ public macro Tag(tags: Tokens, input: Tokens): Tokens {
     return topLevelMacroDriver(TAG_MACRO, input, tags, { it => insideParentContext(it.macroIdentifier) })
 }
 
-/* Parses input of the following kind @Tags[Tag1, Tag2, Tag3]*/
+
 func verifyTagMacro(tokens: Tokens): Unit {
     let parser = DSLParser(Tokens(collectArray(tokens)))
     try {

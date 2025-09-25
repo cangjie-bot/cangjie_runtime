@@ -1,18 +1,16 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
 const SOCK_LEN_MAX: Int64 = 120
 
-/**
- * Socket domain values.
- */
+
 @When[os != "Windows" && os != "macOS"]
 public struct SocketDomain <: Equatable<SocketDomain> & ToString & Hashable {
     let val: Int32
@@ -93,9 +91,7 @@ public struct SocketDomain <: Equatable<SocketDomain> & ToString & Hashable {
     }
 }
 
-/**
- * Socket type values.
- */
+
 public struct SocketType <: Equatable<SocketType> & ToString & Hashable {
     let val: Int32
 
@@ -131,9 +127,7 @@ public struct SocketType <: Equatable<SocketType> & ToString & Hashable {
     }
 }
 
-/**
- * Socket protocol values.
- */
+
 public struct ProtocolType <: Equatable<ProtocolType> & ToString & Hashable {
     let val: Int32
 
@@ -175,9 +169,7 @@ public struct ProtocolType <: Equatable<ProtocolType> & ToString & Hashable {
     }
 }
 
-/**
- * Socket option level values.
- */
+
 public struct OptionLevel {
     public static const IP: Int32 = IPPROTO_IP
     public static const TCP: Int32 = IPPROTO_TCP
@@ -187,20 +179,15 @@ public struct OptionLevel {
     public static const SOCKET: Int32 = SOL_SOCKET
 }
 
-/**
- * Socket optoin name values.
- */
+
 public struct OptionName {
-    // IPOption
     public static const IP_HDRINCL: Int32 = SOCK_IP_HDRINCL
     public static const IP_TOS: Int32 = SOCK_IP_TOS
     public static const IP_TTL: Int32 = SOCK_IP_TTL
-    // TCPOption
     public static const TCP_KEEPCNT: Int32 = SOCK_TCP_KEEPCNT
     public static const TCP_KEEPIDLE: Int32 = SOCK_TCP_KEEPIDLE
     public static const TCP_KEEPINTVL: Int32 = SOCK_TCP_KEEPINTVL
     public static const TCP_NODELAY: Int32 = SOCK_TCP_NODELAY
-    // SOCKETOption
     public static const SO_DEBUG: Int32 = SOCK_DEBUG
     public static const SO_ACCEPTCONN: Int32 = SOCK_ACCEPTCONN
     public static const SO_REUSEADDR: Int32 = SOCK_REUSEADDR
@@ -216,25 +203,21 @@ public struct OptionName {
     public static const SO_ERROR: Int32 = SOCK_ERROR
 }
 
-/**
- * This class defines the address for RawSocket.
- */
+
 public struct RawAddress {
     let addr_: Array<Byte>
 
-    /* Get the array of RawAddress */
+    
     public prop addr: Array<Byte> {
         get() {
             this.addr_
         }
     }
 
-    /**
-     * Initialize an address with a byte array.
-     * The byte array needs to be memory aligned with the C struct, such as SockAddrIn, SockAddrUn.
-     *
-     * @param addr The byte sequence corresponding to socket address.
-     */
+
+
+
+
     public init(addr: Array<Byte>) {
         this.addr_ = addr
     }

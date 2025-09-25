@@ -1,16 +1,14 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
 
-/**
- * Contains the reflective information about parameters.
- */
+
 public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
     let _info: CPointer<Unit>
     var _index: Option<Int64> = None
@@ -22,9 +20,7 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
         _info = cp
     }
 
-    /**
-     * Returns the index of parameter.
-     */
+
     public prop index: Int64 {
         get() {
             match (_index) {
@@ -37,9 +33,7 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the name of parameter.
-     */
+
     public prop name: String {
         get() {
             match (_name) {
@@ -56,9 +50,7 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the return type of parameter.
-     */
+
     public prop typeInfo: TypeInfo {
         get() {
             match (_typeInfo) {
@@ -72,9 +64,7 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the collection of annotations of parameter.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -90,9 +80,7 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Searches the parameter's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }

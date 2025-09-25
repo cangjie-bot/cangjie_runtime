@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.process
 
@@ -18,7 +18,6 @@ struct ProcessInfo {
 }
 
 foreign {
-    // Process
     func CJ_OS_GetProcessHandle(pid: Int32): IntNative
 
     func CJ_OS_CloseProcessHandle(handle: IntNative): Unit
@@ -45,17 +44,15 @@ foreign {
 
     func CJ_OS_GetProcessAliveStatus(pid: Int32, lastStartTime: Int64): Int8
 
-    /*
-     * terminate the calling Process
-     * Before exiting the Process, invoke all functions registered through the atexit and on_exit functions.
-     * Flush and fend off all standard io streams that are still open;
-     * Delete all files created by using the tmpfile function
-     *
-     * @param Normal end status value
-     *
-     * manual: https://man7.org/linux/man-pages/man2/exit.2.html
-     * signature: void exit(int status);
-     */
+
+
+
+
+
+
+
+
+
     @FastNative
     func exit(status: Int32): Unit
 }
@@ -65,17 +62,14 @@ foreign func FiniCJRuntime(): Int64
 
 @When[os != "Windows"]
 foreign {
-    // Process
     func CJ_OS_StartProcess(startInfo: CPointer<ProcessStartInfo>): CPointer<ProcessRtnData>
 
     func CJ_OS_WaitSubProcessExit(pid: Int32): Int64
+    func CJ_OS_CloseFile(fd: IntNative): Int64
 
-    // File
-    func CJ_OS_CloseFile(fd: IntNative): Int64 // -1: failed, (>= 0): success
+    func CJ_OS_FileRead(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64
 
-    func CJ_OS_FileRead(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64 // -1: failed, 0: end, (>0): the size of buffer be read
-
-    func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool // -1: failed, (>=0): the size of buffer be written
+    func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool
 
     func getenv(name: CString): CString
 
@@ -128,20 +122,17 @@ struct ProcessRtnData {
 
 @When[os == "Windows"]
 foreign {
-    // Process
     func CJ_OS_StartProcess(startInfo: CPointer<ProcessStartInfo>): CPointer<ProcessRtnData>
 
     func CJ_OS_WaitSubProcessExit(handle: IntNative): CPointer<ExitInfo>
-    // Directory
     func CJ_OS_GetSystemDirectory(): CString
 
     func CJ_OS_GetWindowsDirectory(): CString
-    // File
-    func CJ_OS_CloseFile(fd: IntNative): Int64 // -1: failed, (>= 0): success
+    func CJ_OS_CloseFile(fd: IntNative): Int64
 
-    func CJ_OS_FileRead(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64 // -1: failed, 0: end, (>0): the size of buffer be read
+    func CJ_OS_FileRead(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64
 
-    func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool // -1: failed, (>=0): the size of buffer be written
+    func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool
 
     func CJ_OS_GetStdHandle(fd: IntNative): IntNative
 

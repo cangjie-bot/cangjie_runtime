@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -65,7 +65,7 @@ private func areTwoArgsSuitable(args: Array<Expr>, input: Tokens) { args.size ==
 private func twoArgsExpandMacro(args: Array<Expr>, input: Tokens, macroName: String) {
     let left = args[0].toTokens()
     let right = args[1].toTokens()
-    /* Wrap operands to respect op precedence. */
+    
     let parsedExpr = quote(($left) == ($right)) |> parseExpr
     let result = PowerAssertWrapper.wrapNode(parsedExpr, isImplicitEquality: true)
 
@@ -81,14 +81,9 @@ private func threeArgsDeltaExpandMacro(args: Array<Expr>, input: Tokens, macroNa
     return commonPowerAssertDiagramBuilderInvocation(result)
 }
 
-/*
-We use a self-invoked lambda because Cangjie doesn't support blocks, and it's a short way to create a new lexical scope,
-self-invoked lambdas are also optimised by the compiler not to have call actually,
-due to this, for example, capturing mutable variables is allowed by the Cangjie compiler front-end.
-*/
-// TODO: look at how we can isolate `pa__` not to pollute a lexical scope with it
+
+
 private func commonPowerAssertDiagramBuilderInvocation(result: VisitorResult): Tokens {
-    // assertEqual inserts a cancelation point
     quote(
         { $(PowerAssertWrapper.variableName): PowerAssertDiagramBuilder =>
             assertEqual("true", "true", true, true)
@@ -98,10 +93,7 @@ private func commonPowerAssertDiagramBuilderInvocation(result: VisitorResult): T
 }
 
 private abstract class PowerAssertWrapper <: Visitor {
-    // Local variable name to store PowerAssertDiagramBuilder instance
     static let variableName = Token(TokenKind.IDENTIFIER, "pa__")
-
-    // Shortcuts for PowerAssertDiagramBuilder methods
     static let handleException = Token(TokenKind.IDENTIFIER, "h")
     static let writeTestResult = Token(TokenKind.IDENTIFIER, "w")
     static let recordValue = Token(TokenKind.IDENTIFIER, "r")
@@ -238,7 +230,6 @@ private abstract class PowerAssertWrapper <: Visitor {
     protected override func visit(node: Modifier): Unit { wrap { w => wrap(node, w) } }
 
     protected func wrapTryCatch(tokensToWrap: Tokens, expr: String, position!: Int64) {
-        // Couldn't pass $tokensToWrap as a lambda because it may capture mutable variables
         quote(
             try {
                 $tokensToWrap
@@ -259,7 +250,6 @@ private abstract class PowerAssertWrapper <: Visitor {
         let tryCatchWrapped = wrapTryCatch(wrappedTokens, expr, position: params.position)
 
         if (params.isTopLevel) {
-            // We don't record a top-level value because it equals to false indeed
             tryCatchWrapped
         } else {
             wrapRecordValue(tryCatchWrapped, expr, position: params.position)
@@ -267,11 +257,11 @@ private abstract class PowerAssertWrapper <: Visitor {
     }
 
     private func wrap(wrapper: (SeqWrapper) -> Unit) {
-        let params = visitorParams.getOrThrow() // @see [visitorParams]
+        let params = visitorParams.getOrThrow()
 
         let wrapped = wrapSeq(params.position) { w => wrapper(w) }
         let wrappedTokens = getWrappingCall(wrapped.wrapped, wrapped.exprView, params)
-        visitorResult = VisitorResult(wrapped: wrappedTokens, exprView: wrapped.exprView) // @see [visitorResult]
+        visitorResult = VisitorResult(wrapped: wrappedTokens, exprView: wrapped.exprView)
         breakTraverse()
     }
 
@@ -288,22 +278,18 @@ private abstract class PowerAssertWrapper <: Visitor {
         seqWrapper.result
     }
 
-    /**
-     * Node visit params that passed implicitly during traversal due to the lack of accepting visitor.
-     * TODO: Remove after appearing of accepting visitor.
-     * Note: May cause sync errors in in case of `Visitor` becomes concurrent.
-     * Should not be used directly.
-     */
+
+
+
+
     protected var visitorParams: ?VisitorParams = None
 
     protected let deltaParams: DeltaParams = DeltaParams()
 
-    /**
-     * Node visit result that returns implicitly during traversal due to the lack of returning visitor.
-     * TODO: Remove after appearing of returning visitor.
-     * Note: May cause sync errors in in case of `Visitor` becomes concurrent.
-     * Should not be used directly.
-     */
+
+
+
+
     private var visitorResult: ?VisitorResult = None
 
     private func traverse(node: Node, params!: VisitorParams): VisitorResult {
@@ -459,9 +445,8 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
     }
 
     protected override func wrap(expr: BinaryExpr, wrapper: SeqWrapper) {
-        /**
-         * Eliminate parenthesis on expressions implicitly wrapped on top-level.
-         */
+
+
         let lexpr = match (expr.leftExpr) {
             case parenExpr: ParenExpr where isTopLevel && hasImplicitTopLevelEquality => parenExpr.parenthesizedExpr
             case other => other
@@ -524,12 +509,12 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
             let runes = refBaseExpr.identifier.value.toRuneArray()
             if (runes[0].isUpperCase() && (runes.size < 2 || !runes[1].isUpperCase())) {
                 let tokens = refBaseExpr.toTokens()
-                wrapper.wrap(tokens, padBefore: false, padAfter: false) // Assume as type
+                wrapper.wrap(tokens, padBefore: false, padAfter: false)
             } else {
-                wrapper.wrap(expr.baseExpr) // Assume as expr
+                wrapper.wrap(expr.baseExpr)
             }
         } else {
-            wrapper.wrap(expr.baseExpr) // Assume as expr
+            wrapper.wrap(expr.baseExpr)
         }
 
         wrapper.wrap(expr.dot, padBefore: false, padAfter: false)
@@ -755,7 +740,7 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
             wrapper.wrap(expr.declType)
         }
         wrapper.space()
-        wrapper.catchNoWrapping(expr.block) // Do not record values from declaration. It could be called multiple times.
+        wrapper.catchNoWrapping(expr.block)
     }
 
     protected override func wrap(expr: VarDecl, wrapper: SeqWrapper) {
@@ -986,9 +971,7 @@ private class VisitResultBuilder {
         result.exprView.size
     }
 
-    /**
-     * Returns the count of appended characters.
-     */
+
     func append(view: String, padBefore!: Bool = true, padAfter!: Bool = true): Int64 {
         if (padBefore) { this.view.append(' ') }
         this.view.append(view)
@@ -1147,7 +1130,7 @@ extend Argument {
     prop isNamed: Bool {
         get() {
             try {
-                this.identifier // identifier access throws exception if it is empty
+                this.identifier
                 true
             } catch (e: ASTException) {
                 false

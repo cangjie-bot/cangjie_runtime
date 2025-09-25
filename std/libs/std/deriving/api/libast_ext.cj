@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.api
 
 import std.ast.*
@@ -56,7 +56,7 @@ extend Decl <: DeclExt {
         match (this) {
             case makro: MacroExpandDecl => try { makro.macroInputDecl.unwrap() } catch (_) { this }
             case makro: MacroExpandParam => try { makro.macroInputDecl.unwrap() } catch (_) { this }
-            case makro: MacroExpandExpr => this // there is no accessor for the underlying decl
+            case makro: MacroExpandExpr => this
             case _ => this
         }
     }
@@ -120,10 +120,8 @@ extend ExtendDecl <: AstExt {
         }
     }
 
-    /**
-     * Append constraints to the extend block possibly mutating the first constraint
-     * injecting "where" keyword if needed.
-     */
+
+
     public func appendConstraints(constraints: Iterable<GenericConstraint>): Unit {
         let iter = constraints.iterator()
         if (let Some(first) <- iter.next()) {

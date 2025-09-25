@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -14,9 +14,7 @@ func fillInStackTrace(pc: RawArray<UInt64>, message: RawArray<UInt8>): RawArray<
 @Intrinsic
 func decodeStackTrace(pc: UInt64, funcStart: UInt64, funcDesc: UInt64): StackTraceData
 
-// This data structure is used to represent the StackTraceElement on the runtime.
-// Get necessary datas by the intrinsic from runtime and construct StackTraceElement
-// on frontend, i.e. func getStackTraceImpl(RawArray<UInt64>)
+
 struct StackTraceData {
     let className: RawArray<UInt8> = EMPTY_UINT8_RAW_ARRAY
     let methodName: RawArray<UInt8> = EMPTY_UINT8_RAW_ARRAY
@@ -25,16 +23,12 @@ struct StackTraceData {
 }
 
 func getStackTraceImpl(pcArray: RawArray<UInt64>): Array<StackTraceElement> {
-    // The size of pcArray is 3n+1 when some frames are folded, and the last frame is invalid.
-    // In this case, discard the last frame.
     let frameSize = arraySize(pcArray) / 3
     let emptyElement = StackTraceElement("", "", "", 0)
     let stackTraceArray = Array<StackTraceElement>(frameSize, repeat: emptyElement)
     var eleSize: Int64 = 0
     for (i in 0..frameSize) {
-        // PC and function start form one pair in pcArray
         let data = decodeStackTrace(arrayGet(pcArray, i * 3), arrayGet(pcArray, i * 3 + 1), arrayGet(pcArray, i * 3 + 2))
-        // Ignore invalid stack trace data
         if (data.lineNumber == 0 && arraySize(data.fileName) == 0) {
             continue
         }
@@ -91,7 +85,7 @@ public open class Exception <: ToString {
         eprintln(toString())
         traceElementArray = getStackTrace()
         for (element in traceElementArray) {
-            if (element.declaringClass.isEmpty() && element.methodName.isEmpty()) { // simple stack trace format
+            if (element.declaringClass.isEmpty() && element.methodName.isEmpty()) {
                 eprintln("\t at ${element.fileName}:${element.lineNumber}")
             } else {
                 let packageDelimiter: String = if (element.declaringClass.isEmpty()) { "" } else { "." }

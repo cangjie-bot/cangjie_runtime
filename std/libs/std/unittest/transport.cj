@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.binary.BigEndianOrder
@@ -14,14 +14,10 @@ import std.net.*
 import std.unittest.common.*
 import std.env.atExit
 
-/**
- * Timeout on connection between worker and main.
- */
+
 private const CONNECTION_TIMEOUT_S = 10
 
-/**
- * Timeout on message send for worker/main.
- */
+
 private const WRITE_TIMEOUT_S = 10
 private let OUTPUT_DELIMITER: String = "\t<-%#&->\t"
 private const INT8_BYTES = 8
@@ -115,9 +111,7 @@ class TransportChannel <: Resource {
         }
     }
 
-    /**
-     * @return lazy messages recieved by the channel.
-     */
+
     func receive(limit!: ?UInt64 = None): Iterator<ExecutionResultPart> {
         return ExecutionResultPartIterator(socket, limit: limit)
     }
@@ -172,7 +166,7 @@ enum Transport <: Resource {
         let transport = match (TestProcessKind.fromDefaultConfiguration()) {
             case Main => TMain(TransportMain.fromDefaultConfiguration())
             case Worker(_, _, _, port) =>
-                let socket = TcpSocket("127.0.0.1", port) // Currently, it's supported to run workers only on local machine.
+                let socket = TcpSocket("127.0.0.1", port)
                 socket.connect(timeout: Duration.second * CONNECTION_TIMEOUT_S)
                 TChannel(TransportChannel(socket, outputReporter))
         }
@@ -199,15 +193,13 @@ class TransportMain <: Resource {
         }
     }
 
-    /**
-     * Accepts connection from any worker and return the communication channel with it.
-     */
+
     func accept(): TransportChannel {
         TransportChannel(socket.accept(timeout: Duration.second * CONNECTION_TIMEOUT_S), outputReporter, isMain: true)
     }
 
     static func fromDefaultConfiguration(): TransportMain {
-        let socket = TcpServerSocket(bindAt: 0u16) // Use system-assigned port from the dynamic range.
+        let socket = TcpServerSocket(bindAt: 0u16)
         socket.bind()
         TransportMain(socket, TestOutputReporter.fromDefaultConfiguration())
     }

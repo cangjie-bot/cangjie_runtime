@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.concurrent.NonBlockingQueue
@@ -25,8 +25,6 @@ class ProgressReporter {
             case _ => throw Exception("Actual reporter does not exists! Should 'ProgressReporter' be created?")
         }
     }
-
-    // Terminal size cache
     private var terminalHeight: ?UInt64 = None
     private var terminalWidth: ?UInt64 = None
 
@@ -44,9 +42,7 @@ class ProgressReporter {
         }
     }
 
-    /**
-     * Start dynamic progress report for specified `reporter` until it will be stopped via `stopAndClear()` call.
-     */
+
     func startReporting() {
         if (!isActive.compareAndSwap(false, true)) {
             return
@@ -71,7 +67,7 @@ class ProgressReporter {
                 printer.exclusive { printer: TerminalPrettyPrinter =>
                     clearDynamicArea()
 
-                    printer.append("\n" * reportLinesCountTrimmed) // dedicate lines for report
+                    printer.append("\n" * reportLinesCountTrimmed)
                     printer.up(reportLinesCountTrimmed)
                     printer.saveCursorPos()
 
@@ -98,9 +94,7 @@ class ProgressReporter {
         while (!Thread.currentThread.hasPendingCancellation) {
             let timeBeforeUpdate = MonoTime.now()
 
-            /* Recache terminal size.
-               Do it infrequently enough to now slow down due to system calls and have dynamically updated size of the report on terminal size changed.
-             */
+
             if (tact % ADJUST_TERMINAL_SIZE_FREQ_REDRAWS == 0) {
                 tact = 0
                 terminalWidth = printer.terminalWidth
@@ -176,17 +170,13 @@ extend Configuration {
 interface UTProgressReporter {
     prop updateQueue: NonBlockingQueue<UTProgress>
 
-    /**
-     * Indicates start of the reported process.
-     * Required initialization could happen here.
-     */
+
+
     func start(): Unit {}
 
     func report(terminalHeight: ?UInt64, terminalWidth: ?UInt64): PrettyText
 
-    /**
-     * Reset the state of the reported.
-     */
+
     func reset(): Unit {}
 }
 

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.runtime
 
@@ -32,9 +32,7 @@ public func GC(heavy!: Bool = false): Unit {
     return gc(heavy: heavy)
 }
 
-/*
- * Set GCThreshold that user expected for GC as reference threshold.
- */
+
 @When[backend == "cjnative"]
 @Deprecated[message: "Use 'public func setGCThreshold(value: UInt64): Unit' instead."]
 public func SetGCThreshold(value: UInt64): Unit {

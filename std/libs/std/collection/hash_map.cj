@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines HashMap and related classes.
- */
+
+
+
+
+
+
+
+
 package std.collection
 
 struct HashMapEntry<K, V> {
@@ -35,11 +32,10 @@ struct HashMapEntry<K, V> {
         value = unsafe { zeroValue<V>() }
     }
 }
-/**
- * This class is a collection of K types of hashmap and is suitable for stripping key-value pair types.
- *
- * @since 0.24.2
- */
+
+
+
+
 class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatable<K> {
     private let map: HashMap<K, V>
 
@@ -48,13 +44,11 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
         map = m
     }
 
-    /**
-     * Returns sizes of key-value.
-     *
-     * @return sizes of key-value.
-     *
-     * @since 0.24.2
-     */
+
+
+
+
+
     @Frozen
     public prop size: Int64 {
         get() {
@@ -62,59 +56,49 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
         }
     }
 
-    /**
-     * Check whether the size is empty. If yes, true is returned. Otherwise, false is returned.
-     *
-     * @return bool if yes, true is returned. Otherwise, false is returned.
-     *
-     * @since 0.24.2
-     */
+
+
+
+
+
     @Frozen
     public func isEmpty(): Bool {
         return map.isEmpty()
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the specified key exists in this mapping.
-     *
-     * @param element transfer the key to be judged.
-     * @return bool returns true if exists; otherwise, false.
-     *
-     * @since 0.24.2
-     */
+
+
+
+
+
+
     @Frozen
     public func contains(element: K): Bool {
         return map.contains(element)
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the collection key exists in this mapping.
-     *
-     * @param elements transfer the collection key to be judged.
-     * @return bool returns true if exists; otherwise, false.
-     *
-     * @since 0.24.2
-     */
+
+
+
+
+
+
     @Frozen
     public func contains(all!: Collection<K>): Bool {
         return map.contains(all: all)
     }
 
-    /**
-     * Returns iterator of hashmap.
-     *
-     * @return iterator of hashmap.
-     *
-     * @since 0.24.2
-     */
+
+
+
+
+
     @Frozen
     public func iterator(): Iterator<K> {
         return map.iterator().map<K> {i: (K, V) => i[0]}
     }
 
-    /**
-     * Returns the keys in this Map as an Array.
-     */
+
     @Frozen
     public func toArray(): Array<K> {
         let keys = Array<K>(size, repeat: unsafe { zeroValue<K>() })
@@ -131,11 +115,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
     }
 }
 
-/**
- * This class is a collection of V types of hashmaps and is suitable for stripping key-value pair types.
- *
- * @since 0.24.2
- */
+
+
+
 class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
     private let map: HashMap<K, V>
 
@@ -144,13 +126,11 @@ class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
         map = m
     }
 
-    /**
-     * Returns sizes of values.
-     *
-     * @return sizes of values.
-     *
-     * @since 0.24.2
-     */
+
+
+
+
+
     @Frozen
     public prop size: Int64 {
         get() {
@@ -158,33 +138,27 @@ class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Check whether the size is empty. If yes, true is returned. Otherwise, false is returned.
-     *
-     * @return bool if yes, true is returned. Otherwise, false is returned.
-     *
-     * @since 0.24.2
-     */
+
+
+
+
+
     @Frozen
     public func isEmpty(): Bool {
         return map.isEmpty()
     }
 
-    /**
-     * Returns value Iterator<T> - Iterator<T> type, which can be traversed using an iterator.
-     *
-     * @return the value corresponding to the return key is encapsulated with option.
-     *
-     * @since 0.24.2
-     */
+
+
+
+
+
     @Frozen
     public func iterator(): Iterator<V> {
         return map.iterator().map<V> {i: (K, V) => i[1]}
     }
 
-    /**
-     * Returns the values in this Map as an Array.
-     */
+
     @Frozen
     public func toArray(): Array<V> {
         let values = Array<V>(size, repeat: unsafe { zeroValue<V>() })
@@ -201,26 +175,15 @@ class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
     }
 }
 
-/**
- * Class HashMapEntryView is a reference view of a key in a hashmap.
- * Thread safety is not guaranteed.
- */
+
+
 class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatable<K> {
-    // Reference to a HashMap.
     private let map: HashMap<K, V>
-
-    // The specified key.
     private let _key: K
-
-    // Hash of a specified key.
     private let hash: Int64
-
-    // Index of a specified key.
     private var index: Int64
 
     private var _isAbsent: Bool
-
-    // The HashMap's version.
     private var lockVersion: Int64
 
     @Frozen
@@ -254,13 +217,12 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
             }
         }
     }
-    /**
-     * Get the key of HashMapEntryView with time complexity O(1).
-     *
-     * Returns key.
-     *
-     * @since 0.45.1
-     */
+
+
+
+
+
+
     @Frozen
     func getKey(): K {
         if (lockVersion != map.version()) {
@@ -269,13 +231,11 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
         return _key
     }
 
-    /**
-     * Get the value of HashMapEntryView with time complexity O(1).
-     *
-     * Returns value.
-     *
-     * @since 0.45.1
-     */
+
+
+
+
+
     @Frozen
     func getValue(): ?V {
         if (lockVersion != map.version()) {
@@ -288,14 +248,12 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
         }
     }
 
-    /**
-     * Update the value of HashMapEntryView with time complexity O(1).
-     *
-     * If the view is empty, the key-value pair is inserted, and the view is converted into a non-empty view and the value is returned.
-     * Otherwise, the value is modified.
-     *
-     * @since 0.45.1
-     */
+
+
+
+
+
+
     @Frozen
     private func setValue(v: V) {
         if (lockVersion != map.version()) {
@@ -326,53 +284,45 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
     }
 }
 
-/**
- * The hashmap is implemented based on the hash algorithm.
- * You can use put key-value to obtain the value and get key to obtain the value.
- *
- * @since 0.18.4
- */
+
+
+
+
 public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
-    /* Max size of buckets. */
+    
     private static const MAX_BUCKET_SIZE: Int64 = 4611686018427387904
 
-    /*
-     * Load factor of the HashMap.
-     * Capacity expansion when the usage more than 75%
-     */
+
+
     private static const LOAD_FACTOR: Float32 = 0.75
 
-    /*
-     * default Initialized Capacity.
-     * Default array initialization size is 16
-     */
+
+
     private static const DEFAULT_CAPACITY: Int64 = 16
 
-    /* Maximum number of int64 types. */
-    /* Subscripts that can be directly inserted*/
+    
+    
     var appendIndex: Int64 = 0
 
-    /* Subscript of the currently available deleted entry.*/
+    
     var freeIndex: Int64 = -1
 
-    /* Total number of deleted entries that are available.*/
+    
     var freeSize: Int64 = 0
 
-    /* Modified hashmap version.*/
+    
     var modCount: Int64 = 0b00000000
 
-    /* Index Array.*/
+    
     var buckets: Array<Int64>
 
-    /* Element Array.*/
+    
     var entries: Array<HashMapEntry<K, V>>
 
-    /**
-     * Initializes an empty HashMap with a default initial DEFAULT_CAPACITY (16) and a default load factor.
-     *
-     * @since 0.18.4
-     */
+
+
+
     @Frozen
     public init() {
         buckets = Array<Int64>(DEFAULT_CAPACITY, repeat: -1)
@@ -382,13 +332,11 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         )
     }
 
-    /**
-     * Initializes a HashMap with an incoming iterator for initialization.
-     *
-     * @param elements an incoming iterator is initialized.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public init(elements: Collection<(K, V)>) {
         let bucketSize: Int64 = elements.size + (elements.size >> 1)
@@ -399,13 +347,11 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Initializes a hashmap with an incoming list for initialization.
-     *
-     * @param elements an incoming list is initialized.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public init(elements: Array<(K, V)>) {
         let bucketSize: Int64 = elements.size + (elements.size >> 1)
@@ -416,15 +362,13 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Initializes a HashMap with an incoming @p DEFAULT_CAPACITY for initialization.
-     *
-     * @param capacity an incoming capacity is initialized.
-     *
-     * @throws IllegalArgumentException if capacity is less than zero
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
     @Frozen
     public init(capacity: Int64) {
         if (capacity < 0) {
@@ -435,16 +379,14 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         entries = Array<HashMapEntry<K, V>>(capacity, repeat: HashMapEntry<K, V>())
     }
 
-    /**
-     * Initializes a hash map with an incoming size and an initial element for initialization.
-     *
-     * @param size the size of the incoming initial element.
-     * @param initElement an incoming initElement is initialized.
-     *
-     * @throws IllegalArgumentException if size is less than zero
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
+
     @Frozen
     public init(size: Int64, initElement: (Int64) -> (K, V)) {
         if (size < 0) {
@@ -468,14 +410,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         freeSize = other.freeSize
     }
 
-    /**
-     * Returns value Iterator<T> - Iterator<T> type, which can be traversed using an iterator.
-     *
-     * @param key transfer key to obtain the value.
-     * @return the value corresponding to the return key is encapsulated with option.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     public func get(key: K): ?V {
         let hash: Int64 = getHash(key.hashCode())
@@ -490,17 +430,15 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return None
     }
 
-    /**
-     * Associates the specified @p value with the specified @p key in this map.
-     * If you map a mapping that previously contained a key, the old value is replaced.
-     *
-     * @param key the key to put.
-     * @param value the value to assign.
-     * @return If the key exists before the assignment, the value before the assignment is encapsulated with Option.
-     * Otherwise, return to Option<V>.None
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     public func add(key: K, value: V): Option<V> {
@@ -557,14 +495,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         buckets[bucketIndex] = entryIndex
     }
 
-    /**
-     * A view of a single entry in a hashmap, which can be empty or has a value.
-     *
-     * @param key the key to put.
-     * @return If the hashmap has this key, a view with a value is returned. Otherwise, an empty view is returned.
-     *
-     * @since 0.45.1
-     */
+
+
+
+
+
+
     @Frozen
     public func entryView(key: K): MapEntryView<K, V> {
         let hash: Int64 = getHash(key.hashCode())
@@ -579,14 +515,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return HashMapEntryView<K, V>(true, key, hash, entryIndex, this)
     }
 
-    /**
-     * Transfer specified elements for traversal and assign values in sequence.
-     * If you map a mapping that previously contained a key, the old value is replaced.
-     *
-     * @param elements the element passing in for traversal assignment.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     public func add(all!: Collection<(K, V)>): Unit {
         if (all.size > entries.size) {
@@ -597,14 +531,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Removes the key-value pair corresponding to the key based on the specified key from this mapping, if one exists.
-     *
-     * @param key pass in the key to be deleted.
-     * @return removed element
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     public func remove(key: K): Option<V> {
@@ -635,13 +567,11 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return None
     }
 
-    /**
-     * Traverse the set of transferred keys and delete them based on the traversal result.
-     *
-     * @param keys pass in the collection to traverse.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public func remove(all!: Collection<K>): Unit {
         for (key in all) {
@@ -649,13 +579,11 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Transfer a lambda expression and delete the corresponding key value if the condition is met.
-     *
-     * @param predicate transfer a lambda expression for judgment.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     public func removeIf(predicate: (K, V) -> Bool): Unit {
@@ -693,11 +621,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Clear all key-value pairs.
-     *
-     * @since 0.18.4
-     */
+
+
+
     @Frozen
     @OverflowWrapping
     public func clear(): Unit {
@@ -715,15 +641,13 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         freeSize = 0
     }
 
-    /**
-     * Reserves capacity for at least additional more elements to be inserted in this hashmap.
-     * If the additional parameter is negative, the hash map does not change.
-     * If the additional parameter plus the size of the hashmap is smaller than the capacity of the  array, the hashmap does not change.
-     *
-     * @param additional ensure that there is sufficient capacity. additional indicates the quantity to be added.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
     @Frozen
     public func reserve(additional: Int64): Unit {
         if (additional <= 0 || size + additional < capacity) {
@@ -734,14 +658,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         modCount++
     }
 
-    /**
-     * Returns the capacity of the hashmap.
-     * The return value is the size of the array, not the size of the elements that can be accommodated.
-     *
-     * @return the capacity of the hashmap.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     public prop capacity: Int64 {
         get() {
@@ -749,14 +671,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the collection key exists in this mapping.
-     *
-     * @param keys transfer the collection key to be judged.
-     * @return bool returns true if exists; otherwise, false.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     public func contains(all!: Collection<K>): Bool {
         for (key in all where !contains(key)) {
@@ -765,14 +685,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return true
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the specified key exists in this mapping.
-     *
-     * @param key transfer the key to be judged.
-     * @return bool returns true if exists; otherwise, false.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     public func contains(key: K): Bool {
         if (appendIndex - freeSize == 0) {
@@ -790,52 +708,44 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return false
     }
 
-    /**
-     * Copy a HashMap.
-     *
-     * @return a clone value of HashMap.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public func clone(): HashMap<K, V> {
         return HashMap<K, V>(this)
     }
 
-    /**
-     * Returns the Set view of all keys in this HashMap.
-     *
-     * @return the Set view of the keys.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public func keys(): EquatableCollection<K> {
         return HashMapKeys<K, V>(this)
     }
 
-    /**
-     * Returns the Set view of all values in this HashMap.
-     *
-     * @return the list view of the values.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public func values(): Collection<V> {
         return HashMapValues<K, V>(this)
     }
 
-    /**
-     * An exception is reported when the get operator is overloaded and the key does not exist.
-     *
-     * @param key transfer the value for judgment.
-     * @return the value corresponding to the key.
-     *
-     * @throws NoneValueException if value does not exist.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
+
     @Frozen
     public operator func [](key: K): V {
         return match (get(key)) {
@@ -844,56 +754,48 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * The operator overloads the set. If the key does not exist, an exception is reported.
-     *
-     * @param key transfer the value for judgment.
-     * @param value transfer the value to be set.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     public operator func [](key: K, value!: V): Unit {
         add(key, value)
     }
 
-    /*
-     * Transfer the key to obtain the k index.
-     *
-     * @param hash transfer the value for judgment.
-     * @param size transfer the value for judgment.
-     *
-     * @return the k index corresponding to the key.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     func getIndex(hash: Int64, size: Int64): Int64 {
         return hash & (size - 1)
     }
 
-    /*
-     * Transfer the key to obtain the hash value.
-     *
-     * @param key transfer the value for judgment.
-     * @return the hash value corresponding to the key.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     private func getHash(hashCode: Int64): Int64 {
         hashCode ^ (hashCode >> 32)
     }
 
-    /**
-     * Returns sizes of key-value.
-     *
-     * @return sizes of key-value.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public prop size: Int64 {
         get() {
@@ -901,37 +803,31 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Returns iterator of hashmap.
-     *
-     * @return iterator of hashmap.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public func iterator(): HashMapIterator<K, V> {
         return HashMapIterator<K, V>(this)
     }
 
-    /**
-     * Check whether the size is empty. If yes, true is returned. Otherwise, false is returned.
-     *
-     * @return bool if yes, true is returned. Otherwise, false is returned.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public func isEmpty(): Bool {
         return (appendIndex - freeSize) == 0
     }
 
-    /**
-     * Obtaining the Version Number.
-     *
-     * @return the modCount about technology.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     func version(): Int64 {
         return modCount
@@ -946,9 +842,7 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
-    /**
-     * Returns the element in this Map as an Array.
-     */
+
     @Frozen
     public func toArray(): Array<(K, V)> {
         let arr = Array<(K, V)>(size, repeat: unsafe { (zeroValue<K>(), zeroValue<V>()) })
@@ -964,22 +858,18 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return arr
     }
 
-    /*
-     * Initializes or doubles the table size.
-     * If empty, the allocation is based on the initial DEFAULT_CAPACITY target reserved in the field threshold.
-     *
-     * @return a TreeNode encapsulated with option after expansion.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     func resize(argCap: Int64): Bool {
         var isRehash: Bool = false
         let oldBucketsSize = buckets.size
         let allowedBucketSize = Int64(Float32(oldBucketsSize) * LOAD_FACTOR)
-
-        // Except for reserve, following two if condition would not be satisfied at the same time.
         if (argCap >= allowedBucketSize) {
             let newCapOfBuckets = max(oldBucketsSize << 1, tableSizeFor(argCap))
             let newBuckets: Array<Int64> = Array<Int64>(newCapOfBuckets, repeat: -1)
@@ -1007,13 +897,11 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return isRehash
     }
 
-    /*
-     * Returns a power of two size for the given target capacity.
-     *
-     * @return target capacity.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     private static func tableSizeFor(cap: Int64): Int64 {
         if (cap <= DEFAULT_CAPACITY) {
@@ -1054,11 +942,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     }
 }
 
-/**
- *
- *
- * @since 0.18.4
- */
+
+
+
 extend<K, V> HashMap<K, V> <: ToString where V <: ToString, K <: ToString {
     @Frozen
     public func toString(): String {
@@ -1069,7 +955,6 @@ extend<K, V> HashMap<K, V> <: ToString where V <: ToString, K <: ToString {
         let it = iterator()
         var tmp: (K, V) = it.next().getOrThrow()
         while (let Some(next) <- it.next()) {
-            //"(${k}, ${v})"
             sb.append(r'(')
             sb.append(tmp[0])
             unsafe { sb.appendFromUtf8Unchecked(", ".toArray()) }
@@ -1086,13 +971,11 @@ extend<K, V> HashMap<K, V> <: ToString where V <: ToString, K <: ToString {
     }
 }
 
-/**
- * This is the function of hashmap equal and not equal. If the keys and values are same for two hasmaps, then they are equal.
- *
- * Returns true if the two hashmaps are equal for ==. Return true if the two hashmaps are not equal for !=.
- *
- * @since 0.18.4
- */
+
+
+
+
+
 extend<K, V> HashMap<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
     @Frozen
     public operator func ==(right: HashMap<K, V>): Bool {
@@ -1132,25 +1015,21 @@ extend<K, V> HashMap<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
     }
 }
 
-/**
- * This is a hashmap iterator used to iterate effects.
- *
- * @since 0.18.4
- */
+
+
+
 public class HashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equatable<K> {
-    /* Define an empty set */
+    
     private var lockVersion: Int64
     private var index: Int64
     private let data: HashMap<K, V>
     private var isRemoved: Bool
 
-    /**
-     * Initialize the iterator and transfer the hashmap.
-     *
-     * @param map the hashmap to be transferred.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Frozen
     public init(map: HashMap<K, V>) {
         isRemoved = true
@@ -1159,15 +1038,13 @@ public class HashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equ
         index = -1
     }
 
-    /**
-     * Iterates the bucketIndex element. The return type is option, which contains key and value.
-     *
-     * @return type is option, which contains key and value.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "data.version()".
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
     @Frozen
     public func next(): ?(K, V) {
         if (lockVersion != data.version()) {
@@ -1184,19 +1061,17 @@ public class HashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equ
         return Some((data.entries[index].key, data.entries[index].value))
     }
 
-    /**
-     * Remove the element returned by the next function of this iterator.
-     * This method can be called only once when the next function is called.
-     *
-     * @see Currently, the Cangjie modifier does not implement the function visible in the package,
-     * and the API function modified by public is insecure. It is recommended that this method be used temporarily.
-     * This method can be improved after the function visible in the package is supported in the future.
-     * In the future, the  function should be used to implement the function.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "data.version()".
-     *
-     * @since 0.24.1
-     */
+
+
+
+
+
+
+
+
+
+
+
     @Frozen
     public func remove(): Option<(K, V)> {
         if (lockVersion != data.version()) {

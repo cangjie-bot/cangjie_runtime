@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -14,8 +14,6 @@ import std.convert.Parsable
 public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
     let _addr: IPAddress
     let _port: UInt16
-
-    // init with byte array and port
     public init(address: Array<Byte>, port: UInt16) {
         this._port = port
         if (address.size == 4) {
@@ -30,7 +28,6 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
         this._addr = IPAddress.parse(address)
         this._port = port
     }
-    // init by IPAddress and port
     public init(address: IPAddress, port: UInt16) {
         this._port = port
         this._addr = address
@@ -53,10 +50,9 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
             }
         }
     }
-    /**
-     * Parses the socket address in text format, for example, 192.168.0.0:80 or [fc00::1]:8080.
-     * If the parsing fails, an exception is thrown.
-     */
+
+
+
     public static func parse(s: String): IPSocketAddress {
         let (ipstr, portstr, isV6) = innerParse(s).unwrap()
         let port = UInt16.tryParse(portstr) ?? throw IllegalFormatException("Parse (${s}): invalid port.")
@@ -103,20 +99,13 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
     }
     public func getAddressBytes(): Array<Byte> {
         let buf = Array<Byte>(this.size, repeat: 0)
-        // 2bytes family
         this.family.value.writeLittleEndian(buf)
-        // 2bytes port
         this.port.writeBigEndian(buf[2..])
         match (_addr) {
             case v4: IPv4Address =>
-                // 4 bytes addr4
                 v4.writeBigEndian(buf[4..])
             case v6: IPv6Address =>
-                // 4bytes flowInfo current always zero, skip it
-
-                // 16 bytes addr6
                 v6.writeBigEndian(buf[8..])
-                // 4bytes scopeId
                 let scopeId = v6.scopeId ?? 0
                 scopeId.writeLittleEndian(buf[24..])
             case _ => throw Exception()

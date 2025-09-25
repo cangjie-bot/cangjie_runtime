@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -41,14 +41,12 @@ extend<T> Box<T> <: Comparable<Box<T>> where T <: Comparable<T> {
         return this.value <= that.value
     }
 
-    /**
-     * Compare the relationship between two instance of Box<T>.
-     *
-     * @param that Instance of Box<T> compared with this.
-     * @return Value indicating the relationship between two instance of Box<T>.
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
+
     public func compare(that: Box<T>): Ordering {
         match {
             case this.value < that.value => Ordering.LT

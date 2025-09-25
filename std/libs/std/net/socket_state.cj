@@ -1,29 +1,19 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
-/**
- * This struct represents a complex socket state including termination state,
- * presence of readers/writers, number of users, connected and bound flags.
- *
- * The idea is to encode all the state fields into a single number that can be
- * stored to an atomic variable and can be checked and updated atomically.
- */
+
+
+
+
+
 struct SocketState {
-    // the bit layout is as follows
-    // 31 has writer
-    // 30 has reader
-    // 29 bound
-    // 28 connected
-    // 27 failed
-    // 25-26 state code
-    // 0-24  use counter
     private static const CONNECTED_MASK: UInt32 = 1u32 << 28
     private static const BOUND_MASK: UInt32 = 0b10u32 << 28
     private static const HAS_READER_MASK: UInt32 = 0b100u32 << 28
@@ -31,9 +21,6 @@ struct SocketState {
     private static const FAILED_MASK: UInt32 = 1u32 << 27
 
     private static const COUNTER_MASK: UInt32 = 0x1FF_FFFFu32
-
-    // 2 bits for state code
-    // states are number in the proper order: it makes difference
     private static const NATIVE_STATE_MASK: UInt32 = 0x600_0000u32
     private static const NATIVE_STATE_SHIFT: UInt8 = 25
     private static const STATE_NOT_CREATED_CODE: UInt32 = 0
@@ -63,9 +50,7 @@ struct SocketState {
         JustAccepted = s
     }
 
-    /**
-     * Number of currently running operations
-     */
+
     mut prop useCounter: UInt32 {
         get() {
             value & COUNTER_MASK
@@ -82,9 +67,7 @@ struct SocketState {
         throw OverflowException("Socket usage couter overflow")
     }
 
-    /**
-     * Numeric value of the current state, see STATE_XXX_CODE constants
-     */
+
     private mut prop nativeStateNum: UInt32 {
         get() {
             (value & NATIVE_STATE_MASK) >> NATIVE_STATE_SHIFT
@@ -116,8 +99,6 @@ struct SocketState {
                 case SocketPrepared => STATE_PREPARED_CODE
                 case SocketClosing => STATE_CLOSING_CODE
                 case SocketDisposed => STATE_DISPOSED_CODE
-                // introducing more socket states will require changing NATIVE_STATE_MASK
-                // and reconsidering native state bit layout
             }
             if (nativeStateNum > newValue) {
                 throw IllegalArgumentException("Backward state transition is not allowed")

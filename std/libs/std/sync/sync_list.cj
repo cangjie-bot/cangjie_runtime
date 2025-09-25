@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.sync
 
@@ -37,7 +37,6 @@ class NotifyOnce {
 
     private func waitWithoutTimeout(): Unit {
         synchronized(m) {
-            // In case of spurious-wakeup, we should put `wait` inside a while loop.
             while (!notified) {
                 m.wait()
             }
@@ -47,7 +46,6 @@ class NotifyOnce {
     private func waitWithTimeout(timeout: Duration): Unit {
         var restOfTimeout = timeout
         synchronized(m) {
-            // In case of spurious-wakeup, we should put `wait` inside a while loop.
             while (!notified && restOfTimeout > Duration.Zero) {
                 let startTime = DateTime.nowUTC()
                 m.wait(timeout: timeout)
@@ -57,14 +55,10 @@ class NotifyOnce {
         }
     }
 }
-
-// Linked-list node
 class SyncNode {
     let n = NotifyOnce()
     var next: ?SyncNode = None
 }
-
-// SyncList is used to achieve "unpark-all" behaviour
 class SyncList {
     private var head: ?SyncNode = None
     private let m = Monitor()
@@ -96,8 +90,6 @@ class SyncList {
         unlock()
         node.n.wait(timeout: timeout)
     }
-
-    // Release one sema and remove it from the head of queue
     func notifyOne(): Bool {
         synchronized(m) {
             if (let Some(current) <- head) {
@@ -108,9 +100,6 @@ class SyncList {
             return false
         }
     }
-
-    // Notify all node in linked-list which head is the first node.
-    // After this method, head node would be None
     func notifyAll(): Bool {
         synchronized(m) {
             if (let None <- head) {

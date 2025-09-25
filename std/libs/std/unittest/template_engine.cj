@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -15,13 +15,11 @@ func substituteTemplate(template: String, values: JsonValue): String {
     Root(template).substitute(values)
 }
 
-// template consists of
-//  - named subtemplate `{{Type <subtemplate> }}` where `Type` is the name identifying this subtemplate. Can't contain nested subtemplates.
-//  - placeholders in the form of `$ident` which substiture `ident` field value in that place, or `$ident:Type`
-//    which substitute subtemplate named `Type` with value of `ident` field.
-//  - repetitions in form of `{! <subtemplate>  !}. This will repeatedly insert subtemplate
-//    repeating non-array fields and zipping array fields for all placeholders inside of it until any of arrays is finished.
-//    if repetition is the only subtemplate in current scope then it also works on array of structs so preliminary unzipping is not required
+
+
+
+
+
 class Root {
     var templates = HashMap<String, Template>()
     var rootTemplate: Template
@@ -30,8 +28,6 @@ class Root {
 
         var idx = 0
         let builder = StringBuilder()
-
-        // not using regex because for some reason it crashes on such input
         while (let Some(start) <- template.indexOf("{{", idx)) {
             let end = template.indexOf("}}", idx).getOrThrow()
             let t = Template.fromString(template[start + 2..end])
@@ -42,8 +38,6 @@ class Root {
         builder.append(template[idx..])
 
         rootTemplate = Template("Root", builder.toString())
-
-        // temporary workaround due to bug in CHIR interpreter
         Template.REPEATABLES_MATCHER = Regex("\\{\\!(([^!]|\\![^}])+)\\!\\}")
         Template.VARIABLES_MATCHER = Regex("\\$([a-zA-Z0-9_]+)\\:?([a-zA-Z0-9_]+)?")
     }
@@ -170,7 +164,6 @@ extend JsonValue {
 }
 
 extend JsonValue {
-    // Index in SoA and AoS simultaneously
     func getIndexed(field: String, index: Int64): ?JsonValue {
         if (let Some(arr) <- (this as JsonArray)) {
             return (arr.get(index) as JsonObject)?.get(field) ?? None

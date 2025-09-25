@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.diff
 
 import std.convert.Formattable
@@ -12,12 +12,11 @@ import std.math.ceil
 import std.unittest.common.PrettyPrinter
 
 interface AssertPrintableFloat<F> where F <: AnyFloat & Formattable & ToString & Equatable<F> {
-    /*
-     * To print the shortest form of float number, we use r'g' specifier which also removes all trailing zeros,
-     * there is no way to configure this behaviour specifically,
-     * but we need to keep the fractional part even it's empty to highlight that it's a floating-point number,
-     * so for empty fractional part, we add ".0" explicitly.
-     */
+
+
+
+
+
     static func addTrailingPointZeroIfNeeded(floatStr: String) {
         if (!floatStr.contains(".") && !floatStr.contains("e")) {
             floatStr + ".0"
@@ -111,9 +110,7 @@ extend PrettyPrinter {
     }
 }
 
-// Below are temporary hacks to workaround a compiler issue
-// related to produced wrong symbols for floats (further, linker failed)
-// in case of extending them by `AssertPrintableFloat` directly
+
 
 interface AnyFloat {
     func isNaN(): Bool

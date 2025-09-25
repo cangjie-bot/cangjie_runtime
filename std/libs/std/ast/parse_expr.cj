@@ -1,17 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
 import std.collection.ArrayList
 
 public func parseExpr(input: Tokens): Expr {
-    /* Get node info from flatbuffer */
+    
     let node = unsafe {
         try {
             parse(input, {
@@ -24,7 +24,7 @@ public func parseExpr(input: Tokens): Expr {
             throw ParseASTException("\n" + e.message + "parsing expr error.")
         }
     }
-    /* Get decl info from flatbuffer */
+    
     var astNode = generateExprAST(node.GetRootAsExpr())
     return astNode
 }
@@ -200,7 +200,6 @@ func createLitConstExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): E
     }
     var litConstKind = TokenKindHelper.getLiteralConstKind(litExpr.GetLiteralConstKind())
     if (litConstKind == TokenKind.STRING_LITERAL) {
-        // Determine the TokenKind Based on StringKind
         litConstKind = TokenKindHelper.getStringKind(litExpr.GetStringKind())
         if (litExpr.GetIsSingleQuote() && litConstKind == TokenKind.STRING_LITERAL) {
             litConstKind = TokenKind.SINGLE_QUOTED_STRING_LITERAL
@@ -484,7 +483,6 @@ func createMatchExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr
     }
     var lCurl = Token(TokenKind.LCURL).addPosition(me.GetLeftCurlPos())
     var matchcases: ArrayList<MatchCase> = ArrayList<MatchCase>()
-    // matchCases and matchCaseOthers cannot be not empty at the same time
     for (mc in me.GetMatchCases()) {
         matchcases.add(generateMatchCase(mc))
     }

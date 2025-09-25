@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.collection.*
@@ -26,29 +26,25 @@ public class MockFramework {
         CallHandler.recordStatic(CallHandlerImpl(objCounter.fetchAdd(1), GLOBAL_SESSION_NAME))
     }
 
-    /**
-     * Opens a new session. Sessions form a stacklike structure.
-     * Sessions are closed in the reverse order they were opened in.
-     * Mock objects created during a given session are only accessible inside the session or any of it's inner sessions.
-     * Each session keeps its own invocation log so any verification is performed on calls made inside latest open session.
-     * Expectations can only be verified whenever the session is closed.
-     *
-     * @param name to identify a session for debugging purposes.
-     * @param sessionKind indicating what stubs are allowed in this session.
-     */
+
+
+
+
+
+
+
+
     public static func openSession(name: String, sessionKind: MockSessionKind): Unit {
         return _FRAMEWORK.doOpen(name, sessionKind)
     }
 
-    /**
-     * Closes the session. Sessions can only be closed in the same order they were opened in.
-     *
-     * Checks for misconfiguration errors such as stubs created but not configured.
-     * Automatically verifies expectations for all declared stubs iff the session was *Verifiable*. See *MockSessionKind*.
-     *
-     * @throws MockFrameworkException if any misconfiguration errors were detected.
-     * @throws ExpectationFailedException if any of the expectations were not met.
-     */
+
+
+
+
+
+
+
     public static func closeSession(): Unit {
         return _FRAMEWORK.doClose()
     }

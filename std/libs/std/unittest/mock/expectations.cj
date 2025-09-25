@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.collection.*
@@ -25,8 +25,6 @@ extend MockSession {
     }
 
     func checkForMisconfigurationIssues(): Unit {
-        // force misconfiguration errors before any verification is performed
-        // we could accumulate configuration errors here, but that doesn't seem to have any benefit for usability
         for (chain in chainsByStubId.values() |> flatten) {
             chain.ensureActivated()
         }

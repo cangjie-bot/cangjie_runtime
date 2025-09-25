@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -12,9 +12,7 @@ public interface Hashable {
     func hashCode(): Int64
 }
 
-/**
- * The hashcode is defined as: 3 for Ordering.GT, 2 for Ordering.EQ, 1 for Ordering.LT
- */
+
 extend Ordering <: Hashable {
     public func hashCode(): Int64 {
         match (this) {
@@ -293,37 +291,31 @@ extend Float64 <: Hashable {
         }
     }
 
-    /**
-     * If the value of @p Float64 is Positive Infinity or Negative Infinity,
-     * true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float64 is Positive Infinity or Negative Infinity.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     public func isInf(): Bool {
         return this == Float64.Inf || this == -Float64.Inf
     }
 
-    /**
-     * If the value of @p Float64 is nan, true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float64 is nan.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
     public func isNaN(): Bool {
         return this != this
     }
 
-    /**
-     * If the value of @p Float64 is a normal floating-point number,
-     * true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float64 is a normal floating-point number.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     public func isNormal(): Bool {
         var exp: Int64 = (f642i64(this) >> Int64(52)) & 0x7FF
         return exp != 0 && exp != 0x7FF
@@ -422,37 +414,31 @@ extend Float32 <: Hashable {
         }
     }
 
-    /**
-     * If the value of @p Float32 is Positive Infinity or Negative Infinity,
-     * true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float32 is Positive Infinity or Negative Infinity.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     public func isInf(): Bool {
         return this == Float32.Inf || this == -Float32.Inf
     }
 
-    /**
-     * If the value of @p Float32 is nan, true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float32 is nan.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
     public func isNaN(): Bool {
         return this != this
     }
 
-    /**
-     * If the value of @p Float32 is a normal floating-point number,
-     * true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float32 is a normal floating-point number.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     public func isNormal(): Bool {
         var exp: Int32 = (f32toi32(this) >> Int32(23)) & 0xFF
         return exp != 0 && exp != 0xFF
@@ -551,37 +537,31 @@ extend Float16 <: Hashable {
         }
     }
 
-    /**
-     * If the value of @p Float16 is Positive Infinity or Negative Infinity,
-     * true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float16 is Positive Infinity or Negative Infinity.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     public func isInf(): Bool {
         return this == Float16.Inf || this == -Float16.Inf
     }
 
-    /**
-     * If the value of Float16 is nan, true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float16 is nan.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
     public func isNaN(): Bool {
         return this != this
     }
 
-    /**
-     * If the value of @p Float16 is a normal floating-point number,
-     * true is returned. Otherwise, false is returned.
-     *
-     * @return true if @p Float16 is a normal floating-point number.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     public func isNormal(): Bool {
         if (this == Float16(0)) {
             return false
@@ -739,13 +719,11 @@ public struct DefaultHasher <: Hasher {
         res = hashCombine(res, value.hashCode())
     }
 
-    /*
-     * widely-used hash algorithm combining two numbers from C++ boost:
-     * seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2)
-     */
+
+
     @OverflowWrapping
     private func hashCombine(seed: Int64, hashV: Int64): Int64 {
-        let a: Int64 = -7046029254386353131 // 0x9e3779b97f4a7c15
+        let a: Int64 = -7046029254386353131
         return seed ^ (hashV + a + (seed << 6) + (seed >> 2))
     }
     public init(res!: Int64 = 0) {
@@ -753,13 +731,11 @@ public struct DefaultHasher <: Hasher {
     }
 }
 
-/**
- * @brief cangjie version of wyRand & wyHash
- *
- * wyRand is a fast pseudo-random function, It can eliminate the performance loss caused by bad hashes.
- *
- * @param seed The seed to generate a 64-bit random number
- */
+
+
+
+
+
 const SECRET0 = 0xa0761d6478bd642fu64
 const SECRET1 = 0xe7037ed1a0b428dbu64
 const SECRET2 = 0x8ebc6af09c88c6e3u64

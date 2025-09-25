@@ -1,29 +1,25 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
 
 import std.collection.*
 
-/**
- * Contains the reflective information about annotations.
- */
+
 public type Annotation = Object
 
-/**
- * Parses the input string as a TypeInfo array
- *
- * @param parameterTypes the parameter type part of the function type.
- * It does not contain the parameter name, default value, or outermost parenthesis.
- * @return TypeInfo array converted from a parameter type string.
- *
- * @throws IllegalArgumentException if the input string does not comply with the specifications
- */
+
+
+
+
+
+
+
 public func parseParameterTypes(parameters: String): Array<TypeInfo> {
     let parameterTypes = parameters.trimAscii()
     if (parameterTypes.isEmpty()) {

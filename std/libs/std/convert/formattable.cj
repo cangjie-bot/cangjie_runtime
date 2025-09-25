@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a library for format class.
- */
+
+
+
+
+
+
+
+
 
 package std.convert
 
@@ -50,16 +47,14 @@ protected enum Flags {
 
 extend Int64 <: Formattable {
 
-    /**
-     * Formatting the Int64 Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected int format pattern
-     */
+
+
+
+
+
+
+
+
     @OverflowWrapping
     public func format(fmt: String): String {
         var format = escapeControlCharacters(fmt)
@@ -73,18 +68,16 @@ extend Int64 <: Formattable {
 
 extend Int32 <: Formattable {
 
-    /**
-     * Formatting the Int32 Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @throws IllegalArgumentException if fmt is not a valid format pattern.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected int format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         return Int64(this).format(fmt)
     }
@@ -92,18 +85,16 @@ extend Int32 <: Formattable {
 
 extend Int16 <: Formattable {
 
-    /**
-     * Formatting the Int16 Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @throws IllegalArgumentException if fmt is not a valid format pattern.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected int format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         return Int64(this).format(fmt)
     }
@@ -111,18 +102,16 @@ extend Int16 <: Formattable {
 
 extend Int8 <: Formattable {
 
-    /**
-     * Formatting the Int8 Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @throws IllegalArgumentException if fmt is not a valid format pattern.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected int format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         return Int64(this).format(fmt)
     }
@@ -130,18 +119,16 @@ extend Int8 <: Formattable {
 
 extend UInt64 <: Formattable {
 
-    /**
-     * Formatting the UInt64 Type
-     *
-     * @param fmt formatting string.
-     * @return formatted string
-     *
-     * @throws IllegalArgumentException
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected unit format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     @OverflowWrapping
     public func format(fmt: String): String {
         var format = escapeControlCharacters(fmt)
@@ -155,18 +142,16 @@ extend UInt64 <: Formattable {
 
 extend UInt32 <: Formattable {
 
-    /**
-     * Formatting the UInt32 Type
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @throws IllegalArgumentException if fmt is not a valid format pattern.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected unit format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         return UInt64(this).format(fmt)
     }
@@ -174,18 +159,16 @@ extend UInt32 <: Formattable {
 
 extend UInt16 <: Formattable {
 
-    /**
-     * Formatting the UInt16 Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @throws IllegalArgumentException if fmt is not a valid format pattern.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected unit format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         return UInt64(this).format(fmt)
     }
@@ -193,18 +176,16 @@ extend UInt16 <: Formattable {
 
 extend UInt8 <: Formattable {
 
-    /**
-     * Formatting the UInt8 Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @throws IllegalArgumentException if fmt is not a valid format pattern.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected unit format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         return UInt64(this).format(fmt)
     }
@@ -212,16 +193,14 @@ extend UInt8 <: Formattable {
 
 extend Float64 <: Formattable {
 
-    /**
-     * Formatting the Float64 Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected float format pattern
-     */
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         var format = escapeControlCharacters(fmt)
         if (!(Verify(fmt).verifyFloatFormatArg())) {
@@ -234,18 +213,16 @@ extend Float64 <: Formattable {
 
 extend Float32 <: Formattable {
 
-    /**
-     * Formatting the Float32 Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @throws IllegalArgumentException if fmt is not a valid format pattern.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected float format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         return Float64(this).format(fmt)
     }
@@ -253,18 +230,16 @@ extend Float32 <: Formattable {
 
 extend Float16 <: Formattable {
 
-    /**
-     * Formatting the Float16 Type
-     *
-     * @param fmt formatting string.
-     * @return formatted string
-     *
-     * @throws IllegalArgumentException if fmt is not a valid format pattern.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected float format pattern
-     */
+
+
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         return Float64(this).format(fmt)
     }
@@ -272,16 +247,14 @@ extend Float16 <: Formattable {
 
 extend Rune <: Formattable {
 
-    /**
-     * Formatting the Rune Type.
-     *
-     * @param fmt formatting string.
-     * @return formatted string.
-     *
-     * @since 0.17.4
-     *
-     * @throws IllegalArgumentException if the `fmt` does not match the expected char format pattern
-     */
+
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         var format = escapeControlCharacters(fmt)
         if (!(Verify(fmt).verifyCharFormatArg())) {
@@ -330,12 +303,10 @@ protected class Verify {
         return false
     }
 
-    /**
-     * Verify the Format Parameter of Int.
-     * Based on regular expression of the Int type: ^([-|+|#|0])?([1-9][0-9]*)?(\\.[0-9]+)?([b|B|o|O|x|X])?$
-     *
-     * @return Bool Whether the format string complies with the format of Int.
-     */
+
+
+
+
     public func verifyIntFormatArg(): Bool {
         if (verifyNumFormatArg()) {
             return true
@@ -346,12 +317,10 @@ protected class Verify {
         return index == size
     }
 
-    /**
-     * Verify the Format Parameter of Float.
-     * Based on regular expression of the Float type: ^([-|+|#|0])?([1-9][0-9]*)?(\\.[0-9]+)?([e|E|g|G])?$
-     *
-     * @return Bool Whether the format string complies with the format of Float.
-     */
+
+
+
+
     public func verifyFloatFormatArg(): Bool {
         if (verifyNumFormatArg()) {
             return true
@@ -362,12 +331,10 @@ protected class Verify {
         return index == size
     }
 
-    /**
-     * Verify the Format Parameter of Rune.
-     * Based on regular expression of the Rune type: ^-?([1-9][0-9]*)?$
-     *
-     * @return Bool Whether the format string complies with the format of Rune.
-     */
+
+
+
+
     func verifyCharFormatArg(): Bool {
         if (size == 0) {
             return true
@@ -401,10 +368,8 @@ protected class Verify {
         return false
     }
 
-    /**
-     * Match the Width regular expression.
-     * Based on regular expression: [0-9]*
-     */
+
+
     func parseWidthSign(): Unit {
         for (i in index..size) {
             var temp = data[i]
@@ -419,10 +384,8 @@ protected class Verify {
         }
     }
 
-    /**
-     * Match the Precision regular expression.
-     * Based on regular expression: [0-9]+
-     */
+
+
     func parsePrecisionSign(): Unit {
         for (i in (index + 1)..size) {
             var temp = data[i]
@@ -442,16 +405,14 @@ protected class Verify {
     }
 }
 
-/**
- * Find Flags,Width,Precision and specifier in the format string.
- *
- * @param fmt formatting string.
- * @return formatSpecifier Object.
- *
- * @since 0.17.4
- * @throws IllegalArgumentException if the string is empty, or if the string is starting with "+",
- * or if failing to convert to Int64, or if the value after conversion is out of the Int64 range
- */
+
+
+
+
+
+
+
+
 func parser(fmt: String): FormatSpecifier {
     let (flags, width, precision, specifier) = parseFormat(fmt)
     return FormatSpecifier(flags, width, precision, specifier)
@@ -466,7 +427,7 @@ protected func parseFormat(fmt: String): (Flags, Int64, Int64, Rune) {
     if (fmtCharArray.size <= 0) {
         return (flags, width, precision, specifier)
     }
-    /* flags */
+    
     var c = fmtCharArray[0]
     flags = getFlags(c)
     var idx = 0
@@ -474,7 +435,7 @@ protected func parseFormat(fmt: String): (Flags, Int64, Int64, Rune) {
     if (flags != Flags.NoFlag && end > 1) {
         idx = 1
     }
-    /* width */
+    
     if (fmtCharArray[idx].isAsciiNumber() && idx < end) {
         var start: Int64 = idx
         var len: Int64 = 0
@@ -489,7 +450,7 @@ protected func parseFormat(fmt: String): (Flags, Int64, Int64, Rune) {
         var str = fmt[start..start + len]
         width = Int64.parse(str)
     }
-    /* precision */
+    
     if (fmtCharArray[idx] == r'.' && idx < end) {
         idx++
         var start = idx
@@ -505,7 +466,7 @@ protected func parseFormat(fmt: String): (Flags, Int64, Int64, Rune) {
         var str = fmt[start..start + len]
         precision = Int64.parse(str)
     }
-    /* specifier */
+    
     if (fmtCharArray[idx].isAsciiLetter()) {
         specifier = fmtCharArray[idx]
     }
@@ -522,14 +483,12 @@ func getFlags(c: Rune): Flags {
     }
 }
 
-/**
- * Handling escape characters.
- * ‘t’ | ‘b’ | ‘r’ | ‘n’ | ‘’’ | ‘”’ | ‘\’ | ‘f’ | ‘v’ | ‘0’ | ‘$'
- * @param str formatted string.
- * @return String Object.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 protected func escapeControlCharacters(str: String): String {
     var tmp = ""
     for (c in str.runes()) {
@@ -550,34 +509,32 @@ protected func escapeControlCharacters(str: String): String {
 
 class FormatSpecifier {
 
-    /* Hexadecimal lowercase */
+    
     private let ldigits = "0123456789abcdef".toRuneArray()
 
-    /* Hexadecimal uppercase */
+    
     private let udigits = "0123456789ABCDEF".toRuneArray()
 
-    /* flags */
+    
     private let flags: Flags
 
-    /* width */
+    
     private let width: Int64
 
-    /* precision */
+    
     private let precision: Int64
 
-    /* specifier */
+    
     private let specifier: Rune
 
-    /**
-     * Constructor.
-     *
-     * @param flags flags.
-     * @param width width.
-     * @param precision precision.
-     * @param specifier specifier.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
     init(flags: Flags, width: Int64, precision: Int64, specifier: Rune) {
         this.flags = flags
         this.width = width
@@ -585,22 +542,20 @@ class FormatSpecifier {
         this.specifier = specifier
     }
 
-    /**
-     * Formats a signed or unsigned integer.
-     *
-     * @param arg formatting parameter.
-     * @param isSigned signed or not.
-     * @return String after integer formatting.
-     *
-     * @since 0.17.4
-     * @throws IllegalArgumentException if the string is empty, or if the string is starting with "+" or "-",
-     * or if failing to convert to UInt64, or if the value after conversion is out of the UInt64 range
-     */
+
+
+
+
+
+
+
+
+
     @OverflowWrapping
     func fmtInteger(arg: UInt64, isSigned: Bool): String {
         var u: UInt64 = 0
         var negative = isSigned && Int64(arg) < 0
-        /* Obtains the absolute value of the arg parameter. */
+        
         if (negative) {
             var intVal = Int64(arg)
             var s = "${intVal}"
@@ -679,19 +634,17 @@ class FormatSpecifier {
         return ""
     }
 
-    /**
-     * Formats floating-point number.
-     *
-     * @param arg formatting parameter.
-     * @return formatted string after float formatting.
-     * throws IllegalMemoryException if there are some system errors.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
     func fmtFloat(arg: Float64): String {
         var negative = false
         var str = "${arg}".toRuneArray()
-        /* Negative numbers, including -0.0 */
+        
         if (str[0] == r'-') {
             negative = true
         }
@@ -744,14 +697,12 @@ class FormatSpecifier {
         return writePadding(val)
     }
 
-    /*
-     * Generates n bytes of padding.
-     *
-     * @param s original string.
-     * @return padded string.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     private func writePadding(s: String): String {
         var sCharArray = s.toRuneArray()
         var result = ""
@@ -771,14 +722,12 @@ class FormatSpecifier {
         return result
     }
 
-    /*
-     * Returns a string representation of the argument as an unsigned integer in base 2.
-     *
-     * @param u original number.
-     * @return binary string.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     private func toBinaryString(u: UInt64): String {
         var v: UInt64 = u
         var str = ""
@@ -797,14 +746,12 @@ class FormatSpecifier {
         }
     }
 
-    /*
-     * Returns a string representation of the argument as an unsigned integer in base 8.
-     *
-     * @param u original number.
-     * @return octal string.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     private func toOctalString(u: UInt64): String {
         var v: UInt64 = u
         var str = ""
@@ -823,15 +770,13 @@ class FormatSpecifier {
         }
     }
 
-    /*
-     * Returns a string representation of the argument as an unsigned integer in base 16.
-     *
-     * @param u original number.
-     * @param isUpper uppercase or not.
-     * @return hex string.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
     private func toHexString(u: UInt64, isUpper: Bool): String {
         var v: UInt64 = u
         if (u > 0) {
@@ -854,17 +799,15 @@ class FormatSpecifier {
         }
     }
 
-    /*
-     * Conversion of floating-point numbers to scientific notation.
-     *
-     * @param u original float number.
-     * @Param isUpper uppercase or not.
-     * @Param precision precision.
-     * @return scientific notation string.
-     * @throws IllegalMemoryException if failed to call float64Formatter.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
+
     private func toScientificString(u: Float64, isUpper: Bool, precision: Int64): String {
         var v: Float64 = u
         var fmt = ""
@@ -876,17 +819,15 @@ class FormatSpecifier {
         return float64Formatter(v, fmt)
     }
 
-    /*
-     * Conversion of floating-point numbers to General string.
-     *
-     * @param u original float number.
-     * @Param isUpper uppercase or not.
-     * @Param precision Precision.
-     * @return general string.
-     * @throws IllegalMemoryException if failed to call float64Formatter.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
+
     private func toGeneralString(u: Float64, isUpper: Bool, precision: Int64): String {
         var v: Float64 = u
         var fmt = ""
@@ -898,32 +839,28 @@ class FormatSpecifier {
         return float64Formatter(v, fmt)
     }
 
-    /*
-     * Converting a Floating-Point Number to a Decimal Type.
-     *
-     * @param u original float number.
-     * @Param precision precision.
-     * @return general string.
-     * @throws IllegalMemoryException if failed to call float64Formatter.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
     private func toDecimalString(u: Float64, precision: Int64): String {
         var v: Float64 = u
         var fmt = "%.${precision}f"
         return float64Formatter(v, fmt)
     }
 
-    /*
-     * Formating floating-point numbers.
-     *
-     * @param a original float number.
-     * @Param format formatting string.
-     * @return formatted string.
-     * @throws IllegalMemoryException if malloc failed.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
     private func float64Formatter(a: Float64, format: String): String {
         var f = unsafe { LibC.mallocCString(format) }
         var res: CString = unsafe { CJ_FORMAT_Float64Formatter(a, f) }

@@ -1,17 +1,15 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
 
-/*
- * Immediately fails the test if Exception instance was not thrown.
- */
+
 public macro AssertThrows(body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return expandAssertThrowsMacro(body, quote(Exception), insideCustom: true)
@@ -19,9 +17,7 @@ public macro AssertThrows(body: Tokens): Tokens {
     return expandAssertThrowsMacro(body, quote(Exception), insideCustom: false)
 }
 
-/*
- * Immediately fails the test if one of 'exceptions' was not thrown.
- */
+
 public macro AssertThrows(exceptions: Tokens, body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return expandAssertThrowsMacro(body, exceptions, insideCustom: true)
@@ -29,9 +25,7 @@ public macro AssertThrows(exceptions: Tokens, body: Tokens): Tokens {
     return expandAssertThrowsMacro(body, exceptions, insideCustom: false)
 }
 
-/*
- * Fails the test if Exception instance was not thrown.
- */
+
 public macro ExpectThrows(body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return expandAssertThrowsMacro(body, quote(Exception), insideCustom: true, isExpect: true)
@@ -39,9 +33,7 @@ public macro ExpectThrows(body: Tokens): Tokens {
     return expandAssertThrowsMacro(body, quote(Exception), insideCustom: false, isExpect: true)
 }
 
-/*
- * Fails the test if one of 'exceptions' was not thrown.
- */
+
 public macro ExpectThrows(exceptions: Tokens, body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return expandAssertThrowsMacro(body, exceptions, insideCustom: true, isExpect: true)
@@ -115,13 +107,11 @@ private func obtainMacroSpecificTokens(isExpect: Bool, insideCustom: Bool) {
     return (macroName, unexpectedECall, failFunctionTokens, callArgs)
 }
 
-/* Rewrite due to a bug:
-    @AssertThrows doc says that framework exception should be propagated further unless AssertException is explicitly specified
 
-    But the following example cathces all of the exceptions including AssertException which it shouldn't
 
-    @AssertThrows(@Assert(false))
- */
+
+
+
 private func handleExpectedErrorTypes(iter: Iterable<TypeNode>) {
     let sb = StringBuilder()
     var shouldThrowAssert: Bool = true
@@ -186,10 +176,6 @@ private func expandAssertThrowsMacro(
     }
     let expectedExceptions = catchPatterns[0]
     let etp = (expectedExceptions as ExceptTypePattern).getOrThrow()
-
-    // TODO: when type inference will be able to infer smallest common supertype
-    // of `try { None } catch (e: A | B) { e }` to `Option<C>` where A < C and B < C
-    // return type of 'try' block should be updated to `None`
     var returnTypeTokens = if (etp.types.size == 1) {
         etp.types[0].toTokens()
     } else {
@@ -201,8 +187,6 @@ private func expandAssertThrowsMacro(
 
     let noExceptionErrmesg = "${macroName}: Expected '${exceptionsStringTokens}' was not caught."
     let unexpectedErrmesg = "${macroName}(${exceptionsStringTokens})"
-
-    // assertEqual inserts a cancellation point
     return quote(
         try {
             try {
@@ -217,8 +201,6 @@ private func expandAssertThrowsMacro(
                 e
             }
         } catch (e: Exception) {
-            // skip internal unittest exceptions ahead
-            // (they're transmit information about a failed check)
             if (e is AssertException || e is AssertIntermediateException || e is UnittestTimeoutException) {
                 throw e
             }

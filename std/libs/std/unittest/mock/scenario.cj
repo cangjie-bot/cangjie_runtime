@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.collection.ArrayList
@@ -144,8 +144,6 @@ class StubChain {
     ) {}
 
     let scenarios: ArrayList<Scenario> = ArrayList()
-
-    // we're implicitly modifying session state here, session parameter for documentation purposes
     func addScenario(_: MockSession): Scenario {
         if (wasActivated) {
             StubMisconfiguration().fail(this, CannotModifyActive)

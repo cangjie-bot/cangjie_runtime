@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -109,10 +109,8 @@ extend CString <: ToString {
         return cmpRet == 0
     }
 
-    /**
-     * @throws IndexOutOfBoundsException if beginIndex is greater than the size of string.
-     * @throws IllegalMemoryException if memory malloc or memcpy_s fails.
-     */
+
+
     public func subCString(beginIndex: UIntNative): CString {
         var len = UIntNative(size())
         if (beginIndex > len) {
@@ -122,10 +120,8 @@ extend CString <: ToString {
         return subCString(beginIndex, len - beginIndex)
     }
 
-    /*
-     * @throws IndexOutOfBoundsException if beginIndex is greater than the size of string.
-     * @throws IllegalMemoryException if memory malloc or memcpy_s fails.
-     */
+
+
     public func subCString(beginIndex: UIntNative, subLen: UIntNative): CString {
         var buffer = CPointer<UInt8>()
         var len = UIntNative(size())
@@ -145,9 +141,6 @@ extend CString <: ToString {
                 throw IllegalMemoryException("Malloc in CString::subCString failed.")
             }
             var rc = memcpy_s(buffer, actualLen + 1, getChars() + Int64(beginIndex), actualLen)
-
-            // The 'actualLen' cannot be guaranteed to be copied to the end. Therefore, '\ 0' cannot be
-            // guaranteed by copying 'actualLen + 1'. Therefore, the end needs to be added.
             if (rc != 0) {
                 LibC.free(buffer)
                 throw IllegalMemoryException("The memcpy_s in subCString failed with error code: ${rc}.")
@@ -157,9 +150,7 @@ extend CString <: ToString {
         return CString(buffer)
     }
 
-    /*
-     * @throws Exception if self is null or str is null
-     */
+
     public func compare(str: CString): Int32 {
         let chars = getChars()
         if (chars.isNull() || str.isNull()) {
@@ -194,8 +185,6 @@ extend CString <: ToString {
         } else {
             unsafe {
                 let rawData: CPointerHandle<UInt8> = acquireArrayRawData(data)
-                // If the length of the string is greater than the safe length of the safe function,
-                // it needs to be copied multiple times.
                 var remain = len
                 var offset = 0
                 while (remain >= SECUREC_MEM_MAX_LEN) {

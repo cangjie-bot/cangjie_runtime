@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.fs.Path
@@ -12,8 +12,6 @@ import std.collection.*
 import std.unittest.common.PrettyPrinter
 
 sealed interface Reporter<TReport, TReturn> {}
-
-// NOTE: our predefined reporters
 public class CsvReporter <: Reporter<BenchReport, Unit> {
     public CsvReporter(let directory: Path) {}
 }
@@ -35,8 +33,6 @@ public class TextReporter<PP> <: Reporter<TestReport, PP> & Reporter<BenchReport
     public TextReporter(let into!: PP) {}
 }
 
-// this hidden interface is needed because check for TextReporter<PP> is impossible without satisfying
-// PP <: PrettyPrinter, which cannot be satisfied in generic context
 interface TextReporterBase<PP> <: Reporter<TestReport, PP> & Reporter<BenchReport, PP> {
     func printReport(report: Report): PP
 }
@@ -56,8 +52,6 @@ extend ConsoleReporter <: TextReporterBase<Unit> {
         TextReports.printDefaultReport(pp, report.groupResult, outputReporter, report.runConfiguration)
     }
 }
-
-// NOTE: for our internal benchmarks
 public class RawStatsReporter <: Reporter<BenchReport, HashMap<String, (Float64, Float64)>> {
     public RawStatsReporter() {}
 

@@ -1,24 +1,19 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a library for StringReader.
- */
+
+
+
+
+
+
+
+
 
 package std.io
 
-const HIGH_1_UInt8: UInt8 = 0b10000000 // 0x80
+const HIGH_1_UInt8: UInt8 = 0b10000000
 
-/**
- * This class Provides the ability to read data from an input stream and convert it to characters or strings.
- */
+
 public class StringReader<T> where T <: InputStream {
     let inputBIS: BufferedInputStream<T>
 
@@ -26,9 +21,7 @@ public class StringReader<T> where T <: InputStream {
         inputBIS = BufferedInputStream(input)
     }
 
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
     @Frozen
     public func read(): ?Rune {
         if (isFinished()) {
@@ -79,9 +72,7 @@ public class StringReader<T> where T <: InputStream {
         (done, haveCR)
     }
 
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
     @Frozen
     public func readln(): Option<String> {
         if (isFinished()) {
@@ -109,9 +100,8 @@ public class StringReader<T> where T <: InputStream {
     public func lines(): Iterator<String> {
         return LinesIterator(this)
     }
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
+
     @Frozen
     public func readToEnd(): String {
         var bas: ByteBuffer = ByteBuffer()
@@ -128,16 +118,12 @@ public class StringReader<T> where T <: InputStream {
         }
     }
 
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
     public func readUntil(v: Rune): Option<String> {
         return readUntil({c: Rune => return c == v})
     }
 
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
     public func readUntil(predicate: (Rune) -> Bool): Option<String> {
         if (isFinished()) {
             return Option<String>.None
@@ -157,9 +143,7 @@ public class StringReader<T> where T <: InputStream {
         inputBIS.availLen -= readNum
     }
 
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
     private func readCharFromInbuf(): (Rune, Int64) {
         try {
             if (inputBIS.availLen < 4) {
@@ -186,9 +170,7 @@ public class StringReader<T> where T <: InputStream {
         }
     }
 
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
     private func readUntilToString(predicate: (Rune) -> Bool, isIncludeChar!: Bool = true): String {
         var bas: ByteBuffer = ByteBuffer()
         while (!isFinished()) {
@@ -208,51 +190,43 @@ public class StringReader<T> where T <: InputStream {
 }
 
 extend<T> StringReader<T> <: Resource where T <: Resource {
-    /**
-     * Close the current stream.
-     */
+
+
     public func close(): Unit {
         inputBIS.close()
     }
 
-    /**
-     * Returns whether the current flow is closed.
-     *
-     * @return true if the current stream has been closed, otherwise returns false.
-     */
+
+
+
     public func isClosed(): Bool {
         inputBIS.isClosed()
     }
 }
 
 extend<T> StringReader<T> <: Seekable where T <: Seekable {
-    /**
-     * Seek to an offset, in bytes, in a stream.
-     *
-     * @params sp - Start position of the offset and size of the offset.
-     *
-     * @return the number of bytes in the stream from the beginning of the data to the cursor position.
-     */
+
+
+
+
+
+
     public func seek(sp: SeekPosition): Int64 {
         inputBIS.seek(sp)
     }
 
-    /**
-     * Gets the current read position of StringReader .
-     *
-     * This property calls the `seek()` function each time it is accessed, moving the cursor to a specific location.
-     * The position is adjusted by setting the offset to the negative value of the current available bytes (`inputBIS.availLen` which not be read yet),
-     * ensuring that read operations continue from the appropriate position.
-     *
-     * Note: This property only performs operations when accessed, adjusting the cursor and returning the current position.
-     *
-     * @return The current read position of the input stream (of type `Int64`), representing the offset of the cursor
-     *         from the beginning of the stream.
-     */
+
+
+
+
+
+
+
+
+
+
     public prop position: Int64 {
         get() {
-            // Move the cursor back by the length of unread data in the buffer (inputBIS.availLen).
-            // This ensures that subsequent reads start at the correct position in the stream.            
             seek(Current(-inputBIS.availLen))
         }
     }
@@ -261,9 +235,7 @@ extend<T> StringReader<T> <: Seekable where T <: Seekable {
 class RunesIterator<T> <: Iterator<Rune> where T <: InputStream {
     RunesIterator(let data: StringReader<T>) {}
 
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
     public func next(): Option<Rune> {
         return data.read()
     }
@@ -272,9 +244,7 @@ class RunesIterator<T> <: Iterator<Rune> where T <: InputStream {
 class LinesIterator<T> <: Iterator<String> where T <: InputStream {
     LinesIterator(let data: StringReader<T>) {}
 
-    /**
-     * @throws ContentFormatException if the format of the read data is incorrect.
-     */
+
     public func next(): Option<String> {
         return data.readln()
     }

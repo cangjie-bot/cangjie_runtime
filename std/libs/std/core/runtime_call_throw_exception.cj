@@ -1,16 +1,14 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
-/**
- * The following functions are used by cjnative.
- */
+
 var globalOutOfMemoryError = OutOfMemoryError()
 
 @C
@@ -26,9 +24,7 @@ func throwImplicitException(id: Int64, args: CPointer<Unit>): Unit {
     }
 }
 
-/*
- * @throws ArithmeticException if divided by zero
- */
+
 func throwArithmeticException(): Unit {
     throw ArithmeticException("Divided by zero!")
 }
@@ -45,9 +41,7 @@ func createOverflowExceptionMsg(msg: String): OverflowException {
     OverflowException(msg)
 }
 
-/**
- * The following functions are used by the interpreter.
- */
+
 func throwOverflowException(): Unit {
     throw OverflowException()
 }

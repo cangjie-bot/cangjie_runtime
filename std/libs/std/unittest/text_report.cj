@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -30,8 +30,7 @@ extend PrettyPrinter {
     }
 
     func appendSuiteInfo(id: TestSuiteId, info: TestSuiteReportInfo, config: Configuration): PrettyPrinter {
-        // Tags will be printed in the test case.
-        if (!id.isFromTopLevelFunc) { // TODO do it in a better way with new reporting
+        if (!id.isFromTopLevelFunc) {
             this.appendTags(info.tags, config)
         }
         this
@@ -105,7 +104,6 @@ class TestOutputReporter {
     }
 
     private static func appendStream(pp: PrettyPrinter, stream: String): PrettyPrinter {
-        // Make user's output properly idented.
         for (line in stream.lines()) {
             pp.appendLine(line)
         }
@@ -208,8 +206,6 @@ class PackageTextReport {
         let reportPath = getReportDirectory(KeyReportPath.reportPath) ?? return
         let dir = reportPath.join("benchmarks")
         Directory.ensureExists(dir)
-
-        //temporary workaround for incorrect NaN json serialization
         baselineReport.removeIf { _, v => v.isNaN() }
 
         let data = baselineReport.serializeInternal().toJson().toJsonString()
@@ -267,7 +263,6 @@ class PackageTextReport {
             if (tc.details.testcode == SKIP && !outputReporter.verbose) { return }
 
             let step = tc.subResults[0]
-            // print Before all/After all only if there is any output
             if (step.kind.isClassLifecycle() && tc.output.isEmpty()) { return }
 
             printEntry(TextReportEntry(tc.subResults[0], tc.caseId.caseName, tc.caseInfo))
@@ -328,9 +323,7 @@ class PackageTextReport {
     }
 }
 
-/**
- * Print a line covering (hopefully) the whole width of output
- */
+
 func appendDashLine(pp: PrettyPrinter): PrettyPrinter {
     if (pp.isTopLevel) {
         pp.appendLine(
@@ -603,8 +596,8 @@ extend CheckResult <: PrettyPrintable {
     public func pprintWithFailedPrefix(pp: PrettyPrinter): PrettyPrinter {
         if (let Some(aecr) <- (this as AssertExpectCheckResult)) {
             match (aecr.kind) {
-                case Assert => pp.append("Assert Failed: ") // If for whatever reason you want to change this message,
-                case Expect => pp.append("Expect Failed: ") // look accurately at PowerAssert message offset
+                case Assert => pp.append("Assert Failed: ")
+                case Expect => pp.append("Expect Failed: ")
             }
             this.pprint(pp)
             pp.newLine()
@@ -649,13 +642,13 @@ extend CheckResult <: PrettyPrintable {
                 pp.append("`(")
                 resultValue.diagram.pprintExpression(resultValue.expr, pp)
                 pp.appendLine(")`")
-                resultValue.diagram.setOffset(16) // "Assert Failed: ".size + 1 ("Expect Failed: ".size + 1)
+                resultValue.diagram.setOffset(16)
                 pp.appendLine(resultValue.diagram)
             case resultValue: PowerAssertExceptionCheckResult =>
                 pp.append("`(")
                 resultValue.diagram.pprintExpression(resultValue.expression, pp)
                 pp.appendLine(")`")
-                resultValue.diagram.setOffset(16) // "Assert Failed: ".size + 1 ("Expect Failed: ".size + 1)
+                resultValue.diagram.setOffset(16)
                 pp.appendLine(resultValue.diagram)
                 pp.appendLine(resultValue.exception)
             case resultValue: FailCheckResult =>

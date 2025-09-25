@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
 
@@ -21,9 +21,7 @@ const MODULE_SUFFIX = ".dll"
 @When[os != "Windows"]
 const MODULE_SUFFIX = ".so"
 
-/**
- * Contains the reflective information about packages.
- */
+
 public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
     private static let filenameSet = HashSet<String>()
     private static let qualifiedNameMap = HashMap<String, PackageInfo>()
@@ -43,8 +41,6 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
     init(cp: CPointer<Unit>) {
         _packageInfo = cp
     }
-
-    // Return a specified packageInfo from the loaded dynamic module
     public static func get(qualifiedName: String): PackageInfo {
         synchronized(mutex) {
             if (let Some(info) <- qualifiedNameMap.get(qualifiedName)) {
@@ -87,7 +83,6 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             let cpath = unsafe { LibC.mallocCString(realPath.toString()) }
             try {
                 let info: CPointer<Unit> = loadPackage(cpath.getChars())
-                // for performance reason, info pointer need to carry loading result
                 let result = info.toUIntNative()
                 if (result == PACKAGE_LOAD_FAIL) {
                     throw ReflectException("Package `${path}` load failed.")
@@ -106,9 +101,6 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             }
         }
     }
-
-    // package name with prefix
-    // returns "a.b.c" when the package name is "a.b.c"
     public prop qualifiedName: String {
         get() {
             match (_qualifiedName) {
@@ -120,9 +112,6 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             }
         }
     }
-
-    // current package name
-    // returns "c" when the package name is "a.b.c"
     public prop name: String {
         get() {
             match (_name) {
@@ -144,8 +133,6 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             _noPublicInfoList
         }
     }
-
-    // Get all type information of the current package
     public prop typeInfos: Collection<TypeInfo> {
         get() {
             match (_typeInfos) {
@@ -168,7 +155,7 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         get() {
             match (_version) {
                 case Some(version) => version
-                case _ => CString(getPackageVersion(_packageInfo)).toString() // no need to free this pointer
+                case _ => CString(getPackageVersion(_packageInfo)).toString()
             }
         }
     }
@@ -239,8 +226,6 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             }
         }
     }
-
-    // Get all global variable information of the current package
     public prop variables: Collection<GlobalVariableInfo> {
         get() {
             match (_variables) {
@@ -269,8 +254,6 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             infoList.add(varInfo)
         }
     }
-
-    // Get all global function information of the current package
     public prop functions: Collection<GlobalFunctionInfo> {
         get() {
             match (_functions) {
@@ -305,25 +288,17 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             infoList.add(funcInfo)
         }
     }
-
-    // lookup type information, return None if
-    // Unable to look up the generic type
     public func getTypeInfo(qualifiedTypeName: String): TypeInfo {
         getByName(typeInfos, qualifiedTypeName,
             "type info `${qualifiedTypeName}` not found from package ${qualifiedName}") {
             typeInfo => typeInfo.qualifiedName
         }
     }
-
-    // Find the global variable, return None if not found or the type does not match
     public func getVariable(name: String): GlobalVariableInfo {
         getByName(variables, name, "variable info `${name}` not found from package `${qualifiedName}`") {
             variable => variable.name
         }
     }
-
-    // Find the global function, return None if not found or the type does not match
-    // Could not find generic function
     public func getFunction(name: String, parameterTypes: Array<TypeInfo>): GlobalFunctionInfo {
         getByNameAndParamTypes(functions, name, parameterTypes,
             "func info `${name}` not found from package `${qualifiedName}`") {

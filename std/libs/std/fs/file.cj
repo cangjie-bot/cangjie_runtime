@@ -1,23 +1,20 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a library for File.
- */
+
+
+
+
+
+
+
+
 package std.fs
 
 import std.io.*
 
-const SEEK_SET: Int32 = 0 /* Seek from beginning of file.  */
-const SEEK_CUR: Int32 = 1 /* Seek from current position.  */
-const SEEK_END: Int32 = 2 /* Seek from end of file.  */
+const SEEK_SET: Int32 = 0 
+const SEEK_CUR: Int32 = 1 
+const SEEK_END: Int32 = 2 
 
 const READ_ONLY: Int32 = 0
 const WRITE_ONLY: Int32 = 1
@@ -25,10 +22,10 @@ const APPEND: Int32 = 2
 const READ_WRITE: Int32 = 3
 
 public enum OpenMode <: ToString & Equatable<OpenMode> {
-    | Read      // O_RDONLY
-    | Write     // O_WRONLY | O_CREAT | O_TRUNC
-    | Append    // O_WRONLY | O_CREAT | O_APPEND
-    | ReadWrite // O_RDWR | O_CREAT
+    | Read
+    | Write
+    | Append
+    | ReadWrite
 
     public operator func ==(that: OpenMode): Bool {
         return match ((this, that)) {
@@ -54,9 +51,7 @@ public enum OpenMode <: ToString & Equatable<OpenMode> {
     }
 }
 
-// FD numbers are indexes into the FD table.
-// Unix/Linux use the Int type for handle, while Windows use HANDLE type.
-// HANDLE is typedef'd void *, which is really just a 32-bit index, only for more opaque.
+
 public struct FileDescriptor {
     var _fileHandle: IntNative = InvalidHandle
 
@@ -82,18 +77,16 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
-    /**
-     * Constructors
-     *
-     * @param path - The file path.
-     * @param mode - The open mode.
-     *
-     * @throws IllegalArgumentException - If path is empty or path contains null character.
-     * @throws FSException - If the file does not exist while operation is open,
-     * the file already exists while operation is create,
-     * the parent directory of the file does not exist,
-     * or other reasons caused fail to open file.
-     */
+
+
+
+
+
+
+
+
+
+
     public init(path: String, mode: OpenMode) {
         if (path.isEmpty()) {
             throw IllegalArgumentException("The file path cannot be empty.")
@@ -106,24 +99,21 @@ public class File <: Resource & IOStream & Seekable {
         if (!parent.isEmpty() && !exists(parent)) {
             throw FSException("The path `${parent}` does not exist.")
         }
-        // Because `filePath` may not exist before `openFile` is executed, `FileInfo` does not check whether the path exists.
         _fileInfo = FileInfo(filePath, false)
         _openMode = mode
         openFile()
     }
 
-    /**
-     * Constructors
-     *
-     * @param path - The file path.
-     * @param mode - The open mode.
-     *
-     * @throws IllegalArgumentException - If path is empty or contains null character.
-     * @throws FSException - If the file does not exist while operation is open,
-     * the file already exists while operation is create,
-     * the parent directory of the file does not exist,
-     * or other reasons caused fail to open file.
-     */
+
+
+
+
+
+
+
+
+
+
     public init(path: Path, mode: OpenMode) {
         this(path.toString(), mode)
     }
@@ -184,23 +174,21 @@ public class File <: Resource & IOStream & Seekable {
                     throw FSException("Failed to tuncate the file: ${result.msg}.")
                 }
             } finally {
-                LibC.free(result.msg) // it's safe to free(NULL)
+                LibC.free(result.msg)
             }
         }
     }
 
-    /**
-     * Read data from file.
-     *
-     * @param buffer - Read data from file to the byte array.
-     *
-     * @return Int64 - Size of the data be read.
-     *
-     * @throws IllegalArgumentException - If buffer is empty.
-     * @throws FSException - If the file to read is not opened,
-     *      or the file does not have the read permission
-     *      or failed to read file
-     */
+
+
+
+
+
+
+
+
+
+
     public func read(buffer: Array<Byte>): Int64 {
         checkCanRead()
         if (buffer.size == 0) {
@@ -215,11 +203,9 @@ public class File <: Resource & IOStream & Seekable {
         return readBytes
     }
 
-    /**
-     * @throws FSException if system failed to write the file
-     * @throws FSException if file is not opened
-     * @throws FSException if the file is not allowed to write
-     */
+
+
+
     public func write(buffer: Array<Byte>): Unit {
         if (!isHandleValid(fileHandle)) {
             throw FSException("The file not opened, can not be written.")
@@ -235,11 +221,9 @@ public class File <: Resource & IOStream & Seekable {
 
     public func flush(): Unit {}
 
-    /**
-     * @throws FSException if file can not seek
-     * @throws FSException if there is error in parameter
-     * @throws FSException if unknown errors occurred
-     */
+
+
+
     public func seek(sp: SeekPosition): Int64 {
         if (!canSeek()) {
             throw FSException("The file can not seek.")
@@ -277,16 +261,14 @@ public class File <: Resource & IOStream & Seekable {
         return _canWrite
     }
 
-    /**
-     * @throws FSException if system failed to close file
-     */
+
     public func close(): Unit {
         if (!isHandleValid(fileHandle)) {
             return
         }
         flush()
 
-        /* Call the close() in the C Language */
+        
         if (unsafe { CJ_FS_CloseFile(fileHandle) } < 0) {
             throw FSException("Failed to close file.")
         }
@@ -297,18 +279,14 @@ public class File <: Resource & IOStream & Seekable {
         return !isHandleValid(fileHandle)
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     */
+
+
     public static func create(path: Path): File {
         return create(path.toString())
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     */
+
+
     public static func create(path: String): File {
         if (exists(path)) {
             throw FSException("The file already exists!")
@@ -316,22 +294,16 @@ public class File <: Resource & IOStream & Seekable {
         return File(path, Write)
     }
 
-    /**
-     * @throws FSException if failed to create the temporary file or directoryPath is invalid.
-     * @throws IllegalArgumentException while path contains null character or path is empty.
-     */
+
+
     public static func createTemp(directoryPath: String): File {
         return createTemp(Path(directoryPath))
     }
 
-    /**
-     * @throws FSException if failed to create the temporary file or directoryPath is invalid.
-     * @throws IllegalArgumentException while path contains null character or path is empty.
-     */
+
+
     public static func createTemp(directoryPath: Path): File {
         var utf8View = unsafe { canonicalize(directoryPath).toString().rawData() }
-
-        // Append r'/' + "tmpfile" + Six random characters and r'\0'
         var appendStrUtf8View = TMP_FILE
         var tempArrSize = utf8View.size + appendStrUtf8View.size
         var tempArr = Array<Byte>(tempArrSize, repeat: 0)
@@ -350,10 +322,8 @@ public class File <: Resource & IOStream & Seekable {
         return File(tempPath, ReadWrite, ret)
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     */
+
+
     static func copy(sourcePath: String, destinationPath: String, overwrite: Bool): Unit {
         if (overwrite) {
             callNativeFunc(sourcePath, destinationPath, CJ_FS_CopyREF,
@@ -366,20 +336,16 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     */
+
+
     public static func readFrom(path: Path): Array<Byte> {
         File.readFrom(path.toString())
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     * @throws FSException if file read failed
-     * @throws FSException if system failed to close file
-     */
+
+
+
+
     public static func readFrom(path: String): Array<Byte> {
         var file = File(path, Read)
         try {
@@ -389,47 +355,37 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     * @throws FSException if system failed to close file.
-     */
+
+
+
     public static func writeTo(path: Path, buffer: Array<Byte>): Unit {
         writeTo(path.toString(), buffer)
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     * @throws FSException if system failed to close file.
-     */
+
+
+
     public static func writeTo(path: String, buffer: Array<Byte>): Unit {
         writeTo(path, buffer, Write)
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     * @throws FSException if system failed to close file
-     */
+
+
+
     public static func appendTo(path: Path, buffer: Array<Byte>): Unit {
         appendTo(path.toString(), buffer)
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     * @throws FSException if system failed to close file
-     */
+
+
+
     public static func appendTo(path: String, buffer: Array<Byte>): Unit {
         writeTo(path, buffer, OpenMode.Append)
     }
 
-    /**
-     * @throws FSException while path is empty.
-     * @throws IllegalArgumentException while path contains null character.
-     * @throws FSException if system failed to close file
-     */
+
+
+
     private static func writeTo(path: String, buffer: Array<Byte>, mode: OpenMode): Unit {
         var file = File(path, mode)
         try {
@@ -439,19 +395,14 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
-    /*
-     * private functions
-     */
 
-    /**
-     * Open file according to options.
-     *
-     * @throws FSException if check parameter is invalid or failed to get offset
-     * @throws FSException if failed to open file
-     * @throws FSException if file does not exist when operation is open
-     * @throws FSException if file already exists when operation is create
-     * @throws FSException if path is invalid
-     */
+
+
+
+
+
+
+
     private func openFile(): Unit {
         let isExists = exists(_fileInfo.path)
         let (r, w, s, openMode): (Bool, Bool, Bool, Int32) = match ((_openMode, isExists)) {
@@ -503,10 +454,8 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
-    /**
-     * @throws FSException if the file to read is not opened
-     * @throws FSException if the file does not have the read permission
-     */
+
+
     private func checkCanRead(): Unit {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw FSException("The file not opened, can not to read.")
@@ -516,10 +465,8 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
-    /**
-     * @throws FSException if the file to read is not opened
-     * @throws FSException if the file does not have the read permission
-     */
+
+
     private func checkCanTruncate(): Unit {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw FSException("The file not opened, can not to read.")
@@ -531,14 +478,12 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
-    /**
-     * Read from the file directly and write into buffer.
-     *
-     * @param buffer - Read to the buffer from the file
-     *
-     * @return Length successfully written into the array buffer
-     * @since 0.17.4
-     */
+
+
+
+
+
+
     private func directRead(buffer: Array<Byte>): Int64 {
         unsafe {
             let bufPtr: CPointerHandle<Byte> = acquireArrayRawData(buffer)
@@ -548,15 +493,13 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
-    /**
-     * Write the array to the file and return the bytes successfully written into the file.
-     *
-     * @param buffer – The buffer will be written to the file
-     *
-     * @since 0.17.4
-     *
-     * @throws FSException if system failed to write the file
-     */
+
+
+
+
+
+
+
     private func directWrite(buffer: Array<Byte>): Unit {
         unsafe {
             let bufSize: Int64 = buffer.size

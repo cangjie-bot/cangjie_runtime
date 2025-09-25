@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -29,14 +29,11 @@ func handleException(ex: Exception): Unit {
     }
 }
 
-/**
- * Handler for all errors that are not caught by user code.
- * Make sure no new error/exception are thrown.
- */
+
+
 func handleError(er: Error): Unit {
     try {
         match (er) {
-            // No memory left for printing the stack trace, just print the error message.
             case _: OutOfMemoryError =>
                 eprintln("An exception has occurred:")
                 eprintln("OutOfMemoryError")

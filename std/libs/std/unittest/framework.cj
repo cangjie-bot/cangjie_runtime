@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.sync.ReentrantMutex
@@ -13,7 +13,7 @@ import std.collection.ArrayList
 import std.collection.concurrent.ConcurrentLinkedQueue
 
 enum LaunchApi {
-    | FromPublicApi // dynamic tests
+    | FromPublicApi
     | FromCli
 }
 
@@ -30,22 +30,15 @@ enum LaunchSource {
     }
 }
 
-// provides entry point to test execution
-// macros like @Assert/@Fail submit results via context statically held by this
 class Framework {
     private var transport: ?Transport = None
     private var progressQueue: ?ConcurrentLinkedQueue<UTProgress> = None
     private let mtx: ReentrantMutex = ReentrantMutex()
-
-    // "global utils" like @Assert/@Expect/@Fail will be reported here
     private var currentlyRunning: RunContext = OutsideOfFrameworkContext()
     private static let instance = Framework()
     private static let internalContext = FrameworkInternalsContext()
 
     private init() {}
-
-    // must be called at every entry point to initialize global state
-    // parallel calls to this will lead to unclear exceptions, need to add diagnostics to prohibit this scenario
     static func launch<T>(api!: LaunchApi, hasWorkersInSetup!: Bool,
         progressQueue!: ?ConcurrentLinkedQueue<UTProgress> = None, body!: () -> T): T {
         instance.transport = if (hasWorkersInSetup) {
@@ -117,13 +110,9 @@ class Framework {
             f(instance.currentlyRunning)
         }
     }
-
-    // returns None if no step currently running
     static func abortCurrentStep(): ?RunStepResult {
         withCurrentContext { ctx =>
             let stepCtx = ctx as RunStepContext ?? return None
-
-            // attach unattached failures to current step
             stepCtx.checkResults.add(all: internalContext.checkResults)
             internalContext.checkResults.clear()
             let result = stepCtx.finishStep()
@@ -151,7 +140,7 @@ class Framework {
 
     static func onTestCasesRegistered(packageName: String, casesCount: UInt64): Unit {
         let workerId = match (TestProcessKind.fromDefaultConfiguration()) {
-            case Worker(_, _, nCasesSkip, _) where nCasesSkip > 0 => return // Do not call test cases registration repetetive
+            case Worker(_, _, nCasesSkip, _) where nCasesSkip > 0 => return
             case Worker(workerId, _, _, _) => workerId
             case _ => 0
         }
@@ -165,8 +154,6 @@ class Framework {
         }
 
         channel.send(message)
-
-        // Delimit output of static initialization and test execution.
         instance.transport?.channel?.delimitOutput()
 
         match (channel.receive(limit: 1).next()) {
@@ -209,11 +196,8 @@ class Framework {
 
 class OutsideOfFrameworkContext <: RunContext {
     protected func storeCheckResult(_: CheckResult) {
-        // behaviour for @Assert/@Expect outside of test cases can be defined here
     }
 }
-
-// Used to collect all checks that were executed outside of case body
 class FrameworkInternalsContext <: RunContext {}
 
 abstract class RunContext {

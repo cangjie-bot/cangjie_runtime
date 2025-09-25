@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
@@ -86,7 +86,6 @@ public class Block <: Expr {
         }
         if (isValidToken(rCurl_)) {
             var rCurlPos = rCurl_.pos
-            // if last pos of ret equal to rcurl.pos, refresh rcurl.pos, for lexer will delete rcurl when see pos equal to node.endPos
             if (ret[ret.size - 1].pos == rCurlPos) {
                 rCurlPos = Position(rCurlPos.fileID, rCurlPos.line, rCurlPos.column + 1)
             }
@@ -620,7 +619,7 @@ public class LitConstExpr <: Expr {
                 .append(Token(TokenKind.RPAREN).addPosition(pos.fileID, pos.line, pos.column + 1))
         }
         if ((literal_.kind == TokenKind.INTEGER_LITERAL || literal_.kind == TokenKind.FLOAT_LITERAL) &&
-            literal_.value.size > 1 && literal_.value[0] == 45) { // 45 is r'-'
+            literal_.value.size > 1 && literal_.value[0] == 45) {
             return Tokens()
                 .append(Token(TokenKind.SUB).addPosition(pos))
                 .append(Token(literal_.kind, literal_.value[1..]).addPosition(pos.fileID, pos.line, pos.column + 1))
@@ -3386,7 +3385,6 @@ public class SubscriptExpr <: Expr {
         } else {
             addParen(ret, postfixExpr_, this, addOnEqualPred: false)
         }
-        // for '\n[0] or ';[0]', delete r'\n' or r';'
         if (ret.size > 1 && (ret[ret.size - 1].kind == TokenKind.NL || ret[ret.size - 1].kind == TokenKind.SEMI)) {
             ret = ret.remove(ret.size - 1)
         }
@@ -3810,7 +3808,6 @@ public class OptionalExpr <: Expr {
     public init() {
         super()
     }
-    // we construct a MemberAccess to help parse OptionalExpr because compiler can't parse OptionalExpr directly.
     public init(inputs: Tokens) {
         let memberAccess: MemberAccess
         try {

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
 
@@ -102,13 +102,9 @@ class TypeTemplateParser {
     }
 }
 
-/**
- * Contains the reflective information that is common for classes, interfaces, structs and primitive types.
- */
+
 sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     private static let CACHE = HashMap<String, TypeInfo>()
-
-    // this is a pointer to type metadata
     protected let _info: CPointer<Unit>
     var _qualifiedName: Option<String> = None
     var _name: Option<String> = None
@@ -128,32 +124,24 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         _info = cp
     }
 
-    /**
-     * Creates the certain type info by generic type T.
-     */
+
     public static func of<T>(): TypeInfo {
         getOrCreate(getTypeByMangledName<T>())
     }
 
-    /**
-     * Creates the certain type info for incoming instance with 'Any' type.
-     */
+
     public static func of(a: Any): TypeInfo {
         getOrCreate(getTypeForAny(a))
     }
 
-    /**
-     * Creates the class type info for incoming instance with 'Object' type.
-     */
+
     @Deprecated[message: "Use 'ClassTypeInfo.of(Object)' instead."]
     public static func of(a: Object): ClassTypeInfo {
         (getOrCreate(getObjClass(a)) as ClassTypeInfo) ?? throw InfoNotFoundException("TypeInfo not found!")
     }
 
-    /**
-     * Searches and creates the certain type info by incoming qualified name.
-     * If no corresponding type information for incoming qualified name is found, the exception is thrown.
-     */
+
+
     public static func get(qualifiedName: String): TypeInfo {
         synchronized(TYPE_INFO_CREATE_LOCK) {
             if (let Some(ti) <- CACHE.get(qualifiedName)) {
@@ -179,9 +167,6 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         let (isPrimitive, _, _) = checkPrimitive(qualifiedName)
         let hasPrefix = qualifiedName.contains(".")
         let isGeneric = qualifiedName.contains("<")
-
-        // 1. primitive type should use mangled name to find type
-        // 2. qualifiedName in std.core should omits prefix, but runtime need it, must complete qualifiedName here
         let stripedName = qualifiedName.replace(" ", "")
         match ((isPrimitive, hasPrefix, isGeneric)) {
             case (true, _, _) => unsafe { stripedName }
@@ -202,9 +187,6 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             (qualifiedName, typeInfoPointer)
         }
     }
-
-    // tuple and function type currently not supported
-    // eg: Array<(()-> Unit, (Int64, String) -> Unit)>
     private static func parseGeneric(qualifiedName: String): String {
         var dotNum = 0
         var lastParseIdx = 0
@@ -305,9 +287,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         typeInfo
     }
 
-    /**
-     * Returns the simple name of type info.
-     */
+
     public prop name: String {
         get() {
             match (_name) {
@@ -320,9 +300,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the qualified name of type info.
-     */
+
     public prop qualifiedName: String {
         get() {
             match (_qualifiedName) {
@@ -334,8 +312,6 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             }
         }
     }
-
-    // return qualifiedName with space from runtime
     private static func getQualifiedName(pointer: CPointer<Unit>): String {
         let namePointer = getTypeName(pointer)
         return if (let qualifiedName <- CString(namePointer).toString()) {
@@ -356,9 +332,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the collection of public instance functions of type info.
-     */
+
     public prop instanceFunctions: Collection<InstanceFunctionInfo> {
         get() {
             if (_instanceFunctions.isNone()) {
@@ -368,9 +342,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the list of public static functions of type info.
-     */
+
     public prop staticFunctions: Collection<StaticFunctionInfo> {
         get() {
             if (_staticFunctions.isNone()) {
@@ -380,9 +352,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the collection of public instance properties of type info.
-     */
+
     public prop instanceProperties: Collection<InstancePropertyInfo> {
         get() {
             if (_instanceProperties.isNone()) {
@@ -392,9 +362,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the collection of public static properties of type info.
-     */
+
     public prop staticProperties: Collection<StaticPropertyInfo> {
         get() {
             if (_staticProperties.isNone()) {
@@ -404,9 +372,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the collection of annotations of type info.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -422,9 +388,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the collection of super interfaces of type info.
-     */
+
     public prop superInterfaces: Collection<InterfaceTypeInfo> {
         get() {
             match (_superInterfaces) {
@@ -458,9 +422,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns the collection of modifiers of type info.
-     */
+
     public prop modifiers: Collection<ModifierInfo> {
         get() {
             match (_modifiers) {
@@ -473,20 +435,15 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns true, if current type info is subtype of incoming type info, false otherwise.
-     */
+
     public func isSubtypeOf(supertype: TypeInfo): Bool {
-        // Any is super type of all types
         if (supertype.qualifiedName == "Any") {
             return true
         }
         isSubType(_info, supertype._info)
     }
 
-    /**
-     * Searches the type info's public instance function by incoming name and parameter types.
-     */
+
     public func getInstanceFunction(name: String, parameterTypes: Array<TypeInfo>): InstanceFunctionInfo {
         getByNameAndParamTypes(instanceFunctions, name, parameterTypes, "Instance func '${name}' not found.") {
             instanceFunction => (instanceFunction.name, instanceFunction.parameters)
@@ -501,9 +458,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         fns.toArray()
     }
 
-    /**
-     * Searches the type info's public static function by incoming name and parameter types.
-     */
+
     public func getStaticFunction(name: String, parameterTypes: Array<TypeInfo>): StaticFunctionInfo {
         getByNameAndParamTypes(staticFunctions, name, parameterTypes, "Static func '${name}' not found.") {
             staticFunction => (staticFunction.name, staticFunction.parameters)
@@ -518,27 +473,21 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         fns.toArray()
     }
 
-    /**
-     * Searches the type info's public instance property by incoming name and signature.
-     */
+
     public func getInstanceProperty(name: String): InstancePropertyInfo {
         getByName(instanceProperties, name, "Instance property '${name}' not found.") {
             instanceProperty => instanceProperty.name
         }
     }
 
-    /**
-     * Searches the type info's public static property by incoming name and signature.
-     */
+
     public func getStaticProperty(name: String): StaticPropertyInfo {
         getByName(staticProperties, name, "Static property '${name}' not found.") {
             staticProperty => staticProperty.name
         }
     }
 
-    /**
-     * Searches the type info's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
@@ -581,9 +530,6 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             if (name.isEmpty()) {
                 throw ReflectException("Unexpected empty instance func name.")
             }
-            // prop func starts with $
-            // need filter $toAny , which is generated by compiler
-            // NOTE: only exist in instance func of struct
             if (name[0] == b'$') {
                 let isGetter = match (name[name.size - 3..]) {
                     case "get" => true
@@ -630,7 +576,6 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             if (name.isEmpty()) {
                 throw ReflectException("Unexpected empty static func name.")
             }
-            // prop func starts with $
             if (name.startsWith("$")) {
                 let isGetter = match (name[name.size - 3..]) {
                     case "get" => true

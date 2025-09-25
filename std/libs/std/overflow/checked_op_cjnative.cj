@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.overflow
 
@@ -156,7 +156,7 @@ extend Int64 <: CheckedOp<Int64> & CheckedPow {
     public func checkedMod(y: Int64): ?Int64 {
         checkedMod<Int64>(this, y)
     }
-    public func checkedPow(y: UInt64): ?Int64 { // cjlint-ignore !G.ITF.02
+    public func checkedPow(y: UInt64): ?Int64 {
         checkedPow(this, y)
     }
     public func checkedInc(): ?Int64 {

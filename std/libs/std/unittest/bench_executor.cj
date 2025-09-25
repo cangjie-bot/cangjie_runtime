@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.PrettyText
@@ -77,7 +77,6 @@ class BenchExecutor<T> <: Executor {
         }
         let sb = StringBuilder()
         for (i in 0..inputs.size) {
-            // skip empty unit strategy
             if (inputs[i].name.isEmpty()) {
                 continue
             }
@@ -145,14 +144,10 @@ struct StatisticsSample {
     prop mode: Float64 { get () {
         kde.iterator().maxBy{ a => a[1] }[0]
     }}
-
-    // second mode to detect multimodality
     func mode2(): Float64 {
         let (modeIdx, (mode, modeDensity)) = kde.iterator().enumerate().maxBy{ a => a[1][1] }
 
         let kdeCopy = _kde.clone()
-
-        // remove points related to main mode
         for (direction in [1, -1]) {
             var i = modeIdx + direction
             var localMin = modeDensity
@@ -170,11 +165,7 @@ struct StatisticsSample {
             }
         }
         kdeCopy[modeIdx] = (mode, 0.0)
-
-        // find mode of remaining distribution
         let (mode2, density2) = kdeCopy.iterator().maxBy{ a => a[1] }
-
-        // if the second mode is big enough
         if (density2 / modeDensity > 0.15) {
             mode2
         } else {
@@ -193,7 +184,6 @@ class BenchmarkResult {
     prop median: Float64 { get() {
         bootstrapped.medianStats.sample.percentile(0.5)
     }}
-    // median confidence interval radius
     prop medianCI99: Float64 { get() {
         (bootstrapped.medianStats.sample.percentile(0.99) - bootstrapped.medianStats.sample.percentile(0.01)) / 2.0
     }}
@@ -215,7 +205,6 @@ class BenchmarkResult {
 
     prop mainResult: Float64 {
         get() {
-            // to get more stable output when result is basically zero
             if (median < 0.001) { 0.0 } else { median }
         }
     }
@@ -253,8 +242,6 @@ class BenchmarkResult {
 
         bootstrapped.finish()
     }
-
-    // bootstrap actual values distribution accounting for batch size and overhead
     func valuesSample(): StatisticsSample {
         let bootstrapped = ArrayList<Float64>()
         let medianOverhead = this.bootstrapped.medianOverheadStats.sample.data
@@ -359,7 +346,6 @@ struct BootstrapResult {
                 let slope = (y1 - y2) / (x1 - x2)
                 let yat0 = abs(y2 - x2 * slope) - 0.001
                 if (yat0 > y2 || yat0 > y1) {
-                    // do not include nonsensical values
                     continue
                 }
                 slopes.add(slope)

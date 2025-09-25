@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.impl
 
 import std.deriving.api.*
@@ -168,10 +168,8 @@ private func diagnoseOrdering(
         } else if (!fieldsSet.contains(o)) {
             match (findDecl(target, o)) {
                 case Some(p: PropDecl) where p.isStatic() =>
-                    // it would appear in the fieldsSet otherwise
                     logger.error(o.token, "Property ${o.value} is static, can't include it")
                 case Some(_: PropDecl) =>
-                    // it would appear in the fieldsSet otherwise
                     logger.error(o.token, "Property ${o.value} is not included, apply @DeriveInclude on it")
                 case Some(f: VarDecl) where f.isStatic() =>
                     logger.error(o.token, "Field ${o.value} is static, can't include it")
@@ -190,7 +188,7 @@ private func diagnoseOrdering(
         let message = "Not all attributes included: ${missing}"
         match (at) {
             case Some(at) => logger.error(at, message)
-            case None => throw MacroContextException(message) // we have no tokens to complain at
+            case None => throw MacroContextException(message)
         }
     }
 

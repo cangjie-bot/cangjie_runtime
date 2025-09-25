@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.fs.*
@@ -110,8 +110,6 @@ private func appendStatistics(
     var (result, unit) = table.minToNonAdjustedPair(benchStats.mainResult)
 
     let isEmptyBench = benchStats.errorEst == 0.0 && result == 0.0
-
-    // to get more stable output when result is basically zero
     if (result < 0.001) {
         result = 0.0
     }

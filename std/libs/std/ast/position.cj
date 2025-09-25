@@ -1,53 +1,53 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
 public struct Position <: ToBytes {
-    /* Fields */
+    
     public let fileID: UInt32
     public let line: Int32
     public let column: Int32
 
-    /* Constructors */
+    
 
-    /** Create an empty position. */
+    
     public init() {
         fileID = 0
         line = 0
         column = 0
     }
 
-    /** Create a new position which is formed by fileID, line, column. */
+    
     public init(fileID: UInt32, line: Int32, column: Int32) {
         this.fileID = fileID
         this.line = line
         this.column = column
     }
 
-    /* Methods */
+    
 
-    /** Returns true if and only if this position line and column equal to 0. */
+    
     public func isEmpty(): Bool {
         return line == 0 && column == 0
     }
 
-    /** Returns true if and only if the two positions are identical. */
+    
     public operator func ==(r: Position): Bool {
         return this.fileID == r.fileID && this.line == r.line && this.column == r.column
     }
 
-    /** Returns true if and only if the two positions are not identical. */
+    
     public operator func !=(r: Position): Bool {
         return !(this == r)
     }
 
-    /** Print the information of this position. */
+    
     public func dump(): Unit {
         print("fileID: ${fileID}, line: ${line}, column: ${column}\n")
     }

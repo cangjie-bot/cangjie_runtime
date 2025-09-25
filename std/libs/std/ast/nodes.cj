@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
@@ -78,13 +78,10 @@ public class Annotation <: Node {
     private var innerToken_: Tokens = quote(func innerToken() {})
     private var at_: Token = Token(TokenKind.AT)
     private var identifier_: Token = Token(TokenKind.IDENTIFIER, "")
-    // Common annotation
     private var lSquare_: Token = Token(TokenKind.LSQUARE)
     private var args_: ArrayList<Argument> = ArrayList<Argument>()
     private var rSquare_: Token = Token(TokenKind.RSQUARE)
-    // Attribute annotation
     private var attrs_: Tokens = Tokens()
-    // Condtional Compile
     private var cond_: Option<Expr> = None<Expr>
 
     public mut prop at: Token {
@@ -317,10 +314,8 @@ public class GenericParam <: Node {
     }
 }
 
-/*
- * GenericConstraint is:
- *   where T <: A, K <: B
- */
+
+
 public class GenericConstraint <: Node {
     init(keyword: Token, ty: TypeNode, upbound: Token, upperBounds: ArrayList<TypeNode>, bitAnds: Tokens) {
         super()
@@ -427,11 +422,9 @@ public class GenericConstraint <: Node {
     }
 }
 
-/*
- * Body is:
- *   {...}
- * For mutable types, like ClassDecl, StructDecl, InterfaceDecl
- */
+
+
+
 public class Body <: Node {
     init(lBrace: Token, decls: ArrayList<Decl>, rBrace: Token) {
         super()
@@ -485,7 +478,6 @@ public class Body <: Node {
             }
         }
         var rBracePos = rBrace_.pos
-        // if last pos of ret equal to rbrace.pos, refresh rbrace.pos, for lexer will delete rbrace when see pos equal to node.endPos
         if (ret[ret.size - 1].pos == rBracePos) {
             rBracePos = Position(rBracePos.fileID, rBracePos.line, rBracePos.column + 1)
         }
@@ -520,11 +512,9 @@ public class Body <: Node {
     }
 }
 
-/*
- * Argument is actual parameter Node:
- *   foo(arg1:value1)
- *   "arg1:value1" is an Argument type
- */
+
+
+
 public class Argument <: Node {
     init(inout_: Token, identifier: Token, colon: Token, expr: Expr, comma: Token) {
         super()
@@ -627,14 +617,12 @@ public class Argument <: Node {
     }
 }
 
-/*
- * MatchCase is the children node of Match Expression:
- *   var scoreResult: String = match (score) {
- *       case 0 => "zero" // This is a MatchCase Node
- *       case 10 | 20 | 30 | 40 | 50 => "fail" // This is a MatchCase Node
- *       case _ => "not a valid score"
- *   }
- */
+
+
+
+
+
+
 public class MatchCase <: Node {
     init(case_: Token, expr: Option<Expr>, arrow: Token, exprOrDecl: Block) {
         super()
@@ -815,9 +803,7 @@ public class MatchCase <: Node {
     }
 }
 
-/**
- * Program is the Cangjie source File node.
- */
+
 public class Program <: Node {
     init(pkgHeader: PackageHeader, importLists: ArrayList<ImportList>, decls: ArrayList<Decl>) {
         super()
@@ -916,10 +902,8 @@ public class Program <: Node {
     }
 }
 
-/**
- * PackageHeader node represents the package of the current file.
- * The PackageHeader starts with the keyword package, followed by the package name.
- */
+
+
 public class PackageHeader <: Node {
     init(accessibleToken: Token, macroToken: Token, keyword: Token, prefixPaths: Tokens, prefixDots: Tokens,
         pkgIdentifier: Token) {
@@ -1365,12 +1349,10 @@ public class ImportList <: Node {
     }
 }
 
-/**
- * Constructor node represents the values related to enum.
- * enum TimeUnit1 {
- *   Year | Month | Day | Hour(Float32) // Constructor node
- * }
- */
+
+
+
+
 public class Constructor <: Node {
     public init() {
     }

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.PrettyText
@@ -56,7 +56,6 @@ class TestSuiteExecutor {
 
         let afterAllResult = runNonTestBodyStep(suiteId, suiteInfo, AfterAll) {
             testSuite.runAfterAll()
-            // collect hanging failures in this step so that they are not lost
             Framework.withCurrentContext { ctx =>
                 for (unattached in Framework.collectUnattachedFailures()) {
                     ctx.storeCheckResult(unattached)
@@ -67,13 +66,9 @@ class TestSuiteExecutor {
         if (!beforeAllResult.hasFailures()) {
             result.add(afterAllResult)
         }
-
-        // making sure mock session close, but only reporting errors
-        // if there are no other error during teardown step
         try {
             MockFramework.closeSession()
         } catch (e: Exception) {
-            // Note: for now we assumes that it should not throw exceptions
         }
         result.finish()
         result
@@ -103,7 +98,6 @@ class TestSuiteExecutor {
         } else {
             var testBody = runSingleCase(caseConfiguration, testOrBench.executor)
             if (let Some(duration) <- caseConfiguration.timeout) {
-                // test body decorator if any time constraints are specified
                 testBody = runConsideringTimeout(caseConfiguration, duration, testBody)
             }
             testBody
@@ -172,7 +166,6 @@ class TestSuiteExecutor {
                 testSuite.runAfterEach(caseId.caseName)
             }
             if (!result.hasFailures() && afterEachResult.hasFailures()) {
-                // NOTE: for now these failures are suppressed if there are existing errors
                 result.add(afterEachResult)
             }
         }
@@ -207,13 +200,11 @@ class TestSuiteExecutor {
         if (TestProcessKind.fromDefaultConfiguration().isWorker) {
             exitOnTimeout(testCaseResult)
         } else {
-            // Executed via dynamic test API.
             let suiteId = testCaseResult.caseId.suiteId
             let info = TestCaseInfo(suiteId.groupName, suiteId.suiteName, testCaseResult.caseId.caseName)
             caseConfiguration.timeoutHandler(info)
             testingThread.cancel()
             Framework.withCurrentContext { ctx: RunContext =>
-                // It is to complicated to distinquish between cancelled execution and ended by itself.
                 let msg = "Execution time exceeded specified timeout."
                 ctx.checkFailed(TimeoutCheckResult(PrettyText(msg)))
             }
@@ -233,7 +224,6 @@ class TestSuiteExecutor {
                 duration: prev.duration)
             testCaseResult.add(newResult)
         } else {
-            // this case is almost nonsensical, but technically it can happen if there is sleep in the first iteration of @Strategy
             let failures = Framework.collectUnattachedFailures().toArray()
             let newResult = RunStepResult(0, DateTime.now(), UserCode, Failure(failures))
             testCaseResult.add(newResult)
@@ -254,7 +244,6 @@ extend TestSuite {
 
     prop allCasesIterator: Iterable<CaseOrBench> {
         get() {
-            // Better run some basic tests from template before.
             chain(template?.allCasesIterator ?? Array<CaseOrBench>().iterator(), cases)
         }
     }
@@ -280,7 +269,6 @@ extend TestSuite {
     }
 
     private func runBeforeEachMocked(caseShortName: String): Unit {
-        // Run template initializers before
         this.template?.runBeforeEachMocked(caseShortName)
         for (c in beforeEachs) {
             c(caseShortName)
@@ -291,12 +279,10 @@ extend TestSuite {
         for (c in afterEachs) {
             c(caseShortName)
         }
-        // Run template cleanups after
         this.template?.runAfterEach(caseShortName)
     }
 
     func runBeforeAll(): Unit {
-        // Run template initializers before
         this.template?.runBeforeAll()
         for (c in beforeAlls) {
             c()
@@ -307,7 +293,6 @@ extend TestSuite {
         for (c in afterAlls) {
             c()
         }
-        // Run template cleanups after
         this.template?.runAfterAll()
     }
 }

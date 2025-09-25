@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -12,14 +12,8 @@ import std.overflow.{CheckedOp, WrappingOp}
 import std.convert.Parsable
 
 sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
-
-    // IPAddress
     public prop address: IPAddress
-
-    // prefix length
     public prop prefixLength: UInt8
-
-    // Parse the IP address prefix from the character string. If the IP address prefix is invalid, IllegalFormatException is thrown.
     public static func parse(s: String): IPPrefix {
         match (tryParse(s)) {
             case Some(prefix) => return prefix
@@ -56,7 +50,6 @@ sealed abstract class IPPrefix <: Equatable<IPPrefix> & Hashable & ToString {
             case _ => false
         }
     }
-    // Overlap with the Specified IP Network
     public func overlaps(rhs: IPPrefix): Bool {
         match ((this, rhs)) {
             case (lv4: IPv4Prefix, rv4: IPv4Prefix) => return lv4.overlaps(rv4)

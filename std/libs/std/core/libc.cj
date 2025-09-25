@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -63,8 +63,6 @@ public struct LibC {
             return CString(cp)
         }
         let ptrArr: CPointer<UInt8> = str.acquireRaw()
-        // If the length of the string is greater than the safe length of the safe function,
-        // it needs to be copied multiple times.
         var remain = length
         var offset = 0
         while (remain >= SECUREC_MEM_MAX_LEN) {

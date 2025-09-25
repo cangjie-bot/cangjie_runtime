@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -39,8 +39,6 @@ public func println(str: String): Unit {
     }
 }
 
-// The `eprint` is used to print error message, such as exception throwing.
-// The message will be printed to standard error text stream rather than standard output.
 @Frozen
 public func eprint(str: String, flush!: Bool = true): Unit {
     unsafe {
@@ -53,8 +51,6 @@ public func eprint(str: String, flush!: Bool = true): Unit {
     }
 }
 
-// The `eprintln` is used to print error message, such as exception throwing.
-// The message will be printed to standard error text stream rather than standard output.
 @Frozen
 public func eprintln(str: String): Unit {
     unsafe {
@@ -124,14 +120,12 @@ private func readFromConsole(): String {
     return build.toString()
 }
 
-/**
- * overload primitive types for performance optimization
- * For example, when using `Bool` type as the argument of `print` function, there are two steps:
- * 1. call `toString()` method to create a String
- * 2. call `print(String)` function to do the printing
- * A few temporary objects like `Array<UInt8>` and `String` are created in above process.
- * If we provide a few overloaded `print` function below, these temporary objects can be avoided.
- */
+
+
+
+
+
+
 @Frozen
 public func print(b: Bool, flush!: Bool = false): Unit {
     unsafe { CJ_CORE_PrintBool(b, false, flush) }

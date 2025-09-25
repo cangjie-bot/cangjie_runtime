@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines TreeMap.
- */
+
+
+
+
+
+
+
+
 package std.collection
 
 const DEGREE: Int64 = 6
@@ -20,29 +17,25 @@ const MIN_CHILD_SIZE: Int64 = DEGREE
 const MAX_CHILD_SIZE: Int64 = 2 * DEGREE
 
 public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
-    /* The number of entries in the TreeMap. */
+    
     private var _size: Int64 = 0
 
-    /* Modified treemap version. */
+    
     private var modCount: Int64 = 0
 
-    /* Root node of the current TreeMap. */
+    
     private var root: Node<K, V>
 
-    /**
-     * Initializes an empty TreeMap.
-     *
-     * @since 0.43.1
-     */
+
+
+
     public init() {
         this.root = Node<K, V>(Node<K, V>.nullNode())
     }
 
-    /**
-     * Initializes a TreeMap with an incoming iterator for initialization.
-     *
-     * @since 0.43.1
-     */
+
+
+
     public init(elements: Collection<(K, V)>) {
         this.root = Node<K, V>(Node<K, V>.nullNode())
         for (i in elements) {
@@ -50,13 +43,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Initializes a TreeMap with an incoming list for initialization.
-     *
-     * @param elements an incoming list is initialized.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public init(elements: Array<(K, V)>) {
         this.root = Node<K, V>(Node<K, V>.nullNode())
         for (i in elements) {
@@ -64,16 +55,14 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Initializes a TreeMap with an incoming size and an initial element for initialization.
-     *
-     * @param size the size of the incoming initial element.
-     * @param initElement an incoming initElement is initialized.
-     *
-     * @throws IllegalArgumentException if size is less than zero
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
+
     public init(size: Int64, initElement: (Int64) -> (K, V)) {
         if (size < 0) {
             throw IllegalArgumentException("Invalid size of TreeMap: ${size}.")
@@ -86,14 +75,12 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Returns the value to which the specified key is mapped.
-     *
-     * @param key transfer key to obtain the value.
-     * @return the value corresponding to the return key is encapsulated with Option.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public func get(key: K): ?V {
         let sr = searchEntry(this.root, key)
         return match (sr.replaceNode) {
@@ -102,26 +89,22 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the specified key exists in this mapping.
-     *
-     * @param key transfer the key to be judged.
-     * @return bool returns true if exists; otherwise, false.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public func contains(key: K): Bool {
         searchEntry(this.root, key).replaceNode.isSome()
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the collection key exists in this mapping.
-     *
-     * @param keys transfer the collection key to be judged.
-     * @return bool returns true if exists; otherwise, false.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public func contains(all!: Collection<K>): Bool {
         for (key in all where !this.contains(key)) {
             return false
@@ -129,53 +112,44 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         return true
     }
 
-    /**
-     * Associates the specified @p value with the specified @p key in this map.
-     * If you map a mapping that previously contained a key, the old value is replaced.
-     *
-     * @param key the key to put.
-     * @param value the value to assign.
-     * @return If the key exists before the assignment, the value before the assignment is encapsulated with Option.
-     * Otherwise, return to Option<V>.None
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
+
+
     public func add(key: K, value: V): Option<V> {
-        //If the root node is full, split the root node.
         if (this.root.entrySize == MAX_ENTRY_SIZE) {
-            //Create a node as the new root node after splitting. The original root node becomes the left node.
             let newNode: Node<K, V> = Node<K, V>(Node<K, V>.nullNode())
             newNode.insertChild(0, this.root)
             this.root._parent = newNode
             splitNode(newNode, this.root, 0)
             this.root = newNode
         }
-        //Insert Node.
         return inserEntry(this.root, TreeMapEntry<K, V>(key, value))
     }
 
-    /**
-     * Transfer specified elements for traversal and assign values in sequence.
-     * If you map a mapping that previously contained a key, the old value is replaced.
-     *
-     * @param elements the element passing in for traversal assignment.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public func add(all!: Collection<(K, V)>): Unit {
         for ((k, v) in all) {
             this.add(k, v)
         }
     }
 
-    /**
-     * Removes the key-value pair corresponding to the key based on the specified key from this mapping, if one exists.
-     *
-     * @param key pass in the key to be deleted.
-     * @return removed element
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public func remove(key: K): Option<V> {
         if (this.isEmpty()) {
             return None
@@ -187,26 +161,22 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Traverse the set of transferred keys and delete them based on the traversal result.
-     *
-     * @param keys pass in the collection to traverse.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func remove(all!: Collection<K>): Unit {
         for (key in all) {
             this.remove(key)
         }
     }
 
-    /**
-     * Transfer a lambda expression and delete the corresponding key value if the condition is met.
-     *
-     * @param predicate transfer a lambda expression for judgment.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func removeIf(predicate: (K, V) -> Bool): Unit {
         var sr: SearchResult<K, V> = getFirstEntry()
         while (let Some(node) <- sr.replaceNode) {
@@ -235,38 +205,32 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Clear all key-value pairs.
-     *
-     * @since 0.43.1
-     */
+
+
+
     public func clear(): Unit {
         this._size = 0
         this.modCount++
         this.root = Node<K, V>(Node<K, V>.nullNode())
     }
 
-    /**
-     * Copy a TreeMap.
-     *
-     * @return a clone value of TreeMap.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func clone(): TreeMap<K, V> {
         return TreeMap<K, V>(this)
     }
 
-    /**
-     * An exception is reported when the get operator is overloaded and the key does not exist.
-     *
-     * @param key transfer the value for judgment.
-     * @return the value corresponding to the key.
-     *
-     * @throws NoneValueException if value does not exist.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
+
     public operator func [](key: K): V {
         return match (this.get(key)) {
             case None => throw NoneValueException("Value does not exist!")
@@ -274,84 +238,70 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * The operator overloads the set. If the key does not exist, an exception is reported.
-     *
-     * @param key transfer the value for judgment.
-     * @param value transfer the value to be set.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public operator func [](key: K, value!: V): Unit {
         this.add(key, value)
     }
 
-    /**
-     * Returns the Set view of all keys in this TreeMap.
-     *
-     * @return the Set view of the keys.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func keys(): EquatableCollection<K> {
         return TreeMapKeys<K, V>(this)
     }
 
-    /**
-     * Returns the Set view of all values in this TreeMap.
-     *
-     * @return the list view of the values.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func values(): Collection<V> {
         return TreeMapValues<K, V>(this)
     }
 
-    /**
-     * Returns sizes of key-value.
-     *
-     * @return sizes of key-value.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public prop size: Int64 {
         get() {
             return this._size
         }
     }
 
-    /**
-     * Check whether the size is empty. If yes, true is returned. Otherwise, false is returned.
-     *
-     * @return bool if yes, true is returned. Otherwise, false is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func isEmpty(): Bool {
         return this.root.isEmpty()
     }
 
-    /**
-     * Get an iterator.
-     *
-     * @return type is iterator, which contains key and value.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     @Frozen
     public func iterator(): Iterator<(K, V)> {
         let node = TreeMapEntryView(this, getFirstEntry())
         return TreeMapIterator<K, V>(node)
     }
 
-    /**
-     * Gets the first node of the TreeMap.
-     *
-     * @return If the first node exists, the key-value pair stored on the first node is returned. Otherwise, None is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public prop first: ?(K, V) {
         get() {
             let sr: SearchResult<K, V> = getFirstEntry()
@@ -364,13 +314,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Delete the first node of the TreeMap.
-     *
-     * @return If there is a first node, return the deletion and return the key-value pair it stores; Otherwise, None is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func removeFirst(): ?(K, V) {
         let sr: SearchResult<K, V> = getFirstEntry()
         match (sr.replaceNode) {
@@ -382,13 +330,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Gets the last node of the TreeMap.
-     *
-     * @return If the last node exists, the key-value pair stored on the first node is returned. Otherwise, None is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public prop last: ?(K, V) {
         get() {
             let sr: SearchResult<K, V> = getLastEntry()
@@ -401,13 +347,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Delete the last node of the TreeMap.
-     *
-     * @return If there is a last node, return the deletion and return the key-value pair it stores; Otherwise, None is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func removeLast(): ?(K, V) {
         let sr: SearchResult<K, V> = getLastEntry()
         match (sr.replaceNode) {
@@ -442,18 +386,17 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
         return TreeMapEntryView<K, V>(this, searchEntry(this.root, result))
     }
-    /**
-     * Generate an iterator in positive order from the current node to the end of the bound node.
-     *
-     * @param bound - Passed key
-     * @param inclusive: indicates whether the input key is included. The default value is true, indicating that the input key is included.
-     *
-     * @return value Iterator<(K, V)> - Returns an iterator in positive order from the current node to the end of the bound.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "this.map.version()".
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
+
+
+
+
     public func backward(mark: K, inclusive!: Bool = true): Iterator<(K, V)> {
         var entry = this.searchEntry(this.root, mark)
         return match (entry.replaceNode) {
@@ -471,18 +414,16 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /**
-     * Generate an iterator in positive order from the current node to the end of the bound node.
-     *
-     * @param bound - Passed key
-     * @param inclusive: indicates whether the input key is included. The default value is true, indicating that the input key is included.
-     *
-     * @return value Iterator<(K, V)> - Returns an iterator in positive order from the current node to the end of the bound.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "this.map.version()".
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func forward(mark: K, inclusive!: Bool = true): Iterator<(K, V)> {
         var entry = this.searchEntry(this.root, mark)
         return match (entry.replaceNode) {
@@ -500,12 +441,12 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /* Obtains the number of modification times. */
+    
     func version(): Int64 {
         return this.modCount
     }
 
-    /* Obtains the smallest node. */
+    
     func getFirstEntry(): SearchResult<K, V> {
         if (this.root.isEmpty()) {
             return SearchResult<K, V>(-1, None)
@@ -517,7 +458,7 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         return SearchResult<K, V>(0, curNode)
     }
 
-    /* Obtains the largest node. */
+    
     func getLastEntry(): SearchResult<K, V> {
         if (this.root.isEmpty()) {
             return SearchResult<K, V>(-1, None)
@@ -529,7 +470,7 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         return SearchResult<K, V>(curNode.entrySize - 1, curNode)
     }
 
-    /* Query the node location. */
+    
     func searchEntry(node: ?Node<K, V>, key: K): SearchResult<K, V> {
         if (let Some(node) <- node) {
             var sr: SearchResult<K, V> = node.searchEntry(key)
@@ -550,9 +491,8 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         return searchEntry(this.root, key)
     }
 
-    /* Insert a node. */
+    
     func inserEntry(node: Node<K, V>, entry: TreeMapEntry<K, V>): Option<V> {
-        //Query the location to be inserted.
         let sr: SearchResult<K, V> = node.searchEntry(entry.key)
         match (sr.replaceNode) {
             case Some(node) =>
@@ -561,14 +501,12 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
                 tmp.value = entry.value
                 return oldValue
             case None =>
-                //If the node is a leaf node, directly insert the node.
                 if (node.isLeaf()) {
                     this._size++
                     this.modCount++
                     node.insertEntry(sr.index, entry)
                     return None
                 }
-                //Find the child node and determine whether to split it.
                 var childNode: Node<K, V> = node.getChild(sr.index).getOrThrow()
                 if (childNode.entrySize == MAX_ENTRY_SIZE) {
                     splitNode(node, childNode, sr.index)
@@ -580,11 +518,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /* Split a node. */
+    
     func splitNode(node: Node<K, V>, splitNode: Node<K, V>, index: Int64) {
-        //Right node after splitting
         var rightNode: Node<K, V> = Node<K, V>(node)
-        //Distribute the element to the right node
         for (i in DEGREE..MAX_ENTRY_SIZE) {
             rightNode.entries.add(splitNode.entries[i])
         }
@@ -592,7 +528,6 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         for (i in MAX_ENTRY_SIZE - 1..DEGREE - 2 : -1) {
             splitNode.entries.remove(at: i)
         }
-        //If the node to be split is not a leaf node, assign the child to the right node.
         if (!splitNode.isLeaf()) {
             for (i in DEGREE..MAX_CHILD_SIZE) {
                 let child = splitNode.children[i]
@@ -603,23 +538,18 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
                 splitNode.children.remove(at: i)
             }
         }
-        //Raise the split element to the parent node.
         node.insertEntry(midEntry)
         node.insertChild(index + 1, rightNode)
     }
 
-    /* Delete a node. */
+    
     func deleteEntry(node: Node<K, V>, key: K): Option<V> {
-        //Query the location of the element to be deleted
         var sr: SearchResult<K, V> = node.searchEntry(key)
         match (sr.replaceNode) {
             case Some(v) =>
                 let oldValue: V
-                //If the node is not a leaf node, search for the previous node.
                 if (!v.isLeaf()) {
-                    //Find the previous element of the deleted element
                     var psr = predecessor(sr)
-                    //Swap the position of the predecessor element and the deleted element
                     if (let Some(rNode) <- psr.replaceNode) {
                         let entry = node.getEntry(sr.index).getOrThrow()
                         let rEntry = rNode.getEntry(psr.index).getOrThrow()
@@ -630,24 +560,18 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
                         sr = psr
                     }
                 }
-
-                //Deletes an element.
                 var curNode = sr.replaceNode.getOrThrow()
                 oldValue = curNode.getEntry(sr.index).getOrThrow().value
                 curNode.deleteEntry(sr.index)
                 this._size--
                 this.modCount++
-                //If the number of node elements after deletion is less than the minimum number of elements
                 while (curNode.entrySize < MIN_ENTRY_SIZE) {
-                    //If the current node is the root node, the loop ends.
                     if (curNode._parent.isNone()) {
                         break
                     }
-                    //Find the parent node of the current node.
                     let psr: SearchResult<K, V> = parentOf(curNode)
                     let parent: Node<K, V> = psr.replaceNode.getOrThrow()
                     var broNode: ?Node<K, V> = Node<K, V>.nullNode()
-                    //If there is a left brother, and the left brother has an extra element, borrow an element from him.
                     if (psr.index > 0 && parent.getChild(psr.index - 1).getOrThrow().entrySize > MIN_ENTRY_SIZE) {
                         broNode = parent.getChild(psr.index - 1).getOrThrow()
                         curNode.insertEntry(0, parent.getEntry(psr.index - 1).getOrThrow())
@@ -662,7 +586,6 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
                         broNode?.deleteEntry(broNode.getOrThrow().entrySize - 1)
                         continue
                     }
-                    //If there is a right brother, and the right brother has an extra element, borrow an element from him.
                     if (psr.index < parent.childrenSize - 1 && parent.getChild(psr.index + 1).getOrThrow().entrySize >
                         MIN_ENTRY_SIZE) {
                         broNode = parent.getChild(psr.index + 1).getOrThrow()
@@ -678,9 +601,7 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
                         broNode?.deleteEntry(0)
                         continue
                     }
-                    //Left and right brothers do not have redundant elements. Merge left and right brothers and parent nodes.
                     if (psr.index > 0) {
-                        //There's left brother
                         broNode = parent.getChild(psr.index - 1).getOrThrow()
                         broNode?.insertEntry(parent.getEntry(psr.index - 1).getOrThrow())
                         for (i in 0..curNode.entrySize) {
@@ -696,7 +617,6 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
                         parent.deleteEntry(psr.index - 1)
                         parent.deleteChild(psr.index)
                     } else {
-                        //There's a right brother
                         broNode = parent.getChild(psr.index + 1).getOrThrow()
                         curNode.insertEntry(parent.getEntry(psr.index).getOrThrow())
                         for (i in 0..broNode.getOrThrow().entrySize) {
@@ -715,7 +635,6 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
                         parent.deleteEntry(psr.index)
                         parent.deleteChild(psr.index + 1)
                     }
-                    //If the parent node of the current node is the root node and there is no element left, the current node is the new root node.
                     if (parent._parent.isNone() && parent.isEmpty()) {
                         this.root = if (broNode.getOrThrow().isEmpty()) {
                             curNode
@@ -732,41 +651,33 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
-    /* Search for the predecessor node. */
+    
     func predecessor(sr: SearchResult<K, V>): SearchResult<K, V> {
         var curSr = sr
         var curNode = sr.replaceNode.getOrThrow()
-        //If the current node is a leaf node
         if (curNode.isLeaf()) {
-            //If the current node does not have redundant elements, query upwards.
             while (curSr.index < 1 && curNode._parent.isSome()) {
                 curSr = parentOf(curNode)
                 curNode = curSr.replaceNode.getOrThrow()
             }
-            //Find the top-most parent node.
             if (curSr.index < 1) {
-                //If the predecessor node is not found, there is no.
                 return SearchResult<K, V>(-1, None)
             }
 
             return SearchResult<K, V>(curSr.index - 1, curNode)
         }
-        //If the current node is a non-leaf node, it must have a left child.
         var leftChild = curNode.getChild(sr.index).getOrThrow()
-        //If the left child is a leaf node, the rightmost element is returned, otherwise the loop looks for its rightmost child.
         while (!leftChild.isLeaf()) {
             leftChild = leftChild.getChild(leftChild.childrenSize - 1).getOrThrow()
         }
         return SearchResult<K, V>(leftChild.entrySize - 1, leftChild)
     }
 
-    /* Query the successor node. */
+    
     func successor(sr: SearchResult<K, V>): SearchResult<K, V> {
         var curSr = sr
         var curNode = sr.replaceNode.getOrThrow()
-        //If the current node is a leaf node
         if (curNode.isLeaf()) {
-            //If the current node has extra elements, the next one is returned.
             if (curSr.index < curNode.entrySize - 1) {
                 return SearchResult<K, V>(curSr.index + 1, curNode)
             }
@@ -777,22 +688,17 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
             curSr = parentOf(curNode)
             curNode = curSr.replaceNode.getOrThrow()
-            //If the current node does not have redundant elements, query upwards.
             while (curSr.index > curNode.entrySize - 1 && curNode._parent.isSome()) {
                 curSr = parentOf(curNode)
                 curNode = curSr.replaceNode.getOrThrow()
             }
-            //Find the top-most parent node
             if (curSr.index > curNode.entrySize - 1) {
-                //If the successor node is not found, then there is no.
                 return SearchResult<K, V>(-1, None)
             }
 
             return SearchResult<K, V>(curSr.index, curNode)
         }
-        //If the current node is a non-leaf node, it must have a right child.
         var rightChild = curNode.getChild(curSr.index + 1).getOrThrow()
-        //If the right child is a leaf node, the leftmost element is returned, otherwise the loop looks for its leftmost child.
         while (!rightChild.isLeaf()) {
             rightChild = rightChild.getChild(0).getOrThrow()
         }
@@ -800,7 +706,7 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         return SearchResult<K, V>(0, rightChild)
     }
 
-    /* Find the parent node of a node. */
+    
     func parentOf(node: Node<K, V>): SearchResult<K, V> {
         let parent = node._parent
         var index = 0
@@ -821,11 +727,10 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 }
 
 extend<K, V> TreeMap<K, V> <: ToString where V <: ToString, K <: ToString & Comparable<K> {
-    /**
-     * Returns the string form of a TreeMap
-     *
-     * @since 0.43.1
-     */
+
+
+
+
     public func toString(): String {
         let size: Int64 = this.size
         if (size == 0) {
@@ -847,14 +752,13 @@ extend<K, V> TreeMap<K, V> <: ToString where V <: ToString, K <: ToString & Comp
 }
 
 extend<K, V> TreeMap<K, V> <: Equatable<TreeMap<K, V>> where V <: Equatable<V> {
-    /**
-     * Compares whether two TreeMaps are equal.
-     *
-     * @param that Another TreeMap instance.
-     * @return If two TreeMaps are equal, true is returned. Otherwise, false is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
     public operator func ==(right: TreeMap<K, V>): Bool {
         if (refEq(this, right)) {
             return true
@@ -877,14 +781,12 @@ extend<K, V> TreeMap<K, V> <: Equatable<TreeMap<K, V>> where V <: Equatable<V> {
         return true
     }
 
-    /**
-     * Compares whether two TreeMaps are not equal.
-     *
-     * @param that Another TreeMap instance.
-     * @return If two TreeMaps are equal, false is returned. Otherwise, true is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public operator func !=(right: TreeMap<K, V>): Bool {
         return !(this == right)
     }
@@ -902,12 +804,10 @@ struct TreeMapEntryView<K, V> <: MapEntryView<K, V> where K <: Comparable<K> {
         this._key = key
     }
 
-    /*
-     * Gets the key of the node.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "this.map.version()".
-     *
-     */
+
+
+
+
     public prop key: K {
         get() {
             if (lockVersion != this.map.version()) {
@@ -923,12 +823,10 @@ struct TreeMapEntryView<K, V> <: MapEntryView<K, V> where K <: Comparable<K> {
         }
     }
 
-    /*
-     * Gets or modify the key of the node.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "this.map.version()".
-     *
-     */
+
+
+
+
     public mut prop value: ?V {
         get() {
             if (lockVersion != this.map.version()) {
@@ -983,13 +881,11 @@ class ForwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
     private var key: K
     private var inclusive: Bool
 
-    /**
-     * Initialize the iterator and transfer the treemap.
-     *
-     * @param map the treemap to be transferred.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     init(node: TreeMapEntryView<K, V>, key: K, inclusive: Bool) {
         this.curNode = if (inclusive || !node.isSome()) {
             node
@@ -1000,15 +896,13 @@ class ForwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
         this.inclusive = inclusive
     }
 
-    /**
-     * Iterate over the nodes of the treemap. The return type is Option, which contains key and value.
-     *
-     * @return type is Option, which contains key and value.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "this.map.version()".
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
     @Frozen
     public func next(): Option<(K, V)> {
         checkVersion(curNode)
@@ -1029,13 +923,11 @@ class BackwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
     private var key: K
     private var inclusive: Bool
 
-    /**
-     * Initialize the iterator and transfer the treemap.
-     *
-     * @param map the treemap to be transferred.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     init(node: TreeMapEntryView<K, V>, key: K, inclusive: Bool) {
         this.curNode = if (inclusive || !node.isSome()) {
             node
@@ -1046,15 +938,13 @@ class BackwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
         this.inclusive = inclusive
     }
 
-    /**
-     * Iterate over the nodes of the treemap. The return type is Option, which contains key and value.
-     *
-     * @return type is Option, which contains key and value.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "this.map.version()".
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
     @Frozen
     public func next(): Option<(K, V)> {
         checkVersion(curNode)
@@ -1076,83 +966,69 @@ func checkVersion<K, V>(node: TreeMapEntryView<K, V>) where K <: Comparable<K> {
     }
 }
 
-/**
- * This class is a collection of K types of treemap and is suitable for stripping key-value pair types.
- *
- * @since 0.43.1
- */
+
+
+
 class TreeMapKeys<K, V> <: EquatableCollection<K> where K <: Comparable<K> {
     private let map: TreeMap<K, V>
     public init(m: TreeMap<K, V>) {
         this.map = m
     }
 
-    /**
-     * Returns sizes of key-value.
-     *
-     * @return sizes of key-value.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public prop size: Int64 {
         get() {
             return this.map.size
         }
     }
 
-    /**
-     * Check whether the size is empty. If yes, true is returned. Otherwise, false is returned.
-     *
-     * @return bool if yes, true is returned. Otherwise, false is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func isEmpty(): Bool {
         return this.map.isEmpty()
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the specified key exists in this mapping.
-     *
-     * @param element transfer the key to be judged.
-     * @return bool returns true if exists; otherwise, false.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public func contains(element: K): Bool {
         return this.map.contains(element)
     }
 
-    /**
-     * Checks whether the mapping relationship corresponding to the collection key exists in this mapping.
-     *
-     * @param elements transfer the collection key to be judged.
-     * @return bool returns true if exists; otherwise, false.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
     public func contains(all!: Collection<K>): Bool {
         return this.map.contains(all: all)
     }
 
-    /**
-     * Returns iterator of treemap.
-     *
-     * @return iterator of treemap.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     @Frozen
     public func iterator(): Iterator<K> {
         return map.iterator().map<K> {i: (K, V) => i[0]}
     }
 }
 
-/**
- * This class is a collection of V types of treemaps and is suitable for stripping key-value pair types.
- *
- * @since 0.43.1
- */
+
+
+
 class TreeMapValues<K, V> <: Collection<V> where K <: Comparable<K> {
     private let map: TreeMap<K, V>
 
@@ -1160,71 +1036,59 @@ class TreeMapValues<K, V> <: Collection<V> where K <: Comparable<K> {
         this.map = m
     }
 
-    /**
-     * Returns sizes of values.
-     *
-     * @return sizes of values.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public prop size: Int64 {
         get() {
             return this.map.size
         }
     }
 
-    /**
-     * Check whether the size is empty. If yes, true is returned. Otherwise, false is returned.
-     *
-     * @return bool if yes, true is returned. Otherwise, false is returned.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public func isEmpty(): Bool {
         return this.map.isEmpty()
     }
 
-    /**
-     * Returns value Iterator<T> - Iterator<T> type, which can be traversed using an iterator.
-     *
-     * @return the value corresponding to the return key is encapsulated with Option.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     @Frozen
     public func iterator(): Iterator<V> {
         return map.iterator().map<V> {i: (K, V) => i[1]}
     }
 }
 
-/**
- * This is a treemap iterator used to iterate effects.
- *
- * @since 0.43.1
- */
+
+
+
 class TreeMapIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
     private var curNode: TreeMapEntryView<K, V>
 
-    /**
-     * Initialize the iterator and transfer the treemap.
-     *
-     * @param map the treemap to be transferred.
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
     public init(node: TreeMapEntryView<K, V>) {
         this.curNode = node
     }
 
-    /**
-     * Iterate over the nodes of the treemap. The return type is Option, which contains key and value.
-     *
-     * @return type is Option, which contains key and value.
-     *
-     * @throws ConcurrentModificationException if lockVersion is not equal to "this.data.version()".
-     *
-     * @since 0.43.1
-     */
+
+
+
+
+
+
+
     @Frozen
     public func next(): Option<(K, V)> {
         checkVersion(curNode)

@@ -1,17 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
 import std.collection.ArrayList
 
 public func parseType(input: Tokens): TypeNode {
-    /* Get node info from flatbuffer */
+    
     let node = unsafe {
         try {
             parse(input, {
@@ -24,7 +24,7 @@ public func parseType(input: Tokens): TypeNode {
             throw ParseASTException("parsing type error.")
         }
     }
-    /* Get decl info from flatbuffer */
+    
     var astNode = generateTypeAST(node.GetRootAsType())
     return astNode
 }
@@ -93,7 +93,6 @@ func createPrimitiveType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase)
     var typeBase = primitiveType.GetBase() ?? throw ParseASTException()
     var typeName: Token = Token(TokenKind.IDENTIFIER, typeBase.GetTypeParameterName()).addPosition(nodeBase.GetBegin())
     let colon: Token = Token(TokenKind.COLON).addPosition(typeBase.GetColonPos())
-    // for named parameter types x: Type, type position is in type_pos, otherwise, just use begin
     let typePosition = if (isValidPosition(typeBase.GetTypePos())) {
         typeBase.GetTypePos()
     } else {
@@ -230,7 +229,6 @@ func createThisType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): Typ
     var typeBase = thisType.GetBase() ?? throw ParseASTException()
     var typeName: Token = Token(TokenKind.IDENTIFIER, typeBase.GetTypeParameterName()).addPosition(nodeBase.GetBegin())
     let colon: Token = Token(TokenKind.COLON).addPosition(typeBase.GetColonPos())
-    // for named parameter types x: Type, type position is in type_pos, otherwise, just use begin
     let typePosition = if (isValidPosition(typeBase.GetTypePos())) {
         typeBase.GetTypePos()
     } else {

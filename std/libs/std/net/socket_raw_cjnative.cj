@@ -1,28 +1,26 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
 import std.sync.*
 
-/*
- * This API supplies users with the basic functionality to create and use sockets of different domains and types.
- * For example, based on this API user should be able to create sockets in following domains: AF_PACKET, AF_NETLINK,
- * and in following types: SOCK_RAW, SOCK_SEQPACKET.
- * This is a low-level API, not recommended for general and direct usage. Users are encouraged to construct their own
- * higher level APIs based on this one to access a socket of specific domain and/or type.
- * For general usage of TCP, UDP, UDS in stream or datagram mode, it's encouraged to use existing corresponding
- * Cangjie APIs rather than this one.
- * Implementation note:
- * This API is an thin interface between Cangjie code and system calls related to socket.
- * To enable users to access these system calls, the implementation makes sure that calling these wrapped cangjie API
- * will not block underlying system thread.
- */
+
+
+
+
+
+
+
+
+
+
+
 @When[backend == "cjnative"]
 public class RawSocket {
     let sockImpl: RawSocketImpl
@@ -38,7 +36,7 @@ public class RawSocket {
         }
     }
 
-    /* Get local socket address */
+    
     @Deprecated[message: "Use `public prop localAddress: RawAddress` instead."]
     public prop localAddr: RawAddress {
         get() {
@@ -47,7 +45,7 @@ public class RawSocket {
         }
     }
 
-    /* Get local socket address */
+    
     public prop localAddress: RawAddress {
         get() {
             throwIfClosed()
@@ -55,7 +53,7 @@ public class RawSocket {
         }
     }
 
-    /* Get remote socket address */
+    
     @Deprecated[message: "Use `public prop remoteAddress: RawAddress` instead."]
     public prop remoteAddr: RawAddress {
         get() {
@@ -64,7 +62,7 @@ public class RawSocket {
         }
     }
 
-    /* Get remote socket address */
+    
     public prop remoteAddress: RawAddress {
         get() {
             throwIfClosed()
@@ -72,7 +70,7 @@ public class RawSocket {
         }
     }
 
-    /* Get or set timeout for socket read */
+    
     public mut prop readTimeout: ?Duration {
         get() {
             throwIfClosed()
@@ -84,7 +82,7 @@ public class RawSocket {
         }
     }
 
-    /* Get or set timeout for socket write */
+    
     public mut prop writeTimeout: ?Duration {
         get() {
             throwIfClosed()
@@ -100,15 +98,13 @@ public class RawSocket {
         this.sockImpl = RawSocketImpl(fd)
     }
 
-    /**
-     * Create a socket with specific domain, type and protocol.
-     *
-     * @param domain The socket communication domain defined in struct SocketDomain.
-     * @param sockType The socket type defined in struct SocketType.
-     * @param protocol The socket protocol defined in struct ProtocolType.
-     *
-     * @throws SocketException if fail to create socket.
-     */
+
+
+
+
+
+
+
     public init(domain: SocketDomain, `type`: SocketType, protocol: ProtocolType) {
         unsafe {
             let cNet = LibC.mallocCString("raw")
@@ -121,13 +117,11 @@ public class RawSocket {
         }
     }
 
-    /**
-     * Assign an address to the socket.
-     *
-     * @param addr The socket address stored in byte array.
-     *
-     * @throws SocketException if fail to bind address.
-     */
+
+
+
+
+
     public func bind(addr: RawAddress): Unit {
         throwIfClosed()
         match (localAddr_) {
@@ -138,13 +132,11 @@ public class RawSocket {
         }
     }
 
-    /**
-     * Mark the socket as a passive socket to accept incoming connection.
-     *
-     * @param backlog The maximum length of the pending connections queue.
-     *
-     * @throws SocketException if fail to listen.
-     */
+
+
+
+
+
     public func listen(backlog: Int32): Unit {
         throwIfClosed()
         let sockFd = unsafe { CJ_MRT_SockListen(this.sockFd, backlog) }
@@ -154,18 +146,16 @@ public class RawSocket {
         this.sockImpl.sockFd = sockFd
     }
 
-    /**
-     * Accept a connecting socket, waiting for one if there are no pending connection requests within the specified timeout.
-     * If the timeout is `None`, then acception attempts will continue without time limit.
-     * If the timeout less than or equal to Duration.Zero, it will timeout immediately.
-     *
-     * @param timeout The maxium waiting duration for getting a connection.
-     * @return RawSocket for communication.
-     *
-     * @throws IllegalArgumentException if timeout is negative.
-     * @throws SocketTimeoutException if the specified timeout ellapsed before any connection request were made.
-     * @throws SocketException when other error occurs.
-     */
+
+
+
+
+
+
+
+
+
+
     public func accept(timeout!: ?Duration = None): RawSocket {
         let val = getTimeout(timeout)
         throwIfClosed()
@@ -191,21 +181,18 @@ public class RawSocket {
         return connSock
     }
 
-    /**
-     * Connect the socket to the address specified by addr within the specified timeout.
-     * If the timeout is `None`, then acception attempts will continue without time limit.
-     *
-     * @param addr The peer socket address.
-     * @param timeout The maxium duration for connection.
-     *
-     * @throws IllegalArgumentException if timeout is negative.
-     * @throws SocketTimeoutException if the specified timeout ellapsed before acception was made.
-     * @throws SocketException when other error occurs.
-     */
+
+
+
+
+
+
+
+
+
     public func connect(addr: RawAddress, timeout!: ?Duration = None): Unit {
         throwIfClosed()
         let val = getTimeout(timeout)
-        // connect will not try to connect when timeout == 0
         if (val == 0) {
             throw SocketTimeoutException("Failed to connect: connect timeout.")
         }
@@ -213,7 +200,7 @@ public class RawSocket {
         this.localAddr_ = getLocalAddress()
     }
 
-    /* Close the socket */
+    
     public func close(): Unit {
         if (this.isClosed) {
             return
@@ -222,32 +209,28 @@ public class RawSocket {
         this.sockImpl.close()
     }
 
-    /**
-     * Transmit a message specified by buffer to another socket.
-     *
-     * @param addr The peer address.
-     * @param buffer The array data to be send.
-     * @param flag The flag of how to invoke this func.
-     *
-     * @throws SocketTimeoutException when timeout.
-     * @throws SocketException when other error occurs.
-     */
+
+
+
+
+
+
+
+
     public func sendTo(addr: RawAddress, buffer: Array<Byte>, flags: Int32): Unit {
         throwIfClosed()
         let timeout = this.writeTimeout_?.toNanoseconds() ?? -1
         return sockImpl.sendTo(addr.addr, buffer, flags, timeout)
     }
 
-    /**
-     * Receive a message and store it in buffer.
-     *
-     * @param buffer The buffer for message to be stored in.
-     * @param flag The flag of how to invoke this func.
-     * @return tuple of peer address and the number of bytes sent.
-     *
-     * @throws SocketTimeoutException when timeout.
-     * @throws SocketException when other error occurs.
-     */
+
+
+
+
+
+
+
+
     public func receiveFrom(buffer: Array<Byte>, flags: Int32): (RawAddress, Int64) {
         throwIfClosed()
         let timeout = this.readTimeout_?.toNanoseconds() ?? -1
@@ -259,47 +242,41 @@ public class RawSocket {
         return sockImpl.receiveFrom(size, buffer, flags, timeout)
     }
 
-    /**
-     * Transmit a message specified by buffer to another socket. This api is only used for connected socket.
-     *
-     * @param buffer The array data to be send.
-     * @param flag The flag of how to invoke this func.
-     *
-     * @throws SocketTimeoutException when timeout.
-     * @throws SocketException when other error occurs.
-     */
+
+
+
+
+
+
+
     public func send(buffer: Array<Byte>, flags: Int32): Unit {
         throwIfClosed()
         let timeout = this.writeTimeout_?.toNanoseconds() ?? -1
         return sockImpl.send(buffer, flags, timeout)
     }
 
-    /**
-     * Receive a message and store it in buffer. This api is only used for connected socket.
-     *
-     * @param buffer The buffer for message to be stored in.
-     * @param flag The flag of how to invoke this func.
-     * @return the number of bytes sent.
-     *
-     * @throws SocketTimeoutException when timeout.
-     * @throws SocketException when other error occurs.
-     */
+
+
+
+
+
+
+
+
     public func receive(buffer: Array<Byte>, flags: Int32): Int64 {
         throwIfClosed()
         let timeout = this.readTimeout_?.toNanoseconds() ?? -1
         return sockImpl.receive(buffer, flags, timeout)
     }
 
-    /**
-     * Set socket option with value specified by @p value in byte array form.
-     *
-     * @param level Socket option level defined in struct OptionLevel or Int32 value.
-     * @param option Socket option name defined in struct OptionName or Int32 value.
-     * @param value The value of option name in CPointer form.
-     * @param len The length of option name struct.
 
-     * @throws SocketException if fail to set socket option.
-     */
+
+
+
+
+
+
+
     public unsafe func setSocketOption(level: Int32, option: Int32, value: CPointer<Byte>, len: Int32): Unit {
         throwIfClosed()
         let ret = CJ_SockOptionSet(this.sockFd, level, option, CPointer<Unit>(value), len)
@@ -309,16 +286,14 @@ public class RawSocket {
         }
     }
 
-    /**
-     * Get socket option value.
-     *
-     * @param level Socket option level defined in struct OptionLevel or Int32 value.
-     * @param option Socket option name defined in struct OptionName or Int32 value.
-     * @param value The value of option name to be stored in.
-     * @param len The length of value to be stored in.
-     *
-     * @throws SocketException if fail to get socket option.
-     */
+
+
+
+
+
+
+
+
     public unsafe func getSocketOption(level: Int32, option: Int32, value: CPointer<Byte>, len: CPointer<Int32>): Unit {
         throwIfClosed()
         let ret = CJ_SockOptionGet(this.sockFd, level, option, CPointer<Unit>(value), len)
@@ -600,7 +575,6 @@ class RawSocketImpl {
         var copyLen: Int32 = 0
         unsafe {
             let bufCp = acquireArrayRawData(buffer)
-            // bufCp.pointer copy to socketBufferPtr
             copyLen = CJ_SOCKET_BufferWCopy(
                 this.socketBufferPtr,
                 bufCp.pointer,
@@ -635,7 +609,6 @@ class RawSocketImpl {
             var copyLen: Int32 = 0
             unsafe {
                 let bufCp = acquireArrayRawData(buffer)
-                // bufCp.pointer copy to socketBufferPtr
                 copyLen = CJ_SOCKET_BufferWCopy(
                     this.socketBufferPtr,
                     bufCp.pointer + writeToBufferSize,
@@ -681,7 +654,6 @@ class RawSocketImpl {
                 if (r < 0) {
                     socketProcessErrno(ErrnoLabel.Read)
                 }
-                // Can not get address if timeout
                 (addr.toRawAddress(), r)
             } finally {
                 addr.free()
@@ -690,7 +662,6 @@ class RawSocketImpl {
         var copyLen: Int32 = 0
         unsafe {
             let bufCp = acquireArrayRawData(buffer)
-            // socketBufferPtr copy to bufCp.pointer
             copyLen = CJ_SOCKET_BufferRCopy(this.socketBufferPtr, bufCp.pointer, buffer.size, readLen)
             releaseArrayRawData(bufCp)
         }
@@ -709,7 +680,6 @@ class RawSocketImpl {
             var copyLen: Int32 = 0
             unsafe {
                 let bufCp = acquireArrayRawData(buffer)
-                // socketBufferPtr copy to bufCp.pointer
                 copyLen = CJ_SOCKET_BufferRCopy(this.socketBufferPtr, bufCp.pointer, buffer.size, readLen)
                 releaseArrayRawData(bufCp)
             }
@@ -729,7 +699,7 @@ class RawSocketImpl {
     func close(): Unit {
         match (socketBufferPtr.isNull()) {
             case true => unsafe { CJ_MRT_SockClose(sockFd) }
-            case false => unsafe { CJ_SOCKET_BufferClose(socketBufferPtr, sockFd) } // does CJ_MRT_SockClose inside
+            case false => unsafe { CJ_SOCKET_BufferClose(socketBufferPtr, sockFd) }
         }
     }
 }

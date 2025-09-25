@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines some utility functions.
- */
+
+
+
+
+
+
+
+
 
 package std.io
 
@@ -18,13 +15,12 @@ let BLOCK_SIZE = 4096
 
 @FastNative
 foreign func CJ_IO_IsBigEndian(): Bool
-/**
- * SeekPosition  is the position of the cursor in the file.
- */
+
+
 public enum SeekPosition {
-    | Current(Int64) /* < current position. */
-    | Begin(Int64) /* < begin position of the file. */
-    | End(Int64) /* < end position of the file. */
+    | Current(Int64) 
+    | Begin(Int64) 
+    | End(Int64) 
 }
 
 public func readString<T>(from: T): String where T <: InputStream & Seekable {

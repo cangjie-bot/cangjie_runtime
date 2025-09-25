@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.math.numeric
 
@@ -69,11 +69,10 @@ func reinterpretAsInt(val: Float32): Int32 {
 func reinterpretAsInt(val: Float64): Int64 {
     return Int64(val.toBits())
 }
-/**
- * @brief Decimal
- *
- * @since 0.46.1
- */
+
+
+
+
 public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
     var _scale: Int32
 
@@ -83,98 +82,88 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
     var _sign: Int64
 
-    /**
-     * Return the scale of this Decimal.
-     * A Decimal is presented as (value * (10 ^ {- scale})), and
-     * this property returns the scale part.
-     *
-     * @return: the scale of this Decimal.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public prop scale: Int32 {
         get() {
             this._scale
         }
     }
 
-    /**
-     * Return the precision, which is the number of digits in value, of this Decimal.
-     *
-     * @return: the scale of this Decimal.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
     public prop precision: Int64 {
         get() {
             this._precision
         }
     }
 
-    /**
-     * Return the digits of this Decimal.
-     * A Decimal is presented as (value * (10 ^ {- scale}), and
-     * this property returns the value part.
-     *
-     * @return: the unscaled value of this Decimal.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public prop value: BigInt {
         get() {
             this._value
         }
     }
 
-    /**
-     * Return the signum function of this Decimal.
-     *
-     * @return:
-     *  -1: if this Decimal is negative;
-     *   0: if this Decimal equals to zero;
-     *   1: if this Decimal is positive.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
     public prop sign: Int64 {
         get() {
             this._sign
         }
     }
 
-    /**
-     * Translate a string @p val into a Decimal.
-     * The form of the string @p val follows the BNF 'DecimalString' shown below.
-     *
-     * DecimalString
-     *     : (SignString)? ValueString (ExponentString)?
-     * SignString
-     *     : + | -
-     * ValueString
-     *     : IntegerPart.(FractionPart)?
-     *     | .FractionPart
-     *     | IntegerPart
-     * IntegerPart
-     *     : Digits
-     * FractionPart
-     *     : Digits
-     * ExponentString
-     *     : ExponentIndicator (SignString)? IntegerPart
-     * ExponentIndicator
-     *     : e | E
-     * Digits
-     *     : Digit | Digit Digits
-     * Digit
-     *     : 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
-     *
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @throws IllegalArgumentException if @p val does match the required string format
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public static func parse(value: String): Decimal` instead."]
     public init(val: String) {
         if (val.isEmpty()) {
@@ -186,7 +175,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
         var newValArr: Array<UInt8> = Array<UInt8>(val.size, repeat: 0)
         var isPositive: Bool = true
-        // process sign bit
         var offset = 0
         var newArrIndex = 0
         if (val[offset] == b'-') {
@@ -205,11 +193,9 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         var exponent = 0
         var hasHeadZero = false
         while (offset < valLen) {
-            //  1. process digits, calculate precision, scale.
             let c = val[offset]
             if (c >= b'0' && c <= b'9') {
                 if (c == b'0') {
-                    // check whether head is 0, head 0 is regarded as 0.
                     if (val_precision == 0) {
                         hasHeadZero = true
                     } else {
@@ -229,8 +215,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
                 offset++
                 continue
             }
-
-            // 2. process r'.'
             if (c == b'.') {
                 if (hasDot) {
                     throw IllegalArgumentException("String value not allow contains more than one dot.")
@@ -240,8 +224,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
                 offset++
                 continue
             }
-
-            // 3. process r'e' | r'E'
             if (c == b'e' || c == b'E') {
                 exponent = parseExponent(val, offset)
                 break
@@ -250,15 +232,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
             throw IllegalArgumentException(
                 "String value not allow contains other character beyond [digit, \'.\', e, sign].")
         }
-
-        // only has head 0, the value is 0.
         if (val_precision == 0 && hasHeadZero) {
             newValArr[newArrIndex] = b'0'
             newArrIndex++
             val_precision++
         }
-
-        // 4. process precision and scale
         if (val_precision == 0) {
             throw IllegalArgumentException("String value not allow without digits.")
         }
@@ -266,29 +244,24 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         if (exponent != 0) {
             val_scale = checkAndRtnScale(val_scale, exponent)
         }
-        // 5. process context precison and do round if necessary.
         let valString = String.fromUtf8(newValArr[0..newArrIndex])
         var val_bigint = BigInt(valString)
-
-        // 6. build decimal 
         this._scale = val_scale
         this._precision = val_precision
         this._value = val_bigint
         this._sign = this._value.sign
     }
 
-    /**
-     * Translate a BigInt @p value and an scale into a Decimal.
-     * The value of the Decimal is (val × (10 ^ {-scale}))
-     *
-     * Constructing a Decimal, whose integer part is @p val and scale is @p scale.
-     *
-     * @param val: a value translated to a Decimal
-     * @param scale: the count of numbers after the decimal point
-     *
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public init(val: BigInt, scale: Int32) {
         var val_precision = calcNumberOfDigits(val)
         this._scale = scale
@@ -305,67 +278,57 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         this._sign = this._value.sign
     }
 
-    /**
-     * Translate an Int8 type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: Int8) {
         this(Int64(val))
     }
 
-    /**
-     * Translate an Int16 type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: Int16) {
         this(Int64(val))
     }
 
-    /**
-     * Translate an Int32 type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: Int32) {
         this(Int64(val))
     }
 
-    /**
-     * Translate an IntNative type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: IntNative) {
         this(Int64(val))
     }
 
-    /**
-     * Translate an Int64 type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: Int64) {
         var val_precision: Int64 = calcNumberOfDigits(val)
         var val_scale: Int32 = 0
@@ -376,67 +339,57 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         this._sign = this._value.sign
     }
 
-    /**
-     * Translate an UInt8 type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: UInt8) {
         this(UInt64(val))
     }
 
-    /**
-     * Translate an UInt16 type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: UInt16) {
         this(UInt64(val))
     }
 
-    /**
-     * Translate an UInt32 type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: UInt32) {
         this(UInt64(val))
     }
 
-    /**
-     * Translate an UIntNative type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: UIntNative) {
         this(UInt64(val))
     }
 
-    /**
-     * Translate an UInt64 type value @p val into a Decimal.
-     * The decimal sacle value is 0.
-     * Translating @p val to a Decimal directly.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public init(val: UInt64) {
         var val_precision: Int64 = calcNumberOfDigits(val)
         var val_scale: Int32 = 0
@@ -446,55 +399,49 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         this._sign = this._value.sign
     }
 
-    /**
-     * Translate a Float16 type value @p val into a Decimal.
-     * Translating @p val to a Decimal directly.
-     *
-     * Note: The results of this constructor can be somewhat unpredictable.
-     * This constructor provides an exact conversion, and may not have
-     * the same result as Decimal(v.toString()), where the type of v is Float16.
-     * For example, use 0.1f16 to constructor a Decimal instance, actually get 0.0999755859375 not equal to 0.1.
-     *
-     * Conversely, result of Decimal(string) constructor is perfectly predictable.
-     * Decimal(string) constructor method is more recommend.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @throws IllegalArgumentException if @p val equals to 'inf', '-inf' or 'nan'
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public init(val: Float16) {
         this(Float32(val))
     }
 
-    /**
-     * Translate a Float32 type value @p val into a Decimal.
-     * Translating @p val to a Decimal directly.
-     *
-     * Note: The results of this constructor can be somewhat unpredictable.
-     * This constructor provides an exact conversion, and may not have
-     * the same result as Decimal(v.toString()), where the type of v is Float32.
-     * For example, use 0.1f32 to constructor a Decimal instance,
-     * actually get 0.100000001490116119384765625 not equal to 0.1.
-     *
-     * Conversely, result of Decimal(string) constructor is perfectly predictable.
-     * Decimal(string) constructor method is more recommend.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @throws IllegalArgumentException if @p val equals to 'inf', '-inf' or 'nan'
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public init(val: Float32) {
         if (val.isNaN() || val.isInf()) {
             throw IllegalArgumentException("Float value cannot be Inf or NaN.")
         }
         let f32Bits: Int32 = reinterpretAsInt(val)
-        // float32 exponent is 8 bits, abs for exponent will never overflow.
         var (f_sign, exponent, fraction): (Int32, Int32, Int32) = parseFloat32Bits(f32Bits)
-        // fraction is 0, means Decimal value is 0
         if (fraction == 0) {
             this._precision = 1
             this._scale = 0
@@ -502,15 +449,12 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
             this._sign = 0
             return
         }
-
-        // remove the tailing zero.
         while (fraction % 2 == 0) {
             fraction = fraction >> 1
             exponent++
         }
 
         var val_bigint: BigInt = BigInt(f_sign * fraction)
-        // calculate val_bigint
         var val_scale: Int32 = 0
         if (exponent > 0) {
             val_bigint = val_bigint * (BigInt(2) ** (UInt64(exponent)))
@@ -526,33 +470,29 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         this._sign = this._value.sign
     }
 
-    /**
-     * Translate a Float64 type value @p val into a Decimal.
-     * Translating @p val to a Decimal directly.
-     *
-     * Note: The results of this constructor can be somewhat unpredictable.
-     * This constructor provides an exact conversion, and may not have
-     * the same result as Decimal(v.toString()), where the type of v is Float64.
-     * For example, use 0.1f64 to constructor a Decimal instance,
-     * actually get 0.1000000000000000055511151231257827021181583404541015625 not equal to 0.1.
-     *
-     * Conversely, result of Decimal(string) constructor is perfectly predictable.
-     * Decimal(string) constructor method is more recommend.
-     *
-     * @param val: a value translated to a Decimal
-     *
-     * @throws IllegalArgumentException if @p val equals to 'inf', '-inf' or 'nan'
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public init(val: Float64) {
         if (val.isNaN() || val.isInf()) {
             throw IllegalArgumentException("Float value cannot be Inf or NaN.")
         }
         let f64Bits: Int64 = reinterpretAsInt(val)
-        // float32 exponent is 11 bits, abs for exponent will never overflow.
         var (f_sign, exponent, fraction): (Int64, Int64, Int64) = parseFloat64Bits(f64Bits)
-        // fraction is 0, means Decimal value is 0
         if (fraction == 0) {
             this._precision = 1
             this._scale = 0
@@ -560,8 +500,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
             this._sign = this._value.sign
             return
         }
-
-        // remove the tailing zero.
         while (fraction % 2 == 0) {
             fraction = fraction >> 1
             exponent++
@@ -572,7 +510,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
 
         var val_bigint: BigInt = BigInt(f_sign * fraction)
-        // calculate val_bigint
         var val_scale: Int32 = 0
         if (exponent > 0) {
             val_bigint = val_bigint * (BigInt(2) ** (UInt64(exponent)))
@@ -595,20 +532,18 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         this._sign = this._value.sign
     }
 
-    /**
-     * Return a Decimal, whose value is (this + @p d),
-     * with the precision is 0 which means unlimited precision,
-     * the specific precision is determined by the calculation result.
-     * The result has scale = max(this.scale, @p d.scale).
-     *
-     * @param d: the value to be added to this Decimal;
-     *
-     * @return: the result of (this + @p d).
-     *
-     * @throw OverflowException if (this.scale - @p d.scale) exceeds the range of Int32.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     func add(d: Decimal): Decimal {
         let resValue: BigInt
         let valPrecision: Int64
@@ -623,7 +558,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         checkScaleOverFlow(diffScale)
 
         if (diffScale > 0) {
-            // this._scale bigger than d.scale, modify d.value multiply by 10 ^ diffScale.
             resValue = this._value + ailgnBigValue(d.value, diffScale)
         } else {
             resValue = d.value + ailgnBigValue(this._value, -diffScale)
@@ -633,39 +567,35 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Decimal(resValue, valScale, valPrecision)
     }
 
-    /**
-     * Overloading r'+' operator.
-     * Return a Decimal, whose value is (this + @p d),
-     * with the precision is 0 which means unlimited precision,
-     * the specific precision is determined by the calculation result.
-     * The result has scale = max(this.scale, @p d.scale).
-     *
-     * @param d: the value to be added to this Decimal;
-     *
-     * @return: the result of (this + @p d).
-     *
-     * @throw OverflowException if (this.scale - @p d.scale) exceeds the range of Int32.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
     public operator func +(d: Decimal): Decimal {
         return this.add(d)
     }
 
-    /**
-     * Return a Decimal, whose value is (this - @p d),
-     * with the precision is 0 which means infinite precision,
-     * the specific precision is determined by the calculation result.
-     * The result has scale = max(this.scale, @p d.scale).
-     *
-     * @param d: the value to be substracted from this Decimal;
-     *
-     * @return: the result of (this - @p d).
-     *
-     * @throw OverflowException if (this.scale - @p d.scale) exceeds the range of Int32.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     func sub(d: Decimal): Decimal {
         return this.add(d.neg())
     }
@@ -674,20 +604,18 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.add(d.neg())
     }
 
-    /**
-     * Return a Decimal, whose value is (this * @p d),
-     * with the precision is 0 which means infinite precision,
-     * the specific precision is determined by the calculation result.
-     * The result has scale = (this.scale + @p d.scale).
-     *
-     * @param d: the value to be multiplied by this Decimal;
-     *
-     * @return: the result of (this * @p d).
-     *
-     * @throws OverflowException if (this.scale + @p d.scale) exceeds the range of Int32.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     func mul(d: Decimal): Decimal {
         let resScale: Int32 = checkScaleOverFlow(Int64(this._scale) + Int64(d.scale))
 
@@ -716,38 +644,32 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         if (precision != 0 && resPrecision > precision) {
             var roundPrecision: Int64 = resPrecision - precision
             while (roundPrecision > 0) {
-                // process with scale
                 resScale = checkScaleOverFlow(Int64(resScale) - roundPrecision)
-                // do rounding return a new bigint object
                 resValue = doRoundWithCtx(resValue, roundPrecision, roundingMode)
-                // calculate new bigint number precision
                 resPrecision = calcNumberOfDigits(resValue)
-                // if resPrecision still bigger than precison, need do round again.
                 roundPrecision = resPrecision - precision
             }
         }
         return Decimal(resValue, resScale, resPrecision)
     }
 
-    /**
-     * Return a Decimal r, whose value is (this / @p d),
-     * with the precision is 0 which means infinite precision.
-     * If the result r is a finite decimal, the specific precision is
-     * determined by the calculation result.
-     * If the result r is an infinite decimal, the specific precision
-     * complies with IEEE 754-2019 decimal128, precision is 34 and
-     * roundingMode is HalfEven.
-     *
-     * @param d: the value that this Decimal is to be divided;
-     *
-     * @return: the result of (this / @p d).
-     *
-     * @throws IllegalArgumentException if @p d == 0.
-     * @throws OverflowException if the target Decimal is not in the range of
-     * [-(maxValue(precision) * (10 ^ {Int32.MAX})), maxValue(precision) * (10 ^ {Int32.MAX})]
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     func div(d: Decimal): Decimal {
         divWithContext(d, RoundingMode.HalfEven)
     }
@@ -756,24 +678,21 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.div(d)
     }
 
-    /**
-     * Return a Decimal, whose value is (this / @p d),
-     * with the precision and roundingMode.
-     *
-     * @param d: the value that this Decimal is to be divided;
-     * @param precision: transfer decimal value to precision.
-     * @param roundingMode: transfer the value to roundingMode.
-     *
-     * @return: the result of (this / @p d) rounded according to the precision and roundingMode.
-     *
-     * @throws IllegalArgumentException if @p d == 0.
-     * @throws OverflowException if the target Decimal is not in the range of
-     * [-(maxValue(precision) * (10 ^ {Int32.MAX})), maxValue(precision) * (10 ^ {Int32.MAX})]
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public func divWithPrecision(d: Decimal, precision: Int64, roundingMode!: RoundingMode = HalfEven): Decimal {
-        // if precision is 0, process same with without precision paramter.
         if (precision == 0) {
             return divWithContext(d, roundingMode)
         }
@@ -793,20 +712,18 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return divAndMod(d)
     }
 
-    /**
-     * Return a BigInt i and Remainder r, where i equals to the integer part of (this / d),
-     * and r satisfies this = (i * d) + r.
-     *
-     * @param d: the value that this Decimal is to be divided;
-     *
-     * @throws IllegalArgumentException if @p d == 0.
-     * @throws OverflowException if the target Decimal is not in the range of
-     * [-(maxValue(precision) * (10 ^ {Int32.MAX})), maxValue(precision) * (10 ^ {Int32.MAX})]
-     *
-     * For example, (5.3 / 2.1) = 2 --- 1.1
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     public func divAndMod(d: Decimal): (BigInt, Decimal) {
         var qu = this.divForRem(d)
         let re = this.sub(qu.mul(d))
@@ -818,15 +735,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return a Decimal, whose value is (- this),
-     * with the precision is 0 which means infinite precision,
-     * the specific precision is determined by the calculation result.
-     *
-     * @return: the result of (- this).
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     func neg(): Decimal {
         return Decimal(-(this._value), this._scale, this._precision)
     }
@@ -835,15 +750,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.neg()
     }
 
-    /** 
-     * Return a Decimal, which is equivalent to this one
-     * with the decimal point moved n places to the left if n >= 0, or
-     * with the decimal point moved (-n) places to the right if n < 0.
-     *
-     * @param n: number of places to move the decimal point.
-     *
-     * @return: the result of (this * 10^{-n}), whose digits is the same as this Decimal.
-     */
+
+
+
+
+
+
+
     public func shiftPoint(n: Int32): Decimal {
         if (n == 0) {
             return this
@@ -856,23 +769,20 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Decimal(this.value, reScale, this.precision)
     }
 
-    /**
-     * Return a Decimal rounded according to @p precision and @p roundingMode.
-     *
-     * @param precision: transfer decimal value to precision.
-     * @param roundingMode: transfer the value to roundingMode.
-     *
-     * @return: a Decimal rounded according to @p precision and @p roundingMode.
-     *
-     * @throws OverflowException if the target Decimal is not in the range of
-     * [-(maxValue(precision) * (10 ^ {Int32.MAX})), maxValue(precision) * (10 ^ {Int32.MAX})]
-     */
+
+
+
+
+
+
+
+
+
     public func roundWithPrecision(precision: Int64, roundingMode!: RoundingMode = RoundingMode.HalfEven): Decimal {
         if (precision == 0 || precision >= this.precision) {
             return this
         }
         var unscaledValue: BigInt = this.value
-        // whether roundPrecision can be overflow
         var roundPrecision: Int64 = this.precision - precision
         var reScale: Int32 = this.scale
         var rePrecision = this.precision
@@ -886,15 +796,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Decimal(unscaledValue, reScale, rePrecision)
     }
 
-    /**
-     * Return whether this Decimal is less than another Decimal.
-     *
-     * @param d: the Decimal for comparison.
-     *
-     * @return: true if this Decimal is less than @p d, otherwise false.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public operator func <(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.LT => true
@@ -902,15 +810,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return whether this Decimal is greater than another Decimal.
-     *
-     * @param d: the Decimal for comparison.
-     *
-     * @return: true if this Decimal is greater than @p d, otherwise false.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public operator func >(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.GT => true
@@ -918,15 +824,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return whether this Decimal is less than or equal to another Decimal.
-     *
-     * @param d: the Decimal for comparison.
-     *
-     * @return: true if this Decimal is less than or equal to @p d, otherwise false.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public operator func <=(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.GT => false
@@ -934,15 +838,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return whether this Decimal is greater than or equal to another Decimal.
-     *
-     * @param d: the Decimal for comparison.
-     *
-     * @return: true if this Decimal is greater than or equal to @p d, otherwise false.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public operator func >=(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.LT => false
@@ -950,15 +852,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return whether this Decimal is equal to another Decimal.
-     *
-     * @param d: the Decimal for comparison.
-     *
-     * @return: true if this Decimal is equal to @p d, otherwise false.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public operator func ==(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.EQ => true
@@ -966,15 +866,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return whether this Decimal is not equal to another Decimal.
-     *
-     * @param d: the Decimal for comparison.
-     *
-     * @return: true if this Decimal is not equal to @p d, otherwise false.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public operator func !=(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.EQ => false
@@ -982,15 +880,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Compare the relationship between this Decimal and another Decimal.
-     *
-     * @param d: the Decimal for comparison
-     *
-     * @return: the relationship between two Decimal instances.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public func compare(d: Decimal): Ordering {
         if (this.sign == 0 && this.sign == d.sign) {
             return Ordering.EQ
@@ -1003,8 +899,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
                 return Ordering.LT
             }
         }
-
-        // this.sign and d.sign is same, not equal 0.
         let precisionDiff1: Int64 = this.precision - Int64(this.scale)
         let precisionDiff2: Int64 = d.precision - Int64(d.scale)
         if (precisionDiff1 > precisionDiff2) {
@@ -1032,20 +926,18 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return ailgnBigValue(this.value, -diffScale).compare(d.value)
     }
 
-    /**
-     * Return a Decimal, whose value is (this ^ {@p n}),
-     * with the precision is 0 which means infinite precision,
-     * the specific precision is determined by the calculation result.
-     *
-     * @param n: power to raise this Decimal to.
-     *
-     * @return: the result of (this ^ {@p n}).
-     *
-     * @throws OverflowException if the target Decimal is not in the range of
-     * [-(maxValue(precision) * (10 ^ {Int32.MAX})), maxValue(precision) * (10 ^ {Int32.MAX})]
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     func pow(n: Int64): Decimal {
         if (n == 0) {
             return Decimal(BIGINT_ONE, 0)
@@ -1070,21 +962,19 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.pow(n)
     }
 
-    /**
-     * Return a Decimal, whose value is (this ^ {@p n}),
-     * with the precision and roundingMode.
-     *
-     * @param n: power to raise this Decimal to.
-     * @param precision: transfer decimal value to precision.
-     * @param roundingMode: transfer the value to roundingMode.
-     *
-     * @return: the result of (this ^ {@p n}) rounded according to the precision and roundingMode.
-     *
-     * @throws OverflowException if the target Decimal is not in the range of
-     * [-(maxValue(precision) * (10 ^ {Int32.MAX})), maxValue(precision) * (10 ^ {Int32.MAX})]
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
     public func powWithPrecision(n: Int64, precision: Int64, roundingMode!: RoundingMode = RoundingMode.HalfEven): Decimal {
         if (n == 0) {
             return Decimal(BIGINT_ONE, 0)
@@ -1115,21 +1005,19 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Returns a Decimal, whose value is the square root of this Decimal.
-     * Default precision is 0.
-     * If the result is a finite decimal, the specific precision is
-     * determined by the calculation result.
-     * If the result is an infinite decimal, the specific precision
-     * complies with IEEE decimal128, precision is 34 and
-     * roundingMode is HalfEven.
-     *
-     * @return: the result of sqrt(this) rounded according to @p precision and @p roundingMode.
-     *
-     * @throws IllegalArgumentException if this < 0.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
     public func sqrtWithPrecision(precision: Int64, roundingMode!: RoundingMode = RoundingMode.HalfEven): Decimal {
         if (this._sign == 0) {
             return Decimal(BIGINT_ZERO, this._scale >> 1)
@@ -1195,39 +1083,31 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return res
     }
 
-    /**
-     * Obtain the hash value of this Decimal.
-     * Decimal hashcode is based on bigint hashcode and decimal scale value.
-     *
-     * @return: hash value of this Decimal.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
     @OverflowWrapping
     public func hashCode(): Int64 {
         let rmvTrailingZerosDecimal = this.removeTrailingZeros()
         return 31 * rmvTrailingZerosDecimal.value.hashCode() + Int64(rmvTrailingZerosDecimal.scale)
     }
 
-    /**
-     * Obtain the string representation of this Decimal.
-     * The return string is the non-exponential representation of this Decimal.
-     *
-     * @return: the string representation of this Decimal.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
     public func toString(): String {
-        // scale value is 0, just call bigint value toString().
         if (this._scale == 0) {
             return this._value.toString()
         }
 
         let unscaleValStrArr = this._value.toString().toArray()
-        // scale value lower than 0, need append tailing 0.
-        // when scale range is [Int32.Min, 0)
         if (this._scale < 0) {
-            // if sign is 0 means value is 0, no need append tailing 0, return 0.
             if (this._sign == 0) {
                 return "0"
             }
@@ -1237,16 +1117,12 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
             unscaleValStrArr.copyTo(decimalStrArr, 0, 0, unscaleValStrArr.size)
             return String.fromUtf8(decimalStrArr)
         }
-
-        // scale value bigger than 0, need insert decimal point to corresponding position.
-        // precision is bigger than 0 and scale range [0, Int32.Max]
         let decimalPointIndex = this._precision - Int64(this._scale)
 
         let decimalStrArr: Array<Byte>
         if (decimalPointIndex == 0) {
             decimalStrArr = Array<Byte>(unscaleValStrArr.size + 2, repeat: b'0')
             if (unscaleValStrArr[0] == b'-') {
-                // copy minus sign char to result array 
                 unscaleValStrArr.copyTo(decimalStrArr, 0, 0, 1)
                 decimalStrArr[2] = b'.'
                 unscaleValStrArr.copyTo(decimalStrArr, 1, 3, unscaleValStrArr.size - 1)
@@ -1255,7 +1131,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
                 unscaleValStrArr.copyTo(decimalStrArr, 0, 2, unscaleValStrArr.size)
             }
         } else if (decimalPointIndex > 0) {
-            // decimalPointIndex bigger than 0, decimal point in the middle of bigint value.
             decimalStrArr = Array<Byte>(unscaleValStrArr.size + 1, repeat: b'0')
             if (unscaleValStrArr[0] == b'-') {
                 unscaleValStrArr.copyTo(decimalStrArr, 0, 0, decimalPointIndex + 1)
@@ -1267,8 +1142,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
                 unscaleValStrArr.copyTo(decimalStrArr, decimalPointIndex, decimalPointIndex + 1, Int64(this._scale))
             }
         } else {
-            // decimalPointIndex less than 0, decimal point in the left of bigint value.
-            // when decimalPointIndex less than 0, it's range [-Int32.Max, 0], abs will nerver overflow.
             decimalStrArr = Array<Byte>(unscaleValStrArr.size + abs(decimalPointIndex) + 2, repeat: b'0')
             if (unscaleValStrArr[0] == b'-') {
                 decimalStrArr[0] = b'-'
@@ -1283,21 +1156,19 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return String.fromUtf8(decimalStrArr)
     }
 
-    /**
-     * Return a Decimal, whose scale is specified by @p newScale,
-     * equal to this Decimal rounded according to roundingMode @p rm.
-     * Assuming that this Decimal is (n * (10 ^ {- scale})) and we call this.reScale(newScale, rm),
-     * the return Decimal is (m * (10 ^ {- newScale})) and satisfies:
-     * (n * (10 ^ {- scale})) = (m * (10 ^ {- newScale})).
-     * So, m = Int(n * (10 ^ {- scale + newScale})) rounded according to rm.
-     *
-     * @param newScale: new scale of the Decimal;
-     * @param rm: The rounding mode to apply.
-     *
-     * @return: a Decimal, whose scale is the specified value, rounded according to @p rm.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
     public func reScale(newScale: Int32, roundingMode!: RoundingMode = HalfEven): Decimal {
         let oldScale = this.scale
         if (newScale == oldScale) {
@@ -1316,15 +1187,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return a Decimal, which is numerically equal to this one
-     * but with any trailing zeros removed from the representation.
-     * For example, if this Decimal is (100 * (10 ^ {- 2})), the result is (1 * (10 ^ {0})).
-     *
-     * @return: a numerically equal Decimal with any trailing zeros removed.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public func removeTrailingZeros(): Decimal {
         if (this.sign == 0) {
             return Decimal(BigInt("0"), 0, 1)
@@ -1347,24 +1216,20 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Decimal(unscaledValue, scl)
     }
 
-    /**
-     * Return a Decimal, whose value part equals to one and scale equals to this.scale.
-     *
-     * @return: a Decimal, whose value = 1, and scale = this.scale.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
     public func scaleUnit(): Decimal {
         return Decimal(BIGINT_ONE, this.scale, 1)
     }
 
-    /**
-     * Justify whether this Decimal is an integer.
-     *
-     * @return: true if this Decimal is an integer, otherwise false.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
     public func isInteger(): Bool {
         if (this.sign == 0 || this.scale <= 0) {
             return true
@@ -1388,18 +1253,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return true
     }
 
-    /**
-     * Convert this Decimal to an Int8.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an Int8,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to Int8.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toInt8(overflowHandling!: OverflowStrategy = Throwing): Int8 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -8) {
             return 0
@@ -1408,18 +1271,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toInt8(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an Int16.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an Int16,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to Int16.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toInt16(overflowHandling!: OverflowStrategy = Throwing): Int16 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -16) {
             return 0
@@ -1428,18 +1289,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toInt16(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an Int32.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an Int32,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to Int32.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toInt32(overflowHandling!: OverflowStrategy = Throwing): Int32 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -32) {
             return 0
@@ -1448,23 +1307,17 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toInt32(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an Int64.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an Int64,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to Int64.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toInt64(overflowHandling!: OverflowStrategy = Throwing): Int64 {
-        // return DECIMAL_ZERO in following cases:
-        // 1. this.sign is 0
-        // 2. this decimal only has fractional part, this.scale >= this.precision
-        // 3. a large number, which scale < 0 and -scale > Int.bitLen
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -64) {
             return 0
         }
@@ -1472,18 +1325,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toInt64(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an IntNative.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an IntNative,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to IntNative.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toIntNative(overflowHandling!: OverflowStrategy = Throwing): IntNative {
         var nativeLen = 64
         if (Int64(IntNative.Max) == Int64(Int32.Max)) {
@@ -1497,18 +1348,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toIntNative(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an UInt8.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an UInt8,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to UInt8.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toUInt8(overflowHandling!: OverflowStrategy = Throwing): UInt8 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -8) {
             return 0
@@ -1517,18 +1366,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toUInt8(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an UInt16.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an UInt16,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to UInt16.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toUInt16(overflowHandling!: OverflowStrategy = Throwing): UInt16 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -16) {
             return 0
@@ -1537,18 +1384,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toUInt16(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an UInt32.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an UInt32,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to UInt32.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toUInt32(overflowHandling!: OverflowStrategy = Throwing): UInt32 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -32) {
             return 0
@@ -1557,18 +1402,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toUInt32(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an UInt64.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an UInt64,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to UInt64.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toUInt64(overflowHandling!: OverflowStrategy = Throwing): UInt64 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -64) {
             return 0
@@ -1577,18 +1420,16 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toUInt64(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an UIntNative.
-     * Any fractional part of this Decimal will be discarded,
-     * the integer part of this Decimal will be remained.
-     * If the integer part of this Decimal is too big to fit in an UIntNative,
-     * handling the behavior of integer overflow according to @p overflowHandling.
-     * The default handling strategy is Throwing OverflowException.
-     *
-     * @return: this Decimal to UIntNative.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
+
+
+
     public func toUIntNative(overflowHandling!: OverflowStrategy = Throwing): UIntNative {
         var nativeLen = 64
         if (Int64(IntNative.Max) == Int64(Int32.Max)) {
@@ -1602,18 +1443,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return this.toBigInt().toUIntNative(overflowHandling: overflowHandling)
     }
 
-    /**
-     * Convert this Decimal to an UInt16.
-     * Any fractional part of this Decimal will be discarded.
-     *
-     * @return: this Decimal to BigInt.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
     public func toBigInt(): BigInt {
-        // return DECIMAL_ZERO in following cases:
-        // 1. this.sign is 0
-        // 2. this decimal only has fractional part, this.scale >= this.precision
         if (this.sign == 0 || Int64(this.scale) >= this.precision) {
             return BIGINT_ZERO
         }
@@ -1621,15 +1457,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return reScale(0, roundingMode: RoundingMode.Down).value
     }
 
-    /**
-     * Convert this Decimal to a Float16.
-     * If this Decimal is too big to fit in an Float16,
-     * the result is inf, if this Decimal > 0; or -inf, if this Decimal < 0.
-     *
-     * @return: this Decimal to Float16.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public func toFloat16(): Float16 {
         if (this.scale <= 0 && this.precision - Int64(this.scale) <= 18) {
             if (this.sign > 0) {
@@ -1642,15 +1476,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Float16.parse(this.toSciString())
     }
 
-    /**
-     * Convert this Decimal to a Float32.
-     * If this Decimal is too big to fit in an Float32,
-     * the result is inf, if this Decimal > 0; or -inf, if this Decimal < 0.
-     *
-     * @return: this Decimal to Float32.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public func toFloat32(): Float32 {
         if (this.scale <= 0 && this.precision - Int64(this.scale) <= 18) {
             if (this.sign > 0) {
@@ -1663,15 +1495,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Float32.parse(this.toSciString())
     }
 
-    /**
-     * Convert this Decimal to a Float64.
-     * If this Decimal is too big to fit in an Float64,
-     * the result is inf, if this Decimal > 0; or -inf, if this Decimal < 0.
-     *
-     * @return: this Decimal to Float64.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
+
     public func toFloat64(): Float64 {
         if (this.scale <= 0 && this.precision - Int64(this.scale) <= 18) {
             if (this.sign > 0) {
@@ -1684,14 +1514,12 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Float64.parse(this.toSciString())
     }
 
-    /**
-     * Convert this Decimal to engineering notation format.
-     * For example, Decimal.parse("0.00012").toEngString() = 120 * (10 ^ {-6}).
-     *
-     * @return: engineering notation for this Decimal.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
     public func toEngString(): String {
         let valArr: Array<Byte> = abs(this.value).toString().toArray()
         var resultExponent: Int64 = this.precision - 1 - Int64(this.scale)
@@ -1700,7 +1528,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
             significantDigit = significantDigit + 3
         }
         resultExponent = resultExponent - significantDigit
-        // add default significant digit one.
         significantDigit++
         let stringBuilder: StringBuilder = StringBuilder()
         if (this.sign < 0) {
@@ -1735,14 +1562,12 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return stringBuilder.toString()
     }
 
-    /**
-     * Convert this Decimal scientific notation format.
-     * For example, Decimal.parse("0.00012").toSciString() = 1.2 * (10 ^ {-4})
-     *
-     * @return: scientific notation for this Decimal.
-     *
-     * @since 0.46.1
-     */
+
+
+
+
+
+
     public func toSciString(): String {
         let valArr: Array<Byte> = abs(this.value).toString().toArray()
         let resultExponent: Int64 = this.precision - 1 - Int64(this.scale)
@@ -1774,8 +1599,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         let bdivisor: BigInt = divisor.value
         let dScl: Int64 = dividend.precision
         var sScl: Int64 = divisor.precision
-        // Make the precision of divisor and divisor consistent,
-        // and then compare them, ensure quotient of x/y within [0.1, 1)
         if (compareBySamePrecision(bdividend, dScl, bdivisor, sScl) > 0) {
             sScl -= 1
         }
@@ -1860,9 +1683,7 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
     }
 
     private func compareBySamePrecision(x: BigInt, xscale: Int64, y: BigInt, yscale: Int64): Int64 {
-        // difference in precision between dividend and divisor
         let diff = xscale - yscale
-        // precision alignment, and then compare two decimal magnitude.
         if (diff < 0) {
             return ailgnBigValue(x, -diff).compareMagnitude(y)
         } else {
@@ -1904,8 +1725,6 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
             }
             return -1
         }
-
-        // this.sign and d.sign is same, not equal 0.
         let precisionDiff1: Int64 = this.precision - Int64(this.scale)
         let precisionDiff2: Int64 = d.precision - Int64(d.scale)
         if (precisionDiff1 > precisionDiff2) {
@@ -1962,30 +1781,23 @@ func parseExponent(val: String, offset: Int64): Int64 {
     var isPositive = true
     var expOffset = offset
     expOffset++
-    // check for out of bounds.
     if (expOffset >= val.size) {
         throw IllegalArgumentException("String value not allow without digits after e.")
     }
-
-    // process sign bit.
     if (val[expOffset] == b'-') {
         isPositive = false
         expOffset++
     } else if (val[expOffset] == b'+') {
         expOffset++
     }
-
-    // if no digit after sign, throw IllegalArgumentException
     if (expOffset >= val.size) {
         throw IllegalArgumentException("String value not allow without digits after e.")
     }
 
     var exponent: Int64 = 0
-    // remove head 0
     while (expOffset < val.size && val[expOffset] == b'0') {
         expOffset++
     }
-    // check val size still greater than Int32.Max length, throw OverflowException.
     if (val.size - expOffset > 10) {
         throw OverflowException("Exponent overflow.")
     }
@@ -1996,7 +1808,6 @@ func parseExponent(val: String, offset: Int64): Int64 {
             exponent = exponent * 10 + Int64((c - b'0'))
             expOffset++
         } else {
-            // character range [r'0', r'9'], other character is not allowed.
             throw IllegalArgumentException(
                 "String exponent value not allow contains other character beyond [digit, sign].")
         }
@@ -2103,16 +1914,14 @@ func tenPowerN(n: Int64): BigInt {
     return tenPowerValue
 }
 
-/**
- * Determine whether carry is required based on params.
- *
- * @param roundingMode: Rounding rules, enum value defined in RoundingMode.
- * @param sign: Decimal sign, sign > 0 positive, sign < 0 negative, sign = 0 zero.
- * @param halfFlag: Compare with half result, halfFlag > 0 bigger than half, halfFlag < 0 less than half, halfFlag = 0 equals to half.
- * @param isOdd: true is an odd number, false is an even number.
- *
- * @return: whether need carry.
- */
+
+
+
+
+
+
+
+
 func needCarry(roundingMode: RoundingMode, sign: Int64, halfFlag: Int64, isOdd: Bool): Bool {
     match (roundingMode) {
         case Up => true
@@ -2141,16 +1950,10 @@ func parseFloat32Bits(f32Bits: Int32): (Int32, Int32, Int32) {
     let E: Int32 = (f32Bits >> 23) & 0xff
     var fraction: Int32
     if (E == 0) {
-        // E equals 0 is denormalized scenario.
-        // To ensure value smooth conversion from denormalized to normalized,
-        // exponent = 1 - biased, Float32 biased value is 127. exponent is -126
         fraction = (f32Bits & 0x7fffff) << 1
     } else {
-        // E not equals 0 is normalized scenario.
-        // exponent = E - biased, Float32 biased value is 127. exponent range [-126, 127]
         fraction = (f32Bits & 0x7fffff) | 0x800000
     }
-    // exponent = E - 127 - 23
     let exponent = E - 150
 
     return (sign, exponent, fraction)
@@ -2166,16 +1969,10 @@ func parseFloat64Bits(f64Bits: Int64): (Int64, Int64, Int64) {
     let E: Int64 = (f64Bits >> 52) & 0x7ff
     var fraction: Int64
     if (E == 0) {
-        // E equals 0 is denormalized scenario.
-        // To ensure value smooth conversion from denormalized to normalized,
-        // exponent = 1 - biased, Float64 biased value is 1023. exponent is -1022
         fraction = (f64Bits & 0xfffffffffffff) << 1
     } else {
-        // E not equals 0 is normalized scenario.
-        // exponent = E - biased, Float64 biased value is 1023. exponent range [-1023, 1024]
         fraction = (f64Bits & 0xfffffffffffff) | 0x10000000000000
     }
-    // exponent = E - 1023 - 52
     let exponent = E - 1075
 
     return (sign, exponent, fraction)
@@ -2203,33 +2000,28 @@ class PrecisionMismatchException <: Exception {
     }
 }
 
-/**
- * Return a Decimal, whose value is the absolute value of this Decimal,
- * and whose scale is this.scale.
- *
- * @param d: the value need to do abs.
- *
- * @return: a Decimal equals to this.abs().
- *
- * @since 0.46.1
- */
+
+
+
+
+
+
+
+
 public func abs(d: Decimal): Decimal {
     return Decimal(abs(d.value), d.scale, d.precision)
 }
 
-/**
- * Return a Decimal rounded to adjacent integer using the specified rounding mode.
- *
- * @param d: the value need to do round;
- * @param roundingMode: transfer the value to roundingMode.
- *
- * @return: a Decimal rounded according to the rounding mode.
- *
- * @throws OverflowException if the target Decimal is not in the range of
- * [-(maxValue(precision) * (10 ^ {Int32.MAX})), maxValue(precision) * (10 ^ {Int32.MAX})]
- */
+
+
+
+
+
+
+
+
+
 public func round(d: Decimal, roundingMode!: RoundingMode = RoundingMode.HalfEven): Decimal {
-    //  The value ranges from -1 to 1.
     if (Int64(d.scale) >= d.precision) {
         return d.reScale(0, roundingMode: roundingMode)
     }
@@ -2238,23 +2030,21 @@ public func round(d: Decimal, roundingMode!: RoundingMode = RoundingMode.HalfEve
     return d.roundWithPrecision(roundingPre, roundingMode: roundingMode)
 }
 
-/**
- * Returns a Decimal, whose value is the square root of this Decimal.
- * Default precision is 0.
- * If the result is a finite decimal, the specific precision is
- * determined by the calculation result.
- * If the result is an infinite decimal, the specific precision
- * complies with IEEE decimal128, precision is 34 and
- * roundingMode is HalfEven.
- *
- * @param d: the value need to do sqrt.
- *
- * @return: the result of sqrt(this) rounded.
- *
- * @throws IllegalArgumentException if this < 0.
- *
- * @since 0.46.1
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func sqrt(d: Decimal): Decimal {
     if (d.sign == 0) {
         return Decimal(BIGINT_ZERO, d.scale >> 1)

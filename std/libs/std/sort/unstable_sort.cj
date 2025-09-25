@@ -1,20 +1,18 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.sort
 
-/**
- * Unstable ascending sort
- *
- * @param data Array to be sorted.
- *
- * @since 0.27.3
- */
+
+
+
+
+
 @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` instead."]
 public func unstableSort<T>(data: Array<T>): Unit where T <: Comparable<T> {
     if (data.size < 2) {
@@ -23,14 +21,12 @@ public func unstableSort<T>(data: Array<T>): Unit where T <: Comparable<T> {
     data.introSort(0, data.size - 1, data.depth())
 }
 
-/**
- * Unstable sort
- *
- * @param data Array to be sorted.
- * @param comparator The sorted comparison strategy.
- *
- * @since 0.27.3
- */
+
+
+
+
+
+
 @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` instead."]
 public func unstableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     if (data.size < 2) {
@@ -70,9 +66,6 @@ extend<T> Array<T> where T <: Comparable<T> {
             d--
 
             let (lo, hi) = this.getPartition(b, e)
-
-            // Let the smaller side do recursion
-            // Let the bigger side do loop
             if (lo - b < e - hi) {
                 this.introSort(b, lo, d)
                 b = hi
@@ -94,16 +87,12 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
         this.compareSwap3(begin, mid, end)
         let pivot: T = this[mid]
-
-        // swap mid and end
         let temp = this[end]
         this[end] = pivot
         this[mid] = temp
         var pointNum = 0
         var b = begin
         var e = end - 1
-
-        // query the first value equal to pivot
         var first: Int64 = b
         while (b < e) {
             let tb = this[b]
@@ -142,8 +131,6 @@ extend<T> Array<T> where T <: Comparable<T> {
                 }
             }
         }
-
-        // find partition pivot
         while (b < e) {
             var tb: T = pivot
             while (b < e) {
@@ -186,8 +173,6 @@ extend<T> Array<T> where T <: Comparable<T> {
         if (b - first >= pointNum * pointNum) {
             return (b - 1, b + 1)
         } else {
-            // When the number of traversal times is less than the square of the number of pivot
-            // merge a large number of values that are the same as pivot
             let hi = b
             b = first
             e = hi - 1
@@ -227,8 +212,6 @@ extend<T> Array<T> where T <: Comparable<T> {
 }
 
 extend<T> Array<T> {
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
-    // end - begin >= 1
     @OverflowWrapping
     private func getPartition(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): (Int64, Int64) {
         let len: Int64 = end - begin + 1
@@ -240,16 +223,12 @@ extend<T> Array<T> {
         }
         this.compareSwap3(begin, mid, end, comparator)
         let pivot: T = this[mid]
-
-        // swap mid and end
         let temp = this[end]
         this[end] = pivot
         this[mid] = temp
         var pointNum = 0
         var b = begin
         var e = end - 1
-
-        // query the first value equal to pivot
         var first: Int64 = b
         while (b < e) {
             let tb = this[b]
@@ -288,8 +267,6 @@ extend<T> Array<T> {
                     }
             }
         }
-
-        // find partition pivot
         while (b < e) {
             var tb: T = pivot
             while (b < e) {
@@ -330,8 +307,6 @@ extend<T> Array<T> {
         if (b - first >= pointNum * pointNum) {
             return (b - 1, b + 1)
         } else {
-            // When the number of traversal times is less than the square of the number of pivot
-            // merge a large number of values that are the same as pivot
             let hi = b
             b = first
             e = hi - 1
@@ -367,8 +342,6 @@ extend<T> Array<T> {
             return (b, hi + 1)
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func introSort(begin: Int64, end: Int64, depth: Int64, comparator: (T, T) -> Ordering): Unit {
         var b: Int64 = begin
@@ -394,9 +367,6 @@ extend<T> Array<T> {
             }
             d--
             let (lo, hi) = this.getPartition(b, e, comparator)
-
-            // Let the smaller side do recursion
-            // Let the bigger side do loop
             if (lo - b < e - hi) {
                 this.introSort(b, lo, d, comparator)
                 b = hi

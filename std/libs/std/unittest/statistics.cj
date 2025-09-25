@@ -1,14 +1,11 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file The file contains implementation of statistical calculations required for benchmark analysis.
- */
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -22,7 +19,6 @@ import std.unittest.prop_test.ShrinkHelpers
 
 class Sample {
     Sample(let data: ArrayList<Float64>) {
-        // sorted to easily get percentiles
         this.data.removeIf { x => x.isNaN() }
         this.data.sort()
     }
@@ -47,9 +43,6 @@ class Sample {
     static func create(data: ArrayList<Float64>): Sample {
         Sample(data)
     }
-
-
-    // kernel density estimation
     func kde(kdeThroughput: Float64): ArrayList<(Float64, Float64)> {
         let result = ArrayList<(Float64, Float64)>()
 
@@ -64,9 +57,6 @@ class Sample {
 
             point = if (i < data.size && data[i] <= point+minStep) {
                 i += 1
-                // very crude optimization to take generally less than quadratic time to build kde
-                // otherwise its BOOTSTRAP_ITERATIONS^2 = 2000*2000 iterations of quite slow normalDist functions.
-                // and we need to calculate quite a lot of kde
                 if (data[i - 1] <= point+minStep / 3.0) {
                     continue
                 }
@@ -95,12 +85,11 @@ class Sample {
     }
 }
 
-/* coefficient corresponding to 95% confidence interval for median */
+
 let MEDIAN_CI_95_COEFF: Float64 = 1.96
-/* coefficient corresponding to 99% confidence interval for median */
+
 let MEDIAN_CI_99_COEFF: Float64 = 2.58
 let MEDIAN_CI_999_COEFF: Float64 = 3.291
-// simple epsilon to compare floats
 let EPSILON: Float64 = 0.0001
 
 class Measurements {
@@ -113,12 +102,6 @@ class Measurements {
     var intercept: Float64 = 0.0
     var errorEst: Float64 = 0.0
     var r2: Float64 = 0.0
-
-    // Calculates slope and 95% confidence interval(CI) according to Theil-Sen linear regression.
-    //
-    // Algorithm is to calculate slopes of lines passing through every pair of points.
-    // And the median of these slopes is the linear regression we are searching for.
-    // And CI for it is calculated with a simple formula, no need for bootstrapping or other complex statistical calculations
     func calculateMedian(): This {
         this.calcSlopes()
 
@@ -134,16 +117,10 @@ class Measurements {
             map<Float64, Float64>({ x => abs(this.mainSlope - x) }) |>
             collectArrayList<Float64> |>
             Sample.create
-
-        //to indicate big error if sample size is very small
         absErrs.data.add(this.mainSlope)
 
         let n = Float64(absErrs.size)
-        // this is formula for index offset from n/2 at which CI boundaries are located in both directions
         let medianCIOffset = MEDIAN_CI_999_COEFF * sqrt(n) * 0.5 / n
-        // however for simplicity we want to give user a single number as an error estimation
-        // so we are going to the same offset but for absolute deviation,
-        // doubling it because we are going in one direction here
         this.errorEst = absErrs.percentile(2.0 * medianCIOffset)
         this
     }
@@ -165,8 +142,6 @@ class Measurements {
 
         this.slopes = Sample(slopes)
     }
-
-    // Calculates mean slope according to ordinary least squares linear regression.
     func calculateMean(): This {
         let sumx = data.iterator().map {p => p[0]}.sum()
         let sumy = data.iterator().fold(0.0) {acc, p => p[1] + acc}
@@ -178,10 +153,6 @@ class Measurements {
         this.mainSlope = (n * sumxy - sumx * sumy) / (n * sumx2 - sumx * sumx)
 
         this.intercept = (sumy - this.mainSlope * sumx) / n
-
-        // we know apriori that under our model negative intercept or slope should not be possible
-        // so we fall back to regressing to a line with zero intercept or zero slope in that case
-        // choosing the one with lower MSE
         if (mainSlope < 0.0 || intercept < 0.0) {
             let slope = sumxy / sumx2
             let zeroInterceptMSE = data.iterator().map {p: (Float64, Float64) => pow(p[1] - p[0] * slope, 2)}.sum() /

@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a library for StringWriter.
- */
+
+
+
+
+
+
+
+
 
 package std.io
 
@@ -32,16 +29,12 @@ foreign func CJ_CORE_Float64ToCPointer(num: Float64): CPointer<UInt8>
 @FastNative
 foreign func strlen(str: CPointer<UInt8>): UIntNative
 
-/**
- * This class provides the ability to convert some types to strings with specified string encoding format
- *  and endian configuration and write them to the output stream.
- */
+
+
 public class StringWriter<T> where T <: OutputStream {
     var outputBOS: BufferedOutputStream<T>
 
-    /**
-     * @throws IllegalArgumentException if encoding is UTF16 or UTF32
-     */
+
     public init(output: T) {
         outputBOS = BufferedOutputStream(output)
     }
@@ -85,7 +78,7 @@ public class StringWriter<T> where T <: OutputStream {
         var cnt: Int64 = if (v >= 0 && v < 10) {
             1
         } else {
-            21 // "${Int64.Min}".size + "\0".size = 20 + 1 = 21
+            21
         }
         ensureEnoughOutBuf(cnt)
 
@@ -124,7 +117,7 @@ public class StringWriter<T> where T <: OutputStream {
         var cnt: Int64 = if (v >= 0 && v < 10) {
             1
         } else {
-            21 // "${Int64.Min}".size + "\0".size = 20 + 1 = 21
+            21
         }
         ensureEnoughOutBuf(cnt)
         var res: Int64 = 0
@@ -154,7 +147,7 @@ public class StringWriter<T> where T <: OutputStream {
             if (p.isNull()) {
                 throw IOException()
             }
-            let cpSize = Int64(strlen(p)) + 1 // append r'\0' in the end
+            let cpSize = Int64(strlen(p)) + 1
             LibC.free(p)
             ensureEnoughOutBuf(cpSize)
 
@@ -171,7 +164,7 @@ public class StringWriter<T> where T <: OutputStream {
     }
 
     public func write(v: Rune): Unit {
-        ensureEnoughOutBuf(6) // up to 6 byte for one utf-8 rune
+        ensureEnoughOutBuf(6)
         var res: Int64 = Rune.intoUtf8Array(v, this.outputBOS.outBuf, this.outputBOS.curPos)
         this.outputBOS.curPos += res
     }
@@ -254,31 +247,27 @@ public class StringWriter<T> where T <: OutputStream {
 }
 
 extend<T> StringWriter<T> <: Resource where T <: Resource {
-    /**
-     * Close the current stream.
-     */
+
+
     public func close(): Unit {
         outputBOS.close()
     }
 
-    /**
-     * Returns whether the current flow is closed.
-     *
-     * @return true if the current stream has been closed, otherwise returns false.
-     */
+
+
+
     public func isClosed(): Bool {
         outputBOS.isClosed()
     }
 }
 
 extend<T> StringWriter<T> <: Seekable where T <: Seekable {
-    /**
-     * Seek to an offset, in bytes, in a stream.
-     *
-     * @params sp - Start position of the offset and size of the offset.
-     *
-     * @return the number of bytes in the stream from the beginning of the data to the cursor position.
-     */
+
+
+
+
+
+
     public func seek(sp: SeekPosition): Int64 {
         outputBOS.seek(sp)
     }

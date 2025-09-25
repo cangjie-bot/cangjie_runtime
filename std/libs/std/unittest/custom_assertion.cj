@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -46,9 +46,7 @@ enum PrettyTreeStruct <: PrettyPrintable {
     }
 }
 
-/**
- * Wrapper for PrettyText to write nice trees
- */
+
 private class PrettyTree <: PrettyPrinter & PrettyPrintable {
     let pt: PrettyText = PrettyText()
 
@@ -77,9 +75,7 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
         needTreeIndent = true
     }
 
-    /**
-     * Recollect current prefix
-     */
+
     private prop prefix: String {
         get() {
             let sb = StringBuilder()
@@ -90,9 +86,7 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
         }
     }
 
-    /**
-     * Recollect current prefix without last indent
-     */
+
     private prop prefixNoLast: String {
         get() {
             let sb = StringBuilder()
@@ -103,10 +97,8 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
         }
     }
 
-    /**
-     * Store indented prefix in array and execute nested printers
-     * Remove indented prefix in the end
-     */
+
+
     public func indentWithPrefix(prefix: String, body: () -> Unit): PrettyTree {
         indentaions.add(prefix)
         treeIndent = this.prefix
@@ -121,9 +113,7 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
         return this
     }
 
-    /*
-     * Prints line, replacing last indent with the specified one
-     */
+
     public func appendWithPrefix(prefix: String, text: String): PrettyTree {
         if (needTreeIndent) {
             needTreeIndent = false
@@ -133,10 +123,8 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
         return this
     }
 
-    /**
-     * Prints line, replacing last indent with the specified one
-     * Replaces finished indent prefix with whitespaces
-     */
+
+
     public func appendLastWithPrefix(prefix: String, text: String): PrettyTree {
         if (needTreeIndent) {
             needTreeIndent = false
@@ -148,9 +136,7 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
         return this
     }
 
-    /*
-     * Prints PrettyPrintable, replacing last indent with the specified one
-     */
+
     public func appendWithPrefix<PP>(prefix: String, value: PP): PrettyTree where PP <: PrettyPrintable {
         if (needTreeIndent) {
             needTreeIndent = false
@@ -160,10 +146,8 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
         return this
     }
 
-    /**
-     * Prints PrettyPrintable, replacing last indent with the specified one
-     * Replaces finished indent prefix with whitespaces
-     */
+
+
     public func appendLastWithPrefix<PP>(prefix: String, value: PP): PrettyPrinter where PP <: PrettyPrintable {
         if (needTreeIndent) {
             needTreeIndent = false
@@ -181,24 +165,18 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
     }
 }
 
-/**
- * Assertion context base class
- *
- * If user wants to create custom assertion he must:
- * 1. Annotate function with @CustomAssertion
- * 2. Provide `AssertionCtx` as it's FIRST parameter in function parameters list
- */
+
+
+
+
+
 public class AssertionCtx {
     private let _stringArgs: String
-    // Mapping between funcion parameter names and unresolved function call arguments
     private var _argsMap: ?HashMap<String, String> = None
-    // List for stacktrace of inner assertions
     let _errors: ArrayList<PrettyTreeStruct> = ArrayList()
 
     protected AssertionCtx(
-        // Raw passed arguments, provided to function
         private let _passedArgs!: Array<String> = [],
-        // Stores the assertion function which this context was built for
         private let _caller!: String = String.empty
     ) {
         _stringArgs = _passedArgs |> collectString<String>(delimiter: ", ")
@@ -210,57 +188,45 @@ public class AssertionCtx {
         }
     }
 
-    /**
-     * Says whether any error occured during run of assertion
-     */
+
     public prop hasErrors: Bool {
         get() {
             return !_errors.isEmpty()
         }
     }
 
-    /**
-     * Unresolved passed arguments getter
-     *
-     * @param key: String - if matches with value of argument identifier in function declaration, return unresolved argument
-     */
+
+
+
     public func arg(key: String): String { return _argsMap?[key] ?? "<${key} not found>" }
 
-    /**
-     * Comma-separated string of arguments
-     */
+
     public prop args: String {
         get() {
             return _stringArgs
         }
     }
 
-    /**
-     * Specifies names for accessing unresolved values
-     *
-     * @param aliases: Array<String> - String aliases for each argument in function declaration.
-     *                                 Length of provided array should match with size of paramenter list
-     */
+
+
+
+
     public func setArgsAliases(aliases: Array<String>) {
         _argsMap = aliases.iterator().zip(_passedArgs.iterator()) |> collectHashMap
     }
 
-    /**
-     * Stores FailCheckResult in local stacktrace
-     *
-     * @throws AssertException
-     */
+
+
+
     public func fail(message: String): Nothing {
         let checkResult = FailCheckResult(Assert, message)
         _errors.add(Leaf(checkResult))
         throw AssertException("", checkResult)
     }
 
-    /**
-     * Stores CustomCheckResult in local stacktrace
-     *
-     * @throws AssertException
-     */
+
+
+
     public func fail<PP>(pt: PP): Nothing where PP <: PrettyPrintable {
         let checkResult = CustomCheckResult(Assert, PrettyText.of(pt))
         _errors.add(Leaf(checkResult))
@@ -272,18 +238,14 @@ public class AssertionCtx {
         _errors.add(Leaf(checkResult))
     }
 
-    /**
-     * Stores CustomCheckResult in local stacktrace
-     */
+
     public func failExpect<PP>(pt: PP): Unit where PP <: PrettyPrintable {
         let checkResult = CustomCheckResult(Expect, PrettyText.of(pt))
         _errors.add(Leaf(checkResult))
     }
 }
 
-/**
- * If any of nested @Expect have failed, raises AssertException
- */
+
 private func runAssert<T>(ctx: AssertionCtx, assert: (AssertionCtx) -> T): T {
     let result = assert(ctx)
     if (ctx.hasErrors) {
@@ -292,9 +254,7 @@ private func runAssert<T>(ctx: AssertionCtx, assert: (AssertionCtx) -> T): T {
     return result
 }
 
-/**
- * If any of nested @Assert threw an expection, suppresses those
- */
+
 private func runExpect(ctx: AssertionCtx, expect: (AssertionCtx) -> Any): Unit {
     try {
         expect(ctx)
@@ -302,18 +262,16 @@ private func runExpect(ctx: AssertionCtx, expect: (AssertionCtx) -> Any): Unit {
     }
 }
 
-/**
- * Runs custom assertion specified by @Assert[caller](passedArgs) inside of @Test/@TestCase functions
- *
- * Used by framework and not considered to be called by end user
- *
- * @param passedArgs:   Array<String>       - unresolved passed arguments
- * @param caller:       String              - name of called custom assertion with generic parameters if such specified
- * @param assert:       (AssertionCtx) -> T - capture of invocation of assertion with right arguments
- * @param optParentCtx: ?AssertionCtx       - first argument of @CustomAssertion function
- *
- * @throws AssertException if any occured in nested checks
- */
+
+
+
+
+
+
+
+
+
+
 public func invokeCustomAssert<T>(
     passedArgs: Array<String>,
     caller: String,
@@ -351,16 +309,14 @@ public func invokeCustomAssert<T>(
     throw AssertException("", checkResult)
 }
 
-/**
- * Runs custom assertion specified by @Assert[caller](passedArgs) inside of @Test/@TestCase functions
- *
- * Used by framework and not considered to be called by end user
- *
- * @param passedArgs:   Array<String>         - unresolved passed arguments
- * @param caller:       String                - name of called custom assertion with generic parameters if such specified
- * @param expect:       (AssertionCtx) -> Any - capture of invocation of assertion with right arguments
- * @param optParentCtx: ?AssertionCtx         - first argument of @CustomAssertion function
- */
+
+
+
+
+
+
+
+
 public func invokeCustomExpect(
     passedArgs: Array<String>,
     caller: String,

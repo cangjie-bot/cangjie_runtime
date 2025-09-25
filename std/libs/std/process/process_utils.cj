@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.process
 
@@ -126,12 +126,10 @@ func cStringToOption(cstring: CString): ?String {
     return cstring.toString()
 }
 
-/**
- * cpointerToArray
- *
- * @param cpointer: CPointer<CString>
- * @return Array<String>
- */
+
+
+
+
 func cpointerToArray(cpointer: CPointer<CString>): ?Array<String> {
     if (cpointer.isNull()) {
         return None
@@ -148,12 +146,10 @@ func cpointerToArray(cpointer: CPointer<CString>): ?Array<String> {
     return arrList.toArray()
 }
 
-/**
- * getEnvirments
- *
- * @param envCpointer: CPointer<CString>
- * @return HashMap<String, String>
- */
+
+
+
+
 func getEnvirments(envCpointer: CPointer<CString>): ?Map<String, String> {
     if (envCpointer.isNull()) {
         return None
@@ -178,7 +174,7 @@ func getEnvirments(envCpointer: CPointer<CString>): ?Map<String, String> {
 }
 
 func readToByteBuffer(inputStream: InputStream): ByteBuffer {
-    let tempSize: Int64 = 4096 // 4KB
+    let tempSize: Int64 = 4096
     var buffer: ByteBuffer = ByteBuffer(tempSize)
     let tempArr: Array<UInt8> = Array<UInt8>(tempSize, repeat: 0)
     while (true) {

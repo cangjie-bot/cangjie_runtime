@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.database.sql
 
@@ -32,10 +32,8 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         backgroundCheckIdleLife()
     }
 
-    /**
-     * Maximum number of connections in the connection pool. If the value is less than or equal to 0, the value is Int32.Max.
-     * If the configured value is smaller than the current value, the setting takes effect only after idle connections are reclaimed.
-     */
+
+
     public mut prop maxSize: Int32 {
         get() {
             options.maxSize
@@ -48,10 +46,9 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
             }
         }
     }
-    /**
-     * Maximum number of idle connections. If the number of idle connections exceeds this value, the excess connections are disconnected.
-     * If the value is less than or equal to 0, Int32.Max is used.
-     */
+
+
+
     public mut prop maxIdleSize: Int32 {
         get() {
             options.maxIdleSize
@@ -200,7 +197,7 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
     }
 
     public func close() {
-        if (!isclosed.compareAndSwap(false, true)) {    // compareAndSwap return true if the value equal first parameter.
+        if (!isclosed.compareAndSwap(false, true)) {
             return
         }
         for (_ in 0..idleEntry.size) {

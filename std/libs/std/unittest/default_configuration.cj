@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.sync.AtomicOptionReference
@@ -61,11 +61,9 @@ func setValueWithGuessedType(configuration: Configuration, key: String, value: S
             case JsInt => configuration.guessInteger(key, jsv.asInt().getValue())
             case JsFloat => configuration.guessFloat(key, jsv.asFloat().getValue())
             case JsString => configuration.setByName(key, jsv.asString().getValue())
-            // else just use String
             case _ => configuration.setByName(key, value)
         }
     } catch (ex: JsonException) {
-        // ignore the error, just use String
         configuration.setByName(key, value)
     }
 }
@@ -99,41 +97,28 @@ func buildDefaultConfiguration(): Configuration {
 
 var defaultConfigurationCached: AtomicOptionReference<Configuration> = AtomicOptionReference<Configuration>()
 
-/**
- * Create default configuration by reading command-line arguments.
- * Any command-line argument given to the test will be turned into a field in configuration according to the rules:
- * - kebab-case arguments such as --random-seed are turned into camelCase parameters: randomSeed
- * - arguments with no values are turned into bool values: --no-color becomes noColor of type Bool and value true
- * - the rest are converted according to the following rules, in this order:
- *    - `true` and `false` values are Bool: --feel-good=true becomes field feelGood of type Bool and value true
- *    - integer number literals are Int64: --random-seed=3 becomes field randomSeed of type Int64 and value 3
- *    - float number literals are Float64: --value-pi=3.14 becomes field valuePi of type Float64 and value 3.14
- *    - any other values are considered Strings
- */
+
+
+
+
+
+
+
+
+
 public func defaultConfiguration(): Configuration {
-    // the idea behind this function is the following: we don't want a lock, because
-    // it's too heavy, but we also want to avoid running buildDefaultConfiguration()
-    // too many times (several is fine), so we implement double checking using CAS on AtomicOptionReference
     match (defaultConfigurationCached.load()) {
-        // it is already set, return it
         case Some(c) => return c
-        // it is not set, try setting it
         case None =>
             unittestOptionsRegistryClosed = true
             let newValue = buildDefaultConfiguration()
-            // we have a race here, someone could have already assigned the value, so we need to do CAS
             if (defaultConfigurationCached.compareAndSwap(None, newValue)) {
-                // CAS was successful, we can just return new value
                 return newValue
             } else {
-                // CAS is not successful, someone has assigned the value before us, try again
-                // this can only recurse one time, so should be fine
                 return defaultConfiguration()
             }
     }
 }
-
-// this func mutate configuration
 func setValuesFromJsonConfiguration(configuration: Configuration, rawJson: String) {
     let jsonObject = JsonValue.fromStr(rawJson).asObject()
     for ((key, jsonValue) in jsonObject.getFields()) {
@@ -169,7 +154,7 @@ private enum Guesser {
                     cb()
                     return Success
                 } catch (_: Exception) {
-                    return this // keep the first exception
+                    return this
                 }
         }
     }
@@ -306,7 +291,6 @@ let _ = { =>
     registerUnittestOption<Int64>(KeyMinBatches.minBatches)
     registerUnittestOption<Measurement>(KeyMeasurement.measurement)
     registerUnittestOption<MeasurementInfo>(KeyMeasurementInfo.measurementInfo)
-    // Dynamic progress
     registerUnittestOption<Bool>(KeyNoProgress.noProgress, description: "Disable progress report",
         typeDescription: ("Bool", "Disable progress report"))
     registerUnittestOption<Bool>(KeyProgressBrief.progressBrief,

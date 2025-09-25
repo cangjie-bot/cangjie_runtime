@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.sync.ReentrantMutex
@@ -12,8 +12,6 @@ import std.random.Random
 import std.fs.*
 import std.env.getTempDirectory
 
-// std.fs.File.createTempt can only create up to 26 files
-// so we have this to workaround it
 class TempDirectory {
     private static const ID_SIZE: Int64 = 16
     private static const MAX_ATTEMPTS: Int64 = 100
@@ -84,7 +82,7 @@ class TempDirectory {
         for (_ in 0..MAX_ATTEMPTS) {
             let path = createTempPath(dir: dir, prefix: prefix, suffix: suffix)
             try {
-                return File.create(path) // File.create is not atomic, may clash
+                return File.create(path)
             } catch (_) {
             }
         }

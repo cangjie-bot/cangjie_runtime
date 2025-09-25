@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 enum SessionHandleResult {
@@ -18,8 +18,6 @@ extend MockSession {
         for (chain in chains) {
             chain.ensureActivated()
         }
-
-        // chain priority is bottom to top
         for (index in (chains.size - 1)..=0 : -1) {
             let chain = chains[index]
             let matchStatus = chain.invocationMatcher.tryMatch(invocation)
@@ -29,10 +27,9 @@ extend MockSession {
                     unmatchedChains.add((chain, matchStatus))
                     continue
             }
-            // scenario priority is left to right
             for (sc in chain.scenarios) {
                 match (sc.action) {
-                    case Fail => return PerformScenario(sc) // explicitly configured to fail
+                    case Fail => return PerformScenario(sc)
                     case _ => ()
                 }
 
@@ -41,7 +38,6 @@ extend MockSession {
                     return PerformScenario(sc)
                 }
             }
-            // failed to register invocation => all scenarios reached maximum cardinality
             return InvocationLimitExceeded(chain)
         }
         return Unhandled

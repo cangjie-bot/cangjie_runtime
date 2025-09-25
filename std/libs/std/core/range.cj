@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -17,9 +17,7 @@ public struct Range<T> <: Iterable<T> where T <: Countable<T> & Comparable<T> & 
     public let hasEnd: Bool
     public let isClosed: Bool
 
-    /*
-     * @throws IllegalArgumentException if the value of the step is equal to zero
-     */
+
     @Frozen
     public const init(start: T, end: T, step: Int64, hasStart: Bool, hasEnd: Bool, isClosed: Bool) {
         if (step == 0) {
@@ -52,11 +50,9 @@ public struct Range<T> <: Iterable<T> where T <: Countable<T> & Comparable<T> & 
         }
     }
 
-    /**
-     * Calculates the last value contained in this range (may not equal `start`).
-     *
-     * Note: this function has a sensible value only for non-empty ranges.
-     */
+
+
+
     @OverflowWrapping
     private const func last() {
         if (step != 1 && step != -1) {

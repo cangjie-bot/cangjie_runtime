@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a class for consoleReader.
- */
+
+
+
+
+
+
+
+
 
 package std.console
 
@@ -37,21 +34,17 @@ foreign func memset_s(dest: CPointer<Byte>, destMax: UIntNative, c: Int32, count
 
 const defaultCapacity: Int64 = 32
 
-/**
- * This class Provides the ability to read data from console
- */
+
 @Deprecated[message: "This class migrate to the std.env."]
 public class ConsoleReader <: InputStream {
     private static let mutex: ReentrantMutex = ReentrantMutex()
-    private var buffer: Array<Byte> = Array<Byte>(defaultCapacity, repeat: 0) /* stdin read buffer */
+    private var buffer: Array<Byte> = Array<Byte>(defaultCapacity, repeat: 0) 
     private var endIndex: Int64 = 0
     private var startIndex: Int64 = 0
     init() {}
 
-    /**
-     * Read one char
-     * @throws IllegalMemoryException if there are some system errors.
-     */
+
+
     @OverflowWrapping
     public func read(): ?Rune {
         synchronized(mutex) {
@@ -66,10 +59,9 @@ public class ConsoleReader <: InputStream {
         }
     }
 
-    /** Read one line */
+    
     public func readln(): ?String {
         if (let Some(ln) <- readUntil({c => c == r'\n'})) {
-            // not including CR character
             if (ln.endsWith("\r\n")) {
                 return ln[..ln.size - 2]
             } else if (ln.endsWith('\n')) {
@@ -80,23 +72,19 @@ public class ConsoleReader <: InputStream {
         return None
     }
 
-    /** Read all line */
+    
     public func readToEnd(): ?String {
         return readUntil({_ => return false})
     }
 
-    /**
-     * Reads until some contents is encountered, or the end of the stream is reached.
-     * ch is included in the result
-     */
+
+
     public func readUntil(ch: Rune): ?String {
         return readUntil({it => it == ch})
     }
 
-    /**
-     * Reads until predicate is encountered, or the end of the stream is reached.
-     * ch is included in the result
-     */
+
+
     public func readUntil(predicate: (Rune) -> Bool): ?String {
         let result: StringBuilder = StringBuilder()
         synchronized(mutex) {
@@ -123,9 +111,7 @@ public class ConsoleReader <: InputStream {
         }
     }
 
-    /*
-     * write Array<Byte> from stdIn to arr and return the length
-     */
+
     public func read(arr: Array<Byte>): Int64 {
         let arraySize = arr.size
         synchronized(mutex) {
@@ -164,9 +150,7 @@ public class ConsoleReader <: InputStream {
         return true
     }
 
-    /*
-     * @returns utf8 position
-     */
+
     private func findFirstOf(predicate: (Rune) -> Bool): Int64 {
         var byteOffset = startIndex
         while (byteOffset < endIndex) {
@@ -189,7 +173,6 @@ public class ConsoleReader <: InputStream {
                 UIntNative(itemLen))
             releaseArrayRawData(itemP)
             if (rc != 0) {
-                // never reaches here
                 throw IllegalMemoryException("The memcpy_s failed with error code: ${rc}")
             }
         } else {
@@ -206,16 +189,13 @@ public class ConsoleReader <: InputStream {
     @OverflowThrowing
     private func reserve(additional: Int64): Unit {
         if (this.buffer.size - this.endIndex >= additional) {
-            // if have enough space, do nothing
             return
         } else if (this.buffer.size - (this.endIndex - this.startIndex) >= additional) {
-            // if move data to head can make space, move data to head
             this.buffer.copyTo(this.buffer, startIndex, 0, this.endIndex - startIndex)
             this.endIndex -= startIndex
             this.startIndex = 0
             return
         }
-        // else malloc new space
         this.grow(this.buffer.size + additional)
     }
 

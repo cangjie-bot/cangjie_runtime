@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.process
 
@@ -12,10 +12,8 @@ import std.collection.*
 import std.fs.*
 import std.io.*
 
-/**
- * SubProcess
- *
- */
+
+
 public class SubProcess <: Process {
     var _stdIn: OutputStream
     var _stdOut: InputStream
@@ -83,33 +81,27 @@ public class SubProcess <: Process {
         }
     }
 
-    /**
-     * wait func developer should read the outputStream or errStream first and then invoke this func.
-     * if developer invoke wait func first and then read stream, it can be occur unexpected concurrency results.
-     *
-     * @param timeout
-     * @return Int64
-     */
+
+
+
+
+
     public func wait(timeout!: ?Duration = None): Int64 {
-        // implement func for wait subprocess exec result and return statuscode
         let exitCode: Int64 = getWaitExitCode(timeout ?? Duration.Zero, Int32(this.pid), this._handle)
         closeStdStream()
         return exitCode
     }
 
-    /**
-     * waitOutput func is applicable to scenarios where number of bytes in output or error stream is small.
-     * If you need to deal with big size within output or error stream, please use stdOut or stdErr prop and wait func.
-     *
-     * @return (exitCode: Int64, out: Array<Byte>, err: Array<Byte>)
-     */
+
+
+
+
     public func waitOutput(): (Int64, Array<Byte>, Array<Byte>) {
         let outStreamFuture: Future<Array<Byte>> = spawn {
             => try {
                 let outByteArrStream: ByteBuffer = readToByteBuffer(this._stdOut)
                 return readToEnd(outByteArrStream)
             } catch (_: ProcessException) {
-                // processException while read outputStream means it is invalid.
                 throw ProcessException("OutputStream is invalid, not allow to read.")
             }
         }
@@ -119,15 +111,12 @@ public class SubProcess <: Process {
                 let errByteArrStream: ByteBuffer = readToByteBuffer(this._stdErr)
                 return readToEnd(errByteArrStream)
             } catch (_: ProcessException) {
-                // processException while read errStream means it is invalid.
                 throw ProcessException("ErrorStream is invalid, not allow to read.")
             }
         }
 
         let outArr: Array<Byte> = outStreamFuture.get()
         let errArr: Array<Byte> = errStreamFuture.get()
-
-        // implement func for wait subprocess exec result and return statuscode, stdOut and stdErr
         let exitCode: Int64 = getWaitExitCode(Duration.Zero, Int32(this.pid), this._handle)
 
         closeStdStream()

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.deriving
 
 import std.deriving.api.*
@@ -45,7 +45,7 @@ private func parseNames(members: Tokens, logger: Logger): Array<Token> {
 
         let comma = it.next() ?? break
         if (comma.kind == TokenKind.IDENTIFIER) {
-            result.add(comma) // we do report an error in the following if
+            result.add(comma)
         }
         if (comma.kind != TokenKind.COMMA) {
             logger.error(comma, "Expected comma or nothing, got ${comma.kind}")
@@ -81,4 +81,3 @@ struct DeriveOrderData <: DerivingMacroMessage<DeriveOrderData> {
 
     private static const MEMBERS_KEY = "members"
 }
-

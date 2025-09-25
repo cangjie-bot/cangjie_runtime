@@ -1,19 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
 
-/**
- * Contains the reflective information about instance variables.
- */
+
 public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable & ToString {
     let _info: CPointer<Unit>
-    let _isStruct: Bool // reserve for abi compatible
+    let _isStruct: Bool
     var _mutable: Option<Bool> = None
     var _name: Option<String> = None
     var _typeInfo: Option<TypeInfo> = None
@@ -27,9 +25,7 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         _isStruct = isStruct
     }
 
-    /**
-     * Returns the name of instance variable.
-     */
+
     public prop name: String {
         get() {
             match (_name) {
@@ -46,9 +42,7 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the return type of instance variable.
-     */
+
     public prop typeInfo: TypeInfo {
         get() {
             match (_typeInfo) {
@@ -62,9 +56,7 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the collection of modifiers of instance variable.
-     */
+
     public prop modifiers: Collection<ModifierInfo> {
         get() {
             match (_modifiers) {
@@ -77,9 +69,7 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the collection of annotations of instance variable.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -95,9 +85,7 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns true if instance variable is 'mut'
-     */
+
     public func isMutable(): Bool {
         match (_mutable) {
             case Some(res) => res
@@ -108,26 +96,22 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the instance variable's value for incoming instance.
-     *
-     * @throw IllegalTypeException, if the input instance type is different from the instance which this InstanceVariableInfo belong to.
-     */
+
+
+
     public func getValue(instance: Any): Any {
         checkDeclaringClassType(instance)
         getInstanceFieldValue(_info, _declaringTypeInfo, instance)
     }
 
-    /**
-     * Updates the instance variable's value with incoming new value for incoming instance.
-     *
-     * @param instance which the member variable belongs.
-     * @param newValue new value to set.
-     *
-     * @throw IllegalSetException, if the instance variable is immutable.
-     * @throw IllegalTypeException, if the input newValue type is different from the instance variable type.
-     * @throw IllegalTypeException, if the input instance type is different from the instance which this InstanceVariableInfo belong to.
-     */
+
+
+
+
+
+
+
+
     public func setValue(instance: Any, newValue: Any): Unit {
         if (!this.isMutable()) {
             throw IllegalSetException("Attempt to modify immutable variable '${name}'.")
@@ -146,9 +130,7 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         }
     }
 
-    /**
-     * Searches the instance variable's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
     }
@@ -186,12 +168,10 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
     }
 }
 
-/**
- * Contains the reflective information about static variables.
- */
+
 public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & ToString {
     let _info: CPointer<Unit>
-    let _isStruct: Bool // reserve for abi compatible
+    let _isStruct: Bool
     var _mutable: Option<Bool> = None
     var _name: Option<String> = None
     var _typeInfo: Option<TypeInfo> = None
@@ -205,9 +185,7 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
         _declaringTypeInfo = declaringTypeInfo
     }
 
-    /**
-     * Returns the name of static variable.
-     */
+
     public prop name: String {
         get() {
             match (_name) {
@@ -224,9 +202,7 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the return type of static variable.
-     */
+
     public prop typeInfo: TypeInfo {
         get() {
             match (_typeInfo) {
@@ -240,9 +216,7 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the collection of modifiers of static variable.
-     */
+
     public prop modifiers: Collection<ModifierInfo> {
         get() {
             match (_modifiers) {
@@ -255,9 +229,7 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the collection of annotations of static variable.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -273,9 +245,7 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns true if static variable is 'mut'
-     */
+
     public func isMutable(): Bool {
         match (_mutable) {
             case Some(res) => res
@@ -286,21 +256,17 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the static variable's value.
-     */
+
     public func getValue(): Any {
         getStaticFieldValue(_info)
     }
 
-    /**
-     * Updates the static variable's value with incoming new value.
-     *
-     * @param newValue new value to set.
-     *
-     * @throw IllegalSetException, if the static variable is immutable.
-     * @throw IllegalTypeException, if the input newValue type is different from the static variable type.
-     */
+
+
+
+
+
+
     public func setValue(newValue: Any): Unit {
         if (!isMutable()) {
             throw IllegalSetException("Attempt to modify immutable variable '${name}'.")
@@ -309,9 +275,7 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
         setStaticFieldValue(_info, newValue)
     }
 
-    /**
-     * Searches the static variable's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
@@ -349,9 +313,7 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
     }
 }
 
-/**
- * Contains the reflective information about global variables.
- */
+
 public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & ToString {
     let _info: CPointer<Unit>
     var _mutable: Option<Bool> = None
@@ -363,9 +325,7 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
         _info = cp
     }
 
-    /**
-     * Returns the name of global variable.
-     */
+
     public prop name: String {
         get() {
             match (_name) {
@@ -381,8 +341,6 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
             }
         }
     }
-
-    // variable type
     public prop typeInfo: TypeInfo {
         get() {
             match (_typeInfo) {
@@ -395,8 +353,6 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
             }
         }
     }
-
-    // Annotation, when there is no data, size is 0. Note that this api does not guarantee a constant traversal order.
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -411,8 +367,6 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
             }
         }
     }
-
-    // Whether it is a variable modified by var. Calling setValue on a variable modified by let will throw an exception.
     public func isMutable(): Bool {
         match (_mutable) {
             case Some(res) => res
@@ -422,20 +376,16 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
                 mutable
         }
     }
-
-    // get variable value
     public func getValue(): Any {
         getStaticFieldValue(_info)
     }
 
-    /**
-     * Updates the global variable's value with incoming new value.
-     *
-     * @param newValue new value to set.
-     *
-     * @throw IllegalSetException, if the global variable is immutable.
-     * @throw IllegalTypeException, if the input newValue type is different from the global variable type.
-     */
+
+
+
+
+
+
     public func setValue(newValue: Any): Unit {
         if (!isMutable()) {
             throw IllegalSetException("Attempt to modify immutable variable '${name}'.")
@@ -444,9 +394,7 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
         setStaticFieldValue(_info, newValue)
     }
 
-    /**
-     * Searches the global variable's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -25,42 +25,40 @@ private const MAX_PROGRESS_INDICATOR_WIDTH = 50
 
 private const PERCENT_VALUE_WIDTH = 3
 private const MARK_WIDTH = 4
-private const STATIC_SIZED_AREA_WIDTH = 1 /* " " */ + PERCENT_VALUE_WIDTH + 5 /* "% [] " */ + MARK_WIDTH + 1 /* " " */ + 10 /* (hh:mm:ss) */   // = 24
+private const STATIC_SIZED_AREA_WIDTH = 1  + PERCENT_VALUE_WIDTH + 5  + MARK_WIDTH + 1  + 10
 
-private const DEFAULT_NAMED_AREA_WIDTH = 36 // "📦 group <name> "
+private const DEFAULT_NAMED_AREA_WIDTH = 36
 private const MIN_NAMED_AREA_WIDTH = 20
 
 private const DEFAULT_HEIGHT = 12
-private const DEFAULT_WIDTH = STATIC_SIZED_AREA_WIDTH + DEFAULT_PROGRESS_INDICATOR_WIDTH + DEFAULT_NAMED_AREA_WIDTH // = 80
+private const DEFAULT_WIDTH = STATIC_SIZED_AREA_WIDTH + DEFAULT_PROGRESS_INDICATOR_WIDTH + DEFAULT_NAMED_AREA_WIDTH
 
-private const MIN_WIDTH = STATIC_SIZED_AREA_WIDTH + MIN_PROGRESS_INDICATOR_WIDTH + MIN_NAMED_AREA_WIDTH // = 54
-private const MIN_HEIGHT = 4 // 1 line for group, 1 line for possible error test case, 1 line for test case, 1 line for summary
+private const MIN_WIDTH = STATIC_SIZED_AREA_WIDTH + MIN_PROGRESS_INDICATOR_WIDTH + MIN_NAMED_AREA_WIDTH
+private const MIN_HEIGHT = 4
 
 private func namedAreaWidth(total: Int64): Int64 {
-    total - STATIC_SIZED_AREA_WIDTH - progressIndicatorWidth(total) // 64% of free area
+    total - STATIC_SIZED_AREA_WIDTH - progressIndicatorWidth(total)
 }
 
 private func progressIndicatorWidth(total: Int64): Int64 {
-    let v = (total - STATIC_SIZED_AREA_WIDTH) * 36 / 100 // 36% of free area
+    let v = (total - STATIC_SIZED_AREA_WIDTH) * 36 / 100
     max(min(v, MAX_PROGRESS_INDICATOR_WIDTH), MIN_PROGRESS_INDICATOR_WIDTH)
 }
 
 private func groupNameWidth(total: Int64): Int64 {
-    namedAreaWidth(total) - GROUP_WORD.size - 4 /* "📦 " and " "  between */
+    namedAreaWidth(total) - GROUP_WORD.size - 4 
 }
 
 private func testCaseNameWidth(total: Int64): Int64 {
-    total - TEST_WORD.size - 4 /* "🧪 " and " " between */ - 10 /* (hh:mm:ss) */ - MARK_WIDTH - 2 /* spaces between mark */
+    total - TEST_WORD.size - 4  - 10  - MARK_WIDTH - 2 
 }
 
 class TestProgressReporter <: UTProgressReporter {
     private var width = DEFAULT_WIDTH
     private var height = DEFAULT_HEIGHT
 
-    /**
-     * Space reserved for finished cases counter in summary.
-     * Can grow.
-     */
+
+
     private var markWidth = MARK_WIDTH
 
     private let booker: TestProgressCollector
@@ -106,11 +104,11 @@ class TestProgressReporter <: UTProgressReporter {
             let percent = percentString(pack.finishPercent)
 
             let markSymbol = match {
-                case pack.isFailed => "✗" // 1 grapheme, 1 rune but probably many bytes
+                case pack.isFailed => "✗"
                 case pack.finishedCases < pack.totalCases => ""
-                case _ => "✓" // 1 grapheme, 1 rune but probably many bytes
+                case _ => "✓"
             }
-            let mark = markSymbol.padEnd(MARK_WIDTH + if (markSymbol.size > 1) { markSymbol.size - 1 } else { 0 }) // Adjust padding knowing the mark size is 1 grapheme it could takes many bytes
+            let mark = markSymbol.padEnd(MARK_WIDTH + if (markSymbol.size > 1) { markSymbol.size - 1 } else { 0 })
 
             let duration = pack.duration.toStringFormatted()
             let statusColor = if (pack.isFailed) { Color.RED} else { Color.GREEN }
@@ -146,8 +144,8 @@ class TestProgressReporter <: UTProgressReporter {
         let text = PrettyText()
         if (let Some(failedCase) <- booker.lastFailedStep) {
             let statusCode = failedCase.check.statusCode().toString()
-            let caseNameSpace = namedAreaWidth(width) + progressIndicatorWidth(width) - statusCode.size - 1 - 3 /* "   FAILED " */
-            text.append("   ") // alignment of level groups and cases name
+            let caseNameSpace = namedAreaWidth(width) + progressIndicatorWidth(width) - statusCode.size - 1 - 3 
+            text.append("   ")
             text.colored(Color.RED, statusCode).space()
             text.append(failedCase.trimmed(caseNameSpace).padEnd(caseNameSpace))
         }
@@ -177,7 +175,7 @@ class TestProgressReporter <: UTProgressReporter {
                 statusInfo.append("error:").space().colored(Color.RED, "failed to register test(s)")
         }
 
-        markWidth = max(markWidth, summary.totalCases.toString().size * 2 + 1 /* reserve totalCases space for both totalCases and finishedCases + 1 for "/" */ )
+        markWidth = max(markWidth, summary.totalCases.toString().size * 2 + 1  )
         let emptiness = "".padEnd(namedAreaWidth(width) - statusInfo.toString().size - markWidth + MARK_WIDTH)
         let finishedCounter = "${summary.finishedCases}/${summary.totalCases}".padStart(markWidth)
         let duration = summary.duration.toStringFormatted()
@@ -217,7 +215,7 @@ class TestProgressReporter <: UTProgressReporter {
 
         height = min(height, Int64(booker.registeredPackagesCount) + testCasesParallelism + 2)
         if (let Some(lim) <- entriesLimit) {
-            height = min(height, Int64(lim) + 2) // (packages and test cases) entries + error line + status line
+            height = min(height, Int64(lim) + 2)
         }
 
         height = max(height, MIN_HEIGHT)
@@ -237,9 +235,7 @@ class TestProgressReporter <: UTProgressReporter {
 private class TestProgressCollector {
     let updateQueue = NonBlockingQueue<UTProgress>()
 
-    /**
-     * Stores workers that were registered respective the related packages.
-     */
+
     private let registeredWorkers = HashSet<UniqueWorkerId>()
     private let totalPackageCasesCount = HashMap<String, UInt64>()
     private let packagesOrder = ArrayList<String>()
@@ -249,7 +245,7 @@ private class TestProgressCollector {
     private let failedPackages = HashSet<String>()
 
     private var _totalCasesCount = 0u64
-    private let casesOrder: Array<?Int64> // Worker ids
+    private let casesOrder: Array<?Int64>
     private var _finishedCasesCount = 0u64
     private var _passedCasesCount = 0u64
     private var _failedCasesCount = 0u64
@@ -259,12 +255,10 @@ private class TestProgressCollector {
     private let summaryProgress = Progress(totalPieces: 0)
     private var startTime: MonoTime = MonoTime.now()
 
-    /**
-     * Stores currently executing header on the worker with its id.
-     */
+
     private let executing = HashMap<Int64, TestCaseProgressData>()
 
-    private let finishedPackages = ArrayList<String>() // List of finished packages to be shown and removed from progress.
+    private let finishedPackages = ArrayList<String>()
 
     TestProgressCollector(testCasesParallelism: Int64) {
         casesOrder = Array<?Int64>(testCasesParallelism, repeat: None)
@@ -322,7 +316,6 @@ private class TestProgressCollector {
         get() {
             packagesOrder |> filterMap<String, PackageProgressData> { name: String =>
                 let totalCases = totalPackageCasesCount[name]
-                // do not show effectively empty packages
                 if (totalCases == 0) { return None }
                 PackageProgressData(
                     name,
@@ -388,8 +381,6 @@ private class TestProgressCollector {
 
     private func registerWorkerIfRequired(cases: UInt64, id!: Int64, pack!: String) {
         if (cases == 0) {
-            // we still have to initialize the information because this package may be
-            // mentioned in other messages from worker, but we don't want it to
             totalPackageCasesCount.addIfAbsent(pack, 0u64)
             finishedPackageCasesCount.addIfAbsent(pack, 0u64)
             packagesProgress.addIfAbsent(pack, Progress(totalPieces: Int64(cases)))
@@ -534,7 +525,7 @@ private struct PackageProgressData {
 
 private enum TestCaseName <: ToString {
     | CaseName(TestCaseId)
-    | CNStep(LStep) // Consider test class lifecycle methods as cases here and display it.
+    | CNStep(LStep)
 
     public override func toString() {
         match (this) {
@@ -717,48 +708,32 @@ private func trimPackage(pack: String, limit!: Int64): String {
     }
 }
 
-/**
- * Right-aligned percent
- */
+
 private func percentString(percent: UInt64, width!: Int64 = PERCENT_VALUE_WIDTH): String {
     percent.toString().padStart(width) + "%"
 }
 
 private class Progress <: PrettyPrintable {
-    /**
-     * Cached text incremental representation
-     */
+
+
     private var text = PrettyText()
 
-    /**
-     * Type of the elements in the progress. One element takes about (width of the full progress bar / totalPieces) bars.
-     */
+
     private let pieces = ArrayList<Bool>()
 
 
-    /**
-     * Cached index of bar (single pipe) that should be rendered as the next.
-     */
     private var barIdx = 0
 
-    /**
-     *  Amount of progress pieces that were rendered and cached.
-     */
+
     private var drawnPieces = 0
 
-    /**
-     * Area available for the whole progress pipes during previous render.
-     */
+
     private var prevWidth = 0
 
-    /**
-     * Last rendered piece width (in pipes).
-     */
+
     private var prevPieceWidth = 0
 
-    /**
-     * Last rendered piece status: positive or negative.
-     */
+
     private var prevPieceStatus = true
 
     Progress(var totalPieces!: Int64) {
@@ -775,9 +750,7 @@ private class Progress <: PrettyPrintable {
         pieces.add(positive)
     }
 
-    /**
-    * Increase total pieces amount.
-    */
+
     func expand(extendBy: UInt64) {
         pieces.reserve(Int64(extendBy))
         totalPieces += Int64(extendBy)
@@ -798,8 +771,6 @@ private class Progress <: PrettyPrintable {
         for (i in drawnPieces..pieces.size) {
             let pieceWidth = progressWidth(i, fullWidth: width)
             let progress = PROGRESS_INDICATOR_FINISHED_FILL * pieceWidth
-
-            // adjust bars color if previous pieces were failed but had no space to display
             let pieceStatus = match {
                 case prevPieceWidth == 0 => pieces[i] && prevPieceStatus
                 case _ => pieces[i]

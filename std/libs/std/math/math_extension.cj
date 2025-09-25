@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a library for math class.
- */
+
+
+
+
+
+
+
+
 
 package std.math
 
@@ -50,7 +47,7 @@ extend Float16 <: MathExtension<Float16> {
     }
 }
 
-/******************************** extend MaxMinValue<T> *********************************/
+
 
 extend Int8 <: MaxMinValue<Int8> {
     public static func getMax(): Int8 {
@@ -169,7 +166,7 @@ extend Float64 <: MaxMinValue<Float64> {
     }
 }
 
-/******************************** extend Number<T> *********************************/
+
 
 extend Int8 <: Number<Int8> {}
 
@@ -197,7 +194,7 @@ extend Float32 <: Number<Float32> {}
 
 extend Float64 <: Number<Float64> {}
 
-/******************************* extend Integer<T> *********************************/
+
 
 extend Int8 <: Integer<Int8> {
     public static func isSigned(): Bool {
@@ -259,7 +256,7 @@ extend UIntNative <: Integer<UIntNative> {
     }
 }
 
-/******************************** extend FloatingPoint<T> *********************************/
+
 
 extend Float16 <: FloatingPoint<Float16> {
     public static func getPI(): Float16 {

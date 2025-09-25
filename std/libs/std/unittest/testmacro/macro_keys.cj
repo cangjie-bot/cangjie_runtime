@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -16,8 +16,6 @@ let TEST_BUILDER_MACRO = MacroKey.create("@TestBuilder", Function, TestEntity, c
     placement: TopLevel)
 let TEST_TEMPLATE_MACRO = MacroKey.create("@TestTemplate", Class, TestEntity, conflicts: [TEST_MACRO],
     placement: TopLevel, allowedModifiers: [ABSTRACT])
-
-// actual keys that are written to @Attribute section
 let SKIP_MACRO = MacroKey.create("@Skip", ClassOrFunction, Configuration)
 let TESTCASE_MACRO = MacroKey.create("@TestCase", Function, TestEntity,
     placement: InsideParent([TEST_MACRO, TEST_TEMPLATE_MACRO]))
@@ -27,11 +25,9 @@ let TYPES_MACRO = MacroKey.create("@Types", ClassOrFunction, Configuration,
 let TIMEOUT_MACRO = MacroKey.create("@Timeout", ClassOrFunction, Configuration)
 let TAG_MACRO = MacroKey.create("@Tag", ClassOrFunction, Configuration, repeatable: true)
 let MEASURE_MACRO = MacroKey.create("@Measure", ClassOrFunction, Configuration, repeatable: true, placement: TopLevel)
-// @Test @Bench is allowed on top level func, we allow @Bench @TestCase on member function
 let BENCH_MACRO = MacroKey.create("@Bench", Function, TestEntity)
 let PARALLEL_MACRO = MacroKey.create("@Parallel", ClassOrFunction, Configuration,
     conflicts: [TEST_TEMPLATE_MACRO, TESTCASE_MACRO, BENCH_MACRO])
-// lifecycle macros are only allowed on member functions that do not have any other macros
 let BEFORE_EACH_MACRO = MacroKey.create("@BeforeEach", Function, Lifecycle,
     placement: InsideParent([TEST_MACRO, TEST_TEMPLATE_MACRO]))
 let AFTER_EACH_MACRO = MacroKey.create("@AfterEach", Function, Lifecycle,
@@ -40,13 +36,9 @@ let BEFORE_ALL_MACRO = MacroKey.create("@BeforeAll", Function, Lifecycle,
     placement: InsideParent([TEST_MACRO, TEST_TEMPLATE_MACRO]))
 let AFTER_ALL_MACRO = MacroKey.create("@AfterAll", Function, Lifecycle,
     placement: InsideParent([TEST_MACRO, TEST_TEMPLATE_MACRO]))
-
-// assertion macro is only allowed on top-level functions that do not have any other macros
 let ASSERTION_MACRO = MacroKey.create("@CustomAssertion", Function, Assertion, placement: TopLevel)
 
 type Verifier = (MacroAttrs, Decl, MacroErrors) -> Unit
-
-// NOTE: other rules related to mapping generic arguments and parsing @Types DSL are checked elsewhere
 let TYPES_VERIFIER: Verifier = {
     _: MacroAttrs, decl: Decl, errors: MacroErrors =>
     if (!decl.isGenericDecl) {
@@ -79,16 +71,16 @@ let VERIFIERS = HashMap<MacroKey, Verifier>(
 )
 
 enum MacroKind {
-    | TestEntity // declares a runnable entity like a test class, test case function, benchmark etc
-    | Configuration // configures an existing runnable entity
-    | Lifecycle // controls lifecycle and cannot have any other annotations apart from other lifecycle annotations
-    | Assertion // registers custom assertion function and prevents other annotations being put
+    | TestEntity
+    | Configuration
+    | Lifecycle
+    | Assertion
 }
 
 enum MacroPlacement {
-    | Anywhere // can be placed anywhere
-    | TopLevel // can be placed only on top level
-    | InsideParent(Array<MacroKey>) // only inside one of the given parents
+    | Anywhere
+    | TopLevel
+    | InsideParent(Array<MacroKey>)
 
     public prop canBeTopLevel: Bool {
         get() {
@@ -114,7 +106,7 @@ enum MacroPlacement {
                         "${tail}, or ${parentKeys[0]}"
                 }
                 "${k} must be used on a member of class annotated with ${targetsFormat}."
-            case Anywhere => "" // no errors are expected for this placement
+            case Anywhere => ""
         }
     }
 }

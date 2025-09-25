@@ -1,26 +1,24 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.diff.AssertPrintable
 import std.unittest.common.*
 
-/**
- * Checks two values for equality and will throw an exception if the check fails.
- *
- * @param leftStr string representation of expected.
- * @param rightStr string representation of actual.
- * @param expected expected value.
- * @param actual actual value.
- * @param optParentCtx context where fail message is stored
 
- * @throws AssertException If <expected> and <actual> are not equal.
- */
+
+
+
+
+
+
+
+
 public func assertEqual<T>(
     leftStr: String,
     rightStr: String,
@@ -31,18 +29,16 @@ public func assertEqual<T>(
     assertEqual(leftStr, rightStr, expected, actual, isDelta: false, optParentCtx: optParentCtx)
 }
 
-/**
- * Checks two values for equality and will throw an exception if the check fails.
- *
- * @param leftStr string representation of expected.
- * @param rightStr string representation of actual.
- * @param expected expected value.
- * @param actual actual value.
- * @param isDelta is delta comparison
- * @param optParentCtx context where fail message is stored
 
- * @throws AssertException If <expected> and <actual> are not equal.
- */
+
+
+
+
+
+
+
+
+
 public func assertEqual<T>(
     leftStr: String,
     rightStr: String,
@@ -69,15 +65,13 @@ public func assertEqual<T>(
     }
 }
 
-/**
- * Same as assertEqual but will not throw an exception immediately.
- *
- * @param leftStr string representation of expected.
- * @param rightStr string representation of actual.
- * @param expected expected value.
- * @param actual actual value.
- * @param optParentCtx context where fail message is stored
- */
+
+
+
+
+
+
+
 public func expectEqual<T>(
     leftStr: String,
     rightStr: String,
@@ -88,16 +82,14 @@ public func expectEqual<T>(
     expectEqual(leftStr, rightStr, expected, actual, isDelta: false, optParentCtx: optParentCtx)
 }
 
-/**
- * Same as assertEqual but will not throw an exception immediately.
- *
- * @param leftStr string representation of expected.
- * @param rightStr string representation of actual.
- * @param expected expected value.
- * @param actual actual value.
- * @param isDelta is delta comparison
- * @param optParentCtx context where fail message is stored
- */
+
+
+
+
+
+
+
+
 public func expectEqual<T>(
     leftStr: String,
     rightStr: String,

@@ -1,17 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
 import std.collection.ArrayList
 
 public func parseDecl(input: Tokens, astKind!: String = ""): Decl {
-    /* Get node info from flatbuffer */
+    
     var node = try {
         match (astKind) {
             case "PrimaryCtorDecl" => unsafe {
@@ -44,7 +44,7 @@ public func parseDecl(input: Tokens, astKind!: String = ""): Decl {
         throw ParseASTException("\n" + e.message + "parsing decl error.")
     }
 
-    /* Get decl info from flatbuffer */
+    
     var astNode = generateDeclAST(node.GetRootAsDecl())
     return astNode
 }
@@ -120,7 +120,6 @@ func createDeclBase(keyWord: Token, declBase: NodeFormat_DeclBase): Decl {
     var indentifier = Token(TokenKind.IDENTIFIER, declBase.GetIdentifier()).addPosition(declBase.GetIdentifierPos())
     var (param, constraint, constraintCommas, isGeneric) = generateGenericInfo(declBase.GetGeneric())
     var genericParam: Option<GenericParam> = param
-    // Solve some special node
     if (keyWord.kind == TokenKind.EXTEND) {
         indentifier = Token()
     } else if (keyWord.kind == TokenKind.FUNC) {
@@ -339,7 +338,6 @@ func createFuncDecl(decl: NodeFormat_Decl, declBase: NodeFormat_DeclBase): Decl 
         createDeclBase(Token(TokenKind.FUNC), declBase)
     }
     var funcDecl = generateCommonFuncDecl(fd, declNode)
-    // Deal with overload op.
     var overloadOp = getOperaterKindOrIdentTokens(fd.GetOpKind(), fd.GetBase().getOrThrow().GetIdentifierPos(), Tokens())
     funcDecl.overloadOp = overloadOp
     return funcDecl
@@ -463,7 +461,6 @@ func createFuncBody(funcBody: Option<NodeFormat_FuncBody>) {
         case Some(v) => v
         case None => NodeFormat_FuncBody(Array<UInt8>(0, repeat: 0), 0)
     }
-    // create function parameters
     var funcParams: ArrayList<FuncParam> = generateFuncParams(fb)
     var colon = Token()
     var ty = try {
@@ -481,7 +478,6 @@ func createFuncBody(funcBody: Option<NodeFormat_FuncBody>) {
     } catch (e: Exception) {
         (Token(), Token())
     }
-    // create function block
     return match (fb.GetBody()) {
         case Some(blockNode) =>
             var lCurl: Token = Token()

@@ -1,17 +1,16 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.*
 import std.collection.*
 
 const MIN_COLUMN_WIDTH = 6
-// const MAX_COLUMN_WIDTH = 30
 class PrettyTable <: PrettyPrintable {
     let columnSizes: ArrayList<Int64>
     let rows = ArrayList<ArrayList<(String, Color)>>()
@@ -87,9 +86,6 @@ class PrettyTable <: PrettyPrintable {
     }
 
     private func displaySize(str: String): Int64 {
-        // We assume ambiguous width as half width. Such symbols are quite rare.
-        // However TerminalPrinter will be able to handle one of such characters being full width by overwriting trailing space.
-        // For example, this can happen for `±` which has ambiguous width and actual width depends on a specific font being used.
         str.runes()
             .map { r: Rune => r.width() }
             .fold(0) { a, b => a + b }

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -19,12 +19,10 @@ type ActualTcpPlatformSocket = DopraTcpSocketImpl
 @When[backend == "cjnative" && os == "Windows"]
 type ActualTcpPlatformSocket = DopraOtherSocketImpl
 
-// here we repeat the generic instantiation trick to avoid virtual invocation
-// for read(), write() and accept()
-// so the generic type parameter is also required here
-// This type should be never used as generic argument, only as a super-type
+
+
 abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: PlatformSocket<Self> {
-    protected var address: ?SockAddr = None // this is used in accept to not allocate it every time
+    protected var address: ?SockAddr = None
     private var isIPv6 = false
     protected DopraSocketImpl(protected var _handle: AtomicInt64) {}
     protected mut prop handle: Int64 {
@@ -154,11 +152,9 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
     }
 
     private func ensureAddress(): SockAddr {
-        // we don't need any synchronization here because accept() can't be invoked concurrently
-        // that is guarded in SocketCommon
         match (this.address) {
             case Some(address) => address
-            case None => createAddress() // slowpath
+            case None => createAddress()
         }
     }
 
@@ -169,8 +165,6 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
     }
 
     public open override func shutdown(): Unit {
-        // we don't need special synchronization here because nether shutdown
-        // nor dispose are never invoked concurrently
         unsafe { CJ_MRT_SockShutdown(handle) }
     }
 
@@ -182,15 +176,13 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         getRemoteAddress(handle)
     }
 
-    /**
-     * Read the specified socket option writing the result to value buffer
-     * of the specified valueLength (in bytes).
-     * Before invoking this function valueLength should be initialized with the buffer size
-     * After invoking this function valueLength will contain the actual result
-     * size in bytes.
-     *
-     * Throws an exception if failed (when getsockopt returns -1).
-     */
+
+
+
+
+
+
+
     public override unsafe func getSocketOption(
         level: Int32,
         option: Int32,
@@ -217,12 +209,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
-    /**
-     * Write the specified socket option from value buffer having valueLength
-     * size in bytes.
-     *
-     * Throws an exception if failed (when setsockopt returns -1).
-     */
+
+
+
+
     public override unsafe func setSocketOption(
         level: Int32,
         option: Int32,
@@ -236,12 +226,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
-    /**
-     * Read the specified socket option returning it's value as IntNative result.
-     *
-     * Throws an exception if failed (when getsockopt returns -1) or if the result
-     * has size different from IntNative.
-     */
+
+
+
+
     public override func getSocketOptionIntNative(
         level: Int32,
         option: Int32
@@ -256,12 +244,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
-    /**
-     * Write a numeric IntNative value to the specified socket option.
-     *
-     * Throws an exception if failed (when setsockopt returns -1), for example
-     * when the option size is different from IntNative.
-     */
+
+
+
+
     public override func setSocketOptionIntNative(
         level: Int32,
         option: Int32,
@@ -310,9 +296,6 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
 
         return None
     }
-
-    // we can't make it abstract so we have to implement it
-    // it should be never invoked
     public static redef func create(
         _: SocketNet,
         _: AddressFamily,
@@ -355,12 +338,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
     }
 
     static func toDopraTimeout(timeout: Duration): UInt64 {
-        UInt64(timeout.toNanoseconds()).atLeast(1) // timeout of zero is not allowed on Dopra
+        UInt64(timeout.toNanoseconds()).atLeast(1)
     }
 }
 
-// Specialized version of socket impl for TCP. Should be never used for other types.
-// Doesn't support send/receive, only read/write
 class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
     private init(_handle: AtomicInt64) {
         super(_handle)
@@ -538,7 +519,6 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
             var copyLen: Int32 = 0
             unsafe {
                 let bufCp = acquireArrayRawData(buffer)
-                // bufCp.pointer copy to socketBufferPtr
                 copyLen = CJ_SOCKET_BufferWCopy(socketBufferPtr, bufCp.pointer + writeToBufferSize,
                     Int64(SOCK_WRITE_BUFFER_SIZE), Int32(bufferOnceSize))
                 releaseArrayRawData(bufCp)
@@ -568,7 +548,7 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
 
     public override func read(buffer: Array<UInt8>, timeout: ?Duration): ?Int64 {
         let timeoutNano = timeout?.toNanoseconds() ?? -1
-        let readLen: Int32 = unsafe { CJ_SOCKET_BufferRead(socketBufferPtr, 0, Int32(buffer.size), timeoutNano, 0) } // offset 0
+        let readLen: Int32 = unsafe { CJ_SOCKET_BufferRead(socketBufferPtr, 0, Int32(buffer.size), timeoutNano, 0) }
         if (readLen < 0) {
             socketProcessErrno(ErrnoLabel.Read)
         }
@@ -578,7 +558,6 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
             var copyLen: Int32 = 0
             unsafe {
                 let bufCp = acquireArrayRawData(buffer)
-                // socketBufferPtr copy to bufCp.pointer
                 copyLen = CJ_SOCKET_BufferRCopy(socketBufferPtr, bufCp.pointer, buffer.size, readLen)
                 releaseArrayRawData(bufCp)
             }
@@ -614,7 +593,6 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
                 if (r < 0) {
                     socketProcessErrno(ErrnoLabel.Read)
                 }
-                // Can not get address if timeout
                 (addr.toSocketAddress(), r)
             } finally {
                 addr.free()
@@ -624,8 +602,6 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         var copyLen: Int32 = 0
         unsafe {
             let bufCp = acquireArrayRawData(buffer)
-
-            // socketBufferPtr copy to bufCp.pointer
             copyLen = CJ_SOCKET_BufferRCopy(socketBufferPtr, bufCp.pointer, buffer.size, readLen)
             releaseArrayRawData(bufCp)
             if (copyLen < 0) {
@@ -640,7 +616,6 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         var copyLen: Int32 = 0
         unsafe {
             let bufCp = acquireArrayRawData(buffer)
-            // bufCp.pointer copy to socketBufferPtr
             copyLen = CJ_SOCKET_BufferWCopy(socketBufferPtr, bufCp.pointer, Int64(SOCK_WRITE_BUFFER_SIZE),
                 Int32(buffer.size))
             releaseArrayRawData(bufCp)
@@ -673,7 +648,7 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
 
     public override unsafe func dispose(): Unit {
         address?.free()
-        CJ_SOCKET_BufferClose(socketBufferPtr, handle) // does CJ_MRT_SockClose inside
+        CJ_SOCKET_BufferClose(socketBufferPtr, handle)
     }
 
     public static redef func create(

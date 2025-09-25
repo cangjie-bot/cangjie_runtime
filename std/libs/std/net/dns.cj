@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -40,16 +40,13 @@ func isDomainValid(domainStr: String): Bool {
             numberPartCnt++
         }
     }
-    // reject the evil domain which looks like ip
     if (numberPartCnt == domainList.size) {
         return false
     }
     return true
 }
 
-/**
- * @throws IllegalFormatException while domain contains null character.
- */
+
 func resolveDomain(family: AddressFamily, domain: String): Array<IPAddress> {
     if (domain.contains(NULL_BYTE)) {
         throw IllegalFormatException("Domain cannot contain null character!")
@@ -69,8 +66,6 @@ func resolveDomain(family: AddressFamily, domain: String): Array<IPAddress> {
     var rp = res
     while (rp.isNotNull()) {
         var ai = unsafe { rp.read() }
-        // offset of ai_addr in struct AddrInfo differs on different platform
-        // so we get the value of ai_addr from c code
         let ai_addr = unsafe { CJ_SOCKET_GetAddrFromAddrinfo(rp) }
         rp = ai.ai_next
         if (ai_addr.isNull()) {

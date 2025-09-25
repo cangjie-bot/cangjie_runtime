@@ -1,14 +1,11 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file The file declares several ffi functions and classes.
- */
+
+
+
+
+
+
 package std.net
 
 foreign func CJ_MRT_TcpsockInit(): Int32
@@ -20,10 +17,8 @@ foreign func CJ_MRT_RawsockInit(): Int32
 @When[os != "Windows"]
 foreign func CJ_MRT_DomainsockInit(): Int32
 
-/**
- * For static link, we have to call this init function in coroutine module.
- * Save the result as a global variable to make sure this init function is called before other functions.
- */
+
+
 let CJ_MRT_TCP_SOCK_INIT: Int32 = unsafe { CJ_MRT_TcpsockInit() }
 let CJ_MRT_UDP_SOCK_INIT: Int32 = unsafe { CJ_MRT_UdpsockInit() }
 let CJ_MRT_RAW_SOCK_INIT: Int32 = unsafe { CJ_MRT_RawsockInit() }
@@ -32,9 +27,7 @@ let CJ_MRT_DOMAIN_SOCK_INIT: Int32 = unsafe {
     CJ_MRT_DomainsockInit()
 }
 
-/**
- * CJ_MRT_SockCreate type
- */
+
 const SOCK_STREAM: Int32 = 1
 const SOCK_DGRAM: Int32 = 2
 @When[os == "Windows" || os == "macOS"]
@@ -42,7 +35,7 @@ const SOCK_RDM: Int32 = 4
 @When[os == "Windows" || os == "macOS"]
 const SOCK_SEQPACKET: Int32 = 5
 
-/* Error code in runtime */
+
 const ERRNO_SOCK_ARG_INVALID: Int32 = 0x100C0000
 const ERRNO_SOCK_NOT_SUPPORTED: Int32 = 0x100C0001
 const ERRNO_SOCK_NOT_REGISTERED: Int32 = 0x100C0002
@@ -61,10 +54,8 @@ func peerAddrGet(handle: Int64, addr: CPointer<SockAddr>): Int32 {
     unsafe { CJ_MRT_SockPeerAddrGet(handle, addr) }
 }
 
-/*
- * @throws SocketException while some system errors are happened.
- * @throws SocketException while malloc socket address is failed.
- */
+
+
 func getAddress(handle: Int64, getAddressFunc: (Int64, CPointer<SockAddr>) -> Int32, msg: String): SockAddr {
     var addr = SockAddr()
     let res: Int32 = getAddressFunc(handle, inout addr)
@@ -132,7 +123,6 @@ foreign {
     func CJ_MRT_SockWaitSend(handle: Int64): Int32
 
     func CJ_MRT_SockWaitSendTimeout(handle: Int64, timeout: UInt64): Int32
-    // raw socket
     func CJ_MRT_SockListen(sockfd: Int64, backlog: Int32): Int64
 
     func CJ_MRT_SockSendtoNonBlock(sockfd: Int64, buf: CPointer<UInt8>, size: Int32, flags: Int32,
@@ -168,8 +158,6 @@ func getSocketError(): Int32 {
 
 func socketProcessErrno(label: ErrnoLabel): Nothing {
     let errno = getSocketError()
-
-    // There is no EWOULDBLOCK/ ETIMEDOUT / EAGAIN in runtime, the socket is in NONBLOCK mode.
     if (errno == ERRNO_SOCK_TIMEOUT) {
         throw SocketTimeoutException("Failed to ${label}: ${label} timeout.")
     }

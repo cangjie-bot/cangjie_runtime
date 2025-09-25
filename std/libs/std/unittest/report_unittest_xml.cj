@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.ArrayList
@@ -160,10 +160,8 @@ interface ReportFormat {
         get() { defaultConfiguration().bench }
     }
 
-    /**
-     * @returns report format instance specified in `str` parameter.
-     * @throws UnittestCliOptionsFormatException if report format could not be created from `str`
-     */
+
+
     static func fromString(format: String, path: Path): ReportFormat {
         match (isBench) {
             case true => BenchReportFormat.fromString(format, path)
@@ -185,8 +183,6 @@ interface ReportFormat {
                 "--report-path directory should be specified since --report-format is specified")
             return ReportFormat.fromString(explicitFormat, dir)
         }
-
-        // return default format if report directory was specified
         ReportFormat.default(reportDir ?? return None)
     }
 
@@ -218,17 +214,13 @@ enum UTestReportFormat <: ReportFormat {
     }
 }
 
-/**
- * @returns report directory path specified in default configuration.
- * Returns None if configuration value is not specified or the value is not a directory.
- */
+
+
 func getReportDirectory<Key>(key: Key): ?Path where Key <: KeyFor<String> {
     let pathStr = defaultConfiguration().get<String>(key) ?? return None
     if (pathStr.isAsciiBlank()) {
         return None
     }
-
-    // if passed output is not a valid directory, we silently don't do anything
     if (File.exists(pathStr)) { return None }
     Path(pathStr)
 }
@@ -245,7 +237,6 @@ private class XmlReport {
     var currentCaseId: TestCaseId
     var fakeId: TestCaseId
     XmlReport(let suiteResult: TestSuiteResult) {
-        // NOTE: questionable entry name
         fakeId = TestCaseId(suiteResult.suiteId, "lifecycle", isBench: false)
         currentCaseId = fakeId
     }

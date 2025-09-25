@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -13,8 +13,6 @@ foreign func CJ_CORE_Float64ToHash(x: Float64): Int64
 
 @FastNative
 foreign func CJ_CORE_Float32ToHash(x: Float32): Int64
-
-// print
 @FastNative
 foreign func CJ_CORE_PrintUTF8(c: CPointer<UInt8>, len: Int64, newLine: Bool, flush: Bool): Int64
 
@@ -41,7 +39,6 @@ foreign func CJ_CONSOLE_Readline(): CPointer<StructureString>
 
 @FastNative
 foreign func CJ_CONSOLE_ClearstdInerr(): Unit
-// string
 @FastNative
 foreign func memcpy_s(dest: CPointer<UInt8>, destMax: UIntNative, src: CPointer<UInt8>, count: UIntNative): Int32
 

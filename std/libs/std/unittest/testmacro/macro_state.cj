@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -13,8 +13,6 @@ import std.collection.concurrent.ConcurrentHashMap
 import std.sync.AtomicUInt64
 
 type MacroAttrs = HashMap<MacroKey, ArrayList<Tokens>>
-
-//NOTE: this is a temporary implementation, until we have contextual macros
 class MacroStorage {
     private static let globalMutableState = ConcurrentHashMap<String, Tokens>()
     private static let globalCounter = AtomicUInt64(0)

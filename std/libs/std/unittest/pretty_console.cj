@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.sync.ReentrantMutex
@@ -18,10 +18,9 @@ foreign func DisableANSITerminal(): Bool
 var isConsoleUtf8: Bool = true
 
 open class TerminalPrettyPrinter <: PrettyPrinter {
-    /**
-     * Unfortunately, we need a global lock here to make sure EnableANSITerminal() is not called
-     * more than once
-     */
+
+
+
     private static let globalAnsiLock = ReentrantMutex()
     private static var globalAnsiEnabled: ?Bool = None
 
@@ -44,7 +43,6 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
     }
 
     private static let ESC = "\u{1B}"
-    // Colors
     private static let ESC_C_DEFAULT_MODE = "${ESC}[0m"
     private static let ESC_C_RED_MODE = "${ESC}[31m"
     private static let ESC_C_GREEN_MODE = "${ESC}[32m"
@@ -53,38 +51,26 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
     private static let ESC_C_MAGENTA_MODE = "${ESC}[35m"
     private static let ESC_C_CYAN_MODE = "${ESC}[36m"
     private static let ESC_C_GRAY_MODE = "${ESC}[90m"
-
-    // Cursor
-    private static func escLinesUp(lines: Int64) { "${ESC}[${lines}F" } // `lines` up and move to the column start
-    private static func escLinesDown(lines: Int64) { "${ESC}[${lines}E" } // `lines` down and move to the column start
-    private static func escCursorHorizontalPos(column: Int64) { "${ESC}[${column}G" } // Sets cursor column
-    private static func escCursorRight(shift: Int64) { "${ESC}[${shift}C" } // Sets cursor column
-    private static let ESC_CURSOR_SAVE = "${ESC}7" // Saves cursor position & attributes
-    private static let ESC_CURSOR_RESTORE = "${ESC}8" // Restores previously saved cursor position & attributes
+    private static func escLinesUp(lines: Int64) { "${ESC}[${lines}F" }
+    private static func escLinesDown(lines: Int64) { "${ESC}[${lines}E" }
+    private static func escCursorHorizontalPos(column: Int64) { "${ESC}[${column}G" }
+    private static func escCursorRight(shift: Int64) { "${ESC}[${shift}C" }
+    private static let ESC_CURSOR_SAVE = "${ESC}7"
+    private static let ESC_CURSOR_RESTORE = "${ESC}8"
     private static let ESC_CURSOR_HIDE = "${ESC}[?25l"
     private static let ESC_CURSOR_SHOW = "${ESC}[?25h"
-
-    // Scrollable margins
-    // sets scrollable margins. Start value begins from 1.
     private static func escSetScrollableMargins(start: Int64, endInclusive: Int64) { "${ESC}[${start};${endInclusive}r" }
-    // sets scrollable margins from the first line to `endInclusive`
     private static func escSetScrollableMarginsEnd(endInclusive!: Int64) { "${ESC}[1;${endInclusive}r" }
-    // sets scrollable margins from the `start` to the last line of the terminal bounds
     private static func escSetScrollableMarginsStart(start!: Int64) { "${ESC}[${start};r" }
-    // resets scrollable margins to the whole terminal bounds
     private static let ESC_RESET_SCROLLABLE_MARGINS = "${ESC}[;r"
-
-    // Clear
-    private static let ESC_CLEAR_AHEAD = "${ESC}[0J" // Clears the whole screen after the current cursor position
-    private static let ESC_CLEAR_LINE = "${ESC}[2K" // Clears the whole line
+    private static let ESC_CLEAR_AHEAD = "${ESC}[0J"
+    private static let ESC_CLEAR_LINE = "${ESC}[2K"
 
     private let areColorsEnabled: Bool
     private let areOtherAnsiEnabled: Bool
 
-    /**
-     * @p isColored: should colors be displayed (via ANSI)
-     * @p isOtherAnsiAble: should other ANSI escape codes be displayed such as "move cursor", "clear screen", etc
-     */
+
+
     TerminalPrettyPrinter(isColored: Bool, isOtherAnsiAble!: Bool = true) {
         let isAnsiEnabled = globalInitializeAnsi()
         this.areColorsEnabled = isColored && isAnsiEnabled
@@ -96,9 +82,7 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
         this(!(configuration.get(KeyNoColor.noColor) ?? false))
     }
 
-    /**
-     * Actual terminal height. Could equal `None` in case of terminal size is unavailable for some reason.
-     */
+
     prop terminalHeight: ?UInt64 {
         get() {
             match (unsafe { GetTerminalHeight() }) {
@@ -108,9 +92,7 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
         }
     }
 
-    /**
-     * Actual terminal width. Could equal `None` in case of terminal size is unavailable for some reason.
-     */
+
     prop terminalWidth: ?UInt64 {
         get() {
             match (unsafe { GetTerminalWidth() }) {
@@ -126,24 +108,20 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
         }
     }
 
-    /**
-     * Performs the cursor move for [lines] lines up. Scrolling-down is absent.
-     */
+
     func up(lines: Int64) {
         if (!areOtherAnsiEnabled || lines <= 0) { return }
         put(escLinesUp(lines))
     }
 
-    /**
-     * Performs the cursor move for [lines] lines down. Scrolling-down is absent.
-     */
+
     func down(lines: Int64) {
         if (!areOtherAnsiEnabled || lines <= 0) { return }
         put(escLinesDown(lines))
     }
 
     func toBottom() {
-        down(9999) // There is no common way to ask the terminal go to the bottom
+        down(9999)
     }
 
     func setColumn(column!: Int64 = 1) {

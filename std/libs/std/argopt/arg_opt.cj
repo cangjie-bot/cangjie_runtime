@@ -1,134 +1,119 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a library for ArgOpt class.
- */
+
+
+
+
+
+
+
+
 package std.argopt
 
 import std.collection.*
 
-/**
- * This is a library for ArgOpt class.
- * This module helps scripts parse command-line arguments,
- * And parse functions (including special meanings of parameters.
- * in the form of "-" and "--") , Supported by the GNU software.
- * This class uses some methods of String and Rune classes for implementation.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
 @Deprecated[message: "Use global function `public func parseArguments(args: Array<String>, specs: Array<ArgumentSpec>): ParsedArguments` instead."]
 public class ArgOpt {
 
-    /* Class that actually handles work. */
+    
     private var utils: ParserHelper
 
-    /* Class that stores symbols. */
+    
     private var arguments: Arguments
 
-    /**
-     * Constructor one parameters.
-     * For example : shortArgFormat ="abc:d:".
-     * indicates that the first letter before the colon can be parsed. that's c and d.
-     *
-     * @see init(args: Array<String>, shortArgFormat: String, longArgList:Array<String>.
-     * @param shortArgFormat Short parameter.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
     public init(shortArgFormat: String) {
         this(Arguments.NULL, shortArgFormat, Arguments.NULL)
     }
 
-    /**
-     * Constructor one parameters.
-     * For example: longArgList = {"testA=", "testB"}, args = {"--testA=foo","--test=bar"}
-     * Because of the r'=' exists after testA in longArgList. you can find the value of.
-     * testA in args. Conversely, no value found.
-     *
-     * @see init(args: Array<String>, shortArgFormat: String, longArgList: Array<String>).
-     * @param longArgList Long parameter set.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
+
     public init(longArgList: Array<String>) {
         this(Arguments.NULL, "", longArgList)
     }
 
-    /**
-     * Constructor two parameters.
-     * For example, see the context.
-     *
-     * @see init(shortArgFormat: String).
-     * @see init(longArgList: Array<String>).
-     * @see init(args: Array<String>, shortArgFormat: String, longArgList: Array<String>).
-     * @param longArgList Long parameter set.
-     * @param shortArgFormat Short parameter.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
+
+
     public init(shortArgFormat: String, longArgList: Array<String>) {
         this(Arguments.NULL, shortArgFormat, longArgList)
     }
 
-    /**
-     * This constructor is parsed using the ParserHelper class.
-     * which implements the overall round robin scheduling.
-     * The split parameters are placed in ParserHelper.argMap.
-     * The indexes that do not parse parameters are placed in ParserHelper.argsList.
-     * For example No.1: shortArgFormat="abc:d:", args= {"-afoo", "-bofo", "-cbar", "-d"}.
-     * Because indicates that the first letter before the colon can be parsed.
-     * Keys '-a', '-b', '-c', and '-d' have been saved in the key of ParserHelper.argMap.
-     * so the value of r'c' is "bar", the value of r'd' is "".
-     * For example No.2: longArgList= {"testA=", "testB"}, args= {"--testA=foo", "--testB=bar"}.
-     * Because of the r'=' exists after testA in longArgList.
-     * you can find the value of testA in args. Conversely, no value found.
-     * Keys 'testA' and 'testB' have been parsed into the key of ParserHelper.argMap.
-     * However, The values of keys 'testA' and 'testB' depend on the parametric form of 'longArgList'.
-     * For example No.3: longArgList= {"testA=", "testB"},args= {"--testA", "foo", "--testB", "bar"}.
-     * Because of the r'=' exists after testA in longArgList.
-     * But, if '--testA' in 'args' does not have a value (value after r'='), the next value of '--testA' must be obtained.
-     * In addition, the prefix of this next value cannot be '--' or r'-'.
-     * In the same way, Keys 'testA' and 'testB' have been parsed into the key of ParserHelper.argMap.
-     *
-     * @see Arguments.init().
-     * @see Arguments.getDoubleSign().
-     * @see Arguments.getSingleSign().
-     * @see Arguments.setMyArgs(String).
-     * @see ParserHelper.init(Arguments).
-     * @see ParserHelper.returnTupleFun(String).
-     * @see ParserHelper.isArrayEmptyFun(Array<String>).
-     * @param longArgList Long parameter set.
-     * @param shortArgFormat Short parameter.
-     * @param args setting Default parameters of myArgs.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public init(args: Array<String>, shortArgFormat: String, longArgList: Array<String>) {
         this.arguments = Arguments()
         this.utils = ParserHelper(this.arguments)
         this.utils.argsParser(args, shortArgFormat, longArgList)
     }
 
-    /**
-     * Getting the value of a parameter.
-     * For example one: getArg("a") or getArg("-a").
-     * The prefix of the input parameter can be without r'-' or can contain r'-'.
-     * which does not affect the returned value.
-     * For example two: getArg("--test").
-     *
-     * @param arg Target key.
-     * @return return the option type corresponding to the parameter.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
+
+
     public func getArg(arg: String): Option<String> {
         if (arg.isEmpty()) {
             return Option<String>.None
@@ -145,13 +130,11 @@ public class ArgOpt {
         return argMap.get(argStr)
     }
 
-    /**
-     * Getting the are no parsed parameters.
-     *
-     * @return if there are no unresolved parameters, returns Arguments.NULL.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
     public func getUnparseArgs(): Array<String> {
         let argsList: ArrayList<Int8> = utils.getArgsList()
         if (argsList.size == 0) {
@@ -176,34 +159,30 @@ public class ArgOpt {
         return this.arguments.getUnparseArgs()
     }
 
-    /**
-     * Getting all parsed parameters and values.
-     *
-     * @return key-value pair. The header of the key value must contain r'-' or '--'.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
     public func getArgumentsMap(): HashMap<String, String> {
         return this.utils.getArgsMap()
     }
 }
 
-/**
- * Stores parameters used by the ArgOpt class.
- * including default parameters, and common symbols.
- * Provides the get and set methods.
- *
- * @since 0.17.4
- */
+
+
+
+
+
 class Arguments {
 
-    /* Provide an empty Array. */
+    
     static let NULL: Array<String> = Array<String>()
 
-    /* Default parameters of myArgs.The default value is NULL. */
+    
     private var myArgs: Array<String> = NULL
 
-    /* Unparsed parameter array, The default value is NULL. */
+    
     private var unparseArgs: Array<String> = NULL
 
     func setMyArgs(Args: Array<String>) {
@@ -223,83 +202,71 @@ class Arguments {
     }
 }
 
-/**
- * Exception Type Enumeration.
- *
- * @since 0.17.4
- */
+
+
+
 enum ErrorType {
     IllegalArgument
     | IndexOutOfBounds
     | Runtime
 }
 
-/**
- * Parameter Parsing Helper class
- *
- * @since 0.17.4
- */
+
+
+
 class ParserHelper {
 
-    /* Initialization map creation object: HashMap */
+    
     private let argMap: HashMap<String, String> = HashMap<String, String>()
 
-    /* Initialization Records Resolved and Unresolved Collections:argList */
+    
     private var argsList: ArrayList<Int8> = ArrayList<Int8>()
 
-    /* arguments */
+    
     private var arguments: Arguments
 
-    /* prefix prompt for exceptions */
+    
     private static let exceptionPrompt = "Invalid string, please check the parameter: "
 
-    /**
-     * Constructor one parameters.
-     *
-     * @param argument Reference to the incoming object.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
     init(argument: Arguments) {
         this.arguments = argument
     }
 
-    /**
-     * Return Members argMap.
-     *
-     * @return return HashMap object.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
     func getArgsMap(): HashMap<String, String> {
         return this.argMap.clone()
     }
 
-    /**
-     * Return Members argsList.
-     *
-     * @return returns the list set.
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
     func getArgsList(): ArrayList<Int8> {
         return this.argsList
     }
 
-    /**
-     * Processes the args parameter sent by the argopt.
-     * Traverse @args to determine the @arg type based on the @arg prefix.
-     * If the prefix is --, use @doLongParser  to obtain @long and @unParse.
-     * If the prefix is -, use @doShortParser  to obtain @long and @unParse.
-     * @unParse check whether the @arg is matched and parsed in @shortStr or @longOpts.
-     * @long is number of @arg consumed by each parsing operation.
-     *
-     * @param args
-     * @param shortArgFormat
-     * @param longArgList
-     *
-     * @since 0.17.4
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     func argsParser(args: Array<String>, shortArgFormat: String, longArgList: Array<String>): Unit {
         let shortStr: String = checkShortStr(shortArgFormat)
         let longOpts: Array<String> = checkLongOpt(longArgList)
@@ -402,9 +369,7 @@ class ParserHelper {
         return (1, true)
     }
 
-    /**
-     * @throws IllegalArgumentException if errorId is IllegalArgument.
-     */
+
     private func checkShortStr(shortStr: String): String {
         for (item in shortStr.runes()) {
             if (item == r':' || item.isAsciiLetter()) {
@@ -415,9 +380,7 @@ class ParserHelper {
         return shortStr
     }
 
-    /**
-     * @throws IllegalArgumentException if errorId is IllegalArgument.
-     */
+
     private func checkLongOpt(longOpts: Array<String>): Array<String> {
         for (item in longOpts) {
             if (item.isEmpty()) {
@@ -564,7 +527,7 @@ class ArgParser {
     }
 
     func addSpec(spec: ArgumentSpec): Unit {
-        match (spec) { // r: Rune for short option, s: String for long option
+        match (spec) {
             case Short(r, _) =>
                 checkDuplicateShortOption(r)
                 _shortOptionSpecs.add(r, spec)
@@ -597,18 +560,18 @@ class ArgParser {
     }
 
     func parseLongOption(arg: String, next: ?String): Bool {
-        let splited: Array<String> = arg.split("=", 2) // if `=` not exist in arg, [arg] will get, else [option, value] get.
+        let splited: Array<String> = arg.split("=", 2)
 
         return if (let Some(spec) <- _longOptionSpecs.get(splited[0])) {
-            match ((spec.mode, splited.size == 1)) { // splited.size == 1 means no `=`, simply like --option
-                case (OptionalValue, true) => addOptionAndExecuteAction(splited[0], "", spec) // --option
-                case (OptionalValue, false) => addOptionAndExecuteAction(splited[0], splited[1], spec) // --option=value
+            match ((spec.mode, splited.size == 1)) {
+                case (OptionalValue, true) => addOptionAndExecuteAction(splited[0], "", spec)
+                case (OptionalValue, false) => addOptionAndExecuteAction(splited[0], splited[1], spec)
                 case (RequiredValue, true) =>
                     addOptionAndExecuteAction(splited[0],
-                        next ?? throw ArgumentParseException("Missing option value for ${splited[0]}."), spec) // --option value
-                    _index += 1 // consume next string
-                case (RequiredValue, false) => addOptionAndExecuteAction(splited[0], splited[1], spec) // --option=value
-                case (NoValue, true) => addOptionAndExecuteAction(splited[0], "", spec) // --option
+                        next ?? throw ArgumentParseException("Missing option value for ${splited[0]}."), spec)
+                    _index += 1
+                case (RequiredValue, false) => addOptionAndExecuteAction(splited[0], splited[1], spec)
+                case (NoValue, true) => addOptionAndExecuteAction(splited[0], "", spec)
                 case (NoValue, false) => throw ArgumentParseException("Unexcepted value for ${splited[0]}.")
             }
             true
@@ -616,14 +579,12 @@ class ArgParser {
             false
         }
     }
-
-    // Initialize and filter a list for argument specs that have no value, until first not NoValue option.
     func generateNoValueSpecForShortOption(runeArray: Array<Rune>): ArrayList<ArgumentSpec> {
         let arr: ArrayList<ArgumentSpec> = ArrayList<ArgumentSpec>()
-        let set = HashSet<Rune>() // cjlint-ignore !G.VAR.02
+        let set = HashSet<Rune>()
         for ((idx, c) in enumerate(runeArray.iterator())) {
             if (let Some(spec) <- _shortOptionSpecs.get(c) && !set.contains(c) && !_options.contains(c.toString()) &&
-                spec.mode == NoValue) { // cjlint-ignore !G.EXP.03 
+                spec.mode == NoValue) {
                 arr.add(spec)
                 set.add(c)
             } else {
@@ -636,12 +597,12 @@ class ArgParser {
         let noValueSpecs = generateNoValueSpecForShortOption(runeArray)
 
         for (spec in noValueSpecs) {
-            let key = spec.name[1]?.toString() ?? "" // should not be "", just for pass the compile check.
+            let key = spec.name[1]?.toString() ?? ""
             addOptionAndExecuteAction(key, "", spec)
         }
 
         let cur = runeArray[0]
-        if (runeArray.size - 1 == noValueSpecs.size) { // for last rune
+        if (runeArray.size - 1 == noValueSpecs.size) {
             let spec = _shortOptionSpecs.get(runeArray[runeArray.size - 1]) ?? throw ArgumentParseException(
                 "Unknown option: ${cur}.")
             match (spec.mode) {
@@ -652,7 +613,7 @@ class ArgParser {
                     addOptionAndExecuteAction(spec.name[1]?.toString() ?? "", value, spec)
                 case NoValue => throw ArgumentParseException("Should never reach here becauese of previously check.")
             }
-        } else if (runeArray.size - 1 > noValueSpecs.size) { // for not last rune
+        } else if (runeArray.size - 1 > noValueSpecs.size) {
             let spec = _shortOptionSpecs.get(runeArray[noValueSpecs.size]) ?? throw ArgumentParseException(
                 "Unknown option: ${runeArray[noValueSpecs.size]}.")
             if (spec.mode == RequiredValue && noValueSpecs.size < runeArray.size - 2) {
@@ -676,16 +637,16 @@ class ArgParser {
             match (spec.mode) {
                 case OptionalValue =>
                     let value = if (runeSize > 1) {
-                        String(runeArray[1..]) // rune after a OptionalValue option is value
+                        String(runeArray[1..])
                     } else {
                         ""
                     }
                     addOptionAndExecuteAction(cur.toString(), value, spec)
                 case RequiredValue =>
-                    let value = if (runeSize == 1) { // -o v
+                    let value = if (runeSize == 1) {
                         _index += 1
                         next ?? throw ArgumentParseException("Missing option value for ${cur}.")
-                    } else { // -ov
+                    } else {
                         String(runeArray[1..])
                     }
                     addOptionAndExecuteAction(cur.toString(), value, spec)
@@ -695,8 +656,6 @@ class ArgParser {
             throw ArgumentParseException("Unknown option: ${arg}.")
         }
     }
-
-    // '-' or '--' should be removed before this function called.
     func parseOption(arg: String, next: ?String, longOptionOnly!: Bool = false) {
         if (arg.size == 0) {
             throw ArgumentParseException("Option cannot be empty.")
@@ -733,7 +692,7 @@ class ArgParser {
                     } else if (cur.startsWith("-")) {
                         parseOption(cur[1..], args.get(_index + 1))
                     } else {
-                        throw ArgumentParseException("Illegal option format for ${cur}.") // just for branch coverage, should never be here
+                        throw ArgumentParseException("Illegal option format for ${cur}.")
                     }
                     state = ParseState.Start
                 case ParseState.NonOption =>

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.*
@@ -30,9 +30,9 @@ public func entryMain(testPackage: TestPackage): Int64 {
     if (printUnittestHelpPageIfRequested()) {
         return 0
     }
-    /* -m Compiler completes the module name in the constructor */
-    /* -p Compiler completes the package name in the constructor */
-    let reportFormat = ReportFormat.fromDefaultConfiguration() // check report options correctness before tests execution
+    
+    
+    let reportFormat = ReportFormat.fromDefaultConfiguration()
     let testGroup = testPackage.build()
     let outputReporter = TestOutputReporter.fromDefaultConfiguration()
     let progressReporter = ProgressReporter.fromDefaultConfiguration()
@@ -55,14 +55,9 @@ public func entryMain(testPackage: TestPackage): Int64 {
     }
     errorCode(result.details)
 }
-
-// Test runner should be placed in std package to be able to call it.
 protected func testRunnerEntryMain(): Int64 {
     let nWorkers = ParallelInfo.fromDefaultConfiguration().nWorkers
     let semaphore = Semaphore(nWorkers)
-    // We need to prevent situation when user wants to use 300 workers but
-    // we are executing a lot of small packages and many worker processes just start,
-    // figure out that there is nothing to do and terminate.
     let nWorkersPerPackage = if (defaultConfiguration().noRun) { 1 } else {
         min(MAX_N_WORKERS_PER_PACKAGE, nWorkers)
     }
@@ -83,8 +78,6 @@ protected func testRunnerEntryMain(): Int64 {
     errorCode(projectResult.details)
 }
 
-// NOTE: Project/Module results only exists in our model of execution
-// they're not available for users to interact with them
 class ModuleExecutionResult <: ResultContainer<TestGroupResult> {
     ModuleExecutionResult(
         let moduleName: String
@@ -96,8 +89,6 @@ class ProjectExecutionResult <: ResultContainer<ModuleExecutionResult> {}
 class PackageExecutionResult {
     PackageExecutionResult(let packageResult: TestGroupResult) {}
 }
-
-// Serialization should remain compatible with previous versions cause CJPM uses it.
 private struct ExecutableTestProject <: Serializable<ExecutableTestProject> {
     ExecutableTestProject(let testModules: Array<ExecutableTestModule>) {}
     static let API_VERSION = 2
@@ -147,8 +138,6 @@ private struct ExecutableTestProject <: Serializable<ExecutableTestProject> {
         projectResult
     }
 }
-
-// Serialization should remain compatible with previous versions cause CJPM uses it.
 private struct ExecutableTestModule <: Serializable<ExecutableTestModule> {
     ExecutableTestModule(let name: String, let testPackages: Array<ExecutableTestPackage>) {}
 
@@ -179,12 +168,9 @@ private struct ExecutableTestModule <: Serializable<ExecutableTestModule> {
             packageResult.packageResult
         } |> forEach(packageResults.add)
         packageResults.finish()
-        // at this point we're no longer storing output streams after they've been reported
         packageResults
     }
 }
-
-// Serialization should remain compatible with previous versions cause CJPM uses it.
 private struct ExecutableTestPackage <: Serializable<ExecutableTestPackage> {
     ExecutableTestPackage(let name: String, let executeCommand: TestPackageExecuteCommand) {}
 
@@ -216,8 +202,6 @@ private struct ExecutableTestPackage <: Serializable<ExecutableTestPackage> {
     }
 
     func registerTestCases(parallelCtx: ParallelCtx, reportCtx: ReportCtx): Unit {
-        // It will require too much refactoring to get whole environment from CJPM,
-        // so we reuse current one overriding some properties.
         registeredWorkers.add(all: initWorkersMain(buildExecutionContext(parallelCtx, reportCtx)))
     }
 
@@ -228,8 +212,6 @@ private struct ExecutableTestPackage <: Serializable<ExecutableTestPackage> {
         return result
     }
 }
-
-// Serialization should remain compatible with previous versions cause CJPM uses it.
 struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
     TestPackageExecuteCommand(
         public let command: String,
@@ -254,7 +236,7 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
         let env = HashMap<String, String>()
         try {
             env.add(all: Process.current.environment)
-        } catch (_: ProcessException) { /* do nothing */ }
+        } catch (_: ProcessException) {  }
         env.add(all: this.env)
         TestPackageExecuteCommand(command, args, env)
     }
@@ -268,9 +250,7 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
         TestPackageExecuteCommand(command, args.toArray(), env)
     }
 
-    /**
-     * Save information about launching from test runner.
-     */
+
     func withRunnerOption(): TestPackageExecuteCommand {
         for (arg in Process.currentArgs where arg.contains(OP_INTERNAL_TESTRUNNER_INPUT_PATH)) {
             return TestPackageExecuteCommand(command, args + arg, env)
@@ -289,7 +269,7 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
         let env = HashMap<String, String>()
         try {
             env.add(all: Process.current.environment)
-        } catch (_: ProcessException) { /* do nothing */ }
+        } catch (_: ProcessException) {  }
         TestPackageExecuteCommand(Process.current.command, Process.currentArgs, env)
     }
 }

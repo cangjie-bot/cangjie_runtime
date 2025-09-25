@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -40,7 +40,6 @@ public class StackOverflowError <: Error {
         if (FoldedFlag == TopFolded) {
             eprintln("\t ... Some frames are not displayed ...")
         }
-        // When stack overflow occurs, the first frame does not have a valid line number.Therefor the line number is not displayed.
         var packageDelimiter: String = if (traceElementArray[0].declaringClass.isEmpty()) {
             ""
         } else {

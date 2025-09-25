@@ -1,14 +1,11 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file The file declares the Regex class.
- */
+
+
+
+
+
+
 package std.regex
 
 import std.collection.*
@@ -28,9 +25,7 @@ func release(pcre2md: Pcre2MatchDataPtr) {
     }
 }
 
-/**
- * Iterator for lazyFindAll() of Regex
- */
+
 class FindIterator <: Iterator<MatchData> {
     var offset: Int64 = 0
 
@@ -73,12 +68,9 @@ class FindIterator <: Iterator<MatchData> {
     }
 }
 
-/**
- * Regular Expression.
- * Description: Used to retrieve and replace text that conforms to a certain pattern.
- */
+
+
 public class Regex {
-    // refers to `pcre2_code*` in PCRE2, and indicates the compiled pattern
     let re: Pcre2CodePtr
 
     var pattern: String
@@ -140,11 +132,9 @@ public class Regex {
         return Matcher(this, input)
     }
 
-    /**
-     * Attempts to check whether input matches the pattern.
-     * @param input The character sequence to be matched.
-     * @return Bool indicates the check result
-     */
+
+
+
     public func matches(input: String): Bool {
         unsafe {
             let inputCString = LibC.mallocCString(input)
@@ -164,11 +154,9 @@ public class Regex {
         }
     }
 
-    /**
-     * lazy getter of namedGroups, which only depending on the compiled pattern.
-     * So this method can be invoked as soon as `Regex` is initialized.
-     * return Map<String, Int64> indicates the mapping from group name to group index
-     */
+
+
+
     public func getNamedGroups(): Map<String, Int64> {
         if (let Some(map) <- namedGroups) {
             return map
@@ -183,7 +171,6 @@ public class Regex {
             LibC.free(nameTableInfoCPointer)
             let nameCount = Int64(nameTableInfo.nameCount)
             let nameEntrySize = Int64(nameTableInfo.nameEntrySize)
-            // nameTable cannot be `free()` because it's not created by `malloc()`
             let nameTable = nameTableInfo.nameTable
             let map = HashMap<String, Int64>(nameCount)
             if (nameTable.isNull()) {
@@ -207,20 +194,16 @@ public class Regex {
         }
     }
 
-    /**
-     * find the group index by group name
-     */
+
     private func nameToIndex(name: String): Int64 {
         let map = getNamedGroups()
         return map.get(name) ?? throw IllegalArgumentException("Capture group `${name}` not found.")
     }
 
-    /**
-     * Attempts to find the first match of the input sequence from the beginning.
-     * @param input The the input sequence.
-     * @param group Whether enable capture group or not. Disabled by default.
-     * @return Option<MatchData> indicates the match.
-     */
+
+
+
+
     public func find(input: String, group!: Bool = false): Option<MatchData> {
         let inputCString = unsafe { LibC.mallocCString(input) }
         if (inputCString.isNull()) {
@@ -241,11 +224,9 @@ public class Regex {
         return result
     }
 
-    /**
-     * Method of `internal` version with parameters `inputCString` & `offset`
-     * @param inputCString indicates cached CString of input sequenece
-     * @param offset indicates the offset of `pcre2_match()`, which used by `FindIterator` and `Matcher`
-     */
+
+
+
     func find(input: String, inputCString: CString, pcre2md: Pcre2MatchDataPtr, offset: Int64, group!: Bool = false): Option<MatchData> {
         unsafe {
             var md: Option<MatchData> = None
@@ -253,7 +234,6 @@ public class Regex {
             if (rc < 0) {
                 return md
             }
-            // ovector cannot be `free()` because it's not created by `malloc`
             let ovector: CPointer<UIntNative> = CJ_REGEX_GetOvector(pcre2md)
             if (ovector.isNull()) {
                 throw RegexException("Process matched data failed.")
@@ -290,12 +270,10 @@ public class Regex {
         }
     }
 
-    /**
-     * Find all matches of the input sequence from the beginning.
-     * @param input The the input sequence.
-     * @param group Whether enable capture group or not. Disabled by default.
-     * @return Array<MatchData> indicates the matches.
-     */
+
+
+
+
     public func findAll(input: String, group!: Bool = false): Array<MatchData> {
         let list = ArrayList<MatchData>()
         unsafe {
@@ -314,7 +292,6 @@ public class Regex {
                 if (rc < 0) {
                     break
                 }
-                // ovector cannot be `free()` because it's not created by `malloc`
                 let ovector: CPointer<UIntNative> = CJ_REGEX_GetOvector(pcre2md)
                 if (ovector.isNull()) {
                     release(inputCString)
@@ -346,39 +323,33 @@ public class Regex {
         }
     }
 
-    /**
-     * Get an iterator for finding all matches of the input sequence from the beginning.
-     * @param input The the input sequence.
-     * @param group Whether enable capture group or not. Disabled by default.
-     * @return Iterator<MatchData> indicates the iterator.
-     */
+
+
+
+
     public func lazyFindAll(input: String, group!: Bool = false): Iterator<MatchData> {
         return FindIterator(this, input, group: group)
     }
 
-    /**
-     * Replaces the first subsequence of the input sequence that matches the
-     * pattern with the given replacement string from the beginning.
-     *
-     * @param input The the input sequence.
-     * @param replacement The character sequence to be replaced.
-     * @return The character that has been replaced.
-     */
+
+
+
+
+
+
     public func replace(input: String, replacement: String): String {
         return replace(input, replacement, 0)
     }
 
-    /**
-     * Replaces the first subsequence of the input sequence that matches the
-     * pattern with the given replacement string from index.
-     *
-     * @param input The the input sequence.
-     * @param replacement The character sequence to be replaced.
-     * @param index The the input sequence that matches from index.
-     * @return The character that has been replaced.
-     *
-     * @throws IndexOutOfBoundsException if index is less than 0 or index is greater than or equal to input.size.
-     */
+
+
+
+
+
+
+
+
+
     public func replace(input: String, replacement: String, index: Int64): String {
         if (index < 0 || index >= input.size) {
             throw IndexOutOfBoundsException("Invalid index: ${index} against size: ${input.size}.")
@@ -414,31 +385,27 @@ public class Regex {
         }
     }
 
-    /**
-     * Replaces all subsequence of the input sequence that matches the
-     * pattern with the given replacement string from the beginning.
-     *
-     * @param input The the input sequence.
-     * @param replacement The character sequence to be replaced.
-     * @return The character that has been replaced.
-     */
+
+
+
+
+
+
     public func replaceAll(input: String, replacement: String): String {
         replaceAll(input, replacement, -1)
     }
 
-    /**
-     * Replaces all subsequence of the input sequence that matches the
-     * pattern with the given replacement string from the beginning.
-     *
-     * if `limit` is greater than zero then it will replace the string at most `limit` times
-     * if `limit` is non-positive, it will replace the string as many times as possible
-     * if `limit` is zero, return the string
-     *
-     * @param input The the input sequence.
-     * @param replacement The character sequence to be replaced.
-     * @param limit The replacement limit.
-     * @return The character that has been replaced.
-     */
+
+
+
+
+
+
+
+
+
+
+
     public func replaceAll(input: String, replacement: String, limit: Int64): String {
         if (limit == 0) {
             return input
@@ -465,13 +432,11 @@ public class Regex {
         return sb.toString()
     }
 
-    /**
-     * Split the input sequence by all subsequence that matches the pattern as the delimiters.
-     *
-     * @param input The the input sequence.
-     * @return The array of strings computed by splitting the input
-     * around matches of this pattern
-     */
+
+
+
+
+
     public func split(input: String): Array<String> {
         let mds = findAll(input, group: false)
         let list = ArrayList<String>(mds.size + 1)
@@ -485,17 +450,15 @@ public class Regex {
         return unsafe { list.getRawArray() }
     }
 
-    /**
-     * Split the input sequence by all subsequence that matches the pattern as the delimiters
-     *
-     * if limit n is greater than zero then it will separate the string at most n times
-     * if limit n is non-positive, it will separate the string as many times as possible
-     *
-     * @param input The the input sequence.
-     * @param limit The limit of split
-     * @return The array of strings computed by splitting the input
-     * around matches of this pattern
-     */
+
+
+
+
+
+
+
+
+
     public func split(input: String, limit: Int64): Array<String> {
         if (limit <= 0) {
             return split(input)

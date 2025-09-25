@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
@@ -107,11 +107,9 @@ func dumpNodes<N>(name: String, contents: ArrayList<N>, indent: UInt16): String 
     return ret
 }
 
-/**
- * Return true if two tokens are considered equal somehow(exclude NL, END and position info).
- */
+
 public func compareTokens(tokens1: Tokens, tokens2: Tokens): Bool {
-    /** Delete newline token first. */
+    
     func rmNewlineEnd(input: Tokens): Tokens {
         var tokenArr: Tokens = Tokens()
         var iterator = input.iterator()
@@ -127,7 +125,7 @@ public func compareTokens(tokens1: Tokens, tokens2: Tokens): Bool {
     var tokens1_: Tokens = rmNewlineEnd(tokens1)
     var tokens2_: Tokens = rmNewlineEnd(tokens2)
 
-    /* Compare tokens. */
+    
     var size1: Int64 = tokens1_.size
     var size2: Int64 = tokens2_.size
     if (size1 != size2) {
@@ -136,7 +134,7 @@ public func compareTokens(tokens1: Tokens, tokens2: Tokens): Bool {
     for (i in 0..size1) {
         var token1 = tokens1_[i]
         var token2 = tokens2_[i]
-        /* Skip the check for position. */
+        
         if (token1.kind != token2.kind || token1.value != token2.value) {
             return false
         }

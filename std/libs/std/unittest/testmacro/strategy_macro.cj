@@ -1,14 +1,11 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file The file declares the macro Bench.
- */
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -18,13 +15,11 @@ public macro Strategy(input: Tokens): Tokens {
     expandStrategy(Tokens(), input)
 }
 
-/**
- * This Macro is used to combine and map existing strategies into a new strategy.
- * Can be used independently from @Test macro.
- *
- * @throws MacroException if input is not FuncDecl.
- * @throws MacroException if function return type is not specified.
- */
+
+
+
+
+
 public macro Strategy(attr: Tokens, input: Tokens): Tokens {
     expandStrategy(attr, input)
 }

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.sort
 
@@ -54,14 +54,11 @@ extend<T> Array<T> where T <: Comparable<T> {
             i++
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func heapify(begin: Int64, end: Int64, root: Int64): Unit {
         var fi: Int64 = root
-        var si = (fi << 1) + 1 // fi * 2 + 1
+        var si = (fi << 1) + 1
         while (begin + si <= end) {
-            // si or (si + 1) is taken only once
             let s = if (begin + si + 1 <= end) {
                 let s1 = this[begin + si]
                 let s2 = this[begin + si + 1]
@@ -85,37 +82,26 @@ extend<T> Array<T> where T <: Comparable<T> {
             si = (fi << 1) + 1
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func heapSort(begin: Int64, end: Int64): Unit {
         let len = end - begin + 1
         var i = (len >> 1) - 1
-
-        // build max or min heap
         while (i >= 0) {
             this.heapify(begin, end, i)
             i--
         }
         i = end
         while (i > begin) {
-            // swap top and bottom data
             this.swap(begin, i)
-            // reset max or min heap
             this.heapify(begin, i - 1, 0)
             i--
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
-    // end - begin >= 1
     @OverflowWrapping
     func getSequenceLength(begin: Int64, end: Int64, temp: TempArray<T>): Int64 {
         var b: Int64 = begin
         var equalNum: Int64 = 1
         var isAscending: Bool = true
-
-        // Obtains the length of a sequence with the same value.
         if (this[b] < this[b + 1]) {
             isAscending = true
         } else if (this[b] > this[b + 1]) {
@@ -160,11 +146,9 @@ extend<T> Array<T> where T <: Comparable<T> {
                 n++
                 b++
             }
-
-            // reverse sequence
             if (equalNum == 1) {
                 var i = begin
-                var j = begin + n // begin + equalNum + n - 1
+                var j = begin + n
                 while (i < j) {
                     this.swap(i, j)
                     i++
@@ -249,8 +233,6 @@ extend<T> Array<T> where T <: Comparable<T> {
             i++
         }
     }
-
-    // The queried position is just greater than and equal the previous value.
     @OverflowWrapping
     func binaryQueryGT(point: T, start: Int64, len: Int64): Int64 {
         var l = start
@@ -265,8 +247,6 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
         return l
     }
-
-    // The queried position is just less than and equal the next value.
     @OverflowWrapping
     func binaryQueryLT(point: T, start: Int64, len: Int64): Int64 {
         var l = start
@@ -281,8 +261,6 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
         return l
     }
-
-    // The queried position is just greater than and equal the previous value.
     @OverflowWrapping
     func queryGT(point: T, start: Int64, len: Int64, r: Bool) {
         var gallopMax = len
@@ -335,8 +313,6 @@ extend<T> Array<T> where T <: Comparable<T> {
             return this.binaryQueryGT(point, start + lastOfs, ofs - lastOfs)
         }
     }
-
-    // The queried position is just less than and equal the next value.
     @OverflowWrapping
     func queryLT(point: T, start: Int64, len: Int64, r: Bool) {
         var gallopMax = len
@@ -392,7 +368,6 @@ extend<T> Array<T> where T <: Comparable<T> {
 }
 
 extend<T> Array<T> {
-    // the value range of the parameter: 0 <= i1 < i2 <= array.size - 1
     func compareSwap2(i1: Int64, i2: Int64, comparator: (T, T) -> Ordering) {
         let a: T = this[i1]
         let b: T = this[i2]
@@ -403,10 +378,6 @@ extend<T> Array<T> {
             case _ => ()
         }
     }
-
-    // the value range of the parameter: 0 <= i1 < i2 < i3 <= array.size - 1
-    // Ordering.LT/EQ: a <= b <= c
-    // Ordering.GT   : a >= b >= c
     func compareSwap3(i1: Int64, i2: Int64, i3: Int64, comparator: (T, T) -> Ordering) {
         var a: T = this[i1]
         var b: T = this[i2]
@@ -459,8 +430,6 @@ extend<T> Array<T> {
         }
         return res * 2
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func insertionSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         var i: Int64 = begin + 1
@@ -479,16 +448,11 @@ extend<T> Array<T> {
             i++
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
-    // end - begin >= 1
     @OverflowWrapping
     func getSequenceLength(begin: Int64, end: Int64, temp: TempArray<T>, comparator: (T, T) -> Ordering): Int64 {
         var b: Int64 = begin
         var equalNum: Int64 = 1
         var isAscending: Bool = true
-
-        // Obtains the length of a sequence with the same value.
         match (comparator(this[b], this[b + 1])) {
             case LT => isAscending = true
             case GT => isAscending = false
@@ -542,11 +506,9 @@ extend<T> Array<T> {
                     case _ => break
                 }
             }
-
-            // reverse sequence
             if (equalNum == 1) {
                 var i = begin
-                var j = begin + n // begin + equalNum + n - 1
+                var j = begin + n
                 while (i < j) {
                     this.swap(i, j)
                     i++
@@ -608,9 +570,6 @@ extend<T> Array<T> {
             return equalNum + n
         }
     }
-
-    // the original relative positions of equal elements are not guaranteed.
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func binaryInsertionSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering, n: Int64) {
         var i = begin + n
@@ -633,14 +592,11 @@ extend<T> Array<T> {
             i++
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func heapify(begin: Int64, end: Int64, root: Int64, comparator: (T, T) -> Ordering): Unit {
         var fi: Int64 = root
-        var si = (fi << 1) + 1 // fi * 2 + 1
+        var si = (fi << 1) + 1
         while (begin + si <= end) {
-            // si or (si + 1) is taken only once
             let s = if (begin + si + 1 <= end) {
                 let s1 = this[begin + si]
                 let s2 = this[begin + si + 1]
@@ -664,30 +620,21 @@ extend<T> Array<T> {
             si = (fi << 1) + 1
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func heapSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         let len = end - begin + 1
         var i = (len >> 1) - 1
-
-        // build max or min heap
         while (i >= 0) {
             this.heapify(begin, end, i, comparator)
             i--
         }
         i = end
         while (i > begin) {
-            // swap top and bottom data
             this.swap(begin, i)
-
-            // reset max or min heap
             this.heapify(begin, i - 1, 0, comparator)
             i--
         }
     }
-
-    // The queried position is just greater than and equal the previous value.
     @OverflowWrapping
     func binaryQueryGT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering): Int64 {
         var l = start
@@ -701,8 +648,6 @@ extend<T> Array<T> {
         }
         return l
     }
-
-    // The queried position is just less than and equal the next value.
     @OverflowWrapping
     func binaryQueryLT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering): Int64 {
         var l = start
@@ -716,8 +661,6 @@ extend<T> Array<T> {
         }
         return l
     }
-
-    // The queried position is just greater than and equal the previous value.
     @OverflowWrapping
     func queryGT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering, r: Bool) {
         var gallopMax = len
@@ -770,8 +713,6 @@ extend<T> Array<T> {
             return this.binaryQueryGT(point, start + lastOfs, ofs - lastOfs, comparator)
         }
     }
-
-    // The queried position is just less than and equal the next value.
     @OverflowWrapping
     func queryLT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering, r: Bool) {
         var gallopMax = len

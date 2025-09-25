@@ -1,15 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.math.abs
-
-// float delta within interval START
 
 private func isDeltaWithinInterval(delta: Float16) {
     if (delta >= 0.0f16 && delta < Float16.Max) {
@@ -31,10 +29,6 @@ private func isDeltaWithinInterval(delta: Float64) {
     }
     return (false, "delta must be in interval [0.0, Float64.Max). Actual delta: ${delta}.")
 }
-
-// float delta within interval END
-
-// is float delta NaN START
 
 private let DELTA_IS_NAN_MESSAGE = "delta is NaN."
 
@@ -58,10 +52,6 @@ private func isDeltaNaN(delta: Float64) {
     }
     return (false, "")
 }
-
-// is float delta NaN END
-
-// is delta valid START
 
 private func isDeltaValid(delta: Float16) {
     let (isDeltaNaN, nanErrorMessage) = isDeltaNaN(delta)
@@ -105,10 +95,6 @@ private func isDeltaValid(delta: Float64) {
     return (true, "")
 }
 
-// is delta valid END
-
-// is relative delta valid START
-
 private func isRelativeDeltaValid(delta: RelativeDelta<Float16>) {
     let (isAbsDeltaValid, absErrMessage) = isDeltaValid(delta.absolute)
     if (!isAbsDeltaValid) {
@@ -150,8 +136,6 @@ private func isRelativeDeltaValid(delta: RelativeDelta<Float64>) {
     
     return (true, "")
 }
-
-// is relative delta valid END
 
 private func validateFloats(f1: Any, f2: Any, delta: Any) {
     func isComparingArgValid(arg: Any, isFirstArg!: Bool): Bool {

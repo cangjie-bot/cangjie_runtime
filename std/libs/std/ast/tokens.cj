@@ -1,29 +1,29 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
 import std.collection.ArrayList
 
 public class TokensIterator <: Iterator<Token> {
-    /* Fields */
+    
     private var position: Int64 = -1
     private let data: Tokens
 
-    /* Constructors */
+    
 
     public init(tokens: Tokens) {
         data = tokens
     }
 
-    /* Methods */
+    
 
-    /** Returns the current Option<Token>. */
+    
     public func peek(): Option<Token> {
         if (position >= data.size || position < 0) {
             return None<Token>
@@ -31,7 +31,7 @@ public class TokensIterator <: Iterator<Token> {
         return Some(data[position])
     }
 
-    /** Returns true if current token is the kind, otherwise false. */
+    
     public func seeing(kind: TokenKind): Bool {
         return match (this.peek()) {
             case Some(obj) => obj.kind == kind
@@ -39,9 +39,8 @@ public class TokensIterator <: Iterator<Token> {
         }
     }
 
-    /** Returns next Option<Token>. */
+    
     public func next(): Option<Token> {
-        // This is not quite right. Why do we need to add a Token(END) in the end?
         if (position < data.size) {
             position = position + 1
         }
@@ -49,16 +48,14 @@ public class TokensIterator <: Iterator<Token> {
     }
 }
 
-// This function is used in macro desugar and we don't want this function be public,
-// the implicit used functions must be toplevel so we encapsulate refreshPosition().
 func refreshTokensPosition(tks: Tokens) {
     return tks.refreshPosition()
 }
 
 public open class Tokens <: ToString & Iterable<Token> & ToBytes {
-    /* Invariant: `tokens` is immutable; after construction, we never alter its elements */
+    
 
-    /* Fields */
+    
     protected var tokens: ArrayList<Token> = ArrayList<Token>(0)
 
     func refreshPosition() {
@@ -70,13 +67,13 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         return this
     }
 
-    /* Constructors */
+    
 
-    /** Create an empty tokens. */
+    
     public init() {
     }
 
-    /** Create a new tokens from tokens' bytes. */
+    
     init(buf: Array<UInt8>) {
         if (buf.size == 0) {
             return
@@ -115,28 +112,26 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         }
     }
 
-    /** Create a new tokens from token array. */
+    
     public init(tokArray: Array<Token>) {
         tokens.add(all: tokArray)
     }
 
-    /** Create a new tokens from token array. */
+    
     public init(tokArrayList: ArrayList<Token>) {
-        // We need to copy the elements over in order to guarantee the invariant
-        // that `tokens` is immutable.
         tokens.add(all: tokArrayList)
     }
 
-    /* Methods */
+    
 
-    /** Returns the size of tokens. */
+    
     public open prop size: Int64 {
         get() {
             return tokens.size
         }
     }
 
-    /** Returns the token from the index, if the index is out of bound or its element is null then throws IndexOutOfBoundsException. */
+    
     public open func get(index: Int64): Token {
         if (index < 0 || index >= tokens.size) {
             throw IndexOutOfBoundsException("index is ${index} but the size of tokens is ${tokens.size}")
@@ -144,19 +139,19 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         return tokens[index]
     }
 
-    /** Returns an iterator over the tokens. */
+    
     public func iterator(): TokensIterator {
         return TokensIterator(this)
     }
 
-    /** Returns the concatenation of this Tokens and the argument. */
+    
     public func concat(tokens: Tokens): Tokens {
         return ConcatTokens(this, tokens)
     }
 
-    /* Operator functions */
+    
 
-    /** Returns the token at the specified index. */
+    
     public operator func [](index: Int64): Token {
         return this.get(index)
     }
@@ -165,18 +160,18 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         return Tokens(tokens[range])
     }
 
-    /** Returns a tokens which is the result of concatenating `ts1` and `ts2`. */
+    
     public operator func +(r: Tokens): Tokens {
         return this.concat(r)
     }
 
-    /** Returns a tokens which is the result of concatenating `ts1` and `t2`. */
+    
     public operator func +(r: Token): Tokens {
         var rts: Tokens = Tokens(Array<Token>(1, repeat: r))
         return this.concat(rts)
     }
 
-    /** Returns current tokens which is the result of concatenating this and `tks`. */
+    
     public open func append(tokens: Tokens): Tokens {
         for (tk in tokens) {
             this.tokens.add(tk)
@@ -184,7 +179,7 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         return this
     }
 
-    /** Returns current tokens which is the result of concatenating this and `tk`. */
+    
     public open func append(token: Token): Tokens {
         tokens.add(token)
         return this
@@ -200,20 +195,15 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         return this
     }
 
-    /** Print the information of this tokens. */
+    
     public func dump(): Unit {
         for (tk in this) {
             tk.dump()
         }
     }
 
-    /** Convert Tokens to String. */
+    
     public func toString(): String {
-        // This API is just for pretty printing. Do not use this for production code.
-        // For example, prviously if we have a MULTILINE_RAW_STRING Token:  #"hello\123"# 
-        // When we toSting that Token, we get: "hello\123", which is wrong, and will cause
-        // a internal compiler error when lexing. I have fixed that in tokenToString function,
-        // but still, be careful when you use this API.
         if (size == 0) {
             return ""
         } else if (size == 1) {
@@ -234,7 +224,6 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
                 if (this[loop].kind == TokenKind.RCURL && indent > 0) {
                     indent = indent - 1
                 }
-                // add indentation string
                 if (loop != 0 && this[loop - 1].kind == TokenKind.NL) {
                     toStr = toStr + indentStr * indent
                 }
@@ -242,7 +231,6 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
                     indent = indent + 1
                 }
                 toStr = toStr + tokenToString(this[loop])
-                // add space
                 if (unsafe { spaceFlag.read(loop) }) {
                     toStr = toStr + " "
                 }
@@ -341,37 +329,34 @@ func tokenToString(tk: Token): String {
 }
 
 class ConcatTokens <: Tokens {
-    /* Invariant: by construction, the `tokens` field inherited from Tokens is always empty. */
-    /* Invariant: `cachedSize` is the `leftChild.size + rightChild.size` */
+    
+    
 
-    /* Fields */
+    
     private let leftChild: Tokens
     private var rightChild: Tokens
     private var cachedSize: Int64
 
-    /* Constructors */
+    
 
-    /** Create a concatenation between a left Tokens subtree and a right Tokens subtree. */
+    
     init(lc: Tokens, rc: Tokens) {
-        // In the long run, we can do more here to balance the resulting tree. See AVL trees
-        // and red-black trees. This makes a difference, because successive concatenation
-        // tends to create left-leaning trees: (((ts1 + ts2) + ts3) + ts4) + ...
 
         leftChild = lc
         rightChild = rc
         cachedSize = leftChild.size + rightChild.size
     }
 
-    /* Methods */
+    
 
-    /** Returns the size of tokens. */
+    
     public override prop size: Int64 {
         get() {
             return cachedSize
         }
     }
 
-    /** Returns the token from the index, if the index is out of bound or its element is null then throws IndexOutOfBoundsException. */
+    
     public override func get(index: Int64): Token {
         if (index < 0 || index >= size) {
             throw IndexOutOfBoundsException("index is ${index} but the size of tokens is ${size}")
@@ -403,14 +388,14 @@ class ConcatTokens <: Tokens {
         }
     }
 
-    /** Returns current ConcatTokens which is the result of concatenating leftChild + rightChild + tks. */
+    
     public override func append(tks: Tokens): Tokens {
         rightChild = rightChild + tks
         cachedSize += tks.size
         return this
     }
 
-    /** Returns current ConcatTokens which is the result of concatenating leftChild + rightChild + tk. */
+    
     public override func append(tk: Token): Tokens {
         rightChild = rightChild + tk
         cachedSize += 1

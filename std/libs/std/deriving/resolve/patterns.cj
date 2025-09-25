@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.resolve
 
 import std.deriving.api.Identifier
@@ -52,9 +52,6 @@ func patternExpr(p: Pattern, t: TypeNode, scope: Scope): Unit {
             return
         }
 
-        // requires full resolve and reflect
-        // lucky we are
-
         scope.append(Identifier(e.identifier), typeNode)
     }
 
@@ -74,7 +71,6 @@ func optionType(t: TypeNode): TypeNode {
     match (t) {
         case ref: RefType where ref.identifier.value == "Option" => ref.typeArguments[0]
         case par: ParenType => optionType(par.parenthesizedType)
-        case _ => t // wrap to option
+        case _ => t
     }
 }
-

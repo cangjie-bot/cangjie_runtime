@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.fs.*
@@ -735,15 +735,11 @@ extend TestGroupResult {
         let classes = collectClassObjects(caseResults.keys())
 
         let htmlBytes = Root(ROOT_TEMPLATE).substitute(object([("package", object([("name", groupName), ("classes", classes)]))]))
-
-        //write html
         File.writeTo(
             dir.join("index.html"),
             htmlBytes.toString().toArray()
         )
         println("Html report available at ${dir.join("index.html")}")
-
-        // write css
         File.writeTo(
             dir.join("styles.css"),
             STYLES.toString().toArray()
@@ -801,8 +797,6 @@ extend TestGroupResult {
             e.toString()
         }
     }
-
-    // creates json model suitable for the template for all benchmark
     func collectAllResults(directory: Path): HashMap<TestCaseId, JsonValue> {
         let env = collectEnvironment()
         let results = HashMap<TestCaseId, JsonValue>()
@@ -838,7 +832,6 @@ extend TestGroupResult {
             parameter.arrayFieldAppend("measurement", measurementValue)
 
             if (parameters.get(step.arg.stepIndex).isNone()) {
-                // it is a first measument for this parameter
                 parameters.add(parameter)
                 let row = JsonObject()
                 row.put("col", JsonArray([JsonString(paramText)]))
@@ -855,8 +848,6 @@ extend TestGroupResult {
         results
     }
 }
-
-// creates json model suitable for the Measurement subtemplate for one benchmark result
 func measurementModel(step: BenchStepEntry, directory: Path, index: Int64): (Float64, JsonObject) {
     let measurementValue = JsonObject()
     let mName = step.measurementInfo.name
@@ -993,8 +984,6 @@ extend BenchmarkResult {
         let max95 = Sample(this.data |> map { x: BenchRawMeasurement => x[1] } |> collectArrayList).percentile(0.98)
         let result = median
         let overhead = medianOverhead
-
-        // prevent major outliers to ruin whole image
         let bound = max(maxx * result * 1.4 + overhead, max95 * 1.2) |> ceil
 
         let dataFile = File.createTemp(into.parent)

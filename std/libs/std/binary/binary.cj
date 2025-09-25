@@ -1,63 +1,53 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.binary
 
-/**
- * big-endian order interface
- *
- */
+
+
 public interface BigEndianOrder<T> {
-    /**
-     * @brief write a value of type T in big-endian order to the buffer byte array
-     * @param buffer, the target byte array
-     * @return the number of bytes written if the buffer length is sufficient, otherwise throws an exception
-     * @exception throws IndexOutOfBoundsException when the target length is insufficient
-     */
+
+
+
+
+
     func writeBigEndian(buffer: Array<UInt8>): Int64
-    /**
-     * @brief raead the value of type T in big-endian order from the buffer byte array
-     * @param buffer, the source byte array
-     * @return the value of type T
-     * @exception throws IndexOutOfBoundsException when the target length is insufficient
-     */
+
+
+
+
+
     static func readBigEndian(buffer: Array<UInt8>): T
 }
-/**
- * little-endian order interface
- *
- */
+
+
+
 public interface LittleEndianOrder<T> {
-    /**
-     * @brief write a value of type T in little-endian order to the buffer byte array
-     * @param buffer, the target byte array
-     * @return the number of bytes written if the buffer length is sufficient, otherwise throws an exception
-     * @exception throws IndexOutOfBoundsException when the target length is insufficient
-     */
+
+
+
+
+
     func writeLittleEndian(buffer: Array<UInt8>): Int64
-    /**
-     * @brief raead the value of type T in little-endian order from the buffer byte array
-     * @param buffer, the source byte array
-     * @return the value of type T
-     * @exception throws IndexOutOfBoundsException when the target length is insufficient
-     */
+
+
+
+
+
     static func readLittleEndian(buffer: Array<UInt8>): T
 }
 
-/**
- * @brief swap endian order interface
- *
- */
+
+
 public interface SwapEndianOrder<T> {
-    /**
-     * @brief reverse the byte order of T
-     * @return the value of type T
-     */
+
+
+
     func swapBytes(): T
 }
 

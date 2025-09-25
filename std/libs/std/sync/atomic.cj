@@ -1,16 +1,14 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.sync
 
-/**
- * Don't edit this, or the order should be the same as C's atomic memory_order.
- */
+
 @Deprecated
 public enum MemoryOrder {
     | SeqCst
@@ -52,15 +50,13 @@ func fetchOr<ATOMIC_TYPE, TYPE>(atomicType: ATOMIC_TYPE, value: TYPE, memoryOrde
 @Intrinsic
 func fetchXor<ATOMIC_TYPE, TYPE>(atomicType: ATOMIC_TYPE, value: TYPE, memoryOrder: MemoryOrder): TYPE
 
-// NOTE:
-// The APIs of atomic types should have a naming parameter with a default argument,
-// like `atomicInt8.load(memoryOrder!: MemoryOrder.SeqCst)`.
-// However, most APIs are used with the default argument that will be obtained by
-// an extra function and passed to the API call.
-// The default argument construction incurs a huge performance overhead compared to the API call.
-// So, we split the API with two methods.
-//   - A method without the order parameter
-//   - A method with a naming parameter
+
+
+
+
+
+
+
 
 public class AtomicInt8 {
     private var value: Int8
@@ -1054,85 +1050,65 @@ public class AtomicReference<T> where T <: Object {
     }
 }
 
-/**
- * AtomicOptionReference is an atomic reference type which could store null value, i.e. Option<T>.None.
- */
+
 public class AtomicOptionReference<T> where T <: Object {
     private var value: Option<T> = None
 
-    /**
-     * Initialize an AtomicOptionReference with null initial value.
-     */
+
     @Frozen
     public init() {}
 
-    /**
-     * Initialize an AtomicOptionReference with the given initial value.
-     */
+
     @Frozen
     public init(val: Option<T>) {
         value = val
         store<AtomicOptionReference<T>, Option<T>>(this, val, DefaultMemoryOrder)
     }
 
-    /**
-     * Load the current value.
-     */
+
     @Frozen
     public func load(): Option<T> {
         load<AtomicOptionReference<T>, Option<T>>(this, DefaultMemoryOrder)
     }
 
-    /**
-     * Load the current value with the given memory order.
-     */
+
     @Frozen
     @Deprecated[message: "Use `public func load(): Option<T>` instead."]
     public func load(memoryOrder!: MemoryOrder): Option<T> {
         load<AtomicOptionReference<T>, Option<T>>(this, DefaultMemoryOrder)
     }
 
-    /**
-     * Store the given value.
-     */
+
     @Frozen
     public func store(val: Option<T>): Unit {
         store<AtomicOptionReference<T>, Option<T>>(this, val, DefaultMemoryOrder)
     }
 
-    /**
-     * Store the given value with the given memory order.
-     */
+
     @Frozen
     @Deprecated[message: "Use `public func store(val: Option<T>): Unit` instead."]
     public func store(val: Option<T>, memoryOrder!: MemoryOrder): Unit {
         store<AtomicOptionReference<T>, Option<T>>(this, val, DefaultMemoryOrder)
     }
 
-    /**
-     * Atomically store the given value and return the old value.
-     * @return the old value
-     */
+
+
     @Frozen
     public func swap(val: Option<T>): Option<T> {
         swap<AtomicOptionReference<T>, Option<T>>(this, val, DefaultMemoryOrder)
     }
 
-    /**
-     * Atomically store the given value with the given memory order and return the old value.
-     * @return the old value
-     */
+
+
     @Frozen
     @Deprecated[message: "Use `public func swap(val: Option<T>): Option<T>` instead."]
     public func swap(val: Option<T>, memoryOrder!: MemoryOrder): Option<T> {
         swap<AtomicOptionReference<T>, Option<T>>(this, val, DefaultMemoryOrder)
     }
 
-    /**
-     * Atomically store the new value if the current value is equal to the old value.
-     * @return `true` if store the new value successfully
-     * @return `false` indicates that the current value is not equal to the old value
-     */
+
+
+
     @Frozen
     public func compareAndSwap(old: Option<T>, new: Option<T>): Bool {
         return compareAndSwap<AtomicOptionReference<T>, Option<Object>>(
@@ -1150,11 +1126,9 @@ public class AtomicOptionReference<T> where T <: Object {
         )
     }
 
-    /**
-     * Atomically store the new value with the given memory order if the current value is equal to the old value.
-     * @return `true` if store the new value successfully
-     * @return `false` indicates that the current value is not equal to the old value
-     */
+
+
+
     @Frozen
     @Deprecated[message: "Use `public func compareAndSwap(old: Option<T>, new: Option<T>): Bool` instead."]
     public func compareAndSwap(

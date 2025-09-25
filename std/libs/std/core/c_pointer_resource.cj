@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -43,19 +43,15 @@ extend<T> CPointer<T> {
         write(0, value)
     }
 
-    /**
-     * This interface does not check the correctness of the pointer.
-     * If the pointer is invalid, an undefined error occurs.
-     */
+
+
     @Frozen
     public unsafe func read(idx: Int64): T {
         return readPointer<T>(this, idx)
     }
 
-    /**
-     * This interface does not check the correctness of the pointer.
-     * If the pointer is invalid, an undefined error occurs.
-     */
+
+
     @Frozen
     public unsafe func write(idx: Int64, value: T): Unit {
         writePointer<T>(this, idx, value)

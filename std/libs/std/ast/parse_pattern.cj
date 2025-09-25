@@ -1,17 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
 import std.collection.ArrayList
 
 public func parsePattern(input: Tokens): Pattern {
-    /* Get node info from flatbuffer */
+    
     let node = unsafe {
         try {
             parse(input, {
@@ -24,7 +24,7 @@ public func parsePattern(input: Tokens): Pattern {
             throw ParseASTException("\n" + e.message + "parsing pattern error.")
         }
     }
-    /* Get decl info from flatbuffer */
+    
     var astNode = generatePatternAST(node.GetRootAsPattern())
     return astNode
 }
@@ -118,7 +118,7 @@ func createVarOrEnumPattern(pattern: NodeFormat_Pattern, pos: NodeFormat_Positio
         case None => throw ParseASTException("In createVarOrEnumPattern function: get varOrEnumPattern")
     }
     var identifier = Token(TokenKind.IDENTIFIER, varOrEnumPattern.GetIdentifier()).addPosition(pos)
-    /* Need to support? generatePatternAST(varOrEnumPattern.GetPattern()) */
+    
     return VarOrEnumPattern(identifier)
 }
 

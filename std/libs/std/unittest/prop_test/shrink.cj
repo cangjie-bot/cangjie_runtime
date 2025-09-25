@@ -1,23 +1,20 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.prop_test
 
 import std.collection.*
 import std.math.*
 import std.random.Random
 
-/**
- * Shrink interface: reduce values of type T to a number of "smaller" values
- */
+
 public interface Shrink<T> {
-    /**
-     * shrink this value to a set of possible "smaller" values
-     */
+
+
     func shrink(): Iterable<T> { emptyIterable<T>() }
 }
 
@@ -27,27 +24,22 @@ extend Unit <: Shrink<Unit> {
 extend Bool <: Shrink<Bool> {
 }
 
-/*****************************************************************
-@ForEach[IntType in [Int8, Int16, Int32, Int64, IntNative]]
-extend IntType <: Shrink<IntType> {
-    public func shrink(): Iterable<IntType> {
-        let res = HashSet<IntType>()
-        if (this == 0) { return [] }
-        if (this == 1) { return [0] }
-        res.add(0)
-        res.add(1)
-        if (this < 0) {
-            res.add(-this)
-        }
-        res.add(this / 2)
-        res
-    }
-}
- ******************************************************************/
 
-/**
- * Shrink instance for signed integer
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 extend Int8 <: Shrink<Int8> {
     public func shrink(): Iterable<Int8> {
         let res = HashSet<Int8>()
@@ -59,7 +51,7 @@ extend Int8 <: Shrink<Int8> {
         }
         res.add(0)
         res.add(1)
-        if (this < 0 && this != Int8.Min) { // -Int.Min causes overflow
+        if (this < 0 && this != Int8.Min) {
             res.add(-this)
         }
         res.add(this / 2)
@@ -67,9 +59,7 @@ extend Int8 <: Shrink<Int8> {
     }
 }
 
-/**
- * Shrink instance for signed integer
- */
+
 extend Int16 <: Shrink<Int16> {
     public func shrink(): Iterable<Int16> {
         let res = HashSet<Int16>()
@@ -81,7 +71,7 @@ extend Int16 <: Shrink<Int16> {
         }
         res.add(0)
         res.add(1)
-        if (this < 0 && this != Int16.Min) { // -Int.Min causes overflow
+        if (this < 0 && this != Int16.Min) {
             res.add(-this)
         }
         res.add(this / 2)
@@ -89,9 +79,7 @@ extend Int16 <: Shrink<Int16> {
     }
 }
 
-/**
- * Shrink instance for signed integer
- */
+
 extend Int32 <: Shrink<Int32> {
     public func shrink(): Iterable<Int32> {
         let res = HashSet<Int32>()
@@ -99,7 +87,7 @@ extend Int32 <: Shrink<Int32> {
         if (this == 1) { return [0] }
         res.add(0)
         res.add(1)
-        if (this < 0&& this != Int32.Min) { // -Int.Min causes overflow
+        if (this < 0&& this != Int32.Min) {
             res.add(-this)
         }
         res.add(this / 2)
@@ -107,9 +95,7 @@ extend Int32 <: Shrink<Int32> {
     }
 }
 
-/**
- * Shrink instance for signed integer
- */
+
 extend Int64 <: Shrink<Int64> {
     public func shrink(): Iterable<Int64> {
         let res = HashSet<Int64>()
@@ -117,7 +103,7 @@ extend Int64 <: Shrink<Int64> {
         if (this == 1) { return [0] }
         res.add(0)
         res.add(1)
-        if (this < 0 && this != Int64.Min) { // -Int.Min causes overflow
+        if (this < 0 && this != Int64.Min) {
             res.add(-this)
         }
         res.add(this / 2)
@@ -125,9 +111,7 @@ extend Int64 <: Shrink<Int64> {
     }
 }
 
-/**
- * Shrink instance for signed integer
- */
+
 extend IntNative <: Shrink<IntNative> {
     public func shrink(): Iterable<IntNative> {
         let res = HashSet<IntNative>()
@@ -135,7 +119,7 @@ extend IntNative <: Shrink<IntNative> {
         if (this == 1) { return [0] }
         res.add(0)
         res.add(1)
-        if (this < 0 && this != IntNative.Min) { // -Int.Min causes overflow
+        if (this < 0 && this != IntNative.Min) {
             res.add(-this)
         }
         res.add(this / 2)
@@ -143,24 +127,19 @@ extend IntNative <: Shrink<IntNative> {
     }
 }
 
-/********************************************************************
-@ForEach[UIntType in [UInt8, UInt16, UInt32, UInt64, UIntNative]]
-extend UIntType <: Shrink<UIntType> {
-    public func shrink(): Iterable<UIntType> {
-        let res = HashSet<UIntType>()
-        if (this == 0) { return [] }
-        if (this == 1) { return [0] }
-        res.add(0)
-        res.add(1)
-        res.add(this / 2)
-        res
-    }
-}
- *********************************************************************/
 
-/**
- * Shrink instance for unsigned integer
- */
+
+
+
+
+
+
+
+
+
+
+
+
 extend UInt8 <: Shrink<UInt8> {
     public func shrink(): Iterable<UInt8> {
         let res = HashSet<UInt8>()
@@ -173,9 +152,7 @@ extend UInt8 <: Shrink<UInt8> {
     }
 }
 
-/**
- * Shrink instance for unsigned integer
- */
+
 extend UInt16 <: Shrink<UInt16> {
     public func shrink(): Iterable<UInt16> {
         let res = HashSet<UInt16>()
@@ -188,9 +165,7 @@ extend UInt16 <: Shrink<UInt16> {
     }
 }
 
-/**
- * Shrink instance for unsigned integer
- */
+
 extend UInt32 <: Shrink<UInt32> {
     public func shrink(): Iterable<UInt32> {
         let res = HashSet<UInt32>()
@@ -203,9 +178,7 @@ extend UInt32 <: Shrink<UInt32> {
     }
 }
 
-/**
- * Shrink instance for unsigned integer
- */
+
 extend UInt64 <: Shrink<UInt64> {
     public func shrink(): Iterable<UInt64> {
         let res = HashSet<UInt64>()
@@ -218,9 +191,7 @@ extend UInt64 <: Shrink<UInt64> {
     }
 }
 
-/**
- * Shrink instance for unsigned integer
- */
+
 extend UIntNative <: Shrink<UIntNative> {
     public func shrink(): Iterable<UIntNative> {
         let res = HashSet<UIntNative>()
@@ -243,7 +214,6 @@ extend Float16 <: Shrink<Float16> {
         }
         let rounded = round(this)
         appendShrinked(rounded, result)
-        // 1024.0 is the maximum precisely representable number in Float16
         if (this > 1024.0 || rounded == this) {
             appendShrinked(this / 2.0f16, result)
         } else if (this < 2.0) {
@@ -291,8 +261,6 @@ extend Float32 <: Shrink<Float32> {
         let smallestValue = this / powerMultiplier
         appendShrinked(smallestValue, result)
         appendShrinked(powerMultiplier, result)
-
-        // try to reduce power
         appendShrinked(this / pow(10.0f32, powerOf10 / 2), result)
 
         smallestValue.shrinkFracDigits(result, powerMultiplier)
@@ -338,8 +306,6 @@ extend Float64 <: Shrink<Float64> {
         let smallestValue = this / powerMultiplier
         appendShrinked(smallestValue, result)
         appendShrinked(powerMultiplier, result)
-
-        // try to reduce power
         appendShrinked(this / (10.0 ** (powerOf10 / 2)), result)
 
         smallestValue.shrinkFracDigits(result, powerMultiplier)
@@ -358,9 +324,7 @@ extend Float64 <: Shrink<Float64> {
     }
 }
 
-/**
- * Shrink instance for Rune
- */
+
 extend Rune <: Shrink<Rune> {
     public func shrink(): Iterable<Rune> {
         let alnum = shrinkToAlnum(this)
@@ -377,14 +341,12 @@ func arrayReplace<T>(array: Array<T>, index: Int64, element: T) {
     Array<T>(array.size) { ix => if (ix == index) { element } else { array[ix] } }
 }
 
-/**
- * CanShrinkElements is an auxilliary private interface used to check whether "elements" of T
- * implement Shrink because logic in this case may be different.
- * Alternatively, we could check each individual element for Shrink implementation, but that is
- * inefficient for collections. Using this private interface allows using only one check for the
- * whole collection. Another alternative is to require Shrink<Element> for each collection, but
- * we want to avoid this due to being inconvenient for users.
- */
+
+
+
+
+
+
 private interface CanShrinkElements<T> {
     func shrinkUsingElements(): LazySeq<T>
 }
@@ -411,7 +373,7 @@ extend<T> Array<T> <: Shrink<Array<T>> {
         result = result.append([])
         if (this.size > 1) {
             result = result.append(this[0..1])
-            if (this.size > 3) { // if size is 2 or 3, first half is just one element
+            if (this.size > 3) {
                 result = result.append(this[0..this.size / 2])
             }
             result = result.append(this[this.size / 2..this.size])
@@ -447,7 +409,7 @@ extend<T> ArrayList<T> <: Shrink<ArrayList<T>> {
         result = result.append(ArrayList())
         if (this.size > 1) {
             result = result.append(this[0..1])
-            if (this.size > 3) { // if size is 2 or 3, first half is just one element
+            if (this.size > 3) {
                 result = result.append(this[0..this.size / 2])
             }
             result = result.append(this[this.size / 2..this.size])
@@ -503,24 +465,20 @@ extend<T> HashSet<T> <: Shrink<HashSet<T>> {
     }
 }
 
-/**
- * HashMaps are complicated for Shrink: there are 4 cases
- * 1. K is Shrink<K>, V is Shrink<V>
- * 2. K is Shrink<K>, V is not Shrink<V>
- * 3. K is not Shrink<K>, V is Shrink<V>
- * 4. both K and V are not shrinkable
- * as we want to provide Shrink<HashMap<K, V>> for all 4 cases, use CanShrinkElement trick for V,
- * but for K we need to do an additional trick through an inline structure
- * which conditionally implements CanShrinkElement if K implements Shrink<K>
- */
+
+
+
+
+
+
+
+
 private struct ShrinkKeyWrapper<K, V> where K <: Equatable<K> & Hashable {
     ShrinkKeyWrapper(let data: HashMap<K, V>) {}
 }
 
-/**
- * ShrinkKeyWrapper<K, V> implements CanShrinkElements<HashMap<K, V>> iff K is Shrink<K>
- * and provides shrinking via keys
- */
+
+
 extend<K, V> ShrinkKeyWrapper<K, V> <: CanShrinkElements<HashMap<K, V>> where K <: Shrink<K> {
     public func shrinkUsingElements(): LazySeq<HashMap<K, V>> {
         let iterators = this.data |> map { kv: (K, V) =>
@@ -536,10 +494,8 @@ extend<K, V> ShrinkKeyWrapper<K, V> <: CanShrinkElements<HashMap<K, V>> where K 
     }
 }
 
-/**
- * HashMap<K, V> implements CanShrinkElements<HashMap<K, V>> iff V is Shrink<V>
- * and provides shrinking via values
- */
+
+
 extend<K, V> HashMap<K, V> <: CanShrinkElements<HashMap<K, V>> where V <: Shrink<V> {
     public func shrinkUsingElements(): LazySeq<HashMap<K, V>> {
         let iterators = this |> map { kv: (K, V) =>
@@ -629,7 +585,7 @@ extend String <: Shrink<String> {
         }
         if (charArr.size > 1) {
             result = result.append(String(charArr[0..1]))
-            if (charArr.size > 3) { // if size is 2 or 3, first half is exactly one rune, which we already added
+            if (charArr.size > 3) {
                 result = result.append(String(charArr[0..charArr.size / 2]))
             }
             result = result.append(String(charArr[charArr.size / 2..charArr.size]))
@@ -722,13 +678,10 @@ extend<T0, T1, T2, T3, T4> TupleWrapper5<T0, T1, T2, T3, T4> <: Shrink<TupleWrap
     }
 }
 
-/**
- * Utility class used to help developers write their own implementations of Shrink
- */
+
 public class ShrinkHelpers {
-    /**
-     * Build a shrinking sequence for tuple (T0, T1) from sequences for T0 and T1
-     **/
+
+
     public static func shrinkTuple<T0, T1>(
         tuple: (T0, T1),
         t0: Iterable<T0>,
@@ -740,9 +693,7 @@ public class ShrinkHelpers {
         LazySeq.mix(s0, s1)
     }
 
-    /**
-     * Build a shrinking sequence for tuple (T0, T1, T2) from sequences for T0, T1 and T2
-     **/
+
     public static func shrinkTuple<T0, T1, T2>(
         tuple: (T0, T1, T2),
         t0: Iterable<T0>,
@@ -756,9 +707,7 @@ public class ShrinkHelpers {
         LazySeq.mix(s0, s1, s2)
     }
 
-    /**
-     * Build a shrinking sequence for tuple (T0, T1, T2, T3) from sequences for T0, T1, T2 and T3
-     **/
+
     public static func shrinkTuple<T0, T1, T2, T3>(
         tuple: (T0, T1, T2, T3),
         t0: Iterable<T0>,
@@ -774,9 +723,7 @@ public class ShrinkHelpers {
         LazySeq.mix(s0, s1, s2, s3)
     }
 
-    /**
-     * Build a shrinking sequence for tuple (T0, T1, T2, T3, T4) from sequences for T0, T1, T2, T3 and T4
-     **/
+
     public static func shrinkTuple<T0, T1, T2, T3, T4>(
         tuple: (T0, T1, T2, T3, T4),
         t0: Iterable<T0>,
@@ -804,7 +751,7 @@ public class ShrinkHelpers {
 
 private class MixingIterator<T> <: Iterator<T> {
     private var currentIdx = 0
-    private var finishedCount = 0 // contigious sequence of finished iterators
+    private var finishedCount = 0
 
     private let pool = ArrayList<Iterator<T>>()
 

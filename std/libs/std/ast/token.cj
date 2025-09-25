@@ -1,34 +1,27 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.ast
 
 public struct Token <: ToBytes {
-    /**
-         Fields
-     */
+
+
     public let kind: TokenKind
     public let value: String
     public let pos: Position
-    public var delimiterNum: UInt16 = 1 // Delimiter r'#' number for raw string.
+    public var delimiterNum: UInt16 = 1
     protected var isSingleQuote = false
 
-    /**
-         Constructors
-     */
-    // Create an token with default value.
     public init() {
         kind = TokenKind.ILLEGAL
         value = ""
         pos = Position()
     }
-
-    // Create a new token without value, position from enumerated type token.
     public init(kind: TokenKind) {
         this.kind = kind
         value = getTokenLiteral(kind)
@@ -37,10 +30,7 @@ public struct Token <: ToBytes {
             this.isSingleQuote = true
         }
     }
-
-    // Create a new token with empty position from token kind and token value.
     public init(kind: TokenKind, value: String) {
-        // Forbid illegal init such as Token(TokenKind.ADD, "foo")
         if (!checkKindValue(kind, value)) {
             throw IllegalArgumentException(
                 "TokenKind(" + getTokenKindValue(kind) + ") and Value(" + value + ") not matched.\n")
@@ -52,8 +42,6 @@ public struct Token <: ToBytes {
             this.isSingleQuote = true
         }
     }
-
-    // Create a new token from token kind, value, fileID, line, column.
     init(k: TokenKind, v: String, f: UInt32, l: Int32, c: Int32) {
         kind = k
         value = v
@@ -71,31 +59,20 @@ public struct Token <: ToBytes {
     func addPosition(position: Position) {
         return Token(this.kind, this.value, position.fileID, position.line, position.column)
     }
-
-    // Returns true if and only if the two token's kind id, value, position are identical.
-    // XXX: Bound check.
     public operator func ==(r: Token): Bool {
         return this.kind == r.kind && this.value == r.value && this.pos == r.pos
     }
-
-    // Returns true if and only if the two token's kind id, value, position are not identical.
     public operator func !=(r: Token): Bool {
         return !(this == r)
     }
-
-    // Token + Tokens => Tokens
     public operator func +(r: Tokens): Tokens {
         var l: Tokens = Tokens(Array<Token>(1, repeat: this))
         return l + r
     }
-
-    // Token + Token => Tokens
     public operator func +(r: Token): Tokens {
         var l: Tokens = Tokens(Array<Token>(1, repeat: this))
         return l + r
     }
-
-    // Print the information of this token.
     public func dump(): Unit {
         let kv: String = getTokenKindValue(kind)
         let id: UInt16 = getTokenID(kind)

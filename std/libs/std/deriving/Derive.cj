@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.deriving
 
 import std.deriving.api.*
@@ -52,9 +52,6 @@ private func reportNonDeclInput(input: Tokens, logger: Logger, cause: Exception)
             return input
         }
     }
-
-    // here we could try to make a lax parse and try to proceed but it requires
-    // much more effort
     logger.error(declKeyword ?? findReportTarget(input), "Deriving is only supported for classes, enums and structs: ${cause}")
 
     return input

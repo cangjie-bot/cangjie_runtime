@@ -1,17 +1,14 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines basic help methods.
- *
- */
+
+
+
+
+
+
+
+
+
 
 package std.convert
 
@@ -176,18 +173,16 @@ let baseInfosUInt64: Array<Array<(UInt64, UInt64, UInt64)>> = [
         (0, 0, 0), (FOTMAT_BASE_NUM_UI64_16, HEXADECIMAL_OVERFLOW_LIMIT_UI64, MAXVAL_UI64)]
 ]
 
-/**
- * Specifies the data type.
- */
+
 enum TypeBase {
-    | I8 /* 8-bit  */
-    | UI8 /* U-8-bit  */
-    | I16 /* 16-bit  */
-    | UI16 /* U-16-bit  */
-    | I32 /* 32-bit  */
-    | UI32 /* U-32-bit  */
-    | I64 /* 64-bit  */
-    | UI64 /* U-64-bit  */
+    | I8 
+    | UI8 
+    | I16 
+    | UI16 
+    | I32 
+    | UI32 
+    | I64 
+    | UI64 
 }
 
 enum ConvertResult<T> {
@@ -234,19 +229,17 @@ func getBaseInfosWithRadix(typeBase: TypeBase, isNegative: Int64, radix: Int64):
     return (radixUint64, maxAbsVa / radixUint64, maxAbsVa)
 }
 
-/*
- * 1. Remove "'" from the character string.
- * 2. The length of the removed character string must be 1. If the length is not 1,
- *    an empty character string is returned.
- *
- * @param data of Array<Rune>.
- * @return Parameters of Option<Rune>
- */
+
+
+
+
+
+
 func strToChar(data: Array<Rune>): Option<Rune> {
     if (data.size < 2 || data[0] != r'\'' || data[data.size - 1] != r'\'') {
         return None
     }
-    /* Check special characters. */
+    
     if (data.size == 4 && data[1] == r'\\') {
         match (data[2]) {
             case r'n' => return Option<Rune>.Some(r'\n')
@@ -262,25 +255,23 @@ func strToChar(data: Array<Rune>): Option<Rune> {
             case _ => return Option<Rune>.None
         }
     }
-    /* Determine a single character. */
+    
     if (data.size == 3) {
         return Option<Rune>.Some(data[1])
     }
-    /* Check whether it is Unicode. */
+    
     if (data[1] == r'\\' && data[2] == r'u') {
         return unicodeToChar(data)
     }
     return None
 }
 
-/*
- * Converts chs to the corresponding numeric type.
- *
- * @Param chs of Rune
- * @return Parameters of UInt64
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 func charToNumber(chs: Rune): UInt64 {
     var value: UInt64 = UInt64(UInt32(chs))
     if (chs == r'A' || chs == r'B' || chs == r'C' || chs == r'D' || chs == r'E' || chs == r'F') {
@@ -295,23 +286,22 @@ func charToNumber(chs: Rune): UInt64 {
 
 func checkChar(formatBaseNum: UInt64, ch: Rune): Bool {
     return match (formatBaseNum) {
-        /* ASCII: 0 => 48 9 => 57 A => 65 F => 70 a => 97 f => 102 */
+        
         case 16 where (ch >= r'0' && ch <= r'9') || (ch >= r'A' && ch <= r'F') || (ch >= r'a' && ch <= r'f') => true
         case _ => false
     }
 }
 
 func charsToInteger(chars: Array<Rune>, formatBaseNum: UInt64): Option<UInt64> {
-    /*
-     * Calculate the result of each character based on the formula
-     * and sum it up to obtain the final result.
-     */
+
+
+
     var maxAbsVal: UInt64 = MAXVAL_UI64
     var num: UInt64 = 0
     for (ch in chars) {
-        /* Whether the character complies with the definition of the hexadecimal type */
+        
         if (checkChar(formatBaseNum, ch)) {
-            /* Obtains the number corresponding to char. */
+            
             let digit: UInt64 = charToNumber(ch)
             if ((maxAbsVal / UInt64(formatBaseNum)) < num) {
                 return Option<UInt64>.None
@@ -324,20 +314,19 @@ func charsToInteger(chars: Array<Rune>, formatBaseNum: UInt64): Option<UInt64> {
                 num = num + digit
             }
         } else {
-            /* If the definition is not correct, the system returns the value. */
+            
             return Option<UInt64>.None
         }
     }
     return Option<UInt64>.Some(num)
 }
-/*
- * Escape unicode to char.
- *
- * @Param string of String.
- * @return Parameters of Option<Rune>
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
 func unicodeToChar(data: Array<Rune>): Option<Rune> {
     if (data.size < 5 || data[3] != r'{' || data[data.size - 2] != r'}') {
         return None

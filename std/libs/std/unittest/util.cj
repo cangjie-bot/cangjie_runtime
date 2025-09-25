@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -13,9 +13,9 @@ import std.sync.Semaphore
 import std.unittest.common.*
 
 foreign {
-    func CJ_FS_IsFileORLinkToFile(path: CString): Int8 // -1: error, 0: false, 1: true
+    func CJ_FS_IsFileORLinkToFile(path: CString): Int8
 
-    func CJ_FS_IsDirORLinkToFDir(path: CString): Int8 // -1: error, 0: false, 1: true
+    func CJ_FS_IsDirORLinkToFDir(path: CString): Int8
 }
 
 extend<K, V> HashMap<K, V> {
@@ -62,14 +62,12 @@ extend<T> Array<T> where T <: Equatable<T> {
         }
     }
 
-    /**
-     * Returns array of parts (including empty), separated by delimiter:
-     * [].split([2]) ~> [[]]
-     * [1, 2].split([2]) ~> [[1], []]
-     * [2, 3].split([2]) ~> [[], [3]]
-     * [2, 2].split([2]) ~> [[], [], []]
-     * [2, 2].split([2, 2]) ~> [[], []]
-     */
+
+
+
+
+
+
     func split(delimiter: Array<T>): Array<Array<T>> {
         let parts = ArrayList<Array<T>>()
         var idxPartStart = 0

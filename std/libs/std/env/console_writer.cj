@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a class for ConsoleWriter.
- */
+
+
+
+
+
+
+
+
 
 package std.env
 
@@ -22,17 +19,15 @@ foreign func CJ_CONSOLE_Flush(fd: Int32): Unit
 public class ConsoleWriter <: OutputStream {
     private let mutex: Mutex = Mutex()
 
-    /* Write buffer size is 512 bytes */
+    
     private let bufferSize: Int64 = 512
 
-    /* Write buffer */
+    
     private let buffer: Array<UInt8> = Array<UInt8>(this.bufferSize, repeat: 0)
 
     private let fd: Int32
 
-    /**
-     * Init the ConsoleWriteStream, initialize the buffer.
-     */
+
     init(fd: Int32) {
         this.fd = fd
     }
@@ -119,7 +114,6 @@ public class ConsoleWriter <: OutputStream {
     }
 
     public func write(v: Rune): Unit {
-        // up to 6 bytes in utf-8
         let itemBytes: Array<UInt8> = Array<UInt8>(6, repeat: 0)
         let len = Rune.intoUtf8Array(v, itemBytes, 0)
         write(itemBytes[..len])
@@ -243,17 +237,15 @@ public class ConsoleWriter <: OutputStream {
         }
     }
 
-    /**
-     * Write buffer data into stdOut.
-     *
-     * @param arr write Array.
-     * @param off The write data is placed into b from the index.
-     * @param cnt write cnt bytes.
-     *
-     * @return Int64
-     *
-     * @since 0.24.1
-     */
+
+
+
+
+
+
+
+
+
     private func directWrite(arr: Array<UInt8>, cnt: Int64, newline!: Bool = false): Int64 {
         unsafe {
             var pos: Int64 = 0

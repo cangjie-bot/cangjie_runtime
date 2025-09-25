@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.Color
@@ -211,9 +211,7 @@ private class BenchBaselineGroup <: BenchTableGroup {
         }
     }
 
-    /**
-     * Required to distinguish between the benches measured with equal measurements in baseline report (comparing with previous run).
-     */
+
     private let baselineReportIndices = HashMap<String, Int64>()
 
     public override func putResultToBaselineReport(key: String, value: Float64) {
@@ -274,7 +272,7 @@ private class BenchBaselineGroup <: BenchTableGroup {
         for ((baselineId, cases) in batchedBenches) {
             var baseline = Baseline.PreviousReport
             if (baselineToCases.contains(baselineId)) {
-                let baselineMeasurements = measurementsByCase[baselineId][0] // take first run as baseline
+                let baselineMeasurements = measurementsByCase[baselineId][0]
                 baseline = Baseline.TestCaseBaseline(baselineMeasurements.result.mainResult)
             }
 
@@ -292,8 +290,6 @@ private class BenchBaselineGroup <: BenchTableGroup {
     ) {
         let standaloneBenches = ArrayList<TestCaseId>()
         let baselineNotFoundBenches = ArrayList<TestCaseId>()
-        // each batch consists of [<baseline>, *<cases that have this baseline>] or [<all parameters for one case>]
-        // so each case can appear in the report at most twice: once as a baseline and once as non-baseline in a batch
         let batchedBenches = HashMap<TestCaseId, ArrayList<TestCaseId>>()
 
         for ((caseId, steps) in measurementsByCase) {
@@ -337,12 +333,10 @@ private open class BenchCaseRow <: BenchTableGroup {
         let errPercent!: Float64,
         let mean!: Float64,
         let isBaseline!: Bool,
-        let isEmptyResult!: Bool = false // was not actually executed during benchmarking, so results make no sense.
+        let isEmptyResult!: Bool = false
     ) {
         super(parent)
     }
-
-    // Constructor of empty bench case row
     init(parent: BenchTableImpl, caseId: TestCaseId, argText: String, isBaseline: Bool) {
         this(
             parent, caseId, argText,
@@ -357,7 +351,6 @@ private open class BenchCaseRow <: BenchTableGroup {
 
     private prop benchColor: Color {
         get() {
-            // mark bench as warninig if it was optimizied and not measured properly.
             if (isEmptyResult) { YELLOW } else { DEFAULT_COLOR }
         }
     }

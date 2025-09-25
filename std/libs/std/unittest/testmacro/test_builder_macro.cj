@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -54,8 +54,6 @@ private func generateBuildSuite(funcDecl: FuncDecl): Tokens {
 }
 
 private let WRONG_TARGET_MESSAGE = "@TestBuilder macro must be put on a function without parameters."
-
-// NOTE: sadly cannot verify that function is top level
 private func verifyDeclShape(decl: Decl): FuncDecl {
     let funcDecl = (decl as FuncDecl) ?? throw MacroException(WRONG_TARGET_MESSAGE)
     if (!funcDecl.funcParams.isEmpty()) {

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
 
@@ -19,9 +19,7 @@ public class GenericTypeInfo <: TypeInfo & Equatable<GenericTypeInfo> {
     }
 }
 
-/**
- * Contains the reflective information about instance functions.
- */
+
 public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable & ToString {
     let _info: CPointer<Unit>
     var _name: Option<String> = None
@@ -66,18 +64,14 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the name of instance function.
-     */
+
     public prop name: String {
         get() {
             _name.getOrThrow()
         }
     }
 
-    /**
-     * Returns the list of parameters of instance function.
-     */
+
     public prop parameters: ReadOnlyList<ParameterInfo> {
         get() {
             match (_parameters) {
@@ -90,9 +84,7 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the return type of instance function.
-     */
+
     public prop returnType: TypeInfo {
         get() {
             match (_returnType) {
@@ -106,9 +98,7 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the collection of modifiers of instance function.
-     */
+
     public prop modifiers: Collection<ModifierInfo> {
         get() {
             match (_modifiers) {
@@ -121,9 +111,7 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the collection of annotations of instance function.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -139,29 +127,23 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns true if instance function is 'public', false otherwise.
-     */
+
     public func isOpen(): Bool {
         containsModifier(modifiers, ModifierInfo.Open)
     }
 
-    /**
-     * Returns true if instance function is 'abstract', false otherwise.
-     */
+
     public func isAbstract(): Bool {
         containsModifier(modifiers, ModifierInfo.Abstract)
     }
 
-    /**
-     * Makes a call of public instance function with incoming args for incoming instance.
-     *
-     * @param args parameter list.
-     *
-     * @throw IllegalArgumentException, if the number of input parameters is different from the number of invoked function parameters.
-     * @throw IllegalTypeException, if the input parameter type does not match the required parameter type.
-     * @throw InvocationTargetException, if an exception is thrown when the function is abstract.
-     */
+
+
+
+
+
+
+
     public func apply(instance: Any, args: Array<Any>): Any {
         let nullEntryPointer = methodEntryPointIsNull(_info)
         if (isAbstract() && nullEntryPointer) {
@@ -204,9 +186,7 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
         applyCJGenericInstanceMethod(_info, instance, gArgs.toArray(), args)
     }
 
-    /**
-     * Searches the instance function's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
@@ -252,9 +232,7 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
     }
 }
 
-/**
- * Contains the reflective information about static functions.
- */
+
 public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & ToString {
     let _info: CPointer<Unit>
     var _name: Option<String> = None
@@ -299,18 +277,14 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the name of static function.
-     */
+
     public prop name: String {
         get() {
             _name.getOrThrow()
         }
     }
 
-    /**
-     * Returns the list of parameters of static function.
-     */
+
     public prop parameters: ReadOnlyList<ParameterInfo> {
         get() {
             match (_parameters) {
@@ -323,9 +297,7 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the return type of static function.
-     */
+
     public prop returnType: TypeInfo {
         get() {
             match (_returnType) {
@@ -339,9 +311,7 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the collection of modifiers of static function.
-     */
+
     public prop modifiers: Collection<ModifierInfo> {
         get() {
             match (_modifiers) {
@@ -354,9 +324,7 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the collection of annotations of static function.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -372,14 +340,12 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
         }
     }
 
-    /**
-     * Makes a call of static function with incoming args.
-     *
-     * @param args parameter list.
-     *
-     * @throw IllegalArgumentException, if the number of input parameters is different from the number of invoked function parameters.
-     * @throw IllegalTypeException, if the input parameter type does not match the required parameter type.
-     */
+
+
+
+
+
+
     public func apply(thisType: TypeInfo, args: Array<Any>): Any {
         try {
             if (genericParams.size > 0) {
@@ -427,9 +393,7 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
         applyCJGenericStaticMethod(_info, gArgs.toArray(), args, thisType._info)
     }
 
-    /**
-     * Searches the static function's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
@@ -475,12 +439,9 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
     }
 }
 
-/**
- * Contains the reflective information about instance properties.
- */
+
 public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable & ToString {
     let _name: String
-    // must have value
     var _getterInfo: Option<InstanceFunctionInfo> = None
     var _setterInfo: Option<InstanceFunctionInfo> = None
     var _typeInfo: Option<TypeInfo> = None
@@ -493,18 +454,14 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
         _declaringTypeInfo = declaringTypeInfo
     }
 
-    /**
-     * Returns the name of instance property.
-     */
+
     public prop name: String {
         get() {
             _name
         }
     }
 
-    /**
-     * Returns the return type of instance property.
-     */
+
     public prop typeInfo: TypeInfo {
         get() {
             match (_typeInfo) {
@@ -516,9 +473,7 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the collection of modifiers of instance property.
-     */
+
     public prop modifiers: Collection<ModifierInfo> {
         get() {
             match (_modifiers) {
@@ -537,9 +492,7 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns the collection of annotations of instance property.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -556,43 +509,32 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
         }
     }
 
-    /**
-     * Returns true if instance property is 'public', false otherwise.
-     */
+
     public func isOpen(): Bool {
         containsModifier(modifiers, ModifierInfo.Open)
     }
 
-    /**
-     * Returns true if instance property is 'abstract', false otherwise.
-     */
+
     public func isAbstract(): Bool {
         containsModifier(modifiers, ModifierInfo.Abstract)
     }
 
-    /**
-     * Returns true if instance property is 'mut'
-     */
+
     public func isMutable(): Bool {
         _setterInfo.isSome()
     }
 
-    /**
-     * Returns the instance property's value for incoming instance.
-     */
+
     public func getValue(instance: Any): Any {
         if (isAbstract()) {
             throw UnsupportedException("Abstract prop cannot get value.")
         }
-        // instance type is checked in apply
-        if (let Some(v) <- _getterInfo) { // Getter must be implemented, no need to consider `None`
+        if (let Some(v) <- _getterInfo) {
             return v.apply(instance, Array<Any>())
         }
     }
 
-    /**
-     * Updates the instance property's value with incoming new value for incoming instance.
-     */
+
     public func setValue(instance: Any, newValue: Any): Unit {
         if (isAbstract()) {
             throw IllegalSetException("Attempt to modify abstract variable '${name}'")
@@ -600,17 +542,13 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
         if (!isMutable()) {
             throw IllegalSetException("Attempt to modify immutable property '${name}'")
         }
-
-        // instance type is checked in apply
         match (_setterInfo) {
             case Some(v) => v.apply(instance, Array<Any>(1, repeat: newValue))
             case None => throw IllegalSetException("Attempt to modify immutable property '${name}'")
         }
     }
 
-    /**
-     * Searches the instance property's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
@@ -657,12 +595,9 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
     }
 }
 
-/**
- * Contains the reflective information about static properties.
- */
+
 public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & ToString {
     let _name: String
-    // must have value
     var _getterInfo: Option<StaticFunctionInfo> = None
     var _setterInfo: Option<StaticFunctionInfo> = None
     var _typeInfo: Option<TypeInfo> = None
@@ -674,18 +609,14 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
         _declaringTypeInfo = declaringTypeInfo
     }
 
-    /**
-     * Returns the name of static property.
-     */
+
     public prop name: String {
         get() {
             _name
         }
     }
 
-    /**
-     * Returns the return type of static property.
-     */
+
     public prop typeInfo: TypeInfo {
         get() {
             match (_typeInfo) {
@@ -697,9 +628,7 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the collection of modifiers of static property.
-     */
+
     public prop modifiers: Collection<ModifierInfo> {
         get() {
             match (_modifiers) {
@@ -718,9 +647,7 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the collection of annotations of static property.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -737,25 +664,19 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns true if static property is 'mut'
-     */
+
     public func isMutable(): Bool {
         _setterInfo.isSome()
     }
 
-    /**
-     * Returns the static property's value for incoming instance.
-     */
+
     public func getValue(): Any {
-        if (let Some(v) <- _getterInfo) { // getter must be implemented, no need to consider `None`
+        if (let Some(v) <- _getterInfo) {
             return v.apply(TypeInfo.getOrCreate(_declaringTypeInfo), Array<Any>())
         }
     }
 
-    /**
-     * Updates the static property's value with incoming new value for incoming instance.
-     */
+
     public func setValue(newValue: Any): Unit {
         if (!isMutable()) {
             throw IllegalSetException("Attempt to modify immutable property '${name}'")
@@ -766,9 +687,7 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
         }
     }
 
-    /**
-     * Searches the static property's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
@@ -814,9 +733,7 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
     }
 }
 
-/**
- * Contains the reflective information about constructors.
- */
+
 public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString {
     let _info: CPointer<Unit>
     var _parameters: Option<ArrayList<ParameterInfo>> = None
@@ -828,9 +745,7 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
         _declaringTypeInfo = declaringTypeInfo
     }
 
-    /**
-     * Returns the list of parameters of constructor.
-     */
+
     public prop parameters: ReadOnlyList<ParameterInfo> {
         get() {
             match (_parameters) {
@@ -843,9 +758,7 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
         }
     }
 
-    /**
-     * Returns the collection of annotations of constructor.
-     */
+
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -875,15 +788,13 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
         }
     }
 
-    /**
-     * Makes a call of constructor with incoming args.
-     *
-     * @param args parameter list.
-     *
-     * @throw IllegalArgumentException, if the number of input parameters is different from the number of invoked function parameters.
-     * @throw IllegalTypeException, if the input parameter type does not match the required parameter type.
-     * @throw InvocationTargetException, if the constructor is abstract
-     */
+
+
+
+
+
+
+
     public func apply(args: Array<Any>): Any {
         let nullEntryPointer = methodEntryPointIsNull(_info)
         if (isAbstract || nullEntryPointer) {
@@ -894,9 +805,7 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
         applyCJStaticMethod(_info, args, CPointer<Unit>())
     }
 
-    /**
-     * Searches the constructor's annotation by incoming name.
-     */
+
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
@@ -935,9 +844,7 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
     }
 }
 
-/**
- * Contains the reflective information about global functions.
- */
+
 public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & ToString {
     let _info: CPointer<Unit>
     var _name: ?String = None
@@ -976,17 +883,13 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
             }
         }
     }
-
-    // Function name, overloaded functions have the same function name
     public prop name: String {
         get() {
             _name.getOrThrow()
         }
     }
 
-    /**
-     * Returns the list of parameters of global function.
-     */
+
     public prop parameters: ReadOnlyList<ParameterInfo> {
         get() {
             match (_parameters) {
@@ -999,9 +902,7 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
         }
     }
 
-    /**
-     * Returns the return type of global function.
-     */
+
     public prop returnType: TypeInfo {
         get() {
             match (_returnType) {
@@ -1014,8 +915,6 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
             }
         }
     }
-
-    // Annotation, when there is no data, size is 0. Note that this api does not guarantee a constant traversal order.
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -1031,15 +930,13 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
         }
     }
 
-    /**
-     * Makes a call of global function with incoming args.
-     *
-     * @param args parameter list.
-     *
-     * @throw IllegalArgumentException, if the number of input parameters is different from the number of invoked function parameters.
-     * @throw IllegalTypeException, if the input parameter type does not match the required parameter type.
-     * @throw InvocationTargetException, if then generic parameter check failed.
-     */
+
+
+
+
+
+
+
     public func apply(args: Array<Any>): Any {
         try {
             if (genericParams.size > 0) {
@@ -1068,8 +965,6 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
 
         applyCJGenericStaticMethod(_info, gArgs.toArray(), args, CPointer<Unit>())
     }
-
-    // Get the annotation by name, return None if not found
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }

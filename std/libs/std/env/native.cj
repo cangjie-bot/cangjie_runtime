@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.env
 
@@ -57,13 +57,13 @@ foreign {
     func CJ_OS_GetStdHandle(fd: IntNative): IntNative
 
     @FastNative
-    func CJ_OS_CloseFile(fd: IntNative): Int64 // -1: failed, (>= 0): success
+    func CJ_OS_CloseFile(fd: IntNative): Int64
 
     @FastNative
-    func CJ_OS_FileRead(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64 // -1: failed, 0: end, (>0): the size of buffer be read
+    func CJ_OS_FileRead(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64
 
     @FastNative
-    func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool // -1: failed, (>=0): the size of buffer be written
+    func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool
 }
 
 @When[os != "Windows"]
@@ -78,13 +78,13 @@ foreign {
     func unsetenv(name: CString): Int32
 
     @FastNative
-    func CJ_OS_CloseFile(fd: IntNative): Int64 // -1: failed, (>= 0): success
+    func CJ_OS_CloseFile(fd: IntNative): Int64
 
     @FastNative
-    func CJ_OS_FileRead(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64 // -1: failed, 0: end, (>0): the size of buffer be read
+    func CJ_OS_FileRead(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64
 
     @FastNative
-    func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool // -1: failed, (>=0): the size of buffer be written
+    func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool
 }
 
 @FastNative

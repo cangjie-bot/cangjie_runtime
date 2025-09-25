@@ -1,53 +1,44 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines ArrayList and related classes.
- */
+
+
+
+
+
+
+
+
 package std.collection
 
 import std.math.*
 
-/**
- * ArrayList-based Iterator.
- *
- * @since 0.18.2
- */
+
+
+
 class ArrayListIterator<T> <: Iterator<T> {
     private var myPosition: Int64 = 0
     private let myData: ArrayList<T>
     private let initVersion: Int64
 
-    /**
-     * Initializing ArrayListIterator.
-     *
-     * @param data - data of ArrayList<T>.
-     * @param version - version of Int64.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     @Frozen
     init(data: ArrayList<T>) {
         myData = data
         initVersion = data.myVersion
     }
 
-    /**
-     * Returns the next element in the iteration.
-     *
-     * @return Option<T>.
-     *
-     * @throws ConcurrentModificationException if initVersion is not equal to myData.myVersion.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     public func next(): Option<T> {
@@ -65,27 +56,25 @@ class ArrayListIterator<T> <: Iterator<T> {
     }
 }
 
-/**
- * Resizable-array implementation of the Collection.
- * Implements all Collection operations, and permits all elements, including null.
- * In addition to implementing the Collection interface, this class provides methods to manipulate the size of the array that is used to store the ArrayList.
- *
- * @since 0.18.2
- */
+
+
+
+
+
 public class ArrayList<T> <: List<T> {
-    /* Defines the ArrayList myData type as Array. */
+    
     var myData: Array<T>
 
-    /* Defines the ArrayList size. */
+    
     var mySize: Int64
 
-    /* Defines the ArrayList version. */
+    
     var myVersion: Int64 = 0
 
-    /* Defines the ArrayList default capacity */
+    
     private static const DEFAULT_CAPACITY: Int64 = 16
 
-    /* Defines the capacity of the ArrayList. */
+    
     @Frozen
     public prop capacity: Int64 {
         get() {
@@ -93,24 +82,20 @@ public class ArrayList<T> <: List<T> {
         }
     }
 
-    /**
-     * Initializes an empty ArrayList with the default capacity.
-     *
-     * @since 0.18.2
-     */
+
+
+
     @Frozen
     public init() {
         myData = Array<T>(DEFAULT_CAPACITY, repeat: unsafe { zeroValue<T>() })
         mySize = 0
     }
 
-    /**
-     * Initializes an empty ArrayList with the specified initial capacity.
-     *
-     * @param capacity incoming initialized capacity.
-     * @throws IllegalArgumentException if the capacity is less than 0.
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public init(capacity: Int64) {
         mySize = 0
@@ -122,16 +107,14 @@ public class ArrayList<T> <: List<T> {
         myData = Array<T>(cap, repeat: unsafe { zeroValue<T>() })
     }
 
-    /**
-     * Initializes an ArrayList with the specified initial size and specified initial function.
-     *
-     * @param size incoming initialize size.
-     * @param initElement incoming initialize initElement.
-     *
-     * @throws IllegalArgumentException if size is negative.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
+
     @Frozen
     public init(size: Int64, initElement: (Int64) -> T) {
         if (size < 0) {
@@ -147,13 +130,11 @@ public class ArrayList<T> <: List<T> {
         mySize = elements.size
     }
 
-    /**
-     * Initializes an ArrayList with the iterable of elements initial function.
-     *
-     * @param  elements transfer the element type collection.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public init(elements: Collection<T>) {
         match (elements) {
@@ -163,33 +144,27 @@ public class ArrayList<T> <: List<T> {
         mySize = elements.size
     }
 
-    /**
-     * Statically generate an ArrayList with the specified Array.
-     *
-     * @param elements input element type array.
-     *
-     */
+
+
+
+
     @Frozen
     public static func of(elements: Array<T>): ArrayList<T> {
         return ArrayList(elements)
     }
 
-    /**
-     * Returns the raw data of the ArrayList.
-     *
-     * @since 0.23.3
-     *
-     */
+
+
+
+
     @Frozen
     public unsafe func getRawArray(): Array<T> {
         return this.myData
     }
 
-    /**
-     * Returns the element in this ArrayList as an Array.
-     *
-     * @throws IndexOutOfBoundsException if "mySize" is out of bound.
-     */
+
+
+
     @Frozen
     public func toArray(): Array<T> {
         if (mySize == 0) {
@@ -201,14 +176,12 @@ public class ArrayList<T> <: List<T> {
         return newArr
     }
 
-    /**
-     * Gets the element at the specified location in this ArrayList.
-     *
-     * @param index indicates the index of the get interface.
-     * @return the T type of value.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     @Frozen
     public func get(index: Int64): ?T {
         if (index >= mySize || index < 0) {
@@ -231,12 +204,10 @@ public class ArrayList<T> <: List<T> {
         }
     }
 
-    /**
-     * Appends the specified element to the next index of the element at the end of the ArrayList
-     *
-     * @param element the type of the inserted element is T.
-     *
-     */
+
+
+
+
     @Frozen
     public func add(element: T): Unit {
         if (mySize == myData.size) {
@@ -247,12 +218,10 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Adds all elements in the specified collection after the end element of this ArrayList.
-     *
-     * @param elements import elements of the collection type and insert them one by one.
-     * @throws ConcurrentModificationException if there are some system errors.
-     */
+
+
+
+
     @Frozen
     public func add(all!: Collection<T>): Unit {
         let cSize: Int64 = all.size
@@ -275,14 +244,12 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Inserts the specified element at the specified position in this ArrayList.
-     *
-     * @param index the index of the element to insert.
-     * @param element the element to insert is of type T.
-     * @throws IndexOutOfBoundsException if index is out of range.
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     public func add(element: T, at!: Int64): Unit {
@@ -302,14 +269,12 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Inserts all of the elements in the specified Collection into this ArrayList, starting at the specified position.
-     *
-     * @param index the index of the element to insert.
-     * @param elements the collection type element to insert.
-     * @throws IndexOutOfBoundsException if index is out of bounds.
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     @Frozen
     @OverflowWrapping
     public func add(all!: Collection<T>, at!: Int64): Unit {
@@ -340,13 +305,11 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Removes an element at the specified location from this ArrayList.
-     *
-     * @param index remove an Index of an Element.
-     * @throws IndexOutOfBoundsException if index is out of range.
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public func remove(at!: Int64): T {
         checkRange(at)
@@ -359,16 +322,14 @@ public class ArrayList<T> <: List<T> {
         return removed
     }
 
-    /**
-     * Removes multiple elements at the specified location from this ArrayList.
-     *
-     * @param range indexs of element to remove
-     *
-     * @throws IllegalArgumentException if range.step is not equal to 1.
-     * @throws IndexOutOfBoundsException if range.start or range.end is less than zero, or range.end is greater than mySize.
-     *
-     * @since 0.31.3
-     */
+
+
+
+
+
+
+
+
     @Frozen
     public func remove(range: Range<Int64>): Unit {
         if (range.isEmpty()) {
@@ -384,12 +345,9 @@ public class ArrayList<T> <: List<T> {
         if (range.isClosed) {
             end = end + 1
         }
-
-        // If end is omitted, end = size of this ArrayList.
         if (!range.hasEnd) {
             end = this.mySize
         }
-        // If start is omitted, start = 0.
         if (!range.hasStart) {
             start = 0
         }
@@ -408,13 +366,11 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Removes all of the elements of this ArrayList that satisfy the given predicate.
-     *
-     * @param predicate transfer the condition for determining the deletion.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public func removeIf(predicate: (T) -> Bool): Unit {
         var i: Int64 = 0
@@ -443,17 +399,15 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Removes all of the elements from this ArrayList.
-     *
-     * @since 0.18.2
-     *
-     */
+
+
+
+
     @Frozen
     public func clear(): Unit {
         if (mySize > 0) {
             let zero: T = unsafe { zeroValue<T>() }
-            /* Back-to-front traversal can reduce boundary checks and improve performance */
+            
             for (i in mySize - 1..=0 : -1) {
                 myData[i] = zero
             }
@@ -462,13 +416,11 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Reserves capacity for at least additional more elements to be inserted in this ArrayList.
-     *
-     * @param additional ensure that there is sufficient capacity. additional indicates the quantity to be added.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public func reserve(additional: Int64): Unit {
         if (myData.size - mySize >= additional) {
@@ -479,14 +431,12 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Incoming Sort by Condition.
-     *
-     * @param comparator transfer the condition to be judged.
-     * @param stable Whether to use stable sorting.
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
+
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` in std.sort instead."]
     public func sortBy(stable!: Bool, comparator!: (T, T) -> Ordering): Unit {
@@ -498,13 +448,11 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Incoming Sort by Condition.
-     *
-     * @param comparator transfer the condition to be judged.
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` in std.sort instead."]
     public func sortBy(comparator!: (T, T) -> Ordering): Unit {
@@ -512,12 +460,10 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Reverses the order of the elements in this ArrayList.
-     *
-     * @since 0.18.2
-     *
-     */
+
+
+
+
     @Frozen
     public func reverse(): Unit {
         var i: Int64 = 0
@@ -532,39 +478,33 @@ public class ArrayList<T> <: List<T> {
         myVersion++
     }
 
-    /**
-     * Operator overload slice.
-     *
-     * @param range transfer the range for the slice.
-     *
-     * @throws IllegalArgumentException if the step of range is not 1.
-     * @throws IndexOutOfBoundsException if range is invalid.
-     * @since 0.18.2
-     *
-     */
+
+
+
+
+
+
+
+
     @Frozen
     public operator func [](range: Range<Int64>): ArrayList<T> {
         return this.slice(range)
     }
 
-    /**
-     * The input parameter range is used as the index and the ArrayList corresponding to the index is returned.
-     *
-     * @param range transfer the range for the slice.
-     *
-     * @throws IllegalArgumentException if the step of range is not 1.
-     * @throws IndexOutOfBoundsException if range is invalid.
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
     @Frozen
     public func slice(range: Range<Int64>): ArrayList<T> {
         return ArrayList<T>(rangeSlice(this.myData, range, this.size))
     }
 
-    /**
-     * @throws IllegalArgumentException if the step of range is not 1.
-     * @throws IndexOutOfBoundsException if range is invalid.
-     */
+
+
     @Frozen
     private func rangeSlice(arr: Array<T>, range: Range<Int64>, size: Int64): Array<T> {
         if (range.step != 1) {
@@ -610,42 +550,36 @@ public class ArrayList<T> <: List<T> {
         return arr[start..end]
     }
 
-    /**
-     * Clone a new ArrayList.
-     *
-     * @return new ArrayList
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public func clone(): ArrayList<T> {
         return ArrayList<T>(this)
     }
 
-    /**
-     * Operator overload get.
-     * An exception is reported when no index exists.
-     *
-     * @param index indicates the index of the get interface.
-     * @return the T type of value.
-     * @throws IndexOutOfBoundsException if index is out of range.
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
     @Frozen
     public operator func [](index: Int64): T {
         checkRange(index)
         return this.myData[index]
     }
 
-    /**
-     * Operator overload set.
-     * An exception is reported when no index exists.
-     *
-     * @param index Index value to be set.
-     * @param value the T type of element.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
     @Frozen
     public operator func [](index: Int64, value!: T): Unit {
         if (index >= mySize || index < 0) {
@@ -655,37 +589,31 @@ public class ArrayList<T> <: List<T> {
         unsafe { myData.setUnchecked(index, value) }
     }
 
-    /**
-     * Returns an iterator over the elements in this ArrayList in proper Collection.
-     *
-     * @return Iterator<T>.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public func iterator(): Iterator<T> {
         return ArrayListIterator<T>(this)
     }
 
-    /**
-     * Check whether the size is empty. If yes, true is returned. Otherwise, false is returned.
-     *
-     * @return If this size is empty, true is returned. Otherwise, false is returned.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public func isEmpty(): Bool {
         return mySize == 0
     }
 
-    /**
-     * Returns the number of elements in this ArrayList.
-     *
-     * @return the size.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     public prop size: Int64 {
         get() {
@@ -693,15 +621,13 @@ public class ArrayList<T> <: List<T> {
         }
     }
 
-    /*
-     * Check whether the size range is as expected.
-     *
-     * @param index pass in the index to be checked.
-     *
-     * @throws IndexOutOfBoundsException if index is less than zero or index is greater than or equal to Array size.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
     @Frozen
     private func checkRange(index: Int64): Unit {
         if (index >= mySize || index < 0) {
@@ -709,15 +635,13 @@ public class ArrayList<T> <: List<T> {
         }
     }
 
-    /*
-     * Check whether the size range is as expected.
-     *
-     * @param index pass in the index to be checked.
-     *
-     * @throws IndexOutOfBoundsException if index is less than zero or index is greater than Array size.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
     @Frozen
     private func checkRangeInsert(index: Int64): Unit {
         if (index > mySize || index < 0) {
@@ -725,13 +649,11 @@ public class ArrayList<T> <: List<T> {
         }
     }
 
-    /*
-     * grow capacity.
-     *
-     * @param minCapacity - minCapacity of Int64.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
     @Frozen
     private func grow(minCapacity: Int64, startIndex!: Int64 = 0): Unit {
         let oldCapacity: Int64 = myData.size
@@ -749,19 +671,17 @@ public class ArrayList<T> <: List<T> {
     }
 }
 
-/**
- * The `ArrayList` conforms `Equatable` interface where `T` is `Equatable`
- *
- * @since 0.18.2
- */
+
+
+
 extend<T> ArrayList<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
-    /** overloaded determination == method. */
+    
     @Frozen
     public operator func ==(that: ArrayList<T>): Bool {
         if (this.size != that.size) {
             return false
         }
-        /* Back-to-front traversal can reduce boundary checks and improve performance */
+        
         for (i in this.size - 1..=0 : -1) {
             if (unsafe { this.myData.getUnchecked(i) != that.myData.getUnchecked(i) }) {
                 return false
@@ -770,7 +690,7 @@ extend<T> ArrayList<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
         return true
     }
 
-    /** overloaded determination != method. */
+    
     @Frozen
     public operator func !=(that: ArrayList<T>): Bool {
         return !(this == that)
@@ -793,13 +713,12 @@ extend<T> ArrayList<T> <: Equatable<ArrayList<T>> where T <: Equatable<T> {
 }
 
 extend<T> ArrayList<T> where T <: Comparable<T> {
-    /**
-     * Sort data in ascending order.
-     *
-     * @param stable Whether to use stable sorting
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
+
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` in std.sort instead."]
     public func sort(stable!: Bool): Unit {
@@ -812,13 +731,11 @@ extend<T> ArrayList<T> where T <: Comparable<T> {
         this.sortBy() {lhs: T, rhs: T => lhs.compare(rhs)}
     }
 
-    /**
-     * Sort data in descending order.
-     *
-     * @param stable Whether to use stable sorting
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` in std.sort instead."]
     public func sortDescending(stable!: Bool): Unit {
@@ -866,17 +783,13 @@ func max(a: Int64, b: Int64): Int64 {
         b
     }
 }
-
-// Temporary code, deleted when @Deprecated ends
 func stableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     if (data.size < 2) {
         return
     }
     data.timSort(comparator)
 }
-// Temporary code, deleted when @Deprecated ends
 extend<T> Array<T> {
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     private func shortSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         let len = this.size
@@ -1303,8 +1216,6 @@ extend<T> Array<T> {
             shortSort(0, this.size - 1, comparator)
             return
         }
-
-        // init temp data
         let mrl = this.getMinRunLength()
         var temp = TempArray(this.size, this[0])
         let stackLen = Int64(log2(Float64(this.size) / Float64(mrl) + 2.0)) + 1
@@ -1337,7 +1248,6 @@ extend<T> Array<T> {
         this.mergeAll(startArr, lengthArr, endIndex, temp, comparator)
     }
 }
-// Temporary code, deleted when @Deprecated ends
 class TempArray<T> {
     private var data: Array<T>
     private let zero: T
@@ -1365,19 +1275,13 @@ class TempArray<T> {
         return this.data
     }
 }
-
-// Temporary code, deleted when @Deprecated ends
 func unstableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     if (data.size < 2) {
         return
     }
     data.introSort(0, data.size - 1, data.depth(), comparator)
 }
-
-// Temporary code, deleted when @Deprecated ends
 extend<T> Array<T> {
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
-    // end - begin >= 1
     @OverflowWrapping
     private func getPartition(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): (Int64, Int64) {
         let len: Int64 = end - begin + 1
@@ -1389,16 +1293,12 @@ extend<T> Array<T> {
         }
         this.compareSwap3(begin, mid, end, comparator)
         let pivot: T = this[mid]
-
-        // swap mid and end
         let temp = this[end]
         this[end] = pivot
         this[mid] = temp
         var pointNum = 0
         var b = begin
         var e = end - 1
-
-        // query the first value equal to pivot
         var first: Int64 = b
         while (b < e) {
             let tb = this[b]
@@ -1437,8 +1337,6 @@ extend<T> Array<T> {
                     }
             }
         }
-
-        // find partition pivot
         while (b < e) {
             var tb: T = pivot
             while (b < e) {
@@ -1479,8 +1377,6 @@ extend<T> Array<T> {
         if (b - first >= pointNum * pointNum) {
             return (b - 1, b + 1)
         } else {
-            // When the number of traversal times is less than the square of the number of pivot
-            // merge a large number of values that are the same as pivot
             let hi = b
             b = first
             e = hi - 1
@@ -1516,8 +1412,6 @@ extend<T> Array<T> {
             return (b, hi + 1)
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func introSort(begin: Int64, end: Int64, depth: Int64, comparator: (T, T) -> Ordering): Unit {
         var b: Int64 = begin
@@ -1543,9 +1437,6 @@ extend<T> Array<T> {
             }
             d--
             let (lo, hi) = this.getPartition(b, e, comparator)
-
-            // Let the smaller side do recursion
-            // Let the bigger side do loop
             if (lo - b < e - hi) {
                 this.introSort(b, lo, d, comparator)
                 b = hi
@@ -1556,10 +1447,7 @@ extend<T> Array<T> {
         }
     }
 }
-
-// Temporary code, deleted when @Deprecated ends
 extend<T> Array<T> {
-    // the value range of the parameter: 0 <= i1 < i2 <= array.size - 1
     func compareSwap2(i1: Int64, i2: Int64, comparator: (T, T) -> Ordering) {
         let a: T = this[i1]
         let b: T = this[i2]
@@ -1570,10 +1458,6 @@ extend<T> Array<T> {
             case _ => ()
         }
     }
-
-    // the value range of the parameter: 0 <= i1 < i2 < i3 <= array.size - 1
-    // Ordering.LT/EQ: a <= b <= c
-    // Ordering.GT   : a >= b >= c
     func compareSwap3(i1: Int64, i2: Int64, i3: Int64, comparator: (T, T) -> Ordering) {
         var a: T = this[i1]
         var b: T = this[i2]
@@ -1626,8 +1510,6 @@ extend<T> Array<T> {
         }
         return res * 2
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func insertionSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         var i: Int64 = begin + 1
@@ -1646,16 +1528,11 @@ extend<T> Array<T> {
             i++
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
-    // end - begin >= 1
     @OverflowWrapping
     func getSequenceLength(begin: Int64, end: Int64, temp: TempArray<T>, comparator: (T, T) -> Ordering): Int64 {
         var b: Int64 = begin
         var equalNum: Int64 = 1
         var isAscending: Bool = true
-
-        // Obtains the length of a sequence with the same value.
         match (comparator(this[b], this[b + 1])) {
             case LT => isAscending = true
             case GT => isAscending = false
@@ -1709,11 +1586,9 @@ extend<T> Array<T> {
                     case _ => break
                 }
             }
-
-            // reverse sequence
             if (equalNum == 1) {
                 var i = begin
-                var j = begin + n // begin + equalNum + n - 1
+                var j = begin + n
                 while (i < j) {
                     this.swap(i, j)
                     i++
@@ -1775,9 +1650,6 @@ extend<T> Array<T> {
             return equalNum + n
         }
     }
-
-    // the original relative positions of equal elements are not guaranteed.
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func binaryInsertionSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering, n: Int64) {
         var i = begin + n
@@ -1800,14 +1672,11 @@ extend<T> Array<T> {
             i++
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func heapify(begin: Int64, end: Int64, root: Int64, comparator: (T, T) -> Ordering): Unit {
         var fi: Int64 = root
-        var si = (fi << 1) + 1 // fi * 2 + 1
+        var si = (fi << 1) + 1
         while (begin + si <= end) {
-            // si or (si + 1) is taken only once
             let s = if (begin + si + 1 <= end) {
                 let s1 = this[begin + si]
                 let s2 = this[begin + si + 1]
@@ -1831,30 +1700,21 @@ extend<T> Array<T> {
             si = (fi << 1) + 1
         }
     }
-
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     func heapSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         let len = end - begin + 1
         var i = (len >> 1) - 1
-
-        // build max or min heap
         while (i >= 0) {
             this.heapify(begin, end, i, comparator)
             i--
         }
         i = end
         while (i > begin) {
-            // swap top and bottom data
             this.swap(begin, i)
-
-            // reset max or min heap
             this.heapify(begin, i - 1, 0, comparator)
             i--
         }
     }
-
-    // The queried position is just greater than and equal the previous value.
     @OverflowWrapping
     func binaryQueryGT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering): Int64 {
         var l = start
@@ -1868,8 +1728,6 @@ extend<T> Array<T> {
         }
         return l
     }
-
-    // The queried position is just less than and equal the next value.
     @OverflowWrapping
     func binaryQueryLT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering): Int64 {
         var l = start
@@ -1883,8 +1741,6 @@ extend<T> Array<T> {
         }
         return l
     }
-
-    // The queried position is just greater than and equal the previous value.
     @OverflowWrapping
     func queryGT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering, r: Bool) {
         var gallopMax = len
@@ -1937,8 +1793,6 @@ extend<T> Array<T> {
             return this.binaryQueryGT(point, start + lastOfs, ofs - lastOfs, comparator)
         }
     }
-
-    // The queried position is just less than and equal the next value.
     @OverflowWrapping
     func queryLT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering, r: Bool) {
         var gallopMax = len

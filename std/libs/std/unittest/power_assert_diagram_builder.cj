@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -28,9 +28,7 @@ class PowerAssertValue <: Serializable<PowerAssertValue> {
         }
     }
 
-    /**
-     * Expression position range.
-     */
+
     prop range: Range<Int64> {
         get() {
             position..(position + expression.size)
@@ -51,9 +49,7 @@ class PowerAssertValue <: Serializable<PowerAssertValue> {
         }
     }
 
-    /**
-     * Returns the safe position for the next value after this expression.
-     */
+
     prop safeValueNextPosition: Int64 {
         get() {
             if (value.size > expression.size) {
@@ -140,11 +136,10 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
     }
 
     func addValue(newValue: PowerAssertValue) {
-        // Try to put the new recorded value into the existing line, there as space enough.
 
         let minLine = match (getValueRowByNesting(newValue)) {
             case Some(i) => i
-            case _ => diagram.size // Skip the loop before and append the new line.
+            case _ => diagram.size
         }
 
         for (lineIdx in minLine..diagram.size) {
@@ -159,10 +154,8 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         diagram.add(ArrayList([newValue]))
     }
 
-    /**
-     * Returns suitable index for the `value` in the `line` of the diagram.
-     * May return `None` if there is no space for the `value` in the `line`.
-     */
+
+
     private func getSuitableIndex(value: PowerAssertValue, line: ArrayList<PowerAssertValue>): ?Int64 {
         var nextPosFromLeft = Int64.Min
         for (i in 0..line.size) {
@@ -175,8 +168,8 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
             let valueFitsRight = value.safeValueNextPosition <= valueRight.valuePosition
 
             match {
-                case !exprFitsLeft || !valueFitsLeft => return None // Not enough space from left.
-                case exprFitsRight && !valueFitsRight => return None // Not enough space for the value from right.
+                case !exprFitsLeft || !valueFitsLeft => return None
+                case exprFitsRight && !valueFitsRight => return None
                 case exprFitsRight => return i
                 case _ => ()
             }
@@ -187,17 +180,15 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         let exprFitsLeft = nextPosFromLeft <= value.position
         let valueFitsLeft = nextPosFromLeft <= value.valuePosition
         if (exprFitsLeft && valueFitsLeft) {
-            return line.size // Rightmost expr with enough space for the value from left.
+            return line.size
         }
 
         return None
     }
 
-    /**
-     * Returns minimal available row index into which [value] should be inserted considering expressions nesting levels:
-     * * In diagram parent node expression is printed below its children nodes.
-     * * Return None if there is no suitable index in [this.diagram]
-     */
+
+
+
     private func getValueRowByNesting(value: PowerAssertValue): ?Int64 {
         func nextLine(i: Int64): ?Int64 {
             if (i + 1 < diagram.size) {
@@ -324,26 +315,20 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         }
     }
 
-    /**
-     * Note: [Range.step] shoud not be considered here due to expressions ranges are always with step 1.
-     */
+
     private func isPosInRange(position: Int64, range: Range<Int64>) {
         if (position < range.start) { return false }
         return position <= lastPos(range)
     }
 
-    /**
-     * Returns last element in the range inclusive.
-     * Note: it's considering that [range] always has step 1 and it's not empty.
-     */
+
+
     private func lastPos(range: Range<Int64>): Int64 {
         if (range.isClosed) { range.end } else { range.end - 1 }
     }
 
-    /**
-     * Merges intercecting [positions] ranges and returns sorted non-intercecting array of position ranges.
-     * Note: it's considered that both accepting and returning ranges are 1-stepped and not empty.
-     */
+
+
     private func merge(positions: Iterable<Range<Int64>>): Array<Range<Int64>> {
         let posArray = positions |> collectArray
         posArray.sortBy { l, r => l.start.compare(r.start) }
@@ -416,8 +401,6 @@ public class PowerAssertDiagramBuilder {
     public init(expression: String) {
         this.expression = expression
     }
-
-    // Below are shortcuts to reduce the size of generated code by power assertion macro
 
     public func r<T>(value: T, exprAsText: String, position: Int64): T {
         if (value is ToString) {

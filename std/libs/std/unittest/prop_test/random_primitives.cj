@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.prop_test
 
 import std.random.Random
@@ -189,12 +189,10 @@ private let UINT64_TABLE = WeightTable<(Random) -> UInt64>(
     (60, { random: Random => random.nextUInt64() } )
 )
 
-/* Generate next equidistant float with normal distribution of length of integer part
- * and normal distribution of denominator of fractional part.
- *
- * Such value represent rational number that can be easily imagine or visualized
- * by person, these numbers are more common in everyday life.
- */
+
+
+
+
 func nextImaginableFloat64(random: Random): Float64 {
     let INTEGER_STRETCHING = 3.0
     var nextGaussian = random.nextGaussianFloat64(mean: 0.0, sigma: INTEGER_STRETCHING)
@@ -213,15 +211,9 @@ func nextImaginableFloat64(random: Random): Float64 {
 }
 
 private func nextDenseFloat16(random: Random): Float16 {
-    // random 10 bit number (random mantissa)
     let inRange = random.nextUInt16() >> (16 - 10)
     let rangeMax = 1 << 10
-
-    // equidistant in 1..2
-    // range 1..2 represent values with exp=0
     let randomInRange = (Float16(inRange) / Float16(rangeMax)) + 1.0
-
-    // random exponent in range [-15..15]
     let nextPower = Float64(Int64(random.nextUInt64() % 31) - Int64(15))
 
     var res = randomInRange * Float16(2.0 ** nextPower)
@@ -248,15 +240,9 @@ private let FLOAT16_TABLE = WeightTable<(Random) -> Float16>(
 )
 
 private func nextDenseFloat32(random: Random): Float32 {
-    // random 23 bit number (random mantissa)
     let inRange = random.nextUInt16() >> (32 - 23)
     let rangeMax = 1 << 23
-
-    // equidistant in 1..2
-    // range 1..2 represent values with exp=0
     let randomInRange = (Float32(inRange) / Float32(rangeMax)) + 1.0
-
-    // random exponent in range [-2^(8 - 1) -1..2^(8 - 1) -1]
     let nextPower = Float64(Int64(random.nextUInt64() % 255) - Int64(127))
 
     var res = randomInRange * Float32(2.0 ** nextPower)
@@ -281,18 +267,10 @@ private let FLOAT32_TABLE = WeightTable<(Random) -> Float32>(
     (40, nextDenseFloat32),
     (33, { random: Random => Float32(nextImaginableFloat64(random)) })
 )
-
-// generate random float number with dense distribution
 private func nextDenseFloat64(random: Random): Float64 {
-    // random 52 bit number (random mantissa)
     let inRange = random.nextUInt16() >> (64 - 52)
     let rangeMax = 1 << 52
-
-    // equidistant in 1..2
-    // range 1..2 represent values with exp=0
     let randomInRange = (Float64(inRange) / Float64(rangeMax)) + 1.0
-
-    // random exponent in range [-2^(11 - 1) -1..2^(11 - 1) -1]
     let nextPower = Float64(Int64(random.nextUInt64() % 2047) - Int64(1023))
 
     var res = randomInRange * Float64(2.0 ** nextPower)

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.resolve
 
 import std.deriving.api.*
@@ -33,7 +33,7 @@ func resolveFields(body: Body): Array<(VarDecl, ?TypeNode)> {
 }
 
 func blockType(block: Block, scope: Scope): TypeNode {
-    let blockScope = Scope(scope) // not func scope
+    let blockScope = Scope(scope)
     flow(block.nodes, blockScope)
     return blockScope.scopeType
 }

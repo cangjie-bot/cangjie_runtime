@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -13,14 +13,12 @@ import std.collection.*
 private let CTX_CLASS_NAME: Token = Token(IDENTIFIER, "AssertionCtx")
 let MACRO_CTX_VAR_NAME: Token = Token(IDENTIFIER, "__ctx_access_variable_name")
 
-/**
- *
- * The macro only add inner macro @Attribute to outer macro Test.
- * It can use for-in expressionn to make Multiple Invocations.
- * The macro can be only defined at func.
- * @since 0.17.3
- * @see Test
- */
+
+
+
+
+
+
 public macro Expect(input: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return assertionCallExpr(input, true, true)
@@ -34,8 +32,6 @@ public macro Assert(input: Tokens): Tokens {
     }
     return assertionCallExpr(input, false, false)
 }
-
-// Should @PowerAssert be befriend with custom assertions in similar way?
 private func assertionCallExpr(input: Tokens, isExpect: Bool, insideCustom: Bool): Tokens {
     let (macroName, name) = if (isExpect) { ("@Expect", "expectEqual") } else { ("@Assert", "assertEqual") }
     let optParentCtx = if (insideCustom) { quote(optParentCtx: $MACRO_CTX_VAR_NAME) } else { quote() }
@@ -87,11 +83,9 @@ public macro Assert(assertion: Tokens, body: Tokens): Tokens {
     return customAssertionCallExpr(assertion, body, false, false)
 }
 
-/**
- * This macro marks top-level function which is used as custom assertion in @Assert and @Expect macroses
- *
- * FIRST function argument should be of type AssertionCtx
- */
+
+
+
 public macro CustomAssertion(body: Tokens) {
     return topLevelMacroDriver(ASSERTION_MACRO, body, Tokens(), { it => insideParentContext(it.macroIdentifier) })
 }

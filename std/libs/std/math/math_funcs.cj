@@ -1,96 +1,85 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a library for math class.
- */
+
+
+
+
+
+
+
+
 
 package std.math
 
-/**
- * Returns the cube root of the value.
- * The cube root of a positive value is the positive number
- * of the cube root of the size of the value.
- * That is, the cube root of a negative value is the negative number
- * of the cube root of the size of the value.
- * special cases that arise:
- * If the argument is NaN, the result is NaN.
- * If the argument is infinite, the result is infinity.
- *
- * @param x some value.
- * @return the cube root of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func cbrt(x: Float64): Float64 {
     unsafe { return CJ_MATH_Cbrt(x) }
 }
 
-/**
- * Returns the cube root of the value.
- * The cube root of a positive value is the positive number
- * of the cube root of the size of the value.
- * That is, the cube root of a negative value is the negative number
- * of the cube root of the size of the value.
- * special cases that arise:
- * If the argument is NaN, the result is NaN.
- * If the argument is infinite, the result is infinity.
- *
- * @param x some value.
- * @return the cube root of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func cbrt(x: Float32): Float32 {
     unsafe { return CJ_MATH_Cbrtf(x) }
 }
 
-/**
- * Returns the cube root of the value.
- * The cube root of a positive value is the positive number
- * of the cube root of the size of the value.
- * That is, the cube root of a negative value is the negative number
- * of the cube root of the size of the value.
- * special cases that arise:
- * If the argument is NaN, the result is NaN.
- * If the argument is infinite, the result is infinity.
- *
- * @param x some value.
- * @return the cube root of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func cbrt(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Cbrt(Float64(x))) }
 }
 
-/**
- * Returns the x logarithm of the base of a value.
- * special cases that arise:
- * If the base is 2.
- * @see func log2(x)
- *
- * If the base is 10.
- * @see func log10(x)
- *
- * If the base is e.
- * @see func log(x)
- *
- * @param x some value.
- * @param base base value.
- * @return \f$ \log_{base} {x} \f$
- *
- * @throws IllegalArgumentException if the argument `x` or `base` is not positive, or the `base` is 1.0
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func logBase(x: Float32, base: Float32): Float32 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -98,26 +87,24 @@ public func logBase(x: Float32, base: Float32): Float32 {
     unsafe { return log(x) / log(base) }
 }
 
-/**
- * Returns the x logarithm of the base of a value.
- * special cases that arise:
- * If the base is 2.
- * @see func log2(x)
- *
- * If the base is 10.
- * @see func log10(x)
- *
- * If the base is e.
- * @see func log(x)
- *
- * @param x some value.
- * @param base base value.
- * @return \f$ \log_{base} {x} \f$
- *
- * @throws IllegalArgumentException if the argument `x` or `base` is not positive, or the `base` is 1.0
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func logBase(x: Float64, base: Float64): Float64 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -125,26 +112,24 @@ public func logBase(x: Float64, base: Float64): Float64 {
     return unsafe { log(x) / log(base) }
 }
 
-/**
- * Returns the x logarithm of the base of a value.
- * special cases that arise:
- * If the base is 2.
- * @see func log2(x)
- *
- * If the base is 10.
- * @see func log10(x)
- *
- * If the base is e.
- * @see func log(x)
- *
- * @param x some value.
- * @param base base value.
- * @return \f$ \log_{base} {x} \f$
- *
- * @throws IllegalArgumentException if the argument `x` or `base` is not positive, or the `base` is 1.0
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func logBase(x: Float16, base: Float16): Float16 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -152,129 +137,107 @@ public func logBase(x: Float16, base: Float16): Float16 {
     unsafe { return log(x) / log(base) }
 }
 
-/**
- * Returns the gamma function value of @p x.
- *
- * @param x some value.
- * @return the gamma function value of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func gamma(x: Float64): Float64 {
     unsafe { return CJ_MATH_Tgamma(x) }
 }
 
-/**
- * Returns the gamma function value of @p x.
- *
- * @param x some value.
- * @return the gamma function value of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func gamma(x: Float32): Float32 {
     unsafe { return CJ_MATH_Tgammaf(x) }
 }
 
-/**
- * Returns the gamma function value of @p x.
- *
- * @param x some value.
- * @return the gamma function value of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func gamma(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Tgamma(Float64(x))) }
 }
 
-/**
- * Returns the Gauss error function of @p x.
- * The related definition is: \f$ {erf} x={\frac {2}{\sqrt {\pi }}}\int _{0}^{x}e^{-t^{2}}\,dt \f$
- *
- * @param x some value.
- * @return the Gauss error function of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
 public func erf(x: Float64): Float64 {
     unsafe { return CJ_MATH_Erf(x) }
 }
 
-/**
- * Returns the Gauss error function of @p x.
- * The related definition is: \f$ {erf} x={\frac {2}{\sqrt {\pi }}}\int _{0}^{x}e^{-t^{2}}\,dt \f$
- *
- * @param x some value.
- * @return the Gauss error function of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
 public func erf(x: Float32): Float32 {
     unsafe { return CJ_MATH_Erff(x) }
 }
 
-/**
- * Returns the Gauss error function of @p x.
- * The related definition is: \f$ {erf} x={\frac {2}{\sqrt {\pi }}}\int _{0}^{x}e^{-t^{2}}\,dt \f$
- *
- * @param x some value.
- * @return the Gauss error function of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
 public func erf(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Erf(Float64(x))) }
 }
 
-/********************* Trigonometric functions *********************/
 
-/**
- * Returns the trigonometric tangent of an angle.
- *
- * @param x an angle, in radians.
- * @return the tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
 public func tan(x: Float64): Float64 {
     unsafe { return CJ_MATH_Tan(x) }
 }
 
-/**
- * Returns the trigonometric tangent of an angle.
- *
- * @param x an angle, in radians.
- * @return the tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func tan(x: Float32): Float32 {
     unsafe { return CJ_MATH_Tanf(x) }
 }
 
-/**
- * Returns the trigonometric tangent of an angle.
- *
- * @param x an angle, in radians.
- * @return the tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func tan(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Tan(Float64(x))) }
 }
 
-/**
- * Returns the arc sine of a value, the returned angle is in the range -π/2 through π/2.
- *
- * @param x some value.
- * @return the arc sine of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is larger than 1.0 or less than -1.0
- */
+
+
+
+
+
+
+
+
 public func asin(x: Float64): Float64 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -282,16 +245,14 @@ public func asin(x: Float64): Float64 {
     unsafe { return CJ_MATH_Asin(x) }
 }
 
-/**
- * Returns the arc sine of a value, the returned angle is in the range -π/2 through π/2.
- *
- * @param x some value.
- * @return the arc sine of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is larger than 1.0 or less than -1.0
- */
+
+
+
+
+
+
+
+
 public func asin(x: Float32): Float32 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -299,16 +260,14 @@ public func asin(x: Float32): Float32 {
     unsafe { return CJ_MATH_Asinf(x) }
 }
 
-/**
- * Returns the arc sine of a value, the returned angle is in the range -π/2 through π/2.
- *
- * @param x some value.
- * @return the arc sine of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is larger than 1.0 or less than -1.0
- */
+
+
+
+
+
+
+
+
 public func asin(x: Float16): Float16 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -316,16 +275,14 @@ public func asin(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Asin(Float64(x))) }
 }
 
-/**
- * Returns the arc cosine of a value, the returned angle is in the range 0.0 through π.
- *
- * @param x some value.
- * @return the arc cosine of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is larger than 1.0 or less than -1.0
- */
+
+
+
+
+
+
+
+
 public func acos(x: Float64): Float64 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -333,16 +290,14 @@ public func acos(x: Float64): Float64 {
     unsafe { return CJ_MATH_Acos(x) }
 }
 
-/**
- * Returns the arc cosine of a value, the returned angle is in the range 0.0 through π.
- *
- * @param x some value.
- * @return the arc cosine of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is larger than 1.0 or less than -1.0
- */
+
+
+
+
+
+
+
+
 public func acos(x: Float32): Float32 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -350,16 +305,14 @@ public func acos(x: Float32): Float32 {
     unsafe { return CJ_MATH_Acosf(x) }
 }
 
-/**
- * Returns the arc cosine of a value; the returned angle is in the range 0.
- *
- * @param Float16 of x.
- * @return Float16 type of number.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is larger than 1.0 or less than -1.0
- */
+
+
+
+
+
+
+
+
 public func acos(x: Float16): Float16 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -367,198 +320,164 @@ public func acos(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Acos(Float64(x))) }
 }
 
-/**
- * Returns the arc tangent of a value, the returned angle is in the range -π/2 through π/2.
- *
- * @param x some value.
- * @return the arc tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func atan(x: Float64): Float64 {
     unsafe { return CJ_MATH_Atan(x) }
 }
 
-/**
- * Returns the arc tangent of a value, the returned angle is in the range -π/2 through π/2.
- *
- * @param x some value.
- * @return the arc tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func atan(x: Float32): Float32 {
     unsafe { return CJ_MATH_Atanf(x) }
 }
 
-/**
- * Returns the arc tangent of a value, the returned angle is in the range -π/2 through π/2.
- *
- * @param x some value.
- * @return the arc tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func atan(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Atan(Float64(x))) }
 }
 
-/********************* Hiberbolic functions *********************/
 
-/**
- * Returns the hyperbolic sine of a float64 value.
- *
- * @param x some value.
- * @return the hyperbolic sine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
 public func sinh(x: Float64): Float64 {
     unsafe { return CJ_MATH_Sinh(x) }
 }
 
-/**
- * Returns the hyperbolic sine of a float32 value.
- *
- * @param x some value.
- * @return the hyperbolic sine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func sinh(x: Float32): Float32 {
     unsafe { return CJ_MATH_Sinhf(x) }
 }
 
-/**
- * Returns the hyperbolic sine of a float16 value.
- *
- * @param x some value.
- * @return the hyperbolic sine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func sinh(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Sinh(Float64(x))) }
 }
 
-/**
- * Returns the hyperbolic cosine of a float64 value.
- *
- * @param x some value.
- * @return the hyperbolic cosine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func cosh(x: Float64): Float64 {
     unsafe { return CJ_MATH_Cosh(x) }
 }
 
-/**
- * Returns the hyperbolic cosine of a float32 value.
- *
- * @param x some value.
- * @return the hyperbolic cosine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func cosh(x: Float32): Float32 {
     unsafe { return Float32(CJ_MATH_Cosh(Float64(x))) }
 }
 
-/**
- * Returns the hyperbolic cosine of a float16 value.
- *
- * @param x some value.
- * @return the hyperbolic cosine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func cosh(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Cosh(Float64(x))) }
 }
 
-/**
- * Returns the hyperbolic tangent of a float64 value.
- *
- * @param x some value.
- * @return the hyperbolic tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func tanh(x: Float64): Float64 {
     unsafe { return CJ_MATH_Tanh(x) }
 }
 
-/**
- * Returns the hyperbolic tangent of a float32 value.
- *
- * @param x some value.
- * @return the hyperbolic tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func tanh(x: Float32): Float32 {
     unsafe { return CJ_MATH_Tanhf(x) }
 }
 
-/**
- * Returns the hyperbolic tangent of a float16 value.
- *
- * @param x some value.
- * @return the hyperbolic tangent of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func tanh(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Tanh(Float64(x))) }
 }
 
-/**
- * Returns the inverse hyperbolic sine of a float64 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic sine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func asinh(x: Float64): Float64 {
     unsafe { return CJ_MATH_Asinh(x) }
 }
 
-/**
- * Returns the inverse hyperbolic sine of a float32 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic sine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func asinh(x: Float32): Float32 {
     unsafe { return CJ_MATH_Asinhf(x) }
 }
 
-/**
- * Returns the inverse hyperbolic sine of a float16 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic sine of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func asinh(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Asinh(Float64(x))) }
 }
 
-/**
- * Returns the inverse hyperbolic cosine of a float64 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic cosine of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is less than 1.0
- */
+
+
+
+
+
+
+
+
 public func acosh(x: Float64): Float64 {
     if (x < 1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -566,16 +485,14 @@ public func acosh(x: Float64): Float64 {
     unsafe { return CJ_MATH_Acosh(x) }
 }
 
-/**
- * Returns the inverse hyperbolic cosine of a float32 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic cosine of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is less than 1.0
- */
+
+
+
+
+
+
+
+
 public func acosh(x: Float32): Float32 {
     if (x < 1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -583,16 +500,14 @@ public func acosh(x: Float32): Float32 {
     unsafe { return CJ_MATH_Acoshf(x) }
 }
 
-/**
- * Returns the inverse hyperbolic cosine of a float16 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic cosine of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is less than 1.0
- */
+
+
+
+
+
+
+
+
 public func acosh(x: Float16): Float16 {
     if (x < 1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -600,16 +515,14 @@ public func acosh(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Acosh(Float64(x))) }
 }
 
-/**
- * Returns the inverse hyperbolic tangent of a float64 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic tangent of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is not larger than -1.0 and less than 1.0
- */
+
+
+
+
+
+
+
+
 public func atanh(x: Float64): Float64 {
     if (x >= 1.0 || x <= -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -617,16 +530,14 @@ public func atanh(x: Float64): Float64 {
     unsafe { return CJ_MATH_Atanh(x) }
 }
 
-/**
- * Returns the inverse hyperbolic tangent of a float32 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic tangent of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is not larger than -1.0 and less than 1.0
- */
+
+
+
+
+
+
+
+
 public func atanh(x: Float32): Float32 {
     if (x >= 1.0 || x <= -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -634,16 +545,14 @@ public func atanh(x: Float32): Float32 {
     unsafe { return CJ_MATH_Atanhf(x) }
 }
 
-/**
- * Returns the inverse hyperbolic tangent of a float16 value.
- *
- * @param x some value.
- * @return the inverse hyperbolic tangent of @p x.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `x` is not in range (-1.0, 1.0)
- */
+
+
+
+
+
+
+
+
 public func atanh(x: Float16): Float16 {
     if (x >= 1.0 || x <= -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -651,13 +560,8 @@ public func atanh(x: Float16): Float16 {
     unsafe { return Float16(CJ_MATH_Atanh(Float64(x))) }
 }
 
-/**
- * bit manipulation
- */
 
-/**
- * Number of leading zero bits
- */
+
 var uint8len: Array<Int64> = [0x00, 0x01, 0x02, 0x02, 0x03, 0x03, 0x03, 0x03, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04,
     0x04, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x06, 0x06,
     0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06,
@@ -673,9 +577,7 @@ var uint8len: Array<Int64> = [0x00, 0x01, 0x02, 0x02, 0x03, 0x03, 0x03, 0x03, 0x
     0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
     0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08]
 
-/**
- * Poptab for Int8-of array
- */
+
 var poptab: Array<Int64> = [0x00, 0x01, 0x01, 0x02, 0x01, 0x02, 0x02, 0x03, 0x01, 0x02, 0x02, 0x03, 0x02, 0x03, 0x03,
     0x04, 0x01, 0x02, 0x02, 0x03, 0x02, 0x03, 0x03, 0x04, 0x02, 0x03, 0x03, 0x04, 0x03, 0x04, 0x04, 0x05, 0x01, 0x02,
     0x02, 0x03, 0x02, 0x03, 0x03, 0x04, 0x02, 0x03, 0x03, 0x04, 0x03, 0x04, 0x04, 0x05, 0x02, 0x03, 0x03, 0x04, 0x03,
@@ -691,9 +593,7 @@ var poptab: Array<Int64> = [0x00, 0x01, 0x01, 0x02, 0x01, 0x02, 0x02, 0x03, 0x01
     0x03, 0x04, 0x04, 0x05, 0x04, 0x05, 0x05, 0x06, 0x04, 0x05, 0x05, 0x06, 0x05, 0x06, 0x06, 0x07, 0x04, 0x05, 0x05,
     0x06, 0x05, 0x06, 0x06, 0x07, 0x05, 0x06, 0x06, 0x07, 0x06, 0x07, 0x07, 0x08]
 
-/**
- * Revtab for Int8 of array
- */
+
 var revtab: Array<UInt8> = [0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0, 0x10, 0x90, 0x50, 0xd0, 0x30, 0xb0, 0x70,
     0xf0, 0x08, 0x88, 0x48, 0xc8, 0x28, 0xa8, 0x68, 0xe8, 0x18, 0x98, 0x58, 0xd8, 0x38, 0xb8, 0x78, 0xf8, 0x04, 0x84,
     0x44, 0xc4, 0x24, 0xa4, 0x64, 0xe4, 0x14, 0x94, 0x54, 0xd4, 0x34, 0xb4, 0x74, 0xf4, 0x0c, 0x8c, 0x4c, 0xcc, 0x2c,
@@ -708,14 +608,13 @@ var revtab: Array<UInt8> = [0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0, 0x10
     0xb3, 0x73, 0xf3, 0x0b, 0x8b, 0x4b, 0xcb, 0x2b, 0xab, 0x6b, 0xeb, 0x1b, 0x9b, 0x5b, 0xdb, 0x3b, 0xbb, 0x7b, 0xfb,
     0x07, 0x87, 0x47, 0xc7, 0x27, 0xa7, 0x67, 0xe7, 0x17, 0x97, 0x57, 0xd7, 0x37, 0xb7, 0x77, 0xf7, 0x0f, 0x8f, 0x4f,
     0xcf, 0x2f, 0xaf, 0x6f, 0xef, 0x1f, 0x9f, 0x5f, 0xdf, 0x3f, 0xbf, 0x7f, 0xff]
-/**
- * Number of zero bits returned before the most significant (leftmost) bit.
- *
- * @param xx some value.
- * @return number of zero bits before the most significant bit of @p xx.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
 public func leadingZeros(x: UInt64): Int64 {
     var n: Int64 = 0
     var xx = x
@@ -734,14 +633,12 @@ public func leadingZeros(x: UInt64): Int64 {
     return 64 - n - uint8len[Int64(xx)]
 }
 
-/**
- * Number of zero bits returned before the most significant (leftmost) bit.
- *
- * @param xx some value.
- * @return number of zero bits before the most significant bit of @p xx.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func leadingZeros(x: UInt32): Int64 {
     var n: Int64 = 0
     var xx = x
@@ -756,14 +653,12 @@ public func leadingZeros(x: UInt32): Int64 {
     return 32 - n - uint8len[Int64(xx)]
 }
 
-/**
- * Number of zero bits returned before the most significant (leftmost) bit.
- *
- * @param xx some value.
- * @return number of zero bits before the most significant bit of @p xx.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func leadingZeros(x: UInt16): Int64 {
     var n: Int64 = 0
     var xx = x
@@ -774,26 +669,22 @@ public func leadingZeros(x: UInt16): Int64 {
     return 16 - n - uint8len[Int64(xx)]
 }
 
-/**
- * Number of zero bits returned before the most significant (leftmost) bit.
- *
- * @param x some value.
- * @return number of zero bits before the most significant bit of @p xx.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func leadingZeros(x: UInt8): Int64 {
     return 8 - uint8len[Int64(x)]
 }
 
-/**
- * Number of zero bits returned before the most significant (leftmost) bit.
- *
- * @param x some value.
- * @return number of zero bits before the most significant bit of @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func leadingZeros(x: Int8): Int64 {
     return if (x >= 0) {
@@ -805,14 +696,12 @@ public func leadingZeros(x: Int8): Int64 {
     }
 }
 
-/**
- * Number of zero bits returned before the most significant (leftmost) bit.
- *
- * @param x some value.
- * @return number of zero bits before the most significant bit of @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func leadingZeros(x: Int16): Int64 {
     return if (x >= 0) {
@@ -824,14 +713,12 @@ public func leadingZeros(x: Int16): Int64 {
     }
 }
 
-/**
- * Number of zero bits returned before the most significant (leftmost) bit.
- *
- * @param x some value.
- * @return number of zero bits before the most significant bit of @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func leadingZeros(x: Int32): Int64 {
     return if (x >= 0) {
@@ -843,14 +730,12 @@ public func leadingZeros(x: Int32): Int64 {
     }
 }
 
-/**
- * Number of zero bits returned before the most significant (leftmost) bit.
- *
- * @param x some value.
- * @return number of zero bits before the most significant bit of @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func leadingZeros(x: Int64): Int64 {
     return if (x >= 0) {
@@ -862,14 +747,12 @@ public func leadingZeros(x: Int64): Int64 {
     }
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func trailingZeros(x: UInt64): Int64 {
     if (x == 0) {
         return 64
@@ -885,14 +768,12 @@ public func trailingZeros(x: UInt64): Int64 {
     return count
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func trailingZeros(x: UInt32): Int64 {
     if (x == 0) {
         return 32
@@ -901,14 +782,12 @@ public func trailingZeros(x: UInt32): Int64 {
     return trailingZeros(UInt64(x))
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func trailingZeros(x: UInt16): Int64 {
     if (x == 0) {
         return 16
@@ -917,14 +796,12 @@ public func trailingZeros(x: UInt16): Int64 {
     return trailingZeros(UInt64(x))
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func trailingZeros(x: UInt8): Int64 {
     if (x == 0) {
         return 8
@@ -933,14 +810,12 @@ public func trailingZeros(x: UInt8): Int64 {
     return trailingZeros(UInt64(x))
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func trailingZeros(x: Int8): Int64 {
     return if (x >= 0) {
@@ -952,14 +827,12 @@ public func trailingZeros(x: Int8): Int64 {
     }
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func trailingZeros(x: Int16): Int64 {
     return if (x >= 0) {
@@ -971,14 +844,12 @@ public func trailingZeros(x: Int16): Int64 {
     }
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func trailingZeros(x: Int32): Int64 {
     return if (x >= 0) {
@@ -990,14 +861,12 @@ public func trailingZeros(x: Int32): Int64 {
     }
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func trailingZeros(x: Int64): Int64 {
     return if (x >= 0) {
@@ -1009,62 +878,52 @@ public func trailingZeros(x: Int64): Int64 {
     }
 }
 
-/**
- * Calculate the number of one.
- *
- * @param x some value.
- * @return the number of one in @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func countOnes(x: UInt64): Int64 {
     return countOnes(UInt32(x >> 32)) + countOnes(UInt32(x & 0xFFFFFFFF))
 }
 
-/**
- * Calculate the number of one.
- *
- * @param x some value.
- * @return the number of one in @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func countOnes(x: UInt32): Int64 {
     return countOnes(UInt16(x >> 16)) + countOnes(UInt16(x & 0xFFFF))
 }
 
-/**
- * Calculate the number of one.
- *
- * @param x some value.
- * @return the number of one in @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func countOnes(x: UInt16): Int64 {
     return poptab[Int64(x >> 8)] + poptab[Int64(x & 0xFF)]
 }
 
-/**
- * Calculate the number of one.
- *
- * @param x some value.
- * @return the number of one in @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func countOnes(x: UInt8): Int64 {
     return poptab[Int64(x)]
 }
 
-/**
- * Calculate the number of one.
- *
- * @param x some value.
- * @return the number of one in @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func countOnes(x: Int8): Int64 {
     return if (x >= 0) {
@@ -1076,14 +935,12 @@ public func countOnes(x: Int8): Int64 {
     }
 }
 
-/**
- * Calculate the number of one.
- *
- * @param x some value.
- * @return the number of one in @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func countOnes(x: Int16): Int64 {
     return if (x >= 0) {
@@ -1095,14 +952,12 @@ public func countOnes(x: Int16): Int64 {
     }
 }
 
-/**
- * Calculate the number of one.
- *
- * @param x some value.
- * @return the number of one in @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func countOnes(x: Int32): Int64 {
     return if (x >= 0) {
@@ -1114,14 +969,12 @@ public func countOnes(x: Int32): Int64 {
     }
 }
 
-/**
- * Calculate the number of one.
- *
- * @param x some value.
- * @return the number of one in @p x.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 @OverflowWrapping
 public func countOnes(x: Int64): Int64 {
     return if (x >= 0) {
@@ -1173,64 +1026,54 @@ public func countOne(x: UInt64): Int8 {
     Int8(countOnes(x))
 }
 
-/**
- * Reverse bit pattern.
- *
- * @param x some value.
- * @return reverse bits of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func reverse(x: UInt64): UInt64 {
     return UInt64(reverse(UInt32(x & 0xFFFFFFFF))) << UInt64(32) | UInt64(reverse(UInt32(x >> UInt64(32))))
 }
 
-/**
- * Reverse bit pattern.
- *
- * @param x some value.
- * @return reverse bits of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func reverse(x: UInt32): UInt32 {
     return UInt32(reverse(UInt16(x & 0xFFFF))) << UInt32(16) | UInt32(reverse(UInt16(x >> UInt32(16))))
 }
 
-/**
- * Reverse bit pattern.
- *
- * @param x some value.
- * @return reverse bits of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func reverse(x: UInt16): UInt16 {
     return (UInt16(revtab[Int64(x & 0xFF)]) << UInt16(8)) | UInt16(revtab[Int64(x >> UInt16(8))])
 }
 
-/**
- * Reverse bit pattern.
- *
- * @param x some value.
- * @return reverse bits of @p x.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
 public func reverse(x: UInt8): UInt8 {
     return revtab[Int64(x)]
 }
 
-/**
- * Determine the absolute value of the Int8 type.
- *
- * @param x some value.
- * @return absolute value of @p x or None.
- *
- * @throws OverflowException if the argument `x` is the minimum value of Int8
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
 public func checkedAbs(x: Int8): Option<Int8> {
     return if (x == Int8.Min) {
         None
@@ -1239,16 +1082,14 @@ public func checkedAbs(x: Int8): Option<Int8> {
     }
 }
 
-/**
- * Determine the absolute value of the Int16 type.
- *
- * @param x some value.
- * @return absolute value of @p x or None.
- *
- * @throws OverflowException if the argument `x` is the min value of Int16
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
 public func checkedAbs(x: Int16): Option<Int16> {
     return if (x == Int16.Min) {
         None
@@ -1257,16 +1098,14 @@ public func checkedAbs(x: Int16): Option<Int16> {
     }
 }
 
-/**
- * Determine the absolute value of the Int32 type.
- *
- * @param x some value.
- * @return absolute value of @p x or None.
- *
- * @throws OverflowException if the argument `x` is the minimum value of Int32
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
 public func checkedAbs(x: Int32): Option<Int32> {
     return if (x == Int32.Min) {
         None
@@ -1275,16 +1114,14 @@ public func checkedAbs(x: Int32): Option<Int32> {
     }
 }
 
-/**
- * Determine the absolute value of the Int64 type.
- *
- * @param x some value.
- * @return absolute value of @p x or None.
- *
- * @throws OverflowException if the argument `x` is the minimum value of Int64
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
 public func checkedAbs(x: Int64): Option<Int64> {
     return if (x == Int64.Min) {
         None
@@ -1293,23 +1130,21 @@ public func checkedAbs(x: Int64): Option<Int64> {
     }
 }
 
-/**
- * Rotation UInt8 type calculation
- * If the length of the number of digits is exceeded,
- * 0 of the same number of digits is returned.
- * Returns the result of rotating the number of the first operand by one amount specified by the second operand.
- * The second operand must be an integer range in - precision to precision.
- * The absolute operand of seconds gives the number of positions to rotate.
- * If the second operand is positive, rotate to the left; Otherwise, rotate to the right.
- * The coefficient of the first operand is padded to the left with 0 to length precision,
- * if necessary. The sign and exponent of the first operand remain unchanged.
- *
- * @param num an UInt8 argument.
- * @param d number of Rotated Bits.
- * @return rotated Value.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func rotate(num: UInt8, d: Int8): UInt8 {
     let numberWidth: Int8 = 8
@@ -1320,23 +1155,21 @@ public func rotate(num: UInt8, d: Int8): UInt8 {
     return num << rotateMid | num >> (numberWidth - rotateMid)
 }
 
-/**
- * Rotation UInt16 type calculation
- * If the length of the number of digits is exceeded,
- * 0 of the same number of digits is returned.
- * Returns the result of rotating the number of the first operand by one amount specified by the second operand.
- * The second operand must be an integer range in - precision to precision.
- * The absolute operand of seconds gives the number of positions to rotate.
- * If the second operand is positive, rotate to the left; Otherwise, rotate to the right.
- * The coefficient of the first operand is padded to the left with 0 to length precision,
- * if necessary. The sign and exponent of the first operand remain unchanged.
- *
- * @param num an UInt16 argument.
- * @param d number of Rotated Bits.
- * @return rotated Value.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func rotate(num: UInt16, d: Int8): UInt16 {
     let numberWidth: Int16 = 16
@@ -1347,23 +1180,21 @@ public func rotate(num: UInt16, d: Int8): UInt16 {
     return num << rotateMid | num >> (numberWidth - rotateMid)
 }
 
-/**
- * Rotation UInt32 type calculation
- * If the length of the number of digits is exceeded,
- * 0 of the same number of digits is returned.
- * Returns the result of rotating the number of the first operand by one amount specified by the second operand.
- * The second operand must be an integer range in - precision to precision.
- * The absolute operand of seconds gives the number of positions to rotate.
- * If the second operand is positive, rotate to the left; Otherwise, rotate to the right.
- * The coefficient of the first operand is padded to the left with 0 to length precision,
- * if necessary. The sign and exponent of the first operand remain unchanged.
- *
- * @param num an UInt32 argument.
- * @param d number of Rotated Bits.
- * @return rotated Value.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func rotate(num: UInt32, d: Int8): UInt32 {
     let numberWidth: Int32 = 32
@@ -1374,23 +1205,21 @@ public func rotate(num: UInt32, d: Int8): UInt32 {
     return num << rotateMid | num >> (numberWidth - rotateMid)
 }
 
-/**
- * Rotation UInt64 type calculation
- * If the length of the number of digits is exceeded,
- * 0 of the same number of digits is returned.
- * Returns the result of rotating the number of the first operand by one amount specified by the second operand.
- * The second operand must be an integer range in - precision to precision.
- * The absolute operand of seconds gives the number of positions to rotate.
- * If the second operand is positive, rotate to the left; Otherwise, rotate to the right.
- * The coefficient of the first operand is padded to the left with 0 to length precision,
- * if necessary. The sign and exponent of the first operand remain unchanged.
- *
- * @param num an UInt64 argument.
- * @param d number of Rotated Bits.
- * @return rotated Value.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func rotate(num: UInt64, d: Int8): UInt64 {
     let numberWidth: Int64 = 64
@@ -1401,105 +1230,95 @@ public func rotate(num: UInt64, d: Int8): UInt64 {
     return num << rotateMid | num >> (numberWidth - rotateMid)
 }
 
-/**
- * Rotate Int8 type calculation.
- * Returns the result of rotating the number of the first operand by one amount specified by the second operand.
- * The second operand must be an integer range in - precision to precision.
- * The absolute operand of seconds gives the number of positions to rotate.
- * If the second operand is positive, rotate to the left; Otherwise, rotate to the right.
- * The coefficient of the first operand is padded to the left with 0 to length precision,
- * if necessary. The sign and exponent of the first operand remain unchanged.
- * Note: Binary negative numbers are taken as complements.
- *
- * @param num an Int8 argument.
- * @param d number of Rotated Bits.
- * @return rotated Value.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func rotate(num: Int8, d: Int8): Int8 {
     return Int8(rotate(UInt8(num), d))
 }
 
-/**
- * Rotate Int16 type calculation.
- * Returns the result of rotating the number of the first operand by one amount specified by the second operand.
- * The second operand must be an integer range in - precision to precision.
- * The absolute operand of seconds gives the number of positions to rotate.
- * If the second operand is positive, rotate to the left; Otherwise, rotate to the right.
- * The coefficient of the first operand is padded to the left with 0 to length precision,
- * if necessary. The sign and exponent of the first operand remain unchanged.
- * Note: Binary negative numbers are taken as complements.
- *
- * @param num an Int16 argument.
- * @param d number of Rotated Bits.
- * @return rotated Value.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func rotate(num: Int16, d: Int8): Int16 {
     return Int16(rotate(UInt16(num), d))
 }
 
-/**
- * Rotate Int32 type calculation.
- * Returns the result of rotating the number of the first operand by one amount specified by the second operand.
- * The second operand must be an integer range in - precision to precision.
- * The absolute operand of seconds gives the number of positions to rotate.
- * If the second operand is positive, rotate to the left; Otherwise, rotate to the right.
- * The coefficient of the first operand is padded to the left with 0 to length precision,
- * if necessary. The sign and exponent of the first operand remain unchanged.
- * Note: Binary negative numbers are taken as complements.
- *
- * @param num an Int32 argument.
- * @param d number of Rotated Bits.
- * @return rotated Value.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func rotate(num: Int32, d: Int8): Int32 {
     return Int32(rotate(UInt32(num), d))
 }
 
-/**
- * Rotate Int64 type calculation.
- * Returns the result of rotating the number of the first operand by one amount specified by the second operand.
- * The second operand must be an integer range in - precision to precision.
- * The absolute operand of seconds gives the number of positions to rotate.
- * If the second operand is positive, rotate to the left; Otherwise, rotate to the right.
- * The coefficient of the first operand is padded to the left with 0 to length precision,
- * if necessary. The sign and exponent of the first operand remain unchanged.
- * Note: Binary negative numbers are taken as complements.
- *
- * @param num an Int64 argument.
- * @param d number of Rotated Bits.
- * @return rotated Value.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func rotate(num: Int64, d: Int8): Int64 {
     return Int64(rotate(UInt64(num), d))
 }
 
-/**
- * Returns the largest of the commonfactors of two Int8 numbers.
- * Using a modified version of the Euclidean algorithm: Stein.
- *
- * @param x an argument.
- * @param y another argument.
- * @return a maximum common divisor.
- *
- * @throws OverflowException if the argument `x` or `y` is the minimum value of Int8
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if argument `x` and `y` are minimum values of Int8,
- * or if one argument is the minimum value of Int8 and the other is 0
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func gcd(x: Int8, y: Int8): Int8 {
     return match {
@@ -1525,21 +1344,19 @@ public func gcd(x: Int8, y: Int8): Int8 {
     }
 }
 
-/**
- * Returns the largest of the commonfactors of two Int16 numbers.
- * Using a modified version of the Euclidean algorithm: Stein.
- *
- * @param x an argument.
- * @param y another argument.
- * @return a maximum common divisor.
- *
- * @throws OverflowException if the argument `x` or `y` is the minimum value of Int16
- * @throws IllegalArgumentException if argument `x` and `y` are minimum values of Int16,
- * or if one argument is the minimum value of Int16 and the other is 0
- *
- * @since 0.17.4
- *
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func gcd(x: Int16, y: Int16): Int16 {
     return match {
@@ -1565,21 +1382,19 @@ public func gcd(x: Int16, y: Int16): Int16 {
     }
 }
 
-/**
- * Returns the largest of the commonfactors of two Int32 numbers.
- * Using a modified version of the Euclidean algorithm: Stein.
- *
- * @param x an argument.
- * @param y another argument.
- * @return a maximum common divisor.
- *
- * @throws OverflowException if the argument `x` or `y` is the minimum value of Int32
- * @throws IllegalArgumentException if argument `x` and `y` are minimum values of Int32,
- * or if one argument is the minimum value of Int32 and the other is 0
- *
- * @since 0.17.4
- *
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func gcd(x: Int32, y: Int32): Int32 {
     return match {
@@ -1605,21 +1420,19 @@ public func gcd(x: Int32, y: Int32): Int32 {
     }
 }
 
-/**
- * Returns the largest of the commonfactors of two Int64 numbers.
- * Using a modified version of the Euclidean algorithm: Stein.
- *
- * @param x an argument.
- * @param y another argument.
- * @return a maximum common divisor.
- *
- * @throws OverflowException if the argument `x` or `y` is the minimum value of Int64
- * @throws IllegalArgumentException if argument `x` and `y` are minimum values of Int64,
- * or if one argument is the minimum value of Int64 and the other is 0
- *
- * @since 0.17.4
- *
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 public func gcd(x: Int64, y: Int64): Int64 {
     return match {
@@ -1645,16 +1458,14 @@ public func gcd(x: Int64, y: Int64): Int64 {
     }
 }
 
-/**
- * Returns the largest of the commonfactors of two UInt8 numbers.
- * Using a modified version of the Euclidean algorithm: Stein.
- *
- * @param x an argument.
- * @param y another argument.
- * @return a maximum common divisor.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
 public func gcd(x: UInt8, y: UInt8): UInt8 {
     if (y == 0) {
         return x
@@ -1693,16 +1504,14 @@ public func gcd(x: UInt8, y: UInt8): UInt8 {
     x_ << counter;
 }
 
-/**
- * Returns the largest of the commonfactors of two UInt16 numbers.
- * Using a modified version of the Euclidean algorithm: Stein.
- *
- * @param x an argument.
- * @param y another argument.
- * @return a maximum common divisor.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
 public func gcd(x: UInt16, y: UInt16): UInt16 {
     if (y == 0) {
         return x
@@ -1741,16 +1550,14 @@ public func gcd(x: UInt16, y: UInt16): UInt16 {
     x_ << counter;
 }
 
-/**
- * Returns the largest of the commonfactors of two UInt32 numbers.
- * Using a modified version of the Euclidean algorithm: Stein.
- *
- * @param x an argument.
- * @param y another argument.
- * @return a maximum common divisor.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
 public func gcd(x: UInt32, y: UInt32): UInt32 {
     if (y == 0) {
         return x
@@ -1789,16 +1596,14 @@ public func gcd(x: UInt32, y: UInt32): UInt32 {
     x_ << counter;
 }
 
-/**
- * Returns the largest of the commonfactors of two UInt64 numbers.
- * Using a modified version of the Euclidean algorithm: Stein.
- *
- * @param x an argument.
- * @param y another argument.
- * @return a maximum common divisor.
- *
- * @since 0.17.4
- */
+
+
+
+
+
+
+
+
 public func gcd(x: UInt64, y: UInt64): UInt64 {
     if (y == 0) {
         return x
@@ -1837,19 +1642,17 @@ public func gcd(x: UInt64, y: UInt64): UInt64 {
     x_ << counter;
 }
 
-/**
- * Calculation of the least common multiple of the Int8 type.
- *
- * @param x some value.
- * @param y another value.
- * @return the least common multiple value of @p x and @p y.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if argument `x` and `y` are minimum values of Int8,
- * or if one argument is the minimum value of Int8 and the other is 0.
- * @throws IllegalArgumentException if the result is out of the Int8 range.
- */
+
+
+
+
+
+
+
+
+
+
+
 public func lcm(x: Int8, y: Int8): Int8 {
     if (x == 0 || y == 0) {
         return 0
@@ -1869,19 +1672,17 @@ public func lcm(x: Int8, y: Int8): Int8 {
     }
 }
 
-/**
- * Calculation of the least common multiple of the Int16 type.
- *
- * @param x some value.
- * @param y another value.
- * @return the least common multiple value of @p x and @p y.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if argument `x` and `y` are minimum values of Int16,
- * or if one argument is the minimum value of Int16 and the other is 0.
- * @throws IllegalArgumentException if the result is out of the Int16 range.
- */
+
+
+
+
+
+
+
+
+
+
+
 public func lcm(x: Int16, y: Int16): Int16 {
     if (x == 0 || y == 0) {
         return 0
@@ -1901,19 +1702,17 @@ public func lcm(x: Int16, y: Int16): Int16 {
     }
 }
 
-/**
- * Calculation of the least common multiple of the Int32 type.
- *
- * @param x some value.
- * @param y another value.
- * @return the least common multiple value of @p x and @p y.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if argument `x` and `y` are minimum values of Int32,
- * or if one argument is the minimum value of Int32 and the other is 0.
- * @throws IllegalArgumentException if the result is out of the Int32 range.
- */
+
+
+
+
+
+
+
+
+
+
+
 public func lcm(x: Int32, y: Int32): Int32 {
     if (x == 0 || y == 0) {
         return 0
@@ -1933,19 +1732,17 @@ public func lcm(x: Int32, y: Int32): Int32 {
     }
 }
 
-/**
- * Calculation of the least common multiple of the Int64 type.
- *
- * @param x some value.
- * @param y another value.
- * @return the least common multiple value of @p x and @p y.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if argument `x` and `y` are minimum values of Int64,
- * or if one argument is the minimum value of Int64 and the other is 0.
- * @throws IllegalArgumentException if the result is out of the Int64 range.
- */
+
+
+
+
+
+
+
+
+
+
+
 public func lcm(x: Int64, y: Int64): Int64 {
     if (x == 0 || y == 0) {
         return 0
@@ -1965,17 +1762,15 @@ public func lcm(x: Int64, y: Int64): Int64 {
     }
 }
 
-/**
- * Calculation of the least common multiple of the UInt8 type.
- *
- * @param x some value.
- * @param y another value.
- * @return the least common multiple value of @p x and @p y.
- * @throws IllegalArgumentException if the result is out of the UInt8 range
- *
- * @since 0.17.4
- *
- */
+
+
+
+
+
+
+
+
+
 public func lcm(x: UInt8, y: UInt8): UInt8 {
     if (x == 0 || y == 0) {
         return 0
@@ -1990,17 +1785,15 @@ public func lcm(x: UInt8, y: UInt8): UInt8 {
     }
 }
 
-/**
- * Calculation of the least common multiple of the UInt16 type.
- *
- * @param x some value.
- * @param y another value.
- * @return the least common multiple value of @p x and @p y.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the result is out of the UInt16 range
- */
+
+
+
+
+
+
+
+
+
 public func lcm(x: UInt16, y: UInt16): UInt16 {
     if (x == 0 || y == 0) {
         return 0
@@ -2014,17 +1807,16 @@ public func lcm(x: UInt16, y: UInt16): UInt16 {
         return x / gcd(x, y) * y
     }
 }
-/**
- * Calculation of the least common multiple of the UInt32 type.
- *
- * @param x some value.
- * @param y another value.
- * @return the least common multiple value of @p x and @p y.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the result is out of the UInt32 range
- */
+
+
+
+
+
+
+
+
+
+
 public func lcm(x: UInt32, y: UInt32): UInt32 {
     if (x == 0 || y == 0) {
         return 0
@@ -2039,17 +1831,15 @@ public func lcm(x: UInt32, y: UInt32): UInt32 {
     }
 }
 
-/**
- * Calculation of the least common multiple of the UInt64 type.
- *
- * @param x some value.
- * @param y another value.
- * @return the least common multiple value of @p x and @p y.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the result is out of the UInt64 range
- */
+
+
+
+
+
+
+
+
+
 public func lcm(x: UInt64, y: UInt64): UInt64 {
     if (x == 0 || y == 0) {
         return 0
@@ -2064,23 +1854,21 @@ public func lcm(x: UInt64, y: UInt64): UInt64 {
     }
 }
 
-/**
- * Panics if min > max, min is NaN, or max is NaN.
- * Restrict a value to a certain Interval unless it is NaN.
- * Returns max if self is greater than max, and min if self is less than min.
- * Otherwise this returns self. Note that this function returns NaN if the initial value was NaN as well.
- *
- * @brief  Returns a number between the maximum and minimum values.
- *
- * @param   v   an argument.
- * @param   min   a minimum argument.
- * @param   max   a maximum argument.
- * @return  restricted value between @p min and @p max.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `min` is larger than `max`, or `min` or `max` is NaN
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func clamp(v: Float16, min: Float16, max: Float16): Float16 {
     match {
         case !isEqual(min, min) || !isEqual(max, max) || min > max => throw IllegalArgumentException(
@@ -2091,23 +1879,21 @@ public func clamp(v: Float16, min: Float16, max: Float16): Float16 {
     }
 }
 
-/**
- * Panics if min > max, min is NaN, or max is NaN.
- * Restrict a value to a certain Interval unless it is NaN.
- * Returns max if self is greater than max, and min if self is less than min.
- * Otherwise this returns self. Note that this function returns NaN if the initial value was NaN as well.
- *
- * @brief  Returns a number between the maximum and minimum values.
- *
- * @param   v   an argument.
- * @param   min   a minimum argument.
- * @param   max   a maximum argument.
- * @return  restricted value between @p min and @p max.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `min` is larger than `max`, or `min` or `max` is NaN
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func clamp(v: Float32, min: Float32, max: Float32): Float32 {
     match {
         case !isEqual(min, min) || !isEqual(max, max) || min > max => throw IllegalArgumentException(
@@ -2118,22 +1904,20 @@ public func clamp(v: Float32, min: Float32, max: Float32): Float32 {
     }
 }
 
-/**
- * Panics if min > max, min is NaN, or max is NaN.
- * Restrict a value to a certain Interval unless it is NaN.
- * Returns max if self is greater than max, and min if self is less than min.
- * Otherwise this returns self. Note that this function returns NaN if the initial value was NaN as well.
- * @brief  Returns a number between the maximum and minimum values.
- *
- * @param   v   an argument.
- * @param   min   a minimum argument.
- * @param   max   a maximum argument.
- * @return  restricted value between @p min and @p max.
- *
- * @since 0.17.4
- *
- * @throws IllegalArgumentException if the argument `min` is larger than `max`, or `min` or `max` is NaN
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public func clamp(v: Float64, min: Float64, max: Float64): Float64 {
     match {
         case !isEqual(min, min) || !isEqual(max, max) || min > max => throw IllegalArgumentException(
@@ -2144,23 +1928,20 @@ public func clamp(v: Float64, min: Float64, max: Float64): Float64 {
     }
 }
 
-/**
- * The banker algorithm is an IEEE-754 specification.
- * If the value of the rounding bit is less than 5, the rounding bit is directly performed.
- * If the value of the rounding bit is greater than 5, the value of the rounding bit is incremented by 1.
- * When the number of rounded bits is equal to 5, there are two cases:
- *    If 5 is followed by other non-zero digits (that is, 5 is not the last digit), the carry value increases by 1.
- *    If there is only 0 after 5 (that is, 5 is the last digit), the system determines whether the first digit is an odd number.
- *    If the first digit is an odd number, the system adds 1 to the carry value. If the first digit is an even number, the system rounds it off.
- *
- * @param x Floating point value
- * @return Float64 Rounded value of @x
- *
- * @since 0.25.2
- */
+
+
+
+
+
+
+
+
+
+
+
+
 public func round(x: Float64): Float64 {
     var result: Float64 = abs(x)
-    // note: if result >= 1e16, Float64(1e16) + 1 = ceil(Float64(1e16) + 0.9)
     if (result >= 1e16) {
         return x
     }
@@ -2180,23 +1961,20 @@ public func round(x: Float64): Float64 {
     }
 }
 
-/**
- * The banker algorithm is an IEEE-754 specification.
- * If the value of the rounding bit is less than 5, the rounding bit is directly performed.
- * If the value of the rounding bit is greater than 5, the value of the rounding bit is incremented by 1.
- * When the number of rounded bits is equal to 5, there are two cases:
- *    If 5 is followed by other non-zero digits (that is, 5 is not the last digit), the carry value increases by 1.
- *    If there is only 0 after 5 (that is, 5 is the last digit), the system determines whether the first digit is an odd number.
- *    If the first digit is an odd number, the system adds 1 to the carry value. If the first digit is an even number, the system rounds it off.
- *
- * @param x Floating point value
- * @return Float64 Rounded value of @x
- *
- * @since 0.25.2
- */
+
+
+
+
+
+
+
+
+
+
+
+
 public func round(x: Float32): Float32 {
     var result: Float32 = abs(x)
-    // note: if result >= 1e8, Float32(1e8) + 1 != ceil(Float32(1e8) + 0.9)
     if (result >= 1e8) {
         return x
     }
@@ -2216,23 +1994,20 @@ public func round(x: Float32): Float32 {
     }
 }
 
-/**
- * The banker algorithm is an IEEE-754 specification.
- * If the value of the rounding bit is less than 5, the rounding bit is directly performed.
- * If the value of the rounding bit is greater than 5, the value of the rounding bit is incremented by 1.
- * When the number of rounded bits is equal to 5, there are two cases:
- *    If 5 is followed by other non-zero digits (that is, 5 is not the last digit), the carry value increases by 1.
- *    If there is only 0 after 5 (that is, 5 is the last digit), the system determines whether the first digit is an odd number.
- *    If the first digit is an odd number, the system adds 1 to the carry value. If the first digit is an even number, the system rounds it off.
- *
- * @param x Floating point value
- * @return Float64 Rounded value of @x
- *
- * @since 0.25.2
- */
+
+
+
+
+
+
+
+
+
+
+
+
 public func round(x: Float16): Float16 {
     var result: Float16 = abs(x)
-    // note: if result >= 1e4, Float16(1e4) + 1 != ceil(Float16(1e4) + 0.5)
     if (result >= 1e4) {
         return x
     }
@@ -2252,39 +2027,31 @@ public func round(x: Float16): Float16 {
     }
 }
 
-/**
- * These functions shall compute the principal value of the arc tangent of y/x, using the signs of both arguments to determine the quadrant of the return value.
- *
- * ref: https://pubs.opengroup.org/onlinepubs/9799919799/functions/atan2.html
- */
+
+
+
 public func atan2(y: Float64, x: Float64): Float64 {
     return unsafe { CJ_MATH_Atan2(y, x) }
 }
 
-/**
- * These functions shall compute the principal value of the arc tangent of y/x, using the signs of both arguments to determine the quadrant of the return value.
- *
- * ref: https://pubs.opengroup.org/onlinepubs/9799919799/functions/atan2.html
- */
+
+
+
 public func atan2(y: Float32, x: Float32): Float32 {
     return unsafe { CJ_MATH_Atan2f(y, x) }
 }
 
-/**
- * These functions shall compute the principal value of the arc tangent of y/x, using the signs of both arguments to determine the quadrant of the return value.
- *
- * ref: https://pubs.opengroup.org/onlinepubs/9799919799/functions/atan2.html
- */
+
+
+
 public func atan2(y: Float16, x: Float16): Float16 {
     return unsafe { Float16(CJ_MATH_Atan2(Float64(y), Float64(x))) }
 }
 
-/**
- * These functions shall return the floating-point remainder of the division of x by y.
- * These functions shall return the value x- i* y, for some integer i such that, if y is non-zero, the result has the same sign as x and magnitude less than the magnitude of y.
- *
- * ref: https://pubs.opengroup.org/onlinepubs/9699919799/functions/fmod.html
- */
+
+
+
+
 public func fmod(x: Float64, y: Float64): Float64 {
     if (isEqual(x, Float64.Inf) || isEqual(y, 0.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -2292,12 +2059,10 @@ public func fmod(x: Float64, y: Float64): Float64 {
     return unsafe { CJ_MATH_Fmod(x, y) }
 }
 
-/**
- * These functions shall return the floating-point remainder of the division of x by y.
- * These functions shall return the value x- i* y, for some integer i such that, if y is non-zero, the result has the same sign as x and magnitude less than the magnitude of y.
- *
- * ref: https://pubs.opengroup.org/onlinepubs/9699919799/functions/fmod.html
- */
+
+
+
+
 public func fmod(x: Float32, y: Float32): Float32 {
     if (isEqual(x, Float32.Inf) || isEqual(y, 0.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -2305,12 +2070,10 @@ public func fmod(x: Float32, y: Float32): Float32 {
     return unsafe { CJ_MATH_Fmodf(x, y) }
 }
 
-/**
- * These functions shall return the floating-point remainder of the division of x by y.
- * These functions shall return the value x- i* y, for some integer i such that, if y is non-zero, the result has the same sign as x and magnitude less than the magnitude of y.
- *
- * ref: https://pubs.opengroup.org/onlinepubs/9699919799/functions/fmod.html
- */
+
+
+
+
 public func fmod(x: Float16, y: Float16): Float16 {
     if (isEqual(x, Float16.Inf) || isEqual(y, 0.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")

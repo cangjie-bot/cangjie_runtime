@@ -1,20 +1,18 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.process
 
 import std.io.*
 
-/**
- * ProcessOutputStream implement OutputStream & Resource interface
- *
- */
-const SEEK_CUR: Int32 = 1 /* Seek from current position.  */
+
+
+const SEEK_CUR: Int32 = 1 
 
 struct FileDescriptor {
     var _fileHandle: IntNative = INVALID_HANDLE
@@ -50,9 +48,7 @@ class ProcessOutputStream <: OutputStream {
     public func flush(): Unit {}
 }
 
-/**
- * PipeOutputStream implement OutputStream & Resource interface
- */
+
 class PipeOutputStream <: OutputStream & Resource {
     var _fileDescriptor: FileDescriptor = FileDescriptor(INVALID_HANDLE)
 
@@ -83,21 +79,19 @@ class PipeOutputStream <: OutputStream & Resource {
 
         this.flush()
 
-        /* Call the close() in the C Language */
+        
         if (unsafe { CJ_OS_CloseFile(this._fileDescriptor._fileHandle) } < 0) {
             throw ProcessException("Failed to close stream.")
         }
         this._fileDescriptor._fileHandle = INVALID_HANDLE
     }
 
-    /**
-     * Write the array to the file and return the bytes successfully written into the file.
-     *
-     * @param buffer – The buffer will be written to the file
-     *
-     *
-     * @throws ProcessException if system failed to write the file
-     */
+
+
+
+
+
+
     private func directWrite(buffer: Array<Byte>): Unit {
         unsafe {
             let bufSize: Int64 = buffer.size
@@ -112,9 +106,7 @@ class PipeOutputStream <: OutputStream & Resource {
     }
 }
 
-/**
- * PipeInputStream implement InputStream & Resource interface
- */
+
 class PipeInputStream <: InputStream & Resource {
     var _fileDescriptor: FileDescriptor = FileDescriptor(INVALID_HANDLE)
 
@@ -147,20 +139,18 @@ class PipeInputStream <: InputStream & Resource {
             return
         }
 
-        /* Call the close() in the C Language */
+        
         if (unsafe { CJ_OS_CloseFile(this._fileDescriptor._fileHandle) } < 0) {
             throw ProcessException("Failed to close stream.")
         }
         this._fileDescriptor._fileHandle = INVALID_HANDLE
     }
 
-    /**
-     * Read from the file directly and write into buffer.
-     *
-     * @param buffer - Read to the buffer from the file
-     *
-     * @return Length successfully written into the array buffer
-     */
+
+
+
+
+
     private func directRead(buffer: Array<Byte>): Int64 {
         unsafe {
             let bufPtr: CPointerHandle<Byte> = acquireArrayRawData(buffer)

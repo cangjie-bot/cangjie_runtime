@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines TimeZone related classes.
- */
+
+
+
+
+
+
+
+
 
 package std.time
 
@@ -41,17 +38,17 @@ const MAXPATHLEN = 4096
 foreign func CJ_TIME_GetEnvVariable(id: CString): CString
 
 enum RuleType {
-    | JulianDay /* Jn = Julian day */
-    | DayOfYear /* n = day of year */
-    | MonthNthDayOfWeek /* Mm.n.d = month, week, day of week */
+    | JulianDay 
+    | DayOfYear 
+    | MonthNthDayOfWeek 
 }
 
 class ZoneRule {
-    var rType: RuleType = JulianDay /* type of rule */
-    var rDay: Int64 = 0 /* day number of rule */
-    var rWeek: Int64 = 0 /* week number of rule */
-    var rMon: Int64 = 0 /* month number of rule */
-    var rTime: Int64 = 0 /* transition time of rule */
+    var rType: RuleType = JulianDay 
+    var rDay: Int64 = 0 
+    var rWeek: Int64 = 0 
+    var rMon: Int64 = 0 
+    var rTime: Int64 = 0 
 
     func parse(footer: String): String {
         if (footer[0] == b'J') {
@@ -66,17 +63,14 @@ class ZoneRule {
             var (mon, week, day) = (0, 0, 0)
             var rest = footer
             (mon, rest) = getNum(rest[1..])
-            // Months range from 1 to 12
             if (mon < 1 || mon > 12 || rest.size == 0 || rest[0] != b'.') {
                 throw InvalidDataException("Failed to parse the timezone data.")
             }
             (week, rest) = getNum(rest[1..])
-            // The range of weeks in a month is 1 to 5.
             if (week < 1 || week > 5 || rest.size == 0 || rest[0] != b'.') {
                 throw InvalidDataException("Failed to parse the timezone data.")
             }
             (day, rest) = getNum(rest[1..])
-            // The number of days in a week ranges from 0 to 6.
             if (day < 0 || day > 6) {
                 throw InvalidDataException("Failed to parse the timezone data.")
             }
@@ -98,13 +92,13 @@ class ZoneRule {
 }
 
 class LocalTime {
-    /* time zone designation. */
+    
     var des: String = ""
 
-    /* time zone offset. */
+    
     var offset: Int32 = 0
 
-    /* Indicates whether local time should be considered Daylight Saving Time (DST). */
+    
     var isDST: Bool = false
 
     init() {}
@@ -117,13 +111,11 @@ class LocalTime {
 }
 
 class TransTime {
-    /* UNIX leap-time values, used as a transition time at which the rules for computing local time may change. */
+    
     var trans: Int64 = Int64.Min
 
-    /*
-     * Specify the type of local time of the corresponding transition time.
-     * This value serves as zero-based indices into the array of LocalTime.
-     */
+
+
     var index: UInt8 = 0
 
     init() {}
@@ -134,15 +126,13 @@ class TransTime {
     }
 }
 
-/**
- * The class TimeZone implements the basic functions of the time zone.
- * The time zone data comes from the IANA time zone database file installed in the operating system.
- * The local time zone is determined by the environment variable TZ.
- * If the TZ does not exist, it is determined by the time zone stored in the /etc/localtime file.
- * Otherwise, the host is regarded as the UTC time zone.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
+
 public class TimeZone <: ToString & Equatable<TimeZone> {
     public static let UTC: TimeZone = TimeZone("UTC", 0)
     public static let Local: TimeZone = initLocal()
@@ -150,9 +140,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
     let zoneId: String
     let localTimes: Array<LocalTime>
     let transTimes: Array<TransTime>
-    let footer: String /* TZif footer. */
+    let footer: String 
 
-    /* The cache of the last successful lookup, including the start, end, and corresponding zone. */
+    
     var cache: Option<(Int64, Int64, LocalTime)> = None
 
     public prop id: String {
@@ -161,14 +151,12 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         }
     }
 
-    /**
-     * Constructs a fixed TimeZone that always uses the given zone id and offset (seconds east of UTC).
-     *
-     * @param id zone id.
-     * @param offset zone offset (seconds east of UTC).
-     *
-     * @since 0.19.3
-     */
+
+
+
+
+
+
     init(id: String, offset: Int32) {
         this.zoneId = id
         this.localTimes = Array<LocalTime>(1, repeat: LocalTime(id, offset, false))
@@ -176,15 +164,13 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         this.footer = ""
     }
 
-    /**
-     * Constructs a fixed TimeZone with given zone id and offset.
-     *
-     * @param id zone id.
-     * @param offset zone offset.
-     *
-     * @throws IllegalArgumentException if TimeZone id is empty.
-     * @since 0.19.3
-     */
+
+
+
+
+
+
+
     public init(id: String, offset: Duration) {
         if (id.size == 0) {
             throw IllegalArgumentException("Invalid timezone id.")
@@ -199,17 +185,15 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         this.footer = ""
     }
 
-    /*
-     * Constructs a TimeZone instance using the given arguments.
-     *
-     * @param localTimes an array of localTime.
-     * @param transTimes an array of zone transition time.
-     * @param id zone id.
-     * @param footer extend zone id.
-     *
-     * @throws IllegalArgumentException if TimeZone id is empty.
-     * @since 0.19.3
-     */
+
+
+
+
+
+
+
+
+
     private init(localTimes: Array<LocalTime>, transTimes: Array<TransTime>, id: String, footer: String) {
         this.zoneId = id
         this.localTimes = localTimes
@@ -218,23 +202,21 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         this.cache = (Int64.Min, Int64.Max, localTimes[0])
     }
 
-    /**
-     * Loads a TimeZone with the given id.
-     * If the id is "UTC", it returns TimeZone.UTC. If the id is "Local", it returns TimeZone.Local.
-     * Otherwise, the id is considered the TimeZone id corresponding to the file in the IANA
-     * If the CJ_TZPATH environment variable exists, obtain the path from the environment variable first.
-     * time zone database, such as "Asia/Shanghai".
-     *
-     * @param id zone id.
-     * @return the TimeZone if success, otherwise an Exception.
-     *
-     * @throws IllegalArgumentException if TimeZone id is illegal or empty.
-     * @throws InvalidDataException if the timezone data cannot be found when a valid environment variable is set
-     * @throws InvalidDataException if the TimeZone file fails to be parsed.
-     * @throws IllegalMemoryException if failed to call loadTimeZone(cjvm).
-     *
-     * @since 0.19.3
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static func load(id: String): TimeZone {
         if (id.size == 0 || id.size > MAXPATHLEN) {
             throw IllegalArgumentException("Invalid timezone id.")
@@ -261,21 +243,19 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         return loadFromPaths(id, envPathArray)
     }
 
-    /**
-     * Obtains the TimeZone object based on the given root path and time zone id.
-     * This function searches for the timezone data named <id> from the given root path in turn until it is found.
 
-     * @param tzpaths Set of root paths for timezone datas.
-     * @param id zone id.
-     * @return the TimeZone if success, otherwise an Exception.
-     *
-     * @throws IllegalArgumentException if TimeZone id is empty.
-     * @throws InvalidDataException if the timezone data cannot be found.
-     * @throws InvalidDataException if the TimeZone file fails to be parsed.
-     * @throws IllegalMemoryException if failed to call loadTimeZone(cjvm).
-     *
-     * @since 0.35.7
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     public static func loadFromPaths(id: String, tzpaths: Array<String>): TimeZone {
         if (id.size == 0 || id.size > MAXPATHLEN) {
             throw IllegalArgumentException("Invalid timezone id.")
@@ -304,18 +284,16 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         throw InvalidDataException("No valid timezone file is found.")
     }
 
-    /**
-     * Loads a TimeZone with the given id initialized from the IANA Time LocalTime database format data.
-     *
-     * @param id zone id.
-     * @param data IANA Time LocalTime database format data.
-     * @return the TimeZone if success, otherwise an Exception.
-     *
-     * @throws IllegalArgumentException if id is empty.
-     * @throws InvalidDataException if the TimeZone data fails to be parsed.
-     * @throws IllegalMemoryException if failed to call runtimeNow(cjvm).
-     * @since 0.19.3
-     */
+
+
+
+
+
+
+
+
+
+
     public static func loadFromTZData(id: String, data: Array<UInt8>): TimeZone {
         if (id.size == 0) {
             throw IllegalArgumentException("Invalid timezone id.")
@@ -347,50 +325,42 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         return result
     }
 
-    /**
-     * Return a String that represents the time zone, actually time zone id.
-     *
-     * @return time zone id.
-     *
-     * @since 0.19.3
-     */
+
+
+
+
+
     public func toString(): String {
         return this.zoneId
     }
 
-    /**
-     * Override the == operator, determines whether this TimeZone equals another TimeZone.
-     *
-     * @param r another TimeZone.
-     * @return true if the TimeZone is equal to @p r, otherwise false.
-     *
-     * @since 0.38.2
-     */
+
+
+
+
+
+
     public operator func ==(r: TimeZone): Bool {
         return refEq(this, r)
     }
 
-    /**
-     * Override the == operator, determines whether this TimeZone is not equal another TimeZone.
-     *
-     * @param r another TimeZone.
-     * @return true if the TimeZone is not equal to @p r, otherwise false.
-     *
-     * @since 0.38.2
-     */
+
+
+
+
+
+
     public operator func !=(r: TimeZone): Bool {
         return !(this == r)
     }
 
-    /**
-     * Return information about the time zone used by the UNIX time specified by @p epochSecond.
-     *
-     * @param epochSecond an instant in time expressed as seconds since January 1, 1970 00:00:00 UTC.
-     * @return a tuple containing the name of the zone (such as "CET"), the offset in seconds east of UTC,
-     * the start and end time when the time zone takes effect.
-     *
-     * @since 0.19.3
-     */
+
+
+
+
+
+
+
     func lookup(epochSecond: Int64): (String, Int64, Int64, Int64) {
         match (cache) {
             case Some(v) =>
@@ -416,7 +386,7 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         var offset = zone.offset
         var start = transTimes[low].trans
 
-        /* If no results are found from the known transition time, try TZif footer. */
+        
         try {
             if (low == transTimes.size - 1 && footer != "") {
                 return parseTZ(footer, end, epochSecond)
@@ -427,14 +397,12 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         return (name, Int64(offset), start, end)
     }
 
-    /**
-     * Search for the corresponding transTime based on epochSecond.
-     *
-     * @param epochSecond an instant in time expressed as seconds since January 1, 1970 00:00:00 UTC.
-     * @return the index in transTimes and the corresponding transTime.
-     *
-     * @since 0.38.2
-     */
+
+
+
+
+
+
     private func binarySearch(epochSecond: Int64): (Int64, Int64) {
         var end = Int64.Max
         var low = 0
@@ -452,15 +420,13 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         return (low, end)
     }
 
-    /**
-     * Return the time zone index used before or without the first transition time.
-     *
-     * @return the index of the time zone to use for times before or without the first transition time.
-     *
-     * @since 0.19.3
-     */
+
+
+
+
+
     func inferZoneIndex(): Int64 {
-        /* If zone 0 is unused in transitions, it's the zone to use for early times. */
+        
         var flag = false
         for (tran in transTimes) {
             if (tran.index == 0) {
@@ -472,10 +438,8 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
             return 0
         }
 
-        /*
-         * Absent the above, if there are transition times and the first transition is to a daylight time,
-         * find the standard type less than and closest to the zone of the first transition.
-         */
+
+
         if (transTimes.size > 0 && localTimes[Int64(transTimes[0].index)].isDST) {
             var index = Int64(transTimes[0].index) - 1
             for (zoneIndex in index..=0 : -1) {
@@ -485,27 +449,25 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
             }
         }
 
-        /* If no result yet, find the first standard type. */
+        
         for (zoneIndex in 0..localTimes.size) {
             if (!localTimes[zoneIndex].isDST) {
                 return zoneIndex
             }
         }
 
-        /* If there is none, punt to zone zero. */
+        
         return 0
     }
 
-    /**
-     * Return the offset of the time zone for a given name and unix time.
-     * (The unix time is in the UTC time zone).
-     *
-     * @param name zone name
-     * @param unix unix time in second.
-     * @return the zone offset.
-     *
-     * @since 0.19.3
-     */
+
+
+
+
+
+
+
+
     func lookupName(name: String, unix: Int64): Int64 {
         var offset = Int64.Min
         for (zone in localTimes) {
@@ -528,17 +490,15 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
     }
 }
 
-/**
- * Given a POSIX section time zone string, the end unix time of the last time zone transition, and a time,
- * return values are similar to that of lookup.
- *
- * @param footer a POSIX section time zone string.
- * @param end the end of the last time zone transition expressed as seconds since 1970.1.1 00:00:00 UTC.
- * @param epochSecond a time expressed the same way as @p end.
- * @return values are similar to that of lookup.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
+
+
+
 func parseTZ(footer: String, end: Int64, epochSecond: Int64): (String, Int64, Int64, Int64) {
     var stdName: String = ""
     var dstName: String = ""
@@ -580,7 +540,7 @@ func parseTZ(footer: String, end: Int64, epochSecond: Int64): (String, Int64, In
 
     var (year, ysec) = toYearAndSecond(epochSecond + SECS_OF_UNIX_TO_AD1)
 
-    /* Calculate the start unix second of current year. */
+    
     let unixSec = daysSinceUnix(year) * SECS_PER_DAY
     if (year <= 0) {
         if (isLeapYear(year)) {
@@ -609,23 +569,18 @@ func parseTZ(footer: String, end: Int64, epochSecond: Int64): (String, Int64, In
     }
 }
 
-/**
- * Return the swapped value.
- */
+
 func swap<T>(left: T, right: T): (T, T) {
     return (right, left)
 }
 
-/**
- * Return the time zone name at the start of the TZif footer string @p footer.
- *
- * @param footer TZif footer string.
- * @return the time zone name, the remainder of @p footer.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
 func parseTZName(footer: String): (String, String) {
-    // The size of the footer is determined to be greater than zero
     let strLen = footer.size
     if (footer[0] == b'<') {
         for (i in 0..strLen) {
@@ -650,14 +605,12 @@ func parseTZName(footer: String): (String, String) {
     return (footer, "")
 }
 
-/**
- * Return the time zone offset at the start of the TZif footer string @p footer as a number of seconds.
- *
- * @param footer TZif footer string.
- * @return the time zone offset, the remainder of @p footer.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
 func parseTZOffset(footer: String): (Int64, String) {
     if (footer.size == 0) {
         throw InvalidDataException("Failed to parse the timezone data.")
@@ -674,7 +627,7 @@ func parseTZOffset(footer: String): (Int64, String) {
         neg = true
     }
     (hours, rest) = getNum(rest)
-    if (hours < 0 || hours > 24) { // The number of hours of the day is within the range of 0-24.
+    if (hours < 0 || hours > 24) {
         throw InvalidDataException("Failed to parse the timezone data.")
     }
     var off = hours * SECS_PER_HOUR
@@ -708,14 +661,12 @@ func parseTZOffset(footer: String): (Int64, String) {
     return (off, rest)
 }
 
-/**
- * Parses a rule from a TZif footer string @p footer.
- *
- * @param footer TZif footer string.
- * @return the rule, and the remainder of the string.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
 func parseTZRule(footer: String): (ZoneRule, String) {
     var rule = ZoneRule()
     if (footer.size == 0) {
@@ -736,14 +687,12 @@ func parseTZRule(footer: String): (ZoneRule, String) {
     return (rule, rest)
 }
 
-/**
- * Parses a number from a TZif footer string @p footer.
- *
- * @param footer TZif footer string.
- * @return the number, the remainder of the string.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
 func getNum(footer: String): (Int64, String) {
     let strLen = footer.size
     if (strLen == 0) {
@@ -770,16 +719,14 @@ func getNum(footer: String): (Int64, String) {
     }
 }
 
-/**
- * Return the number of seconds since the start of the @p year that the @p rule takes effect.
- *
- * @param year year.
- * @param rule a zone rule.
- * @param off time zone offset.
- * @return the transtion time in seconds.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
+
+
 func transToSecOfYear(year: Int64, rule: ZoneRule, off: Int64): Int64 {
     if (year <= 0) {
         throw InvalidDataException("Failed to parse the timezone data")
@@ -788,7 +735,7 @@ func transToSecOfYear(year: Int64, rule: ZoneRule, off: Int64): Int64 {
     match (rule.rType) {
         case JulianDay =>
             sec = (rule.rDay - 1) * SECS_PER_DAY
-            if (isLeapYear(year) && rule.rDay >= 60) { // If the 60day of a leap year is crossed, the number of days must be increased by 1.
+            if (isLeapYear(year) && rule.rDay >= 60) {
                 sec += SECS_PER_DAY
             }
         case DayOfYear => sec = rule.rDay * SECS_PER_DAY
@@ -798,19 +745,15 @@ func transToSecOfYear(year: Int64, rule: ZoneRule, off: Int64): Int64 {
             let day = rule.rDay
 
             var dayOfMonBefore = DAYS_BEFORE[rule.rMon - 1]
-            if (isLeapYear(year) && mon > 2) { // If the 2th month of a leap year is crossed, the number of days must be increased by 1.
+            if (isLeapYear(year) && mon > 2) {
                 dayOfMonBefore++
             }
             var dayOfYear = dayOfMonBefore
-
-            // Use the Zeiller formula variant to calculate the day of the week the first day of the month.
             let firstDayOfMon = ((year - 1) + ((year - 1) / 4) - ((year - 1) / 100) + ((year - 1) / 400) +
                 dayOfMonBefore + 1) % DAYS_PER_WEEK
-
-            // Days in month from January to December
             var daysInMon = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
             if (isLeapYear(year)) {
-                daysInMon[1] = 29 // The number of days in February is 29 in leap years.
+                daysInMon[1] = 29
             }
             var dayOfMon = 0
             if (firstDayOfMon == 0) {

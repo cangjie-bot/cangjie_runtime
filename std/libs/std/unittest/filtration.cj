@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -88,10 +88,8 @@ interface TestFilter {
     func shouldSkipTestCase(caseFilterKey: CaseFilterKey): Bool
 }
 
-/**
- * Filters, directly controlled by users.
- * Filtered out entitites are counted by SKIPPED counter.
- */
+
+
 interface UserTestFilter <: TestFilter {
     static func fromConfiguration(config: Configuration): TestFilter {
         CompositeTestFilter([
@@ -105,12 +103,10 @@ interface UserTestFilter <: TestFilter {
     }
 }
 
-/**
- * The framework implementation-detail filters.
- *
- * A test class should be registered before asking about it and its members.
- * All workers should register same set of test classes in the same order.
- */
+
+
+
+
 interface FrameworkTestFilter <: TestFilter {
     func register(_: SuiteFilterKey, _: TestSuite): Unit {}
 }
@@ -183,9 +179,6 @@ class FilterOptionTestFilter <: UserTestFilter {
             }
 
         if (includeFilters.size == 0) {
-            // true iff: --filter is empty.
-            //           Or only exclusion filters were specified
-            // Want to run the rest not matching with them
             includeFilters.add(FilterOption.ACCEPTING)
         }
     }
@@ -204,8 +197,6 @@ class FilterOptionTestFilter <: UserTestFilter {
     public override func shouldSkipTestClass(filterKey: SuiteFilterKey): Bool {
         let suiteId = filterKey.suiteId
         let name = filterKey.topLevelFunc ?? suiteId.suiteName
-
-        // To avoid function filters exclude classes as a whole we ignore them there
         for (filter in excludeFilters where !filter.isFuncFilter) {
             if (dynamicFullMatch(name, filter.classFilter)) {
                 return true
@@ -215,9 +206,6 @@ class FilterOptionTestFilter <: UserTestFilter {
         if (includeFilters.isEmpty()) {
             return false
         }
-
-        // To avoid cases where filters --filter=*.smth allow every top level fucntion to pass
-        // We ignore these filters for top-level functions specifically
         var includeFiltersIterator = includeFilters.iterator()
         if (filterKey.topLevelFunc != None) {
             includeFiltersIterator = includeFiltersIterator |> filter {filter: FilterOption => !filter.isFuncFilter}
@@ -265,12 +253,9 @@ class FilterOptionTestFilter <: UserTestFilter {
         let pp: String = " " + p
         let m: Int64 = ss.size
         let n: Int64 = pp.size
-        // `dp[i][j]` means weather `mm[0..j-1]` matches `ss[0..j-1]`
-        // use a one-dimensional array to replace the two-dimensional array
         let dp: Array<Bool> = Array<Bool>(m * n, repeat: false)
         dp[0] = true
         for (i in 0..m * n) {
-            // state transition
             let row = i / n
             let col = i % n
             if (col != 0) {
@@ -334,19 +319,14 @@ class TagsTestFilter <: UserTestFilter {
     }
 
     public override func shouldSkipTestClass(filterKey: SuiteFilterKey) {
-        // Tags on test case can only increase in count relative from TestSuite.
-        // If class with it's tags already got filtered out there's no chance for inner test cases to pass
 
         let suiteId = filterKey.suiteId
         let tags = filterKey.tags
         for (filterOp in excludeTagFilters) {
-            // This works only because @Tag macro makes it for each tag to occur only once in given array
             if (containsCount(filterOp.tags, tags)) {
                 return true
             }
         }
-
-        // We ignore includeTagFilters because some test cases might pass under the class with additional tags on top of them
         return false
     }
 
@@ -411,12 +391,7 @@ extend Configuration {
 class WorkerTestFilter <: FrameworkTestFilter {
     private let shouldSkipClassCache = HashMap<TestSuiteId, Bool>()
     private let shouldSkipCaseCache = HashMap<TestCaseId, Bool>()
-    // Test entities are scheduled independently: test classes and test cases of @Parallel classes.
-    // The index is needed to check if current worker is responsible for an entity.
-    // Use only acquireEntityIdx to access.
     private var testEntityIdx = -1
-    // Index of the test case among other test cases that the current worker should execute.
-    // Use only acquireTestCaseIdx to access.
     private var testCaseIdx = -1
 
     WorkerTestFilter(
@@ -426,7 +401,6 @@ class WorkerTestFilter <: FrameworkTestFilter {
 
     public override func register(filterKey: SuiteFilterKey, suite: TestSuite): Unit {
         defaultFilter.register(filterKey, suite)
-        // Template configuration should not affect parallelization.
         if (suite.suiteConfiguration.parallel) {
             registerParallelTestClass(filterKey, suite)
         } else {

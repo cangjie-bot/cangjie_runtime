@@ -1,16 +1,12 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
-
-// Array strip baseptr for intrinsic function: include/cangjie/CodeGen/CGUtils.h: REFLECT_INTRINSIC_FUNC
-
-// TypeInfo
 @Intrinsic
 func isInterface(ti: CPointer<Unit>): Bool
 
@@ -67,21 +63,16 @@ func getInterface(ti: CPointer<Unit>, index: UInt32): CPointer<Unit>
 
 @Intrinsic
 func isSubType(ti: CPointer<Unit>, superTypeclassInfo: CPointer<Unit>): Bool
-// return modifier flags, parsed in enum ModifierInfo
 @Intrinsic
 func getTypeInfoModifier(ti: CPointer<Unit>): UInt32
 
 @Intrinsic
 func getTypeInfoAnnotations(ti: CPointer<Unit>, arrayTi: CPointer<Unit>): Any
-
-// ClassTypeInfo
 @Intrinsic
 func getObjClass(obj: Object): CPointer<Unit>
 
 @Intrinsic
 func getSuperTypeInfo(ti: CPointer<Unit>): CPointer<Unit>
-
-// InstanceFunctionInfo & StaticFunctionInfo
 @Intrinsic
 func getNumOfInstanceMethodInfos(ti: CPointer<Unit>): UInt32
 
@@ -120,7 +111,6 @@ func getActualParameterInfo(methodInfo: CPointer<Unit>, idx: UInt32): CPointer<U
 
 @Intrinsic
 func getGenericParameterInfo(methodInfo: CPointer<Unit>, idx: UInt32): CPointer<Unit>
-// InstanceVariableInfo & StaticVariableInfo
 @Intrinsic
 func getNumOfInstanceFieldInfos(ti: CPointer<Unit>): UInt32
 
@@ -168,8 +158,6 @@ func getStaticFieldValue(fieldInfo: CPointer<Unit>): Any
 
 @Intrinsic
 func setStaticFieldValue(fieldInfo: CPointer<Unit>, value: Any): Unit
-
-// ParameterInfo
 @Intrinsic
 func getParameterIndex(parameterInfo: CPointer<Unit>): UInt32
 
@@ -181,8 +169,6 @@ func getParameterType(parameterInfo: CPointer<Unit>): CPointer<Unit>
 
 @Intrinsic
 func getParameterAnnotations(parameterInfo: CPointer<Unit>, arrayTi: CPointer<Unit>): Any
-
-// ConstructorInfo
 @Intrinsic
 func applyCJInstanceMethod(methodInfo: CPointer<Unit>, instance: Any, args: Array<Any>): Any
 
@@ -197,8 +183,6 @@ func applyCJGenericInstanceMethod(methodInfo: CPointer<Unit>, instance: Any, gen
 func applyCJGenericStaticMethod(methodInfo: CPointer<Unit>, genericTypeArgs: Array<CPointer<Unit>>, args: Array<Any>,
     thisType: CPointer<Unit>): Any
 
-// for dynamic load
-// success return 0, fail return -1
 @Intrinsic
 func getRelatedPackageInfo(packageInfo: CPointer<Unit>): CPointer<Unit>
 

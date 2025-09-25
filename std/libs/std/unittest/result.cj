@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.*
@@ -12,7 +12,6 @@ import std.time.DateTime
 import std.collection.*
 
 interface Result <: Serializable<Result> {
-    // maybe rename to visitSubResults?
     func visitChildren(_: (Result) -> Unit): Unit {}
 
     func walk(visitor: (Result) -> Unit): Unit {
@@ -75,8 +74,6 @@ abstract class ResultContainer<T> <: Result where T <: Result {
             finished
         }
     }
-
-    // lazily calculated after execution is finished
     public prop details: Details {
         get() {
             if (_detailsComputed) { return _details }
@@ -116,7 +113,6 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         visitAll<Result> { r =>
             match (r) {
                 case r: TestCaseResult => currentCase.value = r
-                // case r: RunStepResult where !r.isPartOfTestCase() => visitor(r, None)
                 case r: RunStepResult => visitor(r, currentCase.value.getOrThrow())
                 case _ => ()
             }
@@ -265,10 +261,6 @@ class TestCaseResult <: ResultContainer<RunStepResult> {
     public func addOutput(output: CapturedOutput): Unit {
         _output = output
     }
-
-    // We can't store all successfull steps because there can be too much of them,
-    // so we store only last successfull step but make it contain some info from previous steps
-    // if in future we will want to count successfull steps as well we can do that here
     public func addSuccessfullStep(next: RunStepResult) {
         let first = subResults[0]
         let steps = if (let Test(steps) <- first.info) {
@@ -291,9 +283,7 @@ class TestCaseResult <: ResultContainer<RunStepResult> {
     }
 }
 
-/**
- * Some information about test cases that should reach reporting facilities.
- */
+
 struct TestCaseReportInfo {
     TestCaseReportInfo(let tags!: Array<String>) {}
 
@@ -350,9 +340,7 @@ class TestSuiteResult <: ResultContainer<TestCaseResult> {
     }
 }
 
-/**
- * Some information about test suites that should reach reporting facilities.
- */
+
 struct TestSuiteReportInfo {
     TestSuiteReportInfo(let tags!: Array<String>) {}
 
@@ -529,14 +517,12 @@ struct ArgumentDescription {
 }
 
 enum StepInfo {
-    | Test( /*aggregatedSteps:*/ Int64)
+    | Test(  Int64)
     | Bench(BenchmarkResult)
     | Failure(Array<CheckResult>)
 }
 
-// render options are an extract from configuration that affects result report
-// we cannot serialize the whole configuration
-// but all render options must be serializable (report itself can be in the other process)
+
 struct RenderOptions {
     RenderOptions(
         let baselineString: ?String,

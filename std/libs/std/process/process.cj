@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.process
 
@@ -30,22 +30,20 @@ public open class Process {
     var _commandLine: ?Array<String> = Array<String>()
     var _workingDirectory: ?Path = Path("")
     var _environment: ?Map<String, String> = HashMap<String, String>()
-    // StartTime deal with the scene, old process instance be killed and a new process instance reused the same pid.
     var _startTimeSinceUnixEpoch: Int64 = 0
     var _startTime: Int64 = 0
-    /**
-     * Constructors
-     *
-     * @param pid - process instance id
-     * @param name - process name, always equals commandLine
-     * @param command - process command
-     * @param arguments - process command arguments
-     * @param commandLine - vm backend: commandLine = command + [programName] + arguments
-     *                      non-vm backend: commandLine = command + arguments
-     * @param workingDirectory - process working directory
-     * @param environment - process working environments
-     *
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     init(pid: Int64, name: ?String, command: ?String, arguments: ?Array<String>, commandLine: ?Array<String>,
         workingDirectory: ?Path, environment: ?Map<String, String>) {
         this._pid = pid
@@ -59,10 +57,8 @@ public open class Process {
         this._startTime = getProcessStartTime(Int32(pid))
     }
 
-    /**
-     * return a process instance for current process.The process instance can used to find processInfo and terminate
-     * current process. Also the process instance provide stdio, which can be used to read or write message.
-     */
+
+
     @Deprecated[message: "CurrentProcess has been marked as deprecated, use related global functions in the std.env instead."]
     public static prop current: CurrentProcess {
         get() {
@@ -87,8 +83,6 @@ public open class Process {
             this._command ?? throw ProcessException("Can not get process command.")
         }
     }
-
-    // Process start time
     public prop startTime: DateTime {
         get() {
             return if (this._startTimeSinceUnixEpoch == -1) {
@@ -101,15 +95,11 @@ public open class Process {
             }
         }
     }
-
-    // Time spent on system calls executed directly or indirectly by the program
     public prop systemTime: Duration {
         get() {
             return unsafe { CJ_OS_GetSystemTime(Int32(this._pid)) } * Duration.millisecond
         }
     }
-
-    // Time spent by the program itself and the subprocesses in the libraries it calls
     public prop userTime: Duration {
         get() {
             return unsafe { CJ_OS_GetUserTime(Int32(this._pid)) } * Duration.millisecond
@@ -144,11 +134,9 @@ public open class Process {
         }
     }
 
-    /**
-     * return a process instance for an existing process which pid is giving by user.
-     * The process instance can used to find processInfo and terminate the process.
-     * We can not get stdio for any pid process, so that do not provide the stream attribute to operate stdio.
-     */
+
+
+
     @Deprecated[message: "Use global function `public func findProcess(pid: Int64): Process` instead."]
     public static func of(pid: Int64): Process {
         if (pid > Int64(Int32.Max) || pid < 0) {
@@ -158,26 +146,22 @@ public open class Process {
         return buildProcess(Int32(pid))
     }
 
-    /**
-     * start a new subProcess using command and arguments which provide by user.
-     *
-     * @param command - vaild system command, should not be empty string and can not include Null character.
-     * @param arguments - command arguments, each of the arguments should not be empty string and can not include Null character.
-     * @param workingDirectory - command working directory, if None, means inherit current process working directory.
-     * @param environment - command working environment, if None, means inherit current process environment.
-     * @param stdIn - stdIn redirect mode.
-     * @param stdOut - stdOut redirect mode.
-     * @param stdErr - stdErr redirect mode.
-     *
-     * @return SubProcess - a new subProcess instance.
-     */
+
+
+
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use global function `public func launch(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit, stdErr!: ProcessRedirect = Inherit): SubProcess` instead."]
     public static func start(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
         environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit,
         stdOut!: ProcessRedirect = Inherit, stdErr!: ProcessRedirect = Inherit): SubProcess {
         var std_redirects: Array<ProcessRedirect> = [stdIn, stdOut, stdErr]
-        // check command, arguments and environment, can not be empty or Null.
-        // workingDirectory must be directory.
         if (command.contains("\0")) {
             throw IllegalArgumentException("Command \"${command}\" cannot contains null character.")
         }
@@ -210,9 +194,6 @@ public open class Process {
         if (getNulFileHandle().isNone() && hasDiscardMode(std_redirects)) {
             throw IllegalArgumentException("Failed to open null file, can not redirect stdio to discard mode.")
         }
-
-        // convert attribute from String to CString
-        // if workingDir is None, it means exec the command in current dir.
         let workingDir_c: CString = match (workingDirectory) {
             case Some(dir) => unsafe { LibC.mallocCString(dir.toString()) }
             case _ => CString(CPointer())
@@ -221,17 +202,14 @@ public open class Process {
         return try {
             buildSubProcess(command, arguments, workingDir_c, environment, std_redirects)
         } finally {
-            // release malloc space
             unsafe {
                 workingDir_c.asResource().close()
             }
         }
     }
 
-    /**
-     * func run is combine the start and wait.
-     * provide a convenient way for user, which want start a subprocess and wait the command exec return code.
-     */
+
+
     @Deprecated[message: "Use global function `public func execute(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit, stdErr!: ProcessRedirect = Inherit, timeout!: ?Duration = None): Int64` instead."]
     public static func run(command: String, arguments: Array<String>, 
             workingDirectory!: ?Path = None, 
@@ -246,10 +224,8 @@ public open class Process {
         return subProcess.wait(timeout: timeout)
     }
 
-    /**
-     * func runOutput is combine the start and waitOutput.
-     * provide a convenient way for user, which want start a subprocess and wait the command exec output and err result.
-     */
+
+
     @Deprecated[message: "Use global function `public func executeWithOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Pipe, stdErr!: ProcessRedirect = Pipe): (Int64, Array<Byte>, Array<Byte>)` instead."]
     public static func runOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
         environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Pipe,
@@ -259,11 +235,9 @@ public open class Process {
         return subProcess.waitOutput()
     }
 
-    /**
-     * buildCurrentProcess
-     *
-     * @return CurrentProcess
-     */
+
+
+
     static func buildCurrentProcess(): CurrentProcess {
         let current_pid: Int32 = unsafe { CJ_OS_GetCurrentPid() }
         let processInfo_cp: CPointer<ProcessInfo> = unsafe { CJ_OS_GetProcessInfoByPid(current_pid) }
@@ -283,13 +257,11 @@ public open class Process {
         }
     }
 
-    /**
-     * return a process instance for an existing process which pid is giving by user.
-     *
-     * @param pid - process instance id
-     *
-     * @return Process
-     */
+
+
+
+
+
     static func buildProcess(pid: Int32): Process {
         let processInfo_cp: CPointer<ProcessInfo> = unsafe { CJ_OS_GetProcessInfoByPid(pid) }
         if (processInfo_cp.isNull()) {
@@ -324,18 +296,16 @@ public open class Process {
         return unsafe { CJ_OS_GetProcessAliveStatus(Int32(this._pid), this._startTime) == PROCESS_STATUS_ALIVE }
     }
 
-    /**
-     * terminate process
-     * when terminate the subprocess, the spawn which open to wait subprocess
-     * will modify status and change stdio stream to ByteBuffer let user can read
-     * stdOut & stdErr unread data after subprocess be killed.
-     *
-     * @param force - true terminated forcibly
-     *                false terminated normally
-     *
-     * @throws ProcessException - if the pid invaild
-     * @return Unit
-     */
+
+
+
+
+
+
+
+
+
+
     public func terminate(force!: Bool = false): Unit {
         if (this._pid > Int64(Int32.Max) || this._pid < 0) {
             throw IllegalArgumentException("Invaild pid, \"${this._pid}\".")
@@ -344,19 +314,16 @@ public open class Process {
         terminateAliveProcess(Int32(this._pid), force)
     }
 
-    /**
-     * terminate alive process
-     *
-     * @param pid - process id, need to terminate
-     * @param force - true terminated forcibly
-     *                false terminated normally
-     *
-     * @throws ProcessException - if the pid invaild
-     * @return Unit
-     */
+
+
+
+
+
+
+
+
     protected open func terminateAliveProcess(pid: Int32, force: Bool): Unit {
         let processStatus: Int8 = unsafe { CJ_OS_GetProcessAliveStatus(pid, this._startTime) }
-        // check the process still running, make sure not kill the wrong process.
         if (processStatus == PROCESS_STATUS_ALIVE) {
             unsafe { CJ_OS_Terminate(Int32(pid), force) }
             return
@@ -393,13 +360,11 @@ class PidProcess <: Process {
     }
 }
 
-/**
- * Supported process redirect mode.
- * Pipe: create a pipe between parent current and child process, which can provide a way to exchange info.
- * Inherit: use the same stdio with the current process.
- * FromFile: redirect stdio to a specified file which define by user.
- * Discard: discard the stdio, redirect to system specific "null file".
- */
+
+
+
+
+
 public enum ProcessRedirect {
     | Inherit
     | Pipe
@@ -425,7 +390,6 @@ func getProcessStartTime(pid: Int32): Int64 {
 
 func getProcessInfo(processInfo: ProcessInfo): (Option<String>, Option<String>, Option<Path>, Option<Array<String>>, 
     Option<Array<String>>, Option<Map<String, String>>) {
-    // Build subProcess instance use processInfo which return from System.
     let command: ?String = cStringToOption(processInfo.command)
     let name: ?String = getNameFromCommand(command)
     let workDir: ?String = cStringToOption(processInfo.workingDirectory)
@@ -448,7 +412,7 @@ func getExecutablePath(cmdPath: String): ?Path {
         } else {
             None
         }
-    } catch (_: FSException) { // Any exception except FSException will be throw
+    } catch (_: FSException) {
         None
     }
 }
@@ -486,18 +450,17 @@ func searchExecutableInWindowsDirectory(command: String): ?Path {
     }
     return None
 }
-/**
- * @brief Searches for an executable file in the following directories, according to the default behavior of the CreateProcessW function:
- *
- * 1. The directory from which the application is loaded.
- * 2. The current directory of the parent process.
- * 3. The 32-bit Windows system directory.
- * 4. The 16-bit Windows system directory.
- * 5. The Windows directory.
- * 6. The directories listed in the PATH environment variable.
- *
- * NOTE: For safe reason, we don't search current directory and 16-bit windows system directory.
- */
+
+
+
+
+
+
+
+
+
+
+
 @When[os == "Windows"]
 func resolveExecutable(command: String, environment: ?Map<String, String>, workingDir: CString): ?Path {
     if (command.size == 0) {
@@ -505,9 +468,6 @@ func resolveExecutable(command: String, environment: ?Map<String, String>, worki
     }
 
     let has_exe_extention = command.toAsciiLower().endsWith(".exe")
-
-    // If command is an path not filename, like C:\system32\xxx[.exe] or ./xxx[.exe]
-    // We will only search this path.
     if (command.contains(":") || command.contains("\\") || command.contains("/")) {
         return if (has_exe_extention) {
             getExecutablePath(command)
@@ -515,8 +475,6 @@ func resolveExecutable(command: String, environment: ?Map<String, String>, worki
             getExecutablePath("${command}.exe")
         }
     }
-
-    // Command is a filename, search it by order.
     var newCommand = command
     if (!has_exe_extention) {
         newCommand += ".exe"
@@ -554,7 +512,6 @@ func resolveExecutable(command: String, environment: ?Map<String, String>, worki
 
 @When[os == "Windows"]
 func checkCommandLineLength(command: String, arguments: Array<String>) {
-    // MAX_PATH check: refer from chapter: maximum-file-path-limitation
     var length: Int64 = command.size
     let maxLength = Int64(Int16.Max - 1)
     if (length >= maxLength) {
@@ -573,21 +530,15 @@ func checkCommandLineLength(command: String, arguments: Array<String>) {
 func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CString, environment: ?Map<String, String>,
     std_redirects: Array<ProcessRedirect>): SubProcess {
     checkCommandLineLength(command, arguments)
-    // If no valid path is found, preemptively throw an exception with the error message
-    // that would be returned by CreateProcessW when it fails to find the specified file.
     let program = match (resolveExecutable(command, environment, workingDir_c)) {
         case Some(programe) => programe.toString()
         case _ => throw ProcessException(
             "Created process failed, errMessage: \"The system cannot find the file specified.\".")
     }
-
-    // convert attribute from String to CString
     let subProcess: SubProcess
     var processRtnData_cp: CPointer<ProcessRtnData> = CPointer<ProcessRtnData>()
     var processInfo_cp: CPointer<ProcessInfo> = CPointer<ProcessInfo>()
     var processStartInfo_cp: CPointer<ProcessStartInfo> = CPointer<ProcessStartInfo>()
-    // build commandLine and convert to CString
-    // build envBlock and convert to CString
     var commandLine_c: CStringResource = CString(CPointer()).asResource()
     var envBlock_c: CStringResource = CString(CPointer()).asResource()
     var program_c: CStringResource = CString(CPointer()).asResource()
@@ -604,8 +555,6 @@ func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CS
         processStartInfo_cp = unsafe { CJ_OS_CreateProcessStartInfo() }
         unsafe { processStartInfo_cp.write(processStartInfo) }
         processRtnData_cp = unsafe { CJ_OS_StartProcess(processStartInfo_cp) }
-        // processRtnData errcode not 0 means not success, and it's should not go on.
-        // should deal with the errcode give detail message.
         if (processRtnData_cp.isNull()) {
             throw ProcessException("Created process failed.")
         }
@@ -645,15 +594,11 @@ func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CS
 
     return subProcess
 }
-
-// check and concat command，arguments to commandLine
 @When[os == "Windows"]
 func buildCommandLine(command: String, arguments: Array<String>): CStringResource {
     let cmdLineBuilder: StringBuilder = StringBuilder()
-    // concatenate command
     let escapeCommand = escapeArgument(command)
     cmdLineBuilder.append(escapeCommand)
-    // concatenate arguments
     for (arg in arguments) {
         cmdLineBuilder.append(r' ')
         cmdLineBuilder.append(escapeArgument(arg))
@@ -781,7 +726,6 @@ func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CS
         collectCStringArray
     var environment_cArr: Array<CString> = Array<CString>()
     try {
-        // if environment is None, it will be use current environment which from it's parent's process.
         environment_cArr = match (environment) {
             case Some(env) => env |>
                 map<(String, String), CString> {
@@ -810,7 +754,6 @@ func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CS
     var processRtnData_cp: CPointer<ProcessRtnData> = CPointer<ProcessRtnData>()
     var processInfo_cp: CPointer<ProcessInfo> = CPointer<ProcessInfo>()
     var processStartInfo_cp: CPointer<ProcessStartInfo> = CPointer<ProcessStartInfo>()
-    // convert attribute from String to CString
     var command_c: CString = CString(CPointer<UInt8>())
     try {
         let stdIn_fd = matchRedirectFileHandle(std_redirects[0], StdIO.StdIn)
@@ -824,8 +767,6 @@ func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CS
         processStartInfo_cp = unsafe { CJ_OS_CreateProcessStartInfo() }
         unsafe { processStartInfo_cp.write(processStartInfo) }
         processRtnData_cp = unsafe { CJ_OS_StartProcess(processStartInfo_cp) }
-        // processRtnData errcode not 0 means not success, and it's should not go on.
-        // should deal with the errcode give detail message.
         if (processRtnData_cp.isNull()) {
             throw ProcessException("Created process failed.")
         }
@@ -876,14 +817,12 @@ func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CS
     return subProcess
 }
 
-/**
- * matchRedirectFileHandle
- *
- * @param redirect - process redirect mode, include pipe, inherit, discard and fromfile
- * @param stdio    - stdio type, include stdin, stdout and stderr
- *
- * @return IntNative
- */
+
+
+
+
+
+
 func matchRedirectFileHandle(redirect: ProcessRedirect, stdio: StdIO): IntNative {
     return match (redirect) {
         case ProcessRedirect.Pipe => INVALID_HANDLE
@@ -913,25 +852,21 @@ public func findProcess(pid: Int64): Process {
     return Process.buildProcess(Int32(pid))
 }
 
-/**
- * start a new subProcess using command and arguments which provide by user.
- *
- * @param command - vaild system command, should not be empty string and can not include Null character.
- * @param arguments - command arguments, each of the arguments should not be empty string and can not include Null character.
- * @param workingDirectory - command working directory, if None, means inherit current process working directory.
- * @param environment - command working environment, if None, means inherit current process environment.
- * @param stdIn - stdIn redirect mode.
- * @param stdOut - stdOut redirect mode.
- * @param stdErr - stdErr redirect mode.
- *
- * @return SubProcess - a new subProcess instance.
- */
+
+
+
+
+
+
+
+
+
+
+
 public func launch(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit,
     stdErr!: ProcessRedirect = Inherit): SubProcess {
     var std_redirects: Array<ProcessRedirect> = [stdIn, stdOut, stdErr]
-    // check command, arguments and environment, can not be empty or Null.
-    // workingDirectory must be directory.
     if (command.contains("\0")) {
         throw IllegalArgumentException("Command \"${command}\" cannot contains null character.")
     }
@@ -964,9 +899,6 @@ public func launch(command: String, arguments: Array<String>, workingDirectory!:
     if (getNulFileHandle().isNone() && Process.hasDiscardMode(std_redirects)) {
         throw IllegalArgumentException("Failed to open null file, can not redirect stdio to discard mode.")
     }
-
-    // convert attribute from String to CString
-    // if workingDir is None, it means exec the command in current dir.
     let workingDir_c: CString = match (workingDirectory) {
         case Some(dir) => unsafe { LibC.mallocCString(dir.toString()) }
         case _ => CString(CPointer())
@@ -975,17 +907,14 @@ public func launch(command: String, arguments: Array<String>, workingDirectory!:
     try {
         return buildSubProcess(command, arguments, workingDir_c, environment, std_redirects)
     } finally {
-        // release malloc space
         unsafe {
             workingDir_c.asResource().close()
         }
     }
 }
 
-/**
- * func execute is combine the launch and wait.
- * provide a convenient way for user, which want start a subprocess and wait the command exec return code.
- */
+
+
 public func execute(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit,
     stdErr!: ProcessRedirect = Inherit, timeout!: ?Duration = None): Int64 {
@@ -994,10 +923,8 @@ public func execute(command: String, arguments: Array<String>, workingDirectory!
     subProcess.wait(timeout: timeout)
 }
 
-/**
- * func executeWithOutput is combine the start and waitOutput.
- * provide a convenient way for user, which want start a subprocess and wait the command exec output and err result.
- */
+
+
 public func executeWithOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Pipe,
     stdErr!: ProcessRedirect = Pipe): (Int64, Array<Byte>, Array<Byte>) {

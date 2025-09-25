@@ -1,39 +1,29 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines zone info reader.
- */
+
+
+
+
+
+
+
+
 
 package std.time
-
-// -1: failed, (>= 0): file size
 foreign func CJ_TIME_GetFileSize(path: CPointer<Byte>, pathLen: Int64): Int64
-// -1: failed, (>= 0): number of read bytes
 foreign func CJ_TIME_ReadAllBytesFromFile(path: CPointer<Byte>, pathLen: Int64, buf: CPointer<Byte>, bufLen: Int64): Int64
 
-/**
- * @throws Exception if the length of source is less than or equal to zero
- * @throws InvalidDataException if fileSize is less than zero
- * @throws InvalidDataException if readNum is not equal to fileSize
- * @throws IllegalMemoryException if failed to call loadFromTZData(cjvm).
- */
+
+
+
+
 func loadTimeZone(name: String, source: String): TimeZone {
     return TimeZone.loadFromTZData(name, loadTZifData(name, source))
 }
 
-/**
- * @throws Exception if the length of source is less than or equal to zero
- * @throws InvalidDataException if fileSize is less than zero
- * @throws InvalidDataException if readNum is not equal to fileSize
- */
+
+
+
 func loadTZifData(name: String, source: String): Array<UInt8> {
     let srcLen = source.size
     if (srcLen <= 0) {
@@ -67,71 +57,61 @@ func loadTZifData(path: String): Array<UInt8> {
     }
 }
 
-/**
- * Parse time zone information formated (TZif) data.
- *
- * @param data TZif data formated with RFC8536.
- * @return a List containing a number of LocalTime, a List containing a number of TransTime and extend zone name.
- *
- * @throws InvalidDataException
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
+
+
 func parseTZinfoData(data: Array<UInt8>): (Array<LocalTime>, Array<TransTime>, String) {
     var arrReader = ArrReader(data)
 
-    /*
-     * Now we start to read and parse header of TZif data.
-     * A TZif header is structured as follows (the lengths of multi-octet fields are shown in parentheses):
-     * +---------------+---+
-     * |  magic    (4) |ver|
-     * +---------------+---+---------------------------------------+
-     * |           [unused - reserved for future use] (15)         |
-     * +---------------+---------------+---------------+-----------+
-     * |  isutcnt  (4) |  isstdcnt (4) |  leapcnt  (4) |
-     * +---------------+---------------+---------------+
-     * |  timecnt  (4) |  typecnt  (4) |  charcnt  (4) |
-     * +---------------+---------------+---------------+
-     */
+
+
+
+
+
+
+
+
+
+
+
     let (isUTCnt, isStdCnt, leapCnt, timeCnt, typeCnt, charCnt) = (0, 1, 2, 3, 4, 5)
     var (version, fields) = parseHeader(arrReader)
 
-    /*
-     * If the version of TZif data is 2 or 3, we can only discard the data block of Version 1.
-     * In the version 1 data block, time values are 32 bits (TIME_SIZE = 4 octets).
-     * The data block is structured as follows (the lengths of multi-octet fields are shown in parentheses):
-     * +---------------------------------------------------------+
-     * |  transition times          (timecnt x TIME_SIZE)        |
-     * +---------------------------------------------------------+
-     * |  transition types          (timecnt)                    |
-     * +---------------------------------------------------------+
-     * |  local time type records   (typecnt x 6)                |
-     * +---------------------------------------------------------+
-     * |  time zone designations    (charcnt)                    |
-     * +---------------------------------------------------------+
-     * |  leap-second records       (leapcnt x (TIME_SIZE + 4))  |
-     * +---------------------------------------------------------+
-     * |  standard/wall indicators  (isstdcnt)                   |
-     * +---------------------------------------------------------+
-     * |  UT/local indicators       (isutcnt)                    |
-     * +---------------------------------------------------------+
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     var timeSize = 4
     if (version > 1) {
         arrReader.skip(fields[timeCnt] * timeSize + fields[timeCnt] + fields[typeCnt] * 6 + fields[charCnt] +
                        fields[leapCnt] * (4 + timeSize) + fields[isStdCnt] + fields[isUTCnt])
 
-        /*
-         * In the version 2+ data block, present only in version 2 and 3 files,
-         * time values are 64 bits (TIME_SIZE = 8 octets).
-         */
+
+
         timeSize = 8
 
-        /*
-         * Although the version 1 and 2+ headers have the same format, magic number, and version fields,
-         * their count fields may differ, because the version 1 data can be a subset of the version 2+ data.
-         * So we need to re-read the header to get the right information.
-         */
+
+
+
         (version, fields) = parseHeader(arrReader)
     }
 
@@ -151,12 +131,10 @@ func parseTZinfoData(data: Array<UInt8>): (Array<LocalTime>, Array<TransTime>, S
     let timeNum = fields[timeCnt]
     var TransTime: Array<TransTime> = parseZoneTrans(timeNum, zoneNum, transTimes, transTypes, timeSize)
 
-    /*
-     * The TZif footer is structured as follows (the lengths of multi-octet fields are shown in parentheses):
-     * +---+--------------------+---+
-     * | NL|  TZ string (0...)  |NL |
-     * +---+--------------------+---+
-     */
+
+
+
+
     var footer = ""
     let last = arrReader.getLast()
     let asciiCodeOfLn: UInt8 = b'\n'
@@ -188,21 +166,19 @@ func parseHeader(arrReader: ArrReader): (Int64, Array<Int64>) {
         case b'3' => version = 3
         case _ => throw InvalidDataException("Failed to parse the timezone file.")
     }
-    arrReader.getNext(15) /* Unused 15 bytes */
+    arrReader.getNext(15) 
     return (version, parseFields(arrReader))
 }
 
-/**
- * Parses fields except magic and version in the header.
- *
- * @param reader a DataReader need to be parsed fields except magic and version in the header.
- * @param fields an array used to storage fields that parsed by this function.
- * @return true if no anything wrong occured, otherwise false.
- *
- * @throws InvalidDataException
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 func parseFields(arrReader: ArrReader): Array<Int64> {
     let fields = Array<Int64>(6, repeat: 0)
@@ -212,26 +188,24 @@ func parseFields(arrReader: ArrReader): Array<Int64> {
                                 (UInt32(arrReader.arr[arrReader.index + 2]) << 8) | 
                                 (UInt32(arrReader.arr[arrReader.index + 1]) << 16) | 
                                 (UInt32(arrReader.arr[arrReader.index]) << 24))))
-        arrReader.skip(4) // Jump 4 bytes of one UInt32
+        arrReader.skip(4)
     }
     return fields
 }
 
-/**
- * Parses zones of data block of TZif data. Each record has the following format (the lengths of multi-octet
- * fields are shown in parentheses):
- * +---------------+---+---+
- * |  utoff (4)    |dst|idx|
- * +---------------+---+---+
- *
- * @param zoneNum the number of records, the "typecnt" field in the header.
- * @param typeRecords a series of six-octet records specifying a local time type, which stored in data block of TZif.
- * @param zoneDes a series of octets constituting an array of NUL-terminated (0x00) time zone designation strings,
- * which stored in data block of TZif.
- * @return a Result containing an array of LocalTime parsed from @p typeRecords, or an Exception.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 func parseZones(zoneNum: Int64, typeRecords: Array<UInt8>, zoneDes: Array<UInt8>): Array<LocalTime> {
     if (zoneNum <= 0) {
@@ -262,11 +236,9 @@ func parseZones(zoneNum: Int64, typeRecords: Array<UInt8>, zoneDes: Array<UInt8>
     return zone
 }
 
-/*
- * The string returned must be an ASCII string,
- * so we use the unsafe String.fromUtf8Unchecked method.
- * @throws InvalidDataException if failed to parse timezone.
- */
+
+
+
 func itos(arr: Array<UInt8>, canNul: Bool): String {
     for (i in 0..arr.size) {
         if (arr[i] == 0x00) {
@@ -283,24 +255,22 @@ func itos(arr: Array<UInt8>, canNul: Bool): String {
     return unsafe { String.fromUtf8Unchecked(arr) }
 }
 
-/**
- * Parses transition times of data block of TZif data.
- *
- * @param timeNum the number of records, the "timecnt" field in the header.
- * @param zoneNum the number of records, the "typecnt" field in the header.
- * @param transTimes a series of four- or eight-octet UNIX leap-time values sorted in strictly ascending order,
- * which stored in data block of TZif.
- * @param transTypes a series of one-octet unsigned integers specifying the type of local time of the corresponding
- * transition time, which stored in data block of TZif.
- * @param stdInd a series of one-octet values indicating whether the transition times associated with local time
- * types were specified as standard time or wall-clock time, which stored in data block of TZif.
- * @param utInd a series of one-octet values indicating whether the transition times associated with local time
- * types were specified as UT or local time, which stored in data block of TZif.
- * @param is64 a Bool indicates whether each record is four- or eight-byte.
- * @return a Result containing an array of TransTime parsed from @p transTimes, or an Exception.
- *
- * @since 0.19.3
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @OverflowWrapping
 func parseZoneTrans(
     timeNum: Int64,

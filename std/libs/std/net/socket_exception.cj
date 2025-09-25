@@ -1,22 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file The file declares the SocketException class and SocketTimeoutException class.
- */
+
+
+
+
+
+
 
 package std.net
 
 import std.io.*
 
-/**
- * The SocketException class is used to handle exceptions related to socket connection errors.
- */
+
 public class SocketException <: IOException {
     public init() {
         super()
@@ -53,9 +48,7 @@ public class SocketException <: IOException {
     }
 }
 
-/**
- * The SocketTimeoutException class is used to handle exceptions related to socket connection timeout.
- */
+
 public class SocketTimeoutException <: Exception {
     public init() {
         super()

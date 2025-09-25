@@ -1,14 +1,11 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file The file declares several util functions.
- */
+
+
+
+
+
+
 package std.fs
 
 import std.collection.*
@@ -49,9 +46,7 @@ let TMP_DIR = "/tmpDirXXXXXX\0".toArray()
 @When[os != "Windows"]
 let TMP_FILE = "/tmpFileXXXXXX\0".toArray()
 
-/**
- * Before calling this function, call func checkPath to verify @param path.
- */
+
 @When[os != "Windows"]
 func isAbsolutePath(path: String): Bool {
     return isSlash(path[0])
@@ -130,8 +125,6 @@ const UNC_PACH_PREFIX = "\\\\.\\"
 
 @When[os == "Windows"]
 func isAbsolutePath(path: String): Bool {
-    // The size of path is 3 when path == "[a-z | A-Z]:\\xxxx"
-    // "/xxx" or "\\xxx" is absolute path
     return ((path.size >= 3) && path[0].isAsciiLetter() && (path[1] == b':') && isSlash(path[2])) ||
         (path.size >= 1 && isSlash(path[0]))
 }
@@ -166,22 +159,18 @@ func isRootPath(path: String) {
 
 @When[os == "Windows"]
 func containsSlash(path: String): Bool {
-    // windows can use r'/' or r'\\', so use r'\\' to convert.
     var tempPath = path.replace("/", SLASH_CHAR)
     return tempPath.contains(SLASH_CHAR)
 }
 
 @When[os == "Windows"]
 func lastIndexOfSlash(path: String): Option<Int64> {
-    // windows can use r'/' or r'\\', so use r'\\' to convert.
     var tempPath = path.replace("/", SLASH_CHAR)
     return tempPath.lastIndexOf(SLASH_CHAR)
 }
 
 func getParent(path: String): Path {
     let rootLen = getRootLen(path)
-    // skip trailing slashes
-    // end point to the first non slash rune from end, or rootLen - 1
     var end = path.size - 1
     while (end >= rootLen) {
         if (!isSlash(path[end])) {
@@ -189,14 +178,12 @@ func getParent(path: String): Path {
         }
         end--
     }
-    // find last slash
     while (end >= rootLen) {
         if (isSlash(path[end])) {
             break
         }
         end--
     }
-    // skip ending slashes
     while (end >= rootLen) {
         if (!isSlash(path[end])) {
             break
@@ -208,8 +195,6 @@ func getParent(path: String): Path {
 
 func getFileName(path: String): String {
     let rootLen = getRootLen(path)
-    // skip trailing slashes
-    // end point to the first non slash rune from end, or rootLen - 1
     var end = path.size - 1
     while (end >= rootLen) {
         if (!isSlash(path[end])) {
@@ -217,7 +202,6 @@ func getFileName(path: String): String {
         }
         end--
     }
-    // find last slash
     var start = end
     while (start >= rootLen) {
         if (isSlash(path[start])) {
@@ -239,28 +223,23 @@ func getRootLen(path: String): Int64 {
 @When[os == "Windows"]
 func getRootLen(path: String): Int64 {
     let raw = unsafe { path.rawData() }
-    // "c:" || "c:\\"
     if (raw.size > 1 && raw[1] == b':') {
         if (raw.size > 2 && isSlash(raw[2])) {
             return 3
         }
         return 2
     }
-    // "\\\\?\\UNC\\" || "\\\\.\\UNC\\"
     if (raw.size > 7 && (raw[..8].equalsIgnoreCaseAndSlash("\\\\?\\UNC\\") ||
         raw[..8].equalsIgnoreCaseAndSlash("\\\\.\\UNC\\"))) {
         return countSeparator(raw, idx: 8, cnt: 2)
     }
-    // "\\\\?\\" || "\\\\.\\"
     if (raw.size > 3 && (raw[..4].equalsIgnoreCaseAndSlash("\\\\?\\") || raw[..4].equalsIgnoreCaseAndSlash("\\\\.\\"))) {
         return countSeparator(raw, idx: 4, cnt: 1)
     }
     if (isSlash(raw[0])) {
-        // "\\\\" UNC path
         if (raw.size > 1 && isSlash(raw[1])) {
             return countSeparator(raw, idx: 2, cnt: 2)
         }
-        // "\\"
         return 1
     }
     return 0
@@ -295,9 +274,7 @@ func skipEndSlash(path: String): Int64 {
     return lastLetterIdx
 }
 
-// DOS device paths : Incoming DOS device paths normalize return DOS device paths
-// UNC paths : Incoming UNC paths normalize return UNC paths
-// not DOS device paths, not UNC paths
+
 @When[os == "Windows"]
 func processPathHeader(rawPath: String, canonicalPath: Array<Byte>): String {
     if (rawPath.startsWith(DOS_PATH_PREFIX)) {
@@ -310,30 +287,24 @@ func processPathHeader(rawPath: String, canonicalPath: Array<Byte>): String {
     }
 }
 
-// Some WIN API do not accept normal path longer than 260 bytes (including the ending '\0').
-// So when path is too long, we add "\\\\?\\" to DOS path, "\\\\?\\UNC" to UNC path.
-// Meanwhile, we replace '/' with '\\', since some WIN API do not accept long path with both '\\' and '/'.
+
 @When[os == "Windows"]
 func fixLongPath(path: String): String {
     if (path.size < 259) {
         return path
     }
     let raw = unsafe { path.rawData() }
-    // "c:" || "c:\\"
     if (raw.size > 1 && raw[1] == b':') {
         return concatPath("\\\\?\\", path)
     }
-    // "\\\\?\\UNC\\" || "\\\\.\\UNC\\"
     if (raw.size > 7 && (raw[..8].equalsIgnoreCaseAndSlash("\\\\?\\UNC\\") ||
         raw[..8].equalsIgnoreCaseAndSlash("\\\\.\\UNC\\"))) {
         return path
     }
-    // "\\\\?\\" || "\\\\.\\"
     if (raw.size > 3 && (raw[..4].equalsIgnoreCaseAndSlash("\\\\?\\") || raw[..4].equalsIgnoreCaseAndSlash("\\\\.\\"))) {
         return path
     }
     if (isSlash(raw[0])) {
-        // "\\\\" UNC path
         if (raw.size > 1 && isSlash(raw[1])) {
             return concatPath("\\\\?\\UNC", path[1..])
         }
@@ -405,7 +376,6 @@ func callNativeFunc(
 
 extend Array<Byte> {
     func equalsIgnoreCaseAndSlash(that: String): Bool {
-        // size is the same, and not 0
         var (b1, b2): (Byte, Byte)
         for (i in 0..this.size) {
             b1 = this[i]
@@ -427,7 +397,6 @@ extend Array<Byte> {
         if (b1 == b2) {
             return true
         }
-        // b1 in 'A' ~ 'Z', and the lower case of b1 equals to b2
         if (b1 >= b'A' && b1 <= b'Z' && (b1 + 32) == b2) {
             return true
         }

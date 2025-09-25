@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.*
@@ -137,8 +137,6 @@ class CartesianProductIterator<A, B> <: Iterator<(A, B)> {
     var right: Iterator<B>
 
     CartesianProductIterator(let left: Iterator<A>, let rightGen: () -> Iterator<B>) {
-        // it is important to call rightGen() at least once in the constructor
-        // due to strategy processor internal logic
         this.right = rightGen()
         this.leftElement = left.next()
     }
@@ -160,8 +158,6 @@ class CartesianProductIterator<A, B> <: Iterator<(A, B)> {
     }
 
     public override func next(): ?(A, B) {
-        // a little clarification: we call nextRight() first, because
-        // it internally modifies leftElement
         let b = nextRight() ?? return None
         let a = leftElement ?? return None
         return (a, b)
@@ -218,8 +214,6 @@ class RememberingDataProvider<T> <: DataProvider<T> {
         RememberingIterable<T>(delegate.provide().iterator(), this)
     }
 }
-
-// Iterable that saves last returned item
 class RememberingIterable<T> <: Iterator<T> {
     RememberingIterable(let delegate: Iterator<T>, let source: RememberingDataProvider<T>) {}
 
@@ -247,8 +241,6 @@ class RememberingLazyIterator<T> <: Iterator<T> {
     }
 }
 
-// Iterable that is lazily advanced from outside.
-// Saves last returned item once and then recovers to original saved item.
 class RememberingLazyIterable<T> <: LazyCyclicNode & Iterable<T> {
     var currentItem: ?T = None
     var origLastItem: T
@@ -259,7 +251,6 @@ class RememberingLazyIterable<T> <: LazyCyclicNode & Iterable<T> {
     }
 
     public func recover() {
-        // recover original last item so that the next shrinking iteration happen on a correct item
         storage.current = origLastItem
         storage.info.update(origLastItem)
     }
@@ -273,8 +264,6 @@ class RememberingLazyIterable<T> <: LazyCyclicNode & Iterable<T> {
 
     public func iterator(): Iterator<T> { RememberingLazyIterator(this) }
 }
-
-// Assumes that mixed iterables contain RememberingLazyIterable somewhere inside of them.
 class IterableMix<T> <: Iterator<T> {
     IterableMix(let delegate1: Iterator<T>, let delegate2: Iterator<T>) {}
 
@@ -282,8 +271,6 @@ class IterableMix<T> <: Iterator<T> {
         delegate1.next() ?? delegate2.next()
     }
 }
-
-// Iterates over lazy iterators added to LazyCyclicNode
 class LazyCyclicNodeEngine<T> <: Iterator<T> {
     LazyCyclicNodeEngine(var current: LazyCyclicNode, let iter: Iterator<T>) {}
 
@@ -295,22 +282,17 @@ class LazyCyclicNodeEngine<T> <: Iterator<T> {
     public func advance(): ?Unit {
         current.prev.recover()
         var val = current.advance()
-
-        // remove finished nodes
         while (val.isNone() && !refEq(current, current.next_)) {
             current = current.removeSelf()
             val = current.advance()
         }
-        // move forward
         current = current.next_
         val
     }
 }
 
-// Intrusive cyclic doubly linked list
-// Used to advance type-erased internal lazy iterators one after another in a cycle
-//
-// Public only due to protected sealed functions being implicitly public
+
+
 public open class LazyCyclicNode {
     var next_: LazyCyclicNode = unsafe { zeroValue() }
     var prev: LazyCyclicNode = unsafe { zeroValue() }
@@ -332,8 +314,6 @@ public open class LazyCyclicNode {
         other.next_ = prevNext
         other.prev = this
     }
-
-    // returns next node
     func removeSelf(): LazyCyclicNode {
         let prev = this.prev
         let next = this.next_
@@ -343,8 +323,6 @@ public open class LazyCyclicNode {
         next
     }
 }
-
-// public only due to protected sealed functions being implicitly public
 public class InputParameter {
     var position: Int64 = -1
     var repr: String = ""
@@ -357,9 +335,7 @@ public class InputParameter {
 
 type ShrinkResult = (RunStepResult)
 
-/**
- * Base class for all combinators of `DataStategy`es.
- */
+
 sealed abstract class DataStrategyProcessor<T> {
     private var genIterator: Iterator<T> = Array<T>().iterator()
     var currentReduction = 0
@@ -442,7 +418,6 @@ sealed abstract class DataStrategyProcessor<T> {
 
                 nextShrinked = shrink.next()
             }
-            // if the current shrinking iteration produced no new candidates, we should stop
             if (noCandidates) {
                 break
             }
@@ -466,40 +441,29 @@ sealed abstract class DataStrategyProcessor<T> {
         UnitTestCase.createParameterized<T>(caseName, this, configuration: configuration, body: doRun)
     }
 
-    /** Starting point for combinding/mapping `DataStategy`es.
-     *
-     *  @param s DataStrategy to wrap
-     *  @param name Name of the corresponding parameter in testing report
-     */
+
+
+
     public static func start(s: DataStrategy<T>, name: String): SimpleProcessor<T> {
         SimpleProcessor<T>({ => s }, name)
     }
-
-    // Overload used for type checking and lazy creation inside macro generated code
     public static func start<U>(f: () -> DataStrategy<U>, name: String): DataStrategyProcessor<U>
         where U <: BenchInputProvider<T>
     {
         SimpleProcessor<U>(f, name).mapWithConfig { input, configuration =>
-            // for convenience set batch size automatically
             if (input is BatchSizeOneInputProvider<T>) {
                 configuration.batchSize(1)
             }
             input
         }
     }
-
-    // Overload used for type checking and lazy creation inside macro generated code
     public static func start(f: () -> DataStrategy<T>, name: String, x!: Int64 = 0): SimpleProcessor<T> {
         let _ = x
         SimpleProcessor<T>(f, name)
     }
-
-    // Overload used for type checking and lazy creation inside macro generated code
     public static func start(f: () -> DataStrategyProcessor<T>, _: String): DataStrategyProcessor<T> {
         f()
     }
-
-    // Overload used for type checking and lazy creation inside macro generated code
     public static func start<U>(f: () -> DataStrategyProcessor<U>, _: String, x!: Int64 = 0): DataStrategyProcessor<U>
         where U <: BenchInputProvider<T>
     {
@@ -509,50 +473,39 @@ sealed abstract class DataStrategyProcessor<T> {
 }
 
 extend<T> DataStrategyProcessor<T> {
-    /**
-     * "map" combinator that simply applies `f` to every item of original data strategy.
-     * Shrinking also happens on original input and then mapped.
-     */
+
+
+
     public func map<R>(f: (T) -> R): MapProcessor<T, R> {
         MapProcessor<T, R>(this, { x, _ => f(x) })
     }
 
-    /**
-     * "map" combinator with access to current `Configuration` that simply applies `f` to every item of original data strategy.
-     * Shrinking also happens on original input and then flat mapped.
-     */
+
+
     public func mapWithConfig<R>(f: (T, Configuration) -> R): MapProcessor<T, R> {
         MapProcessor<T, R>(this, { x, configuration => f(x, configuration)})
     }
 
-    /**
-     * "flat map" combinator that simply applies `f` to every item of original data strategy.
-     * Shrinking also happens on original input and then flat mapped.
-     */
+
+
     public func flatMap<R>(f: (T) -> DataProvider<R>): FlatMapProcessor<T, R> {
         FlatMapProcessor<T, R>(this, f)
     }
 
-    /**
-     * "flat map" combinator that simply applies `f` to every item of original data strategy.
-     * However shrinking is done by returned strategy rather than original input.
-     */
+
+
     public func flatMapStrategy<R>(f: (T) -> DataStrategy<R>): FlatMapStrategyProcessor<T, R> {
         FlatMapStrategyProcessor<T, R>(this, f)
     }
 
-    /**
-     * Cartesian product combinator. Creates data strategy that contains all possible permutations of elements in original strategies.
-     * Shrinking happens on each element of the original strategy independently and uniformly.
-     */
+
+
     public func product<R>(p: DataStrategyProcessor<R>): CartesianProductProcessor<T, R> {
         CartesianProductProcessor<T, R>(this, p)
     }
 
-    /**
-     * Convenience adapter for `DataStrategyProcessor.product` when second strategy only does side effects.
-     * Intended to be used from code generated by `@Test` macro to help with type inference.
-     */
+
+
     public func productWithUnit<P>(p: P): MapProcessor<(T, Unit), T> where P <: DataStrategyProcessor<Unit> {
         CartesianProductProcessor<T, Unit>(this, p)
             .map{ x => x[0] }

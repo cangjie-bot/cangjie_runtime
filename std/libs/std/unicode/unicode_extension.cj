@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.unicode
 
@@ -24,10 +24,8 @@ struct UnicodeRange {
     UnicodeRange(var start: Int32, var end: Int32) {}
 }
 
-/**
- * Following arrays are used to determine the type of the input character according to the Unicode standard.
- * Current Unicode standard version is 13.0.0.
- */
+
+
 
 let LOWER_CASE_LETTER: Array<UnicodeRange> = [
     UnicodeRange(0X0061, 0X007A),
@@ -2084,9 +2082,7 @@ let WHITE_SPACE: Array<UnicodeRange> = [
     UnicodeRange(0X3000, 0X3000)
 ]
 
-/**
- * denotes a code point uppercase-lowercase pattern
- */
+
 const UPPERLOWER: Int32 = 0xFFFFFF
 const SPECIAL_UNICODE: Int32 = 0xFFFFFE
 const GREECE_RUNE_LEFT_INTERVAL: UInt32 = 0x0370
@@ -2110,10 +2106,8 @@ let LITHUANIA_SPECIAL_RUNE = HashMap<UInt32, Array<UInt32>>([
     (0x0128, [0x0069, 0x0307, 0x0303])
 ])
 
-/**
- * these case ranges are sorted by start offset, and do not overlap
- * so we can do a binary search
- */
+
+
 let CASE_RANGES: Array<CaseRange> = [
     CaseRange(0x0041, 0x005A, 0, 32, 0),
     CaseRange(0x0061, 0x007A, -32, 0, -32),
@@ -2451,126 +2445,112 @@ let CASE_RANGES: Array<CaseRange> = [
 ]
 
 let SPECIAL_UNICODE_MAP = HashMap<UInt32, (Array<UInt32>, Array<UInt32>, Array<UInt32>)>([
-    // The German es-zed is special--the normal mapping is to SS.
-    // Note: the titlecase should never occur in practice. It is equal to titlecase(uppercase(<es-zed>))
-    (0x00DF, ([0x00DF], [0x0053, 0x0073], [0x0053, 0x0053])), // LATIN SMALL LETTER SHARP S
+    (0x00DF, ([0x00DF], [0x0053, 0x0073], [0x0053, 0x0053])),
+    (0x0130, ([0x0069, 0x0307], [0x0130], [0x0130])),
+    (0xFB00, ([0xFB00], [0x0046, 0x0066], [0x0046, 0x0046])),
+    (0xFB01, ([0xFB01], [0x0046, 0x0069], [0x0046, 0x0049])),
+    (0xFB02, ([0xFB02], [0x0046, 0x006C], [0x0046, 0x004C])),
+    (0xFB03, ([0xFB03], [0x0046, 0x0066, 0x0069], [0x0046, 0x0046, 0x0049])),
+    (0xFB04, ([0xFB04], [0x0046, 0x0066, 0x006C], [0x0046, 0x0046, 0x004C])),
+    (0xFB05, ([0xFB05], [0x0053, 0x0074], [0x0053, 0x0054])),
+    (0xFB06, ([0xFB06], [0x0053, 0x0074], [0x0053, 0x0054])),
 
-    // Preserve canonical equivalence for I with dot. Turkic is handled below.
-    (0x0130, ([0x0069, 0x0307], [0x0130], [0x0130])), // LATIN CAPITAL LETTER I WITH DOT ABOVE
+    (0x0587, ([0x0587], [0x0535, 0x0582], [0x0535, 0x0552])),
+    (0xFB13, ([0xFB13], [0x0544, 0x0576], [0x0544, 0x0546])),
+    (0xFB14, ([0xFB14], [0x0544, 0x0565], [0x0544, 0x0535])),
+    (0xFB15, ([0xFB15], [0x0544, 0x056B], [0x0544, 0x053B])),
+    (0xFB16, ([0xFB16], [0x054E, 0x0576], [0x054E, 0x0546])),
+    (0xFB17, ([0xFB17], [0x0544, 0x056D], [0x0544, 0x053D])),
+    (0x0149, ([0x0149], [0x02BC, 0x004E], [0x02BC, 0x004E])),
+    (0x0390, ([0x0390], [0x0399, 0x0308, 0x0301], [0x0399, 0x0308, 0x0301])),
+    (0x03B0, ([0x03B0], [0x03A5, 0x0308, 0x0301], [0x03A5, 0x0308, 0x0301])),
+    (0x01F0, ([0x01F0], [0x004A, 0x030C], [0x004A, 0x030C])),
+    (0x1E96, ([0x1E96], [0x0048, 0x0331], [0x0048, 0x0331])),
+    (0x1E97, ([0x1E97], [0x0054, 0x0308], [0x0054, 0x0308])),
+    (0x1E98, ([0x1E98], [0x0057, 0x030A], [0x0057, 0x030A])),
+    (0x1E99, ([0x1E99], [0x0059, 0x030A], [0x0059, 0x030A])),
+    (0x1E9A, ([0x1E9A], [0x0041, 0x02BE], [0x0041, 0x02BE])),
+    (0x1F50, ([0x1F50], [0x03A5, 0x0313], [0x03A5, 0x0313])),
+    (0x1F52, ([0x1F52], [0x03A5, 0x0313, 0x0300], [0x03A5, 0x0313, 0x0300])),
+    (0x1F54, ([0x1F54], [0x03A5, 0x0313, 0x0301], [0x03A5, 0x0313, 0x0301])),
+    (0x1F56, ([0x1F56], [0x03A5, 0x0313, 0x0342], [0x03A5, 0x0313, 0x0342])),
+    (0x1FB6, ([0x1FB6], [0x0391, 0x0342], [0x0391, 0x0342])),
+    (0x1FC6, ([0x1FC6], [0x0397, 0x0342], [0x0397, 0x0342])),
+    (0x1FD2, ([0x1FD2], [0x0399, 0x0308, 0x0300], [0x0399, 0x0308, 0x0300])),
+    (0x1FD3, ([0x1FD3], [0x0399, 0x0308, 0x0301], [0x0399, 0x0308, 0x0301])),
+    (0x1FD6, ([0x1FD6], [0x0399, 0x0342], [0x0399, 0x0342])),
+    (0x1FD7, ([0x1FD7], [0x0399, 0x0308, 0x0342], [0x0399, 0x0308, 0x0342])),
+    (0x1FE2, ([0x1FE2], [0x03A5, 0x0308, 0x0300], [0x03A5, 0x0308, 0x0300])),
+    (0x1FE3, ([0x1FE3], [0x03A5, 0x0308, 0x0301], [0x03A5, 0x0308, 0x0301])),
+    (0x1FE4, ([0x1FE4], [0x03A1, 0x0313], [0x03A1, 0x0313])),
+    (0x1FE6, ([0x1FE6], [0x03A5, 0x0342], [0x03A5, 0x0342])),
+    (0x1FE7, ([0x1FE7], [0x03A5, 0x0308, 0x0342], [0x03A5, 0x0308, 0x0342])),
+    (0x1FF6, ([0x1FF6], [0x03A9, 0x0342], [0x03A9, 0x0342])),
+    (0x1F80, ([0x1F80], [0x1F88], [0x1F08, 0x0399])),
+    (0x1F81, ([0x1F81], [0x1F89], [0x1F09, 0x0399])),
+    (0x1F82, ([0x1F82], [0x1F8A], [0x1F0A, 0x0399])),
+    (0x1F83, ([0x1F83], [0x1F8B], [0x1F0B, 0x0399])),
+    (0x1F84, ([0x1F84], [0x1F8C], [0x1F0C, 0x0399])),
+    (0x1F85, ([0x1F85], [0x1F8D], [0x1F0D, 0x0399])),
+    (0x1F86, ([0x1F86], [0x1F8E], [0x1F0E, 0x0399])),
+    (0x1F87, ([0x1F87], [0x1F8F], [0x1F0F, 0x0399])),
+    (0x1F88, ([0x1F80], [0x1F88], [0x1F08, 0x0399])),
+    (0x1F89, ([0x1F81], [0x1F89], [0x1F09, 0x0399])),
+    (0x1F8A, ([0x1F82], [0x1F8A], [0x1F0A, 0x0399])),
+    (0x1F8B, ([0x1F83], [0x1F8B], [0x1F0B, 0x0399])),
+    (0x1F8C, ([0x1F84], [0x1F8C], [0x1F0C, 0x0399])),
+    (0x1F8D, ([0x1F85], [0x1F8D], [0x1F0D, 0x0399])),
+    (0x1F8E, ([0x1F86], [0x1F8E], [0x1F0E, 0x0399])),
+    (0x1F8F, ([0x1F87], [0x1F8F], [0x1F0F, 0x0399])),
+    (0x1F90, ([0x1F90], [0x1F98], [0x1F28, 0x0399])),
+    (0x1F91, ([0x1F91], [0x1F99], [0x1F29, 0x0399])),
+    (0x1F92, ([0x1F92], [0x1F9A], [0x1F2A, 0x0399])),
+    (0x1F93, ([0x1F93], [0x1F9B], [0x1F2B, 0x0399])),
+    (0x1F94, ([0x1F94], [0x1F9C], [0x1F2C, 0x0399])),
+    (0x1F95, ([0x1F95], [0x1F9D], [0x1F2D, 0x0399])),
+    (0x1F96, ([0x1F96], [0x1F9E], [0x1F2E, 0x0399])),
+    (0x1F97, ([0x1F97], [0x1F9F], [0x1F2F, 0x0399])),
+    (0x1F98, ([0x1F90], [0x1F98], [0x1F28, 0x0399])),
+    (0x1F99, ([0x1F91], [0x1F99], [0x1F29, 0x0399])),
+    (0x1F9A, ([0x1F92], [0x1F9A], [0x1F2A, 0x0399])),
+    (0x1F9B, ([0x1F93], [0x1F9B], [0x1F2B, 0x0399])),
+    (0x1F9C, ([0x1F94], [0x1F9C], [0x1F2C, 0x0399])),
+    (0x1F9D, ([0x1F95], [0x1F9D], [0x1F2D, 0x0399])),
+    (0x1F9E, ([0x1F96], [0x1F9E], [0x1F2E, 0x0399])),
+    (0x1F9F, ([0x1F97], [0x1F9F], [0x1F2F, 0x0399])),
+    (0x1FA0, ([0x1FA0], [0x1FA8], [0x1F68, 0x0399])),
+    (0x1FA1, ([0x1FA1], [0x1FA9], [0x1F69, 0x0399])),
+    (0x1FA2, ([0x1FA2], [0x1FAA], [0x1F6A, 0x0399])),
+    (0x1FA3, ([0x1FA3], [0x1FAB], [0x1F6B, 0x0399])),
+    (0x1FA4, ([0x1FA4], [0x1FAC], [0x1F6C, 0x0399])),
+    (0x1FA5, ([0x1FA5], [0x1FAD], [0x1F6D, 0x0399])),
+    (0x1FA6, ([0x1FA6], [0x1FAE], [0x1F6E, 0x0399])),
+    (0x1FA7, ([0x1FA7], [0x1FAF], [0x1F6F, 0x0399])),
+    (0x1FA8, ([0x1FA0], [0x1FA8], [0x1F68, 0x0399])),
+    (0x1FA9, ([0x1FA1], [0x1FA9], [0x1F69, 0x0399])),
+    (0x1FAA, ([0x1FA2], [0x1FAA], [0x1F6A, 0x0399])),
+    (0x1FAB, ([0x1FA3], [0x1FAB], [0x1F6B, 0x0399])),
+    (0x1FAC, ([0x1FA4], [0x1FAC], [0x1F6C, 0x0399])),
+    (0x1FAD, ([0x1FA5], [0x1FAD], [0x1F6D, 0x0399])),
+    (0x1FAE, ([0x1FA6], [0x1FAE], [0x1F6E, 0x0399])),
+    (0x1FAF, ([0x1FA7], [0x1FAF], [0x1F6F, 0x0399])),
+    (0x1FB3, ([0x1FB3], [0x1FBC], [0x0391, 0x0399])),
+    (0x1FBC, ([0x1FB3], [0x1FBC], [0x0391, 0x0399])),
+    (0x1FC3, ([0x1FC3], [0x1FCC], [0x0397, 0x0399])),
+    (0x1FCC, ([0x1FC3], [0x1FCC], [0x0397, 0x0399])),
+    (0x1FF3, ([0x1FF3], [0x1FFC], [0x03A9, 0x0399])),
+    (0x1FFC, ([0x1FF3], [0x1FFC], [0x03A9, 0x0399])),
 
-    // Ligatures
-    (0xFB00, ([0xFB00], [0x0046, 0x0066], [0x0046, 0x0046])), // LATIN SMALL LIGATURE FF
-    (0xFB01, ([0xFB01], [0x0046, 0x0069], [0x0046, 0x0049])), // LATIN SMALL LIGATURE FI
-    (0xFB02, ([0xFB02], [0x0046, 0x006C], [0x0046, 0x004C])), // LATIN SMALL LIGATURE FL
-    (0xFB03, ([0xFB03], [0x0046, 0x0066, 0x0069], [0x0046, 0x0046, 0x0049])), // LATIN SMALL LIGATURE FFI
-    (0xFB04, ([0xFB04], [0x0046, 0x0066, 0x006C], [0x0046, 0x0046, 0x004C])), // LATIN SMALL LIGATURE FFL
-    (0xFB05, ([0xFB05], [0x0053, 0x0074], [0x0053, 0x0054])), // LATIN SMALL LIGATURE LONG S T
-    (0xFB06, ([0xFB06], [0x0053, 0x0074], [0x0053, 0x0054])), // LATIN SMALL LIGATURE ST
+    (0x1FB2, ([0x1FB2], [0x1FBA, 0x0345], [0x1FBA, 0x0399])),
+    (0x1FB4, ([0x1FB4], [0x0386, 0x0345], [0x0386, 0x0399])),
+    (0x1FC2, ([0x1FC2], [0x1FCA, 0x0345], [0x1FCA, 0x0399])),
+    (0x1FC4, ([0x1FC4], [0x0389, 0x0345], [0x0389, 0x0399])),
+    (0x1FF2, ([0x1FF2], [0x1FFA, 0x0345], [0x1FFA, 0x0399])),
+    (0x1FF4, ([0x1FF4], [0x038F, 0x0345], [0x038F, 0x0399])),
 
-    (0x0587, ([0x0587], [0x0535, 0x0582], [0x0535, 0x0552])), // ARMENIAN SMALL LIGATURE ECH YIWN
-    (0xFB13, ([0xFB13], [0x0544, 0x0576], [0x0544, 0x0546])), // ARMENIAN SMALL LIGATURE MEN NOW
-    (0xFB14, ([0xFB14], [0x0544, 0x0565], [0x0544, 0x0535])), // ARMENIAN SMALL LIGATURE MEN ECH
-    (0xFB15, ([0xFB15], [0x0544, 0x056B], [0x0544, 0x053B])), // ARMENIAN SMALL LIGATURE MEN INI
-    (0xFB16, ([0xFB16], [0x054E, 0x0576], [0x054E, 0x0546])), // ARMENIAN SMALL LIGATURE VEW NOW
-    (0xFB17, ([0xFB17], [0x0544, 0x056D], [0x0544, 0x053D])), // ARMENIAN SMALL LIGATURE MEN XEH
-
-    // No corresponding uppercase precomposed character
-    (0x0149, ([0x0149], [0x02BC, 0x004E], [0x02BC, 0x004E])), // LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
-    (0x0390, ([0x0390], [0x0399, 0x0308, 0x0301], [0x0399, 0x0308, 0x0301])), // GREEK SMALL LETTER IOTA WITH DIALYTIKA AND TONOS
-    (0x03B0, ([0x03B0], [0x03A5, 0x0308, 0x0301], [0x03A5, 0x0308, 0x0301])), // GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS
-    (0x01F0, ([0x01F0], [0x004A, 0x030C], [0x004A, 0x030C])), // LATIN SMALL LETTER J WITH CARON
-    (0x1E96, ([0x1E96], [0x0048, 0x0331], [0x0048, 0x0331])), // LATIN SMALL LETTER H WITH LINE BELOW
-    (0x1E97, ([0x1E97], [0x0054, 0x0308], [0x0054, 0x0308])), // LATIN SMALL LETTER T WITH DIAERESIS
-    (0x1E98, ([0x1E98], [0x0057, 0x030A], [0x0057, 0x030A])), // LATIN SMALL LETTER W WITH RING ABOVE
-    (0x1E99, ([0x1E99], [0x0059, 0x030A], [0x0059, 0x030A])), // LATIN SMALL LETTER Y WITH RING ABOVE
-    (0x1E9A, ([0x1E9A], [0x0041, 0x02BE], [0x0041, 0x02BE])), // LATIN SMALL LETTER A WITH RIGHT HALF RING
-    (0x1F50, ([0x1F50], [0x03A5, 0x0313], [0x03A5, 0x0313])), // GREEK SMALL LETTER UPSILON WITH PSILI
-    (0x1F52, ([0x1F52], [0x03A5, 0x0313, 0x0300], [0x03A5, 0x0313, 0x0300])), // GREEK SMALL LETTER UPSILON WITH PSILI AND VARIA
-    (0x1F54, ([0x1F54], [0x03A5, 0x0313, 0x0301], [0x03A5, 0x0313, 0x0301])), // GREEK SMALL LETTER UPSILON WITH PSILI AND OXIA
-    (0x1F56, ([0x1F56], [0x03A5, 0x0313, 0x0342], [0x03A5, 0x0313, 0x0342])), // GREEK SMALL LETTER UPSILON WITH PSILI AND PERISPOMENI
-    (0x1FB6, ([0x1FB6], [0x0391, 0x0342], [0x0391, 0x0342])), // GREEK SMALL LETTER ALPHA WITH PERISPOMENI
-    (0x1FC6, ([0x1FC6], [0x0397, 0x0342], [0x0397, 0x0342])), // GREEK SMALL LETTER ETA WITH PERISPOMENI
-    (0x1FD2, ([0x1FD2], [0x0399, 0x0308, 0x0300], [0x0399, 0x0308, 0x0300])), // GREEK SMALL LETTER IOTA WITH DIALYTIKA AND VARIA
-    (0x1FD3, ([0x1FD3], [0x0399, 0x0308, 0x0301], [0x0399, 0x0308, 0x0301])), // GREEK SMALL LETTER IOTA WITH DIALYTIKA AND OXIA
-    (0x1FD6, ([0x1FD6], [0x0399, 0x0342], [0x0399, 0x0342])), // GREEK SMALL LETTER IOTA WITH PERISPOMENI
-    (0x1FD7, ([0x1FD7], [0x0399, 0x0308, 0x0342], [0x0399, 0x0308, 0x0342])), // GREEK SMALL LETTER IOTA WITH DIALYTIKA AND PERISPOMENI
-    (0x1FE2, ([0x1FE2], [0x03A5, 0x0308, 0x0300], [0x03A5, 0x0308, 0x0300])), // GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND VARIA
-    (0x1FE3, ([0x1FE3], [0x03A5, 0x0308, 0x0301], [0x03A5, 0x0308, 0x0301])), // GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND OXIA
-    (0x1FE4, ([0x1FE4], [0x03A1, 0x0313], [0x03A1, 0x0313])), // GREEK SMALL LETTER RHO WITH PSILI
-    (0x1FE6, ([0x1FE6], [0x03A5, 0x0342], [0x03A5, 0x0342])), // GREEK SMALL LETTER UPSILON WITH PERISPOMENI
-    (0x1FE7, ([0x1FE7], [0x03A5, 0x0308, 0x0342], [0x03A5, 0x0308, 0x0342])), // GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND PERISPOMENI
-    (0x1FF6, ([0x1FF6], [0x03A9, 0x0342], [0x03A9, 0x0342])), // GREEK SMALL LETTER OMEGA WITH PERISPOMENI
-
-    // All letters with YPOGEGRAMMENI (iota-subscript) or PROSGEGRAMMENI (iota adscript)
-    // have special uppercases.
-    // Note: characters with PROSGEGRAMMENI are actually titlecase, not uppercase!
-    (0x1F80, ([0x1F80], [0x1F88], [0x1F08, 0x0399])), // GREEK SMALL LETTER ALPHA WITH PSILI AND YPOGEGRAMMENI
-    (0x1F81, ([0x1F81], [0x1F89], [0x1F09, 0x0399])), // GREEK SMALL LETTER ALPHA WITH DASIA AND YPOGEGRAMMENI
-    (0x1F82, ([0x1F82], [0x1F8A], [0x1F0A, 0x0399])), // GREEK SMALL LETTER ALPHA WITH PSILI AND VARIA AND YPOGEGRAMMENI
-    (0x1F83, ([0x1F83], [0x1F8B], [0x1F0B, 0x0399])), // GREEK SMALL LETTER ALPHA WITH DASIA AND VARIA AND YPOGEGRAMMENI
-    (0x1F84, ([0x1F84], [0x1F8C], [0x1F0C, 0x0399])), // GREEK SMALL LETTER ALPHA WITH PSILI AND OXIA AND YPOGEGRAMMENI
-    (0x1F85, ([0x1F85], [0x1F8D], [0x1F0D, 0x0399])), // GREEK SMALL LETTER ALPHA WITH DASIA AND OXIA AND YPOGEGRAMMENI
-    (0x1F86, ([0x1F86], [0x1F8E], [0x1F0E, 0x0399])), // GREEK SMALL LETTER ALPHA WITH PSILI AND PERISPOMENI AND YPOGEGRAMMENI
-    (0x1F87, ([0x1F87], [0x1F8F], [0x1F0F, 0x0399])), // GREEK SMALL LETTER ALPHA WITH DASIA AND PERISPOMENI AND YPOGEGRAMMENI
-    (0x1F88, ([0x1F80], [0x1F88], [0x1F08, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH PSILI AND PROSGEGRAMMENI
-    (0x1F89, ([0x1F81], [0x1F89], [0x1F09, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH DASIA AND PROSGEGRAMMENI
-    (0x1F8A, ([0x1F82], [0x1F8A], [0x1F0A, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH PSILI AND VARIA AND PROSGEGRAMMENI
-    (0x1F8B, ([0x1F83], [0x1F8B], [0x1F0B, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH DASIA AND VARIA AND PROSGEGRAMMENI
-    (0x1F8C, ([0x1F84], [0x1F8C], [0x1F0C, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH PSILI AND OXIA AND PROSGEGRAMMENI
-    (0x1F8D, ([0x1F85], [0x1F8D], [0x1F0D, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH DASIA AND OXIA AND PROSGEGRAMMENI
-    (0x1F8E, ([0x1F86], [0x1F8E], [0x1F0E, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH PSILI AND PERISPOMENI AND PROSGEGRAMMENI
-    (0x1F8F, ([0x1F87], [0x1F8F], [0x1F0F, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH DASIA AND PERISPOMENI AND PROSGEGRAMMENI
-    (0x1F90, ([0x1F90], [0x1F98], [0x1F28, 0x0399])), // GREEK SMALL LETTER ETA WITH PSILI AND YPOGEGRAMMENI
-    (0x1F91, ([0x1F91], [0x1F99], [0x1F29, 0x0399])), // GREEK SMALL LETTER ETA WITH DASIA AND YPOGEGRAMMENI
-    (0x1F92, ([0x1F92], [0x1F9A], [0x1F2A, 0x0399])), // GREEK SMALL LETTER ETA WITH PSILI AND VARIA AND YPOGEGRAMMENI
-    (0x1F93, ([0x1F93], [0x1F9B], [0x1F2B, 0x0399])), // GREEK SMALL LETTER ETA WITH DASIA AND VARIA AND YPOGEGRAMMENI
-    (0x1F94, ([0x1F94], [0x1F9C], [0x1F2C, 0x0399])), // GREEK SMALL LETTER ETA WITH PSILI AND OXIA AND YPOGEGRAMMENI
-    (0x1F95, ([0x1F95], [0x1F9D], [0x1F2D, 0x0399])), // GREEK SMALL LETTER ETA WITH DASIA AND OXIA AND YPOGEGRAMMENI
-    (0x1F96, ([0x1F96], [0x1F9E], [0x1F2E, 0x0399])), // GREEK SMALL LETTER ETA WITH PSILI AND PERISPOMENI AND YPOGEGRAMMENI
-    (0x1F97, ([0x1F97], [0x1F9F], [0x1F2F, 0x0399])), // GREEK SMALL LETTER ETA WITH DASIA AND PERISPOMENI AND YPOGEGRAMMENI
-    (0x1F98, ([0x1F90], [0x1F98], [0x1F28, 0x0399])), // GREEK CAPITAL LETTER ETA WITH PSILI AND PROSGEGRAMMENI
-    (0x1F99, ([0x1F91], [0x1F99], [0x1F29, 0x0399])), // GREEK CAPITAL LETTER ETA WITH DASIA AND PROSGEGRAMMENI
-    (0x1F9A, ([0x1F92], [0x1F9A], [0x1F2A, 0x0399])), // GREEK CAPITAL LETTER ETA WITH PSILI AND VARIA AND PROSGEGRAMMENI
-    (0x1F9B, ([0x1F93], [0x1F9B], [0x1F2B, 0x0399])), // GREEK CAPITAL LETTER ETA WITH DASIA AND VARIA AND PROSGEGRAMMENI
-    (0x1F9C, ([0x1F94], [0x1F9C], [0x1F2C, 0x0399])), // GREEK CAPITAL LETTER ETA WITH PSILI AND OXIA AND PROSGEGRAMMENI
-    (0x1F9D, ([0x1F95], [0x1F9D], [0x1F2D, 0x0399])), // GREEK CAPITAL LETTER ETA WITH DASIA AND OXIA AND PROSGEGRAMMENI
-    (0x1F9E, ([0x1F96], [0x1F9E], [0x1F2E, 0x0399])), // GREEK CAPITAL LETTER ETA WITH PSILI AND PERISPOMENI AND PROSGEGRAMMENI
-    (0x1F9F, ([0x1F97], [0x1F9F], [0x1F2F, 0x0399])), // GREEK CAPITAL LETTER ETA WITH DASIA AND PERISPOMENI AND PROSGEGRAMMENI
-    (0x1FA0, ([0x1FA0], [0x1FA8], [0x1F68, 0x0399])), // GREEK SMALL LETTER OMEGA WITH PSILI AND YPOGEGRAMMENI
-    (0x1FA1, ([0x1FA1], [0x1FA9], [0x1F69, 0x0399])), // GREEK SMALL LETTER OMEGA WITH DASIA AND YPOGEGRAMMENI
-    (0x1FA2, ([0x1FA2], [0x1FAA], [0x1F6A, 0x0399])), // GREEK SMALL LETTER OMEGA WITH PSILI AND VARIA AND YPOGEGRAMMENI
-    (0x1FA3, ([0x1FA3], [0x1FAB], [0x1F6B, 0x0399])), // GREEK SMALL LETTER OMEGA WITH DASIA AND VARIA AND YPOGEGRAMMENI
-    (0x1FA4, ([0x1FA4], [0x1FAC], [0x1F6C, 0x0399])), // GREEK SMALL LETTER OMEGA WITH PSILI AND OXIA AND YPOGEGRAMMENI
-    (0x1FA5, ([0x1FA5], [0x1FAD], [0x1F6D, 0x0399])), // GREEK SMALL LETTER OMEGA WITH DASIA AND OXIA AND YPOGEGRAMMENI
-    (0x1FA6, ([0x1FA6], [0x1FAE], [0x1F6E, 0x0399])), // GREEK SMALL LETTER OMEGA WITH PSILI AND PERISPOMENI AND YPOGEGRAMMENI
-    (0x1FA7, ([0x1FA7], [0x1FAF], [0x1F6F, 0x0399])), // GREEK SMALL LETTER OMEGA WITH DASIA AND PERISPOMENI AND YPOGEGRAMMENI
-    (0x1FA8, ([0x1FA0], [0x1FA8], [0x1F68, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH PSILI AND PROSGEGRAMMENI
-    (0x1FA9, ([0x1FA1], [0x1FA9], [0x1F69, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH DASIA AND PROSGEGRAMMENI
-    (0x1FAA, ([0x1FA2], [0x1FAA], [0x1F6A, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH PSILI AND VARIA AND PROSGEGRAMMENI
-    (0x1FAB, ([0x1FA3], [0x1FAB], [0x1F6B, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH DASIA AND VARIA AND PROSGEGRAMMENI
-    (0x1FAC, ([0x1FA4], [0x1FAC], [0x1F6C, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH PSILI AND OXIA AND PROSGEGRAMMENI
-    (0x1FAD, ([0x1FA5], [0x1FAD], [0x1F6D, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH DASIA AND OXIA AND PROSGEGRAMMENI
-    (0x1FAE, ([0x1FA6], [0x1FAE], [0x1F6E, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH PSILI AND PERISPOMENI AND PROSGEGRAMMENI
-    (0x1FAF, ([0x1FA7], [0x1FAF], [0x1F6F, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH DASIA AND PERISPOMENI AND PROSGEGRAMMENI
-    (0x1FB3, ([0x1FB3], [0x1FBC], [0x0391, 0x0399])), // GREEK SMALL LETTER ALPHA WITH YPOGEGRAMMENI
-    (0x1FBC, ([0x1FB3], [0x1FBC], [0x0391, 0x0399])), // GREEK CAPITAL LETTER ALPHA WITH PROSGEGRAMMENI
-    (0x1FC3, ([0x1FC3], [0x1FCC], [0x0397, 0x0399])), // GREEK SMALL LETTER ETA WITH YPOGEGRAMMENI
-    (0x1FCC, ([0x1FC3], [0x1FCC], [0x0397, 0x0399])), // GREEK CAPITAL LETTER ETA WITH PROSGEGRAMMENI
-    (0x1FF3, ([0x1FF3], [0x1FFC], [0x03A9, 0x0399])), // GREEK SMALL LETTER OMEGA WITH YPOGEGRAMMENI
-    (0x1FFC, ([0x1FF3], [0x1FFC], [0x03A9, 0x0399])), // GREEK CAPITAL LETTER OMEGA WITH PROSGEGRAMMENI
-
-    // Some characters with YPOGEGRAMMENI also have no corresponding titlecases
-
-    (0x1FB2, ([0x1FB2], [0x1FBA, 0x0345], [0x1FBA, 0x0399])), // GREEK SMALL LETTER ALPHA WITH VARIA AND YPOGEGRAMMENI
-    (0x1FB4, ([0x1FB4], [0x0386, 0x0345], [0x0386, 0x0399])), // GREEK SMALL LETTER ALPHA WITH OXIA AND YPOGEGRAMMENI
-    (0x1FC2, ([0x1FC2], [0x1FCA, 0x0345], [0x1FCA, 0x0399])), // GREEK SMALL LETTER ETA WITH VARIA AND YPOGEGRAMMENI
-    (0x1FC4, ([0x1FC4], [0x0389, 0x0345], [0x0389, 0x0399])), // GREEK SMALL LETTER ETA WITH OXIA AND YPOGEGRAMMENI
-    (0x1FF2, ([0x1FF2], [0x1FFA, 0x0345], [0x1FFA, 0x0399])), // GREEK SMALL LETTER OMEGA WITH VARIA AND YPOGEGRAMMENI
-    (0x1FF4, ([0x1FF4], [0x038F, 0x0345], [0x038F, 0x0399])), // GREEK SMALL LETTER OMEGA WITH OXIA AND YPOGEGRAMMENI
-
-    (0x1FB7, ([0x1FB7], [0x0391, 0x0342, 0x0345], [0x0391, 0x0342, 0x0399])), // GREEK SMALL LETTER ALPHA WITH PERISPOMENI AND YPOGEGRAMMENI
-    (0x1FC7, ([0x1FC7], [0x0397, 0x0342, 0x0345], [0x0397, 0x0342, 0x0399])), // GREEK SMALL LETTER ETA WITH PERISPOMENI AND YPOGEGRAMMENI
-    (0x1FF7, ([0x1FF7], [0x03A9, 0x0342, 0x0345], [0x03A9, 0x0342, 0x0399])) // GREEK SMALL LETTER OMEGA WITH PERISPOMENI AND YPOGEGRAMMENI
+    (0x1FB7, ([0x1FB7], [0x0391, 0x0342, 0x0345], [0x0391, 0x0342, 0x0399])),
+    (0x1FC7, ([0x1FC7], [0x0397, 0x0342, 0x0345], [0x0397, 0x0342, 0x0399])),
+    (0x1FF7, ([0x1FF7], [0x03A9, 0x0342, 0x0345], [0x03A9, 0x0342, 0x0399]))
 ])
 
 enum CaseType {
@@ -2578,11 +2558,8 @@ enum CaseType {
 }
 
 public enum CasingOption {
-    // Turkish
     | TR
-    // Azeri
     | AZ
-    // Lithuanian
     | LT
     | Other
 
@@ -2730,11 +2707,9 @@ func toCaseSpecialArray(rune: Rune, caseType: CaseType): Array<UInt32> {
     }
 }
 
-/**
- * Binary search a character in the given array.
- */
+
 func isRuneInRange(arr: Array<UnicodeRange>, rune: Rune): Bool {
-    /* code point */
+    
     let codePosition: Int32 = Int32(UInt32(rune))
 
     var leftInterval: Int64 = 0
@@ -2756,7 +2731,7 @@ func isRuneInRange(arr: Array<UnicodeRange>, rune: Rune): Bool {
     return false
 }
 
-/* Methods for  Unicode. */
+
 public interface UnicodeRuneExtension {
     func isLetter(): Bool
     func isNumber(): Bool
@@ -2773,10 +2748,9 @@ public interface UnicodeRuneExtension {
 }
 
 extend Rune <: UnicodeRuneExtension {
-    /**
-     * Returns true if this Unicode character is Letter.
-     * In Unicode, Letter includes Uppercase_Letter, Lowercase_Letter, Titlecase_Letter, Modifier_Letter and Other_Letter.
-     */
+
+
+
     public func isLetter(): Bool {
         return isRuneInRange(LOWER_CASE_LETTER, this) ||
                isRuneInRange(UPPER_CASE_LETTER, this) ||
@@ -2785,52 +2759,50 @@ extend Rune <: UnicodeRuneExtension {
                isRuneInRange(OTHER_LETTER, this)
     }
 
-    /**
-     * Returns true if this Unicode character is Number.
-     * In Unicode, Number includes Decimal_Number, Letter_Number and Other_Number.
-     */
+
+
     public func isNumber(): Bool {
         return isRuneInRange(DECIMAL_NUMBER, this) ||
                isRuneInRange(LETTER_NUMBER, this) ||
                isRuneInRange(OTHER_NUMBER,this)
     }
 
-    /** Returns true if this Unicode character is Lowercase. */
+    
     public func isLowerCase(): Bool {
         return isRuneInRange(LOWER_CASE_LETTER, this) || isRuneInRange(OTHER_LOWER_CASE, this)
     }
 
-    /** Returns true if this Unicode character is Uppercase. */
+    
     public func isUpperCase(): Bool {
         return isRuneInRange(UPPER_CASE_LETTER, this) || isRuneInRange(OTHER_UPPER_CASE, this)
     }
 
-    /** Returns true if this Unicode character is Titlecase. */
+    
     public func isTitleCase(): Bool {
         return isRuneInRange(TITLE_CASE_LETTER, this)
     }
 
-    /** Returns true if this Unicode character is whitespace. */
+    
     public func isWhiteSpace(): Bool {
         return isRuneInRange(WHITE_SPACE, this)
     }
 
-    /** Returns the uppercase of this Unicode character. */
+    
     public func toUpperCase(): Rune {
         return toCase(this, CaseType.Upper)
     }
 
-    /** Returns the lowercase of this Unicode character. */
+    
     public func toLowerCase(): Rune {
         return toCase(this, CaseType.Lower)
     }
 
-    /** Returns the titlecase of this Unicode character. */
+    
     public func toTitleCase(): Rune {
         return toCase(this, CaseType.Title)
     }
 
-    /** Returns the uppercase of this Unicode character. */
+    
     public func toUpperCase(opt: CasingOption): Rune {
         match (opt) {
             case Other => return toCase(this, CaseType.Upper)
@@ -2838,7 +2810,7 @@ extend Rune <: UnicodeRuneExtension {
         }
     }
 
-    /** Returns the lowercase of this Unicode character. */
+    
     public func toLowerCase(opt: CasingOption): Rune {
         match (opt) {
             case Other => return toCase(this, CaseType.Lower)
@@ -2846,7 +2818,7 @@ extend Rune <: UnicodeRuneExtension {
         }
     }
 
-    /** Returns the titlecase of this Unicode character. */
+    
     public func toTitleCase(opt: CasingOption): Rune {
         match (opt) {
             case Other => return toCase(this, CaseType.Title)
@@ -2875,9 +2847,8 @@ public interface UnicodeStringExtension {
 }
 
 extend String <: UnicodeStringExtension {
-    /**
-     * Returns true if this string is empty or contains only whitespace Unicode, otherwise `false`.
-     */
+
+
     public func isBlank(): Bool {
         for (i in this.runes()) {
             if (!i.isWhiteSpace()) {
@@ -2887,42 +2858,34 @@ extend String <: UnicodeStringExtension {
         return true
     }
 
-    /**
-     * @return a string which is the result of converting every character in this
-     *         string to its lower case.
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `itemBytes`.
-     */
+
+
+
+
     public func toLower(): String {
         return toCaseInternal(Lower)
     }
 
-    /**
-     * @return a string which is the result of converting every character in
-     *         this string to its upper case.
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `itemBytes`.
-     */
+
+
+
+
     public func toUpper(): String {
         return toCaseInternal(Upper)
     }
 
-    /**
-     * @return a string which is the result of converting every character in
-     *         this string to its title case.
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `itemBytes`.
-     */
+
+
+
+
     public func toTitle(): String {
         return toCaseInternal(Title)
     }
 
-    /**
-     * @return a string which is the result of converting every character in this
-     *         string to its lower case.
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `itemBytes`.
-     */
+
+
+
+
     public func toLower(opt: CasingOption): String {
         match (opt) {
             case Other => return toCaseInternal(Lower)
@@ -2930,12 +2893,10 @@ extend String <: UnicodeStringExtension {
         }
     }
 
-    /**
-     * @return a string which is the result of converting every character in
-     *         this string to its upper case.
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `itemBytes`.
-     */
+
+
+
+
     public func toUpper(opt: CasingOption): String {
         match (opt) {
             case Other => return toCaseInternal(Upper)
@@ -2943,12 +2904,10 @@ extend String <: UnicodeStringExtension {
         }
     }
 
-    /**
-     * @return a string which is the result of converting every character in
-     *         this string to its title case.
-     * @throws IllegalArgumentException if there is an invalid utf8 leading code
-     *         in array `itemBytes`.
-     */
+
+
+
+
     public func toTitle(opt: CasingOption): String {
         match (opt) {
             case Other => return toCaseInternal(Title)
@@ -3082,45 +3041,35 @@ extend String <: UnicodeStringExtension {
         return String.fromUtf8(result.toArray())
     }
 
-    /**
-     * @return a string which is the result of removing the leading and trailing
-     *         whitespace of this string.
-     * @throws IllegalArgumentException if there is no valid utf8 code in array `myData`.
-     */
+
+
+
     public func trim(): String {
         trimInternal(true, true)
     }
 
-    /**
-     * @return a string which is the result of removing the leading whitespace of this string.
-     * @throws IllegalArgumentException if there is no valid utf8 leading code in array `myData`.
-     */
+
+
     @Deprecated[message: "Use member function ` public func trimStart(): String` instead."]
     public func trimLeft(): String {
         return trimInternal(true, false)
     }
 
-    /**
-     * @return a string which is the result of removing the trailing whitespace of this string.
-     * @throws IllegalArgumentException if there is no valid utf8 code in array `myData`.
-     */
+
+
     @Deprecated[message: "Use member function ` public func trimEnd(): String` instead."]
     public func trimRight(): String {
         return trimInternal(false, true)
     }
 
-    /**
-     * @return a string which is the result of removing the leading whitespace of this string.
-     * @throws IllegalArgumentException if there is no valid utf8 leading code in array `myData`.
-     */
+
+
     public func trimStart(): String {
         return trimInternal(true, false)
     }
 
-    /**
-     * @return a string which is the result of removing the trailing whitespace of this string.
-     * @throws IllegalArgumentException if there is no valid utf8 code in array `myData`.
-     */
+
+
     public func trimEnd(): String {
         return trimInternal(false, true)
     }

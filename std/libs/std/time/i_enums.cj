@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines IEnum related classes.
- */
+
+
+
+
+
+
+
+
 
 package std.time
 
@@ -21,16 +18,14 @@ let LONG_DAY_OF_WEEK_FORM = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
 public enum DayOfWeek <: ToString & Equatable<DayOfWeek> {
     Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
 
-    /**
-     * Generates a instance of DayOfWeek according to a Int64 value.
-     *
-     * @param wday a number represents a DayOfWeek.
-     * @return a Result if success to generate a DayOfWeek based on wday, otherwise Failure.
-     *
-     * @throws IllegalArgumentException if dayOfWeek is out of range [0, 6]
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
+
     public static func of(dayOfWeek: Int64): DayOfWeek {
         return match (dayOfWeek) {
             case 0 => Sunday
@@ -44,13 +39,11 @@ public enum DayOfWeek <: ToString & Equatable<DayOfWeek> {
         }
     }
 
-    /**
-     * Return Int64 value of the DayOfWeek instance.
-     *
-     * @return a number represents the DayOfWeek.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Deprecated[message: "Use member function `public func toInteger(): Int64` instead."]
     public func value(): Int64 {
         toInteger()
@@ -68,37 +61,31 @@ public enum DayOfWeek <: ToString & Equatable<DayOfWeek> {
         }
     }
 
-    /**
-     * Return a String that represents the DayOfWeek, for example, Friday.
-     *
-     * @return a DayOfWeek name.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     public func toString(): String {
         return LONG_DAY_OF_WEEK_FORM[this.toInteger()]
     }
 
-    /**
-     * Override the == operator, determines whether this DayOfWeek equals another.
-     *
-     * @param r another DayOfWeek.
-     * @return true if the DayOfWeek is equal to @p r, otherwise false.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     public operator func ==(r: DayOfWeek): Bool {
         return this.toInteger() == r.toInteger()
     }
 
-    /**
-     * Override the != operator, determines whether this DayOfWeek is not equal to another.
-     *
-     * @param r another DayOfWeek.
-     * @return true if the DayOfWeek is not equal to @p r, otherwise false.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     public operator func !=(r: DayOfWeek): Bool {
         return this.toInteger() != r.toInteger()
     }
@@ -121,16 +108,14 @@ public enum Month <: ToString & Equatable<Month> {
     January | February | March | April | May | June
     | July | August | September | October | November | December
 
-    /**
-     * Generates a instance of Month according to a Int64 value.
-     *
-     * @param mon a number represents a Month.
-     * @return a Result if success to generate a Month based on mon, otherwise Failure.
-     *
-     * @throws IllegalArgumentException if mon is out of range [1, 12]
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
+
+
     public static func of(mon: Int64): Month {
         return match (mon) {
             case 1 => January
@@ -149,13 +134,11 @@ public enum Month <: ToString & Equatable<Month> {
         }
     }
 
-    /**
-     * Return Int64 value of the Month instance.
-     *
-     * @return a nunber represents the Month.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     @Deprecated[message: "Use member function `public func toInteger(): Int64` instead."]
     public func value(): Int64 {
         toInteger()
@@ -178,59 +161,49 @@ public enum Month <: ToString & Equatable<Month> {
         }
     }
 
-    /**
-     * Return a String that represents the Month, for example, June.
-     *
-     * @return a month name.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
     public func toString(): String {
         return LONG_MONTH_FORM[this.toInteger() - 1]
     }
 
-    /**
-     * Override the + operator.
-     *
-     * @param n delta.
-     * @return a new Month after adding @p n to this Month.
-     * @since 0.18.4
-     */
+
+
+
+
+
     public operator func +(n: Int64): Month {
         return Month.of((this.toInteger() - 1 + n % MONTHS_PER_YEAR + MONTHS_PER_YEAR) % MONTHS_PER_YEAR + 1)
     }
 
-    /**
-     * Override the - operator.
-     *
-     * @param n delta.
-     * @return a new Month after subtracting @p n from this Month.
-     * @since 0.18.4
-     */
+
+
+
+
+
     public operator func -(n: Int64): Month {
         return Month.of((this.toInteger() - 1 - n % MONTHS_PER_YEAR + MONTHS_PER_YEAR) % MONTHS_PER_YEAR + 1)
     }
 
-    /**
-     * Override the == operator, determines whether this Month equals another.
-     *
-     * @param r another Month.
-     * @return true if the Month is equal to @p r, otherwise false
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     public operator func ==(r: Month): Bool {
         return this.toInteger() == r.toInteger()
     }
 
-    /**
-     * Override the != operator, determines whether this Month is not equal to another.
-     *
-     * @param r another Month.
-     * @return true if the Month is not equal to @p r, otherwise false.
-     *
-     * @since 0.18.4
-     */
+
+
+
+
+
+
     public operator func !=(r: Month): Bool {
         return this.toInteger() != r.toInteger()
     }

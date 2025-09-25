@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.collection
 
@@ -392,7 +392,7 @@ extend<T> LinkedList<T> <: ToString where T <: ToString {
 }
 
 extend<T> LinkedList<T> <: Equatable<LinkedList<T>> where T <: Equatable<T> {
-    /** overloaded determination == method. */
+    
     public operator func ==(right: LinkedList<T>): Bool {
         if (refEq(this, right)) {
             return true
@@ -418,7 +418,7 @@ extend<T> LinkedList<T> <: Equatable<LinkedList<T>> where T <: Equatable<T> {
         return true
     }
 
-    /** overloaded determination != method. */
+    
     public operator func !=(right: LinkedList<T>): Bool {
         return !(this == right)
     }

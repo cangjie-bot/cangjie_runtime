@@ -1,20 +1,18 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.mock.mockmacro
 
 import std.ast.*
 import std.collection.enumerate
 
-// NOTE: this was copied with some changes from power assert macro utils
-// this doesn't cover all the issues
 func descriptionString(tokens: Tokens): String {
     var result = ""
-    var wasSamePosition = false // temporary workaround for a bug in AST API
+    var wasSamePosition = false
 
     for ((i, token) in tokens |> enumerate) {
         if (let NL <- token.kind) {

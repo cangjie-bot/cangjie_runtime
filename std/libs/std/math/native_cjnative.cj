@@ -1,18 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.math
 
-/**
- * Intrinsic Function.
- */
-
-// Floating-point
 @Intrinsic
 func intrinsicSin<T>(x: T): T
 
@@ -51,10 +46,8 @@ func intrinsicRound<T>(x: T): T
 
 @Intrinsic
 func intrinsicFabs<T>(x: T): T
-// Integer
 @Intrinsic
 func intrinsicAbs<T>(x: T): T
-// Pow
 @Intrinsic
 func intrinsicPow<T>(x: T, y: T): T
 

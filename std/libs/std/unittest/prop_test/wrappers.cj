@@ -1,29 +1,22 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.prop_test
 
-/**
- * Some wrappers over functions and tuples to support Arbitrary for functions/tuples
- * These will be removed when CangJie compiler supports extend for functions/tuples
- */
 
-/**
- * Wrapper struct over function of type `() -> R`
- */
+
+
 public struct Function0Wrapper<R> {
     public Function0Wrapper(public let function: () -> R) {}
 
     public operator func () (): R { function() }
 }
 
-/**
- * Wrapper struct over tuple
- */
+
 public struct TupleWrapper2<T0, T1> {
     public TupleWrapper2(public let tuple: (T0, T1)) {}
 
@@ -32,9 +25,7 @@ public struct TupleWrapper2<T0, T1> {
     }
 }
 
-/**
- * Wrapper struct over tuple
- */
+
 public struct TupleWrapper3<T0, T1, T2> {
     public TupleWrapper3(public let tuple: (T0, T1, T2)) {}
 
@@ -43,9 +34,7 @@ public struct TupleWrapper3<T0, T1, T2> {
     }
 }
 
-/**
- * Wrapper struct over tuple
- */
+
 public struct TupleWrapper4<T0, T1, T2, T3> {
     public TupleWrapper4(public let tuple: (T0, T1, T2, T3)) {}
 
@@ -54,9 +43,7 @@ public struct TupleWrapper4<T0, T1, T2, T3> {
     }
 }
 
-/**
- * Wrapper struct over tuple
- */
+
 public struct TupleWrapper5<T0, T1, T2, T3, T4> {
     public TupleWrapper5(public let tuple: (T0, T1, T2, T3, T4)) {}
 
@@ -65,9 +52,7 @@ public struct TupleWrapper5<T0, T1, T2, T3, T4> {
     }
 }
 
-/**
- * ToString implementations, behave exactly the same as toString() for tuples
- */
+
 
 extend<T0, T1> TupleWrapper2<T0, T1> <: ToString
         where T0 <: ToString, T1 <: ToString {
@@ -90,9 +75,6 @@ extend<T0, T1, T2, T3, T4> TupleWrapper5<T0, T1, T2, T3, T4> <: ToString
 }
 
 
-/**
- * Equatable implementations, behave exactly the same as equals() for tuples
- */
 extend<T0, T1> TupleWrapper2<T0, T1> <: Equatable<TupleWrapper2<T0, T1>> where T0 <: Equatable<T0>, T1 <: Equatable<T1> {
     public operator func ==(other: TupleWrapper2<T0, T1>) {
         return this.tuple == other.tuple
@@ -136,10 +118,8 @@ extend<T0, T1, T2, T3, T4> TupleWrapper5<T0, T1, T2, T3, T4> <: Equatable<TupleW
     }
 }
 
-/**
- * Utility interface to get access to elements of tuples by index
- * This is needed to print values
- */
+
+
 public interface IndexAccess {
     func getElementAsAny(index: Int64): ?Any
 }

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -37,19 +37,11 @@ enum HolderState <: Equatable<HolderState> {
     }
 }
 
-/**
- * This class contains the native socket and does manage it's creation and removal
- * controlling lifetime.
- */
+
+
 class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     private let socketCreationLock = NonReentrantWriteLock()
-
-    // number of sessions started with the socket
-    // incremented by startUsing(), startReading() and startWriting()
     private let useCounter = AtomicUInt32(0)
-
-    // holds a native socket, disposed state or a lambda creating a socket
-    // this should be only accessed under "counter" guard != 0
     private var state_: InternalHolderState<NS>
 
     SocketHolder(create: () -> NS) {
@@ -65,8 +57,6 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         get() {
             SocketState(useCounter.load())
         }
-        // this property has no setter and this is intentionally
-        // the state should be updated using compareAndSwap only in a loop
     }
 
     func markConnected(): Unit {
@@ -145,17 +135,15 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         tryClose()
     }
 
-    /**
-     * Access the socket instance for a neutral non I/O operations (e.g. socket options).
-     * Such neutral operations may run concurrently with other use{} invocations and also
-     * with read{} and write{} invocations.
-     *
-     * It is guaranteed that the socket will not be disposed while we are running inside of
-     * the block lambda.
-     *
-     * The provided socket instance shouldn't be captured outside of lambda otherise
-     * an undefined behaviour may occur including crash or random data corruption.
-     */
+
+
+
+
+
+
+
+
+
     func use<R>(block: (NS, SocketState) -> R): ?R {
         let (socket, state) = startUsingSocket() ?? return None
         try {
@@ -206,16 +194,14 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
-    /**
-     * Access the socket instance for read I/O operations. A read operation may run
-     * concurrently with a write operation or with use {} but not with another read{} invocation.
-     *
-     * It is guaranteed that the socket will not be disposed while we are running inside of
-     * the block lambda.
-     *
-     * The provided socket instance shouldn't be captured outside of lambda otherise
-     * an undefined behaviour may occur including crash or random data corruption.
-     */
+
+
+
+
+
+
+
+
     func read<R>(block: (NS, SocketState) -> R): ?R {
         let (socket, state) = startReading() ?? return None
         try {
@@ -274,16 +260,14 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         throw IllegalStateException("Socket is already reading: concurrent read is not allowed")
     }
 
-    /**
-     * Access the socket instance for write I/O operations. A write operation may run
-     * concurrently with a read operation or with use {} but not with another write{} invocation.
-     *
-     * It is guaranteed that the socket will not be disposed while we are running inside of
-     * the block lambda.
-     *
-     * The provided socket instance shouldn't be captured outside of lambda otherise
-     * an undefined behaviour may occur including crash or random data corruption.
-     */
+
+
+
+
+
+
+
+
     func write<R>(block: (NS, SocketState) -> R): ?R {
         let (socket, state) = startWriting() ?? return None
         try {
@@ -341,18 +325,12 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     private static func throwAlreadyWriting(): Nothing {
         throw IllegalStateException("Socket is already writing: concurrent write is not allowed")
     }
-
-    // this should be only invoked after incrementing useCounter
     private func ensureSocket(): ?NS {
-        // here the counter is already incremented so we can safely touch the state
-        // with no risk of concurrent disposal
-        // on the other hand concurrent shutdown or creation is still possible
 
         return match (state_) {
             case NotCreated(_) => tryCreate()
             case Ready(s) => s
             case Disposed =>
-                // close has been invoked during creation
                 return None
         }
     }
@@ -360,14 +338,11 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     private func tryCreate(): ?NS {
         socketCreationLock.lock()
         try {
-            // double-check is required here
-            // because reading outside of the lock could be too weak
             match (state_) {
                 case NotCreated(create) =>
                     let s: NS = create()
                     if (state.disposedOrShuttingDown) {
                         state_ = Disposed
-                        // close has been invoked during creation
                         unsafe { s.dispose() }
                         return None
                     }
@@ -377,8 +352,6 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
                     return s
                 case Ready(s) => return s
                 case Disposed =>
-                    // close has been invoked during creation
-                    // and anoter coroutine handled it in the NotCreated case
                     return None
             }
         } finally {
@@ -413,13 +386,9 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
 
         if (doDispose) {
-            // we had replaced -1 to Int64.Min
-            // so we are the last one
             dispose()
         }
     }
-
-    // this should be only invoked from WriteSession.close()
     @OverflowWrapping
     private func leaveWrite(): Unit {
         var doDispose: Bool = false
@@ -447,8 +416,6 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
 
         if (doDispose) {
-            // we had replaced -1 to Int64.Min
-            // so we are the last one
             dispose()
         }
     }
@@ -479,8 +446,6 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
 
         if (doDispose) {
-            // we had replaced 1 to the terminal state
-            // so we are the last one
             dispose()
         }
     }
@@ -496,8 +461,6 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         while (true) {
             let before = SocketState(useCounter.load())
             if (before.disposedOrShuttingDown) {
-                // we are already disposed or shutting down
-                // do not "help" disposing: let other threads complete it
                 return
             }
 
@@ -509,9 +472,6 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
                 terminated = false
                 new = before
                 new.nativeState = SocketClosing
-
-                // we need this additional +1 to prevent concurrent tasks from disposing it
-                // while we are doing shutdonw() below
                 new.useCounter++
             }
 
@@ -528,36 +488,23 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     }
 
     private func doShutdown() {
-        // despite we are racing with other coroutines here
-        // we have just increased the counter so noone can dispose
-        // or write state_ value therefore we can read it's value with no risk
-        // we are reading AFTER reading/CAS atomic providing happens-before guard
-
-        // The other possibility is that we are doing close() right during
-        // the lazy initialization
 
         try {
             if (let Ready(s) <- state_) {
                 s.shutdown()
             }
         } finally {
-            // we have counter incremented in tryClose()
             leave()
         }
     }
 
     private func dispose() {
-        // we have already switched to the dead state: we are the last thread
-        // accessing the state so no concurrent tasks are running
-        // we can dispose the socket and read/write state_ with no risk
         if (let Some(s) <- doStealExclusive()) {
             unsafe { s.dispose() }
         }
     }
 
     private func doStealExclusive(): ?NS {
-        // we can invoke this only when we are sure that we are the only
-        // the last thread accessing state_
         match (state_) {
             case Ready(s) =>
                 this.state_ = Disposed

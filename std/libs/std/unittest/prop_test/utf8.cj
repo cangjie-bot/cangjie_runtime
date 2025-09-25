@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.prop_test
 
 func coerceInRange(value: Byte, min: Byte, max: Byte) {
@@ -16,23 +16,19 @@ func nextIn<T>(random: RandomSource, arr: Array<T>): T {
     let ix = random.nextInt64(arr.size)
     return arr[ix]
 }
-/**
- * A new random byte in range [low, high], both inclusive
- */
-// @OverflowWrapping is not needed here because it cannot overflow,
-// but on CJVM that throws overflow exception
+
+
 @OverflowWrapping
 func nextInRange(random: RandomSource, low: Byte, high: Byte): Byte {
     let tri = random.nextUInt8()
     if (low <= tri && tri <= high) { return tri }
     return tri % (high - low + 1) + low
 }
-/**
- * Here we encode each state of UTF-8 state machine (see below)
- * as a jump table (data field) that associates each byte with a new state
- * and a set or byte ranges (ranges field) which encodes which ranges of bytes
- * are valid in that state
- */
+
+
+
+
+
 struct UTFState {
     init() {
         this.data = []
@@ -74,19 +70,18 @@ struct UTFState {
         let (low, high) = nextIn(random, ranges)
         return nextInRange(random, low, high)
     }
-    /**
-     * The canonical UTF8 state machine
-     * [START]+--{00..7F}--------------------------------------------------------+
-     *        |--{C2..DF}--------------------------------------+                 |
-     *        |--{E0}-----> [C] --{A0..BF}---------------------|                 |
-     *        |--{ED}-----> [D] --{A0..9F}---------------------|                 |
-     *        |--{E1..EC, EE..EF}-------------+                |                 |
-     *        |--{F1..F3}-> [E] --{80..BF}----|                |                 |
-     *        |--{F0}-----> [F] --{90..BF}----|                |                 |
-     *        |                               v                v                 v
-     *        +--{F4}-----> [G] --{80..8F}-> [B] --{80..BF}-> [A] --{80..BF}-> [END]
-     * (all other transitions are invalid)
-     **/
+
+
+
+
+
+
+
+
+
+
+
+
     static let END_STATE = UTFState()
     static let A_STATE = UTFState(0x80, 0xBF, END_STATE)
     static let B_STATE = UTFState(0x80, 0xBF, A_STATE)
@@ -155,7 +150,6 @@ func randomSuggestedRune(random: RandomSource): Rune {
     if (ASCII_PRINTABLE_MIN <= byte && byte <= ASCII_PRINTABLE_MAX) {
         return Rune(byte)
     }
-    // utf-8 is too complex to do anything smart
     return randomUtf8Rune(random)
 }
 

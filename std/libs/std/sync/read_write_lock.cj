@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.sync
 
@@ -26,9 +26,7 @@ public class ReadWriteLock {
         }
     }
 
-    /**
-     * @param fair - Set up the fair mode.
-     */
+
     public init(fair!: Bool = false) {
         _fair = fair
         let readWriteLockImpl = ReadWriteLockImpl(isFair: fair)
@@ -91,7 +89,7 @@ class ReadWriteLockCondition <: Condition {
 
         lock.checkWriteLockStatus()
         let writeCount = lock.getWriteCount()
-        let success = waitQueue.waitInLock({=> lock.writeUnlock(writeCount: writeCount)}, timeout: timeout) // release the lock and wait for `notify`
+        let success = waitQueue.waitInLock({=> lock.writeUnlock(writeCount: writeCount)}, timeout: timeout)
         lock.writeLock(writeCount: writeCount)
         return success
     }
@@ -112,12 +110,12 @@ class ReadWriteLockCondition <: Condition {
         let startTime = MonoTime.now()
         var spentTime = Duration.Zero
         while (!predicate()) {
-            if (spentTime >= timeout) { // timeout
+            if (spentTime >= timeout) {
                 return false
             }
 
             let success = wait(timeout: timeout - spentTime)
-            if (!success) { // timeout
+            if (!success) {
                 return false
             }
             spentTime = MonoTime.now() - startTime

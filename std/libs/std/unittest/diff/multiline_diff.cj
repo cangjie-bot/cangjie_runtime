@@ -1,19 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.diff
 
 import std.collection.*
 import std.unittest.common.PrettyPrinter
 
-/*
- * Conditional compilation shouldn't be used because the strings may come from Windows environment anyway,
- * e.g. by openning a file created on Windows initially
- */
+
+
 extend String {
     func unifyLineBreaks(): String { replace("\r\n", "\n") }
 }
@@ -35,8 +33,6 @@ private enum WeakEq {
         }
     }
 }
-
-// It implements Myers diff algorithm
 class MultilineDiffBuilder {
     private static const MAX_EDIT_ITEMS = 50
     private static const SIMILARITY_COEF = 0.75
@@ -74,8 +70,6 @@ class MultilineDiffBuilder {
 
         return compareByDist(left, right, thresh)
     }
-
-    // It implements Wagner-Fischer algorithm with modification for limiting maximum distance
     private static func compareByDist(left: Array<Rune>, right: Array<Rune>, thresh: Int64): WeakEq {
         let dist = Array<Array<Int64>>(left.size + 1) {
             x => Array<Int64>(right.size + 1) {
@@ -109,9 +103,6 @@ class MultilineDiffBuilder {
         let strCmp = if (useWeakCmp) { weakCmp } else {
             { l: String, r: String => if (l == r) { WeakEq.Eq } else { WeakEq.Neq } }
         }
-
-        //This marks the farthest-right point along each diagonal in the edit
-        //graph, along with the history that got it there
         let frontier = HashMap<Int64, Frontier<String>>((1, Frontier(0, ArrayList())))
 
         func one(idx: Int64) {
@@ -122,22 +113,7 @@ class MultilineDiffBuilder {
         let bMax = right.size
         for (d in (0..aMax + bMax + 1)) {
             for (k in (-d..(d + 1) : 2)) {
-                //This determines whether our next search point will be going down
-                //in the edit graph, or to the right.
-                //
-                //The intuition for this is that we should go down if we're on the
-                //left edge (k == -d) to make sure that the left edge is fully
-                //explored.
-                //
-                //If we aren't on the top (k != d), then only go down if going down
-                //would take us to territory that hasn't sufficiently been explored
-                //yet.
                 let goDown = (k == -d || (k != d && frontier[k - 1].x < frontier[k + 1].x))
-
-                //Figure out the starting point of this iteration. The diagonal
-                //offsets come from the geometry of the edit grid - if you're going
-                //down, your diagonal is lower, and if you're going right, your
-                //diagonal is higher.
                 var oldX: Int64
                 var x: Int64
                 var history: ArrayList<Edit<String>>
@@ -148,28 +124,16 @@ class MultilineDiffBuilder {
                     (oldX, history) = frontier[k - 1].deconstuct
                     x = oldX + 1
                 }
-
-                //We want to avoid modifying the old history, since some other step
-                //may decide to use it.
                 history = history.clone()
                 var y = x - k
-
-                //We start at the invalid point (0, 0) - we should only start building
-                //up history when we move off of it.
                 if (y >= 1 && y <= bMax && goDown) {
                     history.add(Insert(right[one(y)]))
                 } else if ((x >= 1 && x <= aMax)) {
                     history.add(Remove(left[one(x)]))
                 }
-
-                //Chew up as many diagonal moves as we can - these correspond to common lines,
-                //and they're considered "free" by the algorithm because we want to maximize
-                //the number of these in the output.
                 (x, y) = computeEditScriptMoveDiag(x, y, left, right, history, strCmp)
 
                 if (x >= aMax && y >= bMax) {
-                    //If we're here, then we've traversed through the bottom-left corner,
-                    //and are done.
                     return history
                 } else {
                     frontier[k] = Frontier(x, history)
@@ -250,8 +214,6 @@ extend PrettyPrinter {
         match (skipped) {
             case 0 => ()
             case 1 =>
-                // if we skipped 1 line, it's better to just print it
-                // instead of "lines skipped" message
                 if (let Keep(prevLine) <- script[i - 1]) {
                     append(" ").colored(GRAY, prevLine).newLine()
                 }

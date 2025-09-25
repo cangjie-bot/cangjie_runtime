@@ -1,23 +1,19 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
-/**
- * atexitCallback will be executed, when the program exits.
- */
+
 @FastNative
 foreign func CJ_CORE_AtExitCallbackListLock(): Unit
 
 @FastNative
 foreign func CJ_CORE_AtExitCallbackListUnlook(): Unit
-
-// The node of atexitCallback function.
 class AtexitCallbackNode {
     var atexitCallback: () -> Unit
     var next: ?AtexitCallbackNode = None
@@ -27,12 +23,10 @@ class AtexitCallbackNode {
     }
 }
 
-var atexitCallbackHead: ?AtexitCallbackNode = None // atexitCallback list.
-var callbacksRunningFlag: Bool = false // the flag whether callbacks is being executed
-
-// Add an atexitCallback Function to list.
+var atexitCallbackHead: ?AtexitCallbackNode = None
+var callbacksRunningFlag: Bool = false
 protected func CJ_CORE_AddAtexitCallback(callback: () -> Unit): Unit {
-    if (callbacksRunningFlag) { // Prevent deadlock caused by calling CJ_CORE_AddAtexitCallback inside a callback function 
+    if (callbacksRunningFlag) {
         return
     }
 
@@ -45,14 +39,12 @@ protected func CJ_CORE_AddAtexitCallback(callback: () -> Unit): Unit {
     atexitCallbackHead = Option<AtexitCallbackNode>.Some(newNode)
     unsafe { CJ_CORE_AtExitCallbackListUnlook() }
 }
-
-// Execute all atexitCallback functions. Reverse order of addition.
 protected func CJ_CORE_ExecAtexitCallbacks(): Unit {
-    if (callbacksRunningFlag) { // Prevent deadlock caused by calling CJ_CORE_ExecAtexitCallbacks inside a callback function 
+    if (callbacksRunningFlag) {
         return
     }
     unsafe { CJ_CORE_AtExitCallbackListLock() }
-    if (callbacksRunningFlag) { // Prevent multiple threads from calling CJ_CORE_ExecAtexitCallbacks, which causes the callback function to be executed multiple times.
+    if (callbacksRunningFlag) {
         unsafe { CJ_CORE_AtExitCallbackListUnlook() }
         return
     }

@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines the functions related to 'Duration'.
- */
+
+
+
+
+
+
+
+
 
 package std.core
 
@@ -30,14 +27,12 @@ let MIN_NS_FLOAT64 = Float64(MIN_INT64) * Float64(NS_PER_SEC)
 const FLOAT64_0: Float64 = 0.0f64
 const FLOAT64_1: Float64 = 1.0f64
 const SECS_MAX: UInt64 = 0x8000_0000_0000_0000
-const DUR_BASE: UInt32 = 0x3B9A_CA00 //10^9
+const DUR_BASE: UInt32 = 0x3B9A_CA00
 
-/**
- * Duration is used to represent a time interval with a minimum precision of nanoseconds.
- * Duration can be expressed in the range of Duration.Min to Duration.Max.( [-2^63, 2^63-1) in seconds)
- * Duration provides some common related methods, including static member instances of some common time intervals,
- * calculation and comparison methods of time intervals, and the like.
- */
+
+
+
+
 public struct Duration <: ToString & Hashable & Comparable<Duration> {
     protected let sec: Int64
     protected let ns: UInt32
@@ -62,63 +57,41 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         return Duration(sec, UInt32(ns))
     }
 
-    /*
-     * Duration for 1 nanosecond.
-     */
+
     public static const nanosecond: Duration = Duration(0, 1)
 
-    /*
-     * Duration for 1 microsecond.
-     */
+
     public static const microsecond: Duration = Duration(0, 1000u32)
 
-    /*
-     * Duration for 1 millisecond.
-     */
+
     public static const millisecond: Duration = Duration(0, 1000000u32)
 
-    /*
-     * Duration for 1 second.
-     */
+
     public static const second: Duration = Duration(1, 0)
 
-    /*
-     * Duration for 1 minute.
-     */
+
     public static const minute: Duration = Duration(SECS_PER_MINUTE, 0)
 
-    /*
-     * Duration for 1 hour.
-     */
+
     public static const hour: Duration = Duration(SECS_PER_HOUR, 0)
 
-    /*
-     * Duration for 1 day.
-     */
+
     public static const day: Duration = Duration(SECS_PER_DAY, 0)
 
-    /*
-     * Duration for 0 nanosecond.
-     */
+
     public static const Zero: Duration = Duration(0, 0)
 
-    /*
-     * Duration for 2^63-1 seconds with 999,999,999 nanoseconds.
-     */
+
     public static const Max: Duration = Duration(MAX_INT64, MAX_NANOSECOND)
 
-    /*
-     * Duration for -2^63 seconds.
-     */
+
     public static const Min: Duration = Duration(MIN_INT64, 0)
 
-    /**
-     * Obtain the integer size of the current Duration instance in nanoseconds.
-     *
-     * @return Int64 - Integer size in nanoseconds, rounded up to the smaller absolute value.
-     *
-     * @throws ArithmeticException - if the duration in nanosecond exceeds the range of 'Int64'.
-     */
+
+
+
+
+
     public func toNanoseconds(): Int64 {
         if (let Some(result) <- getResult(NS_PER_SEC)) {
             return result
@@ -126,13 +99,11 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         throw ArithmeticException("The duration in nanosecond exceeds the range of 'Int64'.")
     }
 
-    /**
-     * Obtain the integer size of the current Duration instance in microseconds.
-     *
-     * @return Int64 - Integer size in microseconds, rounded up to the smaller absolute value.
-     *
-     * @throws ArithmeticException - if the duration in microsecond exceeds the range of 'Int64'.
-     */
+
+
+
+
+
     public func toMicroseconds(): Int64 {
         if (let Some(result) <- getResult(US_PER_SEC)) {
             return result
@@ -140,13 +111,11 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         throw ArithmeticException("The duration in microsecond exceeds the range of 'Int64'.")
     }
 
-    /**
-     * Obtain the integer size of the current Duration instance in milliseconds.
-     *
-     * @return Int64 - Integer size in milliseconds, rounded up to the smaller absolute value.
-     *
-     * @throws ArithmeticException - if the duration in millisecond exceeds the range of 'Int64'.
-     */
+
+
+
+
+
     public func toMilliseconds(): Int64 {
         if (let Some(result) <- getResult(MS_PER_SEC)) {
             return result
@@ -154,38 +123,30 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         throw ArithmeticException("The duration in millisecond exceeds the range of 'Int64'.")
     }
 
-    /**
-     * Obtain the integer size of the current Duration instance in seconds.
-     *
-     * @return Int64 - Integer size in seconds, rounded up to the smaller absolute value.
-     */
+
+
+
     public func toSeconds(): Int64 {
         return getRealSecond()
     }
 
-    /**
-     * Obtain the integer size of the current Duration instance in minutes.
-     *
-     * @return Int64 - Integer size in minutes, rounded up to the smaller absolute value.
-     */
+
+
+
     public func toMinutes(): Int64 {
         return getRealSecond() / SECS_PER_MINUTE
     }
 
-    /**
-     * Obtain the integer size of the current Duration instance in hours.
-     *
-     * @return Int64 - Integer size in hours, rounded up to the smaller absolute value.
-     */
+
+
+
     public func toHours(): Int64 {
         return getRealSecond() / SECS_PER_HOUR
     }
 
-    /**
-     * Obtain the integer size of the current Duration instance in days.
-     *
-     * @return Int64 - Integer size in days, rounded up to the smaller absolute value.
-     */
+
+
+
     public func toDays(): Int64 {
         return getRealSecond() / SECS_PER_DAY
     }
@@ -196,15 +157,14 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         }
         return sec
     }
-    /**
-     * Obtain the string representation of the current Duration instance.
-     *
-     * @return String - The string representation of Duration
-     *
-     * The format is as follows: "1d2h3m4s5ms6us7ns".
-     * If the value of a unit is 0, this item is omitted.
-     * when the value of all units is 0, "0s" is returned.
-     */
+
+
+
+
+
+
+
+
     public func toString(): String {
         return match {
             case this == Zero => "0s"
@@ -231,11 +191,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         }
     }
 
-    /**
-     * Obtain the hash value of the current Duration instance.
-     *
-     * @return Int64 - Hash value of the current Duration instance.
-     */
+
+
+
     public func hashCode(): Int64 {
         var dfh: DefaultHasher = DefaultHasher()
         dfh.write(this.sec)
@@ -243,13 +201,11 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         dfh.finish()
     }
 
-    /**
-     * Obtain the duration instance for the absolute value of the interval of the current duration instance.
-     *
-     * @return Duration - The duration instance for the absolute value of the interval of the current instance.
-     *
-     * @throws ArithmeticException - If the absolute value is out of range for 'Duration'.
-     */
+
+
+
+
+
     public func abs(): Duration {
         let (second, nanosecond) = toSameSign()
         if (second == Int64.Min) {
@@ -261,16 +217,14 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         return Duration(second, UInt32(nanosecond))
     }
 
-    /**
-     * Add with another duration.
-     *
-     * @param r - Another duration.
-     * @return Duration - New duration instance after addition.
-     *
-     * @throws ArithmeticException - If the sum in nanoseconds is out of range for 'Duration'.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
+
     public operator func +(r: Duration): Duration {
         if ((r.sec | Int64(r.ns)) == 0) {
             return this
@@ -281,16 +235,14 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         return Duration.of(this.sec + r.sec, Int64(this.ns) + Int64(r.ns))
     }
 
-    /**
-     * Subtract another duration.
-     *
-     * @param r - Another duration.
-     * @return Duration - New duration instance after subtraction.
-     *
-     * @throws ArithmeticException - If the subtracted Value in nanoseconds is out of range for 'Duration'.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
+
     public operator func -(r: Duration): Duration {
         if ((r.sec | Int64(r.ns)) == 0) {
             return this
@@ -301,16 +253,14 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         return Duration.of(this.sec - r.sec, Int64(this.ns) - Int64(r.ns))
     }
 
-    /**
-     * Multiply by the specified 'Int64' value.
-     *
-     * @param r - The specified 'Int64' value to multiply.
-     * @return Duration - New duration instance after multiplication.
-     *
-     * @throws ArithmeticException If the multiplied value in nanoseconds is out of range for 'Duration'.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
+
     public operator func *(r: Int64): Duration {
         if (this == Zero || r == 0) {
             return Zero
@@ -329,17 +279,15 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         throw ArithmeticException("Out of range of representation of 'Duration'!")
     }
 
-    /**
-     * Multiply by the specified 'Float64' value.
-     *
-     * @param r - The specified 'Float64' value to multiply.
-     * @return Duration - New duration instance after multiplication.
-     *
-     * @throws IllegalArgumentException - If the value of @p r is NaN(not a number).
-     * @throws ArithmeticException - If the multiplied value in nanoseconds is out of range for 'Duration'.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
+
+
+
     public operator func *(r: Float64): Duration {
         if (this == Zero || r == FLOAT64_0) {
             return Zero
@@ -372,15 +320,13 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         }
     }
 
-    /**
-     * Divide by the specified 'Int64' value.
-     *
-     * @param r - the specified 'Int64' value.
-     * @return Duration - New instance after division.
-     *
-     * @throws IllegalArgumentException - If the value of @p r is 0.
-     * @throws ArithmeticException - If the divided value in nanoseconds is out of range for 'Duration'.
-     */
+
+
+
+
+
+
+
     public operator func /(r: Int64): Duration {
         if (r == 0) {
             throw IllegalArgumentException("The value of right operand cannot be 0!")
@@ -409,15 +355,13 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         return Duration.of(-seconds, -nanoseconds)
     }
 
-    /**
-     * Divide by the specified 'Float64' value.
-     *
-     * @param r - the specified 'Float64' value.
-     * @return Duration - New instance after division.
-     *
-     * @throws IllegalArgumentException - If the value of @p r is 0 or NaN(not a number).
-     * @throws ArithmeticException - If the divided value in nanoseconds is out of the range for 'Duration'.
-     */
+
+
+
+
+
+
+
     public operator func /(r: Float64): Duration {
         if (this == Zero) {
             return Zero
@@ -434,14 +378,12 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
             {=> ArithmeticException("Out of range of representation of 'Duration'!")})
     }
 
-    /**
-     * Divide by another duration.
-     *
-     * @param r - Another duration.
-     * @return Float64 - The divided 'Float64' value.
-     *
-     * @throws IllegalArgumentException - If @p r is Duration.Zero.
-     */
+
+
+
+
+
+
     public operator func /(r: Duration): Float64 {
         if (r == Zero) {
             throw IllegalArgumentException("The value of right operand cannot be Duration.Zero!")
@@ -449,38 +391,32 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         return this.toFloat64Nanoseconds() / r.toFloat64Nanoseconds()
     }
 
-    /**
-     * Report whether it is equal to another Duration.
-     *
-     * @param r another duration.
-     * @return true if equal @p r, otherwise false.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     public operator func ==(r: Duration): Bool {
         return this.sec == r.sec && this.ns == r.ns
     }
 
-    /**
-     * Report whether it is not equal to another Duration.
-     *
-     * @param r another duration.
-     * @return true if not equal @p r, otherwise false.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     public operator func !=(r: Duration): Bool {
         return !(this == r)
     }
 
-    /**
-     * Report whether it is greater than or equal to another Duration.
-     *
-     * @param r another duration.
-     * @return true if greater than or equal to @p r, otherwise false.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     public operator func >=(r: Duration): Bool {
         return if (this.sec == r.sec) {
             this.ns >= r.ns
@@ -491,14 +427,12 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         }
     }
 
-    /**
-     * Report whether it is greater than another Duration.
-     *
-     * @param r another duration.
-     * @return true if greater than @p r, otherwise false.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     public operator func >(r: Duration): Bool {
         return if (this.sec == r.sec) {
             this.ns > r.ns
@@ -509,36 +443,30 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         }
     }
 
-    /**
-     * Report whether it is less than or equal to another Duration.
-     *
-     * @param r another duration.
-     * @return true if less than or equal to @p r, otherwise false.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     public operator func <=(r: Duration): Bool {
         return !(this > r)
     }
 
-    /**
-     * Report whether it is less than another Duration.
-     *
-     * @param r another duration.
-     * @return true if less than @p r, otherwise false.
-     *
-     * @since 0.18.2
-     */
+
+
+
+
+
+
     public operator func <(r: Duration): Bool {
         return !(this >= r)
     }
 
-    /**
-     * Compare the relationship between the current duration instance and another duration instance.
-     *
-     * @param rhs - Another duration instance for comparison
-     * @return Ordering - Indicating the relationship between two duration instances.
-     */
+
+
+
+
     public func compare(rhs: Duration): Ordering {
         return match {
             case this < rhs => Ordering.LT
@@ -598,9 +526,6 @@ func durMul(secs: UInt64, nanos: UInt32, multiplier: UInt64, sign: Bool): ?Durat
             case Some(v) => seconds = v
             case None => return None
         }
-        // sign: +, second < SECS_MAX
-        // sign: -, second = SECS_MAX, nanoseconds = 0 || second <= SECS_MAX
-        // seconds is not over than SECS_MAX
         if (seconds == SECS_MAX) {
             if (!sign && nanoseconds == 0) {
                 return Duration.Min
@@ -639,8 +564,6 @@ func tryU64Add(left: UInt64, right: UInt64): ?UInt64 {
     }
     return left + right
 }
-
-// return true if overflow
 func checkSub(left: Int64, right: Int64): Bool {
     return (right > 0 && left <= Int64.Min + right) || (right < 0 && left >= Int64.Max + right)
 }
@@ -749,7 +672,6 @@ func u32ThreeMul(num2: UInt32, num1: UInt32, num0: UInt32, multiplier: UInt32): 
 
 func u32DividendMul(num3: UInt32, num2: UInt32, num1: UInt32, num0: UInt32, times: UInt32): (UInt32, UInt32, UInt32, 
     UInt32, UInt32) {
-    // the place is 10^9
     var res0: UInt64 = UInt64(num0) * UInt64(times)
     var res1: UInt64 = UInt64(num1) * UInt64(times) + res0 / DUR_BASE
     var res2: UInt64 = UInt64(num2) * UInt64(times) + res1 / DUR_BASE
@@ -774,14 +696,13 @@ func divAndMod(dividend: UInt64, dividend2: UInt32, divisor2: UInt32, divisor1: 
 }
 
 extend Int64 {
-    /**
-     * Multiply by a duration Instance.
-     *
-     * @param r - a duration Instance.
-     * @return Duration - New duration instance after multiplication.
-     *
-     * @throws ArithmeticException - If the multiplied value in nanoseconds is out of range for 'Duration'.
-     */
+
+
+
+
+
+
+
     public operator func *(r: Duration): Duration {
         return r * this
     }
@@ -814,14 +735,13 @@ extend UInt32 {
 }
 
 extend Float64 {
-    /**
-     * Multiply by a duration Instance.
-     *
-     * @param r - a duration Instance.
-     * @return Duration - New duration instance after multiplication.
-     *
-     * @throws ArithmeticException - If the multiplied value in nanoseconds is out of range for 'Duration'.
-     */
+
+
+
+
+
+
+
     public operator func *(r: Duration): Duration {
         return r * this
     }

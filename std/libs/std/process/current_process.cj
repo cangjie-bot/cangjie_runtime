@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.process
 
@@ -13,8 +13,8 @@ import std.fs.*
 import std.io.*
 import std.sync.*
 
-const RTN_CODE_MIN_VAL: Int64 = -0x0000_0000_8000_0000 //-2147483648
-const RTN_CODE_MAX_VAL: Int64 = 0x0000_0000_7fff_ffff //2147483647
+const RTN_CODE_MIN_VAL: Int64 = -0x0000_0000_8000_0000
+const RTN_CODE_MAX_VAL: Int64 = 0x0000_0000_7fff_ffff
 
 const NULL_BYTE = "\0"
 let mtx: Mutex = Mutex()
@@ -31,9 +31,7 @@ func getCommandLineArgsFromRuntime(): CPointer<CPointer<UInt8>> {
     }
 }
 
-/**
- * CurrentProcess provide the base func for current process.
- */
+
 @Deprecated[message: "Use related global functions in the std.env instead."]
 public class CurrentProcess <: Process {
     let _stdIn: InputStream = ProcessInputStream(FileDescriptor(getStdInHandle()))
@@ -78,7 +76,7 @@ public class CurrentProcess <: Process {
 
     public prop homeDirectory: Path {
         get() {
-            var homeDir: CString = unsafe { CJ_OS_HomeDir() } // Note: no need to free.
+            var homeDir: CString = unsafe { CJ_OS_HomeDir() }
             var dir: Path = Path(homeDir.toString())
             return dir
         }
@@ -112,7 +110,7 @@ public class CurrentProcess <: Process {
             let ck: CString = LibC.mallocCString(key)
             try {
                 return synchronized(mtx) {
-                    nativeGetEnv(ck) // Note: No need to free.
+                    nativeGetEnv(ck)
                 }
             } finally {
                 LibC.free(ck)
@@ -177,26 +175,22 @@ public class CurrentProcess <: Process {
         return args
     }
 
-    /**
-     * Sets the function to be called before the program ends normally.
-     * Function description: atexit() is used to set a function to be called before the program ends normally. When the program returns from main by calling exit(),
-     * The function specified by the function parameter is called before exit() ends the program.
-     * Do not use the atexit function of the C language. Otherwise, unexpected problems may arise.
-     *
-     * @param callback Called Before Normal Exit.
-     *
-     * since 0.24.3
-     */
+
+
+
+
+
+
+
+
     public func atExit(callback: () -> Unit): Unit {
         CJ_CORE_AddAtexitCallback(callback)
     }
 
-    /**
-     * exit() is used to terminate the execution of the current progetStdoutStreamcess and return the status parameter to the parent Process.
-     * All buffer data of the Process is automatically written back and the files that are not closed are closed
-     *
-     * @param code Register the function to be executed before the Process exits.
-     */
+
+
+
+
     public func exit(code: Int64): Nothing {
         var c: Int64 = code
         if (c < RTN_CODE_MIN_VAL) {
@@ -209,19 +203,16 @@ public class CurrentProcess <: Process {
         processExit(Int32(c))
     }
 
-    /**
-     * Override Process func, support callback functions when currentProcess terminate.
-     *
-     * @param pid - process id, need to terminate
-     * @param force - true terminated forcibly
-     *                false terminated normally
-     *
-     * @throws ProcessException - if the pid invaild
-     * @return Unit
-     */
+
+
+
+
+
+
+
+
     protected func terminateAliveProcess(pid: Int32, force: Bool): Unit {
         let status: Int8 = unsafe { CJ_OS_GetProcessAliveStatus(Int32(pid), this._startTime) }
-        // check the process still running, make sure not kill the wrong process.
         if (status == PROCESS_STATUS_ALIVE) {
             CJ_CORE_ExecAtexitCallbacks()
             unsafe { CJ_OS_Terminate(Int32(pid), force) }

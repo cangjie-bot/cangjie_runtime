@@ -1,22 +1,20 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.sort
 
 import std.math.*
 
-/*
- * Stable ascending sort
- *
- * @param data Array to be sorted.
- *
- * @since 0.27.3
- */
+
+
+
+
+
 @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` instead."]
 public func stableSort<T>(data: Array<T>): Unit where T <: Comparable<T> {
     if (data.size < 2) {
@@ -25,14 +23,12 @@ public func stableSort<T>(data: Array<T>): Unit where T <: Comparable<T> {
     data.timSort()
 }
 
-/*
- * Stable sort
- *
- * @param data Array to be sorted.
- * @param comparator The sorted comparison strategy.
- *
- * @since 0.27.3
- */
+
+
+
+
+
+
 @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` instead."]
 public func stableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     if (data.size < 2) {
@@ -459,8 +455,6 @@ extend<T> Array<T> where T <: Comparable<T> {
             shortSort(0, this.size - 1)
             return
         }
-
-        // init temp data
         let mrl = this.getMinRunLength()
         var temp = TempArray(this.size, this[0])
         let stackLen = Int64(log2(Float64(this.size) / Float64(mrl) + 2.0)) + 1
@@ -495,7 +489,6 @@ extend<T> Array<T> where T <: Comparable<T> {
 }
 
 extend<T> Array<T> {
-    // the value range of the parameter: 0 <= begin < end <= array.size - 1
     @OverflowWrapping
     private func shortSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         let len = this.size
@@ -918,8 +911,6 @@ extend<T> Array<T> {
             shortSort(0, this.size - 1, comparator)
             return
         }
-
-        // init temp data
         let mrl = this.getMinRunLength()
         var temp = TempArray(this.size, this[0])
         let stackLen = Int64(log2(Float64(this.size) / Float64(mrl) + 2.0)) + 1

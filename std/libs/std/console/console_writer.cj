@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This is a class for ConsoleWriter.
- */
+
+
+
+
+
+
+
+
 
 package std.console
 
@@ -25,17 +22,15 @@ foreign func CJ_CONSOLE_Flush(fd: Int32): Unit
 public class ConsoleWriter <: OutputStream {
     private let mutex: ReentrantMutex = ReentrantMutex()
 
-    /* Write buffer size is 512 bytes */
+    
     private let bufferSize: Int64 = 512
 
-    /* Write buffer */
+    
     private let buffer_: Array<UInt8> = Array<UInt8>(this.bufferSize, repeat: 0)
 
     private let fd_: Int32
 
-    /**
-     * Init the ConsoleWriteStream, initialize the buffer.
-     */
+
     init(fd: Int32) {
         this.fd_ = fd
     }
@@ -241,17 +236,15 @@ public class ConsoleWriter <: OutputStream {
         }
     }
 
-    /**
-     * Write buffer data into stdOut.
-     *
-     * @param arr write Array.
-     * @param off The write data is placed into b from the index.
-     * @param cnt write cnt bytes.
-     *
-     * @return Int64
-     *
-     * @since 0.24.1
-     */
+
+
+
+
+
+
+
+
+
     private func directWrite(arr: Array<UInt8>, cnt: Int64, newline!: Bool = false): Int64 {
         unsafe {
             var pos: Int64 = 0

@@ -1,15 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
-// here we have generic type parameter: it's important to keep it
-// as we abuse generic instantiation to avoid virtual invocations
 interface PlatformSocket<Self> where Self <: PlatformSocket<Self> {
     func write(buffer: Array<Byte>, timeout: ?Duration): Unit
 
@@ -19,10 +17,8 @@ interface PlatformSocket<Self> where Self <: PlatformSocket<Self> {
 
     func receiveFrom(buffer: Array<UInt8>, timeout: ?Duration): ?(SocketAddress, Int64)
 
-    /**
-     * Connect socket to the specified address, optionally binding it to a local address.
-     * For negotiated protocols, the specified timeout is also considered
-     */
+
+
     func connect(localAddress: ?SocketAddress, address: SocketAddress, timeout: ?Duration): Unit
 
     func disconnect(): Unit
@@ -64,14 +60,12 @@ interface PlatformSocket<Self> where Self <: PlatformSocket<Self> {
 
     func setKeepAlive(config: ?SocketKeepAliveConfig): Bool
 
-    /**
-     * This is the terminal disposal function that should release resources.
-     *
-     * This is guaranteed to be invoked exactly once (unless process exit) and
-     * no other member functions will be invoked for this instance.
-     * It is also guaranteed that this function will be never invoked concurrently
-     * with other member functions.
-     */
+
+
+
+
+
+
     unsafe func dispose(): Unit
 
     static func create(
@@ -81,12 +75,10 @@ interface PlatformSocket<Self> where Self <: PlatformSocket<Self> {
     ): Self
 }
 
-/**
- * This is a socket common implementation shared across different socket types.
- *
- * Here we have generic type parameter: it's important to keep it
- * as we abuse generic instantiation to avoid virtual invocations
- */
+
+
+
+
 class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
     private var readTimeout_: ?Duration = None
     private var writeTimeout_: ?Duration = None
@@ -95,11 +87,6 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
     private var keepAlive_: ?SocketKeepAliveConfig = None
 
     private let addressLock = NonReentrantReadWriteMutex()
-
-    // the addresses should be guarded by the lock
-    // these contains initial requested local/remote address
-    // however after connect/bind/accept they are switched to None and after that
-    // could be lazily detected to real local/remote address
     private var remoteAddress_ = ExternallyLockedLazy<?SocketAddress, SocketHolder<NS>>()
     private var localAddress_ = ExternallyLockedLazy<?SocketAddress, SocketHolder<NS>>()
 
@@ -133,10 +120,8 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         this(SocketHolder<NS>(acceptedSocket: existing), kind)
     }
 
-    /**
-     * A preconfigured local address to bind at if invoked before bind()
-     * or a real local address on which the socket is actually bound.
-     */
+
+
     mut prop localAddress: ?SocketAddress {
         get() {
             checkNotClosed()
@@ -157,10 +142,8 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? SocketException.throwClosedException()
     }
 
-    /**
-     * A preconfigured remote address to connect to if invoked before connect()
-     * or a real local address to which the socket is connected.
-     */
+
+
     mut prop remoteAddress: ?SocketAddress {
         get() {
             checkNotClosed()
@@ -204,8 +187,6 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
             holder.state.connected
         }
     }
-
-    // note that this is suitable only for some cases when races is not a problem
     func checkNotClosed() {
         holder.state.ensureNotClosed()
     }
@@ -316,7 +297,7 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
                 state.ensureNotConnected()
             }
 
-            addressLock.writeMutex.lock() // we need this because we are touching local/remote address
+            addressLock.writeMutex.lock()
             try {
                 connectImpl(socket, state, timeout)
             } catch (e: Exception) {
@@ -327,8 +308,6 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
             }
         } ?? SocketException.throwClosedException()
     }
-
-    // should be only invoked under addressLock
     private func connectImpl(socket: NS, state: SocketState, timeout: ?Duration): Unit {
         let address = remoteAddress_.directValue |> unwrapOption |>
             getOrFail<SocketAddress> {
@@ -344,9 +323,6 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         socket.connect(bindAddress, address, timeout)
 
         if (!state.bound) {
-            // even if we didn't do bind() explicitly in the if-block before
-            // we are bound in connect() anyway
-            // so we are marking a connected socket as bound
             holder.markBound()
         }
         holder.markConnected()
@@ -362,7 +338,7 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
                 return
             }
 
-            addressLock.writeMutex.lock() // we need this because we are touching local/remote address
+            addressLock.writeMutex.lock()
             try {
                 let local = populateLocalAddressUnderLock(socket)
                 socket.disconnect()
@@ -415,7 +391,7 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
                 throw SocketException("Bind couldn't be invoked twice.")
             }
 
-            addressLock.writeMutex.lock() // we need this because we are touching local/remote address
+            addressLock.writeMutex.lock()
             try {
                 bindImpl(socket, backlogSize, bindRequired: true)
                 holder.markBound()
@@ -428,9 +404,6 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
             }
         } ?? SocketException.throwClosedException()
     }
-
-    // should be only invoked under addressLock
-    // doesn't mark as bound: should be done outside
     private func bindImpl(
         socket: NS,
         backlogSize: ?Int32,
@@ -593,13 +566,9 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
     }
 }
 
-// this is a specialized lazy implementation
-// the main goal was to keep it as small as possible
-// so we don't keep fields other than 'value'
+
 struct ExternallyLockedLazy<T, Arg> {
     private var value: ?T = None
-
-    // provide should never cause recursion otherwise self-lock will occur
     mut func compute(lock: NonReentrantReadWriteMutex, arg: Arg, provider: (Arg) -> T): T {
         if (let Some(value) <- tryGet(lock)) {
             return value

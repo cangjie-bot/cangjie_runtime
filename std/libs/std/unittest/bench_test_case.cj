@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.collection.ArrayList
@@ -14,8 +14,6 @@ import std.math.*
 import std.runtime.GC
 import std.convert.Formattable
 import std.sort.*
-
-// upper limit on number of saved measurements to keep reasonable statistics calculation time and memory cost
 const MEASUREMENTS_LIMIT = 5000
 const MAX_BATCH_SIZE = 2 ** 60
 
@@ -85,16 +83,12 @@ class BenchRunner {
         var n = 0
         var aggregateTime = 0.0
         var aggregateRuns = 0
-        // use exponential moving average to prevent single abnormal result
-        // on last warmup iteration to ruin some subsequent calculations
-        // which can cause benchmark to work for too long
         var ema = Ema(3)
         do {
-            n = min(n * 12 / 10 + 1, batchSize.end) // ~20% increase
+            n = min(n * 12 / 10 + 1, batchSize.end)
             let estimation = runMultipleAndEstimateTime(n)
             aggregateRuns += n
             executedBatches += 1
-            //if estimation is that small then most likely result will be zero so we can speed up things
             if (estimation <= 0.001) {
                 if (n > 100000 || aggregateRuns > 1000000) {
                     break
@@ -142,15 +136,12 @@ class BenchRunner {
         if (this.batchSize.end <= 0) {
             throw IllegalArgumentException("batchSize must be positive")
         }
-        // do warmup and estimate the benchmark time
         let estimation = warmupAndEstimate()
 
         let (batchSize, batchCount) = calcBatchSize(estimation)
         this.measurements.reserve(min(batchCount, MEASUREMENTS_LIMIT) - this.measurements.size)
 
         var batch = Float64(batchSize.start)
-        // we use non-constant step to have more data points located closer to zero
-        // which allows better overhead calculation and accounts for potential heteroskedasticity
         let avgStep = Float64(batchSize.end - batchSize.start) / Float64(batchCount)
         let stepChange = 2.0 * avgStep / Float64(batchCount)
         var step = stepChange * 0.5
@@ -169,26 +160,17 @@ class BenchRunner {
             step += stepChange
             runMultipleAndMeasure(Int64(batch |> round), batchSize.end)
             if (batchSize.end == 1) {
-                // IMPORTANT: this code MUST be inside this loop and not in a separate loop
-                // That is to ensure that any possible external effect is applied to overhead measurements in the same way
                 runMultipleAndMeasure(0, batchSize.end)
             }
-            // sanity check to prevent too long executions that look like hangs
             if (i > minBatches && DateTime.now() - start > targetDuration * 4 && targetDuration > Duration.Zero) {
                 break
             }
         }
-
-        // add some measurements with zero executions to better account for measurement overhead
         runMultipleAndMeasure(0, batchSize.end)
-
-        // invoke here so that we have cleaned heap before next run
-        // otherwise GC can be triggered on next bench warmup polluting the results
         ExplicitGcType.Heavy.invoke()
     }
 
     private func avgIterTime(estimation: Float64): Float64 {
-        // last summand is important when user explicitly specifies small batchSize for small benchmark
         estimation + overheadPerIteration * 2.0 + overheadPerBatch / Float64(batchSize.end)
     }
 
@@ -196,12 +178,7 @@ class BenchRunner {
         let targetDurationNs = max(Float64(targetDuration.toNanoseconds()), 0.0)
 
         let avgOneIterationTime = avgIterTime(estimation)
-
-        // how many batches if executing batches with sizes 1,2,3..N
-        // it would be a solution to the quadratic equation: (estimation+overhead*2)*N^2 = duration
         let batchesFrom1ToN = targetDurationNs / avgOneIterationTime |> sqrt |> ceil
-
-        // apply all of the constraints on amount of batches
         let batches = max(min(batchesFrom1ToN, 200.0), Float64(minBatches))
 
         let avgBatchSize = if (targetDurationNs > 0.0) {
@@ -211,14 +188,10 @@ class BenchRunner {
         } else {
             Float64(this.batchSize.end + this.batchSize.start) / 2.0
         }
-
-        // Setup special aggregating of results when not in batch mode and benchmark is small
         if (this.batchSize.end == 1 && avgBatchSize > 10.0) {
             ema0 = Ema(Int64(avgBatchSize))
             ema1 = Ema(Int64(avgBatchSize))
         }
-
-        // apply all of the constraints on batch size
         let maxBatchSize = min(Int64(ceil((avgBatchSize - 1.0) * 2.0 + 1.0)), this.batchSize.end)
         let range = this.batchSize.start..=max(maxBatchSize, this.batchSize.start)
 
@@ -244,10 +217,6 @@ class BenchRunner {
         let result = (Float64(times), dur)
 
         if (max == 1 && ema0.maxLength != 0) {
-            // in that case for small benchmarks if we just save raw results
-            // it takes too much memory and takes too long to process later,
-            // but at the same time we still need to collect statistical distribution
-            // in order to detect signal in all of the noise
             if (times == 0) {
                 ema0.append(dur)
                 if (ema0.reachedMax()) {
@@ -295,36 +264,26 @@ struct Ema {
     }
 }
 
-/**
- * Interface for all kinds of data that can be collected and analyzed during benchmarking.
- */
+
 public interface Measurement {
     func setup() {}
 
-    /**
-     * @return representation of the measurement data that will be used for statistical analisys
-     * and should be suitable for substraction.
-     */
+
+
     @Frozen
     func measure(): Float64 { 0.0 }
 
-    /**
-     * Conversion table for measured values, contains value multipliers mapped to measurement unit representation.
-     */
+
     prop conversionTable: MeasurementUnitTable {
         get() { [(1.0, "")] }
     }
 
-    /**
-     * Name for this type of measurement. Helps to distinguish between different types of Measurement.
-     */
+
     prop name: String {
         get() { "Measurement" }
     }
 
-    /**
-     * Simple description of the measurement to be displayed in some reports
-     */
+
     prop textDescription: String {
         get() { "Measures ${name}" }
     }
@@ -346,9 +305,7 @@ public struct MeasurementInfo {
     ) {}
 }
 
-/**
- * Conversion table for <value>, contains <value> multiplier and its measurement unit.
- */
+
 public type MeasurementUnitTable = Array<(Float64, String)>
 
 let RADIX_UNIT_TABLE: MeasurementUnitTable = [
@@ -366,8 +323,6 @@ func printDuration(dur: Duration): String {
 
 extend MeasurementUnitTable {
     private func adjustMeasurementPrecision(value: Float64): String {
-        // calculate how much precision do we need to print 4 most significant digits
-        // with at most 3 digits after the dot
         let precision = 3 - Int64(log10(clamp(value, 0.0001, 1000.0)))
         if (precision <= 5) {
             "${value.format(".${precision}")}"
@@ -376,17 +331,13 @@ extend MeasurementUnitTable {
         }
     }
 
-    /**
-     * Representation of measured `value` in suitable measurement unit.
-     */
+
     func toString(value: Float64): String {
         let (boundary, unit) = suitablePair(value)
         toString(value, boundary: boundary, unit: unit)
     }
 
-    /**
-     * Representation of measured `value` in suitable measurement `unit` in `boundary`.
-     */
+
     func toString(value: Float64, boundary!: Float64, unit!: String): String {
         if (value.isInf() || value.isNaN()) {
             return value.toString()
@@ -440,20 +391,16 @@ extend MeasurementUnitTable {
     }
 }
 
-/**
- * Measures how much time takes to execute a function.
- */
+
 public struct TimeNow <: Measurement {
     var unit: ?TimeUnit = None
-    /**
-     * @param unit Allows to specify a unit of time that will be used for printing results.
-     */
+
+
     public init(unit: ?TimeUnit) {
         this.unit = unit
     }
-    /**
-     * Chooses output precision automatically for each case.
-     */
+
+
     public init() {}
 
     @Frozen
@@ -487,9 +434,7 @@ public struct TimeNow <: Measurement {
     }
 }
 
-/**
- * Used to explicitly specify the time unit used when `TimeNow` prints time.
- */
+
 public enum TimeUnit <: ToString {
     | Nanos
     | Micros
@@ -519,16 +464,11 @@ public enum TimeUnit <: ToString {
     }
 }
 
-/**
- * Used to specify what type of GC is invoked by the test framework in benchmarks.
- * See std.runtime.GC(heavy: bool) for details about types of GC invokations
- */
+
+
 public enum ExplicitGcType <: ToString {
-    // GC is not invoked explicitly
     | Disabled
-    // GC(heavy: false) is invoked after each batch
     | Light
-    // GC(heavy: true) is invoked after each batch
     | Heavy
 
     func invoke() {
@@ -553,8 +493,6 @@ foreign func GetRdtsc(): UInt64
 
 @When[arch == "x86_64"]
 foreign func GetRdtscp(): UInt64
-
-// corresponds to HW_REF_CPU_CYCLES Perf measurements
 @When[arch == "x86_64"]
 public struct CpuCycles <: Measurement {
     @Frozen
@@ -598,14 +536,14 @@ public struct Perf <: Measurement {
         let rc = unsafe { InitPerf(counter.asRaw()) }
         match (rc) {
             case 0 => return
-            case 13 => // EACCESS
+            case 13 =>
                 throw Exception("""
 Not enough permissions to access performance counters. You need to reduce required permission by
 setting `kernel.perf_event_paranoid` system configuration parameter to value 1 or less.
 On systemd distributions it can be done with:
     sudo sysctl kernel.perf_event_paranoid=1
 """)
-            case 2 | 19 | 95 => // ENOENT|ENODEV|EOPNOTSUPP
+            case 2 | 19 | 95 =>
                 throw Exception(
                 "${counter} performance counter is unsupported by current CPU or linux kernel. errno=${rc}")
             case _ => throw Exception(
@@ -637,8 +575,6 @@ On systemd distributions it can be done with:
         }
     }
 }
-
-// Detailed cache counters are not supported yet
 @When[os == "Linux"]
 public enum PerfCounter <: ToString {
     | HW_CPU_CYCLES

@@ -1,19 +1,19 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.unittest.mock.internal
 
 public struct Call {
-    public let typeArgs: Array<String> // call's type arguments
-    public let receiver: Option<(Object, Array<String>)> // receiver reference and its type arguments
+    public let typeArgs: Array<String>
+    public let receiver: Option<(Object, Array<String>)>
 
     public Call(
         _receiver: Option<Object>,
-        _typeArgs: Array<ToString>, // merged type arguments for a call and for the outer declaration
+        _typeArgs: Array<ToString>,
         public let args: Array<Any>,
         public let funcInfo: FuncInfo
     ) {
@@ -44,19 +44,19 @@ public struct FuncInfo {
 }
 
 public enum DeclKind {
-    | Method( /*name:*/ String)
-    | FieldGetter( /*fieldName: */ String, /*hasSetter: */ Bool)
-    | FieldSetter( /*fieldName:*/ String)
-    | PropertyGetter( /*propertyName:*/ String, /*hasSetter:*/ Bool)
-    | PropertySetter( /*propertyName:*/ String)
-    | TopLevelFunction( /*name:*/ String)
-    | StaticMethod( /*name:*/ String)
-    | StaticPropertyGetter( /*name:*/ String)
-    | StaticPropertySetter( /*name:*/ String)
-    | StaticFieldGetter( /*name:*/ String)
-    | StaticFieldSetter( /*name:*/ String)
-    | TopLevelVariableGetter( /*name:*/ String)
-    | TopLevelVariableSetter( /*name:*/ String)
+    | Method(  String)
+    | FieldGetter(  String,  Bool)
+    | FieldSetter(  String)
+    | PropertyGetter(  String,  Bool)
+    | PropertySetter(  String)
+    | TopLevelFunction(  String)
+    | StaticMethod(  String)
+    | StaticPropertyGetter(  String)
+    | StaticPropertySetter(  String)
+    | StaticFieldGetter(  String)
+    | StaticFieldSetter(  String)
+    | TopLevelVariableGetter(  String)
+    | TopLevelVariableSetter(  String)
 }
 
 public struct ParameterInfo {

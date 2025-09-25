@@ -1,27 +1,23 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines Directory related classes.
- */
+
+
+
+
+
+
+
+
 package std.fs
 
 import std.collection.*
 
 public class Directory {
-    /*
-     * @throws IllegalArgumentException while path is empty, or path is current directory,
-     * or path is root directory, or path contains null character.
-     * @throws FSException while path is exist, or while recursive is false
-     * and the middle path is not exist.
-     */
+
+
+
+
+
     public static func create(path: String, recursive!: Bool = false): Unit {
         let normalPath = removeTralingSlashChar(path)
         if (exists(normalPath)) {
@@ -34,32 +30,24 @@ public class Directory {
         }
     }
 
-    /*
-     * @throws IllegalArgumentException while path is empty, or path is current directory,
-     * or path is root directory, or path contains null character.
-     * @throws FSException while path is exist, or while recursive is false
-     * and the middle path is not exist.
-     */
+
+
+
+
     public static func create(path: Path, recursive!: Bool = false): Unit {
         create(path.toString(), recursive: recursive)
     }
 
-    /*
-     * @throws FSException while path is not exist or failed to create temporary directory
-     * @throws IllegalArgumentException while path is empty or path contains null character
-     */
+
+
     public static func createTemp(directoryPath: String): Path {
         createTemp(Path(directoryPath))
     }
 
-    /*
-     * @throws FSException while path is not exist or failed to create temporary directory.
-     * @throws IllegalArgumentException while path is empty or path contains null character
-     */
+
+
     public static func createTemp(directoryPath: Path): Path {
         var directoryPathArr = unsafe { canonicalize(directoryPath).toString().rawData() }
-
-        // Append Six random characters and r'\0'
         var tmpStr = TMP_DIR
         var tempArr = Array<Byte>(directoryPathArr.size + tmpStr.size, repeat: 0)
         directoryPathArr.copyTo(tempArr, 0, 0, directoryPathArr.size)
@@ -216,12 +204,10 @@ public class Directory {
         }
     }
 
-    /*
-     * @throws FSException while sourceDirPath is not exist,
-     * or destinationDirPath is exit while overwrite is false, or failed to copy,
-     * or destinationDirPath is in sourceDirPath.
-     * @throws IllegalArgumentException while path contains null character.
-     */
+
+
+
+
     static func copy(sourceDirPath: String, destinationDirPath: String, overwrite: Bool): Unit {
         copyCheck(sourceDirPath, destinationDirPath, overwrite)
         if (!exists(destinationDirPath)) {
@@ -240,12 +226,10 @@ public class Directory {
         }
     }
 
-    /*
-     * private functions
-     * @throws FSException if get number of obtain members in the directory failed
-     */
+
+
     private static func getSubData(path: String): (Array<Byte>, Int64) {
-        let arr = Array<Byte>((256 + 2) * size(path), repeat: 0) // UInt8 name_size + UInt8 file_type + UInt8[256]
+        let arr = Array<Byte>((256 + 2) * size(path), repeat: 0)
         unsafe {
             let cPath = LibC.mallocCString(path)
             let arrPtr: CPointerHandle<Byte> = acquireArrayRawData(arr)
@@ -262,9 +246,7 @@ public class Directory {
         }
     }
 
-    /*
-     * @throws FSException if get number of subFiles in directory failed
-     */
+
     private static func size(pathStr: String): Int64 {
         unsafe {
             let cPath: CString = LibC.mallocCString(pathStr)
@@ -277,10 +259,8 @@ public class Directory {
         }
     }
 
-    /*
-     * @throws FSException if parent directory does not exists
-     * @throws FSException if path is null or system create directory failed
-     */
+
+
     private static func createNoRecursive(path: String): Unit {
         let parent = Path(path).parent
         if (!parent.isEmpty() && !exists(parent)) {
@@ -289,30 +269,21 @@ public class Directory {
         callNativeFunc(path, CJ_FS_DirCreate, "Failed to create directory")
     }
 
-    /*
-     * @throws IllegalArgumentException if path is invalid
-     */
+
     private static func removeTralingSlashChar(path: String): String {
-        // cannot create path "", "./" or "/" or r'\0'
         if (path.isEmpty() || path == CURRENT_DIRECTORY_STRING || path == ROOT_DIRECTORY_STRING || path.contains(
             NULL_BYTE)) {
             throw IllegalArgumentException("Invalid path, failed to create directory.")
         }
-
-        // skip the end r'/'
         var lastLetterIdx: Int64 = skipEndSlash(path)
-
-        // cannot create path "/[/]*/",
         if (lastLetterIdx < 0) {
             throw IllegalArgumentException("Invalid path, failed to create directory.")
         }
         return path[..=lastLetterIdx]
     }
 
-    /*
-     * @throws FSException if directory path already exists
-     * @throws FSException if system create directory failed
-     */
+
+
     private static func createRecursive(path: String): Unit {
         callNativeFunc(path, CJ_FS_DirCreateRecursive, "Failed to recursive create directory")
     }

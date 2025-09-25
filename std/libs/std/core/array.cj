@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
@@ -79,11 +79,9 @@ public struct Array<T> {
         }
     }
 
-    /**
-     * @return slice of this Array
-     * @throws IndexOutOfBoundsException if `start` is negative, or `len` is negative,
-     *         or `start + len` is greater than the size of array.
-     */
+
+
+
     @Frozen
     public func slice(start: Int64, len: Int64): Array<T> {
         if (start < 0 || len < 0 || (start + len) > this.len) {
@@ -101,27 +99,19 @@ public struct Array<T> {
         return Some<T>(arrayGetUnchecked(this.rawptr, start + index))
     }
 
-    /**
-     * @throws IndexOutOfBoundsException if `index` is negative or
-     *         greater than or equal to the size of array.
-     */
+
+
     @Frozen
     @OverflowWrapping
     public operator func [](index: Int64): T {
-        // Using type conversion to replace typical bounds checking,
-        // if (index < 0 || index >= this.len), to a single comparison.
-        // The negative value of index will be converted to a large positive number
-        // when `index` and `this.len` are interpreted as UInt64 and will trigger the exception.
         if (UInt64(index) >= UInt64(this.len)) {
             throw IndexOutOfBoundsException("The length of the array is ${this.len}, but the index is ${index}.")
         }
         return arrayGetUnchecked(this.rawptr, start + index)
     }
 
-    /**
-     * @throws IndexOutOfBoundsException if `index` is negative or
-     *         greater than or equal to the size of array.
-     */
+
+
     @Frozen
     @OverflowWrapping
     public operator func [](index: Int64, value!: T): Unit {
@@ -131,10 +121,8 @@ public struct Array<T> {
         return arraySetUnchecked(this.rawptr, start + index, value)
     }
 
-    /**
-     * @throws IllegalArgumentException if the `step` of `range` is not equal to 1.
-     * @throws IndexOutOfBoundsException if the `range` is invalid for this array.
-     */
+
+
     @Frozen
     public operator func [](range: Range<Int64>): Array<T> {
         return rangeSlice(range, this.len)
@@ -147,11 +135,9 @@ public struct Array<T> {
         }
     }
 
-    /**
-     * @throws IllegalArgumentException if the `step` of `range` is not equal to 1,
-     *         or the size of `value` is not equal to the length of `range`.
-     * @throws IndexOutOfBoundsException if `range` is invalid for this array.
-     */
+
+
+
     @Frozen
     public operator func [](range: Range<Int64>, value!: Array<T>): Unit {
         if (range.step != 1) {
@@ -173,7 +159,7 @@ public struct Array<T> {
         intrinsicBuiltInCopyTo<T>(value.rawptr, this.rawptr, value.start, this.start + start_, rangeSize)
     }
 
-    /** Reverse array elements in place. */
+    
     @Frozen
     @OverflowWrapping
     public func reverse(): Unit {
@@ -188,24 +174,22 @@ public struct Array<T> {
         }
     }
 
-    /**
-     * Special processing is performed for 0 in the following cases:
-     * When Range is 0..(excluding 0..=)(that is, start=0, hasStart=true, hasStop=false, isClosed=false)
-     * If the array or buffer is empty, an empty array or buffer is returned.
-     * When Range is 0..0(excluding 0..=0)(that is, start=0, hasStart=true, stop=0, hasStop=true, isClosed=false)
-     * If the array or buffer is empty, an empty array or buffer is returned.
-     * For other ranges, start and end out-of-bounds check is performed normally,
-     * including the range that is actually empty.
-     *
-     * @param range
-     * @param size Size of the collection
-     *
-     * @return Parameters of start*stop*step*offset.
-     * @since 0.25.2
-     *
-     * @throws IllegalArgumentException if the `step` of `range` is not equal to 1.
-     * @throws IndexOutOfBoundsException if the `range` is invalid for this array.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Frozen
     private func rangeSlice(range: Range<Int64>, _: Int64): Array<T> {
         if (range.step != 1) {
@@ -219,14 +203,10 @@ public struct Array<T> {
         }
         return Array<T>(this.rawptr, this.start + start_, end_ - start_)
     }
-
-    // The parameters represents a half-open range [start_, end_)
     @Frozen
     private const func isLegal(start_: Int64, end_: Int64): Bool {
         0 <= start_ && start_ <= end_ && end_ <= this.len
     }
-
-    // normalize Range<Int64> to half-open range [start, end)
     @Frozen
     @OverflowWrapping
     private const func normalize(range: Range<Int64>): (Int64, Int64) {
@@ -249,8 +229,6 @@ public struct Array<T> {
         }
         return (start, end)
     }
-
-    // keep for compatibility - do not remove
     private const func rangeToString(range: Range<Int64>): String {
         let start = if (range.hasStart) {
             range.start
@@ -270,7 +248,7 @@ public struct Array<T> {
         }
     }
 
-    /** Dummy function, used for function overloading check. */
+    
     @Frozen
     public func clone(): Array<T> {
         if (len == 0) {
@@ -281,9 +259,7 @@ public struct Array<T> {
         return Array<T>(newRawPtr, 0, len)
     }
 
-    /*
-     * @throws IndexOutOfBoundsException if the `range` is invalid for this array.
-     */
+
     @Frozen
     @OverflowWrapping
     public func clone(range: Range<Int64>): Array<T> {
@@ -309,12 +285,10 @@ public struct Array<T> {
         return Array<T>(newSize, {i: Int64 => arr[start_ + step * i]})
     }
 
-    /*
-     * @throws IllegalArgumentException if `copyLen` is negative.
-     * @throws IndexOutOfBoundsException if `srcStart` or `dstStart` is negative, or `srcStart` is
-     *         greater or equal to the size of this array, or `dstStart` is greater or equal to
-     *         the size of `dst`, or `copyLen` is out of bounds.
-     */
+
+
+
+
     @Frozen
     public func copyTo(dst: Array<T>, srcStart: Int64, dstStart: Int64, copyLen: Int64): Unit {
         if (copyLen == 0) {
@@ -349,13 +323,11 @@ public struct Array<T> {
         intrinsicBuiltInCopyTo<T>(this.rawptr, dst.rawptr, this.start, dst.start, this.len)
     }
 
-    /*
-     * Returns a new Array concat this and that
-     *
-     * `other` will be copied to the new array
-     *
-     * returns a new array, size is `this.size + that.size`
-     */
+
+
+
+
+
     @Frozen
     public func concat(other: Array<T>): Array<T> {
         if (this.len == 0) {

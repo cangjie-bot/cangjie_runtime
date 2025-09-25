@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 macro package std.unittest.testmacro
 
 import std.ast.*
@@ -20,9 +20,7 @@ func parseNamedCommaSeparatedExpressions(params: Tokens): Array<(Token, Expr)> {
     collectArray(callInfo)
 }
 
-/**
- * Parse parameters in the form @Configure[generationSteps: <number>, randomSeed: <number>, reductionSteps: <number>]
- */
+
 func parseConfigurationMacro(params: Tokens): Array<(Token, Expr)> {
     try {
         parseNamedCommaSeparatedExpressions(params)
@@ -63,9 +61,7 @@ func skipNl(tokens: Tokens, pos: Int64): Int64 {
     next
 }
 
-/**
- * Parse macro arguments in the form @Test[x in value1, y in value2, z in value3]
- */
+
 func parseDSLMacro(params_: ?Tokens): Array<(String, Tokens)> {
     let params = params_ ?? return []
     try {
@@ -96,7 +92,6 @@ func parseDSL(params: Tokens): Array<(String, Tokens)> {
         i = skipNl(params, i + 1)
         match (leftPart) {
             case left: MemberAccess where (left.baseExpr as RefExpr)?.identifier.value == Some("config") =>
-                // desugar config syntax into existing syntax
                 let paramName = Token(STRING_LITERAL, left.field.value)
                 result.add(("_", quote(
                     DataStrategyProcessor.start($rightPart, $paramName)
@@ -111,11 +106,9 @@ func parseDSL(params: Tokens): Array<(String, Tokens)> {
     result.toArray()
 }
 
-/**
- * Create option fully qualified name.
- * for example if identifier = `zxc`
- * then FQ name = `KeyZxc.zxc`
- */
+
+
+
 private func createOptionFQName(identifier: Token): Tokens {
     let nameStr = identifier.value
 
@@ -123,15 +116,13 @@ private func createOptionFQName(identifier: Token): Tokens {
     return quote($structName.$identifier)
 }
 
-/**
- * Taken the output of parseConfigurationMacro, build code that constructs a Configuration object in
- * a vaiable named `variableName`, append the code to the builder `builder`
- * @param raw the result of parseConfigurationMacro
- * @param parentConfiguration the parent configuration object expression
- * @param variableName the name of the variable to put the new configuration to
- * @param builder a TokensBuilder object to append the code to (if any), defaults to an empty builder
- * @return builder
- */
+
+
+
+
+
+
+
 func buildConfiguration(
     raw: Array<(Token, Expr)>,
     variableName: Token,
@@ -145,19 +136,17 @@ func buildConfiguration(
     return builder
 }
 
-/**
- * Taken the output of parseDSLMacro, build code that constructs a DataStrategy object in
- * a vaiable named `variableName`, append the code to the builder `builder`
- * @param raw the result of parseDSLMacro
- * @param argNames the names of the function parameters we're building strategy for
- * @param argTypes the types of the function parameters we're building strategy for
- * @param variableName the variable to put resulting strategy to
- * @param builder the builder to write the code to, or new empty builder if none is provided
- * @return builder
- * @throws MacroException if the number of arguments is bigger than 5
- * @throws MacroException if the strategy code does not contain some function parameter from `argNames`
- * @throws MacroException if argNames and argTypes have different sizes
- */
+
+
+
+
+
+
+
+
+
+
+
 func buildDataStrategy(
     raw: ArrayList<(String, Tokens)>,
     argNames: Array<String>,
@@ -178,8 +167,6 @@ func buildDataStrategy(
         argTypes,
         builder: builder
     )
-
-    // append possible config strategies
     for ((name, strat) in raw where name == "_") {
         builder.append(quote(
             .productWithUnit($strat)

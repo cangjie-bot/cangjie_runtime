@@ -1,19 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.collection.*
 
-/**
- * Represents the exhaustiveness of verification.
- * Exhaustive - requires every invocation on an object to be listed inside Verify block.
- * Partial - allows to list only some invocations and ignore 'uninteresting' invoactions.
- */
+
+
+
 public enum Exhaustiveness {
     Exhaustive | Partial
 }
@@ -32,8 +30,6 @@ func performVerification(statements: Array<VerifyStatement>, orderedness: Ordere
     }
 
     let objectIds = collectObjectsIds(statements)
-
-    // we rely on snapshot being a copy and thus not getting modified concurrently
     let logSnapshot = MockFramework.session { session: MockSession =>
         for (st in statements) {
             st.prepareForVerification(orderedness)

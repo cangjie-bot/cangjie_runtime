@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.collection.enumerate
@@ -68,7 +68,6 @@ extend Location {
 
     func fileNameAndLine(): String {
         let firstEntry = getEntries().get(0) ?? return UNKNOWN_LOCATION_STRING
-        // Path.fileName sometimes fails because StackTraceElement.fileName can be empty (presumably only on Mac)
         let fileName = try {
             Path(firstEntry.filePath).fileName
         } catch (e: Exception) {

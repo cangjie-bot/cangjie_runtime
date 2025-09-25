@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.resolve
 
 import std.ast.*
@@ -75,8 +75,6 @@ public struct Types {
 
         return false
     }
-
-    // returns component type if array
     public static func isArray(node: TypeNode): ?TypeNode {
         match (node) {
             case par: ParenType => isArray(par.parenthesizedType)

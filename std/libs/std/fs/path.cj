@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines Path related classes.
- */
+
+
+
+
+
+
+
+
 package std.fs
 
 public func canonicalize(path: String): Path {
@@ -57,10 +54,8 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         _rawPath = rawPath
     }
 
-    /**
-     * @throws IllegalArgumentException while path contains null character,
-     * or path is empty.
-     */
+
+
     public prop parent: Path {
         get() {
             checkPath()
@@ -68,10 +63,8 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         }
     }
 
-    /**
-     * @throws IllegalArgumentException while path contains null character,
-     * or path is empty.
-     */
+
+
     public prop fileName: String {
         get() {
             checkPath()
@@ -79,10 +72,8 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         }
     }
 
-    /**
-     * @throws IllegalArgumentException while path contains null character,
-     * or path is empty.
-     */
+
+
     public prop extensionName: String {
         get() {
             checkPath()
@@ -94,10 +85,8 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         }
     }
 
-    /**
-     * @throws IllegalArgumentException while path contains null character,
-     * or path is empty.
-     */
+
+
     public prop fileNameWithoutExtension: String {
         get() {
             checkPath()
@@ -109,19 +98,15 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         }
     }
 
-    /**
-     * @throws IllegalArgumentException while path contains null character,
-     * or path is empty.
-     */
+
+
     public func isAbsolute(): Bool {
         checkPath()
         return isAbsolutePath(_rawPath)
     }
 
-    /**
-     * @throws IllegalArgumentException while path contains null character,
-     * or path is empty.
-     */
+
+
     public func isRelative(): Bool {
         checkPath()
         return !isAbsolutePath(_rawPath)

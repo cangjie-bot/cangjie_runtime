@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.unittest
 
@@ -13,11 +13,9 @@ import std.process.Process
 import std.collection.ArrayList
 import std.unittest.common.*
 
-/*
- * Generate and print help page if it the first CLI argument is `help`, `--help`, `-help` or `-h`.
- * The help page contains information about unittest options and options defined by user.
- * Return `true` is help page was printed, `false` in other case.
- */
+
+
+
 func printUnittestHelpPageIfRequested(): Bool {
     if (!needToPrintHelpPage()) {
         return false

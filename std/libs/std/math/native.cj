@@ -1,21 +1,19 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.math
 
 @FastNative
 foreign func CJ_CORE_FastPowerDoubleInt64(x: Float64, y: Int64): Float64
 
-/**
- * libc functions wrapper functions.
- * these wrappers are mainly used to avoid name 'pollution' to the current namespace.
- * for now, native functions can only reside in top level, thus can not be put into a namespace construct
- */
+
+
+
 @FastNative
 foreign func CJ_MATH_Tan(x: Float64): Float64
 

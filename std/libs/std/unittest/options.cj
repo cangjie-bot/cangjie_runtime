@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.random.Random
@@ -626,10 +626,8 @@ public struct KeyShowTags <: KeyFor<Bool> {
     }
 }
 
-/**
- * Disables dynamic progress output if passed.
- * type: `Bool`.
- */
+
+
 struct KeyNoProgress <: KeyFor<Bool> {
     public static prop noProgress: KeyNoProgress {
         get() {
@@ -644,10 +642,8 @@ struct KeyNoProgress <: KeyFor<Bool> {
     }
 }
 
-/**
- * Has lower precedence than [KeyNoProgress].
- * type: `Bool`.
- */
+
+
 struct KeyProgressBrief <: KeyFor<Bool> {
     public static prop progressBrief: KeyProgressBrief {
         get() {
@@ -662,11 +658,9 @@ struct KeyProgressBrief <: KeyFor<Bool> {
     }
 }
 
-/**
- * Limits the entries amount displaying in the dynamic progress output.
- * Has lower precedence than [KeyProgressBrief].
- * type: `Bool`.
- */
+
+
+
 struct KeyProgressEntriesLimit <: KeyFor<Int64> {
     public static prop progressEntriesLimit: KeyProgressEntriesLimit {
         get() {

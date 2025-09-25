@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.runtime
 
@@ -15,9 +15,7 @@ const TRACE_TYPE_SCHEDULE_VALUE: UInt16 = 0x0100
 const TRACE_TYPE_RUNTIME_VALUE: UInt16 = 0x0200
 const TRACE_TYPE_ALL_VALUE: UInt16 = 0xff00
 
-/*
- * TraceType  is used to enable trace for collecting different types of event sets.
- */
+
 @When[backend == "cjnative" && (os == "Windows" || os == "Linux")]
 struct TraceType {
     var data: UInt16
@@ -48,9 +46,7 @@ struct Trace {
     private static let traceLock: Mutex = Mutex()
     private init() {}
 
-    /**
-     * function for dump trace.
-     */
+
     public unsafe static func dump(out: OutputStream): Unit {
         let lenPtr = LibC.malloc<Int32>(count: 1)
         if (lenPtr.isNull()) {
@@ -71,9 +67,7 @@ struct Trace {
         }
     }
 
-    /**
-     * function for start trace.
-     */
+
     public static func start(traceOpenType: TraceType, out: OutputStream): Bool {
         synchronized(traceLock) {
             let result = unsafe { CJ_ScheduleStartTrace(traceOpenType.data) }
@@ -87,9 +81,7 @@ struct Trace {
         }
     }
 
-    /**
-     * function for stop trace.
-     */
+
     public static func stop(): Bool {
         synchronized(traceLock) {
             unsafe { return CJ_ScheduleStopTrace() }

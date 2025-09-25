@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.math.numeric
 
@@ -19,14 +19,12 @@ let EMPTY_ARRAY: Array<UInt32> = Array<UInt32>()
 
 public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
-    /**
-     * Return the signum function of this BigInt.
-     *
-     * @return:
-     *  -1: if this BigInt is negative;
-     *   0: if this BigInt equals to zero;
-     *   1: if this BigInt is positive.
-     */
+
+
+
+
+
+
     public prop sign: Int64 {
         get() {
             if (int == 0 && intArr.size == 0) {
@@ -40,21 +38,16 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return the minmum of the number of bits that can present this BigInt.
-     * For example, using the fewest bits to present decimal -3 is 101,
-     * so, if a BigInt's value is decimal -3, it bitLen is 3.
-     *
-     * @return: the minmum of the number of bits to present this BigInt.
-     */
+
+
+
+
+
     public prop bitLen: Int64 {
         get() {
             if (sign == 0) {
                 return 1
             }
-            // abs in (2^n, 2^(n+1)] return n+2
-            // such as -5: 1011
-            //         -8: 1000
             if (negSign) {
                 let oneMore = if (isPowerOfTwo()) {
                     0
@@ -62,7 +55,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
                     1
                 }
                 if (intArr.size == 0) {
-                    // -1: 11
                     if (int == 1) {
                         return 2
                     }
@@ -70,9 +62,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
                 } else {
                     return 32 * intArr.size - Int64(leadingZeros(intArr[intArr.size - 1])) + 64 + oneMore
                 }
-            // abs in [2^n, 2^(n+1)) return n+1
-            // such as 8: 1000
-            //        15: 1111
             } else {
                 if (intArr.size == 0) {
                     return Int64(64 - leadingZeros(int))
@@ -89,16 +78,14 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         let negSign: Bool
     ) {}
 
-    /**
-     * Constructs a prime of a BigInt, which is in the range of [0, 2 ^ {bitLen} - 1].
-     * The probability that the BigInt constructed is not a prime is at most (1 / 4 ^ {@p certainty}).
-     *
-     * @param bitLen: the number of bits to construct the BigInt;
-     * @param certainty: a measure of a probability that the result is not a prime;
-     * @param rand: source of randomness to construct the BigInt.
-     *
-     * @throw IllegalArgumentException, if @p bitLen <= 1.
-     */
+
+
+
+
+
+
+
+
     public static func randomProbablePrime(bitLen: Int64, certainty: UInt64, rand!: Random = Random()): BigInt {
         if (bitLen <= 1) {
             throw IllegalArgumentException("The bitLen of the BigInt must > 1.")
@@ -110,15 +97,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return randBig
     }
 
-    /**
-     * Translates a byte array @p bytes containing the two's-complement binary into a BigInt.
-     * @p bytes is in big-endian byte-order, which means that
-     * the most significant byte is @p bytes[0].
-     *
-     * @param bytes: a binary number to construct the BigInt.
-     *
-     * @throw IllegalArgumentException if the size of @p bytes is zero.
-     */
+
+
+
+
+
+
+
     public init(bytes: Array<Byte>) {
         if (bytes.size == 0) {
             throw IllegalArgumentException("The size of bytes cannot be zero!")
@@ -142,16 +127,14 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         this.negSign = negSign
     }
 
-    /**
-     * Translates a sign-magnitude, whose sign is @p sign and magnitude is @p magnitude, into a BigInt.
-     * @p magnitude is in big-endian byte-order.
-     * Note that if the size of @p bytes is zero, translating magnitude = 0 to the BigInt.
-     *
-     * @param sign: signum of the number, false for negitive and true for non-negtive;
-     * @param magnitude: big-endian binary representation of the magnitude of the number
-     *
-     * @throw IllegalArgumentException if the value of @p magnitude is 0 and @p sign = false.
-     */
+
+
+
+
+
+
+
+
     public init(sign: Bool, magnitude: Array<Byte>) {
         this.negSign = !sign
         let byteArray = removeLeftZero(magnitude)
@@ -173,11 +156,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Translate an Int8 type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: Int8) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -191,11 +172,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Translate an Int16 type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: Int16) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -209,11 +188,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Translate an Int32 type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: Int32) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -227,11 +204,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Translate an Int64 type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: Int64) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -245,58 +220,46 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Translate an UInt8 type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: UInt8) {
         this(UInt64(n))
     }
 
-    /**
-     * Translate an UInt16 type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: UInt16) {
         this(UInt64(n))
     }
 
-    /**
-     * Translate an UInt32 type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: UInt32) {
         this(UInt64(n))
     }
 
-    /**
-     * Translate an UInt64 type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: UInt64) {
         this.int = n
         this.intArr = EMPTY_ARRAY
         this.negSign = false
     }
 
-    /**
-     * Translate an UIntNative type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: UIntNative) {
         this(UInt64(n))
     }
 
-    /**
-     * Translate an IntNative type value @p val into a BigInt.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
     public init(n: IntNative) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -310,49 +273,41 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Translate an Float16 type value @p n into a BigInt.
-     * Any fractional part of this Float will be discarded.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
+
     public init(n: Float16) {
         let tmp = Decimal(n).toBigInt()
         (this.int, this.intArr, this.negSign) = (tmp.int, tmp.intArr, tmp.negSign)
     }
 
-    /**
-     * Translate an Float32 type value @p n into a BigInt.
-     * Any fractional part of this Float will be discarded.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
+
     public init(n: Float32) {
         let tmp = Decimal(n).toBigInt()
         (this.int, this.intArr, this.negSign) = (tmp.int, tmp.intArr, tmp.negSign)
     }
 
-    /**
-     * Translate an Float64 type value @p n into a BigInt.
-     * Any fractional part of this Float will be discarded.
-     *
-     * @param n: a value translated to a BigInt.
-     */
+
+
+
+
     public init(n: Float64) {
         let tmp = Decimal(n).toBigInt()
         (this.int, this.intArr, this.negSign) = (tmp.int, tmp.intArr, tmp.negSign)
     }
 
-    /**
-     * Construct a sign-magnitude, whose sign is @p sign and
-     * magnitude is generated randomly in the range of [0, 2 ^ {bitLen} - 1]
-     *
-     * @param sign: signum of the number, false for negitive and true for non-negtive;
-     * @param bitLen: the maximum number of bits in magnitude;
-     * @param rand: source of randomness to construct @p magnitude.
-     *
-     * @throw IllegalArgumentException, if @p bitLen <= 0.
-     */
+
+
+
+
+
+
+
+
     public init(sign: Bool, bitLen: Int64, rand!: Random = Random()) {
         if (bitLen <= 0) {
             throw IllegalArgumentException("The bitLen of the BigInt must > 0.")
@@ -387,35 +342,33 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Translate a value presented by string @p value into a BigInt.
-     * Here, @p value is a string form of a @p base base number.
-     * The form of @p value string follows the BNF 'IntegerString' shown below.
-     *
-     * IntegerString
-     *     : (SignString)? ValueString
-     *
-     * SignString
-     *     : + | -
-     *
-     * ValueString
-     *     : digit digits
-     *
-     * digit
-     *     : r'0' ~ r'9' | r'A' ~ r'Z' | r'a' ~ r'z'
-     *
-     * where the digit follows the restriction:
-     * - if digit belongs to 0 ~ 9, then (digit - r'0') < base;
-     * - if digit belongs to r'A' ~ r'Z', then (digit - r'A') + 10 < base;
-     * - if digit belongs to r'a' ~ r'z', then (digit - r'A') + 10 < base.
-     *
-     * @param value: the string form of the specific base number to translate to the BigInt;
-     * @param base: the base of the number in translation.
-     *
-     * @throws IllegalArgumentException
-     * - if @p val does match the required string format, or
-     * - if @p base does not in the range of [2, 36].
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public static func parse(value: String, radix!: Int64): BigInt` instead."]
     public init(s: String, base!: Int64 = 10) {
         if (base < 2 || base > 36) {
@@ -424,15 +377,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         (this.int, this.intArr, this.negSign) = parseString(s, UInt64(base))
     }
 
-    /**
-     * Return the value of the bit at the specified index in this BigInt.
-     *
-     * @param index: index of bit to test.
-     *
-     * @return: true, if (this & (1 << @p index) != 0); otherwise, false.
-     *
-     * @throw IllegalArgumentException, if @p index < 0.
-     */
+
+
+
+
+
+
+
     public func testBit(index: Int64): Bool {
         if (index < 0) {
             throw IllegalArgumentException("The index must >= 0.")
@@ -440,7 +391,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         if (sign == 0) {
             return false
         }
-        // x = !(x_abs - 1)
         if (negSign) {
             let (bitInt, bitArr) = subOne(int, intArr, false)
             if (index < 64) {
@@ -463,28 +413,24 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Search the index of the rightmost (lowest-order) one bit in this BigInt.
-     * If there is no one bit in this BigInt, return -1.
-     *
-     * @return:
-     * - index of the rightmost one bit in this BigInt, if exists;
-     * - otherwise, -1.
-     */
+
+
+
+
+
+
     @Deprecated[message: "Use global function `public func trailingZeros(x: BigInt): Int64` instead."]
     public func lowestOneBit(): Int64 {
         return trailingZeros(this)
     }
 
-    /**
-     * Construct a new BigInt by modifying the bit at @p index to one in this BigInt.
-     *
-     * @param index: index of bit to set.
-     *
-     * @return: this | (1 << @p index)
-     *
-     * @throw IllegalArgumentException, if @p index < 0.
-     */
+
+
+
+
+
+
+
     public func setBit(index: Int64): BigInt {
         if (index < 0) {
             throw IllegalArgumentException("The index must >= 0.")
@@ -498,7 +444,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             arr[arrIndex] = UInt32(1) << u32Index
             return BigInt(0, arr, false)
         }
-        // (!(1<<index) & (x_abs - 1)) + 1
         if (negSign) {
             let arrIndex = (index - 64) >> 5
             if (index >= 64 && arrIndex > intArr.size - 1) {
@@ -506,7 +451,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             }
             let (bitInt, bitArr) = subOne(int, intArr, true)
             if (index < 64) {
-                // one bit of bitInt is set to 0. Therefore, adding 1 will not overflow.
                 return BigInt((!(UInt64(1) << index) & (bitInt)) + 1, normalize(bitArr), true)
             }
             let u32Index = (index - 64) & 0x1F
@@ -520,15 +464,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Construct a new BigInt by modifying the bit at @p index to zero in this BigInt.
-     *
-     * @param index: index of bit to clear.
-     *
-     * @return: this & ~ (1 << @p index)
-     *
-     * @throw IllegalArgumentException, if @p index < 0.
-     */
+
+
+
+
+
+
+
     public func clearBit(index: Int64): BigInt {
         if (index < 0) {
             throw IllegalArgumentException("The index must >= 0.")
@@ -536,7 +478,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         if (sign == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
         }
-        // ((1<<index) | (x_abs -1)) + 1
         if (negSign) {
             return negBitOrOrXor(this, index, Or)
         } else {
@@ -550,22 +491,17 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             }
             let u32Index = (index - 64) & 0x1F
             bitArr[arrIndex] = !(UInt32(1) << u32Index) & bitArr[arrIndex]
-            // the most significant UInt32 may be zero, so normalize is needed
-            // such as: 0x00000001_12345678_12345678
-            //      to  0x00000000_12345678_12345678
             return BigInt(int, normalize(bitArr), false)
         }
     }
 
-    /**
-     * Construct a new BigInt by flipping the bit at @p index in this BigInt.
-     *
-     * @param index: index of bit to flip.
-     *
-     * @return: this ^ (1 << @p index)
-     *
-     * @throw IllegalArgumentException, if @p index < 0.
-     */
+
+
+
+
+
+
+
     public func flipBit(index: Int64): BigInt {
         if (index < 0) {
             throw IllegalArgumentException("The index must >= 0.")
@@ -573,7 +509,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         if (sign == 0) {
             return setBit(index)
         }
-        // ((1<<index) ^ (x_abs -1)) + 1
         if (negSign) {
             return negBitOrOrXor(this, index, Xor)
         } else {
@@ -581,33 +516,26 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Test whether this BigInt is a prime.
-     * The probability that such method views a composite as a prime is at most (1 / 4 ^ {@p certainty}).
-     *
-     * @param certainty: a measure of a probability that such method views a composite as a prime;
-     */
+
+
+
+
     public func isProbablePrime(certainty: UInt64): Bool {
         if (certainty == 0) {
             return true
         }
-        // only positive integers can be prime
         if (sign <= 0) {
             return false
         }
-        // 1 is not a prime
         if (int == 1 && intArr.size == 0) {
             return false
         }
-        // the only even prime
         if (int == 2 && intArr.size == 0) {
             return true
         }
-        // an even number greater than 2 must be a composite
         if ((int & 1) == 0) {
             return false
         }
-        // test odd numbers
         var certaintyTimes = certainty
         while (certaintyTimes > 0x7FFF_FFFF_FFFF_FFFF) {
             if (!checkCertaintyTimes(0x7FFF_FFFF_FFFF_FFFF)) {
@@ -618,33 +546,27 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         if (!checkCertaintyTimes(Int64(certaintyTimes))) {
             return false
         }
-        // n(this BigInt) may be a prime
         return true
     }
 
     func checkCertaintyTimes(certainty: Int64): Bool {
         for (_ in 0..Int64(certainty)) {
             var a: BigInt
-            // the basis for witness can not be 0 or 1
             do {
                 a = BigInt(true, bitLen)
             } while (a.int == 0 || a.int == 1 && a.intArr.size == 0 || a == this)
-            // witness returning true means n(this BigInt) is a composite
             if (witness(a, this)) {
                 return false
             }
         }
-        // n(this BigInt) may be a prime
         return true
     }
 
-    /**
-     * Return a BigInt, whose value is (this + @p that).
-     *
-     * @param that: the value to be added to this BigInt;
-     *
-     * @return: the result of (this + @p that).
-     */
+
+
+
+
+
     public operator func +(that: BigInt): BigInt {
         if (this.sign == 0) {
             return BigInt(that.int, that.intArr.clone(), that.negSign)
@@ -661,13 +583,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return a BigInt, whose value is (this - @p that).
-     *
-     * @param that: the value to be substracted from this BigInt;
-     *
-     * @return: the result of (this - @p that).
-     */
+
+
+
+
+
     public operator func -(that: BigInt): BigInt {
         if (this.sign == 0) {
             return -that
@@ -684,13 +604,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Return a BigInt, whose value is (this * @p that).
-     *
-     * @param that: the value to be multiplied by this BigInt;
-     *
-     * @return: the result of (this * @p that).
-     */
+
+
+
+
+
     public operator func *(that: BigInt): BigInt {
         if (this.sign == 0 || that.sign == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
@@ -699,35 +617,31 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(rInt, rArr, this.negSign != that.negSign)
     }
 
-    /**
-     * Return a BigInt, whose value is (this / @p that).
-     * The result of the quotient is rounding towards zero.
-     * For exampke, -7 divided by 2 is (-3.5), so the result is -3.
-     *
-     * @param that: the value that this BigInt is to be divided;
-     *
-     * @return: the result of (this / @p that).
-     *
-     * @throws ArithmeticException if @p that == 0.
-     */
+
+
+
+
+
+
+
+
+
     public operator func /(that: BigInt): BigInt {
         let (dInt, dArr, dNegSign) = div(that.int, that.intArr, that.negSign)
         return BigInt(dInt, dArr, dNegSign)
     }
 
-    /**
-     * Return a BigInt, whose value is (this % @p that).
-     * The result satisfies the following restrictions:
-     * - If this BigInt is a positive, the result is non-negative;
-     * - If this BigInt is a negative, the result is negative or zero.
-     * For example, -7 / 2 = -3 --- (-1), so the result is -1.
-     *
-     * @param that: the value that this BigInt is to be divided;
-     *
-     * @return: the result of (this % @p that).
-     *
-     * @throws ArithmeticException if @p that == 0.
-     */
+
+
+
+
+
+
+
+
+
+
+
     public operator func %(that: BigInt): BigInt {
         let (mInt, mArr) = mod(int, intArr, that.int, that.intArr)
         let mNegSign = if (mInt == 0 && mArr.size == 0) {
@@ -738,31 +652,27 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(mInt, mArr, mNegSign)
     }
 
-    /**
-     * Return a pair containing (this / @p that) and (this % @p that).
-     * The result of the quotient is rounding towards zero.
-     *
-     * @param that: the value that this BigInt is to be divided;
-     *
-     * @return: the pair containing (this / @p that) and (this % @p that).
-     *
-     * @throws ArithmeticException if @p that == 0.
-     */
+
+
+
+
+
+
+
+
     public func divAndMod(that: BigInt): (BigInt, BigInt) {
         let (dInt, dArr, dNegSign, mInt, mArr, mNegSign) = privateDivAndMod(that.int, that.intArr, that.negSign)
         return (BigInt(dInt, dArr, dNegSign), BigInt(mInt, mArr, mNegSign))
     }
 
-    /**
-     * Return a BigInt, whose value equals to this BigInt divided by @p that.
-     * The caculation follows Euclidean division.
-     *
-     * @param that: the value that this BigInt is to be divided;
-     *
-     * @return: the quotient of this BigInt divided by @p that.
-     *
-     * @throws ArithmeticException if @p that == 0.
-     */
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public func divAndMod(that: BigInt): (BigInt, BigInt)` instead."]
     public func quo(that: BigInt): BigInt {
         let (dInt, dArr, dNegSign, mInt, mArr, _) = privateDivAndMod(that.int, that.intArr, that.negSign)
@@ -773,16 +683,14 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(dInt, dArr, dNegSign)
     }
 
-    /**
-     * Return a BigInt, whose value equals to the reminder of this BigInt divided by @p that.
-     * The result is always non-negative.
-     *
-     * @param that: the value that this BigInt is to be divided;
-     *
-     * @return: the reminder of this BigInt divided by @p that.
-     *
-     * @throws ArithmeticException if @p that == 0.
-     */
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public func divAndMod(that: BigInt): (BigInt, BigInt)` instead."]
     public func rem(that: BigInt): BigInt {
         let (mInt, mArr) = mod(int, intArr, that.int, that.intArr)
@@ -792,16 +700,14 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(mInt, mArr, false)
     }
 
-    /**
-     * Return a BigInt, which is a pair of the quotient and the reminder of this BigInt divided by @p that.
-     * The caculation follows Eculidean division.
-     *
-     * @param that: the value that this BigInt is to be divided;
-     *
-     * @return: the reminder of this BigInt divided by @p that.
-     *
-     * @throws ArithmeticException if @p that == 0.
-     */
+
+
+
+
+
+
+
+
     @Deprecated[message: "Use member function `public func divAndMod(that: BigInt): (BigInt, BigInt)` instead."]
     public func quoAndRem(that: BigInt): (BigInt, BigInt) {
         let (dInt, dArr, dNegSign, mInt, mArr, _) = privateDivAndMod(that.int, that.intArr, that.negSign)
@@ -813,15 +719,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return (BigInt(dInt, dArr, dNegSign), BigInt(mInt, mArr, false))
     }
 
-    /**
-     * Return a BigInt v, where ((this * v) % (@p that) == 1).
-     *
-     * @param that: the modulus.
-     *
-     * @return: a modular multiplicative inverse of this BigInt.
-     *
-     * @throws IllegalArgumentException if this BigInt and @p that are not relatively prime.
-     */
+
+
+
+
+
+
+
     public func modInverse(that: BigInt): BigInt {
         if (that.int == 1 && that.intArr.size == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
@@ -837,11 +741,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return x
     }
 
-    /**
-     * Return a BigInt, whose value is (- this).
-     *
-     * @return: the result of (- this).
-     */
+
+
+
     public operator func -(): BigInt {
         if (sign == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
@@ -849,13 +751,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(this.int, this.intArr.clone(), !this.negSign)
     }
 
-    /**
-     * Return a BigInt, whose value is (this ** (@p n)).
-     *
-     * @param n: power to raise this BigInt to.
-     *
-     * @return: the result of (this ** (@p n)).
-     */
+
+
+
+
+
     public operator func **(n: UInt64): BigInt {
         if (n == 0) {
             return BigInt(1, EMPTY_ARRAY, false)
@@ -874,7 +774,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         var exponent = n
         while (exponent != 0) {
             if ((exponent & 1) == 1) {
-                // modify resultInt and resultArr in situ
                 (resultInt, resultArr) = mul(resultInt, resultArr, powerInt, powerArr)
             }
             (powerInt, powerArr) = mul(powerInt, powerArr, powerInt, powerArr)
@@ -883,18 +782,16 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(resultInt, resultArr, isNeg)
     }
 
-    /**
-     * Return a BigInt, whose value is ((this ** (@p n)) % (@p m)).
-     * The result is rounding towards to zero.
-     *
-     * @param n: power to raise this BigInt to.
-     * @param m: the modulus, None means no modular operation.
-     *
-     * @return: the result of ((this ** (@p n)) % (@p m).
-     *
-     * @throw IllegalArgumentException if @p n < 0;
-     * @throw ArithmeticException if @p m equals to zero.
-     */
+
+
+
+
+
+
+
+
+
+
     public func modPow(n: BigInt, m!: ?BigInt = None): BigInt {
         if (n.sign == -1) {
             throw IllegalArgumentException("The exponent can not be negative.")
@@ -922,7 +819,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         var eArr = n.intArr.clone()
         while (eInt != 0 || eArr.size != 0) {
             if ((eInt & 1) == 1) {
-                // modify resultInt and resultArr in situ
                 (resultInt, resultArr) = mul(resultInt, resultArr, powerInt, powerArr)
                 (resultInt, resultArr) = modOption(resultInt, resultArr, m)
             }
@@ -934,31 +830,24 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(resultInt, resultArr, isNeg)
     }
 
-    /**
-     * Return a BigInt, whose value is (this & (@p that)).
-     *
-     * @param that: value to be AND'ed with this BigInt.
-     *
-     * @return: the result of (this & (@p that)).
-     */
+
+
+
+
+
     public operator func &(that: BigInt): BigInt {
         if (sign == 0 || that.sign == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
         }
         if (negSign == that.negSign) {
-            // _abs means the absolute value
-            // x_abs & y_abs
             if (!negSign) {
                 let (rInt, rArr) = and(int, intArr, that.int, that.intArr)
                 return BigInt(rInt, rArr, false)
             }
-            // ((x_abs - 1) | (y_abs - 1)) + 1
             let (rInt, rArr) = subOneOrOrXor(int, intArr, that.int, that.intArr, Or)
             let (rIntPlus, rArrPlus) = addOneAndOverSize(rInt, normalize(rArr))
             return BigInt(rIntPlus, rArrPlus, true)
         }
-        // x_abs & !(y_abs - 1)
-        // &, the size of the result array is up to the size of x_abs
         if (!negSign) {
             let (intSubOne, rArr) = resetSizeAndSubOne(that.int, that.intArr, intArr.size, true)
             let rInt = !intSubOne & int
@@ -967,8 +856,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             }
             return BigInt(rInt, normalize(rArr), false)
         }
-        // y_abs & !(x_abs - 1)
-        // &, the size of the result array is up to the size of y_abs
         let (intSubOne, rArr) = resetSizeAndSubOne(int, intArr, that.intArr.size, true)
         let rInt = !intSubOne & that.int
         for (i in 0..that.intArr.size) {
@@ -977,13 +864,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(rInt, normalize(rArr), false)
     }
 
-    /**
-     * Return a BigInt, whose value is (this | (@p that)).
-     *
-     * @param that: value to be OR'ed with this BigInt.
-     *
-     * @return: the result of (this | (@p that)).
-     */
+
+
+
+
+
     public operator func |(that: BigInt): BigInt {
         if (sign == 0) {
             return BigInt(that.int, that.intArr.clone(), that.negSign)
@@ -992,19 +877,14 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             return BigInt(int, intArr.clone(), negSign)
         }
         if (negSign == that.negSign) {
-            // _abs means the absolute value
-            // x_abs | y_abs
             if (!negSign) {
                 let (rInt, rArr) = orOrXor(this, that, Or)
                 return BigInt(rInt, rArr, false)
             }
-            // ((x_abs - 1) & (y_abs - 1)) + 1
             let (rInt, rArr) = subOneAnd(int, intArr, that.int, that.intArr)
             let (rIntPlus, rArrPlus) = addOneAndOverSize(rInt, normalize(rArr))
             return BigInt(rIntPlus, rArrPlus, true)
         }
-        // (!x_abs & (y_abs - 1)) + 1
-        // &, the size of the result array is up to the size of (y_abs - 1)
         let rInt: UInt64
         let intSubOne: UInt64
         let rArr: Array<UInt32>
@@ -1014,8 +894,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             for (i in 0..min(rArr.size, intArr.size)) {
                 rArr[i] = !intArr[i] & rArr[i]
             }
-        // (!y_abs & (x_abs - 1)) + 1
-        // &, the size of the result array is up to the size of (x_abs - 1)
         } else {
             (intSubOne, rArr) = subOne(int, intArr, true)
             rInt = !that.int & intSubOne
@@ -1027,13 +905,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(rIntPlus, rArrPlus, true)
     }
 
-    /**
-     * Return a BigInt, whose value is (this ^ (@p that)).
-     *
-     * @param that: value to be XOR'ed with this BigInt.
-     *
-     * @return: the result of (this ^ (@p that)).
-     */
+
+
+
+
+
     public operator func ^(that: BigInt): BigInt {
         if (sign == 0) {
             return BigInt(that.int, that.intArr.clone(), that.negSign)
@@ -1042,18 +918,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             return BigInt(int, intArr.clone(), negSign)
         }
         if (negSign == that.negSign) {
-            // _abs means the absolute value
-            // x_abs ^ y_abs
             if (!negSign) {
                 let (rInt, rArr) = orOrXor(this, that, Xor)
                 return BigInt(rInt, normalize(rArr), false)
             }
-            // (x_abs - 1) ^ (y_abs - 1)
             let (rInt, rArr) = subOneOrOrXor(int, intArr, that.int, that.intArr, Xor)
             return BigInt(rInt, normalize(rArr), false)
         }
-        // (x_abs ^ (y_abs - 1)) + 1
-        // ^, the size of the result array is up to the size of the longer one in (x_abs and (y_abs - 1))
         let rInt: UInt64
         let intSubOne: UInt64
         let rArr: Array<UInt32>
@@ -1071,8 +942,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             if (intArr.size >= that.intArr.size) {
                 intArr.copyTo(rArr, minSize, minSize, maxSize - minSize)
             }
-        // (y_abs ^ (x_abs - 1)) + 1
-        // ^, the size of the result array is up to the size of the longer one in (y_abs and (x_abs - 1))
         } else {
             (intSubOne, rArr) = resetSizeAndSubOne(int, intArr, maxSize, true)
             rInt = that.int ^ intSubOne
@@ -1087,29 +956,23 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(rIntPlus, rArrPlus, true)
     }
 
-    /**
-     * Return a BigInt, whose value is (! this).
-     *
-     * @return: the result of (! this).
-     */
+
+
+
     public operator func !(): BigInt {
-        // x_abs + 1
         if (!negSign) {
             let (rInt, rArr) = addOneAndOverSize(int, intArr.clone())
             return BigInt(rInt, rArr, true)
         }
-        // x_abs - 1
         let (rInt, rArr) = subOne(int, intArr, true)
         return BigInt(rInt, normalize(rArr), false)
     }
 
-    /**
-     * Return a BigInt by shifting this BigInt right n bits.
-     *
-     * @param: the number of bit to shift.
-     *
-     * @throw ArithmeticException if @p n < 0.
-     */
+
+
+
+
+
     public operator func >>(n: Int64): BigInt {
         if (n < 0) {
             throw ArithmeticException("The parameter n must >= 0.")
@@ -1117,10 +980,8 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         if (sign == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
         }
-        // ((x_abs - 1) >> n) + 1
         let (intT, intArrT) = if (negSign) {
             subOne(int, intArr, false)
-        // x_abs >> n
         } else {
             (int, intArr)
         }
@@ -1153,22 +1014,18 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             rArr[i - delta] = shiftResult
         }
         let rInt = shiftRightToUInt64(intT, intArrT, delta, shift, carryRight)
-        // x_abs >> n
         if (!negSign) {
             return BigInt(rInt, rArr, false)
         }
-        // ((x_abs - 1) >> n) + 1
         let (rIntPlus, rArrPlus) = addOneAndOverSize(rInt, normalize(rArr))
         return BigInt(rIntPlus, rArrPlus, true)
     }
 
-    /**
-     * Return a BigInt by shifting this BigInt right n bits.
-     *
-     * @param: the number of bit to shift.
-     *
-     * @throw ArithmeticException if @p n < 0.
-     */
+
+
+
+
+
     public operator func <<(n: Int64): BigInt {
         if (n < 0) {
             throw ArithmeticException("The parameter n must >= 0.")
@@ -1194,35 +1051,29 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return BigInt(rInt, normalize(rArr), negSign)
     }
 
-    /**
-     * Report whether this BigInt is equal to another BigInt.
-     *
-     * @param that: the BigInt for comparison.
-     *
-     * @return: true if this BigInt is equal to @p that, otherwise false.
-     */
+
+
+
+
+
     public operator func ==(that: BigInt): Bool {
         return this.sign == that.sign && this.int == that.int && this.intArr == that.intArr
     }
 
-    /**
-     * Report whether this BigInt is not equal to another BigInt.
-     *
-     * @param that: the BigInt for comparison.
-     *
-     * @return: true if this BigInt is not equal to @p that, otherwise false.
-     */
+
+
+
+
+
     public operator func !=(that: BigInt): Bool {
         return !(this == that)
     }
 
-    /**
-     * Report whether this BigInt is greater than another BigInt.
-     *
-     * @param that: the BigInt for comparison.
-     *
-     * @return: true if this BigInt is greater than @p that, otherwise false.
-     */
+
+
+
+
+
     public operator func >(that: BigInt): Bool {
         if (this.sign > that.sign) {
             return true
@@ -1240,13 +1091,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return false
     }
 
-    /**
-     * Report whether this BigInt is greater than or equal to another BigInt.
-     *
-     * @param that: the BigInt for comparison.
-     *
-     * @return: true if this BigInt is greater than or equal to @p that, otherwise false.
-     */
+
+
+
+
+
     public operator func >=(that: BigInt): Bool {
         if (this.sign > that.sign) {
             return true
@@ -1267,35 +1116,29 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return false
     }
 
-    /**
-     * Report whether this BigInt is less than another BigInt.
-     *
-     * @param that: the BigInt for comparison.
-     *
-     * @return: true if this BigInt is less than @p that, otherwise false.
-     */
+
+
+
+
+
     public operator func <(that: BigInt): Bool {
         return !(this >= that)
     }
 
-    /**
-     * Report whether this BigInt is less than or equal to another BigInt.
-     *
-     * @param that: the BigInt for comparison.
-     *
-     * @return: true if this BigInt is less than or equal to @p that, otherwise false.
-     */
+
+
+
+
+
     public operator func <=(that: BigInt): Bool {
         return !(this > that)
     }
 
-    /**
-     * Compare the relationship between this BigInt and another BigInt.
-     *
-     * @param that: the BigInt for comparison
-     *
-     * @return: the relationship between two BigInt instances.
-     */
+
+
+
+
+
     public func compare(that: BigInt): Ordering {
         match {
             case this < that => Ordering.LT
@@ -1304,11 +1147,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Obtain the hash value of this BigInt.
-     *
-     * @return: hash value of this BigInt.
-     */
+
+
+
     @OverflowWrapping
     public func hashCode(): Int64 {
         var hashCode: UInt64 = 0
@@ -1323,19 +1164,15 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return Int64(hashCode)
     }
 
-    /**
-     * Return this BigInt as a decimal-based string.
-     *
-     * @return: the string representation of this BigDecimal.
-     */
+
+
+
     public func toString(): String {
         return convertToString(10)
     }
 
-    /**
-     * Return a byte array of the two's-complement representation of this BigInteger.
-     * The byte array is in big-endian byte-order.
-     */
+
+
     public func toBytes(): Array<Byte> {
         if (sign == 0) {
             return Array<Byte>(1, repeat: 0)
@@ -1352,10 +1189,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
             fromSmallU32ArrayToBigBytes(byteArr[..byteArr.size - 8], intArr)
             return byteArr
         }
-        // x < 0, if x_abs == 2**(8*n-1), n is a postive integer
-        //  x's byteArr.size == x_abs's byteArr.size - 1
-        //  such as: x = -128, x's byteArr: [128]
-        //                 x_abs's byteArr: [0, 128]
         if (intArr.size == 0) {
             let bitLen = 64 - leadingZeros(int)
             let byteArr = if ((bitLen & 0b111) == 0 && (int ^ (1 << (bitLen - 1))) == 0) {
@@ -1368,7 +1201,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
         let mostSignificantUInt32 = intArr[intArr.size - 1]
         let bitLen = 32 - leadingZeros(mostSignificantUInt32)
-        // 32/8 = 4
         let byteArr = if ((bitLen & 0b111) == 0 && (mostSignificantUInt32 ^ (1 << (bitLen - 1))) == 0 && isAllZero(
             intArr[..intArr.size - 1])) {
             Array<Byte>(intArr.size * 4 + Int64(bitLen / 8) + 4, repeat: 0)
@@ -1380,15 +1212,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return compToMag(byteArr)
     }
 
-    /**
-     * Return the String representation of this BigInteger in the given radix.
-     *
-     * @param radix: the radix of this BigInt.
-     *
-     * @return: string representation of this BigInteger in the given radix.
-     *
-     * @throws IllegalArgumentException if @p radix does not in the range of [2, 36]
-     */
+
+
+
+
+
+
+
     func convertToString(radix: Int64): String {
         if (radix < 2 || radix > 36) {
             throw IllegalArgumentException("The radix should in the range of [2, 36].")
@@ -1426,15 +1256,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return unsafe { String.fromUtf8Unchecked(stringUtf8Arr[begin..]) }
     }
 
-    /**
-     * Converts this BigInt to a Int8.
-     *
-     * @param overflowHandling: handling policy when overflow occurs.
-     *
-     * @return: the corresponding Int8 value is returned based on the overflow handling.
-     *
-     * @throws OverflowException if the value of the BigInt exceeds the range of Int8 and the overflow handling of Throwing is selected
-     */
+
+
+
+
+
+
+
     public func toInt8(overflowHandling!: OverflowStrategy = Throwing): Int8 {
         if (this.intArr.isEmpty()) {
             if (!this.negSign && this.int <= 127) {
@@ -1466,15 +1294,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Converts this BigInt to a Int16.
-     *
-     * @param overflowHandling: handling policy when overflow occurs.
-     *
-     * @return: the corresponding Int16 value is returned based on the overflow handling.
-     *
-     * @throws OverflowException if the value of the BigInt exceeds the range of Int16 and the overflow handling of Throwing is selected
-     */
+
+
+
+
+
+
+
     public func toInt16(overflowHandling!: OverflowStrategy = Throwing): Int16 {
         if (this.intArr.isEmpty()) {
             if (!this.negSign && this.int <= 32767) {
@@ -1506,15 +1332,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Converts this BigInt to a Int32.
-     *
-     * @param overflowHandling: handling policy when overflow occurs.
-     *
-     * @return: the corresponding Int32 value is returned based on the overflow handling.
-     *
-     * @throws OverflowException if the value of the BigInt exceeds the range of Int32 and the overflow handling of Throwing is selected
-     */
+
+
+
+
+
+
+
     public func toInt32(overflowHandling!: OverflowStrategy = Throwing): Int32 {
         if (this.intArr.isEmpty()) {
             if (!this.negSign && this.int <= 2147483647) {
@@ -1546,15 +1370,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Converts this BigInt to a Int64.
-     *
-     * @param overflowHandling: handling policy when overflow occurs.
-     *
-     * @return: the corresponding Int64 value is returned based on the overflow handling.
-     *
-     * @throws OverflowException if the value of the BigInt exceeds the range of Int64 and the overflow handling of Throwing is selected
-     */
+
+
+
+
+
+
+
     public func toInt64(overflowHandling!: OverflowStrategy = Throwing): Int64 {
         if (this.intArr.isEmpty()) {
             if (!this.negSign && this.int <= 9223372036854775807) {
@@ -1620,15 +1442,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return num
     }
 
-    /**
-     * Converts this BigInt to a UInt8.
-     *
-     * @param overflowHandling: handling policy when overflow occurs.
-     *
-     * @return: the corresponding UInt8 value is returned based on the overflow handling.
-     *
-     * @throws OverflowException if the value of the BigInt exceeds the range of UInt8 and the overflow handling of Throwing is selected
-     */
+
+
+
+
+
+
+
     public func toUInt8(overflowHandling!: OverflowStrategy = Throwing): UInt8 {
         if (this.intArr.isEmpty() && !this.negSign && this.int <= 255) {
             return UInt8(this.int)
@@ -1655,15 +1475,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Converts this BigInt to a UInt16.
-     *
-     * @param overflowHandling: handling policy when overflow occurs.
-     *
-     * @return: the corresponding UInt16 value is returned based on the overflow handling.
-     *
-     * @throws OverflowException if the value of the BigInt exceeds the range of UInt16 and the overflow handling of Throwing is selected
-     */
+
+
+
+
+
+
+
     public func toUInt16(overflowHandling!: OverflowStrategy = Throwing): UInt16 {
         if (this.intArr.isEmpty() && !this.negSign && this.int <= 65535) {
             return UInt16(this.int)
@@ -1690,15 +1508,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Converts this BigInt to a UInt32.
-     *
-     * @param overflowHandling: handling policy when overflow occurs.
-     *
-     * @return: the corresponding UInt32 value is returned based on the overflow handling.
-     *
-     * @throws OverflowException if the value of the BigInt exceeds the range of UInt32 and the overflow handling of Throwing is selected
-     */
+
+
+
+
+
+
+
     public func toUInt32(overflowHandling!: OverflowStrategy = Throwing): UInt32 {
         if (this.intArr.isEmpty() && !this.negSign && this.int <= 4294967295) {
             return UInt32(this.int)
@@ -1725,15 +1541,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
-    /**
-     * Converts this BigInt to a UInt64.
-     *
-     * @param overflowHandling: handling policy when overflow occurs.
-     *
-     * @return: the corresponding UInt64 value is returned based on the overflow handling.
-     *
-     * @throws OverflowException if the value of the BigInt exceeds the range of UInt64 and the overflow handling of Throwing is selected
-     */
+
+
+
+
+
+
+
     public func toUInt64(overflowHandling!: OverflowStrategy = Throwing): UInt64 {
         if (this.intArr.isEmpty() && !this.negSign) {
             return this.int
@@ -1763,8 +1577,8 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     public func toUIntNative(overflowHandling!: OverflowStrategy = Throwing): UIntNative {
         let len: UIntNative = uintNativeLen()
         return match (len) {
-            case 20 => UIntNative(this.toUInt64(overflowHandling: overflowHandling)) // 18446744073709551615
-            case 10 => UIntNative(this.toUInt32(overflowHandling: overflowHandling)) // 4294967295
+            case 20 => UIntNative(this.toUInt64(overflowHandling: overflowHandling))
+            case 10 => UIntNative(this.toUInt32(overflowHandling: overflowHandling))
             case _ => throw Exception("Unrecognized UIntNative.")
         }
     }
@@ -1778,9 +1592,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
         return num
     }
-
-    // calculate the size need to store string
-    // log_{2^m}(2^(32*(intArr.size+2))), round up
     private func calculateStrArrSize(anyBase: UInt64): Int64 {
         let powerOfTwo = 64 - leadingZeros(anyBase) - 1
         return (32 * (intArr.size + 2) / Int64(powerOfTwo) + 1)
@@ -1837,26 +1648,15 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         let rArr: Array<UInt32>
         let rInt: UInt64
         if (thatArr.size == 0) {
-            // if the bit length of the abs of divisor does not exceed 32 bits
             if (thatInt <= 0xFFFF_FFFF) {
-                // because it's up to 64 bits, it has to be calculated separately
-                // dividend: rem*2^64 + this.int
-                // divisor:  that.int
-                //
-                // division / :
-                //       (ab+c)/d = (ab/d + c/d + (ab%d+c%d)/d)
-                //                = a*(b/d) + a*(b%d)/d + c/d + (ab%d+c%d)/d
                 let rem: UInt64
                 (rArr, rem) = divByUInt32InSitu(this.intArr.clone(), thatInt)
                 let remInt0 = ((0x8000_0000_0000_0000 % thatInt) * (2 * rem % thatInt)) % thatInt
-                // (ab+c)/d
-                // the divisor is greater than the remainder, so the next line will nor overflow
                 rInt = 2 * rem * (0x8000_0000_0000_0000 / thatInt) + (2 * rem * (0x8000_0000_0000_0000 % thatInt)) /
                     thatInt + (this.int / thatInt) + (this.int % thatInt + remInt0) / thatInt
             } else {
                 (rInt, rArr, _, _) = knuthDivAndMod(thatInt, needMod: false)
             }
-        // otherwise, use Knuth division algorithm
         } else {
             (rInt, rArr, _, _) = knuthDivAndMod(thatInt, thatArr, needMod: false)
         }
@@ -1890,59 +1690,35 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         let rInt: UInt64
         let remInt: UInt64
         if (thatArr.size == 0) {
-            // if the bit length of the abs of divisor does not exceed 32 bits
             if (thatInt <= 0xFFFF_FFFF) {
                 let rem: UInt64
                 (rArr, rem) = divByUInt32InSitu(this.intArr.clone(), thatInt)
-                // because it's up to 64 bits, it has to be calculated separately
-                // dividend: rem*2^64 + this.int
-                // divisor:  thatInt
-                //
-                // division / :
-                //       (ab+c)/d = (ab/d + c/d + (ab%d+c%d)/d)
-                //                = a*(b/d) + a*(b%d)/d + c/d + (ab%d+c%d)/d
-                // mod % :
-                //       (ab+c)%d = ((ab)%d + c%d )%d
-                //       ab%d     = ((a%d)*(b%d))%d
-                //
-                // ab%d
                 let remInt0 = ((0x8000_0000_0000_0000 % thatInt) * (2 * rem % thatInt)) % thatInt
-                // (ab+c)/d
-                // the divisor is greater than the remainder, so the next line will nor overflow
                 rInt = 2 * rem * (0x8000_0000_0000_0000 / thatInt) + (2 * rem * (0x8000_0000_0000_0000 % thatInt)) /
                     thatInt + (this.int / thatInt) + (this.int % thatInt + remInt0) / thatInt
-                // (ab+c)%d
                 remInt = (remInt0 + this.int % thatInt) % thatInt
                 remArr = EMPTY_ARRAY
             } else {
                 (rInt, rArr, remInt, remArr) = knuthDivAndMod(thatInt)
             }
-        // otherwise, use Knuth division algorithm
         } else {
             (rInt, rArr, remInt, remArr) = knuthDivAndMod(thatInt, thatArr)
         }
         return (rInt, rArr, this.negSign != thatNegSign, remInt, remArr, this.negSign)
     }
-
-    // if the bit length of the abs of divisor exceeds 64 bits
     private func knuthDivAndMod(thatInt: UInt64, thatArr: Array<UInt32>, needMod!: Bool = true): (UInt64, Array<UInt32>, 
         UInt64, Array<UInt32>) {
         let sizeDD = intArr.size + 1 + 2
         let sizeD = thatArr.size + 2
-        // normalize, let the most significant UInt32 larger than 0x8000_0000
         let l = leadingZeros(thatArr[thatArr.size - 1])
         let normalizedDividend = knuthNormalize(sizeDD, this.int, this.intArr, l)
         let normalizedDivisor = knuthNormalize(sizeD, thatInt, thatArr, l)
-        // initialize j
         var j = sizeDD - sizeD - 1
-        // the quotient should be j+1 size, and UInt64 occupies two size
-        // therefore, when j+1 is less than or equal to 2, no array is required
         var rArr: Array<UInt32> = EMPTY_ARRAY
         var rInt: UInt64 = 0
         if (j >= 2) {
             rArr = Array<UInt32>(j - 1, repeat: 0)
         }
-        // loop
         while (j >= 0) {
             let q = knuthDivGuessQ(normalizedDividend, normalizedDivisor, sizeD, j)
             if (j >= 2) {
@@ -1956,27 +1732,21 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         if (!needMod) {
             return (rInt, normalize(rArr), 0, EMPTY_ARRAY)
         }
-        // unnormalize
         let remArr = shiftRightInSitu(normalizedDividend, l)
         let remInt = UInt64(remArr[0]) + (UInt64(remArr[1]) << 32)
         return (rInt, normalize(rArr), remInt, normalize(remArr[2..]))
     }
-
-    // if the bit length of the abs of divisor exceeds 32 bits but does not exceed 64 bits
     private func knuthDivAndMod(that: UInt64, needMod!: Bool = true): (UInt64, Array<UInt32>, UInt64, Array<UInt32>) {
         let sizeDD = intArr.size + 1 + 2
-        // normalize, let the most significant UInt32 larger than 0x8000_0000
         let l = leadingZeros(that)
         let normalizedDividend = knuthNormalize(sizeDD, this.int, this.intArr, l)
         let normalizedDivisor = that << l
-        // initialize j
         var j = intArr.size
         var rArr: Array<UInt32> = EMPTY_ARRAY
         var rInt: UInt64 = 0
         if (j >= 2) {
             rArr = Array<UInt32>(j - 1, repeat: 0)
         }
-        // loop
         while (j >= 0) {
             let q = knuthDivGuessQ(normalizedDividend, normalizedDivisor, j)
             if (j >= 2) {
@@ -1990,7 +1760,6 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         if (!needMod) {
             return (rInt, normalize(rArr), 0, EMPTY_ARRAY)
         }
-        // unnormalize
         let remArr = shiftRightInSitu(normalizedDividend, l)
         let remInt = UInt64(remArr[0]) + (UInt64(remArr[1]) << 32)
         return (rInt, normalize(rArr), remInt, normalize(remArr[2..]))
@@ -2020,23 +1789,19 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 }
 
-/**
- * Return a BigInt, whose value is the absolute value of @p i BigInt.
- *
- * @return: a BigInt equals to abs(@p i).
- */
+
+
+
 public func abs(i: BigInt): BigInt {
     return BigInt(i.int, i.intArr.clone(), false)
 }
 
-/**
- * Returns a BigInt, whose value is the square root of BigInt @p i.
- * The result is non-negative and rounding towards zero.
- *
- * @return: the result of sqrt(@p i).
- *
- * @throws IllegalArgumentException if this < 0.
- */
+
+
+
+
+
+
 public func sqrt(i: BigInt): BigInt {
     if (i.sign == 0) {
         return BigInt(0, EMPTY_ARRAY, false)
@@ -2059,20 +1824,12 @@ public func sqrt(i: BigInt): BigInt {
     }
     var xArr = Array<UInt32>(i.intArr.size + 1, repeat: 0)
     i.intArr.copyTo(xArr, 0, 0, i.intArr.size)
-    // Newton's method
-    // x = i
-    // y = (x+i/x)/2
-    // while (x>y) {
-    //      x = y
-    //      y = (x+i/x)/2
-    // }
     let (qInt, qArr, _) = i.div(xInt, normalize(xArr), false)
     if (isNoLessThan(qInt, qArr, xInt, xArr)) {
         return BigInt(xInt, normalize(xArr), false)
     }
     let (resultInt, carry) = addUInt64(xInt, qInt)
     addInSitu(xArr, qArr, carry)
-    // y = (x + i/x)/2
     (xInt, xArr) = divBy2Insitu(resultInt, xArr)
     while (true) {
         let (qInt, qArr, _) = i.div(xInt, normalize(xArr), false)
@@ -2081,21 +1838,18 @@ public func sqrt(i: BigInt): BigInt {
         }
         let (resultInt, carry) = addUInt64(xInt, qInt)
         addInSitu(xArr, qArr, carry)
-        // y = (x + i/x)/2
         (xInt, xArr) = divBy2Insitu(resultInt, xArr)
     }
     return BigInt(xInt, normalize(xArr), false)
 }
 
-/**
- * Return the greatest common divisor of @p i1 and @p i2.
- * The result is alway non-negtive.
- *
- * @param i1: value with which the gcd is to be computed;
- * @param i2: value with which the gcd is to be computed.
- *
- * @return: the greatest common divisor of @p i1 and @p i2.
- */
+
+
+
+
+
+
+
 public func gcd(i1: BigInt, i2: BigInt): BigInt {
     if (i1.sign == 0) {
         return BigInt(i2.int, i2.intArr.clone(), false)
@@ -2107,15 +1861,13 @@ public func gcd(i1: BigInt, i2: BigInt): BigInt {
     return BigInt(i1Int, i1Arr, false)
 }
 
-/**
- * Return the least common multiple of @p i1 and @p i2.
- * The result is alway non-negtive.
- *
- * @param i1: value with which the lcm is to be computed;
- * @param i2: value with which the lcm is to be computed.
- *
- * @return: the least common multiple of @p i1 and @p i2.
- */
+
+
+
+
+
+
+
 public func lcm(i1: BigInt, i2: BigInt): BigInt {
     if (i1.sign == 0 || i2.sign == 0) {
         return BigInt(0, EMPTY_ARRAY, false)
@@ -2131,14 +1883,12 @@ public func countOne(i: BigInt): Int64 {
     return countOnes(i)
 }
 
-/**
- * Calculate the number of one in the two's-complement binary,
- * which can present BigInt @p i with minmum of the number of bits.
- *
- * @param i: value that is calculated the number of one.
- *
- * @return: the number of one in the two's-complement binary of @p i.
- */
+
+
+
+
+
+
 public func countOnes(i: BigInt): Int64 {
     if (i.sign == 0) {
         return 0
@@ -2154,10 +1904,6 @@ public func countOnes(i: BigInt): Int64 {
         }
         return count
     }
-    // such as: 5 to -5
-    //          0101 -> 1010  -> 1011
-    //         10 to -10
-    //         01010 -> 10101 -> 10110
     if (i.intArr.size == 0) {
         count += countZero(i.int)
         return count + 1 - Int64(trailingZeros(i.int)) + 1
@@ -2180,13 +1926,11 @@ public func countOnes(i: BigInt): Int64 {
     return count + 1 - bTrailingZeros + 1
 }
 
-/**
- * Obtains the number of consecutive 0s starting from the least significant bits.
- *
- * @param x some value.
- * @return number of consecutive 0s starting from the least significant bit of @p x.
- *
- */
+
+
+
+
+
 public func trailingZeros(x: BigInt): Int64 {
     if (x.sign == 0) {
         return -1
@@ -2244,9 +1988,7 @@ func countOnes(int: UInt32): Int64 {
     return count32
 }
 
-// count zero
-// such as: 5: 101  return 1
-//          8: 1000 return 3
+
 func countZero(int64: UInt64): Int64 {
     var countZero64 = 0
     var val = int64
@@ -2339,8 +2081,6 @@ func subOneOrOrXor(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, tha
     return (rInt, rArr)
 }
 
-// sub one
-// if shouldClone is true, intArr is cloned even if the intArr does not change
 func subOne(int: UInt64, intArr: Array<UInt32>, shouldClone: Bool): (UInt64, Array<UInt32>) {
     let rInt: UInt64
     let rArr: Array<UInt32>
@@ -2359,8 +2099,6 @@ func subOne(int: UInt64, intArr: Array<UInt32>, shouldClone: Bool): (UInt64, Arr
     return (rInt, rArr)
 }
 
-// reset the size to size and sub one
-// if shouldClone is true, intArr is cloned even if the intArr does not change
 func resetSizeAndSubOne(int: UInt64, intArr: Array<UInt32>, size: Int64, shouldClone: Bool): (UInt64, Array<UInt32>) {
     let rInt: UInt64
     let rArr: Array<UInt32>
@@ -2395,8 +2133,6 @@ func resetSizeAndSubOne(int: UInt64, intArr: Array<UInt32>, size: Int64, shouldC
     }
     return (rInt, rArr)
 }
-
-// add one in situ
 func addOneAndOverSize(int: UInt64, intArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     if (int == 0xFFFF_FFFF_FFFF_FFFF) {
         for (i in intArr.size - 1..=0 : -1) {
@@ -2412,9 +2148,6 @@ func addOneAndOverSize(int: UInt64, intArr: Array<UInt32>): (UInt64, Array<UInt3
 }
 
 func negBitOrOrXor(thisBig: BigInt, index: Int64, bitOperator: Operator): BigInt {
-    // carry case
-    // such as: -7(1...1001): sign: -, abs: 111
-    //      to    (1...1000): sign: -, abs: 1000
     if (index == 0 && thisBig.int == 0xFFFF_FFFF_FFFF_FFFF) {
         var rArrPlus = thisBig.intArr.clone()
         for (i in rArrPlus.size - 1..=0 : -1) {
@@ -2468,8 +2201,6 @@ func arrIndexAndU32Index(index: Int64): (Int64, Int64) {
 func deltaSizeAndU32Shift(index: Int64): (Int64, Int64) {
     return (index >> 5, index & 0x1F)
 }
-
-// shift UInt64 left and divide it into three UInt32
 func shiftLeftUInt64(int: UInt64, shift64: Int64): (UInt32, UInt32, UInt32) {
     let carry: UInt32
     let rArr0: UInt32
@@ -2491,8 +2222,6 @@ func shiftLeftUInt64(int: UInt64, shift64: Int64): (UInt32, UInt32, UInt32) {
     }
     return (carry, rArr0, left)
 }
-
-// obtain the UInt64 after the right shift
 func shiftRightToUInt64(int: UInt64, intArr: Array<UInt32>, delta: Int64, shift: Int64, carryRight: UInt32): UInt64 {
     var rInt: UInt64 = 0
     var carry = carryRight
@@ -2528,8 +2257,6 @@ func shiftRightToUInt64(int: UInt64, intArr: Array<UInt32>, delta: Int64, shift:
     }
     return rInt
 }
-
-// remove the 0s in most significant index
 func removeLeftZero(bytes: Array<Byte>): Array<Byte> {
     var i = 0
     while (i < bytes.size) {
@@ -2540,8 +2267,6 @@ func removeLeftZero(bytes: Array<Byte>): Array<Byte> {
     }
     return bytes[i..]
 }
-
-// converting complementary codes into magnitude
 func compToMag(bytes: Array<Byte>): Array<Byte> {
     let mag = Array<Byte>(bytes.size, {i => !bytes[i]})
     for (i in mag.size - 1..=0 : -1) {
@@ -2554,14 +2279,10 @@ func compToMag(bytes: Array<Byte>): Array<Byte> {
     }
     return mag
 }
-
-// remove leading 0s before calling
 func fromBigBytesToSmallU32Array(bytes: Array<Byte>): Array<UInt32> {
     if (bytes.size == 0) {
         return EMPTY_ARRAY
     }
-    // 3: 0b11
-    // whether it can be divisible by 4
     let oneMore = if ((bytes.size & 3) == 0) {
         0
     } else {
@@ -2588,8 +2309,6 @@ func fromBigBytesToSmallU32Array(bytes: Array<Byte>): Array<UInt32> {
     }
     return smallU32
 }
-
-// remove leading 0s before calling
 func fromBigBytesToU64(bytes: Array<Byte>): UInt64 {
     if (bytes.size == 0) {
         return 0
@@ -2601,8 +2320,6 @@ func fromBigBytesToU64(bytes: Array<Byte>): UInt64 {
     }
     return u64
 }
-
-// modify bytes in situ
 func fromU64ToBigBytes(byteArr: Array<Byte>, int: UInt64) {
     var j = 0
     for (i in byteArr.size - 1..=0 : -1) {
@@ -2613,8 +2330,6 @@ func fromU64ToBigBytes(byteArr: Array<Byte>, int: UInt64) {
         j++
     }
 }
-
-// modify bytes in situ
 func fromSmallU32ArrayToBigBytes(byteArr: Array<Byte>, intArr: Array<UInt32>) {
     var i = byteArr.size - 1
     var j = 0
@@ -2641,8 +2356,6 @@ func isAllZero(intArr: Array<UInt32>): Bool {
     }
     return true
 }
-
-// mul between two UInt64s, return one UInt64 and two UInt32 carry
 func uInt64Mul(thisInt: UInt64, thatInt: UInt64): (UInt64, UInt32, UInt32) {
     let thisInt0: UInt64 = thisInt & 0xFFFF_FFFF
     let thisInt1: UInt64 = thisInt >> 32
@@ -2661,8 +2374,6 @@ func uInt64Mul(thisInt: UInt64, thatInt: UInt64): (UInt64, UInt32, UInt32) {
     let int = resultInt0 | (resultInt1 << 32)
     return (int, UInt32(resultInt2), UInt32(resultInt3))
 }
-
-// convert a binary number to an anyBase number, stored in stringArr
 func calculateStrArr(stringArr: Array<UInt64>, big: BigInt, bound: Int64, anyBase: UInt64): Int64 {
     var stringArrBound = bound
     var i = big.intArr.size - 1
@@ -2694,8 +2405,6 @@ func calculateStrArr(stringArr: Array<UInt64>, int: UInt64, bound: Int64, anyBas
     }
     return stringArrBound
 }
-
-// modify stringUtf8Arr in situ
 func toBaseString(stringUtf8Arr: Array<Byte>, index: Int64, int: UInt64, base: UInt64): Int64 {
     var i = index
     var quo = int
@@ -2724,14 +2433,12 @@ func parseString(s: String, base: UInt64): (UInt64, Array<UInt32>, Bool) {
     let (isNeg, start) = parseSign(s)
     let (int, arr) = parseDigits(s, start, base)
     if (int == 0 && arr.size == 0) {
-        return (int, arr, false) // no -0 for bigint
+        return (int, arr, false)
     }
     return (int, arr, isNeg)
 }
 
-/**
- * @return (int, arr)
- */
+
 func parseDigits(s: String, idx: Int64, radix: UInt64): (UInt64, Array<UInt32>) {
     if (idx >= s.size) {
         throw IllegalArgumentException("Invalid string.")
@@ -2753,9 +2460,7 @@ func parseDigits(s: String, idx: Int64, radix: UInt64): (UInt64, Array<UInt32>) 
     return calculateUInt32Arr(size - 2, numberArray, radix)
 }
 
-/**
- * @return (isNeg, sign length)
- */
+
 func parseSign(s: String): (Bool, Int64) {
     if (s.size == 0) {
         throw IllegalArgumentException("Invalid string.")
@@ -2767,15 +2472,13 @@ func parseSign(s: String): (Bool, Int64) {
     }
 }
 
-/**
- * @return (radix, base length)
- */
+
 func parseBase(s: String, idx: Int64): (UInt64, Int64) {
     if (idx >= s.size) {
         throw IllegalArgumentException("Invalid string.")
     }
     if (s[idx] != b'0' || idx + 1 == s.size) {
-        return (10, 0) // no base prefix, default radix is 10
+        return (10, 0)
     }
     return match (s[idx + 1]) {
         case b'b' | b'B' => (2, 2)
@@ -2800,7 +2503,6 @@ func calculateLenAndBase(base: UInt64): (Int64, UInt64) {
 func calculateUInt32Arr(size: Int64, numberArray: Array<UInt8>, base: UInt64): (UInt64, Array<UInt32>) {
     let resultArr = Array<UInt32>(size, repeat: 0)
     var int: UInt64 = 0
-    // the first two UInt32 is UInt64
     var index = -2
     var numbers = numberArray
     var numSize = numbers.size
@@ -2852,8 +2554,6 @@ func initNumArray(s: String, index: Int64, base: UInt8): Array<UInt8> {
     }
     return numberArray
 }
-
-// for quoAndRem
 func modAddAbsOfDivisor(int: UInt64, intArr: Array<UInt32>, thatBig: BigInt): BigInt {
     let isIntNeg: Bool
     var resultIntAbs: UInt64
@@ -2872,8 +2572,6 @@ func modAddAbsOfDivisor(int: UInt64, intArr: Array<UInt32>, thatBig: BigInt): Bi
     subInSitu(resultArr, intArr, 0)
     return BigInt(resultIntAbs, normalize(resultArr), false)
 }
-
-// add abs
 func addAbs(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     let (resultInt, carry) = addUInt64(thisInt, thatInt)
     if (thisArr.size == 0 && thatArr.size == 0) {
@@ -2899,7 +2597,6 @@ func addUInt64(thisInt: UInt64, thatInt: UInt64): (UInt64, UInt64) {
     let carry: UInt64 = if (leftResult == 3) {
         resultInt = resultInt | 0x8000_0000_0000_0000
         1
-    // carry
     } else if (leftResult == 2) {
         resultInt = resultInt & 0x7FFF_FFFF_FFFF_FFFF
         1
@@ -2912,8 +2609,6 @@ func addUInt64(thisInt: UInt64, thatInt: UInt64): (UInt64, UInt64) {
     return (resultInt, carry)
 }
 
-// add in situ
-// summand has the leading 0 to carry the carry, and summand.size >= addend.size
 func addInSitu(summand: Array<UInt32>, addend: Array<UInt32>, carry: UInt64): Array<UInt32> {
     var c: UInt64 = carry
     for (i in 0..addend.size) {
@@ -2968,16 +2663,12 @@ func subAbs(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: A
     return (resultIntAbs, normalize(resultArr), isArrNeg != negSign)
 }
 
-// sub in situ
-// ensure that the weight of the minuend array is greater than that of the subtrahend array
 func subInSitu(minuend: Array<UInt32>, subtrahend: Array<UInt32>, offset: Int64): Array<UInt32> {
     for (i in 0..subtrahend.size) {
         subAndBorrow(minuend, i + offset, subtrahend[i])
     }
     return normalize(minuend)
 }
-
-// sub in situ
 func subAndBorrow(minuend: Array<UInt32>, index: Int64, subtrahend: UInt32): Unit {
     minuend[index] = if (minuend[index] >= subtrahend) {
         minuend[index] - subtrahend
@@ -3000,8 +2691,6 @@ func knuthNormalize(size: Int64, int: UInt64, intArr: Array<UInt32>, l: Int64): 
     shiftLeftInSitu(normalized, l)
     return normalized
 }
-
-// << in situ
 func shiftLeftInSitu(arr: Array<UInt32>, shift: Int64): Array<UInt32> {
     if (shift == 0) {
         return arr
@@ -3014,8 +2703,6 @@ func shiftLeftInSitu(arr: Array<UInt32>, shift: Int64): Array<UInt32> {
     }
     return arr
 }
-
-// << in situ
 func shiftLeftInSitu(int: UInt64, rArr: Array<UInt32>, shift: Int64, deltaSize: Int64): (UInt64, Array<UInt32>) {
     let shift64 = shift & 0x3F
     let shift32 = shift & 0x1F
@@ -3042,7 +2729,6 @@ func shiftLeftInSitu(int: UInt64, rArr: Array<UInt32>, shift: Int64, deltaSize: 
     let rArr0: UInt32
     let left: UInt32
     (carry, rArr0, left) = shiftLeftUInt64(int, shift64)
-    // UInt64 shift to Array
     if (delta != rArr.size) {
         rArr[delta] = (rArr[0] << shift32) | carry
         if (delta != 0) {
@@ -3063,8 +2749,6 @@ func shiftLeftInSitu(int: UInt64, rArr: Array<UInt32>, shift: Int64, deltaSize: 
     }
     return (rInt, rArr)
 }
-
-// >> in situ
 func shiftRightInSitu(arr: Array<UInt32>, shift: Int64): Array<UInt32> {
     if (shift == 0) {
         return arr
@@ -3078,8 +2762,6 @@ func shiftRightInSitu(arr: Array<UInt32>, shift: Int64): Array<UInt32> {
     return arr
 }
 
-// divded by 2 in situ
-// >> 1
 func divBy2Insitu(int: UInt64, arr: Array<UInt32>): (UInt64, Array<UInt32>) {
     var carry: UInt32 = 0
     for (i in arr.size - 1..=0 : -1) {
@@ -3091,8 +2773,6 @@ func divBy2Insitu(int: UInt64, arr: Array<UInt32>): (UInt64, Array<UInt32>) {
     return (rInt, arr)
 }
 
-// div in situ
-// the bit length of the abs of divisor does not exceed 32 bits
 func divByUInt32InSitu(dividend: Array<UInt32>, divisor: UInt64): (Array<UInt32>, UInt64) {
     var rem: UInt64 = 0
     for (i in dividend.size - 1..=0 : -1) {
@@ -3103,8 +2783,6 @@ func divByUInt32InSitu(dividend: Array<UInt32>, divisor: UInt64): (Array<UInt32>
     return (normalize(dividend), rem)
 }
 
-// mod
-// the bit length of the abs of divisor does not exceed 32 bits
 func modByUInt32(dividend: Array<UInt32>, divisor: UInt64): UInt64 {
     var rem: UInt64 = 0
     for (i in dividend.size - 1..=0 : -1) {
@@ -3113,8 +2791,6 @@ func modByUInt32(dividend: Array<UInt32>, divisor: UInt64): UInt64 {
     }
     return rem
 }
-
-// mod
 func mod(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     if (thisArr.size == 0 && thatArr.size == 0) {
         return (thisInt % thatInt, EMPTY_ARRAY)
@@ -3132,32 +2808,21 @@ func mod(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Arra
     let remArr: Array<UInt32>
     let remInt: UInt64
     if (thatArr.size == 0) {
-        // if the bit length of the abs of divisor does not exceed 32 bits
         if (thatInt <= 0xFFFF_FFFF) {
-            // mod % :
-            //       (ab+c)%d = ((ab)%d + c%d )%d
-            //       ab%d     = ((a%d)*(b%d))%d
-            //
-            // ab%d
             let rem = modByUInt32(thisArr, thatInt)
             let remInt0 = ((0x8000_0000_0000_0000 % thatInt) * (2 * rem % thatInt)) % thatInt
             remInt = (remInt0 + thisInt % thatInt) % thatInt
             remArr = EMPTY_ARRAY
         } else {
             let shift = leadingZeros(thatInt)
-            // dividend's size equals Array<UInt32>'s size plus 2(UInt64 takes up two UInt32), then plus 1(may overflow)
             let normalizedDividend = knuthNormalize(thisArr.size + 3, thisInt, thisArr, shift)
             let normalizedDivisor = thatInt << shift
             (remInt, remArr) = knuthMod(normalizedDividend, normalizedDivisor, shift)
         }
-    // otherwise, use Knuth division algorithm
     } else {
-        // normalize, let the most significant UInt32 larger than 0x8000_0000
         let shift = leadingZeros(thatArr[thatArr.size - 1])
-        // dividend's size equals Array<UInt32>'s size plus 2(UInt64 takes up two UInt32), then plus 1(may overflow)
         let normalizedDividend = knuthNormalize(thisArr.size + 3, thisInt, thisArr, shift)
         let normalizedDivisor = knuthNormalize(thatArr.size + 2, thatInt, thatArr, shift)
-        // divisor's size equals Array<UInt32>'s size plus 2(UInt64 takes up two UInt32)
         (remInt, remArr) = knuthMod(normalizedDividend, normalizedDivisor, shift)
     }
     return (remInt, remArr)
@@ -3171,43 +2836,31 @@ func modOption(int: UInt64, intArr: Array<UInt32>, m: ?BigInt): (UInt64, Array<U
     }
     return (int, intArr)
 }
-
-// if the bit length of the abs of divisor exceeds 64 bits
 func knuthMod(normalizedDividend: Array<UInt32>, normalizedDivisor: Array<UInt32>, shift: Int64): (UInt64, Array<UInt32>) {
     let sizeDD = normalizedDividend.size
     let sizeD = normalizedDivisor.size
-    // initialize j
     var j = sizeDD - sizeD - 1
-    // loop
     while (j >= 0) {
         knuthDivGuessQ(normalizedDividend, normalizedDivisor, sizeD, j)
         j--
     }
-    // unnormalize
     let remArr = shiftRightInSitu(normalizedDividend, shift)
     let remInt = UInt64(remArr[0]) + (UInt64(remArr[1]) << 32)
     return (remInt, normalize(remArr[2..]))
 }
-
-// if the bit length of the abs of divisor exceeds 32 bits but does not exceed 64 bits
 func knuthMod(normalizedDividend: Array<UInt32>, normalizedDivisor: UInt64, shift: Int64): (UInt64, Array<UInt32>) {
     let sizeDD = normalizedDividend.size
-    // initialize j
     var j = sizeDD - 2 - 1
-    // loop
     while (j >= 0) {
         knuthDivGuessQ(normalizedDividend, normalizedDivisor, j)
         j--
     }
-    // unnormalize
     let remArr = shiftRightInSitu(normalizedDividend, shift)
     let remInt = UInt64(remArr[0]) + (UInt64(remArr[1]) << 32)
     return (remInt, normalize(remArr[2..]))
 }
 
-// mul in situ
-// multiplicator <= 0xFFFF_FFFF
-// multiplicand has the leading 0 to carry the carry
+
 func mulByUInt32InSitu(multiplicand: Array<UInt32>, multiplicator: UInt64): Array<UInt32> {
     var carry: UInt64 = 0
     for (i in 0..multiplicand.size) {
@@ -3218,13 +2871,9 @@ func mulByUInt32InSitu(multiplicand: Array<UInt32>, multiplicator: UInt64): Arra
     return normalize(multiplicand)
 }
 
-// mul, modify rArr in situ
-// parameters are result array, multiplicand array, multiplicator and the weight of multiplicator
 func mulByUInt32InSitu(rArr: Array<UInt32>, multiplicand: Array<UInt32>, multiplicator: UInt64, index: Int64) {
     var carry: UInt64 = 0
     for (i in 0..multiplicand.size) {
-        // 0xFFFF_FFFF*0xFFFF_FFFF+FFFF_FFFF+FFFF_FFFF = 0xFFFF_FFFF_FFFF_FFFF
-        // never overflow
         let product = UInt64(multiplicand[i]) * multiplicator + UInt64(rArr[i + index]) + carry
         rArr[i + index] = UInt32(product & 0xFFFF_FFFF)
         carry = product >> 32
@@ -3237,8 +2886,6 @@ func mulByUInt32InSitu(rArr: Array<UInt32>, multiplicand: Array<UInt32>, multipl
         i++
     }
 }
-
-// mul
 func mul(mInt: UInt64, mArr: Array<UInt32>, mulInt: UInt64, mulArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     let (int, rArr0, rArr1) = uInt64Mul(mInt, mulInt)
     if (mArr.size == 0 && mulArr.size == 0) {
@@ -3256,14 +2903,11 @@ func mul(mInt: UInt64, mArr: Array<UInt32>, mulInt: UInt64, mulArr: Array<UInt32
     mulByUInt32InSitu(rArr, mArr, mulInt >> 32, 1)
     mulByUInt32InSitu(rArr, mulArr, mInt & 0xFFFF_FFFF, 0)
     mulByUInt32InSitu(rArr, mulArr, mInt >> 32, 1)
-    // mul of array
     for (i in 0..mArr.size) {
         mulByUInt32InSitu(rArr, mulArr, UInt64(mArr[i]), i + 2)
     }
     return (int, normalize(rArr))
 }
-
-// compare the intArr
 func compareAbsArr(thisArr: Array<UInt32>, thatArr: Array<UInt32>, offset: Int64): Int64 {
     if (thisArr.size > thatArr.size + offset) {
         return 1
@@ -3292,8 +2936,6 @@ func isNoLessThan(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, that
     }
     return c == 1
 }
-
-// gcd
 func gcd(int1: UInt64, int1Arr: Array<UInt32>, int2: UInt64, int2Arr: Array<UInt32>): (UInt64, Array<UInt32>) {
     if (int1Arr.size == 0 && int2Arr.size == 0) {
         return (gcd(int1, int2), EMPTY_ARRAY)
@@ -3341,7 +2983,6 @@ func gcd(int1: UInt64, int1Arr: Array<UInt32>, int2: UInt64, int2Arr: Array<UInt
 
 func exgcdToInverse(thisBig: BigInt, thatBig: BigInt): (BigInt, BigInt) {
     if (thatBig.sign == 0) {
-        // the gcd of thisBig and thatBig must be 1
         if (thisBig.int != 1 || thisBig.intArr.size != 0) {
             throw IllegalArgumentException("The BigInt is not relatively prime with the input.")
         }
@@ -3353,12 +2994,9 @@ func exgcdToInverse(thisBig: BigInt, thatBig: BigInt): (BigInt, BigInt) {
 }
 
 func knuthDivGuessQ(normalizedDividend: Array<UInt32>, normalizedDivisor: Array<UInt32>, sizeD: Int64, j: Int64): UInt64 {
-    // guess q
     let dd = (UInt64(normalizedDividend[sizeD + j]) << 32) + UInt64(normalizedDividend[sizeD + j - 1])
     let d = UInt64(normalizedDivisor[sizeD - 1])
     var q = dd / d
-
-    // if q == 0, there is no need to go into the following steps.
     if (q == 0) {
         return q
     }
@@ -3387,15 +3025,10 @@ func knuthDivGuessQ(normalizedDividend: Array<UInt32>, normalizedDivisor: Array<
 }
 
 func knuthDivGuessQ(normalizedDividend: Array<UInt32>, normalizedDivisor: UInt64, j: Int64): UInt64 {
-    // guess q
-    // the UInt64 int of the dividend is copyed in normalizedDividend array
-    // the UInt64 int occupys two size
     let dd = (UInt64(normalizedDividend[j + 2]) << 32) + UInt64(normalizedDividend[j + 1])
     let d = normalizedDivisor >> 32
     let d0 = normalizedDivisor & 0xFFFF_FFFF
     var q = dd / d
-
-    // if q == 0, there is no need to go into the following steps. 
     if (q == 0) {
         return q
     }
@@ -3417,45 +3050,31 @@ func knuthDivGuessQ(normalizedDividend: Array<UInt32>, normalizedDivisor: UInt64
     return q
 }
 
-// for Miller-Rabin test
-// looking for the nontrivial square root of 1
-// (x^2 mod n = 1, the square root except ±1)
-// if find one, n is composite, this function will return true
+
+
 func witness(a: BigInt, n: BigInt): Bool {
     let (subOneInt, subOneArr) = subOne(n.int, n.intArr, false)
     let subOne = BigInt(subOneInt, normalize(subOneArr), false)
     let t = subOne.lowestOneBit()
     let u = subOne >> t
-    // only four cases,
-    //  see flowing:
     let x0 = a.modPow(u, m: n)
     var x0Int = x0.int
     var x0Arr = x0.intArr
-    // 1. X = <1,1,...,1>
-    //  return false
     if (x0Int == 1 && x0Arr.size == 0) {
         return false
     }
     for (_ in 0..t) {
-        // 2. X = <...,-1,1,...,1>
-        //  return false
         if (x0Int == subOneInt && x0Arr == subOneArr) {
             return false
         }
         var (x1Int, x1Arr) = mul(x0Int, x0Arr, x0Int, x0Arr)
         (x1Int, x1Arr) = mod(x1Int, x1Arr, n.int, n.intArr)
-        // 3. X = <...,d,1,...,1>
-        //  return true
-        // find the nontrivial square root of 1
         if (x1Int == 1 && x1Arr.size == 0) {
             return true
         }
         x0Int = x1Int
         x0Arr = x1Arr
     }
-    // 4. X = <...,d>
-    //  return true
-    // by Fermat's theorem
     if (x0Int != 1 || x0Arr.size != 0) {
         return true
     }

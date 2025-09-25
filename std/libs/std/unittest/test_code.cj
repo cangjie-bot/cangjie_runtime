@@ -1,25 +1,23 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.*
 
-/**
- * TestCode is the result of the running case.
- * @since 0.17.3
- */
+
+
 enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
-    | PASS // passed tests
-    | SKIP // @Skip'ed, filtered out by --filter and --tags tests
+    | PASS
+    | SKIP
     | TIMEOUT
-    | FAIL // checks failed
-    | ERROR // execution aborted by exception or crash
-    | NORUN // dry execution
+    | FAIL
+    | ERROR
+    | NORUN
 
     public func toString(): String {
         match (this) {
@@ -47,7 +45,7 @@ enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
             case TIMEOUT => 2
             case FAIL => 3
             case ERROR => 4
-            case NORUN => 5 // it can be potentially compared only with skip
+            case NORUN => 5
         }
     }
 

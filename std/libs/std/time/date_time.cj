@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines DateTime related structs.
- */
+
+
+
+
+
+
+
+
 
 package std.time
 
@@ -26,34 +23,29 @@ struct NativeClock {
     }
 }
 
-/**
- * A DateTime represents an instance in time with nanosecond precision.
- *
- * DateTime instances can be compared using common comparison operators.
- * DateTime instances can subtract other DateTime instances, producing a Duration.
- * DateTime instances can add or sub a Duration, producing a new DateTime.
- *
- * Each DateTime is associated with a time zone. When calculating the dateTime representation,
- * the TimeZone is involved in it, such as in the toString function.
- * The methods inLocal, inUTC, and inTimeZone return a new DateTime with a specified TimeZone.
- * Every function returns a dateTime will create a new instance.
- *
- * The comparison results between two DateTimes determined by their current UTC time.
- * For example, 2023-04-10T08:00:00 in CST（China Standard Time）is equal to
- * 2023-04-10T00:00:00 in UTC.
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattable & Parsable<DateTime> {
-    /**
-     * The d records the duration since A.D.1.
-     */
+
+
     let d: Duration
 
-    /*
-     * The tz records the timezone of DateTime.
-     */
+
     let tz: TimeZone
 
-    /* Unix epoch time. */
+    
     public static prop UnixEpoch: DateTime {
         get() {
             DateTime.ofUTC(
@@ -68,30 +60,24 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the year of DateTime instance.
-     * Ranges in [-999,999,999, 999,999,999].
-     */
+
+
     public prop year: Int64 {
         get() {
             getYearAndSecond()[0]
         }
     }
 
-    /**
-     * Get the year of DateTime instance.
-     * Values are in Enum Month.
-     */
+
+
     public prop month: Month {
         get() {
             getMonthAndDay()[0]
         }
     }
 
-    /**
-     * Get the month of DateTime instance.
-     * Ranges in [1, 12].
-     */
+
+
     @Deprecated[message: "Use `public prop month: Month` instead."]
     public prop monthValue: Int64 {
         get() {
@@ -99,20 +85,16 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the day of DateTime instance.
-     * Ranges in [1, 31], the maximum depends on month and year.
-     */
+
+
     public prop dayOfMonth: Int64 {
         get() {
             getMonthAndDay()[1]
         }
     }
 
-    /**
-     * Get the day of week of DateTime instance.
-     * Values are in Enum DayOfWeek.
-     */
+
+
     public prop dayOfWeek: DayOfWeek {
         get() {
             let (yearAfter, secondAfter) = getYearAndSecond()
@@ -121,10 +103,8 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the day of year of DateTime instance.
-     * Ranges in [1, 365] in non leap year and [1, 366] in leap year.
-     */
+
+
     public prop dayOfYear: Int64 {
         get() {
             let second = getYearAndSecond()[1]
@@ -132,10 +112,8 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the hour of DateTime instance.
-     * Ranges in [0, 23].
-     */
+
+
     public prop hour: Int64 {
         get() {
             let second = getYearAndSecond()[1]
@@ -143,10 +121,8 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the minute of DateTime instance.
-     * Ranges in [0, 59].
-     */
+
+
     public prop minute: Int64 {
         get() {
             let second = getYearAndSecond()[1]
@@ -154,10 +130,8 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the second of DateTime instance.
-     * Ranges in [0, 59].
-     */
+
+
     public prop second: Int64 {
         get() {
             let second = getYearAndSecond()[1]
@@ -165,20 +139,16 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the nanosecond of DateTime instance.
-     * Ranges in [0, 59].
-     */
+
+
     public prop nanosecond: Int64 {
         get() {
             Int64(d.ns)
         }
     }
 
-    /**
-     * Get the year and week tuple of DateTime instance based on ISO-8601.
-     * Ranges in [0, 59].
-     */
+
+
     public prop isoWeek: (Int64, Int64) {
         get() {
             let (year, sec) = getYearAndSecond()
@@ -192,18 +162,14 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the timeZone of DateTime instance.
-     */
+
     public prop zone: TimeZone {
         get() {
             tz
         }
     }
 
-    /**
-     * Get the zone id of DateTime instance.
-     */
+
     public prop zoneId: String {
         get() {
             if (tz.zoneId == "localtime") {
@@ -214,9 +180,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Get the zone offset of DateTime instance.
-     */
+
     public prop zoneOffset: Duration {
         get() {
             let offset = getOffset()
@@ -239,61 +203,51 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Construct a instance of DateTime.
-     *
-     * @param secs seconds since A.D.1
-     * @param nanos nanoseconds of datetime.
-     * @param systemNanos nanoseconds since programme start up.
-     * @param timeZone time zone.
-     */
+
+
+
+
+
+
     init(secs: Int64, nanos: UInt32, tz: TimeZone) {
         this.d = Duration(secs, nanos)
         this.tz = tz
     }
 
-    /**
-     * Get current DateTime in specified time zone.
-     *
-     * @param timeZone specified time zone. the default value is set to TimeZone.Local.
-     * @return current DateTime in specified time zone.
-     */
+
+
+
+
     @Frozen
     public static func now(timeZone!: TimeZone = TimeZone.Local): DateTime {
         var (curSec, curNS) = systemNow()
         return DateTime(curSec + SECS_OF_UNIX_TO_AD1, UInt32(curNS), timeZone)
     }
 
-    /**
-     * Get current DateTime, with time zone set to UTC.
-     *
-     * @return current DateTime of UTC.
-     */
+
+
+
     public static func nowUTC(): DateTime {
         return now(timeZone: TimeZone.UTC)
     }
 
-    /**
-     * Construct DateTime after d since unix epoch time.
-     *
-     * @param d duration.
-     * @return DateTime after d since unix epoch time.
-     */
+
+
+
+
     public static func fromUnixTimeStamp(d: Duration): DateTime {
         return DateTime.UnixEpoch + d
     }
 
-    /**
-     * Construct a DateTime instance with unix second and unix nanosecond.
-     * The start time is set to unix epoch time.
-     *
-     * @param second unix second.
-     * @param nanosecond unix nanosecond.
-     * @return DateTime after second seconds and nanosecond nanoseconds since unix epoch time.
-     *
-     * @throws IllegalArgumentException if the value of nanosecond is outside the range [0, 999,999,999].
-     * @throws ArithmeticException if the result of year is outside the range [-999,999,999, 999,999,999].
-     */
+
+
+
+
+
+
+
+
+
     public static func ofEpoch(second!: Int64, nanosecond!: Int64): DateTime {
         if (nanosecond < 0 || nanosecond > MAX_NANOSECOND) {
             throw IllegalArgumentException("The nanosecond value should be in the range [0, 999,999,999].")
@@ -309,22 +263,20 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         DateTime(seconds, UInt32(nanosecond), TimeZone.UTC)
     }
 
-    /**
-     * Construct a instance of DateTime with specified parameters.
-     * The start time is set to unix epoch time.
-     *
-     * @param year year A.D, ranges in [-999,999,999, 999,999,999].
-     * @param month month value of year, ranges in [1, 12].
-     * @param dayOfMonth days of month, ranges in [1, 31], the maximum depends on month and year.
-     * @param hour hours of day, ranges in [0, 23].
-     * @param minute minutes of hour, ranges in [0, 59].
-     * @param second seconds of minute, ranges in [0, 59].
-     * @param nanosecond nanoseconds of second, ranges in [0, 999,999,999].
-     * @param timeZone time zone.
-     * @return DateTime with specified parameters.
-     *
-     * @throws IllegalArgumentException if the value of any parameter is out of the range, or the datetime does not exist.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static func of(
         year!: Int64,
         month!: Int64,
@@ -339,22 +291,20 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return DateTime.ofUnchecked(year, month, dayOfMonth, hour, minute, second, nanosecond, timeZone)
     }
 
-    /**
-     * Construct a instance of DateTime with specified parameters.
-     * The start time is set to unix epoch time.
-     *
-     * @param year year A.D, ranges in [-999,999,999, 999,999,999].
-     * @param month month of year.
-     * @param dayOfMonth days of month, ranges in [1, 31], the maximum depends on month and year.
-     * @param hour hours of day, ranges in [0, 23].
-     * @param minute minutes of hour, ranges in [0, 59].
-     * @param second seconds of minute, ranges in [0, 59].
-     * @param nanosecond nanoseconds of second, ranges in [0, 999,999,999].
-     * @param timeZone time zone.
-     * @return DateTime with specified parameters.
-     *
-     * @throws IllegalArgumentException if the value of any parameter is out of the range, or the datetime does not exist.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static func of(
         year!: Int64,
         month!: Month,
@@ -377,21 +327,19 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         )
     }
 
-    /**
-     * Construct a instance of DateTime with specified parameters.
-     * The start time is set to unix epoch time.
-     *
-     * @param year year A.D, ranges in [-999,999,999, 999,999,999].
-     * @param month month value of year, ranges in [1, 12].
-     * @param dayOfMonth days of month, ranges in [1, 31], the maximum depends on month and year.
-     * @param hour hours of day, ranges in [0, 23].
-     * @param minute minutes of hour, ranges in [0, 59].
-     * @param second seconds of minute, ranges in [0, 59].
-     * @param nanosecond nanoseconds of second, ranges in [0, 999,999,999].
-     * @return DateTime with specified parameters.
-     *
-     * @throws IllegalArgumentException if the value of any parameter is out of the range.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static func ofUTC(
         year!: Int64,
         month!: Int64,
@@ -405,21 +353,19 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         DateTime.ofUTCUnchecked(year, month, dayOfMonth, hour, minute, second, nanosecond)
     }
 
-    /**
-     * Construct a instance of DateTime with specified parameters.
-     * The start time is set to unix epoch time.
-     *
-     * @param year year A.D, ranges in [-999,999,999, 999,999,999].
-     * @param month month of year.
-     * @param dayOfMonth days of month, ranges in [1, 31], the maximum depends on month and year.
-     * @param hour hours of day, ranges in [0, 23].
-     * @param minute minutes of hour, ranges in [0, 59].
-     * @param second seconds of minute, ranges in [0, 59].
-     * @param nanosecond nanoseconds of second, ranges in [0, 999,999,999].
-     * @return DateTime with specified parameters.
-     *
-     * @throws IllegalArgumentException if the value of any parameter is out of the range.
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static func ofUTC(
         year!: Int64,
         month!: Month,
@@ -440,14 +386,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         )
     }
 
-    /**
-     * Parse a DateTime from string with RFC3339 date-time format.
-     *
-     * @param str DateTime string.
-     * @return a DateTime if the parsing succeeds.
-     *
-     * @throws TimeParseException if the parsing is incorrect.
-     */
+
+
+
+
+
+
     public static func parse(str: String): DateTime {
         return parseTime(str, DateTimeFormat.RFC3339, isRFC3339: true)
     }
@@ -460,16 +404,14 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /**
-     * Parse a time from string with specified format.
-     *
-     * @param str DateTime string.
-     * @param format of @p str, for example, "yyyy/MM/dd HH:mm:ss OOOO".
-     * @return a DateTime if the parsing succeeds.
-     *
-     * @throws TimeParseException if the parsing is incorrect.
-     * @throws IllegalArgumentException if the format is illegal.
-     */
+
+
+
+
+
+
+
+
     public static func parse(str: String, format: String): DateTime {
         return parseTime(str, format)
     }
@@ -479,61 +421,51 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return parseTime(str, format.format)
     }
 
-    /**
-     * Return DateTime with the time zone set to UTC.
-     *
-     * @return a DateTime with the time zone set to UTC.
-     *
-     * @throws ArithmeticException if the result of year in UTC is outside the range [-999,999,999, 999,999,999].
-     */
+
+
+
+
+
     public func inUTC(): DateTime {
         checkResultYear(d.sec)
         return this.toUTC()
     }
 
-    /**
-     * Return DateTime with the time zone set to Local.
-     *
-     * @return a DateTime with the time zone set to Local.
-     *
-     * @throws ArithmeticException if the result of year in Local is outside the range [-999,999,999, 999,999,999].
-     */
+
+
+
+
+
     public func inLocal(): DateTime {
         return inTimeZone(TimeZone.Local)
     }
 
-    /**
-     * Return DateTime with the time zone set to specified time zone.
-     *
-     * @param timeZone time zone
-     * @return a DateTime with the time zone set to Local.
-     *
-     * @throws ArithmeticException if the result of year in Local is outside the range [-999,999,999, 999,999,999]
-     */
+
+
+
+
+
+
     public func inTimeZone(timeZone: TimeZone): DateTime {
         let offset = timeZone.lookup(d.sec + SECS_OF_UNIX_TO_AD1)[1]
         checkResultYear(d.sec + offset)
         DateTime(d.sec, d.ns, timeZone)
     }
 
-    /**
-     * Return the duration elapsed since January 1, 1970 UTC.
-     * The result does not depend on the time zone associated with time,
-     * in other words, base on the UTC time zone.
-     *
-     * @return duration of unix nanosecond.
-     *
-     * @throws ArithmeticException if the timestamp is out of range for 'Duration'.
-     */
+
+
+
+
+
+
+
     public func toUnixTimeStamp(): Duration {
         return this - UnixEpoch
     }
 
-    /**
-     * Return a String that represents the DateTime instance, the format defaults to RFC3339.
-     *
-     * @return a DateTime string formatted in RFC3339.
-     */
+
+
+
     public func toString(): String {
         let res = StringBuilder()
         res.append(addZeroPrefix(this.year, 4))
@@ -561,15 +493,13 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return res.toString()
     }
 
-    /**
-     * Return a String that represents the DateTime instance, the format is set to specified format.
-     *
-     * @param fmt of func format, for example, "yyyy/MM/dd HH:mm:ss OOOO".
-     *
-     * @return a DateTime string formatted in the specified format.
-     *
-     * @throws IllegalArgumentException if the fmt is illegal.
-     */
+
+
+
+
+
+
+
     public func format(fmt: String): String {
         let res = StringBuilder()
         let layout = fmt.toRuneArray()
@@ -620,26 +550,23 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
             case Termination => ()
         }
     }
-    /**
-     * Returns hash value of DateTime instance
-     *
-     * @return Int64 the hash value of the current DateTime instance.
-     */
+
+
+
+
     public func hashCode(): Int64 {
         return d.hashCode()
     }
 
-    /**
-     * Adds specified years to DateTime instance, returns a new DateTime to represent the new DateTime.
-     * Specifically, if the day is outside the range of month,
-     * it will shift to the last day of the month due to the impact of leap year.
-     * For example, (2020-02-29).addYears(1) will return (2021-02-28)
-     *
-     * @param n the number of year.
-     * @return a new DateTime instance after adding @p n years.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999], or the result datetime does not exist.
-     */
+
+
+
+
+
+
+
+
+
     public func addYears(n: Int64): DateTime {
         let year = this.year
         if ((n > 0 && year > MAX_YEAR - n) || (n < 0 && year < MIN_YEAR - n)) {
@@ -654,17 +581,15 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
             Int64(this.d.ns), this.zone)
     }
 
-    /**
-     * Adds specified months to DateTime instance, returns a new DateTime to represent the new DateTime.
-     * Specifically, if the day is outside the range of month,
-     * it will shift to the last day of the month.
-     * For example, (March 31st).addMonths(1) will return (April 30th).
-     *
-     * @param n the number of month.
-     * @return a new DateTime instance after adding @p n months.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999], or the result datetime does not exist.
-     */
+
+
+
+
+
+
+
+
+
     public func addMonths(n: Int64): DateTime {
         let month = this.month.toInteger()
         if (isSumOverflow(month, n)) {
@@ -693,28 +618,24 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
             Int64(this.d.ns), this.zone)
     }
 
-    /**
-     * Adds specified weeks to DateTime instance, returns a new DateTime to represent the new DateTime.
-     *
-     * @param n the number of week.
-     * @return a new DateTime instance after adding @p n weeks.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999], or the result datetime does not exist.
-     */
+
+
+
+
+
+
     public func addWeeks(n: Int64): DateTime {
         checkMul(DAYS_PER_WEEK, n)
         let days = n * DAYS_PER_WEEK
         return this.addDays(days)
     }
 
-    /**
-     * Adds specified days to DateTime instance, returns a new DateTime to represent the new DateTime.
-     *
-     * @param n the number of day.
-     * @return a new DateTime instance after adding @p n days.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999], or the result datetime does not exist.
-     */
+
+
+
+
+
+
     public func addDays(n: Int64): DateTime {
         checkMul(SECS_PER_DAY, n)
         let offset = getOffset()
@@ -732,42 +653,36 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return DateTime.ofUnchecked(year, month.toInteger(), day, hour, minute, second, Int64(d.ns), this.zone)
     }
 
-    /**
-     * Adds specified hours to DateTime instance, returns a new DateTime to represent the new DateTime.
-     *
-     * @param n the number of hour.
-     * @return a new DateTime instance after adding @p n hours.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999], or the result datetime does not exist.
-     */
+
+
+
+
+
+
     public func addHours(n: Int64): DateTime {
         checkMul(SECS_PER_HOUR, n)
         let seconds = n * SECS_PER_HOUR
         return this.addSeconds(seconds)
     }
 
-    /**
-     * Adds specified minutes to DateTime instance, returns a new DateTime to represent the new DateTime.
-     *
-     * @param n the number of minute.
-     * @return a new DateTime instance after adding @p n minutes.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999], or the result datetime does not exist.
-     */
+
+
+
+
+
+
     public func addMinutes(n: Int64): DateTime {
         checkMul(SECS_PER_MINUTE, n)
         let seconds = n * SECS_PER_MINUTE
         return this.addSeconds(seconds)
     }
 
-    /**
-     * Adds specified seconds to DateTime instance, returns a new DateTime to represent the new DateTime.
-     *
-     * @param n the number of second.
-     * @return a new DateTime instance after adding @p n seconds.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999], or the result datetime does not exist.
-     */
+
+
+
+
+
+
     public func addSeconds(n: Int64): DateTime {
         if (isSumOverflow(d.sec, n)) {
             throw ArithmeticException(YEAR_OUT_OF_RANGE)
@@ -778,27 +693,23 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return DateTime(seconds, d.ns, this.tz)
     }
 
-    /**
-     * Adds specified nanoseconds to DateTime instance, returns a new DateTime to represent the new DateTime.
-     *
-     * @param n the number of nanosecond.
-     * @return a new DateTime instance after adding @p n nanoseconds.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999]
-     */
+
+
+
+
+
+
     public func addNanoseconds(n: Int64): DateTime {
         return this + Duration.nanosecond * n
     }
 
-    /**
-     * Override the + operator, adds with a Duration instance and
-     * returns a new DateTime instance.
-     *
-     * @param r a duration instance.
-     * @return a new DateTime after adding @p r.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999]
-     */
+
+
+
+
+
+
+
     public operator func +(r: Duration): DateTime {
         checkSecAdd(d.sec, r.sec)
         var sec = d.sec + r.sec
@@ -812,15 +723,13 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return DateTime(sec, UInt32(ns), this.tz)
     }
 
-    /**
-     * Override the - operator, subtracts with a Duration instance and
-     * returns a new DateTime instance.
-     *
-     * @param r a duration instance.
-     * @return a new DateTime after subtracting @p r.
-     *
-     * @throws ArithmeticException if result of year is outside [-999,999,999, 999,999,999]
-     */
+
+
+
+
+
+
+
     public operator func -(r: Duration): DateTime {
         if (r.sec == Int64.Min) {
             throw ArithmeticException(YEAR_OUT_OF_RANGE)
@@ -837,85 +746,69 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return DateTime(sec, UInt32(ns), this.tz)
     }
 
-    /**
-     * Override the - operator, subtract another DateTime instance and
-     * returns a Duration instance.
-     * A return value of negative indicates that the time subtracted is later than this time,
-     * otherwise is equal to or earlier than this time.
-     *
-     * @param r another time.
-     * @return a duration as a result of this - @p r.
-     */
+
+
+
+
+
+
+
     public operator func -(r: DateTime): Duration {
         return this.d - r.d
     }
 
-    /**
-     * Override the == operator, determines whether this DateTime equals another DateTime.
-     *
-     * @param r another DateTime to be compared to.
-     * @return true if the DateTime is equal to @p r, otherwise false.
-     */
+
+
+
+
     public operator func ==(r: DateTime): Bool {
         return this.d == r.d
     }
 
-    /**
-     * Override the != operator, determines whether this time is not equal another DateTime.
-     *
-     * @param r another DateTime to be compared to.
-     * @return true if the DateTime is not equal to @p r, otherwise false.
-     */
+
+
+
+
     public operator func !=(r: DateTime): Bool {
         return !(this == r)
     }
 
-    /**
-     * Override the >= operator, determines whether this time is later than or equal to another DateTime.
-     *
-     * @param r another DateTime to be compared to.
-     * @return true if the DateTime is later than or equal to @p r, otherwise false.
-     */
+
+
+
+
     public operator func >=(r: DateTime): Bool {
         return this.d >= r.d
     }
 
-    /**
-     * Override the > operator, determines whether this time is later than another time.
-     *
-     * @param r another DateTime to be compared to.
-     * @return true if the time is later than @p r, otherwise false.
-     */
+
+
+
+
     public operator func >(r: DateTime): Bool {
         return this.d > r.d
     }
 
-    /**
-     * Override the <= operator, determines whether this time is earlier than or equal to another DateTime.
-     *
-     * @param r another DateTime to be compared to.
-     * @return true if the DateTime is earlier than or equal to @p r, otherwise false.
-     */
+
+
+
+
     public operator func <=(r: DateTime): Bool {
         return this.d <= r.d
     }
 
-    /**
-     * Override the < operator, determines whether this time is earlier than another DateTime.
-     *
-     * @param r another DateTime to be compared to.
-     * @return true if the DateTime is earlier than @p r, otherwise false.
-     */
+
+
+
+
     public operator func <(r: DateTime): Bool {
         return this.d < r.d
     }
 
-    /**
-     * Compare the relationship between two instance of DateTime.
-     *
-     * @param rhs Instance of DateTime compared with this.
-     * @return Value indicating the relationship between two instance of DateTime.
-     */
+
+
+
+
     public func compare(rhs: DateTime): Ordering {
         match {
             case this < rhs => Ordering.LT
@@ -924,12 +817,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /* Return datetime in utc without checked. */
+    
     private func toUTC(): DateTime {
         return DateTime(d.sec, d.ns, TimeZone.UTC)
     }
 
-    /* Return datetime in timezone with give utc datetime.*/
+    
     private static func ofUnchecked(
         year: Int64,
         month: Int64,
@@ -967,7 +860,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return DateTime(secSinceAD1 - offset, UInt32(nanosecond), timeZone)
     }
 
-    /* Return datetime in timezone with give utc datetime.*/
+    
     private static func ofUTCUnchecked(
         year: Int64,
         month: Int64,
@@ -981,14 +874,14 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         DateTime(seconds, UInt32(nanosecond), TimeZone.UTC)
     }
 
-    /* Return year, second in year based on offset. */
+    
     private func getYearAndSecond(): (Int64, UInt32) {
         let offset = getOffset()
         let (year, sec) = toYearAndSecond(d.sec + offset)
         return (year, UInt32(sec))
     }
 
-    /* Return month, dayOfMonth based on offset. */
+    
     private func getMonthAndDay(): (Month, Int64) {
         let (yearAfter, secondAfter) = getYearAndSecond()
         let (monthAfter, dayAfter) = getDate(yearAfter, secondAfter)
@@ -1001,7 +894,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return (yearAfter, monthAfter, dayAfter)
     }
 
-    /* Return datetime related offset. */
+    
     private func getOffset(): Int64 {
         return this.tz.lookup(d.sec - SECS_OF_UNIX_TO_AD1)[1]
     }
@@ -1018,8 +911,6 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         var paddingLength = length
         if (length == 2) {
             if ((yearAfter >= 1969 && yearAfter <= 1999) || yearAfter >= 2000 && yearAfter <= 2068) {
-                // 1969 ~ 1999 -->  69 ~ 99
-                // 2000 ~ 2068 -->  00 ~ 68
                 return (yearAfter % 100).toString()
             }
             paddingLength = 4
@@ -1036,7 +927,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return match (length) {
             case 1 | 2 => this.month.toInteger().toString().padStart(length, padding: "0")
             case 3 => this.month.toString()[..3]
-            case _ => this.month.toString() // case 4
+            case _ => this.month.toString()
         }
     }
 
@@ -1049,11 +940,10 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     func toSecondFractionString(length: Int64): String {
-        /**
-         * length = 1, use millisecond to format
-         * length = 2, use microsecond to format
-         * length = 3, use nanosecond to format
-         */
+
+
+
+
         let width = 3 * length
         let fraction = Int64(d.ns) / (10 ** UInt64(9 - width))
         return fraction.toString().padStart(width, padding: "0")
@@ -1116,15 +1006,15 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
-    /* Return the string of zone offset for func toString(format: String) */
+    
     func toGMTOffsetString(length: Int64): String {
         var res = toOffsetString(length)
         let offset = getOffset()
         if (offset == 0) {
             res = match (length) {
                 case 1 => "+0"
-                case 3 => "+00:00:00" // ZZZ
-                case _ => "+00:00" // ZZ ZZZZ
+                case 3 => "+00:00:00"
+                case _ => "+00:00"
             }
         } else if (offset % SECS_PER_HOUR == 0 && length == 1) {
             if (res[1] == b'0') {
@@ -1144,7 +1034,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
     func genDateTime(zoneId: String, zoneOffset: Int64): DateTime {
         if (zoneId == "") {
-            if (zoneOffset != MAX_OFFSET + 1) { // offset exists
+            if (zoneOffset != MAX_OFFSET + 1) {
                 let zoneName = if (zoneOffset == 0) {
                     "GMT"
                 } else {
@@ -1157,7 +1047,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
                 second: second, nanosecond: nanosecond)
         } else {
             try {
-                var timeZone = TimeZone.load(zoneId) // throw InvalidDataException if not found
+                var timeZone = TimeZone.load(zoneId)
                 let dateTime = DateTime.of(year: year, month: month, dayOfMonth: dayOfMonth, hour: hour, minute: minute,
                     second: second, nanosecond: nanosecond, timeZone: timeZone)
                 var offset = dateTime.zoneOffset.toSeconds()
@@ -1167,12 +1057,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
                 return dateTime
             } catch (_: InvalidDataException) {
                 var localTimeZone = TimeZone.Local
-                // try to find zone name in local time zone
                 var offset = localTimeZone.lookupName(zoneId, d.sec - SECS_OF_UNIX_TO_AD1)
-                if (offset == MAX_OFFSET + 1) { // failure
+                if (offset == MAX_OFFSET + 1) {
                     throw TimeParseException("Illegal zone name or zone id.")
                 }
-                if (zoneOffset != MAX_OFFSET + 1 && zoneOffset != offset) { // success but offset does not match
+                if (zoneOffset != MAX_OFFSET + 1 && zoneOffset != offset) {
                     throw TimeParseException("The zone offset does not match.")
                 }
                 return DateTime(d.sec - offset, d.ns, TimeZone(zoneId, Int32(offset)))
@@ -1215,11 +1104,9 @@ func checkMul(left: Int64, right: Int64): Unit {
     }
 }
 
-/**
- * check whether the values of parameters of DateTime is out of their range.
- *
- * @throws IllegalArgumentException if the value of parameters is out of their range
- */
+
+
+
 func checkDateTime(
     year: Int64,
     month: Int64,
@@ -1232,7 +1119,6 @@ func checkDateTime(
     if (year > MAX_YEAR || year < MIN_YEAR) {
         throw IllegalArgumentException("Year value must be in [-999,999,999, 999,999,999].")
     }
-    //month validation are in func daysIn
     let days = daysIn(month, year)
     if (dayOfMonth < 1 || dayOfMonth > days) {
         throw IllegalArgumentException("Day of ${Month.of(month).toString()} in ${year} must be in [1, ${days}].")
@@ -1251,9 +1137,7 @@ func checkDateTime(
     }
 }
 
-/**
- * Calculate year and second in year through seconds since year 1 A.D.
- */
+
 func toYearAndSecond(sec: Int64): (Int64, Int64) {
     var year = START_AD_YEAR
     var seconds = sec
@@ -1286,10 +1170,8 @@ func toYearAndSecond(sec: Int64): (Int64, Int64) {
     return (year, secInYear)
 }
 
-/**
- * Calculate unix second of year and second in year.
- * The exception only used by addFuncs.
- */
+
+
 func toEpochSeconds(year: Int64, sec: UInt32): Int64 {
     try {
         var days = daysSinceUnix(year)
@@ -1300,10 +1182,8 @@ func toEpochSeconds(year: Int64, sec: UInt32): Int64 {
     }
 }
 
-/**
- * Calculate month and day of year and second in year.
- * @throws IllegalArgumentException if idx is out of range [1, 12]
- */
+
+
 func getDate(year: Int64, sec: UInt32): (Month, Int64) {
     var days = Int64(sec) / SECS_PER_DAY
     if (isLeapYear(year)) {
@@ -1317,14 +1197,14 @@ func getDate(year: Int64, sec: UInt32): (Month, Int64) {
     var idx = 0
     var day = 0
     while (idx < DAYS_BEFORE.size) {
-        /* 1. In this case, the corresponding date is the 1st of the month idx + 1. */
+        
         if (days == DAYS_BEFORE[idx]) {
             idx++
             day = 1
             break
         }
 
-        /* 2. In this case, the corresponding date is month idx. */
+        
         if (days < DAYS_BEFORE[idx]) {
             day = days - DAYS_BEFORE[idx - 1] + 1
             break
@@ -1335,9 +1215,7 @@ func getDate(year: Int64, sec: UInt32): (Month, Int64) {
     return (month, day)
 }
 
-/**
- * 0 means Sunday, 6 means Saturday.
- */
+
 func getDayOfWeek(year: Int64, sec: UInt32): Int64 {
     var days = daysSinceAD1(year)
     days += Int64(sec) / SECS_PER_DAY
@@ -1350,17 +1228,13 @@ func getDayOfWeek(year: Int64, sec: UInt32): Int64 {
     }
 }
 
-/**
- * Get the number of days from year 1970 A.D. to year `year`.
- */
+
 func daysSinceUnix(year: Int64): Int64 {
     var days = daysSinceAD1(year)
     return days - DAYS_OF_UNIX_TO_AD1
 }
 
-/**
- * Get the number of days from year 1 A.D. to year `year`.
- */
+
 func daysSinceAD1(year: Int64): Int64 {
     if (year == 0) {
         return -DAYS_OF_LEAP_YEAR
@@ -1371,14 +1245,12 @@ func daysSinceAD1(year: Int64): Int64 {
     return -(daysAD1ToYear(-year + 1) + DAYS_OF_LEAP_YEAR)
 }
 
-/**
- * Get the number of days from year 1 A.d. to year `year`.
- * Assume that `year` is an integer greater than 0.
- * NOTE: Don't use this method directly. Instead, use `daysSinceUnix` or `daysSinceAD1`.
- *
- * @param year target year.
- * @return the number of days from year 1 A.d. to year `year`.
- */
+
+
+
+
+
+
 func daysAD1ToYear(year: Int64): Int64 {
     let years = year - 1
     var days = 365 * years
@@ -1388,21 +1260,19 @@ func daysAD1ToYear(year: Int64): Int64 {
     return days
 }
 
-/**
- * Adjust the value of year and second in year with zone offset to zone UTC.
- * Note: If passing opposite offset, we can adjust it from zone UTC to zone offset.
- *
- * @param year year A.D.
- * @param sec second in year @p year.
- * @param offset associated zone offset.
- * @return the value of year and second in year with zone UTC.
- */
+
+
+
+
+
+
+
 func adjustYearAndSecond(year: Int64, second: UInt32, offset: Int64): (Int64, UInt32) {
     if (offset == 0) {
         return (year, second)
     }
     var seconds = Int64(second) - offset
-    var curYearSec = SECS_OF_NORMAL_YEAR /* seconds in a non-leap year. */
+    var curYearSec = SECS_OF_NORMAL_YEAR 
     if (isLeapYear(year)) {
         curYearSec += SECS_PER_DAY
     }
@@ -1419,28 +1289,24 @@ func adjustYearAndSecond(year: Int64, second: UInt32, offset: Int64): (Int64, UI
     return (year, UInt32(seconds))
 }
 
-/**
- * Indicate whether the year passed in is a leap year.
- *
- * @param year year A.D.
- * @return Parameters of Bool.
- *
- * @since 0.18.4
- */
+
+
+
+
+
+
 func isLeapYear(year: Int64): Bool {
     return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 }
 
-/**
- * Return the number of days of month in year.
- *
- * @param month month value, must be in the range [1, 12].
- * @param year year A.D.
- * @return the number of days in @p month, @p year.
- *
- * @throws IllegalArgumentException if month is out of range [1, 12]
- *
- */
+
+
+
+
+
+
+
+
 func daysIn(month: Int64, year: Int64): Int64 {
     if (month < 1 || month > 12) {
         throw IllegalArgumentException("Month value must be in the range [1, 12].")
@@ -1451,9 +1317,7 @@ func daysIn(month: Int64, year: Int64): Int64 {
     return DAYS_OF_MONTH[month]
 }
 
-/**
- * The TimeParseException class
- */
+
 public class TimeParseException <: Exception {
     public init() {
         super()
@@ -1468,20 +1332,18 @@ public class TimeParseException <: Exception {
     }
 }
 
-/**
- * Parse a DateTime instance from string by specified format.
- * If the zone is stored in this string and its name and offset equals local,
- * sets local as TimeZone in the DateTime instance.
- * If the zone is stored in this string but not equal local, uses its name and offset as a fixed zone.
- *
- * Otherwise, uses defaultLoc as TimeZone in the DateTime instance.
- *
- * @param value the time string.
- * @param format the format string, for example, "yyyy/MM/dd HH:mm:ss ZZZZ".
- * @return a Result containing a time if parsed success or Failure.
- * @throws TimeParseException if the parsing is incorrect.
- * @throws IllegalArgumentException if the format is incorrect.
- */
+
+
+
+
+
+
+
+
+
+
+
+
 func parseTime(value: String, format: String, isRFC3339!: Bool = false): DateTime {
     var dtValue = value.toRuneArray()
     var parser = DateTimeParser(dtValue)
@@ -1537,7 +1399,7 @@ func checkResultYear(seconds: Int64): Unit {
     }
 }
 
-/* get seconds from AD1 */
+
 func toSecondsFromAD1(year: Int64, month: Int64, dayOfMonth: Int64, hour: Int64, minute: Int64, second: Int64): Int64 {
     let secInYear = toSecondInYear(year, month, dayOfMonth, hour, minute, second)
     return toEpochSeconds(year, UInt32(secInYear)) + SECS_OF_UNIX_TO_AD1
@@ -1584,11 +1446,9 @@ func adjustDate(year: Int64, month: Int64, dayOfMonth: Int64, dayOfYear: Int64):
     var day = dayOfMonth
     if (dayOfYear > 0) {
         var (months, days) = dayOfYearToDate(dayOfYear, year)
-        // month comes from "MM", months comes from dayOfYear
         if (month > 0 && month != months) {
             throw TimeParseException("Month value does not match dayOfYear.")
         }
-        // dayOfMonth comes from "dd", days comes from dayOfYear
         if (dayOfMonth > 0 && dayOfMonth != days) {
             throw TimeParseException("DayOfMonth value does not match dayOfYear.")
         }
@@ -1605,7 +1465,7 @@ func adjustDate(year: Int64, month: Int64, dayOfMonth: Int64, dayOfYear: Int64):
     return (mon, day)
 }
 
-/* get second in year */
+
 func toSecondInYear(year: Int64, month: Int64, dayOfMonth: Int64, hour: Int64, minute: Int64, second: Int64): Int64 {
     var days = (DAYS_BEFORE[month - 1] + dayOfMonth - 1)
     if (month > 2 && isLeapYear(year)) {
@@ -1637,7 +1497,6 @@ func genZoneNameWithOffset(offset: Int64): String {
     if (hour < 10) {
         res = "GMT${sign}0${hour}"
     }
-    // padding minute
     var minute = value / SECS_PER_MINUTE
     value = value % SECS_PER_MINUTE
     res += if (minute < 10) {
@@ -1648,7 +1507,6 @@ func genZoneNameWithOffset(offset: Int64): String {
     if (value == 0) {
         return res
     }
-    // padding seconds
     var second = value
     res += if (second < 10) {
         "0${second}"
@@ -1744,8 +1602,8 @@ struct DateTimeParser {
             length
         }
         if (this.getLenToParse() >= this.parseLen) {
-            parsedYear = this.getInteger() /* throw TimeParseException if parsing fails */
-            if (length == 2) { /* Special path when the year represented by two digits. */
+            parsedYear = this.getInteger() 
+            if (length == 2) { 
                 if (parsedYear >= 69) {
                     parsedYear += 1900
                 } else {
@@ -1767,9 +1625,9 @@ struct DateTimeParser {
             case 1 => parseExtraInteger(length)
             case 2 => parseInteger(length)
             case 3 => matchValue(SHORT_MONTH_FORM)
-            case _ => matchValue(LONG_MONTH_FORM) /* n = 4 */
+            case _ => matchValue(LONG_MONTH_FORM) 
         }
-        /* The value of month is index, ranges in [0, 11], so we add it with 1. */
+        
         if (length > 2) {
             parsedMonth++
         }
@@ -1787,8 +1645,8 @@ struct DateTimeParser {
         let parsedWeek = match (length) {
             case 1 => parseExtraInteger(length)
             case 2 => parseInteger(length)
-            case 3 => matchValue(SHORT_DAY_OF_WEEK_FORM) /* www */
-            case _ => matchValue(LONG_DAY_OF_WEEK_FORM) /* wwww */
+            case 3 => matchValue(SHORT_DAY_OF_WEEK_FORM) 
+            case _ => matchValue(LONG_DAY_OF_WEEK_FORM) 
         }
         this.move(this.parseLen)
         return parsedWeek
@@ -1812,9 +1670,9 @@ struct DateTimeParser {
             throw TimeParseException("Extra era value.")
         }
         let size = match (length) {
-            case 1 => 1 /* A */
-            case 2 => 2 /* AD */
-            case _ => 11 /* Anno Domini */
+            case 1 => 1 
+            case 2 => 2 
+            case _ => 11 
         }
         if (this.getLenToParse() < size) {
             throw TimeParseException("Illegal era value.")
@@ -1934,7 +1792,7 @@ struct DateTimeParser {
             throw TimeParseException("Extra nanosecond format.")
         }
         var nanosecond = parseInteger(length * 3)
-        /* to nanoseconds*/
+        
         nanosecond = nanosecond * (10 ** UInt64(9 - this.parseLen))
         this.move(this.parseLen)
         return nanosecond
@@ -2027,12 +1885,12 @@ struct DateTimeParser {
             throw TimeParseException("Extra zone id format.")
         }
         return match (length) {
-            case 4 => parseZoneId() //zzzz: Asia/Shanghai
-            case _ => parseZoneName() // z zz zzz for "UTC" "CST"...
+            case 4 => parseZoneId()
+            case _ => parseZoneName()
         }
     }
 
-    /* parse zone id */
+    
     mut func parseZoneId(): String {
         var slash = false
         for (i in this.index..this.value.size) {
@@ -2053,7 +1911,7 @@ struct DateTimeParser {
         return zoneId
     }
 
-    /* parse zone name */
+    
     mut func parseZoneName(): String {
         for (i in this.index..this.value.size) {
             if (!value[i].isAsciiUpperCase()) {
@@ -2072,14 +1930,13 @@ struct DateTimeParser {
         if (value != MAX_OFFSET + 1) {
             throw TimeParseException("Extra zone offset format.")
         }
-        // Z: GMT+8 ZZ: GMT+08:00 ZZZ: +08:00:00/GMT+08:00:00 ZZZZ: GMT+08:00/GMT+08:00:00/Z
         checkOffsetLength(5)
         if (this.get(0) == r'G' && this.get(1) == r'M' && this.get(2) == r'T') {
             this.move(3)
         } else {
             throw TimeParseException("Illegal offset form.")
         }
-        if (length == 1) { // +8, +1 +12
+        if (length == 1) {
             var isPositive = 0
             match (this.get(0)) {
                 case r'+' => isPositive = 1
@@ -2120,7 +1977,7 @@ struct DateTimeParser {
         }
     }
 
-    /*throw TimeParseException if value contains non-numeric characters. */
+    
     func getInteger(): Int64 {
         var res = 0
         for (i in this.index..this.index + this.parseLen) {
@@ -2146,7 +2003,7 @@ struct DateTimeParser {
         }
     }
 
-    /* Return parsed number and rest value with given value and length to be parsed */
+    
     mut func parseInteger(length: Int64): Int64 {
         this.parseLen = length
         if (!isEnough()) {
@@ -2155,7 +2012,7 @@ struct DateTimeParser {
         return getInteger()
     }
 
-    /* Return parsed nanoseconds.*/
+    
     mut func parseSecFraction(length: Int64): Int64 {
         let len = if (this.getLenToParse() < length) {
             this.getLenToParse()

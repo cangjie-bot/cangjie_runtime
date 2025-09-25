@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.resolve
 
 import std.deriving.api.Identifier
@@ -104,7 +104,6 @@ private func literalType(expr: LitConstExpr): ?TypeNode {
         case TokenKind.BOOL_LITERAL => Types.BoolType
         case TokenKind.RUNE_LITERAL => Types.CharType
         case TokenKind.UNIT_LITERAL => Types.UnitType
-        // JString?
         case _ => None
     }
 }

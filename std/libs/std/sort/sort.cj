@@ -1,23 +1,21 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.sort
 
 import std.collection.*
 
-/**
- * Sorting element T.
- *
- * @param data Array of elements to be sorted.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
 @Frozen
 public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T> {
     if (descending) {
@@ -36,15 +34,13 @@ public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = f
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data Array of elements to be sorted.
- * @param by Comparator.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 @Frozen
 public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit {
     var comparator = by
@@ -63,15 +59,13 @@ public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = fal
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data Array of elements to be sorted.
- * @param lessThan Comparator.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 public func sort<T>(data: Array<T>, lessThan!: (T, T) -> Bool, stable!: Bool = false, descending!: Bool = false): Unit {
     let comparator = {l: T, r: T => match (lessThan(l, r)) {
             case true => LT
@@ -85,15 +79,13 @@ public func sort<T>(data: Array<T>, lessThan!: (T, T) -> Bool, stable!: Bool = f
     sort(data, by: comparator, stable: stable, descending: descending)
 }
 
-/**
- * Sorting element T.
- *
- * @param data Array of elements to be sorted.
- * @param key Mapping of elements T to K.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 public func sort<T, K>(data: Array<T>, key!: (T) -> K, stable!: Bool = false, descending!: Bool = false): Unit where K <: Comparable<K> {
     let comparator = if (descending) {
         {l: T, r: T => key(r).compare(key(l))}
@@ -107,14 +99,12 @@ public func sort<T, K>(data: Array<T>, key!: (T) -> K, stable!: Bool = false, de
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data List of elements to be sorted.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
 public func sort<T>(data: List<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T> {
     var dataArray = data.toArray()
     sort(dataArray, stable: stable, descending: descending)
@@ -124,15 +114,13 @@ public func sort<T>(data: List<T>, stable!: Bool = false, descending!: Bool = fa
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data List of elements to be sorted.
- * @param by Comparator.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 public func sort<T>(data: List<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit {
     var dataArray = data.toArray()
     data.clear()
@@ -142,15 +130,13 @@ public func sort<T>(data: List<T>, by!: (T, T) -> Ordering, stable!: Bool = fals
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data List of elements to be sorted.
- * @param lessThan Comparator.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 public func sort<T>(data: List<T>, lessThan!: (T, T) -> Bool, stable!: Bool = false, descending!: Bool = false): Unit {
     var dataArray = data.toArray()
     data.clear()
@@ -160,15 +146,13 @@ public func sort<T>(data: List<T>, lessThan!: (T, T) -> Bool, stable!: Bool = fa
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data List of elements to be sorted.
- * @param key Mapping of elements T to K.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 public func sort<T, K>(data: List<T>, key!: (T) -> K, stable!: Bool = false, descending!: Bool = false): Unit where K <: Comparable<K> {
     var dataArray = data.toArray()
     data.clear()
@@ -178,14 +162,12 @@ public func sort<T, K>(data: List<T>, key!: (T) -> K, stable!: Bool = false, des
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data List of elements to be sorted.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
 public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T> {
     unsafe {
         var dataArray = data.getRawArray()
@@ -194,15 +176,13 @@ public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data List of elements to be sorted.
- * @param by Comparator.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 public func sort<T>(data: ArrayList<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit {
     unsafe {
         var dataArray = data.getRawArray()
@@ -211,15 +191,13 @@ public func sort<T>(data: ArrayList<T>, by!: (T, T) -> Ordering, stable!: Bool =
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data List of elements to be sorted.
- * @param lessThan Comparator.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 public func sort<T>(data: ArrayList<T>, lessThan!: (T, T) -> Bool, stable!: Bool = false, descending!: Bool = false): Unit {
     unsafe {
         var dataArray = data.getRawArray()
@@ -228,15 +206,13 @@ public func sort<T>(data: ArrayList<T>, lessThan!: (T, T) -> Bool, stable!: Bool
     }
 }
 
-/**
- * Sorting element T.
- *
- * @param data List of elements to be sorted.
- * @param key Mapping of elements T to K.
- * @param stable Whether to use stable sorting.
- * @param descending Indicates whether to use descending sorting.
- *
- */
+
+
+
+
+
+
+
 public func sort<T, K>(data: ArrayList<T>, key!: (T) -> K, stable!: Bool = false, descending!: Bool = false): Unit where K <: Comparable<K> {
     unsafe {
         var dataArray = data.getRawArray()
@@ -247,55 +223,48 @@ public func sort<T, K>(data: ArrayList<T>, key!: (T) -> K, stable!: Bool = false
 
 @Deprecated[message: "The interface is deprecated, no substitutions."]
 public interface SortByExtension<T> {
-    /**
-     * Incoming Sort by Condition.
-     *
-     * @param comparator transfer the condition to be judged.
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
+
     func sortBy(comparator!: (T, T) -> Ordering): Unit
-    /**
-     * Incoming Sort by Condition.
-     *
-     * @param comparator transfer the condition to be judged.
-     * @param stable Whether to use stable sorting
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
+
+
     func sortBy(stable!: Bool, comparator!: (T, T) -> Ordering): Unit
 }
 
 @Deprecated[message: "The interface is deprecated, no substitutions."]
 public interface SortExtension {
-    /**
-     * Sort data in ascending order.
-     *
-     * @since 0.27.3
-     */
+
+
+
+
     func sort(): Unit
-    /**
-     * Sort data in ascending order.
-     *
-     * @param stable Whether to use stable sorting
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
+
     func sort(stable!: Bool): Unit
 
-    /*
-     * Sort data in descending order.
-     *
-     * @since 0.27.3
-     */
+
+
+
     func sortDescending(): Unit
-    /*
-     * Sort data in descending order.
-     *
-     * @param stable Whether to use stable sorting
-     *
-     * @since 0.27.3
-     */
+
+
+
+
+
+
     func sortDescending(stable!: Bool): Unit
 }
 

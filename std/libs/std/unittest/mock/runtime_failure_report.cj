@@ -1,17 +1,15 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.collection.*
 import std.unittest.mock.internal.FuncInfo
 import std.unittest.common.PrettyText
-
-// stub invocation triggers runtime failure
 enum RuntimeFailureReason {
     | UnstubbedDeclaration(FuncInfo)
     | NoneMatchedArguments(Array<(StubChain, Array<Int64>)>)

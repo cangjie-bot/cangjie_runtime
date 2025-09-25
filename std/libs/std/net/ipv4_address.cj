@@ -1,22 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
 import std.binary.*
-
-// ref https://www.rfc-editor.org/rfc/rfc791.html
 public class IPv4Address <: IPAddress & ToString & Equatable<IPv4Address> & LessOrEqual<IPv4Address> {
-    // An IPv4 address with the address pointing to localhost: `127.0.0.1`
     public static let localhost: IPv4Address = IPv4Address(0x7F, 0, 0, 0x01)
-    // An IPv4 address representing an unspecified address: `0.0.0.0`
     public static let unspecified: IPv4Address = IPv4Address(0, 0, 0, 0)
-    // An IPv4 address representing the broadcast address: `255.255.255.255`
     public static let broadcast: IPv4Address = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
 
     var _octets = Array<Byte>(4, repeat: 0)
@@ -31,8 +26,6 @@ public class IPv4Address <: IPAddress & ToString & Equatable<IPv4Address> & Less
     public func toBits(): UInt32 {
         return UInt32.readBigEndian(_octets)
     }
-
-    // into in_addr
     public func writeBigEndian(buffer: Array<Byte>): Int64 {
         if (buffer.size < 4) {
             throw IllegalArgumentException("Buffer size(${buffer.size}) is too small.")

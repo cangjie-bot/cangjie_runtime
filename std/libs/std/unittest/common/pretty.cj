@@ -1,17 +1,15 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.common
 
 import std.collection.ArrayList
 
-/**
- * Color of the pretty output for tests
- */
+
 public enum Color <: Equatable<Color> {
     | RED
     | GREEN
@@ -37,107 +35,89 @@ public enum Color <: Equatable<Color> {
     public operator func !=(that: Color) { !(this == that) }
 }
 
-/**
- * Abstract class to print your output to with support for indentation, alignment and colors
- */
+
 public abstract class PrettyPrinter {
 
-    /**
-     * PrettyPrinter constructor
-     * @param indentationSize the size (in spaces) of a single indentation
-     * @param startingIndent the initial number of indentations applied
-     */
+
+
+
     public PrettyPrinter(let indentationSize!: UInt64 = 4, let startingIndent!: UInt64 = 0) {
         currentIndent = " " * Int64(indentationSize) * Int64(startingIndent)
     }
-    /*
-     * Implement the low-level string printing
-     * @param s the String to print
-     */
+
+
+
     protected func put(s: String): Unit
-    /*
-     * Implement the low-level newline printing, defaults to put("\n")
-     */
+
+
     protected open func putNewLine(): Unit {
         put("\n")
     }
-    /*
-     * Implement the low-level color setting, if this printer does not support colors,
-     * does nothing
-     * @param color the color to set
-     */
+
+
+
+
     protected func setColor(color: Color): Unit
 
-    /**
-     * current indentation string
-     */
+
     private var currentIndent: String
-    /**
-     * flag that is set up every time an indentation is needed
-     */
+
+
     private var needIndent = false
-    /**
-     * current color, used to track color switches
-     * Note: this field has no relation to setColor function
-     */
+
+
+
     private var currentColor: Color = DEFAULT_COLOR
 
-    /**
-     * Is this pretty-printer on the top level of indentation?
-     * @return false if current indent is not empty
-     */
+
+
     public prop isTopLevel: Bool {
         get() { currentIndent.isEmpty() }
     }
-    /**
-     * Run a block of code with indentation
-     * Typical usage:
-    pp.indent {
-        pp.appendLine("1")
-        pp.appendLine("2")
-        pp.appendLine("3")
-    }
-     * This outputs three lines with "1", "2" and "3", all indented one indentation
-     * level more than current indentation
-     * @param body the code block to run with indentation
-     */
+
+
+
+
+
+
+
+
+
+
+
     public func indent(body: () -> Unit): PrettyPrinter {
         indent(1, body)
     }
 
-    /**
-     * Run a block of code with indentation
-     * Typical usage:
-    pp.indent(2) {
-        pp.appendLine("1")
-        pp.appendLine("2")
-        pp.appendLine("3")
-    }
-     * This outputs three lines with "1", "2" and "3", all indented 2 indentation
-     * levels more than current indentation
-     * @param symbols the number of indentations to indent
-     * @param body the code block to run with indentation
-     */
+
+
+
+
+
+
+
+
+
+
+
     public func indent(indents: UInt64, body: () -> Unit): PrettyPrinter {
         customOffset(indents * indentationSize, body)
     }
 
-    /**
-     * Run a block of code with fully custom indentation in addition to the current level
-     * Typical usage:
-    pp.customOffset(5) {
-        pp.appendLine("1")
-        pp.appendLine("2")
-        pp.appendLine("3")
-    }
-     * This outputs three lines with "1", "2" and "3", all indented by exactly 5 spaces
-     * more than current indentation
-     *
-     * This should only be used when fully custom (not representable in indentation offsets)
-     * offset is needed, in all other cases use indent()
-     * @param symbols the number of spaces to indent
-     * @param body the code block to run with indentation
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public func customOffset(symbols: UInt64, body: () -> Unit): PrettyPrinter {
         let savedIndent = currentIndent
         currentIndent += " " * Int64(symbols)
@@ -149,19 +129,17 @@ public abstract class PrettyPrinter {
         return this
     }
 
-    /**
-     * Run a block of code with a different color
-     * Typical usage:
-    pp.colored(RED) {
-        pp.appendLine("1")
-        pp.appendLine("2")
-        pp.appendLine("3")
-    }
-     * This outputs three lines with "1", "2" and "3", all in red color
-     *
-     * @param color the color to use
-     * @param body the code block to run with color
-     */
+
+
+
+
+
+
+
+
+
+
+
     public func colored(color: Color, body: () -> Unit): PrettyPrinter {
         if (color == currentColor) {
             body()
@@ -179,25 +157,21 @@ public abstract class PrettyPrinter {
         return this
     }
 
-    /**
-     * Run a block of code. And if such behavior is supported by corresponding PrettyPrinter
-     * whatever is printed inside this block of code will be
-     * fitted into a space that corresponds to a space taken by `spaceSize` halfwidth characters.
-     *
-     * @param spaceSize size of the space output must fit into
-     * @param body the code block to run with color
-     */
+
+
+
+
+
+
     public open func fillLimitedSpace(spaceSize: Int64, body: () -> Unit): PrettyPrinter {
         body()
 
         return this
     }
 
-    /**
-     * Print a string with a different color
-     * @param color the color to use
-     * @param string the string to print
-     */
+
+
+
     public func colored(color: Color, text: String): PrettyPrinter {
         if (currentColor == color) {
             return append(text)
@@ -211,11 +185,9 @@ public abstract class PrettyPrinter {
         return this
     }
 
-    /**
-     * Append a string to this pretty printer
-     * Note: this does not support multiline strings, no indentation is provided for that case
-     * @param value the string to print
-     */
+
+
+
     public func append(text: String): PrettyPrinter {
         if (needIndent) {
             put(currentIndent)
@@ -225,12 +197,10 @@ public abstract class PrettyPrinter {
         return this
     }
 
-    /**
-     * Append a string to this pretty printer, aligned in the space of `size` characters, centered
-     * Note: this does not support multiline strings, no indentation is provided for that case
-     * @param assert the string to print
-     * @param size the size of the box to use
-     */
+
+
+
+
     public func appendCentered(text: String, space: UInt64): PrettyPrinter {
         let actualSize = UInt64(text.size)
         let leftSpaces = (space - actualSize) / 2
@@ -258,10 +228,8 @@ public abstract class PrettyPrinter {
         append(" " * Int64(rightSpaces))
     }
 
-    /**
-     * Append a PrettyPrintable value to this pretty printer
-     * @param value the value to print
-     */
+
+
     public func append<PP>(value: PP): PrettyPrinter where PP <: PrettyPrintable {
         if (needIndent) {
             put(currentIndent)
@@ -271,29 +239,23 @@ public abstract class PrettyPrinter {
         return this
     }
 
-    /**
-     * Print a newline
-     */
+
     public func newLine(): PrettyPrinter {
         putNewLine()
         needIndent = true
         return this
     }
 
-    /**
-     * Print a given string, followed by a newline
-     * @param value the string to print
-     */
+
+
     public func appendLine(text: String): PrettyPrinter {
         append(text)
         newLine()
         return this
     }
 
-    /**
-     * Print a given PrettyPrintable value, followed by a newline
-     * @param value the value to print
-     */
+
+
     public func appendLine<PP>(value: PP): PrettyPrinter where PP <: PrettyPrintable {
         append(value)
         newLine()
@@ -301,55 +263,43 @@ public abstract class PrettyPrinter {
     }
 }
 
-/**
- * Internal enum used to implement PrettyText, should not be used directly
- * A chunk of output produced by pretty printer:
- * - A string fragment
- * - A color switch
- * - A newline
- */
+
+
+
+
+
 enum PrettyPrintableTextChunk {
     | PPTextPiece(String)
     | PPColorSwitch(Color)
     | PPNewLine
 }
 
-/**
- * A builder-like class to store pretty-printed output.
- * Main usage is for intermediate storage and passing of such values.
- * Implements both PrettyPrinter (can be printed to) and PrettyPrintable (can be printed from)
- */
+
+
+
 public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
     PrettyText(let data: ArrayList<PrettyPrintableTextChunk>) {}
 
-    /**
-     * Default constructor: makes an empty PrettyText
-     */
+
     public init() {
         this(ArrayList())
     }
 
-    /**
-     * String-based constructor: makes a PrettyText with starting content of `string`
-     */
+
     public init(string: String) {
         this()
         put(string)
     }
 
-    /**
-     * Utility factory function: create a PrettyText from a PrettyPrintable by printing it.
-     * This is static only because generic constructors are not allowed.
-     */
+
+
     public static func of<PP>(pp: PP) where PP <: PrettyPrintable {
         let result = PrettyText()
         pp.pprint(result)
         result
     }
 
-    /**
-     * @return true if nothing has been put into this object yet, false otherwise
-     */
+
     public func isEmpty(): Bool {
         data.isEmpty()
     }
@@ -367,10 +317,8 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
         data.add(PPNewLine)
     }
 
-    /**
-     * Print this PrettyText into a pretty printer: output should look exactly like input
-     * @param to the pretty printer to print to
-     */
+
+
     public func pprint(to: PrettyPrinter): PrettyPrinter {
         for (element in data) {
             match (element) {
@@ -381,10 +329,9 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
         }
         return to
     }
-    /**
-     * Print this PrettyText to a String: output should look exactly like it would on an output printer,
-     * but without colors
-     */
+
+
+
     public func toString(): String {
         let result = StringBuilder()
         for (element in data) {
@@ -398,21 +345,16 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
     }
 }
 
-/**
- * Pretty printable: interface signifying this type can be pretty-printed
- */
+
 public interface PrettyPrintable {
-    /**
-     * Pretty-print this object to a given printer
-     * @param to the pretty printer to print to
-     * @return the same value as to
-     */
+
+
+
+
     func pprint(to: PrettyPrinter): PrettyPrinter
 }
 
-/**
- * Pretty printable instance for Array: print elements in succession
- */
+
 extend<T> Array<T> <: PrettyPrintable where T <: PrettyPrintable {
     public func pprint(to: PrettyPrinter): PrettyPrinter {
         for (e in this) {
@@ -422,9 +364,7 @@ extend<T> Array<T> <: PrettyPrintable where T <: PrettyPrintable {
     }
 }
 
-/**
- * Pretty printable instance for ArrayList: print elements in succession
- */
+
 extend<T> ArrayList<T> <: PrettyPrintable where T <: PrettyPrintable {
     public func pprint(to: PrettyPrinter): PrettyPrinter {
         for (e in this) {

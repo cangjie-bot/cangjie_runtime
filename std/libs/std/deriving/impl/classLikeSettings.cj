@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.impl
 
 import std.deriving.api.*
@@ -43,7 +43,7 @@ func settingsForClassLike(
     let settings = DerivingSettings(
         interfaceSettings,
         excludedFields,
-        [], // enum cases order
+        [],
         inputOptions.ordering,
         includedProperties
     )
@@ -51,7 +51,7 @@ func settingsForClassLike(
     let target = DerivingTarget(
         inputOptions.decl,
         orderedFields,
-        [], // enum cases
+        [],
         settings
     )
 
@@ -64,14 +64,9 @@ func applyFieldsOrder(
     includedSet: HashSet<Identifier>,
     excludedSet: HashSet<Identifier>
 ): Array<TargetNamedAttribute> {
-    // first collect fields and properties by the order defined by user
     let ordered = userDefinedOrder |> mapNotNone<Identifier, TargetNamedAttribute> { id =>
         allFieldsMap.get(id)
     } |> filterFields(includedSet, excludedSet) |> collectArrayList
-
-    // after that append fields and properties that should be considered
-    // but missing in the user defined order list
-    // this is an error and it will be reported by diagnoseOrdering() at later stage
 
     let missing = allFieldsMap.values() |>
         filterFields(includedSet, excludedSet) |>

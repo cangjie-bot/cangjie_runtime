@@ -1,32 +1,30 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
 import std.sync.*
 
-/**
- * Custom non-reentrant read-write mutex.
- *
- * The default RW-mutex implementation does a lot of work for tracking
- * reentrancy and check different cases. Unfortunately, it's relatively expensive so
- * we are introducing this implementation that does atomic-check first and does deleate to
- * the original implemnentation as a fallback (slowpath). So in the most common scenario for sockets
- * we don't have any real concurrency so it will never go that deep.
- * We sacrify features that we don't need in our current use-scenario to gain performance.
- */
+
+
+
+
+
+
+
+
 struct NonReentrantReadWriteMutex {
     let readMutex: NonReentrantReadLock
     let writeMutex: NonReentrantWriteLock
 
     init() {
         let m = Monitor()
-        let useCounter = AtomicInt64(0) // positive = read count, -1 - write
+        let useCounter = AtomicInt64(0)
 
         this.readMutex = NonReentrantReadLock(m, useCounter)
         this.writeMutex = NonReentrantWriteLock(m, useCounter)

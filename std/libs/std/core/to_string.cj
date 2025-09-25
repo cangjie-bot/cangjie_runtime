@@ -1,19 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.core
 
-/**
- * This file introduces 'ToString' interface, which has a 'toString' function declaration.
- * 'toString' function is used to provide string representation for various types.
- * For primitive types, we provide standard toString implementation. For composite types
- * or user-defined types, they have to to implement toString function by themselves.
- */
+
+
+
+
 public interface ToString {
     func toString(): String
 }

@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.unittest.common.*
@@ -21,9 +21,7 @@ public abstract class PrettyException <: Exception & PrettyPrintable {
     }
 }
 
-/**
- * An error in mock framework implementation. User should not expect this exception to be thrown.
- */
+
 public class MockFrameworkInternalError <: PrettyException {
     MockFrameworkInternalError(
         text: PrettyText
@@ -32,9 +30,7 @@ public class MockFrameworkInternalError <: PrettyException {
     }
 }
 
-/**
- * Erroneous or inconsistent use of mock framework API.
- */
+
 public class MockFrameworkException <: PrettyException {
     MockFrameworkException(
         text: PrettyText
@@ -43,9 +39,7 @@ public class MockFrameworkException <: PrettyException {
     }
 }
 
-/**
- * One or more expectation set during mock configuration were violated during test execution.
- */
+
 public open class ExpectationFailedException <: PrettyException {
     ExpectationFailedException(
         text: PrettyText
@@ -54,9 +48,7 @@ public open class ExpectationFailedException <: PrettyException {
     }
 }
 
-/**
- * Indicates that a stub was never triggered by the code under test.
- */
+
 public class UnnecessaryStubbingException <: PrettyException {
     UnnecessaryStubbingException(
         text: PrettyText
@@ -65,9 +57,7 @@ public class UnnecessaryStubbingException <: PrettyException {
     }
 }
 
-/**
- * No stubs that match this invocation were provided.
- */
+
 public class UnstubbedInvocationException <: PrettyException {
     UnstubbedInvocationException(
         text: PrettyText
@@ -76,9 +66,7 @@ public class UnstubbedInvocationException <: PrettyException {
     }
 }
 
-/**
- * None of the provided stubs handled the call.
- */
+
 public class UnhandledCallException <: PrettyException {
     UnhandledCallException(
         text: PrettyText

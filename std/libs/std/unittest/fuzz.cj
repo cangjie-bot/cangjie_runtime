@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.random.Random
@@ -340,20 +340,20 @@ class Mutator {
 
     private func pickRandomMutation<T>(value: T): Mutation<T> where T <: Torcable<T> & ToString {
         match (random.nextUInt8(12)) {
-            case 0 | 1 | 2 | 3 => // ~1/3
+            case 0 | 1 | 2 | 3 =>
                 let rep = randomRecentCmp<T>(value) ?? return pickRandomMutation<T>(value)
                 ReplaceWith(rep)
-            case 4 | 5 => // ~1/6
+            case 4 | 5 =>
                 ReplaceWith(T.suggestedFrom(random))
-            case 6 | 7 => // ~1/6
+            case 6 | 7 =>
                 BitFlip(random.nextUInt8())
-            case 8 => // ~1/12
+            case 8 =>
                 Add(random.nextUInt8(31) + 1)
-            case 9 => // ~1/12
+            case 9 =>
                 Sub(random.nextUInt8(31) + 1)
-            case 10 => // ~1/12
-                Insert(value) // duplication
-            case 11 => // ~1/12
+            case 10 =>
+                Insert(value)
+            case 11 =>
                 Drop
             case _ => throw Exception("Logic error: pickRandomMutation")
         }

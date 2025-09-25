@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.process.*
@@ -64,8 +64,6 @@ private class CapturedProcessResult {
         let stdErr: Array<Byte>
     ) {}
 }
-
-// for tests only, Process.start can't be invoked from tests
 func processStart(ctx: MainExecutionCtx): WrappedProcess {
     Process.start(ctx)
 }
@@ -82,17 +80,13 @@ extend Process {
                 stdOut: redirectFor(stdout), stdErr: redirectFor(stderr)
             )
         } catch (cause: Exception) {
-            stdout?.close() // std.process does consume these two
-            stderr?.close() // so we only close them in the case of error
+            stdout?.close()
+            stderr?.close()
             throw cause
         }
 
         return WrappedProcess(process, stdout?.info.path, stderr?.info.path)
     }
-
-    // NOTE: we never use ProcessRedirect.Pipe because it can't be used
-    // with current std.process due to implementation issues
-    // causing coroutines scheduler stagnation
     private static func captureFor(ctx: MainExecutionCtx): ?File {
         match (ctx.outputReporter.capture) {
             case true => TEMP_DIR.createTempFile(prefix: "test-worker-", suffix: ".stdout")
@@ -112,12 +106,6 @@ extend SubProcess {
     
     func terminateSilent(force!: Bool): Unit {
         if (isAlive()) {
-            // on Linux it's always alive until we invoke waitpid()
-            // however on Windows process dies concurrently
-            // so we do have a race here and there is a chance to kill something
-            // irrelevant but we have no better solution as it's better than nothing
-            // this must be fixed in std.process and the only workaround is to
-            // use isAlive() and catch exceptions
             try {
                 terminate(force: force)
             } catch (cause: Exception) {
@@ -131,7 +119,6 @@ private func removeFileSilent(path: Path): Unit {
     try {
         remove(path)
     } catch (_) {
-        // ignore, we don't care
     }
 }
 

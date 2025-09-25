@@ -1,16 +1,13 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
 
-/**
- * @file
- *
- * This file defines FormatStyle related classes.
- */
+
+
+
+
+
+
+
+
 
 package std.time
 
@@ -60,31 +57,29 @@ enum Numeric {
 }
 
 enum FormatType {
-    | FormatYear(Int64) // y
-    | FormatISOYear(Int64) // Y
-    | FormatMonth(Int64) // M
-    | FormatDayOfMonth(Int64) // d
-    | FormatHourIn24(Int64) // H
-    | FormatHourIn12(Int64) // h
-    | FormatMinute(Int64) // m
-    | FormatSecond(Int64) // s
-    | FormatSecondFraction(Int64) // S
-    | FormatOffset(Int64) // O
-    | FormatZoneInfo(Int64) // z
-    | FormatGMTOffset(Int64) // Z
-    | FormatDayOfYear(Int64) // D
-    | FormatAmPm(Int64) // a
-    | FormatDayOfWeek(Int64) // w
-    | FormatISOWeek(Int64) // W
-    | FormatEra(Int64) // G
+    | FormatYear(Int64)
+    | FormatISOYear(Int64)
+    | FormatMonth(Int64)
+    | FormatDayOfMonth(Int64)
+    | FormatHourIn24(Int64)
+    | FormatHourIn12(Int64)
+    | FormatMinute(Int64)
+    | FormatSecond(Int64)
+    | FormatSecondFraction(Int64)
+    | FormatOffset(Int64)
+    | FormatZoneInfo(Int64)
+    | FormatGMTOffset(Int64)
+    | FormatDayOfYear(Int64)
+    | FormatAmPm(Int64)
+    | FormatDayOfWeek(Int64)
+    | FormatISOWeek(Int64)
+    | FormatEra(Int64)
     | Separator(Rune)
     | Termination
 
-    /**
-     * Check whether the length is correct.
-     *
-     * @throws IllegalArgumentException if the number of character is invalid
-     */
+
+
+
     func checkLength(): Unit {
         match (this) {
             case FormatYear(length) => checkFormatLength(length, 9, r'y')
@@ -130,13 +125,11 @@ func parseFormat(formatString: String): ArrayList<FormatType> {
     return data
 }
 
-/**
- * Return end index and format type of a DateTime format.
- *
- * @param layout the format of datetime.
- * @param index the starting point of format parsing
- * @return an ending point and the parsed type of format.
- */
+
+
+
+
+
 func parseFormat(layout: Array<Rune>, index: Int64): (Int64, FormatType) {
     let size = layout.size
     for (idx in index..size) {

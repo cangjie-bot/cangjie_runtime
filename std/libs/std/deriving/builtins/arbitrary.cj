@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.builtins
 
 import std.deriving.api.*
@@ -134,7 +134,7 @@ extend DerivingTarget {
 extend TargetEnumCase {
     func hasExcludedField(position!: Int64): Bool {
         let hasField = fields |> any<TargetEnumField> { it => it.position == position }
-        !hasField // if it is not in 'fields', then it is excluded
+        !hasField
     }
 
     func createCall(ofType: TypeNode, argument: (TypeNode, Int64) -> ToTokens): ToTokens {

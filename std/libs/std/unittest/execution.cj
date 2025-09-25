@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest
 
 import std.unittest.common.*
@@ -38,7 +38,6 @@ func executeSmart(
 ): TestGroupResult {
     let processKind = TestProcessKind.fromDefaultConfiguration()
     match (processKind) {
-        // Optimization: do not run worker to prevent static initialization happening twice.
         case Main where !needStartWorker =>
             executeWorker(packageName, tests, filterService)
         case Main =>
@@ -54,7 +53,7 @@ func executeSmart(
 func initWorkersMain(ctx: MainExecutionCtx): Array<WorkerProcess> {
     let workers = 0..ctx.nWorkers |> mapParallelOrdered(ctx.nWorkers) { workerId: Int64 =>
         WorkerProcess.createAndRegister(workerId, ctx)
-    } |> collectArray // Wait for all test cases registration from workers
+    } |> collectArray
     return workers
 }
 
@@ -131,7 +130,6 @@ private func registerTestSuites(packageName: String, suites: Array<TestSuite>, f
 
 enum TestProcessKind {
     | Main
-    // worker id, number or workers per package, number or test cases to skip, main process port
     | Worker(Int64, Int64, Int64, UInt16)
 
     static func fromDefaultConfiguration(): TestProcessKind {
@@ -219,9 +217,7 @@ class WorkerProcess {
         private let workerId: Int64
     ) {}
 
-    /**
-     * Should be called before test cases execution.
-     */
+
     func waitCasesRegistration() {
         match (transportChannel?.receive(limit: 1u64).next()) {
             case Some(Some(p: TestCasesRegistrationPart)) => progressQueue?.add(TestProgressData(p, workerId: workerId))
@@ -244,15 +240,6 @@ class WorkerProcess {
         } else {
             []
         }
-
-        // if the channel is closed then the process is about to end soon
-        // otherwise the process is terminated explicitly by the connection handler due to timeout or an error
-        //    so after termination it's going to end as well
-        // so the waitpid() invication shouldn't run for long time
-        // this is still unsafe though, especially on Windows
-        // because on Windows std.process.SubProcess.wait() may accidentally wait on
-        // a random irrelevant process so we may stuck forever waiting for some random process to exit
-        // this can't be workarounded and need to be entirely rewritten in std.process
         let code = process.wait()
 
         let output = WorkerOutput(process.stdout(), process.stderr())
@@ -389,14 +376,13 @@ class WorkerProcess {
     ): Int64 {
         match (crashResult.header) {
             case header: LifecycleExecutionResultHeader where header.step == BeforeAll =>
-                // We try to execute suite cases one by one and each of them can report same before all crash.
                 if (!bunchResults.contains(crashResult.suiteId)) {
                     commitResults(bunchResults, [crashResult])
                 }
                 1
             case header: LifecycleExecutionResultHeader where header.step == AfterAll =>
                 commitResults(bunchResults, [crashResult])
-                0 // no skip
+                0
             case _ =>
                 commitResults(bunchResults, [crashResult])
                 1
@@ -529,9 +515,7 @@ abstract class ExecutionResultPart <: Serializable<ExecutionResultPart> {
     }
 }
 
-/**
- * Should be written before execution of case or step to be able to identify this test in case of crash.
- */
+
 abstract class ExecutionResultHeader <: ExecutionResultPart {
     public prop suiteId: TestSuiteId
     public prop suiteInfo: TestSuiteReportInfo
@@ -566,9 +550,7 @@ class ExecutionResultBody <: ExecutionResultPart {
     ExecutionResultBody(let stepResult: TestCaseResult) {}
 }
 
-/**
- * Workers should send this part before execution as test cases registration is the initial job in the workflow.
- */
+
 class TestCasesRegistrationPart <: ExecutionResultPart {
     TestCasesRegistrationPart(let casesCount: UInt64, let workerId!: Int64, let packageName!: String) {}
 }
@@ -577,9 +559,7 @@ class TestCasesRegistrationFailed <: ExecutionResultPart {
     TestCasesRegistrationFailed() {}
 }
 
-/**
- * Data, that sent from Main process for a Worker if it's allowed to continue execution after test cases registration.
- */
+
 class ExecutionPermitPart <: ExecutionResultPart {
     ExecutionPermitPart() {}
 }
@@ -637,8 +617,8 @@ private struct ExecutionResult {
                     let result = ExecutionResult(header, body)
                     results.add(result)
                     currentHeader = None
-                case (_, _: TestCasesRegistrationPart) => () // Repetitive registration could happen if worker crashes, just skip it.
-                case (_, _: TestCasesRegistrationFailed) => () // Repetitive process crash could happen if we have --parallel <N>
+                case (_, _: TestCasesRegistrationPart) => ()
+                case (_, _: TestCasesRegistrationFailed) => ()
                 case _ => throw Exception("Required due to bug in compiler")
             }
         }

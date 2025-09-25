@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.env
 
@@ -16,8 +16,8 @@ import std.sync.*
 const STDIN_FD: IntNative = 0
 const STDOUT_FD: IntNative = 1
 const STDERR_FD: IntNative = 2
-const RTN_CODE_MIN_VAL: Int64 = -0x0000_0000_8000_0000 //-2147483648
-const RTN_CODE_MAX_VAL: Int64 = 0x0000_0000_7fff_ffff //2147483647
+const RTN_CODE_MIN_VAL: Int64 = -0x0000_0000_8000_0000
+const RTN_CODE_MAX_VAL: Int64 = 0x0000_0000_7fff_ffff
 const NULL_BYTE = "\0"
 let mtx: Mutex = Mutex()
 let outConsole: ConsoleWriter = ConsoleWriter(Int32(STDOUT_FD))
@@ -67,7 +67,7 @@ public func getVariable(key: String): ?String {
         let ck: CString = LibC.mallocCString(key)
         try {
             return synchronized(mtx) {
-                nativeGetEnv(ck) // Note: No need to free.
+                nativeGetEnv(ck)
             }
         } finally {
             LibC.free(ck)
@@ -215,7 +215,7 @@ func getEnvirments(env: CPointer<CString>): ?Array<(String, String)> {
 }
 
 func homeDirectory(): Path {
-    let homeDir: CString = unsafe { CJ_OS_HomeDir() } // Note: no need to free.
+    let homeDir: CString = unsafe { CJ_OS_HomeDir() }
     Path(homeDir.toString())
 }
 
@@ -232,7 +232,7 @@ func tempDirectory(): Path {
 
 @When[os == "Windows"]
 func nativeGetEnv(name: CString): Option<String> {
-    let res: CString = unsafe { CJ_OS_GetEnvVal(name) } // No need to free
+    let res: CString = unsafe { CJ_OS_GetEnvVal(name) }
     if (res.isNull()) {
         return None
     }
@@ -246,7 +246,7 @@ func nativeGetEnv(name: CString): Option<String> {
 
 @When[os != "Windows"]
 func nativeGetEnv(name: CString): Option<String> {
-    let res: CString = unsafe { getenv(name) } // No need to free
+    let res: CString = unsafe { getenv(name) }
 
     return if (res.isNull()) {
         None

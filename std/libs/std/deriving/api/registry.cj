@@ -1,19 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.api
 
 import std.collection.*
 import std.sync.AtomicInt64
 
-/**
- * Does register Deriving implementation for all it's supported interfaces or
- * fails if there is already Deriving registered for one of the interfaces.
- */
+
+
 public func registerDeriving(implementation: Deriving): Unit {
     let registration = Registration(implementation)
     let fqNames = implementation.supportedInterfaces
@@ -29,18 +27,14 @@ public func registerDeriving(implementation: Deriving): Unit {
     }
 }
 
-/**
- * Finds deriving implementation for the specified interface name
- * or return None if no derivings registered for the interface
- */
+
+
 public func findDeriving(name: QualifiedName): ?Deriving {
     Registration.find(name)?.deriving
 }
 
-/**
- * Finds deriving implementations for interfaces. Returns registered derivings with their
- * interfaces and an array of interfaces having no relevant derivings registered.
- */
+
+
 public func findDerivings(
     names: Iterable<QualifiedName>
 ): (derivingsToRun: Array<(Deriving, Array<QualifiedName>)>, unresolved: Array<QualifiedName>) {

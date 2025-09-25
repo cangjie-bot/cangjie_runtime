@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.mock
 
 import std.collection.*
@@ -80,10 +80,10 @@ func verifyExhaustiveOrderedIteration(iterator: VerifyIterator): ?VerificationRe
                     if (!iterator.hasMoreStatements()) {
                         internalError("Must have more statements")
                     }
-                    return None // go to next statement
+                    return None
                 case (Ok, Ok) =>
                     return iterator.nonDisjointStatements()
-                case _ => () // process invocation
+                case _ => ()
             }
         }
 
@@ -103,7 +103,7 @@ func verifyExhaustiveOrderedIteration(iterator: VerifyIterator): ?VerificationRe
                     if (iterator.hasMoreStatements()) {
                         return iterator.unmatchedStatements()
                     }
-                    return None // go to next statement
+                    return None
             }
         }
         match (iterator.check(count)) {
@@ -117,7 +117,7 @@ func verifyExhaustiveOrderedIteration(iterator: VerifyIterator): ?VerificationRe
                 if (!iterator.hasMoreStatements()) {
                     return iterator.unmatchedInvocations()
                 }
-                return None // go to next statement
+                return None
             case More => internalError("Too many invocations was handled earlier")
         }
     }

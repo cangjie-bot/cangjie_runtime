@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.net
 
@@ -37,16 +37,16 @@ public class UnixSocketAddress <: SocketAddress & Equatable<UnixSocketAddress> {
         if (_len > 108) {
             throw IllegalArgumentException("Path size(${_len}) is too long, expect <= 108.")
         }
-        if (_len == 0) { // Unnamed socket address
+        if (_len == 0) {
             _path = ""
-        } else if (path[0] == 0) { // Abstract socket address
+        } else if (path[0] == 0) {
             let un = path[1..]
             if (let Some(idx) <- un.indexOf(0)) {
                 throw IllegalArgumentException(
                     "Unix domain socket path must not contain interior null bytes: ${un.toArray()}")
             }
             _path = path
-        } else { // Pathname socket address
+        } else {
             if (let Some(idx) <- path.indexOf(0)) {
                 throw IllegalArgumentException(
                     "Unix domain socket path must not contain interior null bytes: ${path.toArray()}")
@@ -72,9 +72,7 @@ public class UnixSocketAddress <: SocketAddress & Equatable<UnixSocketAddress> {
     }
     public func getAddressBytes(): Array<Byte> {
         let buf = Array<Byte>(this.size, repeat: 0)
-        // 2bytes family
         this.family.value.writeLittleEndian(buf)
-        // sun_un path
         buf[2..] = _path[.._len].toArray()
         return buf
     }

@@ -1,20 +1,18 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 protected package std.deriving.api
 
 import std.ast.*
 import std.collection.*
 import std.unicode.*
 
-/**
- * Represents a qualified name consisting of one or more identifiers (components)
- * separated with dots. It doesn't include generics.
- */
+
+
 public struct QualifiedName <: ToString & Equatable<QualifiedName> & Hashable {
     private QualifiedName(
         public let name: String,
@@ -61,27 +59,21 @@ public struct QualifiedName <: ToString & Equatable<QualifiedName> & Hashable {
         return QualifiedName(tokens |> join, tokens)
     }
 
-    /**
-     * Last component or the whole name if there are no dots
-     */
+
     public prop simpleName: Token {
         get() {
             tokens[tokens.size - 1]
         }
     }
 
-    /**
-     * Creates a "qualified instance" from the simple name.
-     * This is only used to woraround problem of missing fully qualified
-     * references in Cangjie
-     */
+
+
+
     public func toSimpleNameQN(): QualifiedName {
         QualifiedName(simpleName)
     }
 
-    /**
-     * Qualified name components
-     */
+
     public prop components: Array<String> {
         get() {
             tokens |> map<Token, String> { t => t.value } |> collectArray

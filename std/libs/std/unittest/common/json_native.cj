@@ -1,10 +1,10 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 package std.unittest.common
 
 import std.collection.*
@@ -20,7 +20,6 @@ func stringEscapeCharNumGet(input: String): Int64 {
             i = i + 6
             continue
         }
-        // ASCII code over 32 don't need escape
         if ((byte >= 32) && (byte != b'\"') && (byte != b'\\') && (byte != b'&')) {
             i++
             continue
@@ -50,7 +49,7 @@ func replaceEscapeChar(input: String, output: Array<Byte>, from!: Int64 = 0): In
             i = i + 6
             continue
         }
-        if ((byte >= 32) && (byte != b'\"') && (byte != b'\\') && (byte != b'&')) { // ASCII code over 32 don't need escape
+        if ((byte >= 32) && (byte != b'\"') && (byte != b'\\') && (byte != b'&')) {
             output[i] = byte
             i++
             continue
@@ -90,8 +89,8 @@ func replaceEscapeChar(input: String, output: Array<Byte>, from!: Int64 = 0): In
                 output[i + 1] = b'u'
                 output[i + 2] = b'0'
                 output[i + 3] = b'0'
-                output[i + 4] = HEXTABLE[Int64(byte >> 4)] // num of high 4 bits
-                output[i + 5] = HEXTABLE[Int64(byte & 0xF)] // num of low 4 bits
+                output[i + 4] = HEXTABLE[Int64(byte >> 4)]
+                output[i + 5] = HEXTABLE[Int64(byte & 0xF)]
                 i += 6
         }
     }
@@ -130,14 +129,12 @@ func writeBufferAppendInt(buffer: Array<Byte>, int: UInt64) {
     return digits
 }
 
-/**
- * @brief Get rows and columns of the error position
- *
- * @param Array<UInt8> JSON string array
- * @param Int64 The order of the error characters in the string
- * @return (Int64, Int64) Rows and columns of the error position
- * @throws IllegalArgumentException if there is no valid utf8 leading code in array `strArr`.
- */
+
+
+
+
+
+
 func getErrRowAndCol(strArr: Array<UInt8>, errPos: Int64): (Int64, Int64) {
     var tempPos: Int64 = 0
     var errRow: Int64 = 1
@@ -169,12 +166,10 @@ func getErrRowAndCol(strArr: Array<UInt8>, errPos: Int64): (Int64, Int64) {
     return (errRow, errCol)
 }
 
-/**
- * @brief Handle Escape Characters and Multibyte Characters
- *
- * @param Rune error characters
- * @return String Escaped character string
- */
+
+
+
+
 func handleErrChr(errChr: Rune): String {
     match (errChr) {
         case r'\0' => return "\\0"

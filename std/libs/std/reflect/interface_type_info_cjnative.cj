@@ -1,18 +1,16 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2025. All rights reserved.
- * This source file is part of the Cangjie project, licensed under Apache-2.0
- * with Runtime Library Exception.
- *
- * See https://cangjie-lang.cn/pages/LICENSE for license information.
- */
+﻿
+
+
+
+
+
+
 
 package std.reflect
 
 import std.collection.*
 
-/**
- * Contains reflective information about interfaces.
- */
+
 public class InterfaceTypeInfo <: TypeInfo {
     var _sealedSubtypes: Option<Collection<TypeInfo>> = None
 
@@ -41,9 +39,7 @@ public class InterfaceTypeInfo <: TypeInfo {
         }
     }
 
-    /**
-     * Returns the collection of sealed subtypes of type info.
-     */
+
     public prop sealedSubtypes: Collection<TypeInfo> {
         get() {
             match (_sealedSubtypes) {
@@ -81,8 +77,6 @@ func findSubtypeFromPackage<T>(curType: TypeInfo): Array<T> where T <: TypeInfo 
     }
 
     let qualifiedName = curType.qualifiedName
-    // since primitive type is not sealed, if qualifiedName doesn`t contain r'.',
-    // it must be type in std.core
     let curPackage = match (qualifiedName.lastIndexOf(b'.')) {
         case Some(v) => qualifiedName[..v]
         case None => "std.core"
