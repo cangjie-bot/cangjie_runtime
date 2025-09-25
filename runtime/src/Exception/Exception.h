@@ -56,7 +56,7 @@ public:
         exceptionRef = nullptr;
         landingPad = 0;
         if (message != nullptr) {
-            NativeAllocator::NativeFree(message, messageLength);
+            free(message);
             message = nullptr;
         }
     }
@@ -76,7 +76,7 @@ public:
         ehFrameInfos.clear();
         liteFrameInfos.clear();
         if (message != nullptr) {
-            NativeAllocator::NativeFree(message, messageLength);
+            free(message);
             message = nullptr;
         }
         messageLength = 0;
@@ -123,14 +123,14 @@ public:
     void SetExceptionMessage(const char* ptr, size_t len)
     {
         if (message != nullptr) {
-            NativeAllocator::NativeFree(message, messageLength);
+            free(message);
         }
         if (ptr == nullptr) {
             message = nullptr;
             messageLength = 0;
             return;
         }
-        message = static_cast<char*>(NativeAllocator::NativeAlloc(len + 1));
+        message = static_cast<char*>(malloc(len + 1));
         if (UNLIKELY(message == nullptr)) {
             LOG(RTLOG_FATAL, "Exception message init failed");
         }
@@ -177,6 +177,8 @@ public:
         auto oldRsp = context.rsp;
 #elif defined(__aarch64__)
         auto oldRsp = context.sp;
+#elif defined(__arm__)
+        auto oldRsp = context.sp;
 #endif
 #endif
         for (auto frameItor = ehFrameInfos.begin(); frameItor != ehFrameInfos.end(); ++frameItor) {
@@ -194,6 +196,8 @@ public:
 #if defined(__x86_64__)
         Sanitizer::HandleNoReturn(oldRsp, context.rsp);
 #elif defined(__aarch64__)
+        Sanitizer::HandleNoReturn(oldRsp, context.sp);
+#elif defined(__arm__)
         Sanitizer::HandleNoReturn(oldRsp, context.sp);
 #endif
 #endif
