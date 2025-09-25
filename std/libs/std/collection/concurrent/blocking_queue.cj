@@ -24,6 +24,9 @@ public class LinkedBlockingQueue<E> {
     private let front: AtomicReference<Block<E>>
     private let rear: AtomicReference<Block<E>>
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         if (capacity <= 0) {
             throw IllegalArgumentException("Invalid size of BlockingQueue: ${capacity}.")
@@ -35,11 +38,19 @@ public class LinkedBlockingQueue<E> {
         rear = AtomicReference<Block<E>>(block)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init() {
         this(0x7FFF_FFFF_FFFF_FFFF)
     }
 
     @Deprecated[message: "Use the other version of `init` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64, elements: Array<E>) {
         if (capacity <= 0) {
             throw IllegalArgumentException("Invalid size of BlockingQueue: ${capacity}.")
@@ -60,6 +71,11 @@ public class LinkedBlockingQueue<E> {
     }
 
     @Deprecated[message: "Use the other version of `init` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64, elements: Collection<E>) {
         if (capacity <= 0) {
             throw IllegalArgumentException("Invalid size of BlockingQueue: ${capacity}.")
@@ -86,6 +102,9 @@ public class LinkedBlockingQueue<E> {
 
 
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             let headBlock = front.load()
             let tailBlock = rear.load()
@@ -103,10 +122,22 @@ public class LinkedBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func add(element: E): Unit` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func enqueue(element: E): Unit {
         add(element)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func add(element: E): Unit {
         while (true) {
             if (tryAdd(element)) {
@@ -133,10 +164,22 @@ public class LinkedBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func add(element: E, timeout: Duration): Bool` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func enqueue(element: E, timeout: Duration): Bool {
         add(element, timeout)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func add(element: E, timeout: Duration): Bool {
         var total = timeout
         while (true) {
@@ -168,10 +211,24 @@ public class LinkedBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func remove(): E` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     */
     public func dequeue(): E {
         remove()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     */
     public func remove(): E {
         while (true) {
             if (let Some(e) <- tryRemove()) {
@@ -198,10 +255,22 @@ public class LinkedBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func remove(timeout: Duration): Option<E>` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func dequeue(timeout: Duration): Option<E> {
         remove(timeout)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func remove(timeout: Duration): Option<E> {
         var total = timeout
         while (true) {
@@ -231,10 +300,16 @@ public class LinkedBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func peek(): Option<E>` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func head(): Option<E> {
         peek()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func peek(): Option<E> {
         while (true) {
             let headBlock = front.load()
@@ -259,10 +334,18 @@ public class LinkedBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func tryAdd(element: E): Bool` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryEnqueue(element: E): Bool {
         tryAdd(element)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryAdd(element: E): Bool {
         while (true) {
             let tailBlock = rear.load()
@@ -297,10 +380,18 @@ public class LinkedBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func tryRemove(): Option<E>` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryDequeue(): Option<E> {
         tryRemove()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryRemove(): Option<E> {
         while (true) {
             let headBlock = front.load()
@@ -322,6 +413,9 @@ public class LinkedBlockingQueue<E> {
         return None<E>
     }
 
+    /*
+     * @noThrow
+     */
     private func isFull(
         tailVersion: UInt64,
         tailAllocated: Int64,
@@ -331,6 +425,9 @@ public class LinkedBlockingQueue<E> {
         return (tailAllocated - headReserved) + Int64((tailVersion - headVersion) << BUF_SIZE_BITS) >= capacity
     }
 
+    /*
+     * @noThrow
+     */
     private func isFull(): Bool {
         let tailBlock = rear.load()
         let headBlock = front.load()

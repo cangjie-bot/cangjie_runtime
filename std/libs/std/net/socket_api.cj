@@ -120,6 +120,9 @@ public interface DatagramSocket <: Resource & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     func receiveFrom(buffer: Array<Byte>): (SocketAddress, Int64)
 
 
@@ -127,6 +130,9 @@ public interface DatagramSocket <: Resource & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     func sendTo(address: SocketAddress, payload: Array<Byte>): Unit
 }
 
@@ -141,6 +147,9 @@ public interface ServerSocket <: Resource & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     func bind(): Unit
 
 
@@ -151,6 +160,9 @@ public interface ServerSocket <: Resource & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     func accept(timeout!: ?Duration): StreamingSocket
 
 
@@ -158,6 +170,9 @@ public interface ServerSocket <: Resource & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     func accept(): StreamingSocket {
         accept(timeout: None)
     }

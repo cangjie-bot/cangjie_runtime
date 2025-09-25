@@ -7,11 +7,18 @@
 
 package std.unittest.prop_test
 
+/*
+ * @noThrow
+ */
 func coerceInRange(value: Byte, min: Byte, max: Byte) {
     if (min <= value && value <= max) { return value }
     return value % (max - min + 1) + min
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func nextIn<T>(random: RandomSource, arr: Array<T>): T {
     let ix = random.nextInt64(arr.size)
     return arr[ix]
@@ -19,6 +26,9 @@ func nextIn<T>(random: RandomSource, arr: Array<T>): T {
 
 
 @OverflowWrapping
+/*
+ * @noThrow
+ */
 func nextInRange(random: RandomSource, low: Byte, high: Byte): Byte {
     let tri = random.nextUInt8()
     if (low <= tri && tri <= high) { return tri }
@@ -30,10 +40,16 @@ func nextInRange(random: RandomSource, low: Byte, high: Byte): Byte {
 
 
 struct UTFState {
+    /*
+     * @noThrow
+     */
     init() {
         this.data = []
         this.ranges = []
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     init(rangeTransfer: Array<(Byte, Byte, UTFState)>) {
         this.data = Array(256) { ix: Int64 =>
             let byte = UInt8(ix)
@@ -49,6 +65,9 @@ struct UTFState {
             (low, high)
         }
     }
+    /*
+     * @noThrow
+     */
     init(low: Byte, high: Byte, next: UTFState) {
         this.data = Array(256) { ix: Int64 =>
             let byte = UInt8(ix)
@@ -60,12 +79,22 @@ struct UTFState {
     let data: Array<UTFState>
     let ranges: Array<(Byte, Byte)>
 
+    /*
+     * @noThrow
+     */
     func isInvalid() { data.isEmpty() }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     operator func ()(byte: Byte): UTFState {
         data[Int64(byte)]
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func nextByte(random: RandomSource) {
         let (low, high) = nextIn(random, ranges)
         return nextInRange(random, low, high)
@@ -105,6 +134,9 @@ struct UTFState {
 
 let ALNUM_CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toArray()
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func randomAlnumRune(random: RandomSource): Rune {
     let candidate = random.nextUInt8()
     match {
@@ -118,10 +150,17 @@ func randomAlnumRune(random: RandomSource): Rune {
 private const ASCII_PRINTABLE_MIN: Byte = 0x20
 private const ASCII_PRINTABLE_MAX: Byte = 0x7E
 
+/*
+ * @noThrow
+ */
 func randomAsciiRune(random: RandomSource): Rune {
     Rune(nextInRange(random, ASCII_PRINTABLE_MIN, ASCII_PRINTABLE_MAX))
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func randomUtf8Rune(random: RandomSource): Rune {
     var state = UTFState.START_STATE
     let result = Array<Byte>(6, repeat: 0)
@@ -136,6 +175,10 @@ func randomUtf8Rune(random: RandomSource): Rune {
     return Rune.fromUtf8(result[..i], 0)[0]
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func randomBiasedRune(random: RandomSource): Rune {
     match (random.nextInt64(3)) {
         case 0 => randomAlnumRune(random)
@@ -145,6 +188,10 @@ func randomBiasedRune(random: RandomSource): Rune {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func randomSuggestedRune(random: RandomSource): Rune {
     let byte = random.suggestUInt8()
     if (ASCII_PRINTABLE_MIN <= byte && byte <= ASCII_PRINTABLE_MAX) {
@@ -153,6 +200,9 @@ func randomSuggestedRune(random: RandomSource): Rune {
     return randomUtf8Rune(random)
 }
 
+/*
+ * @noThrow
+ */
 func shrinkToAscii(charValue: Rune): Rune {
     if (charValue.isAscii()) {
         return charValue
@@ -163,6 +213,9 @@ func shrinkToAscii(charValue: Rune): Rune {
     Rune(cp)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func shrinkToAlnum(charValue: Rune): Rune {
     if (charValue.isAsciiLetter() || charValue.isAsciiNumber()) {
         return charValue

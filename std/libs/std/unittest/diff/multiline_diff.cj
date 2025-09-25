@@ -13,12 +13,20 @@ import std.unittest.common.PrettyPrinter
 
 
 extend String {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     func unifyLineBreaks(): String { replace("\r\n", "\n") }
 }
 
 private enum WeakEq {
     Eq | Neq | Similar
 
+    /*
+     * @noThrow
+     */
     func isSimilar(): Bool {
         match (this) {
             case Eq | Similar => true
@@ -26,6 +34,9 @@ private enum WeakEq {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func isStrictEq(): Bool {
         match (this) {
             case Eq => true
@@ -33,11 +44,19 @@ private enum WeakEq {
         }
     }
 }
+      /*
+       * @noThrow
+       */
 class MultilineDiffBuilder {
     private static const MAX_EDIT_ITEMS = 50
     private static const SIMILARITY_COEF = 0.75
     private static const SIMILARITY_MAX_DISTANCE = 25
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func splitAndTrim(str: String): (List<String>, Int64) {
         let lines = ArrayList.of(str.split("\n"))
         return if (lines.size > MAX_EDIT_ITEMS) {
@@ -47,6 +66,10 @@ class MultilineDiffBuilder {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func weakCmp(
         leftStr: String,
         rightStr: String
@@ -70,6 +93,9 @@ class MultilineDiffBuilder {
 
         return compareByDist(left, right, thresh)
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private static func compareByDist(left: Array<Rune>, right: Array<Rune>, thresh: Int64): WeakEq {
         let dist = Array<Array<Int64>>(left.size + 1) {
             x => Array<Int64>(right.size + 1) {
@@ -99,6 +125,12 @@ class MultilineDiffBuilder {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Exception
+     */
     static func computeEditScript(left: List<String>, right: List<String>, useWeakCmp!: Bool): ArrayList<Edit<String>> {
         let strCmp = if (useWeakCmp) { weakCmp } else {
             { l: String, r: String => if (l == r) { WeakEq.Eq } else { WeakEq.Neq } }
@@ -143,6 +175,10 @@ class MultilineDiffBuilder {
         throw Exception("Could not find edit script")
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func computeEditScriptMoveDiag(
         xInit: Int64,
         yInit: Int64,
@@ -176,14 +212,27 @@ class MultilineDiffBuilder {
 }
 
 struct Frontier<T> {
+    /*
+     * @noThrow
+     */
     Frontier(let x: Int64, let history: ArrayList<Edit<T>>) {}
 
     prop deconstuct: (Int64, ArrayList<Edit<T>>) {
+        /*
+         * @noThrow
+         */
         get() { (x, history) }
     }
 }
 
 extend PrettyPrinter {
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Exception
+     */
     func printMultilineDiff(left: String, right: String): PrettyPrinter {
         let leftUnified = left.unifyLineBreaks()
         let rightUnified = right.unifyLineBreaks()
@@ -210,6 +259,9 @@ extend PrettyPrinter {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func printEqualLines(skipped: Int64, i: Int64, script: ArrayList<Edit<String>>) {
         match (skipped) {
             case 0 => ()
@@ -222,6 +274,12 @@ extend PrettyPrinter {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func printBlocksDiff(
         removeBlock: ArrayList<String>,
         insertBlock: ArrayList<String>
@@ -240,6 +298,12 @@ extend PrettyPrinter {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func printEditScript(script: ArrayList<Edit<String>>, doBlocksDiff!: Bool): Unit {
         var i = 0
         var skipped = 0

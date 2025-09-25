@@ -39,5 +39,8 @@ public interface Driver {
 
 
 
+    /*
+     * @noThrow
+     */
     func open(connectionString: String, opts: Array<(String, String)>): Datasource
 }

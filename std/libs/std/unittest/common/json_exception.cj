@@ -16,6 +16,9 @@ protected class JsonException <: Exception {
 
 
 
+    /*
+     * @noThrow
+     */
     public init() {
         super()
     }
@@ -26,6 +29,9 @@ protected class JsonException <: Exception {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(message: String) {
         super(message)
     }
@@ -35,6 +41,9 @@ protected class JsonException <: Exception {
 
 
 
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "JsonException"
     }

@@ -16,6 +16,9 @@ protected enum JsonKind {
 }
 
 
+                         /*
+                          * @noThrow
+                          */
 protected abstract class JsonValue <: ToString {
 
 
@@ -25,6 +28,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toString(): String
 
 
@@ -34,6 +40,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toJsonString(): String
 
 
@@ -45,6 +54,11 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws JsonException
+     */
     public static func fromStr(s: String): JsonValue {
         parseString(s)
     }
@@ -54,6 +68,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public func kind(): JsonKind
 
 
@@ -63,6 +80,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @throws JsonException
+     */
     public func asNull(): JsonNull {
         match (this) {
             case jsonNull: JsonNull => jsonNull
@@ -77,6 +97,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @throws JsonException
+     */
     public func asBool(): JsonBool {
         match (this) {
             case jsonBool: JsonBool => jsonBool
@@ -91,6 +114,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @throws JsonException
+     */
     public func asInt(): JsonInt {
         match (this) {
             case jsonInt: JsonInt => jsonInt
@@ -105,6 +131,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @throws JsonException
+     */
     public func asFloat(): JsonFloat {
         match (this) {
             case jsonFloat: JsonFloat => jsonFloat
@@ -120,6 +149,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @throws JsonException
+     */
     public func asString(): JsonString {
         match (this) {
             case jsonString: JsonString => jsonString
@@ -134,6 +166,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @throws JsonException
+     */
     public func asArray(): JsonArray {
         match (this) {
             case jsonArray: JsonArray => jsonArray
@@ -148,6 +183,9 @@ protected abstract class JsonValue <: ToString {
 
 
 
+    /*
+     * @throws JsonException
+     */
     public func asObject(): JsonObject {
         match (this) {
             case jsonObject: JsonObject => jsonObject

@@ -12,10 +12,19 @@ import std.random.Random
 import std.time.DateTime
 
 interface Pool<T> <: Resource {
+    /*
+     * @noThrow
+     */
     func acquire(timeout: Duration): Option<Entry<T>>
 
+    /*
+     * @noThrow
+     */
     func release(entry: Entry<T>): Option<Unit>
 
+    /*
+     * @noThrow
+     */
     func discard(entry: Entry<T>): Option<Unit>
 }
 
@@ -28,6 +37,12 @@ class Entry<T> {
     var poolResetCount: Int32 = 0
     var isValid: Bool = true
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws getOrThrow
+     * @throws IllegalArgumentException
+     */
     init(pool: Pool<T>, value: T) {
         this.pool = pool
         this.value_ = value
@@ -38,16 +53,29 @@ class Entry<T> {
     }
 
     prop value: T {
+        /*
+         * @noThrow
+         */
         get() {
             return this.value_
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     func release() {
         this.lastAccessed = DateTime.now().toUnixTimeStamp()
         pool.release(this)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     func idleDuration(): Duration {
         var now = DateTime.now().toUnixTimeStamp()
         return now - this.lastAccessed

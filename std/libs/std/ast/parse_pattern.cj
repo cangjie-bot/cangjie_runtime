@@ -10,6 +10,17 @@ package std.ast
 
 import std.collection.ArrayList
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parsePattern(input: Tokens): Pattern {
     
     let node = unsafe {
@@ -29,6 +40,17 @@ public func parsePattern(input: Tokens): Pattern {
     return astNode
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parsePatternFragment(input: Tokens, startFrom!: Int64 = 0): (Pattern, Int64) {
     let (node, count) = unsafe {
         try {
@@ -51,6 +73,16 @@ public func parsePatternFragment(input: Tokens, startFrom!: Int64 = 0): (Pattern
     return (astNode, count)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generatePatternAST(patternNode: Option<NodeFormat_Pattern>): Pattern {
     var pattern = match (patternNode) {
         case Some(v) => v
@@ -77,6 +109,12 @@ func generatePatternAST(patternNode: Option<NodeFormat_Pattern>): Pattern {
     return astNode
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createVarPattern(pattern: NodeFormat_Pattern): VarPattern {
     var varPattern = match (pattern.GetPatternAsVarPattern()) {
         case Some(v) => v
@@ -94,6 +132,16 @@ func createVarPattern(pattern: NodeFormat_Pattern): VarPattern {
     return VarPattern(indentifier)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createConstPattern(pattern: NodeFormat_Pattern): ConstPattern {
     var constPattern = match (pattern.GetPatternAsConstPattern()) {
         case Some(v) => v
@@ -107,11 +155,22 @@ func createConstPattern(pattern: NodeFormat_Pattern): ConstPattern {
     return ConstPattern(litConstExpr)
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ */
 func createWildcardPattern(_: NodeFormat_Pattern, pos: NodeFormat_Position): WildcardPattern {
     var keyWord = Tokens().append(Token(TokenKind.WILDCARD).addPosition(pos))
     return WildcardPattern(keyWord)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createVarOrEnumPattern(pattern: NodeFormat_Pattern, pos: NodeFormat_Position): VarOrEnumPattern {
     var varOrEnumPattern = match (pattern.GetPatternAsVarOrEnumPattern()) {
         case Some(v) => v
@@ -122,6 +181,16 @@ func createVarOrEnumPattern(pattern: NodeFormat_Pattern, pos: NodeFormat_Positio
     return VarOrEnumPattern(identifier)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createExceptTypePattern(pattern: NodeFormat_Pattern): ExceptTypePattern {
     var exceptTypePattern = match (pattern.GetPatternAsExceptTypePattern()) {
         case Some(v) => v
@@ -140,6 +209,16 @@ func createExceptTypePattern(pattern: NodeFormat_Pattern): ExceptTypePattern {
     return ExceptTypePattern(p, colon, types, bitOr)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createCommandTypePattern(pattern: NodeFormat_Pattern): CommandTypePattern {
     var commandTypePattern = match (pattern.GetPatternAsCommandTypePattern()) {
         case Some(v) => v
@@ -158,6 +237,16 @@ func createCommandTypePattern(pattern: NodeFormat_Pattern): CommandTypePattern {
     return CommandTypePattern(p, colon, types, bitOr)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createTypePattern(pattern: NodeFormat_Pattern): TypePattern {
     var typePattern = match (pattern.GetPatternAsTypePattern()) {
         case Some(v) => v
@@ -169,6 +258,16 @@ func createTypePattern(pattern: NodeFormat_Pattern): TypePattern {
     return TypePattern(p, colon, ty)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createEnumPattern(pattern: NodeFormat_Pattern): EnumPattern {
     var enumPattern = match (pattern.GetPatternAsEnumPattern()) {
         case Some(v) => v
@@ -191,6 +290,16 @@ func createEnumPattern(pattern: NodeFormat_Pattern): EnumPattern {
     return EnumPattern(exprNode, lParen, patterns, commas, rParen)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createTuplePattern(pattern: NodeFormat_Pattern): TuplePattern {
     var tuplePattern = match (pattern.GetPatternAsTuplePattern()) {
         case Some(v) => v

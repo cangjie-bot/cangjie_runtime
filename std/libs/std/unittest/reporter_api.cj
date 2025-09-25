@@ -13,31 +13,70 @@ import std.unittest.common.PrettyPrinter
 
 sealed interface Reporter<TReport, TReturn> {}
 public class CsvReporter <: Reporter<BenchReport, Unit> {
+    /*
+     * @noThrow
+     */
     public CsvReporter(let directory: Path) {}
 }
 
 public class CsvRawReporter <: Reporter<BenchReport, Unit> {
+    /*
+     * @noThrow
+     */
     public CsvRawReporter(let directory: Path) {}
 }
 
 public class XmlReporter <: Reporter<TestReport, Unit> {
+    /*
+     * @noThrow
+     */
     public XmlReporter(let directory: Path) {}
 }
 
 public class ConsoleReporter <: Reporter<TestReport, Unit> & Reporter<BenchReport, Unit> {
+    /*
+     * @noThrow
+     */
     public ConsoleReporter(let colored!: Bool = true) {}
 }
 
 public class TextReporter<PP> <: Reporter<TestReport, PP> & Reporter<BenchReport, PP>
         where PP <: PrettyPrinter {
+    /*
+     * @noThrow
+     */
     public TextReporter(let into!: PP) {}
 }
 
 interface TextReporterBase<PP> <: Reporter<TestReport, PP> & Reporter<BenchReport, PP> {
+    /*
+     * @noThrow
+     */
     func printReport(report: Report): PP
 }
 
 extend <PP> TextReporter<PP> <: TextReporterBase<PP> where PP <: PrettyPrinter {
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     public func printReport(report: Report): PP {
         let outputReporter = TestOutputReporter.fromDefaultConfiguration()
         TextReports.printDefaultReport(into, report.groupResult, outputReporter, report.runConfiguration)
@@ -46,6 +85,28 @@ extend <PP> TextReporter<PP> <: TextReporterBase<PP> where PP <: PrettyPrinter {
 }
 
 extend ConsoleReporter <: TextReporterBase<Unit> {
+    /*
+     * @throws OverflowException
+     * @throws IllegalSynchronizationStateException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     public func printReport(report: Report): Unit {
         let pp = TerminalPrettyPrinter(colored)
         let outputReporter = TestOutputReporter.fromDefaultConfiguration()
@@ -53,8 +114,17 @@ extend ConsoleReporter <: TextReporterBase<Unit> {
     }
 }
 public class RawStatsReporter <: Reporter<BenchReport, HashMap<String, (Float64, Float64)>> {
+    /*
+     * @noThrow
+     */
     public RawStatsReporter() {}
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func benchResultsAsMap(result: TestGroupResult): HashMap<String, (Float64,Float64)> {
         let caseNameToMeasurement = HashMap<String, (Float64,Float64)>()
         result.visitAll<TestCaseResult> { cr =>
@@ -65,6 +135,12 @@ public class RawStatsReporter <: Reporter<BenchReport, HashMap<String, (Float64,
         caseNameToMeasurement
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     */
     private static func getEntries(tcr: TestCaseResult): ArrayList<(String, (Float64, Float64))> {
         let result = ArrayList<(String, (Float64, Float64))>()
         tcr.visitPassedBenches{ step =>

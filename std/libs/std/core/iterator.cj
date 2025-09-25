@@ -11,20 +11,32 @@ package std.core
 
 public interface Iterable<E> {
     
+    /*
+     * @noThrow
+     */
     func iterator(): Iterator<E>
 }
 
 
 public abstract class Iterator<T> <: Iterable<T> {
+    /*
+     * @noThrow
+     */
     public func next(): Option<T>
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public init() {}
 
 
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): Iterator<T> { this }
 }
 
@@ -37,6 +49,9 @@ class FilterIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(it: Iterator<T>, predicate: (T) -> Bool) {
         this.it = it
         this.predicate = predicate
@@ -45,6 +60,9 @@ class FilterIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<T> {
         while (let Some(value) <- it.next()) {
             
@@ -67,6 +85,9 @@ class MapIterator<T, R> <: Iterator<R> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init(it: Iterator<T>, transform: (T) -> R) {
         this.it = it
         this.transform = transform
@@ -76,6 +97,9 @@ class MapIterator<T, R> <: Iterator<R> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func next(): Option<R> {
         return match (it.next()) {
             case Some(value) => Some(transform(value))
@@ -95,6 +119,9 @@ class StepIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     init(it: Iterator<T>, count: Int64) {
         if (count <= 0) {
             throw IllegalArgumentException("Step count must be greater than 0!")
@@ -107,6 +134,9 @@ class StepIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<T> {
         while (let Some(v) <- it.next()) {
             if (index < _count) {
@@ -130,6 +160,9 @@ class SkipIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     init(it: Iterator<T>, count: Int64) {
         if (count < 0) {
             throw IllegalArgumentException("Skip count cannot less than 0!")
@@ -141,6 +174,9 @@ class SkipIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<T> {
 
 
@@ -168,6 +204,9 @@ class TakeIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     init(it: Iterator<T>, count: Int64) {
         if (count < 0) {
             throw IllegalArgumentException("Take count cannot less than 0!")
@@ -179,6 +218,9 @@ class TakeIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<T> {
         
         if (_count == 0) {
@@ -201,6 +243,9 @@ class ConcatIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(it: Iterator<T>, other: Iterator<T>) {
         this.it = it
         this.other = other
@@ -209,6 +254,9 @@ class ConcatIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<T> {
         if (itOver) {
             return other.next()
@@ -234,6 +282,9 @@ class FlatMapIterator<T, R> <: Iterator<R> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(it: Iterable<T>, transform: (T) -> Iterable<R>) {
         this.it = it.iterator()
         this.transform = transform
@@ -242,6 +293,9 @@ class FlatMapIterator<T, R> <: Iterator<R> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<R> {
 
 
@@ -274,6 +328,9 @@ class ZipIterator<T, R> <: Iterator<(T, R)> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(itt: Iterator<T>, itr: Iterator<R>) {
         this.itt = itt
         this.itr = itr
@@ -282,6 +339,9 @@ class ZipIterator<T, R> <: Iterator<(T, R)> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<(T, R)> {
         match ((itt.next(), itr.next())) {
             case (Some(t), Some(r)) => return Some((t, r))
@@ -299,6 +359,9 @@ class EnumerateIterator<T> <: Iterator<(Int64, T)> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(it: Iterator<T>) {
         this.it = it
     }
@@ -306,6 +369,9 @@ class EnumerateIterator<T> <: Iterator<(Int64, T)> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<(Int64, T)> {
         return match (it.next()) {
             case Some(value) =>
@@ -320,11 +386,17 @@ class FilterMapIterator<T, R> <: Iterator<R> {
     private let transform: (T) -> Option<R>
     private let it: Iterator<T>
 
+    /*
+     * @noThrow
+     */
     init(it: Iterator<T>, transform: (T) -> Option<R>) {
         this.it = it
         this.transform = transform
     }
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<R> {
         while (let Some(t) <- it.next()) {
             match (transform(t)) {
@@ -340,11 +412,17 @@ class InspectIterator<T> <: Iterator<T> {
     private let action: (T) -> Unit
     private let it: Iterator<T>
 
+    /*
+     * @noThrow
+     */
     init(it: Iterator<T>, action: (T) -> Unit) {
         this.it = it
         this.action = action
     }
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<T> {
         match (it.next()) {
             case Some(value) =>
@@ -362,12 +440,18 @@ class IntersperseIterator<T> <: Iterator<T> {
     private var item: ?T
     private var isInsert = false
 
+    /*
+     * @noThrow
+     */
     init(it: Iterator<T>, separator: T) {
         this.it = it
         this.separator = separator
         this.item = it.next()
     }
 
+    /*
+     * @noThrow
+     */
     public func next(): Option<T> {
         if (isInsert) {
             isInsert = false
@@ -384,6 +468,9 @@ class IntersperseIterator<T> <: Iterator<T> {
 
 extend<T> Iterator<T> where T <: Equatable<T> {
     @Frozen
+    /*
+     * @noThrow
+     */
     public func contains(element: T): Bool {
         for (item in this.iterator()) {
             if (item == element) {
@@ -395,6 +482,9 @@ extend<T> Iterator<T> where T <: Equatable<T> {
 }
 
 extend<T> Iterator<T> where T <: Comparable<T> {
+    /*
+     * @noThrow
+     */
     public func max(): Option<T> {
         var result: Option<T> = None
         for (item in this.iterator()) {
@@ -409,6 +499,9 @@ extend<T> Iterator<T> where T <: Comparable<T> {
         return result
     }
 
+    /*
+     * @noThrow
+     */
     public func min(): Option<T> {
         var result: Option<T> = None
         for (item in this.iterator()) {
@@ -426,66 +519,105 @@ extend<T> Iterator<T> where T <: Comparable<T> {
 
 extend<T> Iterator<T> {
     @Frozen
+    /*
+     * @noThrow
+     */
     public func zip<R>(it: Iterator<R>): Iterator<(T, R)> {
         return ZipIterator<T, R>(this, it)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func enumerate(): Iterator<(Int64, T)> {
         return EnumerateIterator<T>(this)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func filter(predicate: (T) -> Bool): Iterator<T> {
         return FilterIterator<T>(this, predicate)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func filterMap<R>(transform: (T) -> Option<R>): Iterator<R> {
         return FilterMapIterator<T, R>(this, transform)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func map<R>(transform: (T) -> R): Iterator<R> {
         return MapIterator<T, R>(this, transform)
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func step(count: Int64): Iterator<T> {
         return StepIterator<T>(this, count)
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func skip(count: Int64): Iterator<T> {
         return SkipIterator<T>(this, count)
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func take(count: Int64): Iterator<T> {
         return TakeIterator<T>(this, count)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func concat(other: Iterator<T>): Iterator<T> {
         return ConcatIterator<T>(this, other)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func inspect(action: (T) -> Unit): Iterator<T> {
         return InspectIterator<T>(this, action)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func flatMap<R>(transform: (T) -> Iterator<R>): Iterator<R> {
         return FlatMapIterator<T, R>(this, transform)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func intersperse(separator: T): Iterator<T> {
         return IntersperseIterator<T>(this, separator)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func all(predicate: (T) -> Bool): Bool {
         for (item in this) {
             if (!predicate(item)) {
@@ -496,6 +628,9 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func any(predicate: (T) -> Bool): Bool {
         for (item in this) {
             if (predicate(item)) {
@@ -506,6 +641,9 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func none(predicate: (T) -> Bool): Bool {
         for (item in this) {
             if (predicate(item)) {
@@ -516,6 +654,9 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return match (this.next()) {
             case None => true
@@ -524,6 +665,9 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func count(): Int64 {
         var count: Int64 = 0
         for (_ in this) {
@@ -533,6 +677,9 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func forEach(action: (T) -> Unit): Unit {
         for (item in this) {
             action(item)
@@ -540,11 +687,17 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func first(): Option<T> {
         return this.next()
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func last(): Option<T> {
         var result: Option<T> = None
         for (item in this) {
@@ -554,6 +707,9 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func at(n: Int64): Option<T> {
         if (n < 0) {
             return None
@@ -569,6 +725,9 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func reduce(operation: (T, T) -> T): Option<T> {
         var it = this.iterator()
         var result: T = it.next() ?? return None
@@ -579,6 +738,9 @@ extend<T> Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func fold<R>(initial: R, operation: (R, T) -> R): R {
         var result: R = initial
         for (item in this) {

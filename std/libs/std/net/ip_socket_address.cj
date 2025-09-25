@@ -14,6 +14,10 @@ import std.convert.Parsable
 public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
     let _addr: IPAddress
     let _port: UInt16
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(address: Array<Byte>, port: UInt16) {
         this._port = port
         if (address.size == 4) {
@@ -24,15 +28,27 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
             throw IllegalArgumentException("IPSocketAddress only support IPv4 and IPv6 address.")
         }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     * @throws IllegalFormatException
+     */
     public init(address: String, port: UInt16) {
         this._addr = IPAddress.parse(address)
         this._port = port
     }
+    /*
+     * @noThrow
+     */
     public init(address: IPAddress, port: UInt16) {
         this._port = port
         this._addr = address
     }
     public prop size: Int64 {
+        /*
+         * @throws Exception
+         */
         get() {
             if (_addr.isIPv4()) {
                 Int64(sizeOf<SockAddrIn>())
@@ -42,6 +58,9 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
         }
     }
     public prop family: AddressFamily {
+        /*
+         * @throws Exception
+         */
         get() {
             if (_addr.isIPv4()) {
                 AddressFamily.INET
@@ -53,6 +72,12 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     * @throws IllegalFormatException
+     */
     public static func parse(s: String): IPSocketAddress {
         let (ipstr, portstr, isV6) = innerParse(s).unwrap()
         let port = UInt16.tryParse(portstr) ?? throw IllegalFormatException("Parse (${s}): invalid port.")
@@ -64,6 +89,11 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
         }
         return IPSocketAddress(ipaddr, port)
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public static func tryParse(s: String): ?IPSocketAddress {
         let r = innerParse(s)
         if (r.isErr()) {
@@ -87,16 +117,27 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
     }
 
     public prop address: IPAddress {
+        /*
+         * @noThrow
+         */
         get() {
             _addr
         }
     }
 
     public prop port: UInt16 {
+        /*
+         * @noThrow
+         */
         get() {
             _port
         }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public func getAddressBytes(): Array<Byte> {
         let buf = Array<Byte>(this.size, repeat: 0)
         this.family.value.writeLittleEndian(buf)
@@ -114,25 +155,44 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
         return buf
     }
 
+    /*
+     * @throws Exception
+     */
     public func isIPv4(): Bool {
         return _addr.isIPv4()
     }
 
+    /*
+     * @throws Exception
+     */
     public func isIPv6(): Bool {
         return _addr.isIPv6()
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func ==(rhs: IPSocketAddress): Bool {
         return _addr == rhs._addr && _port == rhs._port
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func !=(rhs: IPSocketAddress): Bool {
         return !(this == rhs)
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     public func hashCode(): Int64 {
         var df = DefaultHasher()
         df.write(_addr.hashCode())
         df.write(_port)
         df.finish()
     }
+    /*
+     * @throws Exception
+     */
     public func toString(): String {
         if (this.isIPv6()) {
             return "[${_addr}]:${_port}"
@@ -141,6 +201,10 @@ public class IPSocketAddress <: SocketAddress & Equatable<IPSocketAddress> {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func innerParse(s: String): Result<(String, String, Bool)> {
     match (s.lastIndexOf(":")) {
         case Some(i) =>

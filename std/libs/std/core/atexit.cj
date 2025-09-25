@@ -18,6 +18,9 @@ class AtexitCallbackNode {
     var atexitCallback: () -> Unit
     var next: ?AtexitCallbackNode = None
 
+    /*
+     * @noThrow
+     */
     init(callback: () -> Unit) {
         atexitCallback = callback
     }
@@ -25,6 +28,9 @@ class AtexitCallbackNode {
 
 var atexitCallbackHead: ?AtexitCallbackNode = None
 var callbacksRunningFlag: Bool = false
+/*
+ * @noThrow
+ */
 protected func CJ_CORE_AddAtexitCallback(callback: () -> Unit): Unit {
     if (callbacksRunningFlag) {
         return
@@ -39,6 +45,11 @@ protected func CJ_CORE_AddAtexitCallback(callback: () -> Unit): Unit {
     atexitCallbackHead = Option<AtexitCallbackNode>.Some(newNode)
     unsafe { CJ_CORE_AtExitCallbackListUnlook() }
 }
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws OutOfMemoryError
+ */
 protected func CJ_CORE_ExecAtexitCallbacks(): Unit {
     if (callbacksRunningFlag) {
         return

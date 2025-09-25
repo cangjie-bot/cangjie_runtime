@@ -18,9 +18,15 @@ foreign func strncmp(source: CPointer<UInt8>, target: CPointer<UInt8>, cmpSize: 
 foreign func strcasecmp(source: CPointer<UInt8>, target: CPointer<UInt8>): Int32
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func convertCStr2Ptr(cs: CString): CPointer<UInt8>
 
 @OverflowWrapping
+/*
+ * @throws IllegalArgumentException
+ */
 func createStrFromCPointer(cp: CPointer<UInt8>): String {
     if (cp.isNull()) {
         return String()
@@ -30,14 +36,23 @@ func createStrFromCPointer(cp: CPointer<UInt8>): String {
 }
 
 extend CString <: ToString {
+    /*
+     * @noThrow
+     */
     public func getChars(): CPointer<UInt8> {
         return convertCStr2Ptr(this)
     }
 
+    /*
+     * @noThrow
+     */
     public func isNull(): Bool {
         return getChars().isNull()
     }
 
+    /*
+     * @noThrow
+     */
     public func size(): Int64 {
         let chars = getChars()
         if (chars.isNull()) {
@@ -47,14 +62,23 @@ extend CString <: ToString {
         return Int64(len)
     }
 
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return size() == 0
     }
 
+    /*
+     * @noThrow
+     */
     public func isNotEmpty(): Bool {
         return !isEmpty()
     }
 
+    /*
+     * @noThrow
+     */
     public func startsWith(prefix: CString): Bool {
         let chars = getChars()
         if (chars.isNull()) {
@@ -73,6 +97,9 @@ extend CString <: ToString {
         return cmpRet == 0
     }
 
+    /*
+     * @noThrow
+     */
     public func endsWith(suffix: CString): Bool {
         let chars = getChars()
         if (chars.isNull()) {
@@ -91,6 +118,9 @@ extend CString <: ToString {
         return cmpRet == 0
     }
 
+    /*
+     * @noThrow
+     */
     public func equals(rhs: CString): Bool {
         let chars = getChars()
         if (chars.isNull() || rhs.isNull()) {
@@ -100,6 +130,9 @@ extend CString <: ToString {
         return cmpRet == 0
     }
 
+    /*
+     * @noThrow
+     */
     public func equalsLower(rhs: CString): Bool {
         let chars = getChars()
         if (chars.isNull() || rhs.isNull()) {
@@ -111,6 +144,11 @@ extend CString <: ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     */
     public func subCString(beginIndex: UIntNative): CString {
         var len = UIntNative(size())
         if (beginIndex > len) {
@@ -122,6 +160,11 @@ extend CString <: ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     */
     public func subCString(beginIndex: UIntNative, subLen: UIntNative): CString {
         var buffer = CPointer<UInt8>()
         var len = UIntNative(size())
@@ -151,6 +194,9 @@ extend CString <: ToString {
     }
 
 
+    /*
+     * @throws IllegalMemoryException
+     */
     public func compare(str: CString): Int32 {
         let chars = getChars()
         if (chars.isNull() || str.isNull()) {
@@ -166,6 +212,10 @@ extend CString <: ToString {
         return 0
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let chars = getChars()
         if (chars.isNull()) {
@@ -203,6 +253,9 @@ extend CString <: ToString {
         return String(data)
     }
 
+    /*
+     * @noThrow
+     */
     public func asResource(): CStringResource {
         return CStringResource(this)
     }
@@ -212,14 +265,23 @@ public struct CStringResource <: Resource {
     public let value: CString
     private let isFree: Box<Bool> = Box(false)
 
+    /*
+     * @noThrow
+     */
     init(p: CString) {
         this.value = p
     }
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         return isFree.value
     }
 
+    /*
+     * @noThrow
+     */
     public func close(): Unit {
         if (isFree.value) {
             return

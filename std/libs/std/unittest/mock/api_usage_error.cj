@@ -12,14 +12,25 @@ enum StubMisconfigurationReason {
     | CardinalityAlreadySet
     | ActionAlreadySet
     | CannotModifyActive
+      /*
+       * @noThrow
+       */
     | OnlySpyCanCallOriginal(String)
 }
 
 class StubMisconfiguration <: FailureReport {
+    /*
+     * @noThrow
+     */
     StubMisconfiguration() {
         super()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func fail(stub: StubChain, reason: StubMisconfigurationReason): Nothing {
         throw MockFrameworkException(
             build {
@@ -61,6 +72,10 @@ class StubMisconfiguration <: FailureReport {
         )
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func stubConfigurationHint(reason: StubMisconfigurationReason) {
         match (reason) {
             case OnlySpyCanCallOriginal(_) => return
@@ -76,10 +91,18 @@ class StubMisconfiguration <: FailureReport {
 }
 
 class StubModeViolation <: FailureReport {
+    /*
+     * @noThrow
+     */
     StubModeViolation() {
         super()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func stubForbidden(stubDescription: StubDescription, sessionName: String): Nothing {
         throw MockFrameworkException(
             build {
@@ -96,6 +119,11 @@ class StubModeViolation <: FailureReport {
         )
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func statefulStubAction(actionName: String, stubChain: StubChain): Nothing {
         throw MockFrameworkException(
             build {
@@ -123,6 +151,11 @@ class StubModeViolation <: FailureReport {
         )
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func cardinalitySpecifierNotAllowed(stubChain: StubChain): Nothing {
         throw MockFrameworkException(
             build {
@@ -141,14 +174,34 @@ class StubModeViolation <: FailureReport {
 }
 
 enum VerifyMisconfigurationReason {
+    /*
+     * @noThrow
+     */
     StatementUsedTwice(VerifyStatement)
+      /*
+       * @noThrow
+       */
     | StatementNotUsed(VerifyStatement)
+      /*
+       * @noThrow
+       */
     | ArgumentCaptureNotAllowed(VerifyStatement, ArgumentMatcher)
+      /*
+       * @noThrow
+       */
     | CardinalityCannotBeReassigned(VerifyStatement)
     | EmptyVerifyBlock
 }
 
+      /*
+       * @noThrow
+       */
 class VerifyMisconfiguration <: FailureReport {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func fail(reason: VerifyMisconfigurationReason): Nothing {
         let message = build {
             render(reason)
@@ -156,6 +209,10 @@ class VerifyMisconfiguration <: FailureReport {
         throw MockFrameworkException(message)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func render(reason: VerifyMisconfigurationReason) {
         errorHeader("Misconfiguration failure")
         match (reason) {

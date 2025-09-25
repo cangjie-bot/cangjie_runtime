@@ -10,6 +10,11 @@ package std.unittest
 import std.unittest.common.PrettyText
 import std.unittest.mock.PrettyException
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ */
 func renderException(exception: Exception, preamble: ?PrettyText): PrettyText {
     let text = PrettyText()
     if (let Some(preamble) <- preamble) {
@@ -23,6 +28,11 @@ func renderException(exception: Exception, preamble: ?PrettyText): PrettyText {
     text
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ */
 func exceptionToString(e: Exception): String {
     let traceElementArray: Array<StackTraceElement> = e.getStackTrace()
     var msg = StringBuilder("An exception has occurred:${e}\n")
@@ -40,6 +50,9 @@ func exceptionToString(e: Exception): String {
     return msg.toString()
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func indexOfFirstIrrelevantEntry(elements: Array<StackTraceElement>): Int64 {
     var index = elements.size - 1
     while (index > 0) {
@@ -68,16 +81,27 @@ func indexOfFirstIrrelevantEntry(elements: Array<StackTraceElement>): Int64 {
 }
 
 @When[backend == "cjnative"]
+/*
+ * @noThrow
+ */
 func isEntryPoint(_: StackTraceElement): Bool {
     false
 }
 
 @When[backend == "cjnative"]
+/*
+ * @noThrow
+ */
 func isLambda(element: StackTraceElement): Bool {
     element.methodName.startsWith("lambda.")
 }
 
 @When[backend == "cjnative"]
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ */
 func methodName(element: StackTraceElement): String {
     element.methodName.replace("::", ".")
 }

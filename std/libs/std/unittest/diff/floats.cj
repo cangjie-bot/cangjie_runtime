@@ -17,6 +17,9 @@ interface AssertPrintableFloat<F> where F <: AnyFloat & Formattable & ToString &
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     static func addTrailingPointZeroIfNeeded(floatStr: String) {
         if (!floatStr.contains(".") && !floatStr.contains("e")) {
             floatStr + ".0"
@@ -25,6 +28,10 @@ interface AssertPrintableFloat<F> where F <: AnyFloat & Formattable & ToString &
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func pprint(left: F, right: F, delta: F, pp: PrettyPrinter, leftPrefix: String, rightPrefix: String,
         level: Int64): PrettyPrinter {
         if (level == 1) {
@@ -66,6 +73,9 @@ interface AssertPrintableFloat<F> where F <: AnyFloat & Formattable & ToString &
 }
 
 extend<T> Array<T> where T <: Comparable<T> {
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func max() {
         var result = this[0]
         for (e in this) {
@@ -78,6 +88,10 @@ extend<T> Array<T> where T <: Comparable<T> {
 }
 
 extend PrettyPrinter {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func pprintFloatDiff(leftStr: String, rightStr: String, deltaStrOpt: Option<String>, leftPrefix: String,
         rightPrefix: String): PrettyPrinter {
         let leftRightSize = UInt64([leftPrefix.size, rightPrefix.size, 4].max()) + 1
@@ -113,7 +127,13 @@ extend PrettyPrinter {
 
 
 interface AnyFloat {
+    /*
+     * @noThrow
+     */
     func isNaN(): Bool
+    /*
+     * @noThrow
+     */
     func isInf(): Bool
 }
 
@@ -125,8 +145,15 @@ extend Float64 <: AnyFloat {}
 
 extend Float16 <: AssertPrintable<Float16> {
     public prop hasNestedDiff: Bool {
+        /*
+         * @noThrow
+         */
         get() { false }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func pprintForAssertion(pp: PrettyPrinter, right: Float16, leftPrefix: String, rightPrefix: String,
         level: Int64): PrettyPrinter {
         return AssertPrintableFloat<Float16>.pprint(this, right, this - right, pp, leftPrefix, rightPrefix, level)
@@ -135,8 +162,15 @@ extend Float16 <: AssertPrintable<Float16> {
 
 extend Float32 <: AssertPrintable<Float32> {
     public prop hasNestedDiff: Bool {
+        /*
+         * @noThrow
+         */
         get() { false }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func pprintForAssertion(pp: PrettyPrinter, right: Float32, leftPrefix: String, rightPrefix: String,
         level: Int64): PrettyPrinter {
         return AssertPrintableFloat<Float32>.pprint(this, right, this - right, pp, leftPrefix, rightPrefix, level)
@@ -145,8 +179,15 @@ extend Float32 <: AssertPrintable<Float32> {
 
 extend Float64 <: AssertPrintable<Float64> {
     public prop hasNestedDiff: Bool {
+        /*
+         * @noThrow
+         */
         get() { false }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func pprintForAssertion(pp: PrettyPrinter, right: Float64, leftPrefix: String, rightPrefix: String,
         level: Int64): PrettyPrinter {
         return AssertPrintableFloat<Float64>.pprint(this, right, this - right, pp, leftPrefix, rightPrefix, level)

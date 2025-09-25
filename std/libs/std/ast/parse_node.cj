@@ -96,6 +96,17 @@ let PATTERN_LIST: Array<String> = [
     "wildcard_pattern"
 ]
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parseProgram(input: Tokens): Program {
     let node = unsafe {
         try {
@@ -115,6 +126,10 @@ public func parseProgram(input: Tokens): Program {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func addPositionInfo(node: Node, nodeBase: NodeFormat_NodeBase) {
     var begin = nodeBase.GetBegin()
     var end = nodeBase.GetEnd()
@@ -124,6 +139,16 @@ func addPositionInfo(node: Node, nodeBase: NodeFormat_NodeBase) {
     node.astKind = astKind
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateNode(n: Option<NodeFormat_Node>): Node {
     var node = match (n) {
         case Some(v) => v
@@ -153,6 +178,16 @@ func generateNode(n: Option<NodeFormat_Node>): Node {
     return astNode
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createAnnotation(anno: Option<NodeFormat_Annotation>): Annotation {
     var annotation = match (anno) {
         case Some(v) => v
@@ -182,6 +217,11 @@ func createAnnotation(anno: Option<NodeFormat_Annotation>): Annotation {
     return Annotation(at, identifier, lSquare, args, rSquare, attrs, cond)
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createModifier(modifier: Option<NodeFormat_Modifier>): Modifier {
     var mod = match (modifier) {
         case Some(v) => v
@@ -191,6 +231,16 @@ func createModifier(modifier: Option<NodeFormat_Modifier>): Modifier {
     return Modifier(kind)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createArgument(arg: Option<NodeFormat_FuncArg>): Argument {
     var argument = match (arg) {
         case Some(v) => v
@@ -219,6 +269,11 @@ func createArgument(arg: Option<NodeFormat_FuncArg>): Argument {
     return argumentObj
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func generateGenericParamTk(gp: Option<NodeFormat_GenericParamDecl>): (Token, Token) {
     var genericParam = match (gp) {
         case Some(v) => v
@@ -235,6 +290,11 @@ func generateGenericParamTk(gp: Option<NodeFormat_GenericParamDecl>): (Token, To
     return (ident, comma)
 }
 
+/*
+ * @throws ParseASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func createGenericParam(gic: Option<NodeFormat_Generic>): Option<GenericParam> {
     var generic = match (gic) {
         case Some(v) => v
@@ -263,6 +323,16 @@ func createGenericParam(gic: Option<NodeFormat_Generic>): Option<GenericParam> {
     return Some(GenericParam(lAngle, idents, rAngle, commas))
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createGenericConstraint(flag: Bool, cons: Option<NodeFormat_GenericConstraint>): GenericConstraint {
     var constraint = match (cons) {
         case Some(v) => v
@@ -288,6 +358,16 @@ func createGenericConstraint(flag: Bool, cons: Option<NodeFormat_GenericConstrai
     return GenericConstraint(keyword, ty, upbound, upperBounds, bitAnds)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createMacroExpand(nodeInvocation: Option<NodeFormat_MacroInvocation>, isDecl!: Bool = false,
     isFuncParam!: Bool = false): Node {
     var invocation = match (nodeInvocation) {
@@ -355,6 +435,16 @@ func createMacroExpand(nodeInvocation: Option<NodeFormat_MacroInvocation>, isDec
         macroInputDecl, hasParenthesis)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func processCustomAnnotationLikeMacro(macroInputDecl: Option<Decl>, macroNode: Decl) {
     match (macroInputDecl) {
         case Some(v) =>
@@ -364,6 +454,10 @@ func processCustomAnnotationLikeMacro(macroInputDecl: Option<Decl>, macroNode: D
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getPackageIdentToken(s: String): Token {
     let isPkgIdent = s.contains(".") || s.contains("-") || s.contains(" ")
     Token(if (isPkgIdent) {
@@ -373,6 +467,11 @@ func getPackageIdentToken(s: String): Token {
     }, s)
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func getPackagePrefixes(prefixPaths: Array<Option<String>>, prefixPoses: Array<NodeFormat_Position>,
     prefixDotPoses: Array<NodeFormat_Position>): (Tokens, Tokens) {
     if (prefixPaths.size != prefixPoses.size || prefixPaths.size != prefixDotPoses.size) {
@@ -393,10 +492,18 @@ func getPackagePrefixes(prefixPaths: Array<Option<String>>, prefixPoses: Array<N
     (paths, dots)
 }
 
+/*
+ * @noThrow
+ */
 func isSamePos(pos1: NodeFormat_Position, pos2: NodeFormat_Position) {
     return pos1.fileId == pos2.fileId && pos1.line == pos2.line && pos1.column == pos2.column
 }
 
+/*
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func createPackageHeader(pkgHeader: Option<NodeFormat_PackageSpec>): PackageHeader {
     return match (pkgHeader) {
         case Some(v) =>
@@ -421,6 +528,11 @@ func createPackageHeader(pkgHeader: Option<NodeFormat_PackageSpec>): PackageHead
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createImportContent(content: Option<NodeFormat_ImportContent>): ImportContent {
     match (content) {
         case Some(v) =>
@@ -469,6 +581,11 @@ func createImportContent(content: Option<NodeFormat_ImportContent>): ImportConte
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createImportList(imports: Option<NodeFormat_ImportSpec>): ImportList {
     var imp = match (imports) {
         case Some(v) => v
@@ -495,6 +612,16 @@ func createImportList(imports: Option<NodeFormat_ImportSpec>): ImportList {
     ImportList(reExportToken, import_, content)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createProgram(file: Option<NodeFormat_File>): Program {
     var f = match (file) {
         case Some(v) => v
@@ -512,6 +639,16 @@ func createProgram(file: Option<NodeFormat_File>): Program {
     return Program(pkgHeader, imports, decls)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createConstructor(decl: Option<NodeFormat_Decl>): Constructor {
     var d = match (decl) {
         case Some(v) => v
@@ -566,6 +703,11 @@ func createConstructor(decl: Option<NodeFormat_Decl>): Constructor {
     return Constructor(annos, ident, lParen, params_, commas, rParen)
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createArgumentTokens(m: Decl): Tokens {
     var argTokens = Tokens()
     argTokens.append(m.identifier)
@@ -592,6 +734,16 @@ func createArgumentTokens(m: Decl): Tokens {
     return at + argTokens
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createCustomAnnotation(m: Decl): Annotation {
     let argTokens = createArgumentTokens(m)
 
@@ -605,6 +757,16 @@ func createCustomAnnotation(m: Decl): Annotation {
     createAnnotation(node.GetRootAsAnnotation())
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createConstructorLikeMacroExpand(decl: NodeFormat_Decl): Constructor {
     var md = createMacroExpandDecl(decl)
     if (md is MacroExpandDecl) {
@@ -614,6 +776,16 @@ func createConstructorLikeMacroExpand(decl: NodeFormat_Decl): Constructor {
     }
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createConstructorWithAt(decl: Decl): Constructor {
     var annos: ArrayList<Annotation> = ArrayList<Annotation>()
     var ident = decl.identifier
@@ -661,6 +833,11 @@ func createConstructorWithAt(decl: Decl): Constructor {
     return enumConstructor
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createConstructorWithAtExcl(decl: Decl): Constructor {
     match (decl as FuncDecl) {
         case Some(v) =>

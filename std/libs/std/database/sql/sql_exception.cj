@@ -22,6 +22,9 @@ public open class SqlException <: Exception {
 
 
     public prop sqlState: String {
+        /*
+         * @noThrow
+         */
         get() {
             _sqlState
         }
@@ -31,12 +34,18 @@ public open class SqlException <: Exception {
 
 
     public prop errorCode: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             _errorCode
         }
     }
 
     public override prop message: String {
+        /*
+         * @throws IllegalArgumentException
+         */
         get() {
             var msg = super.message
             if (msg != "") {
@@ -53,6 +62,9 @@ public open class SqlException <: Exception {
 
 
 
+    /*
+     * @noThrow
+     */
     public init() {
         super()
     }
@@ -64,6 +76,9 @@ public open class SqlException <: Exception {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(message: String, sqlState: String, errorCode: Int64) {
         super(message)
         this._sqlState = sqlState
@@ -75,10 +90,16 @@ public open class SqlException <: Exception {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(message: String) {
         super(message)
     }
 
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "SqlException"
     }

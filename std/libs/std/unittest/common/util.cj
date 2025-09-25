@@ -10,6 +10,9 @@ package std.unittest.common
 import std.collection.enumerate
 import std.convert.Formattable
 
+/*
+ * @noThrow
+ */
 private func isNonPrintable(char: Rune): Bool {
     let cp = UInt32(char)
     if (0x00 <= cp && cp <= 0x1F || 0x7f <= cp && cp <= 0x9f) {
@@ -18,6 +21,10 @@ private func isNonPrintable(char: Rune): Bool {
     return false
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func asCodePointEscape(char: Rune): String {
     let resultBuilder = StringBuilder("\\u{")
     let cp = UInt32(char)
@@ -36,6 +43,10 @@ private func asCodePointEscape(char: Rune): String {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 protected func shieldEscapeSeq(
     s: String,
     shieldSingleQuote!: Bool = true,
@@ -71,10 +82,16 @@ protected func shieldEscapeSeq(
 }
 
 extend PrettyPrinter {
+    /*
+     * @noThrow
+     */
     protected func space() {
         append(" ")
     }
 
+    /*
+     * @noThrow
+     */
     protected func appendLine() {
         appendLine("")
     }

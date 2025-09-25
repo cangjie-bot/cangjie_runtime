@@ -10,12 +10,19 @@ package std.unittest.mock
 import std.unittest.common.*
 
 public abstract class PrettyException <: Exception & PrettyPrintable {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     PrettyException(
         private let text: PrettyText
     ) {
         super(text.toString())
     }
 
+    /*
+     * @noThrow
+     */
     public func pprint(to: PrettyPrinter): PrettyPrinter {
         text.pprint(to)
     }
@@ -23,6 +30,10 @@ public abstract class PrettyException <: Exception & PrettyPrintable {
 
 
 public class MockFrameworkInternalError <: PrettyException {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     MockFrameworkInternalError(
         text: PrettyText
     ) {
@@ -32,6 +43,10 @@ public class MockFrameworkInternalError <: PrettyException {
 
 
 public class MockFrameworkException <: PrettyException {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     MockFrameworkException(
         text: PrettyText
     ) {
@@ -41,6 +56,10 @@ public class MockFrameworkException <: PrettyException {
 
 
 public open class ExpectationFailedException <: PrettyException {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     ExpectationFailedException(
         text: PrettyText
     ) {
@@ -50,6 +69,10 @@ public open class ExpectationFailedException <: PrettyException {
 
 
 public class UnnecessaryStubbingException <: PrettyException {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     UnnecessaryStubbingException(
         text: PrettyText
     ) {
@@ -59,6 +82,10 @@ public class UnnecessaryStubbingException <: PrettyException {
 
 
 public class UnstubbedInvocationException <: PrettyException {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     UnstubbedInvocationException(
         text: PrettyText
     ) {
@@ -68,6 +95,10 @@ public class UnstubbedInvocationException <: PrettyException {
 
 
 public class UnhandledCallException <: PrettyException {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     UnhandledCallException(
         text: PrettyText
     ) {
@@ -76,6 +107,10 @@ public class UnhandledCallException <: PrettyException {
 }
 
 public class VerificationFailedException <: PrettyException {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     VerificationFailedException(
         text: PrettyText
     ) {

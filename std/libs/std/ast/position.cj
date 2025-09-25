@@ -17,6 +17,9 @@ public struct Position <: ToBytes {
     
 
     
+    /*
+     * @noThrow
+     */
     public init() {
         fileID = 0
         line = 0
@@ -24,6 +27,9 @@ public struct Position <: ToBytes {
     }
 
     
+    /*
+     * @noThrow
+     */
     public init(fileID: UInt32, line: Int32, column: Int32) {
         this.fileID = fileID
         this.line = line
@@ -33,25 +39,40 @@ public struct Position <: ToBytes {
     
 
     
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return line == 0 && column == 0
     }
 
     
+    /*
+     * @noThrow
+     */
     public operator func ==(r: Position): Bool {
         return this.fileID == r.fileID && this.line == r.line && this.column == r.column
     }
 
     
+    /*
+     * @noThrow
+     */
     public operator func !=(r: Position): Bool {
         return !(this == r)
     }
 
     
+    /*
+     * @throws OutOfMemoryError
+     */
     public func dump(): Unit {
         print("fileID: ${fileID}, line: ${line}, column: ${column}\n")
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toBytes(): Array<UInt8> {
         var b1: Array<UInt8> = castUInt32ToBytes(this.fileID)
         var b2: Array<UInt8> = castInt32ToBytes(this.line)
@@ -60,6 +81,9 @@ public struct Position <: ToBytes {
         return concatBytes(b12, b3)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func toBytes(arr: Array<UInt8>, start1: Int64) {
         var start = start1
         start = castUInt32ToBytes(arr, start, this.fileID)
@@ -68,6 +92,9 @@ public struct Position <: ToBytes {
         return start
     }
 
+    /*
+     * @noThrow
+     */
     func getSize() {
         let size_fileID = 4
         let size_line = 4
@@ -76,6 +103,9 @@ public struct Position <: ToBytes {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 func getMacroPosition(macroObjPtr: CPointer<Unit>) {
     var fileID: UInt32 = 0
     var line: Int32 = 0

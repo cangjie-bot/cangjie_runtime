@@ -13,28 +13,50 @@ import std.random.Random
 public interface Generator<T> {
 
 
+    /*
+     * @noThrow
+     */
     func next(): T
 }
 
 class OneValueGenerator<T> <: Generator<T> {
+    /*
+     * @noThrow
+     */
     OneValueGenerator(let value: T) {}
 
+    /*
+     * @noThrow
+     */
     public override func next(): T {
         value
     }
 }
 
 class FunctionGenerator<T> <: Generator<T> {
+    /*
+     * @noThrow
+     */
     FunctionGenerator(let body: () -> T) {}
 
+    /*
+     * @noThrow
+     */
     public override func next(): T {
         body()
     }
 }
 
 class ArrayGenerator<T> <: Generator<T> {
+    /*
+     * @noThrow
+     */
     ArrayGenerator(let random: RandomSource, let array: Array<T>) {}
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func next(): T {
         array[random.nextInt64(array.size)]
     }
@@ -43,6 +65,9 @@ class ArrayGenerator<T> <: Generator<T> {
 class SelectionGenerator<T> <: Generator<T> {
     private let total: UInt64
 
+    /*
+     * @noThrow
+     */
     SelectionGenerator(let random: RandomSource, let variants: Array<(UInt64, Generator<T>)>) {
         var total: UInt64 = 0
         for ((v, _) in variants) {
@@ -51,6 +76,9 @@ class SelectionGenerator<T> <: Generator<T> {
         this.total = total
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public override func next(): T {
         var pick = random.nextUInt64(total)
         for ((n, g) in variants) {
@@ -67,62 +95,98 @@ class SelectionGenerator<T> <: Generator<T> {
 class RangeGenerator<T> <: Generator<T> {
     let l: T
     let r: T
+    /*
+     * @noThrow
+     */
     RangeGenerator(l: T, r: T, let body: (T, T) -> T) {
         this.l = l
         this.r = r
     }
+    /*
+     * @noThrow
+     */
     public override func next(): T {
         body(l, r)
     }
 }
 
 
+             /*
+              * @noThrow
+              */
 public class Generators {
 
 
+    /*
+     * @noThrow
+     */
     public static func generate<T>(l: T, r: T, body: (T, T) -> T): Generator<T> {
         RangeGenerator(l, r, body)
     }
 
 
+    /*
+     * @noThrow
+     */
     public static func single<T>(value: T): Generator<T> {
         FunctionGenerator({=> value})
     }
 
 
+    /*
+     * @noThrow
+     */
     public static func generate<T>(body: () -> T): Generator<T> {
         FunctionGenerator(body)
     }
 
 
+    /*
+     * @noThrow
+     */
     public static func iterable<T>(random: RandomSource, collection: Array<T>): Generator<T> {
         ArrayGenerator<T>(random, collection)
     }
 
 
 
+    /*
+     * @noThrow
+     */
     public static func weighted<T>(random: RandomSource, variants: Array<(UInt64, Generator<T>)>): Generator<T> {
         SelectionGenerator<T>(random, variants)
     }
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public static func pick<T>(random: RandomSource, variants: Array<Generator<T>>): Generator<T> {
         SelectionGenerator<T>(random, Array(variants.size) {i: Int64 => (UInt64(1), variants[i])})
     }
 
 
+    /*
+     * @noThrow
+     */
     public static func lookup<T>(random: RandomSource): Generator<T> where T <: Arbitrary<T> {
         T.arbitrary(random)
     }
 
 
+    /*
+     * @noThrow
+     */
     public static func mapped<T, R>(random: RandomSource, body: (T) -> R): Generator<R> where T <: Arbitrary<T> {
         let base = lookup<T>(random)
         generate {body(base.next())}
     }
 
 
+    /*
+     * @noThrow
+     */
     public static func mapped<T1, T2, R>(random: RandomSource, body: (T1, T2) -> R): Generator<R> where T1 <: Arbitrary<T1>,
         T2 <: Arbitrary<T2> {
         let v1 = lookup<T1>(random)
@@ -131,6 +195,9 @@ public class Generators {
     }
 
 
+    /*
+     * @noThrow
+     */
     public static func mapped<T1, T2, T3, R>(random: RandomSource, body: (T1, T2, T3) -> R): Generator<R> where T1 <: Arbitrary<T1>,
         T2 <: Arbitrary<T2>, T3 <: Arbitrary<T3> {
         let v1 = lookup<T1>(random)
@@ -140,6 +207,9 @@ public class Generators {
     }
 
 
+    /*
+     * @noThrow
+     */
     public static func mapped<T1, T2, T3, T4, R>(random: RandomSource, body: (T1, T2, T3, T4) -> R): Generator<R> where T1 <: Arbitrary<T1>,
         T2 <: Arbitrary<T2>, T3 <: Arbitrary<T3>, T4 <: Arbitrary<T4> {
         let v1 = lookup<T1>(random)

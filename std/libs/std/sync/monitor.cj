@@ -11,6 +11,9 @@ package std.sync
 
 @Deprecated[message: "Use `public interface Condition` instead."]
 public class Monitor <: ReentrantMutex {
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public init() {
         var isNull = unsafe { monitorInit(this) }
         if (isNull) {
@@ -18,6 +21,9 @@ public class Monitor <: ReentrantMutex {
         }
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     init(mutex: Mutex) {
         super(mutex)
         let isNull = unsafe { monitorInit(this) }
@@ -31,6 +37,11 @@ public class Monitor <: ReentrantMutex {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public func wait(timeout!: Duration = Duration.Max): Bool {
         checkMutexStatus()
         if (timeout <= Duration.Zero) {
@@ -46,6 +57,9 @@ public class Monitor <: ReentrantMutex {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func notify(): Unit {
         checkMutexStatus()
         unsafe { monitorNotify(this) }
@@ -53,6 +67,9 @@ public class Monitor <: ReentrantMutex {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func notifyAll(): Unit {
         checkMutexStatus()
         unsafe { monitorNotifyAll(this) }
@@ -63,6 +80,9 @@ public class Monitor <: ReentrantMutex {
 
 @Deprecated[message: "Use `public interface Condition` instead."]
 public struct ConditionID {
+    /*
+     * @noThrow
+     */
     init(m: MultiConditionMonitor, wqPtr: WaitQueue) {
         monitor = m
         waitQueue = wqPtr
@@ -73,6 +93,9 @@ public struct ConditionID {
 }
 
 class WaitQueue {
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     init() {
         var isNull = unsafe { waitQueueInit(this) }
         if (isNull) {
@@ -84,10 +107,16 @@ class WaitQueue {
 
 @Deprecated[message: "Use `public class Mutex` instead."]
 public class MultiConditionMonitor <: ReentrantMutex {
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public init() {}
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func newCondition(): ConditionID {
         checkMutexStatus()
         let waitQueue = WaitQueue()
@@ -100,6 +129,11 @@ public class MultiConditionMonitor <: ReentrantMutex {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func wait(condID: ConditionID, timeout!: Duration = Duration.Max): Bool {
         if (!refEq(this, condID.monitor)) {
             throw IllegalSynchronizationStateException("Invalid condition.")
@@ -119,6 +153,9 @@ public class MultiConditionMonitor <: ReentrantMutex {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func notify(condID: ConditionID): Unit {
         if (!refEq(this, condID.monitor)) {
             throw IllegalSynchronizationStateException("Invalid condition.")
@@ -132,6 +169,9 @@ public class MultiConditionMonitor <: ReentrantMutex {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func notifyAll(condID: ConditionID): Unit {
         if (!refEq(this, condID.monitor)) {
             throw IllegalSynchronizationStateException("Invalid condition.")

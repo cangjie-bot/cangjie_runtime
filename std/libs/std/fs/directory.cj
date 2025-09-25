@@ -12,12 +12,21 @@ package std.fs
 
 import std.collection.*
 
+             /*
+              * @noThrow
+              */
 public class Directory {
 
 
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public static func create(path: String, recursive!: Bool = false): Unit {
         let normalPath = removeTralingSlashChar(path)
         if (exists(normalPath)) {
@@ -34,18 +43,36 @@ public class Directory {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public static func create(path: Path, recursive!: Bool = false): Unit {
         create(path.toString(), recursive: recursive)
     }
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     */
     public static func createTemp(directoryPath: String): Path {
         createTemp(Path(directoryPath))
     }
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     */
     public static func createTemp(directoryPath: Path): Path {
         var directoryPathArr = unsafe { canonicalize(directoryPath).toString().rawData() }
         var tmpStr = TMP_DIR
@@ -63,10 +90,22 @@ public class Directory {
         return Path(String.fromUtf8(tempArr.slice(0, tempArr.size - 1)))
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public static func isEmpty(path: Path): Bool {
         isEmpty(path.toString())
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public static func isEmpty(path: String): Bool {
         unsafe {
             let absPath = checkDirectoryPath(Path(path))
@@ -80,6 +119,12 @@ public class Directory {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws FSException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func readFrom(path: Path): Array<FileInfo> {
         let fileInfos = ArrayList<FileInfo>()
         walk(path) {
@@ -90,10 +135,22 @@ public class Directory {
         return fileInfos.toArray()
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws FSException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func readFrom(path: String): Array<FileInfo> {
         readFrom(Path(path))
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public static func walk(path: Path, f: (FileInfo) -> Bool): Unit {
         let absPath = checkDirectoryPath(path)
         let (subData, subSize) = getSubData(absPath.toString())
@@ -113,10 +170,21 @@ public class Directory {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public static func walk(path: String, f: (FileInfo) -> Bool): Unit {
         walk(Path(path), f)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     */
     private static func copyCheck(sourceDirPath: String, destinationDirPath: String, overwrite: Bool): Unit {
         if (sourceDirPath.contains(NULL_BYTE) || destinationDirPath.contains(NULL_BYTE)) {
             throw IllegalArgumentException(
@@ -130,6 +198,12 @@ public class Directory {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     */
     private static func createSubDirectory(parent: String, name: String): String {
         if (name.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The name cannot contain null character.")
@@ -145,6 +219,12 @@ public class Directory {
         return pathStr
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func copyDirectory(srcDir: String, destDir: String): Int64 {
         let srcQueue = ArrayList<String>()
         let destQueue = ArrayList<String>()
@@ -163,6 +243,12 @@ public class Directory {
         return 0
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     private static func walkAndCopy(srcQueue: ArrayList<String>, destQueue: ArrayList<String>, index: Int64,
         fail: Box<Bool>): Unit {
         let (curSrcDir, curDestDir) = (srcQueue[index], destQueue[index])
@@ -208,6 +294,12 @@ public class Directory {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     static func copy(sourceDirPath: String, destinationDirPath: String, overwrite: Bool): Unit {
         copyCheck(sourceDirPath, destinationDirPath, overwrite)
         if (!exists(destinationDirPath)) {
@@ -228,6 +320,11 @@ public class Directory {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     private static func getSubData(path: String): (Array<Byte>, Int64) {
         let arr = Array<Byte>((256 + 2) * size(path), repeat: 0)
         unsafe {
@@ -247,6 +344,11 @@ public class Directory {
     }
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     private static func size(pathStr: String): Int64 {
         unsafe {
             let cPath: CString = LibC.mallocCString(pathStr)
@@ -261,6 +363,12 @@ public class Directory {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     private static func createNoRecursive(path: String): Unit {
         let parent = Path(path).parent
         if (!parent.isEmpty() && !exists(parent)) {
@@ -270,6 +378,10 @@ public class Directory {
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func removeTralingSlashChar(path: String): String {
         if (path.isEmpty() || path == CURRENT_DIRECTORY_STRING || path == ROOT_DIRECTORY_STRING || path.contains(
             NULL_BYTE)) {
@@ -284,11 +396,22 @@ public class Directory {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     private static func createRecursive(path: String): Unit {
         callNativeFunc(path, CJ_FS_DirCreateRecursive, "Failed to recursive create directory")
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 func checkDirectoryPath(path: Path): Path {
     let info = FileInfo(path)
     if (!info.isDirectory()) {

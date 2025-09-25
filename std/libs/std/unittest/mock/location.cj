@@ -10,7 +10,13 @@ package std.unittest.mock
 import std.collection.enumerate
 import std.fs.Path
 
+               /*
+                * @noThrow
+                */
 abstract class Location {
+    /*
+     * @noThrow
+     */
     public func getEntries(): Array<TraceEntry>
 }
 
@@ -18,17 +24,26 @@ let UNKNOWN_LOCATION = LocationImpl([])
 let UNKNOWN_LOCATION_STRING = "<unknown location>"
 
 class SimpleLocation <: Location {
+    /*
+     * @noThrow
+     */
     SimpleLocation(
         let filePath: String,
         let lineNumber: Int64
     ) {}
 
+    /*
+     * @noThrow
+     */
     public func getEntries(): Array<TraceEntry> {
         return [TraceEntry(filePath, lineNumber)]
     }
 }
 
 struct TraceEntry {
+    /*
+     * @noThrow
+     */
     TraceEntry(
         let filePath: String,
         let lineNumber: Int64
@@ -36,8 +51,14 @@ struct TraceEntry {
 }
 
 class LocationImpl <: Location {
+    /*
+     * @noThrow
+     */
     LocationImpl(private let entries: Array<TraceEntry>) {}
 
+    /*
+     * @noThrow
+     */
     public func getEntries() {
         entries
     }
@@ -45,6 +66,10 @@ class LocationImpl <: Location {
 
 let MOCKED_CLASS_NAME_FRAGMENT = "$Mocked"
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func locationFromTrace(): Location {
     let stackTrace = Exception().getStackTrace()
     for ((index, element) in stackTrace |> enumerate) {
@@ -61,11 +86,18 @@ func locationFromTrace(): Location {
 }
 
 extend Location {
+    /*
+     * @noThrow
+     */
     func forceLineNumber(lineNum: Int64): Location {
         let filePath = getEntries().get(0)?.filePath ?? return UNKNOWN_LOCATION
         return SimpleLocation(filePath, lineNum)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func fileNameAndLine(): String {
         let firstEntry = getEntries().get(0) ?? return UNKNOWN_LOCATION_STRING
         let fileName = try {
@@ -82,6 +114,9 @@ extend Location {
 }
 
 extend StackTraceElement {
+    /*
+     * @noThrow
+     */
     func toEntry(): TraceEntry {
         return TraceEntry(fileName, lineNumber)
     }

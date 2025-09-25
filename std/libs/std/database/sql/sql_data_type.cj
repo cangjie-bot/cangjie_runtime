@@ -33,18 +33,30 @@ public interface SqlNullableDbType <: SqlDbType {}
 @Deprecated[message: "Use `String` instead."]
 public class SqlChar <: SqlDbType {
     var _value: String
+    /*
+     * @noThrow
+     */
     public init(v: String) {
         _value = v
     }
     public mut prop value: String {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlChar"
         }
@@ -57,18 +69,30 @@ public class SqlChar <: SqlDbType {
 @Deprecated[message: "Use `?String` instead."]
 public class SqlNullableChar <: SqlNullableDbType {
     var _value: ?String
+    /*
+     * @noThrow
+     */
     public init(v: ?String) {
         _value = v
     }
     public mut prop value: ?String {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableChar"
         }
@@ -81,18 +105,30 @@ public class SqlNullableChar <: SqlNullableDbType {
 @Deprecated[message: "Use `String` instead."]
 public class SqlVarchar <: SqlDbType {
     var _value: String
+    /*
+     * @noThrow
+     */
     public init(v: String) {
         _value = v
     }
     public mut prop value: String {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlVarchar"
         }
@@ -105,18 +141,30 @@ public class SqlVarchar <: SqlDbType {
 @Deprecated[message: "Use `?String` instead."]
 public class SqlNullableVarchar <: SqlNullableDbType {
     var _value: ?String
+    /*
+     * @noThrow
+     */
     public init(v: ?String) {
         _value = v
     }
     public mut prop value: ?String {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableVarchar"
         }
@@ -129,18 +177,30 @@ public class SqlNullableVarchar <: SqlNullableDbType {
 @Deprecated[message: "Use `Array<Byte>` instead."]
 public class SqlBinary <: SqlDbType {
     var _value: Array<Byte>
+    /*
+     * @noThrow
+     */
     public init(v: Array<Byte>) {
         _value = v
     }
     public mut prop value: Array<Byte> {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlBinary"
         }
@@ -153,18 +213,30 @@ public class SqlBinary <: SqlDbType {
 @Deprecated[message: "Use `?Array<Byte>` instead."]
 public class SqlNullableBinary <: SqlNullableDbType {
     var _value: ?Array<Byte>
+    /*
+     * @noThrow
+     */
     public init(v: ?Array<Byte>) {
         _value = v
     }
     public mut prop value: ?Array<Byte> {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableBinary"
         }
@@ -177,18 +249,30 @@ public class SqlNullableBinary <: SqlNullableDbType {
 @Deprecated[message: "Use `Array<Byte>` instead."]
 public class SqlVarBinary <: SqlDbType {
     var _value: Array<Byte>
+    /*
+     * @noThrow
+     */
     public init(v: Array<Byte>) {
         _value = v
     }
     public mut prop value: Array<Byte> {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlVarBinary"
         }
@@ -201,18 +285,30 @@ public class SqlVarBinary <: SqlDbType {
 @Deprecated[message: "Use `?Array<Byte>` instead."]
 public class SqlNullableVarBinary <: SqlNullableDbType {
     var _value: ?Array<Byte>
+    /*
+     * @noThrow
+     */
     public init(v: ?Array<Byte>) {
         _value = v
     }
     public mut prop value: ?Array<Byte> {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableVarBinary"
         }
@@ -225,18 +321,30 @@ public class SqlNullableVarBinary <: SqlNullableDbType {
 @Deprecated[message: "Use `InputStream` instead."]
 public class SqlClob <: SqlDbType {
     var _value: InputStream
+    /*
+     * @noThrow
+     */
     public init(v: InputStream) {
         _value = v
     }
     public mut prop value: InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlClob"
         }
@@ -249,18 +357,30 @@ public class SqlClob <: SqlDbType {
 @Deprecated[message: "Use `?InputStream` instead."]
 public class SqlNullableClob <: SqlNullableDbType {
     var _value: ?InputStream
+    /*
+     * @noThrow
+     */
     public init(v: ?InputStream) {
         _value = v
     }
     public mut prop value: ?InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableClob"
         }
@@ -273,18 +393,30 @@ public class SqlNullableClob <: SqlNullableDbType {
 @Deprecated[message: "Use `InputStream` instead."]
 public class SqlBlob <: SqlDbType {
     var _value: InputStream
+    /*
+     * @noThrow
+     */
     public init(v: InputStream) {
         _value = v
     }
     public mut prop value: InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlBlob"
         }
@@ -297,18 +429,30 @@ public class SqlBlob <: SqlDbType {
 @Deprecated[message: "Use `?InputStream` instead."]
 public class SqlNullableBlob <: SqlNullableDbType {
     var _value: ?InputStream
+    /*
+     * @noThrow
+     */
     public init(v: ?InputStream) {
         _value = v
     }
     public mut prop value: ?InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableBlob"
         }
@@ -321,18 +465,30 @@ public class SqlNullableBlob <: SqlNullableDbType {
 @Deprecated[message: "Use `Bool` instead."]
 public class SqlBool <: SqlDbType {
     var _value: Bool
+    /*
+     * @noThrow
+     */
     public init(v: Bool) {
         _value = v
     }
     public mut prop value: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlBool"
         }
@@ -345,18 +501,30 @@ public class SqlBool <: SqlDbType {
 @Deprecated[message: "Use `?Bool` instead."]
 public class SqlNullableBool <: SqlNullableDbType {
     var _value: ?Bool
+    /*
+     * @noThrow
+     */
     public init(v: ?Bool) {
         _value = v
     }
     public mut prop value: ?Bool {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableBool"
         }
@@ -369,18 +537,30 @@ public class SqlNullableBool <: SqlNullableDbType {
 @Deprecated[message: "Use `Int8` instead."]
 public class SqlByte <: SqlDbType {
     var _value: Int8
+    /*
+     * @noThrow
+     */
     public init(v: Int8) {
         _value = v
     }
     public mut prop value: Int8 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlByte"
         }
@@ -393,18 +573,30 @@ public class SqlByte <: SqlDbType {
 @Deprecated[message: "Use `?Int8` instead."]
 public class SqlNullableByte <: SqlNullableDbType {
     var _value: ?Int8
+    /*
+     * @noThrow
+     */
     public init(v: ?Int8) {
         _value = v
     }
     public mut prop value: ?Int8 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableByte"
         }
@@ -417,18 +609,30 @@ public class SqlNullableByte <: SqlNullableDbType {
 @Deprecated[message: "Use `Int16` instead."]
 public class SqlSmallInt <: SqlDbType {
     var _value: Int16
+    /*
+     * @noThrow
+     */
     public init(v: Int16) {
         _value = v
     }
     public mut prop value: Int16 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlSmallInt"
         }
@@ -441,18 +645,30 @@ public class SqlSmallInt <: SqlDbType {
 @Deprecated[message: "Use `?Int16` instead."]
 public class SqlNullableSmallInt <: SqlNullableDbType {
     var _value: ?Int16
+    /*
+     * @noThrow
+     */
     public init(v: ?Int16) {
         _value = v
     }
     public mut prop value: ?Int16 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableSmallInt"
         }
@@ -465,18 +681,30 @@ public class SqlNullableSmallInt <: SqlNullableDbType {
 @Deprecated[message: "Use `Int32` instead."]
 public class SqlInteger <: SqlDbType {
     var _value: Int32
+    /*
+     * @noThrow
+     */
     public init(v: Int32) {
         _value = v
     }
     public mut prop value: Int32 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlInteger"
         }
@@ -489,18 +717,30 @@ public class SqlInteger <: SqlDbType {
 @Deprecated[message: "Use `?Int32` instead."]
 public class SqlNullableInteger <: SqlNullableDbType {
     var _value: ?Int32
+    /*
+     * @noThrow
+     */
     public init(v: ?Int32) {
         _value = v
     }
     public mut prop value: ?Int32 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableInteger"
         }
@@ -513,18 +753,30 @@ public class SqlNullableInteger <: SqlNullableDbType {
 @Deprecated[message: "Use `Int64` instead."]
 public class SqlBigInt <: SqlDbType {
     var _value: Int64
+    /*
+     * @noThrow
+     */
     public init(v: Int64) {
         _value = v
     }
     public mut prop value: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlBigInt"
         }
@@ -537,18 +789,30 @@ public class SqlBigInt <: SqlDbType {
 @Deprecated[message: "Use `?Int64` instead."]
 public class SqlNullableBigInt <: SqlNullableDbType {
     var _value: ?Int64
+    /*
+     * @noThrow
+     */
     public init(v: ?Int64) {
         _value = v
     }
     public mut prop value: ?Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableBigInt"
         }
@@ -561,18 +825,30 @@ public class SqlNullableBigInt <: SqlNullableDbType {
 @Deprecated[message: "Use `Float32` instead."]
 public class SqlReal <: SqlDbType {
     var _value: Float32
+    /*
+     * @noThrow
+     */
     public init(v: Float32) {
         _value = v
     }
     public mut prop value: Float32 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlReal"
         }
@@ -585,18 +861,30 @@ public class SqlReal <: SqlDbType {
 @Deprecated[message: "Use `?Float32` instead."]
 public class SqlNullableReal <: SqlNullableDbType {
     var _value: ?Float32
+    /*
+     * @noThrow
+     */
     public init(v: ?Float32) {
         _value = v
     }
     public mut prop value: ?Float32 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableReal"
         }
@@ -609,18 +897,30 @@ public class SqlNullableReal <: SqlNullableDbType {
 @Deprecated[message: "Use `Float64` instead."]
 public class SqlDouble <: SqlDbType {
     var _value: Float64
+    /*
+     * @noThrow
+     */
     public init(v: Float64) {
         _value = v
     }
     public mut prop value: Float64 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlDouble"
         }
@@ -633,18 +933,30 @@ public class SqlDouble <: SqlDbType {
 @Deprecated[message: "Use `?Float64` instead."]
 public class SqlNullableDouble <: SqlNullableDbType {
     var _value: ?Float64
+    /*
+     * @noThrow
+     */
     public init(v: ?Float64) {
         _value = v
     }
     public mut prop value: ?Float64 {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableDouble"
         }
@@ -657,18 +969,30 @@ public class SqlNullableDouble <: SqlNullableDbType {
 @Deprecated[message: "Use `DateTime` instead."]
 public class SqlDate <: SqlDbType {
     var _value: DateTime
+    /*
+     * @noThrow
+     */
     public init(v: DateTime) {
         _value = v
     }
     public mut prop value: DateTime {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlDate"
         }
@@ -681,18 +1005,30 @@ public class SqlDate <: SqlDbType {
 @Deprecated[message: "Use `?DateTime` instead."]
 public class SqlNullableDate <: SqlNullableDbType {
     var _value: ?DateTime
+    /*
+     * @noThrow
+     */
     public init(v: ?DateTime) {
         _value = v
     }
     public mut prop value: ?DateTime {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableDate"
         }
@@ -705,18 +1041,30 @@ public class SqlNullableDate <: SqlNullableDbType {
 @Deprecated[message: "Use `DateTime` instead."]
 public class SqlTime <: SqlDbType {
     var _value: DateTime
+    /*
+     * @noThrow
+     */
     public init(v: DateTime) {
         _value = v
     }
     public mut prop value: DateTime {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlTime"
         }
@@ -729,18 +1077,30 @@ public class SqlTime <: SqlDbType {
 @Deprecated[message: "Use `?DateTime` instead."]
 public class SqlNullableTime <: SqlNullableDbType {
     var _value: ?DateTime
+    /*
+     * @noThrow
+     */
     public init(v: ?DateTime) {
         _value = v
     }
     public mut prop value: ?DateTime {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableTime"
         }
@@ -753,18 +1113,30 @@ public class SqlNullableTime <: SqlNullableDbType {
 @Deprecated[message: "Use `DateTime` instead."]
 public class SqlTimeTz <: SqlDbType {
     var _value: DateTime
+    /*
+     * @noThrow
+     */
     public init(v: DateTime) {
         _value = v
     }
     public mut prop value: DateTime {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlTimeTz"
         }
@@ -777,18 +1149,30 @@ public class SqlTimeTz <: SqlDbType {
 @Deprecated[message: "Use `?DateTime` instead."]
 public class SqlNullableTimeTz <: SqlNullableDbType {
     var _value: ?DateTime
+    /*
+     * @noThrow
+     */
     public init(v: ?DateTime) {
         _value = v
     }
     public mut prop value: ?DateTime {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableTimeTz"
         }
@@ -801,18 +1185,30 @@ public class SqlNullableTimeTz <: SqlNullableDbType {
 @Deprecated[message: "Use `DateTime` instead."]
 public class SqlTimestamp <: SqlDbType {
     var _value: DateTime
+    /*
+     * @noThrow
+     */
     public init(v: DateTime) {
         _value = v
     }
     public mut prop value: DateTime {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlTimestamp"
         }
@@ -825,18 +1221,30 @@ public class SqlTimestamp <: SqlDbType {
 @Deprecated[message: "Use `?DateTime` instead."]
 public class SqlNullableTimestamp <: SqlNullableDbType {
     var _value: ?DateTime
+    /*
+     * @noThrow
+     */
     public init(v: ?DateTime) {
         _value = v
     }
     public mut prop value: ?DateTime {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableTimestamp"
         }
@@ -849,18 +1257,30 @@ public class SqlNullableTimestamp <: SqlNullableDbType {
 @Deprecated[message: "Use `Duration` instead."]
 public class SqlInterval <: SqlDbType {
     var _value: Duration
+    /*
+     * @noThrow
+     */
     public init(v: Duration) {
         _value = v
     }
     public mut prop value: Duration {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlInterval"
         }
@@ -873,18 +1293,30 @@ public class SqlInterval <: SqlDbType {
 @Deprecated[message: "Use `?Duration` instead."]
 public class SqlNullableInterval <: SqlNullableDbType {
     var _value: ?Duration
+    /*
+     * @noThrow
+     */
     public init(v: ?Duration) {
         _value = v
     }
     public mut prop value: ?Duration {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableInterval"
         }
@@ -897,18 +1329,30 @@ public class SqlNullableInterval <: SqlNullableDbType {
 @Deprecated[message: "Use `Decimal` instead."]
 public class SqlDecimal <: SqlDbType {
     var _value: Decimal
+    /*
+     * @noThrow
+     */
     public init(v: Decimal) {
         _value = v
     }
     public mut prop value: Decimal {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlDecimal"
         }
@@ -921,18 +1365,30 @@ public class SqlDecimal <: SqlDbType {
 @Deprecated[message: "Use `?Decimal` instead."]
 public class SqlNullableDecimal <: SqlNullableDbType {
     var _value: ?Decimal
+    /*
+     * @noThrow
+     */
     public init(v: ?Decimal) {
         _value = v
     }
     public mut prop value: ?Decimal {
+        /*
+         * @noThrow
+         */
         get() {
             return _value
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             _value = value
         }
     }
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "SqlNullableDecimal"
         }

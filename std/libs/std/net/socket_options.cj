@@ -9,6 +9,9 @@
 package std.net
 
 public struct SocketOptions {
+    /*
+     * @noThrow
+     */
     private init() {
     }
 

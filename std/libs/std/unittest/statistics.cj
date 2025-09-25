@@ -18,20 +18,35 @@ import std.unittest.diff.AssertPrintable
 import std.unittest.prop_test.ShrinkHelpers
 
 class Sample {
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     Sample(let data: ArrayList<Float64>) {
         this.data.removeIf { x => x.isNaN() }
         this.data.sort()
     }
 
     prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() { data.size }
     }
 
+    /*
+     * @noThrow
+     */
     func mean(): Float64 {
         let sum = data |> fold(0.0) { a, b => a + b }
         sum / Float64(data.size)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func percentile(ratio: Float64): Float64 {
         if (this.data.size == 0) {
             return Float64.NaN
@@ -40,9 +55,18 @@ class Sample {
         (this.data[Int64(ceil(x))] + this.data[Int64(floor(x))]) / 2.0
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func create(data: ArrayList<Float64>): Sample {
         Sample(data)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func kde(kdeThroughput: Float64): ArrayList<(Float64, Float64)> {
         let result = ArrayList<(Float64, Float64)>()
 
@@ -93,6 +117,9 @@ let MEDIAN_CI_999_COEFF: Float64 = 3.291
 let EPSILON: Float64 = 0.0001
 
 class Measurements {
+    /*
+     * @noThrow
+     */
     Measurements(
         private let data: Array<(Float64,Float64)>
     ) {}
@@ -102,6 +129,11 @@ class Measurements {
     var intercept: Float64 = 0.0
     var errorEst: Float64 = 0.0
     var r2: Float64 = 0.0
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func calculateMedian(): This {
         this.calcSlopes()
 
@@ -125,6 +157,11 @@ class Measurements {
         this
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func calcSlopes() {
         let slopes = ArrayList<Float64>()
 
@@ -142,6 +179,9 @@ class Measurements {
 
         this.slopes = Sample(slopes)
     }
+    /*
+     * @noThrow
+     */
     func calculateMean(): This {
         let sumx = data.iterator().map {p => p[0]}.sum()
         let sumy = data.iterator().fold(0.0) {acc, p => p[1] + acc}
@@ -180,10 +220,16 @@ class Measurements {
 }
 
 interface AsFloat {
+    /*
+     * @noThrow
+     */
     func asFloat(): Float64
 }
 
 extend Float64 <: AsFloat {
+    /*
+     * @noThrow
+     */
     public func asFloat(): Float64 {
         this
     }
@@ -191,6 +237,9 @@ extend Float64 <: AsFloat {
 
 extend<T> Iterator<T> where T <: AsFloat {
     @Frozen
+    /*
+     * @noThrow
+     */
     func sum(): Float64 {
         this.filterMap{ x => x.asFloat() }.fold(0.0) { acc, p => acc + p }
     }

@@ -37,11 +37,17 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
     protected let sec: Int64
     protected let ns: UInt32
 
+    /*
+     * @noThrow
+     */
     protected const init(sec: Int64, ns: UInt32) {
         this.sec = sec
         this.ns = ns
     }
 
+    /*
+     * @throws ArithmeticException
+     */
     static func of(sec: Int64, ns: Int64): Duration {
         if (ns < 0) {
             if (sec == Int64.Min) {
@@ -92,6 +98,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public func toNanoseconds(): Int64 {
         if (let Some(result) <- getResult(NS_PER_SEC)) {
             return result
@@ -104,6 +113,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public func toMicroseconds(): Int64 {
         if (let Some(result) <- getResult(US_PER_SEC)) {
             return result
@@ -116,6 +128,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public func toMilliseconds(): Int64 {
         if (let Some(result) <- getResult(MS_PER_SEC)) {
             return result
@@ -126,6 +141,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toSeconds(): Int64 {
         return getRealSecond()
     }
@@ -133,6 +151,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toMinutes(): Int64 {
         return getRealSecond() / SECS_PER_MINUTE
     }
@@ -140,6 +161,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toHours(): Int64 {
         return getRealSecond() / SECS_PER_HOUR
     }
@@ -147,10 +171,16 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toDays(): Int64 {
         return getRealSecond() / SECS_PER_DAY
     }
 
+    /*
+     * @noThrow
+     */
     private func getRealSecond(): Int64 {
         if (sec < 0 && ns > 0u32) {
             return sec + 1
@@ -165,6 +195,10 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return match {
             case this == Zero => "0s"
@@ -194,6 +228,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         var dfh: DefaultHasher = DefaultHasher()
         dfh.write(this.sec)
@@ -206,6 +243,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public func abs(): Duration {
         let (second, nanosecond) = toSameSign()
         if (second == Int64.Min) {
@@ -225,6 +265,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public operator func +(r: Duration): Duration {
         if ((r.sec | Int64(r.ns)) == 0) {
             return this
@@ -243,6 +286,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public operator func -(r: Duration): Duration {
         if ((r.sec | Int64(r.ns)) == 0) {
             return this
@@ -261,6 +307,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public operator func *(r: Int64): Duration {
         if (this == Zero || r == 0) {
             return Zero
@@ -288,6 +337,11 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws getOrThrow
+     * @throws IllegalArgumentException
+     */
     public operator func *(r: Float64): Duration {
         if (this == Zero || r == FLOAT64_0) {
             return Zero
@@ -302,10 +356,16 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
             {=> ArithmeticException("Out of range of representation of 'Duration'!")})
     }
 
+    /*
+     * @noThrow
+     */
     func toFloat64Nanoseconds(): Float64 {
         return Float64(sec) * Float64(NS_PER_SEC) + Float64(ns)
     }
 
+    /*
+     * @throws ArithmeticException
+     */
     private func getDurationByFloat64(ns_f64: Float64): Option<Duration> {
         return if (ns_f64 < MAX_NS_FLOAT64 && ns_f64 > MIN_NS_FLOAT64) {
             let second = Int64(ns_f64 / Float64(NS_PER_SEC))
@@ -327,6 +387,10 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public operator func /(r: Int64): Duration {
         if (r == 0) {
             throw IllegalArgumentException("The value of right operand cannot be 0!")
@@ -362,6 +426,11 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws getOrThrow
+     * @throws IllegalArgumentException
+     */
     public operator func /(r: Float64): Duration {
         if (this == Zero) {
             return Zero
@@ -384,6 +453,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public operator func /(r: Duration): Float64 {
         if (r == Zero) {
             throw IllegalArgumentException("The value of right operand cannot be Duration.Zero!")
@@ -397,6 +469,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func ==(r: Duration): Bool {
         return this.sec == r.sec && this.ns == r.ns
     }
@@ -407,6 +482,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func !=(r: Duration): Bool {
         return !(this == r)
     }
@@ -417,6 +495,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func >=(r: Duration): Bool {
         return if (this.sec == r.sec) {
             this.ns >= r.ns
@@ -433,6 +514,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func >(r: Duration): Bool {
         return if (this.sec == r.sec) {
             this.ns > r.ns
@@ -449,6 +533,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func <=(r: Duration): Bool {
         return !(this > r)
     }
@@ -459,6 +546,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func <(r: Duration): Bool {
         return !(this >= r)
     }
@@ -467,6 +557,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func compare(rhs: Duration): Ordering {
         return match {
             case this < rhs => Ordering.LT
@@ -476,6 +569,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     func toUnsignedNum(r: Int64): (UInt64, UInt32, UInt64, Bool) {
         var sign = r > 0
         let (secs, nanos) = toSameSign()
@@ -491,6 +587,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func getResult(div: Int64): ?Int64 {
         let (second, nanosecond) = toSameSign()
         if (second > 0 && second > (Int64.Max - nanosecond) / div) {
@@ -501,6 +600,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         return second * div + nanosecond * div / NS_PER_SEC
     }
 
+    /*
+     * @noThrow
+     */
     private func toSameSign(): (Int64, Int64) {
         var second = this.sec
         var nanosecond = Int64(this.ns)
@@ -512,6 +614,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
     }
 }
 
+/*
+ * @throws ArithmeticException
+ */
 func durMul(secs: UInt64, nanos: UInt32, multiplier: UInt64, sign: Bool): ?Duration {
     let (count, nanoseconds) = u32MulU64(nanos, multiplier)
     var seconds: UInt64
@@ -539,6 +644,9 @@ func durMul(secs: UInt64, nanos: UInt32, multiplier: UInt64, sign: Bool): ?Durat
     return Duration.of(-Int64(seconds), -Int64(nanoseconds))
 }
 
+/*
+ * @noThrow
+ */
 func u32MulU64(thisInt: UInt32, thatInt: UInt64): (UInt64, UInt32) {
     let thatLow32: UInt32 = thatInt % DUR_BASE
     let thatHigh32: UInt64 = thatInt / UInt64(NS_PER_SEC)
@@ -548,6 +656,9 @@ func u32MulU64(thisInt: UInt32, thatInt: UInt64): (UInt64, UInt32) {
     return (second, nanosecond)
 }
 
+/*
+ * @noThrow
+ */
 func tryU64Mul(left: UInt64, right: UInt64): ?UInt64 {
     if (left == 0u64) {
         return 0u64
@@ -558,16 +669,25 @@ func tryU64Mul(left: UInt64, right: UInt64): ?UInt64 {
     return left * right
 }
 
+/*
+ * @noThrow
+ */
 func tryU64Add(left: UInt64, right: UInt64): ?UInt64 {
     if (right > SECS_MAX - left) {
         return None
     }
     return left + right
 }
+/*
+ * @noThrow
+ */
 func checkSub(left: Int64, right: Int64): Bool {
     return (right > 0 && left <= Int64.Min + right) || (right < 0 && left >= Int64.Max + right)
 }
 
+/*
+ * @noThrow
+ */
 func toSecNsBase(num: UInt64): (UInt32, UInt32, UInt32) {
     let res0 = num % DUR_BASE
     let res1 = num / DUR_BASE % DUR_BASE
@@ -575,6 +695,9 @@ func toSecNsBase(num: UInt64): (UInt32, UInt32, UInt32) {
     return (UInt32(res2), res1, res0)
 }
 
+/*
+ * @noThrow
+ */
 func durDiv(secs: UInt64, nanos: UInt32, divisor: UInt64): (Int64, Int64) {
     let (divisor2, divisor1, divisor0) = toSecNsBase(divisor)
     let (sec2, sec1, sec0) = toSecNsBase(secs)
@@ -625,6 +748,9 @@ func durDiv(secs: UInt64, nanos: UInt32, divisor: UInt64): (Int64, Int64) {
     }
 }
 
+/*
+ * @noThrow
+ */
 func getDifference(num3: Int64, num2: Int64, num1: Int64, num0: Int64): (Int64, Int64, Int64, Int64) {
     var (res3, res2, res1, res0) = (num3, num2, num1, num0)
     if (res0 < 0) {
@@ -642,6 +768,9 @@ func getDifference(num3: Int64, num2: Int64, num1: Int64, num0: Int64): (Int64, 
     return (res3, res2, res1, res0)
 }
 
+/*
+ * @noThrow
+ */
 func getDifference(num2: Int64, num1: Int64, num0: Int64): (UInt32, UInt32, UInt32) {
     var (res2, res1, res0) = (num2, num1, num0)
     if (res0 < 0) {
@@ -655,6 +784,9 @@ func getDifference(num2: Int64, num1: Int64, num0: Int64): (UInt32, UInt32, UInt
     return (UInt32(res2), UInt32(res1), UInt32(res0))
 }
 
+/*
+ * @noThrow
+ */
 func u32TwoMul(num1: UInt32, num0: UInt32, multiplier: UInt32): (UInt32, UInt32, UInt32) {
     var res0: UInt64 = UInt64(num0) * UInt64(multiplier)
     var res1: UInt64 = UInt64(num1) * UInt64(multiplier) + res0 / DUR_BASE
@@ -662,6 +794,9 @@ func u32TwoMul(num1: UInt32, num0: UInt32, multiplier: UInt32): (UInt32, UInt32,
     return (UInt32(res2), res1 % DUR_BASE, res0 % DUR_BASE)
 }
 
+/*
+ * @noThrow
+ */
 func u32ThreeMul(num2: UInt32, num1: UInt32, num0: UInt32, multiplier: UInt32): (UInt32, UInt32, UInt32, UInt32) {
     var res0: UInt64 = UInt64(num0) * UInt64(multiplier)
     var res1: UInt64 = UInt64(num1) * UInt64(multiplier) + res0 / DUR_BASE
@@ -670,6 +805,9 @@ func u32ThreeMul(num2: UInt32, num1: UInt32, num0: UInt32, multiplier: UInt32): 
     return (UInt32(res3), res2 % DUR_BASE, res1 % DUR_BASE, res0 % DUR_BASE)
 }
 
+/*
+ * @noThrow
+ */
 func u32DividendMul(num3: UInt32, num2: UInt32, num1: UInt32, num0: UInt32, times: UInt32): (UInt32, UInt32, UInt32, 
     UInt32, UInt32) {
     var res0: UInt64 = UInt64(num0) * UInt64(times)
@@ -680,6 +818,9 @@ func u32DividendMul(num3: UInt32, num2: UInt32, num1: UInt32, num0: UInt32, time
     return (UInt32(res4), res3 % DUR_BASE, res2 % DUR_BASE, res1 % DUR_BASE, res0 % DUR_BASE)
 }
 
+/*
+ * @noThrow
+ */
 func divAndMod(dividend: UInt64, dividend2: UInt32, divisor2: UInt32, divisor1: UInt32): (UInt32) {
     var discuss = dividend / divisor2
     var remainder = dividend % divisor2
@@ -703,32 +844,50 @@ extend Int64 {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public operator func *(r: Duration): Duration {
         return r * this
     }
 }
 
 extend Int64 {
+    /*
+     * @noThrow
+     */
     operator func -(r: UInt32): Int64 {
         return this - Int64(r)
     }
 }
 
 extend UInt64 {
+    /*
+     * @noThrow
+     */
     operator func *(r: UInt32): UInt64 {
         return this * UInt64(r)
     }
 
+    /*
+     * @noThrow
+     */
     operator func /(r: UInt32): UInt64 {
         return this / UInt64(r)
     }
 
+    /*
+     * @noThrow
+     */
     operator func %(r: UInt32): UInt32 {
         return UInt32(this % UInt64(r))
     }
 }
 
 extend UInt32 {
+    /*
+     * @noThrow
+     */
     operator func *(r: UInt64): UInt64 {
         return UInt64(r) * this
     }
@@ -742,12 +901,21 @@ extend Float64 {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws getOrThrow
+     * @throws IllegalArgumentException
+     */
     public operator func *(r: Duration): Duration {
         return r * this
     }
 }
 
 extend StringBuilder {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func append(num: Int64, unit: String): StringBuilder {
         if (num != 0) {
             this.append(num)
@@ -757,6 +925,9 @@ extend StringBuilder {
     }
 }
 
+/*
+ * @noThrow
+ */
 func isSumOverflow(left: Int64, right: Int64): Bool {
     return (right > 0 && left > MAX_INT64 - right) || (right < 0 && left < MIN_INT64 - right)
 }

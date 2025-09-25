@@ -52,6 +52,10 @@ foreign {
 let BUFFER_HEADER_SIZE: Int64 = 4
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func getInt32FromUnsafePointer(ptr: CPointer<UInt8>): Int32 {
     var buf = Array<UInt8>(BUFFER_HEADER_SIZE, {x: Int64 => unsafe { ptr.read(x) }})
     return getInt32(buf[0..4])
@@ -63,6 +67,12 @@ struct ParseRes {
     let errMsg: CString = CString(CPointer<UInt8>())
 }
 
+/*
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ParseASTException
+ */
 unsafe func parse(input: Tokens, nativeParse: (CPointer<UInt8>) -> CPointer<ParseRes>): NodeFormat_Node {
     let tokensBytes: Array<UInt8> = input.toBytes()
     let pTokensBytes: CPointer<UInt8> = unsafePointerCastFromUint8Array(tokensBytes)
@@ -93,6 +103,12 @@ unsafe func parse(input: Tokens, nativeParse: (CPointer<UInt8>) -> CPointer<Pars
     return node
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ParseASTException
+ * @throws IllegalMemoryException
+ */
 unsafe func parseFragment(
     input: Tokens,
     startFrom: Int64,
@@ -136,6 +152,10 @@ unsafe func parseFragment(
     return (node, tokenCounter + startFrom)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func genNodeFormatNode(pNode: CPointer<UInt8>, pTokensBytes: CPointer<UInt8>) {
     if (pNode.isNull()) {
         unsafe { LibC.free(pTokensBytes) }
@@ -157,6 +177,10 @@ func genNodeFormatNode(pNode: CPointer<UInt8>, pTokensBytes: CPointer<UInt8>) {
     return NodeFormat_Node(flatBuf[BUFFER_HEADER_SIZE..], 0)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getTokensFromBytes(pTokenArray: CPointer<UInt8>): Tokens {
     var length: Int64 = Int64(getInt32FromUnsafePointer(pTokenArray))
     if (length <= 0) {
@@ -169,6 +193,13 @@ func getTokensFromBytes(pTokenArray: CPointer<UInt8>): Tokens {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public func cangjieLex(code: String): Tokens {
     return cangjieLex(code, true)
 }
@@ -177,6 +208,13 @@ public func cangjieLex(code: String): Tokens {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public func cangjieLex(code: String, truncated: Bool): Tokens {
     
     var pCode = unsafe { LibC.mallocCString(code) }
@@ -212,6 +250,11 @@ public func cangjieLex(code: String, truncated: Bool): Tokens {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ */
 func unsafePointerCastFromUint8Array(arr: Array<UInt8>): CPointer<UInt8> {
     let arrSize: Int64 = arr.size
     if (arrSize <= 0) {
@@ -229,12 +272,21 @@ func unsafePointerCastFromUint8Array(arr: Array<UInt8>): CPointer<UInt8> {
 
 
 public class MacroContextException <: Exception {
+    /*
+     * @noThrow
+     */
     public init() {
         super()
     }
+    /*
+     * @noThrow
+     */
     public init(message: String) {
         super(message)
     }
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "MacroAssertParentException"
     }
@@ -247,6 +299,14 @@ public class MacroContextException <: Exception {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws MacroContextException
+ * @throws IllegalMemoryException
+ */
 public func assertParentContext(parentMacroName: String): Unit {
     unsafe {
         if (let Some(macroObjPtr) <- MACRO_OBJECT.get()) {
@@ -268,6 +328,13 @@ public func assertParentContext(parentMacroName: String): Unit {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public func insideParentContext(parentMacroName: String): Bool {
     unsafe {
         if (let Some(macroObjPtr) <- MACRO_OBJECT.get()) {
@@ -293,6 +360,13 @@ let ITEM_TYPE_TOKENS: UInt8 = 4
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public func setItem(key: String, value: String): Unit {
     unsafe {
         if (let Some(macroObjPtr) <- MACRO_OBJECT.get()) {
@@ -310,6 +384,13 @@ public func setItem(key: String, value: String): Unit {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public func setItem(key: String, value: Int64): Unit {
     unsafe {
         if (let Some(macroObjPtr) <- MACRO_OBJECT.get()) {
@@ -328,6 +409,13 @@ public func setItem(key: String, value: Int64): Unit {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public func setItem(key: String, value: Bool): Unit {
     unsafe {
         if (let Some(macroObjPtr) <- MACRO_OBJECT.get()) {
@@ -346,6 +434,13 @@ public func setItem(key: String, value: Bool): Unit {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public func setItem(key: String, value: Tokens): Unit {
     unsafe {
         if (let Some(macroObjPtr) <- MACRO_OBJECT.get()) {
@@ -365,6 +460,9 @@ class McInfo {
     private var value_: CPointer<Unit>
     private var valueType_: UInt8
 
+    /*
+     * @noThrow
+     */
     init(keyVal_: CString, v: CPointer<Unit>, vType: UInt8) {
         keyVal = keyVal_
         value_ = v
@@ -372,18 +470,27 @@ class McInfo {
     }
 
     prop keyV: CString {
+        /*
+         * @noThrow
+         */
         get() {
             keyVal
         }
     }
 
     prop value: CPointer<Unit> {
+        /*
+         * @noThrow
+         */
         get() {
             value_
         }
     }
 
     prop valueType: UInt8 {
+        /*
+         * @noThrow
+         */
         get() {
             valueType_
         }
@@ -392,10 +499,16 @@ class McInfo {
 
 public class MacroMessage {
     var infoMap: ArrayList<McInfo>
+    /*
+     * @noThrow
+     */
     init(res: ArrayList<McInfo>) {
         infoMap = res
     }
 
+    /*
+     * @noThrow
+     */
     private func getIndexFromKey(key: String) {
         var index = 0
         for (info in infoMap) {
@@ -408,6 +521,9 @@ public class MacroMessage {
     }
 
 
+    /*
+     * @noThrow
+     */
     public func hasItem(key: String): Bool {
         return getIndexFromKey(key) != -1
     }
@@ -416,6 +532,10 @@ public class MacroMessage {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     public func getString(key: String): String {
         var keyIndex = getIndexFromKey(key)
         if (keyIndex != -1) {
@@ -432,6 +552,10 @@ public class MacroMessage {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     public func getInt64(key: String): Int64 {
         var keyIndex = getIndexFromKey(key)
         if (keyIndex != -1) {
@@ -450,6 +574,10 @@ public class MacroMessage {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     public func getBool(key: String): Bool {
         var keyIndex = getIndexFromKey(key)
         if (keyIndex != -1) {
@@ -468,6 +596,11 @@ public class MacroMessage {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public func getTokens(key: String): Tokens {
         var keyIndex = getIndexFromKey(key)
         if (keyIndex != -1) {
@@ -485,6 +618,10 @@ public class MacroMessage {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func readCpointerToMap(cp: CPointer<CPointer<Unit>>): ArrayList<McInfo> {
     var i: Int64 = 0
     var infoMap: ArrayList<McInfo> = ArrayList<McInfo>()
@@ -509,6 +646,13 @@ func readCpointerToMap(cp: CPointer<CPointer<Unit>>): ArrayList<McInfo> {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public func getChildMessages(children: String): ArrayList<MacroMessage> {
     let macroObjPtr = match (MACRO_OBJECT.get()) {
         case Some(v) => v

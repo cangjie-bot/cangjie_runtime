@@ -11,7 +11,13 @@ package std.net
 import std.sync.*
 
 enum InternalHolderState<NS> {
+      /*
+       * @noThrow
+       */
     | NotCreated(() -> NS)
+      /*
+       * @noThrow
+       */
     | Ready(NS)
     | Disposed
 }
@@ -22,6 +28,9 @@ enum HolderState <: Equatable<HolderState> {
     | SocketClosing
     | SocketDisposed
 
+    /*
+     * @noThrow
+     */
     public override operator func ==(other: HolderState): Bool {
         match ((this, other)) {
             case (SocketNotCreated, SocketNotCreated) => true
@@ -32,6 +41,9 @@ enum HolderState <: Equatable<HolderState> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public override operator func !=(other: HolderState): Bool {
         !(this == other)
     }
@@ -44,21 +56,33 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     private let useCounter = AtomicUInt32(0)
     private var state_: InternalHolderState<NS>
 
+    /*
+     * @noThrow
+     */
     SocketHolder(create: () -> NS) {
         state_ = NotCreated(create)
     }
 
+    /*
+     * @noThrow
+     */
     init(acceptedSocket!: NS) {
         state_ = Ready(acceptedSocket)
         useCounter.store(SocketState.JustAccepted.value)
     }
 
     prop state: SocketState {
+        /*
+         * @noThrow
+         */
         get() {
             SocketState(useCounter.load())
         }
     }
 
+    /*
+     * @throws SocketException
+     */
     func markConnected(): Unit {
         while (true) {
             let before = SocketState(useCounter.load())
@@ -73,6 +97,9 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private func markCreated() {
         while (true) {
             let before = SocketState(useCounter.load())
@@ -87,6 +114,9 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func unmarkConnected() {
         while (true) {
             let before = SocketState(useCounter.load())
@@ -102,6 +132,9 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws IllegalStateException
+     */
     func markBound(): Unit {
         while (true) {
             let before = SocketState(useCounter.load())
@@ -116,6 +149,9 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func markFailed(): Unit {
         while (true) {
             let before = SocketState(useCounter.load())
@@ -127,10 +163,18 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public override func isClosed(): Bool {
         SocketState(useCounter.load()).disposedOrShuttingDown
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public override func close(): Unit {
         tryClose()
     }
@@ -144,6 +188,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     func use<R>(block: (NS, SocketState) -> R): ?R {
         let (socket, state) = startUsingSocket() ?? return None
         try {
@@ -154,6 +205,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func startUsingSocket(): ?(NS, SocketState) {
         var state: SocketState
 
@@ -178,6 +236,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         return createSocketUsingSession(state)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func createSocketUsingSession(state: SocketState): ?(NS, SocketState) {
         let socket = try {
             ensureSocket()
@@ -202,6 +267,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     func read<R>(block: (NS, SocketState) -> R): ?R {
         let (socket, state) = startReading() ?? return None
         try {
@@ -212,6 +284,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func startReading(): ?(NS, SocketState) {
         var state: SocketState
 
@@ -240,6 +319,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         return createSocketReadSession(state)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func createSocketReadSession(state: SocketState): ?(NS, SocketState) {
         let socket = try {
             ensureSocket()
@@ -256,6 +342,9 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws IllegalStateException
+     */
     private static func throwAlreadyReading(): Nothing {
         throw IllegalStateException("Socket is already reading: concurrent read is not allowed")
     }
@@ -268,6 +357,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     func write<R>(block: (NS, SocketState) -> R): ?R {
         let (socket, state) = startWriting() ?? return None
         try {
@@ -278,6 +374,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func startWriting(): ?(NS, SocketState) {
         var state: SocketState
 
@@ -306,6 +409,13 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         return createSocketWriteSession(state)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func createSocketWriteSession(state: SocketState): ?(NS, SocketState) {
         let socket = try {
             ensureSocket()
@@ -322,9 +432,17 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws IllegalStateException
+     */
     private static func throwAlreadyWriting(): Nothing {
         throw IllegalStateException("Socket is already writing: concurrent write is not allowed")
     }
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     private func ensureSocket(): ?NS {
 
         return match (state_) {
@@ -335,6 +453,11 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     private func tryCreate(): ?NS {
         socketCreationLock.lock()
         try {
@@ -360,6 +483,10 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func leaveRead(): Unit {
         var doDispose: Bool = false
 
@@ -390,6 +517,10 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func leaveWrite(): Unit {
         var doDispose: Bool = false
 
@@ -421,6 +552,10 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func leave(): Unit {
         var doDispose: Bool = false
 
@@ -450,11 +585,19 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws IllegalStateException
+     */
     private static func throwLeaveWithoutEnter(): Nothing {
         throw IllegalStateException("leave() invoked without tryEnterXXX() invocation")
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func tryClose(): Unit {
         var terminated = false
 
@@ -487,6 +630,10 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func doShutdown() {
 
         try {
@@ -498,12 +645,18 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func dispose() {
         if (let Some(s) <- doStealExclusive()) {
             unsafe { s.dispose() }
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func doStealExclusive(): ?NS {
         match (state_) {
             case Ready(s) =>

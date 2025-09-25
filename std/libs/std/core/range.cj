@@ -19,6 +19,9 @@ public struct Range<T> <: Iterable<T> where T <: Countable<T> & Comparable<T> & 
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public const init(start: T, end: T, step: Int64, hasStart: Bool, hasEnd: Bool, isClosed: Bool) {
         if (step == 0) {
             throw IllegalArgumentException("The value of the step should not be zero.")
@@ -32,10 +35,16 @@ public struct Range<T> <: Iterable<T> where T <: Countable<T> & Comparable<T> & 
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): Iterator<T> {
         return RangeIterator<T>(start, last(), step, isEmpty())
     }
 
+    /*
+     * @noThrow
+     */
     public const func isEmpty(): Bool {
         if (isClosed) {
             if (step > 0) {
@@ -54,6 +63,9 @@ public struct Range<T> <: Iterable<T> where T <: Countable<T> & Comparable<T> & 
 
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private const func last() {
         if (step != 1 && step != -1) {
             let (lower, upper, absStep) = if (step > 0) {
@@ -86,6 +98,9 @@ public class RangeIterator<T> <: Iterator<T> where T <: Countable<T> & Comparabl
     private var cur: T
     private var hasNext: Bool
 
+    /*
+     * @noThrow
+     */
     init(first: T, last: T, step: Int64, isEmpty: Bool) {
         this._last = last
         this._step = step
@@ -95,6 +110,9 @@ public class RangeIterator<T> <: Iterator<T> where T <: Countable<T> & Comparabl
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func next(): Option<T> {
         var res = cur
         if (hasNext) {

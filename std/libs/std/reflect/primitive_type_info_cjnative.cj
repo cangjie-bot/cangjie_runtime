@@ -15,6 +15,15 @@ public class PrimitiveTypeInfo <: TypeInfo {
 
     static let ARRAY_OBJECT = Array<Object>()
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     */
     init(cp: CPointer<Unit>, name: String) {
         super(cp)
         this._qualifiedName = name
@@ -28,6 +37,17 @@ public class PrimitiveTypeInfo <: TypeInfo {
         this._annotations = Some(Array())
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalTypeException
+     */
     public static redef func get(qualifiedName: String): PrimitiveTypeInfo {
         match (TypeInfo.get(qualifiedName)) {
             case typ: PrimitiveTypeInfo => return typ
@@ -35,6 +55,16 @@ public class PrimitiveTypeInfo <: TypeInfo {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalTypeException
+     */
     public static redef func of(a: Any): PrimitiveTypeInfo {
         match (TypeInfo.of(a)) {
             case typ: PrimitiveTypeInfo => return typ
@@ -42,6 +72,16 @@ public class PrimitiveTypeInfo <: TypeInfo {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalTypeException
+     */
     public static redef func of<T>(): PrimitiveTypeInfo {
         match (TypeInfo.of<T>()) {
             case typ: PrimitiveTypeInfo => return typ
@@ -49,6 +89,9 @@ public class PrimitiveTypeInfo <: TypeInfo {
         }
     }
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func checkPrimitive(name: String): (Bool, String, String) {
     for (i in 0..PrimitiveTypeInfo.PRIMITIVES.size where name == PrimitiveTypeInfo.PRIMITIVES[i]) {
         return (true, name, PrimitiveTypeInfo.PRIMITIVES[i])

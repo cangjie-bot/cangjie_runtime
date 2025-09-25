@@ -11,6 +11,15 @@ import std.collection.*
 import std.regex.Regex
 import std.unittest.common.*
 
+/*
+ * @throws OutOfMemoryError
+ * @throws JsonException
+ * @throws IllegalArgumentException
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ */
 func substituteTemplate(template: String, values: JsonValue): String {
     Root(template).substitute(values)
 }
@@ -23,6 +32,14 @@ func substituteTemplate(template: String, values: JsonValue): String {
 class Root {
     var templates = HashMap<String, Template>()
     var rootTemplate: Template
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws RegexException
+     */
     Root(t: String) {
         var template = t
 
@@ -42,13 +59,29 @@ class Root {
         Template.VARIABLES_MATCHER = Regex("\\$([a-zA-Z0-9_]+)\\:?([a-zA-Z0-9_]+)?")
     }
 
+    /*
+     * @throws JsonException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     */
     func substitute(values: JsonValue): String {
         rootTemplate.substitute(values, templates, 0).getOrThrow()
     }
 }
 
 class Template {
+    /*
+     * @noThrow
+     */
     Template(let name: String, let baseText: String) {}
+    /*
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func fromString(text: String): Template {
         let parts = text.split("\n", 2)
         Template(parts[0].trimEnd(" \r\n"), parts[1])
@@ -58,6 +91,14 @@ class Template {
     static var VARIABLES_MATCHER: Regex = Regex("temp")
     static let REPETITIONS_SANITY_CHECK: Int64 = 1000;
 
+    /*
+     * @throws JsonException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     */
     func substitute(values: JsonValue, templates: HashMap<String, Template>, index: Int64): ?String {
         if (values is JsonNull) {
             return ""
@@ -106,33 +147,52 @@ class Template {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func object(data: Array<(String, IntoJson)>): JsonObject {
     JsonObject(HashMap<String, JsonValue>(data.size) { i => (data[i][0], data[i][1].json()) })
 }
 
 interface IntoJson {
+    /*
+     * @noThrow
+     */
     func json(): JsonValue
 }
 
 extend JsonValue <: IntoJson {
+    /*
+     * @noThrow
+     */
     public func json(): JsonValue {
         this
     }
 }
 
 extend String <: IntoJson {
+    /*
+     * @noThrow
+     */
     public func json(): JsonValue {
         JsonString(this)
     }
 }
 
 extend Int64 <: IntoJson {
+    /*
+     * @noThrow
+     */
     public func json(): JsonValue {
         JsonInt(this)
     }
 }
 
 extend<T> Option<T> <: IntoJson where T <: IntoJson {
+    /*
+     * @noThrow
+     */
     public func json(): JsonValue {
         match (this) {
             case None => JsonNull()
@@ -142,18 +202,29 @@ extend<T> Option<T> <: IntoJson where T <: IntoJson {
 }
 
 extend<T> Array<T> <: IntoJson where T <: IntoJson {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func json(): JsonValue {
         JsonArray(ArrayList(this.size) {i => this[i].json()})
     }
 }
 
 extend<T> ArrayList<T> <: IntoJson where T <: IntoJson {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func json(): JsonValue {
         JsonArray(ArrayList(this.size) {i => this[i].json()})
     }
 }
 
 extend JsonValue {
+    /*
+     * @noThrow
+     */
     func render(): String {
         match (this) {
             case x: JsonString => x.getValue()
@@ -164,6 +235,10 @@ extend JsonValue {
 }
 
 extend JsonValue {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws JsonException
+     */
     func getIndexed(field: String, index: Int64): ?JsonValue {
         if (let Some(arr) <- (this as JsonArray)) {
             return (arr.get(index) as JsonObject)?.get(field) ?? None

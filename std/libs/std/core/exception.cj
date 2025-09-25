@@ -9,9 +9,15 @@
 package std.core
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func fillInStackTrace(pc: RawArray<UInt64>, message: RawArray<UInt8>): RawArray<UInt64>
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func decodeStackTrace(pc: UInt64, funcStart: UInt64, funcDesc: UInt64): StackTraceData
 
 
@@ -22,6 +28,10 @@ struct StackTraceData {
     let lineNumber: Int64 = 0
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func getStackTraceImpl(pcArray: RawArray<UInt64>): Array<StackTraceElement> {
     let frameSize = arraySize(pcArray) / 3
     let emptyElement = StackTraceElement("", "", "", 0)
@@ -52,25 +62,40 @@ public open class Exception <: ToString {
     private var pcArray: RawArray<UInt64> = RawArray<UInt64>(1, repeat: 0)
     private var traceElementArray: Array<StackTraceElement> = []
 
+    /*
+     * @noThrow
+     */
     public init() {
         pcArray = fillInStackTrace(RawArray<UInt64>(1, repeat: 0), detailMessage.toArray().rawptr)
     }
 
+    /*
+     * @noThrow
+     */
     public init(message: String) {
         detailMessage = message
         pcArray = fillInStackTrace(RawArray<UInt64>(1, repeat: 0), detailMessage.toArray().rawptr)
     }
 
+    /*
+     * @noThrow
+     */
     protected open func getClassName(): String {
         return "Exception"
     }
 
     public open prop message: String {
+        /*
+         * @noThrow
+         */
         get() {
             return detailMessage
         }
     }
 
+    /*
+     * @noThrow
+     */
     public open func toString(): String {
         let className: String = getClassName()
         let message: String = this.message
@@ -80,6 +105,11 @@ public open class Exception <: ToString {
         return "${className}: ${message}"
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func printStackTrace(): Unit {
         eprintln("An exception has occurred:")
         eprintln(toString())
@@ -95,6 +125,10 @@ public open class Exception <: ToString {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func getStackTrace(): Array<StackTraceElement> {
         getStackTraceImpl(pcArray)
     }

@@ -19,6 +19,9 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
     var _annotations: Option<Collection<Annotation>> = None
     var _declaringTypeInfo: CPointer<Unit>
 
+    /*
+     * @noThrow
+     */
     init(cp: CPointer<Unit>, declaringTypeInfo: CPointer<Unit>, isStruct!: Bool = false) {
         _info = cp
         _declaringTypeInfo = declaringTypeInfo
@@ -27,6 +30,9 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
 
 
     public prop name: String {
+        /*
+         * @throws IllegalStateException
+         */
         get() {
             match (_name) {
                 case Some(res) => res
@@ -44,6 +50,15 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
 
 
     public prop typeInfo: TypeInfo {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_typeInfo) {
                 case Some(res) => res
@@ -58,6 +73,10 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
 
 
     public prop modifiers: Collection<ModifierInfo> {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             match (_modifiers) {
                 case Some(res) => res
@@ -71,6 +90,15 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
 
 
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -86,6 +114,9 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isMutable(): Bool {
         match (_mutable) {
             case Some(res) => res
@@ -99,6 +130,16 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     */
     public func getValue(instance: Any): Any {
         checkDeclaringClassType(instance)
         getInstanceFieldValue(_info, _declaringTypeInfo, instance)
@@ -112,6 +153,18 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     * @throws InfoNotFoundException
+     * @throws IllegalSetException
+     */
     public func setValue(instance: Any, newValue: Any): Unit {
         if (!this.isMutable()) {
             throw IllegalSetException("Attempt to modify immutable variable '${name}'.")
@@ -121,6 +174,16 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         setInstanceFieldValue(_info, _declaringTypeInfo, instance, newValue)
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     */
     func checkDeclaringClassType(instance: Any): Unit {
         let declaringClassTypeInfo = getFieldDeclaringClassType(_declaringTypeInfo)
         let instanceTypeInfo = TypeInfo.of(instance)
@@ -131,30 +194,76 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: InstanceVariableInfo): Bool {
         this._info == that._info
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: InstanceVariableInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         this._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         for (m in modifiers) {
@@ -179,6 +288,15 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
     var _annotations: Option<Collection<Annotation>> = None
     var _declaringTypeInfo: CPointer<Unit>
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     init(cp: CPointer<Unit>, declaringTypeInfo: CPointer<Unit>) {
         _info = cp
         _isStruct = getFieldDeclaringClassType(declaringTypeInfo) is StructTypeInfo
@@ -187,6 +305,9 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
 
 
     public prop name: String {
+        /*
+         * @throws IllegalStateException
+         */
         get() {
             match (_name) {
                 case Some(res) => res
@@ -204,6 +325,15 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
 
 
     public prop typeInfo: TypeInfo {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_typeInfo) {
                 case Some(res) => res
@@ -218,6 +348,10 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
 
 
     public prop modifiers: Collection<ModifierInfo> {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             match (_modifiers) {
                 case Some(res) => res
@@ -231,6 +365,15 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
 
 
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -246,6 +389,9 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isMutable(): Bool {
         match (_mutable) {
             case Some(res) => res
@@ -257,6 +403,9 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
     }
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): Any {
         getStaticFieldValue(_info)
     }
@@ -267,6 +416,18 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
 
 
 
+    /*
+     * @throws IllegalTypeException
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalSetException
+     */
     public func setValue(newValue: Any): Unit {
         if (!isMutable()) {
             throw IllegalSetException("Attempt to modify immutable variable '${name}'.")
@@ -276,30 +437,76 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: StaticVariableInfo): Bool {
         this._info == that._info
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: StaticVariableInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         this._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         for (m in modifiers) {
@@ -321,12 +528,18 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
     var _typeInfo: Option<TypeInfo> = None
     var _annotations: Option<Collection<Annotation>> = None
 
+    /*
+     * @noThrow
+     */
     init(cp: CPointer<Unit>) {
         _info = cp
     }
 
 
     public prop name: String {
+        /*
+         * @throws IllegalStateException
+         */
         get() {
             match (_name) {
                 case Some(res) => res
@@ -342,6 +555,15 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
         }
     }
     public prop typeInfo: TypeInfo {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_typeInfo) {
                 case Some(res) => res
@@ -354,6 +576,15 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
         }
     }
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -367,6 +598,9 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
             }
         }
     }
+    /*
+     * @noThrow
+     */
     public func isMutable(): Bool {
         match (_mutable) {
             case Some(res) => res
@@ -376,6 +610,9 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
                 mutable
         }
     }
+    /*
+     * @noThrow
+     */
     public func getValue(): Any {
         getStaticFieldValue(_info)
     }
@@ -386,6 +623,18 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     * @throws InfoNotFoundException
+     * @throws IllegalSetException
+     */
     public func setValue(newValue: Any): Unit {
         if (!isMutable()) {
             throw IllegalSetException("Attempt to modify immutable variable '${name}'.")
@@ -395,30 +644,76 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: GlobalVariableInfo): Bool {
         this._info == that._info
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: GlobalVariableInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         this._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         sb.append(name)
@@ -428,6 +723,15 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
     }
 }
 
+/*
+ * @throws OutOfMemoryError
+ * @throws IllegalSynchronizationStateException
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ReflectException
+ * @throws InfoNotFoundException
+ */
 func getFieldDeclaringClassType(declaringTypeInfo: CPointer<Unit>): TypeInfo {
     TypeInfo.getOrCreate(declaringTypeInfo)
 }

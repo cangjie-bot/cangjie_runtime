@@ -10,6 +10,9 @@ package std.core
 
 @Frozen
 @OverflowWrapping
+/*
+ * @noThrow
+ */
 private func arrayInitByCollection<T>(array: RawArray<T>, elements: Collection<T>): RawArray<T> {
     var i: Int64 = 0
     let it: Iterator<T> = elements.iterator()
@@ -26,6 +29,9 @@ private func arrayInitByCollection<T>(array: RawArray<T>, elements: Collection<T
 
 @Frozen
 @OverflowWrapping
+/*
+ * @noThrow
+ */
 private func arrayInitByFunction<T>(array: RawArray<T>, initElement: (Int64) -> T): RawArray<T> {
     var i: Int64 = 0
     while (i < arraySize(array)) {
@@ -36,6 +42,9 @@ private func arrayInitByFunction<T>(array: RawArray<T>, initElement: (Int64) -> 
 }
 
 @Frozen
+/*
+ * @noThrow
+ */
 func toArray<T>(raw: RawArray<T>): Array<T> {
     if (arraySize(raw) == 0) {
         return Array<T>()
@@ -46,6 +55,9 @@ func toArray<T>(raw: RawArray<T>): Array<T> {
 extend<T> Array<T> <: Collection<T> {
     
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): Iterator<T> {
         return ArrayIterator(this)
     }
@@ -54,6 +66,9 @@ extend<T> Array<T> <: Collection<T> {
 
     @Frozen
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return this.len
         }
@@ -61,11 +76,17 @@ extend<T> Array<T> <: Collection<T> {
 
     
     @Frozen
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return this.len == 0
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func toArray(): Array<T> {
         return this.clone()
     }
@@ -73,6 +94,10 @@ extend<T> Array<T> <: Collection<T> {
 
 extend<T> Array<T> <: ToString where T <: ToString {
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         if (size == 0) {
             return "[]"
@@ -92,6 +117,9 @@ extend<T> Array<T> <: ToString where T <: ToString {
 @ConstSafe
 extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator const func ==(that: Array<T>): Bool {
         if (this.size != that.size) {
             return false
@@ -106,11 +134,17 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator const func !=(that: Array<T>): Bool {
         return !(this == that)
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(element: T): Bool {
         if (this.size == 0) {
             return false
@@ -131,6 +165,9 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func indexOf(element: T): Option<Int64> {
         if (size == 0) {
             return None
@@ -151,6 +188,9 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func indexOf(element: T, fromIndex: Int64): Option<Int64> {
         if (size == 0 || fromIndex >= size) {
             return None
@@ -175,6 +215,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func indexOf(elements: Array<T>): Option<Int64> {
         if (this.size < elements.size) {
             return None
@@ -194,6 +238,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func indexOf(elements: Array<T>, fromIndex: Int64): Option<Int64> {
         if (this.size < elements.size || fromIndex >= this.size) {
             return None
@@ -212,6 +260,9 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func lastIndexOf(element: T): Option<Int64> {
         if (size == 0) {
             return None
@@ -225,6 +276,9 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func lastIndexOf(element: T, fromIndex: Int64): Option<Int64> {
         if (size == 0 || fromIndex >= size) {
             return None
@@ -243,6 +297,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func lastIndexOf(elements: Array<T>): Option<Int64> {
         if (this.size < elements.size) {
             return None
@@ -256,6 +314,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func lastIndexOf(elements: Array<T>, fromIndex: Int64): Option<Int64> {
         if (this.size < elements.size || fromIndex >= this.size) {
             return None
@@ -280,6 +342,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimStart(set: Array<T>): Array<T> {
         var trim = false
         for (i in 0..this.len) {
@@ -304,6 +370,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimEnd(set: Array<T>): Array<T> {
         var trim = false
         for (i in (this.len - 1)..-1 : -1) {
@@ -328,6 +398,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimStart(predicate: (T) -> Bool): Array<T> {
         for (i in 0..this.len) {
             if (!predicate(this[i])) {
@@ -343,6 +417,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimEnd(predicate: (T) -> Bool): Array<T> {
         for (i in (this.len - 1)..-1 : -1) {
             if (!predicate(this[i])) {
@@ -353,6 +431,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func removePrefix(prefix: Array<T>): Array<T> {
         if (this.size < prefix.size || prefix.size == 0) {
             return this
@@ -364,6 +446,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func removeSuffix(suffix: Array<T>): Array<T> {
         if (this.size < suffix.size || suffix.size == 0) {
             return this
@@ -382,6 +468,9 @@ public class ArrayIterator<T> <: Iterator<T> {
     private var myPosition: Int64
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public init(data: Array<T>) {
         this.myData = data
         this.end = data.size
@@ -391,6 +480,9 @@ public class ArrayIterator<T> <: Iterator<T> {
     
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func next(): Option<T> {
         if (this.myPosition < this.end) {
             var v: Option<T> = Some(this.myData[this.myPosition])
@@ -407,12 +499,18 @@ public struct CPointerHandle<T> where T <: CType {
     public let array: Array<T>
 
     @Deprecated[message: "Use global function `public unsafe func acquireArrayRawData<T>(arr: Array<T>): CPointerHandle<T> where T <: CType` instead."]
+    /*
+     * @noThrow
+     */
     public init() {
         pointer = CPointer<T>()
         array = Array<T>()
     }
 
     @Deprecated[message: "Use global function `public unsafe func acquireArrayRawData<T>(arr: Array<T>): CPointerHandle<T> where T <: CType` instead."]
+    /*
+     * @noThrow
+     */
     public init(ptr: CPointer<T>, arr: Array<T>) {
         this.pointer = ptr
         this.array = arr
@@ -424,11 +522,17 @@ public struct CPointerHandle<T> where T <: CType {
 
 
 @Frozen
+/*
+ * @noThrow
+ */
 public unsafe func acquireArrayRawData<T>(arr: Array<T>): CPointerHandle<T> where T <: CType {
     CPointerHandle<T>(acquireRawData<T>(arr.rawptr) + arr.start, arr)
 }
 
 @Frozen
+/*
+ * @noThrow
+ */
 public unsafe func releaseArrayRawData<T>(handle: CPointerHandle<T>): Unit where T <: CType {
     releaseRawData(handle.array.rawptr, handle.pointer - handle.array.start)
 }

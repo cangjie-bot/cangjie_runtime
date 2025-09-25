@@ -15,6 +15,9 @@ public class MultiOutputStream<T> <: OutputStream where T <: OutputStream {
     private var outputArr: Array<T>
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(output: Array<T>) {
         if (output.isEmpty()) {
             throw IllegalArgumentException("The array of output streams cannot be empty!")
@@ -22,12 +25,18 @@ public class MultiOutputStream<T> <: OutputStream where T <: OutputStream {
         outputArr = output.clone()
     }
 
+    /*
+     * @noThrow
+     */
     public func write(buffer: Array<Byte>): Unit {
         for (outputStream in outputArr) {
             outputStream.write(buffer)
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func flush(): Unit {
         for (outputStream in outputArr) {
             outputStream.flush()

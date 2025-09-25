@@ -10,10 +10,18 @@ macro package std.unittest.testmacro
 import std.ast.*
 import std.collection.ArrayList
 extend<T> ArrayList<T> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func push(value: T): Unit {
         add(value)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func pop(): ?T {
         if (size == 0) {
             None
@@ -23,6 +31,9 @@ extend<T> ArrayList<T> {
     }
 
     prop top: ?T {
+        /*
+         * @noThrow
+         */
         get() {
             if (size == 0) { None } else { get(size - 1) }
         }
@@ -33,12 +44,21 @@ extend<T> ArrayList<T> {
 class DSLParser {
     var inputIndex: Int64 = 0
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     DSLParser(let input: Tokens) {
         skipIgnored()
     }
     prop currentToken: Token {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() { if (inputIndex < input.size) { input[inputIndex] } else { Token(END) } }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func nextToken() {
         if (completed()) {
             return
@@ -46,6 +66,9 @@ class DSLParser {
         inputIndex++
         skipIgnored()
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func skipIgnored() {
         while (!completed()) {
             match (currentToken.kind) {
@@ -54,6 +77,11 @@ class DSLParser {
             }
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     func expectToken(kind: TokenKind): Token {
         if (currentToken.kind != kind) {
             throw MacroException(
@@ -65,6 +93,11 @@ class DSLParser {
             return result
         }
     }
+    /*
+     * @throws MacroException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func parseBalancedDelimited(delimiter!: TokenKind, terminator!: TokenKind): Array<Tokens> {
         let result = ArrayList<Tokens>()
         var current = TokensBuilder()
@@ -83,6 +116,11 @@ class DSLParser {
         }
         return result.toArray()
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     func parseBalanced(terminator!: TokenKind = TokenKind.END): Tokens {
         let stack = ArrayList<TokenKind>()
         let tb = TokensBuilder()
@@ -131,6 +169,9 @@ class DSLParser {
         }
         return tb.toTokens()
     }
+    /*
+     * @noThrow
+     */
     func completed(): Bool {
         return inputIndex >= input.size
     }

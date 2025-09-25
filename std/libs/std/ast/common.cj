@@ -12,6 +12,9 @@ import std.collection.ArrayList
 
 const NUM_SPACES: UInt16 = 2
 
+/*
+ * @noThrow
+ */
 func isValidPosition(pos: NodeFormat_Position): Bool {
     if (pos.line == 0 && pos.column == 0) {
         return false
@@ -19,6 +22,9 @@ func isValidPosition(pos: NodeFormat_Position): Bool {
     return true
 }
 
+/*
+ * @noThrow
+ */
 func isValidPosition(tk: Token): Bool {
     if (tk.pos.line == 0 && tk.pos.column == 0) {
         return false
@@ -26,10 +32,18 @@ func isValidPosition(tk: Token): Bool {
     return true
 }
 
+/*
+ * @noThrow
+ */
 func isValidToken(tk: Token): Bool {
     return tk.kind != TokenKind.ILLEGAL
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func getNodeBeginPos(nodeBase: Option<NodeFormat_NodeBase>): NodeFormat_Position {
     return match (nodeBase) {
         case Some(v) => v.GetBegin()
@@ -37,6 +51,10 @@ func getNodeBeginPos(nodeBase: Option<NodeFormat_NodeBase>): NodeFormat_Position
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getOperaterKindOrIdentTokens(opKind: Int32, pos: NodeFormat_Position, ident: Tokens): Tokens {
     let identifierTokens: Tokens = match (getTokenKind(UInt16(opKind))) {
         case NOT => Tokens().append(Token(TokenKind.NOT).addPosition(pos))
@@ -66,10 +84,18 @@ func getOperaterKindOrIdentTokens(opKind: Int32, pos: NodeFormat_Position, ident
     return identifierTokens
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getIndent(indent: UInt16): String {
     return String(Array<Rune>(Int64(indent * NUM_SPACES), repeat: r' '))
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getTokenIndent(name: String, tk: Token, indent: UInt16, noNameIndent!: Bool = false, index!: Option<Int64> = None): String {
     var ret: String = ""
     if (!isValidToken(tk) || (tk.value.isEmpty() && tk.pos.fileID != 1)) {
@@ -98,6 +124,10 @@ func getTokenIndent(name: String, tk: Token, indent: UInt16, noNameIndent!: Bool
     return ret
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func dumpNodes<N>(name: String, contents: ArrayList<N>, indent: UInt16): String where N <: Node {
     var ret = ""
     for (i in 0..contents.size) {
@@ -108,6 +138,10 @@ func dumpNodes<N>(name: String, contents: ArrayList<N>, indent: UInt16): String 
 }
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func compareTokens(tokens1: Tokens, tokens2: Tokens): Bool {
     
     func rmNewlineEnd(input: Tokens): Tokens {
@@ -142,6 +176,9 @@ public func compareTokens(tokens1: Tokens, tokens2: Tokens): Bool {
     return true
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func checkKindValue(k: TokenKind, v: String): Bool {
     let kv: String = getTokenLiteral(k)
     if (kv == "" || k == TokenKind.UNIT_LITERAL) {
@@ -153,6 +190,10 @@ func checkKindValue(k: TokenKind, v: String): Bool {
     return kv == v
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func getImportSpecTokens(imports: ArrayList<ImportList>): Tokens {
     var r: Tokens = Tokens()
     for (i in 0..imports.size) {
@@ -161,6 +202,11 @@ func getImportSpecTokens(imports: ArrayList<ImportList>): Tokens {
     return r
 }
 
+/*
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func dumpCommonContent(currentIndent: UInt16, upperBound: Token, superTypes: ArrayList<TypeNode>,
     constraint: ArrayList<GenericConstraint>, body: Body) {
     var ret: String = ""
@@ -181,6 +227,10 @@ func dumpCommonContent(currentIndent: UInt16, upperBound: Token, superTypes: Arr
     return ret
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func referenceType2Tokens(upperBound: Token, superTypes: ArrayList<TypeNode>, superTypeBitAnds: Tokens,
     constraint: ArrayList<GenericConstraint>, constraintCommas: Tokens): Tokens {
     let ret = Tokens()
@@ -208,6 +258,9 @@ func referenceType2Tokens(upperBound: Token, superTypes: ArrayList<TypeNode>, su
 }
 
 extend Tokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func tryGet(index: Int64): ?Token {
         if (index >= size) {
             Option<Token>.None
@@ -218,6 +271,9 @@ extend Tokens {
 }
 
 extend Token {
+    /*
+     * @noThrow
+     */
     func tryGet(): ?Token {
         if (kind == TokenKind.ILLEGAL) {
             Option<Token>.None
@@ -227,18 +283,27 @@ extend Token {
     }
 }
 
+/*
+ * @throws ASTException
+ */
 func checkTokenType(tk: Token, kind: TokenKind) {
     if (tk.kind != kind) {
         throw ASTException("Illegal TokenKind, TokenKind should be ${kind}")
     }
 }
 
+/*
+ * @throws ASTException
+ */
 func checkTokensType(tks: Tokens, kind: TokenKind) {
     for (tk in tks) {
         checkTokenType(tk, kind)
     }
 }
 
+/*
+ * @throws ASTException
+ */
 func checkTokenTypeAssign(tk: Token) {
     let arr = [ASSIGN, ADD_ASSIGN, SUB_ASSIGN, MUL_ASSIGN, EXP_ASSIGN, DIV_ASSIGN, MOD_ASSIGN, AND_ASSIGN, OR_ASSIGN,
         BITAND_ASSIGN, BITOR_ASSIGN, BITXOR_ASSIGN, LSHIFT_ASSIGN, RSHIFT_ASSIGN]
@@ -250,6 +315,9 @@ func checkTokenTypeAssign(tk: Token) {
     throw ASTException("Illegal TokenKind, TokenKind should be assign")
 }
 
+/*
+ * @throws ASTException
+ */
 func checkPrimitiveType(tk: Token) {
     let arr = [INT8, INT16, INT32, INT64, INTNATIVE, UINT8, UINT16, UINT32, UINT64, UINTNATIVE, FLOAT16, FLOAT32,
         FLOAT64, RUNE, BOOLEAN, NOTHING, UNIT]
@@ -261,6 +329,9 @@ func checkPrimitiveType(tk: Token) {
     throw ASTException("Illegal TokenKind, TokenKind should be a primitive type.")
 }
 
+/*
+ * @noThrow
+ */
 func checkValid(input: Token) {
     if (isValidPosition(input)) {
         return input

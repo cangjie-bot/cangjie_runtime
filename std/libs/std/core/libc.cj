@@ -9,9 +9,15 @@
 package std.core
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func sizeOfType<T>(): UIntNative where T <: CType
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func alignOfType<T>(): UIntNative where T <: CType
 
 @FastNative
@@ -22,19 +28,34 @@ foreign func free(p: CPointer<Unit>): Unit
 
 let SECUREC_MEM_MAX_LEN = Int64(Int32.Max)
 
+/*
+ * @noThrow
+ */
 public func sizeOf<T>(): UIntNative where T <: CType {
     return sizeOfType<T>()
 }
 
+/*
+ * @noThrow
+ */
 public func alignOf<T>(): UIntNative where T <: CType {
     return alignOfType<T>()
 }
 
+/*
+ * @noThrow
+ */
 private unsafe func freeWrapper(p: CPointer<Unit>): Unit {
     free(p)
 }
 
+              /*
+               * @noThrow
+               */
 public struct LibC {
+    /*
+     * @throws IllegalArgumentException
+     */
     public static func malloc<T>(count!: Int64 = 1): CPointer<T> where T <: CType {
         if (count < 0) {
             throw IllegalArgumentException("The value of count cannot be negative")
@@ -47,10 +68,17 @@ public struct LibC {
         return CPointer<T>(unsafe { malloc(size) })
     }
 
+    /*
+     * @noThrow
+     */
     public unsafe static func free<T>(p: CPointer<T>): Unit where T <: CType {
         freeWrapper(CPointer<Unit>(p))
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public unsafe static func mallocCString(str: String): CString {
         let arr: RawArray<UInt8> = str.myData
         var length: Int64 = str.size
@@ -78,6 +106,9 @@ public struct LibC {
         return CString(cp)
     }
 
+    /*
+     * @noThrow
+     */
     public unsafe static func free(cstr: CString): Unit {
         var ptr = cstr.getChars()
         freeWrapper(CPointer<Unit>(ptr))

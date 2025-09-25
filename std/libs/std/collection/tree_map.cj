@@ -29,6 +29,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @noThrow
+     */
     public init() {
         this.root = Node<K, V>(Node<K, V>.nullNode())
     }
@@ -36,6 +39,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public init(elements: Collection<(K, V)>) {
         this.root = Node<K, V>(Node<K, V>.nullNode())
         for (i in elements) {
@@ -48,6 +56,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public init(elements: Array<(K, V)>) {
         this.root = Node<K, V>(Node<K, V>.nullNode())
         for (i in elements) {
@@ -63,6 +76,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(size: Int64, initElement: (Int64) -> (K, V)) {
         if (size < 0) {
             throw IllegalArgumentException("Invalid size of TreeMap: ${size}.")
@@ -81,6 +99,10 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public func get(key: K): ?V {
         let sr = searchEntry(this.root, key)
         return match (sr.replaceNode) {
@@ -95,6 +117,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(key: K): Bool {
         searchEntry(this.root, key).replaceNode.isSome()
     }
@@ -105,6 +130,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(all!: Collection<K>): Bool {
         for (key in all where !this.contains(key)) {
             return false
@@ -121,6 +149,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(key: K, value: V): Option<V> {
         if (this.root.entrySize == MAX_ENTRY_SIZE) {
             let newNode: Node<K, V> = Node<K, V>(Node<K, V>.nullNode())
@@ -138,6 +171,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(all!: Collection<(K, V)>): Unit {
         for ((k, v) in all) {
             this.add(k, v)
@@ -150,6 +188,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func remove(key: K): Option<V> {
         if (this.isEmpty()) {
             return None
@@ -166,6 +209,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func remove(all!: Collection<K>): Unit {
         for (key in all) {
             this.remove(key)
@@ -177,6 +225,12 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     public func removeIf(predicate: (K, V) -> Bool): Unit {
         var sr: SearchResult<K, V> = getFirstEntry()
         while (let Some(node) <- sr.replaceNode) {
@@ -208,6 +262,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func clear(): Unit {
         this._size = 0
         this.modCount++
@@ -219,6 +276,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func clone(): TreeMap<K, V> {
         return TreeMap<K, V>(this)
     }
@@ -231,6 +293,10 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public operator func [](key: K): V {
         return match (this.get(key)) {
             case None => throw NoneValueException("Value does not exist!")
@@ -244,6 +310,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func [](key: K, value!: V): Unit {
         this.add(key, value)
     }
@@ -253,6 +324,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func keys(): EquatableCollection<K> {
         return TreeMapKeys<K, V>(this)
     }
@@ -262,6 +336,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func values(): Collection<V> {
         return TreeMapValues<K, V>(this)
     }
@@ -272,6 +349,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return this._size
         }
@@ -282,6 +362,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return this.root.isEmpty()
     }
@@ -292,6 +375,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
     @Frozen
+    /*
+     * @throws NoneValueException
+     */
     public func iterator(): Iterator<(K, V)> {
         let node = TreeMapEntryView(this, getFirstEntry())
         return TreeMapIterator<K, V>(node)
@@ -303,6 +389,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
     public prop first: ?(K, V) {
+        /*
+         * @throws NoneValueException
+         */
         get() {
             let sr: SearchResult<K, V> = getFirstEntry()
             match (sr.replaceNode) {
@@ -319,6 +408,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func removeFirst(): ?(K, V) {
         let sr: SearchResult<K, V> = getFirstEntry()
         match (sr.replaceNode) {
@@ -336,6 +430,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
     public prop last: ?(K, V) {
+        /*
+         * @throws NoneValueException
+         */
         get() {
             let sr: SearchResult<K, V> = getLastEntry()
             match (sr.replaceNode) {
@@ -352,6 +449,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func removeLast(): ?(K, V) {
         let sr: SearchResult<K, V> = getLastEntry()
         match (sr.replaceNode) {
@@ -363,6 +465,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func searchNearestEntryView(array: ArrayList<K>, key: K, forward!: Bool): TreeMapEntryView<K, V> {
         var (left, right, mid) = (0, array.size - 1, 0)
 
@@ -397,6 +502,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public func backward(mark: K, inclusive!: Bool = true): Iterator<(K, V)> {
         var entry = this.searchEntry(this.root, mark)
         return match (entry.replaceNode) {
@@ -424,6 +534,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public func forward(mark: K, inclusive!: Bool = true): Iterator<(K, V)> {
         var entry = this.searchEntry(this.root, mark)
         return match (entry.replaceNode) {
@@ -442,11 +557,17 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
     }
 
     
+    /*
+     * @noThrow
+     */
     func version(): Int64 {
         return this.modCount
     }
 
     
+    /*
+     * @throws NoneValueException
+     */
     func getFirstEntry(): SearchResult<K, V> {
         if (this.root.isEmpty()) {
             return SearchResult<K, V>(-1, None)
@@ -459,6 +580,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
     }
 
     
+    /*
+     * @throws NoneValueException
+     */
     func getLastEntry(): SearchResult<K, V> {
         if (this.root.isEmpty()) {
             return SearchResult<K, V>(-1, None)
@@ -471,6 +595,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func searchEntry(node: ?Node<K, V>, key: K): SearchResult<K, V> {
         if (let Some(node) <- node) {
             var sr: SearchResult<K, V> = node.searchEntry(key)
@@ -487,11 +614,19 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         return SearchResult<K, V>(-1, None)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func searchEntryFromRoot(key: K): SearchResult<K, V> {
         return searchEntry(this.root, key)
     }
 
     
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func inserEntry(node: Node<K, V>, entry: TreeMapEntry<K, V>): Option<V> {
         let sr: SearchResult<K, V> = node.searchEntry(entry.key)
         match (sr.replaceNode) {
@@ -519,6 +654,10 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
     }
 
     
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func splitNode(node: Node<K, V>, splitNode: Node<K, V>, index: Int64) {
         var rightNode: Node<K, V> = Node<K, V>(node)
         for (i in DEGREE..MAX_ENTRY_SIZE) {
@@ -543,6 +682,11 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
     }
 
     
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func deleteEntry(node: Node<K, V>, key: K): Option<V> {
         var sr: SearchResult<K, V> = node.searchEntry(key)
         match (sr.replaceNode) {
@@ -652,6 +796,10 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
     }
 
     
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     func predecessor(sr: SearchResult<K, V>): SearchResult<K, V> {
         var curSr = sr
         var curNode = sr.replaceNode.getOrThrow()
@@ -674,6 +822,10 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
     }
 
     
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     func successor(sr: SearchResult<K, V>): SearchResult<K, V> {
         var curSr = sr
         var curNode = sr.replaceNode.getOrThrow()
@@ -707,6 +859,10 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
     }
 
     
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     func parentOf(node: Node<K, V>): SearchResult<K, V> {
         let parent = node._parent
         var index = 0
@@ -720,6 +876,9 @@ public class TreeMap<K, V> <: OrderedMap<K, V> where K <: Comparable<K> {
         return SearchResult<K, V>(index, parent)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func entryView(k: K): MapEntryView<K, V> {
         let sr = searchEntry(this.root, k)
         return TreeMapEntryView(this, sr, key: k)
@@ -731,6 +890,10 @@ extend<K, V> TreeMap<K, V> <: ToString where V <: ToString, K <: ToString & Comp
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let size: Int64 = this.size
         if (size == 0) {
@@ -759,6 +922,10 @@ extend<K, V> TreeMap<K, V> <: Equatable<TreeMap<K, V>> where V <: Equatable<V> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public operator func ==(right: TreeMap<K, V>): Bool {
         if (refEq(this, right)) {
             return true
@@ -787,6 +954,10 @@ extend<K, V> TreeMap<K, V> <: Equatable<TreeMap<K, V>> where V <: Equatable<V> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public operator func !=(right: TreeMap<K, V>): Bool {
         return !(this == right)
     }
@@ -797,6 +968,9 @@ struct TreeMapEntryView<K, V> <: MapEntryView<K, V> where K <: Comparable<K> {
     var curNode: SearchResult<K, V>
     var lockVersion: Int64
     var _key: ?K
+    /*
+     * @noThrow
+     */
     init(map: TreeMap<K, V>, curNode: SearchResult<K, V>, key!: ?K = None) {
         this.map = map
         this.curNode = curNode
@@ -809,6 +983,10 @@ struct TreeMapEntryView<K, V> <: MapEntryView<K, V> where K <: Comparable<K> {
 
 
     public prop key: K {
+        /*
+         * @throws NoneValueException
+         * @throws ConcurrentModificationException
+         */
         get() {
             if (lockVersion != this.map.version()) {
                 throw ConcurrentModificationException()
@@ -828,6 +1006,10 @@ struct TreeMapEntryView<K, V> <: MapEntryView<K, V> where K <: Comparable<K> {
 
 
     public mut prop value: ?V {
+        /*
+         * @throws NoneValueException
+         * @throws ConcurrentModificationException
+         */
         get() {
             if (lockVersion != this.map.version()) {
                 throw ConcurrentModificationException()
@@ -840,6 +1022,12 @@ struct TreeMapEntryView<K, V> <: MapEntryView<K, V> where K <: Comparable<K> {
                 case None => throw NoneValueException("Value does not exist!")
             }
         }
+        /*
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ConcurrentModificationException
+         */
         set(v) {
             if (lockVersion != this.map.version()) {
                 throw ConcurrentModificationException()
@@ -861,16 +1049,27 @@ struct TreeMapEntryView<K, V> <: MapEntryView<K, V> where K <: Comparable<K> {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     func nextNode(): TreeMapEntryView<K, V> {
         let sr = this.map.successor(curNode)
         return TreeMapEntryView<K, V>(this.map, sr)
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     func prevNode(): TreeMapEntryView<K, V> {
         let sr = this.map.predecessor(curNode)
         return TreeMapEntryView<K, V>(this.map, sr)
     }
 
+    /*
+     * @noThrow
+     */
     func isSome(): Bool {
         return curNode.replaceNode.isSome()
     }
@@ -886,6 +1085,10 @@ class ForwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     init(node: TreeMapEntryView<K, V>, key: K, inclusive: Bool) {
         this.curNode = if (inclusive || !node.isSome()) {
             node
@@ -904,6 +1107,11 @@ class ForwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws ConcurrentModificationException
+     */
     public func next(): Option<(K, V)> {
         checkVersion(curNode)
         if (curNode.isSome()) {
@@ -928,6 +1136,10 @@ class BackwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     init(node: TreeMapEntryView<K, V>, key: K, inclusive: Bool) {
         this.curNode = if (inclusive || !node.isSome()) {
             node
@@ -946,6 +1158,11 @@ class BackwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws ConcurrentModificationException
+     */
     public func next(): Option<(K, V)> {
         checkVersion(curNode)
         if (curNode.isSome()) {
@@ -960,6 +1177,9 @@ class BackwardIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
     }
 }
 
+/*
+ * @throws ConcurrentModificationException
+ */
 func checkVersion<K, V>(node: TreeMapEntryView<K, V>) where K <: Comparable<K> {
     if (node.lockVersion != node.map.version()) {
         throw ConcurrentModificationException()
@@ -971,6 +1191,9 @@ func checkVersion<K, V>(node: TreeMapEntryView<K, V>) where K <: Comparable<K> {
 
 class TreeMapKeys<K, V> <: EquatableCollection<K> where K <: Comparable<K> {
     private let map: TreeMap<K, V>
+    /*
+     * @noThrow
+     */
     public init(m: TreeMap<K, V>) {
         this.map = m
     }
@@ -981,6 +1204,9 @@ class TreeMapKeys<K, V> <: EquatableCollection<K> where K <: Comparable<K> {
 
 
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return this.map.size
         }
@@ -991,6 +1217,9 @@ class TreeMapKeys<K, V> <: EquatableCollection<K> where K <: Comparable<K> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return this.map.isEmpty()
     }
@@ -1001,6 +1230,9 @@ class TreeMapKeys<K, V> <: EquatableCollection<K> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(element: K): Bool {
         return this.map.contains(element)
     }
@@ -1011,6 +1243,9 @@ class TreeMapKeys<K, V> <: EquatableCollection<K> where K <: Comparable<K> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(all!: Collection<K>): Bool {
         return this.map.contains(all: all)
     }
@@ -1021,6 +1256,9 @@ class TreeMapKeys<K, V> <: EquatableCollection<K> where K <: Comparable<K> {
 
 
     @Frozen
+    /*
+     * @throws NoneValueException
+     */
     public func iterator(): Iterator<K> {
         return map.iterator().map<K> {i: (K, V) => i[0]}
     }
@@ -1032,6 +1270,9 @@ class TreeMapKeys<K, V> <: EquatableCollection<K> where K <: Comparable<K> {
 class TreeMapValues<K, V> <: Collection<V> where K <: Comparable<K> {
     private let map: TreeMap<K, V>
 
+    /*
+     * @noThrow
+     */
     public init(m: TreeMap<K, V>) {
         this.map = m
     }
@@ -1042,6 +1283,9 @@ class TreeMapValues<K, V> <: Collection<V> where K <: Comparable<K> {
 
 
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return this.map.size
         }
@@ -1052,6 +1296,9 @@ class TreeMapValues<K, V> <: Collection<V> where K <: Comparable<K> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return this.map.isEmpty()
     }
@@ -1062,6 +1309,9 @@ class TreeMapValues<K, V> <: Collection<V> where K <: Comparable<K> {
 
 
     @Frozen
+    /*
+     * @throws NoneValueException
+     */
     public func iterator(): Iterator<V> {
         return map.iterator().map<V> {i: (K, V) => i[1]}
     }
@@ -1078,6 +1328,9 @@ class TreeMapIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(node: TreeMapEntryView<K, V>) {
         this.curNode = node
     }
@@ -1090,6 +1343,11 @@ class TreeMapIterator<K, V> <: Iterator<(K, V)> where K <: Comparable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     */
     public func next(): Option<(K, V)> {
         checkVersion(curNode)
         if (curNode.isSome()) {
@@ -1106,32 +1364,50 @@ class Node<K, V> where K <: Comparable<K> {
     var _parent: ?Node<K, V>
     var children: ArrayList<Node<K, V>>
 
+    /*
+     * @noThrow
+     */
     static func nullNode(): ?Node<K, V> {
         return None<Node<K, V>>
     }
 
+    /*
+     * @noThrow
+     */
     init(parent: ?Node<K, V>) {
         this._parent = parent
         this.entries = ArrayList<TreeMapEntry<K, V>>()
         this.children = ArrayList<Node<K, V>>()
     }
 
+    /*
+     * @noThrow
+     */
     func isLeaf(): Bool {
         return this.children.size == 0
     }
 
     prop entrySize: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             this.entries.size
         }
     }
 
     prop childrenSize: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             this.children.size
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func quickEquals(that: Node<K, V>): Bool {
         if (this.entrySize == that.entrySize && this.entrySize != 0) {
             if (this.entries[0].key == that.entries[0].key) {
@@ -1142,10 +1418,16 @@ class Node<K, V> where K <: Comparable<K> {
         return false
     }
 
+    /*
+     * @noThrow
+     */
     func isEmpty(): Bool {
         return entrySize == 0
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func searchEntry(key: K): SearchResult<K, V> {
         if (entrySize == 0) {
             return SearchResult(0, None)
@@ -1180,10 +1462,17 @@ class Node<K, V> where K <: Comparable<K> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func getEntry(index: Int64): Option<TreeMapEntry<K, V>> {
         return entries.get(index)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func insertEntry(entry: TreeMapEntry<K, V>): Option<V> {
         var sr = searchEntry(entry.key)
         match (sr.replaceNode) {
@@ -1198,22 +1487,41 @@ class Node<K, V> where K <: Comparable<K> {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func insertEntry(index: Int64, entry: TreeMapEntry<K, V>): Unit {
         this.entries.add(entry, at: index)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func deleteEntry(index: Int64): Unit {
         this.entries.remove(at: index)
     }
 
+    /*
+     * @noThrow
+     */
     func getChild(index: Int64): ?Node<K, V> {
         return this.children.get(index)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func deleteChild(index: Int64): Unit {
         this.children.remove(at: index)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func insertChild(index: Int64, node: Node<K, V>) {
         this.children.add(node, at: index)
     }
@@ -1223,18 +1531,27 @@ struct SearchResult<K, V> where K <: Comparable<K> {
     private var _index: Int64
     private var _replaceNode: ?Node<K, V>
 
+    /*
+     * @noThrow
+     */
     init(index: Int64, node: ?Node<K, V>) {
         this._replaceNode = node
         this._index = index
     }
 
     prop index: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             this._index
         }
     }
 
     prop replaceNode: ?Node<K, V> {
+        /*
+         * @noThrow
+         */
         get() {
             this._replaceNode
         }
@@ -1245,26 +1562,41 @@ class TreeMapEntry<K, V> where K <: Comparable<K> {
     private var _key: K
     private var _value: V
 
+    /*
+     * @noThrow
+     */
     init(key: K, value: V) {
         this._key = key
         this._value = value
     }
 
     prop key: K {
+        /*
+         * @noThrow
+         */
         get() {
             _key
         }
     }
 
     mut prop value: V {
+        /*
+         * @noThrow
+         */
         get() {
             _value
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             this._value = v
         }
     }
 
+    /*
+     * @noThrow
+     */
     func reset(key: K, value: V) {
         this._key = key
         this._value = value

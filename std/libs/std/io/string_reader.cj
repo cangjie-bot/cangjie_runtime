@@ -17,12 +17,20 @@ const HIGH_1_UInt8: UInt8 = 0b10000000
 public class StringReader<T> where T <: InputStream {
     let inputBIS: BufferedInputStream<T>
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(input: T) {
         inputBIS = BufferedInputStream(input)
     }
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws ContentFormatException
+     * @throws IndexOutOfBoundsException
+     */
     public func read(): ?Rune {
         if (isFinished()) {
             return None
@@ -37,10 +45,18 @@ public class StringReader<T> where T <: InputStream {
         return char
     }
 
+    /*
+     * @noThrow
+     */
     public func runes(): Iterator<Rune> {
         return RunesIterator(this)
     }
 
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func readlnFromBuf(bas: ByteBuffer, haveCR_: Bool): (Bool, Bool) {
         var count = 0
         var done = false
@@ -74,6 +90,12 @@ public class StringReader<T> where T <: InputStream {
 
 
     @Frozen
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ContentFormatException
+     */
     public func readln(): Option<String> {
         if (isFinished()) {
             return Option<String>.None
@@ -97,12 +119,21 @@ public class StringReader<T> where T <: InputStream {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func lines(): Iterator<String> {
         return LinesIterator(this)
     }
 
 
     @Frozen
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ContentFormatException
+     */
     public func readToEnd(): String {
         var bas: ByteBuffer = ByteBuffer()
         let buf = Array<Byte>(4096, repeat: 0)
@@ -119,11 +150,23 @@ public class StringReader<T> where T <: InputStream {
     }
 
 
+    /*
+     * @throws ContentFormatException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func readUntil(v: Rune): Option<String> {
         return readUntil({c: Rune => return c == v})
     }
 
 
+    /*
+     * @throws ContentFormatException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func readUntil(predicate: (Rune) -> Bool): Option<String> {
         if (isFinished()) {
             return Option<String>.None
@@ -131,6 +174,9 @@ public class StringReader<T> where T <: InputStream {
         return Option<String>.Some(readUntilToString(predicate))
     }
 
+    /*
+     * @noThrow
+     */
     private func isFinished(): Bool {
         if (inputBIS.availLen <= 0) {
             inputBIS.fillInBuf()
@@ -138,12 +184,20 @@ public class StringReader<T> where T <: InputStream {
         return inputBIS.availLen == -1
     }
 
+    /*
+     * @noThrow
+     */
     private func updateInBufInfo(readNum: Int64): Unit {
         inputBIS.curPos += readNum
         inputBIS.availLen -= readNum
     }
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ContentFormatException
+     */
     private func readCharFromInbuf(): (Rune, Int64) {
         try {
             if (inputBIS.availLen < 4) {
@@ -156,6 +210,11 @@ public class StringReader<T> where T <: InputStream {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ContentFormatException
+     */
     private func ensureAvailable(required: Int64): Unit {
         while (required > inputBIS.availLen) {
             inputBIS.inBuf.copyTo(inputBIS.inBuf, inputBIS.curPos, 0, inputBIS.availLen)
@@ -171,6 +230,12 @@ public class StringReader<T> where T <: InputStream {
     }
 
 
+    /*
+     * @throws ContentFormatException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func readUntilToString(predicate: (Rune) -> Bool, isIncludeChar!: Bool = true): String {
         var bas: ByteBuffer = ByteBuffer()
         while (!isFinished()) {
@@ -192,6 +257,9 @@ public class StringReader<T> where T <: InputStream {
 extend<T> StringReader<T> <: Resource where T <: Resource {
 
 
+    /*
+     * @noThrow
+     */
     public func close(): Unit {
         inputBIS.close()
     }
@@ -199,6 +267,9 @@ extend<T> StringReader<T> <: Resource where T <: Resource {
 
 
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         inputBIS.isClosed()
     }
@@ -211,6 +282,9 @@ extend<T> StringReader<T> <: Seekable where T <: Seekable {
 
 
 
+    /*
+     * @noThrow
+     */
     public func seek(sp: SeekPosition): Int64 {
         inputBIS.seek(sp)
     }
@@ -226,6 +300,9 @@ extend<T> StringReader<T> <: Seekable where T <: Seekable {
 
 
     public prop position: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             seek(Current(-inputBIS.availLen))
         }
@@ -233,18 +310,35 @@ extend<T> StringReader<T> <: Seekable where T <: Seekable {
 }
 
 class RunesIterator<T> <: Iterator<Rune> where T <: InputStream {
+    /*
+     * @noThrow
+     */
     RunesIterator(let data: StringReader<T>) {}
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws ContentFormatException
+     * @throws IndexOutOfBoundsException
+     */
     public func next(): Option<Rune> {
         return data.read()
     }
 }
 
 class LinesIterator<T> <: Iterator<String> where T <: InputStream {
+    /*
+     * @noThrow
+     */
     LinesIterator(let data: StringReader<T>) {}
 
 
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ContentFormatException
+     */
     public func next(): Option<String> {
         return data.readln()
     }

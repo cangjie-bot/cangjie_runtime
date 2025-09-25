@@ -9,6 +9,9 @@ package std.unittest
 
 import std.math.abs
 
+/*
+ * @noThrow
+ */
 private func isDeltaWithinInterval(delta: Float16) {
     if (delta >= 0.0f16 && delta < Float16.Max) {
         return (true, "")
@@ -16,6 +19,9 @@ private func isDeltaWithinInterval(delta: Float16) {
     return (false, "delta must be in interval [0.0, Float16.Max). Actual delta: ${delta}.")
 }
 
+/*
+ * @noThrow
+ */
 private func isDeltaWithinInterval(delta: Float32) {
     if (delta >= 0.0f32 && delta < Float32.Max) {
         return (true, "")
@@ -23,6 +29,9 @@ private func isDeltaWithinInterval(delta: Float32) {
     return (false, "delta must be in interval [0.0, Float32.Max). Actual delta: ${delta}.")
 }
 
+/*
+ * @noThrow
+ */
 private func isDeltaWithinInterval(delta: Float64) {
     if (delta >= 0.0f64 && delta < Float64.Max) {
         return (true, "")
@@ -32,6 +41,9 @@ private func isDeltaWithinInterval(delta: Float64) {
 
 private let DELTA_IS_NAN_MESSAGE = "delta is NaN."
 
+/*
+ * @noThrow
+ */
 private func isDeltaNaN(delta: Float16) {
     if (delta.isNaN()) {
         return (true, DELTA_IS_NAN_MESSAGE)
@@ -39,6 +51,9 @@ private func isDeltaNaN(delta: Float16) {
     return (false, "")
 }
 
+/*
+ * @noThrow
+ */
 private func isDeltaNaN(delta: Float32) {
     if (delta.isNaN()) {
         return (true, DELTA_IS_NAN_MESSAGE)
@@ -46,6 +61,9 @@ private func isDeltaNaN(delta: Float32) {
     return (false, "")
 }
 
+/*
+ * @noThrow
+ */
 private func isDeltaNaN(delta: Float64) {
     if (delta.isNaN()) {
         return (true, DELTA_IS_NAN_MESSAGE)
@@ -53,6 +71,9 @@ private func isDeltaNaN(delta: Float64) {
     return (false, "")
 }
 
+/*
+ * @noThrow
+ */
 private func isDeltaValid(delta: Float16) {
     let (isDeltaNaN, nanErrorMessage) = isDeltaNaN(delta)
     if (isDeltaNaN) {
@@ -67,6 +88,9 @@ private func isDeltaValid(delta: Float16) {
     return (true, "")
 }
 
+/*
+ * @noThrow
+ */
 private func isDeltaValid(delta: Float32) {
     let (isDeltaNaN, nanErrorMessage) = isDeltaNaN(delta)
     if (isDeltaNaN) {
@@ -81,6 +105,9 @@ private func isDeltaValid(delta: Float32) {
     return (true, "")
 }
 
+/*
+ * @noThrow
+ */
 private func isDeltaValid(delta: Float64) {
     let (isDeltaNaN, nanErrorMessage) = isDeltaNaN(delta)
     if (isDeltaNaN) {
@@ -95,6 +122,9 @@ private func isDeltaValid(delta: Float64) {
     return (true, "")
 }
 
+/*
+ * @noThrow
+ */
 private func isRelativeDeltaValid(delta: RelativeDelta<Float16>) {
     let (isAbsDeltaValid, absErrMessage) = isDeltaValid(delta.absolute)
     if (!isAbsDeltaValid) {
@@ -109,6 +139,9 @@ private func isRelativeDeltaValid(delta: RelativeDelta<Float16>) {
     return (true, "")
 }
 
+/*
+ * @noThrow
+ */
 private func isRelativeDeltaValid(delta: RelativeDelta<Float32>) {
     let (isAbsDeltaValid, absErrMessage) = isDeltaValid(delta.absolute)
     if (!isAbsDeltaValid) {
@@ -123,6 +156,9 @@ private func isRelativeDeltaValid(delta: RelativeDelta<Float32>) {
     return (true, "")
 }
 
+/*
+ * @noThrow
+ */
 private func isRelativeDeltaValid(delta: RelativeDelta<Float64>) {
     let (isAbsDeltaValid, absErrMessage) = isDeltaValid(delta.absolute)
     if (!isAbsDeltaValid) {
@@ -137,6 +173,10 @@ private func isRelativeDeltaValid(delta: RelativeDelta<Float64>) {
     return (true, "")
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalStateException
+ */
 private func validateFloats(f1: Any, f2: Any, delta: Any) {
     func isComparingArgValid(arg: Any, isFirstArg!: Bool): Bool {
         let paramNumMsg = if (isFirstArg) { "first" } else { "second" }
@@ -171,6 +211,10 @@ private func validateFloats(f1: Any, f2: Any, delta: Any) {
 }
 
 extend Float16 <: NearEquatable<Float16, Float16> & NearEquatable<Float16, RelativeDelta<Float16>> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
     public func isNear(obj: Float16, delta!: Float16): Bool {
         validateFloats(this, obj, delta)
         if (this.isInf() || obj.isInf()) {
@@ -179,6 +223,10 @@ extend Float16 <: NearEquatable<Float16, Float16> & NearEquatable<Float16, Relat
         abs(this - obj) <= delta
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
     public func isNear(obj: Float16, delta!: RelativeDelta<Float16>): Bool {
         validateFloats(this, obj, delta)
         if (this.isInf() || obj.isInf()) {
@@ -189,6 +237,10 @@ extend Float16 <: NearEquatable<Float16, Float16> & NearEquatable<Float16, Relat
 }
 
 extend Float32 <: NearEquatable<Float32, Float32> & NearEquatable<Float32, RelativeDelta<Float32>> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
     public func isNear(obj: Float32, delta!: Float32): Bool {
         validateFloats(this, obj, delta)
         if (this.isInf() || obj.isInf()) {
@@ -197,6 +249,10 @@ extend Float32 <: NearEquatable<Float32, Float32> & NearEquatable<Float32, Relat
         abs(this - obj) <= delta
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
     public func isNear(obj: Float32, delta!: RelativeDelta<Float32>): Bool {
         validateFloats(this, obj, delta)
         if (this.isInf() || obj.isInf()) {
@@ -207,6 +263,10 @@ extend Float32 <: NearEquatable<Float32, Float32> & NearEquatable<Float32, Relat
 }
 
 extend Float64 <: NearEquatable<Float64, Float64> & NearEquatable<Float64, RelativeDelta<Float64>> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
     public func isNear(obj: Float64, delta!: Float64): Bool {
         validateFloats(this, obj, delta)
         if (this.isInf() || obj.isInf()) {
@@ -215,6 +275,10 @@ extend Float64 <: NearEquatable<Float64, Float64> & NearEquatable<Float64, Relat
         abs(this - obj) <= delta
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
     public func isNear(obj: Float64, delta!: RelativeDelta<Float64>): Bool {
         validateFloats(this, obj, delta)
         if (this.isInf() || obj.isInf()) {

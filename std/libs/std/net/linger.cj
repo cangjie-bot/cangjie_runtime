@@ -50,6 +50,9 @@ struct Linger {
     var enabled: Int32 = 0
     var seconds: Int32 = 0
 
+    /*
+     * @noThrow
+     */
     init(onOff: Bool, seconds: Int64) {
         this.enabled = if (onOff) {
             1
@@ -64,6 +67,10 @@ struct Linger {
 
     static let size: UIntNative = 8
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     static func use<R>(block: (CPointer<Linger>) -> R): R {
         unsafe {
             let ptr = LibC.malloc<Linger>()
@@ -81,6 +88,15 @@ struct Linger {
 }
 
 extend<ActualPlatformSocket> SocketCommon<ActualPlatformSocket> {
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     func getLinger(): ?Duration {
         Linger.use<?Duration> {
             ptr => unsafe {
@@ -106,6 +122,15 @@ extend<ActualPlatformSocket> SocketCommon<ActualPlatformSocket> {
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     func setLinger(newLinger: ?Duration): Unit {
         Linger.use<Unit> {
             ptr => unsafe {

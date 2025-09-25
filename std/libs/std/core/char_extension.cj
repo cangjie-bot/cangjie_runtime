@@ -11,67 +11,106 @@ package std.core
 extend Rune {
 
 
+    /*
+     * @noThrow
+     */
     public func isAsciiLetter(): Bool {
         return (this >= r'A' && this <= r'Z') || (this >= r'a' && this <= r'z')
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isAsciiNumber(): Bool {
         return this >= r'0' && this <= r'9'
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isAsciiHex(): Bool {
         return this.isAsciiNumber() || (this >= r'a' && this <= r'f') || (this >= r'A' && this <= r'F')
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isAsciiOct(): Bool {
         return this >= r'0' && this <= r'7'
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isAsciiPunctuation(): Bool {
         return (this >= r'!' && this <= r'/') || (this >= r':' && this <= r'@') || (this >= r'[' && this <= r'`') || (this >=
             r'{' && this <= r'~')
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isAsciiGraphic(): Bool {
         return this >= r'!' && this <= r'~'
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isAsciiControl(): Bool {
         return (this >= r'\u{0000}' && this <= r'\u{001F}') || this == r'\u{007F}'
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isAsciiNumberOrLetter(): Bool {
         return this.isAsciiLetter() || this.isAsciiNumber()
     }
 
     
+    /*
+     * @noThrow
+     */
     public func isAsciiLowerCase(): Bool {
         return this >= r'a' && this <= r'z'
     }
 
     
+    /*
+     * @noThrow
+     */
     public func isAsciiUpperCase(): Bool {
         return this >= r'A' && this <= r'Z'
     }
 
     
+    /*
+     * @noThrow
+     */
     public func isAscii(): Bool {
         return this >= r'\u{0000}' && this <= r'\u{007F}'
     }
 
     
+    /*
+     * @noThrow
+     */
     public func isAsciiWhiteSpace(): Bool {
         return (this >= r'\u{0009}' && this <= r'\u{000D}') || this == r'\u{0020}'
     }
 
     
+    /*
+     * @noThrow
+     */
     public func toAsciiUpperCase(): Rune {
         return if (this.isAsciiLowerCase()) {
             Rune(UInt32(this) - UInt32(ASCII_UPPER_TO_LOWER_DIFF))
@@ -81,6 +120,9 @@ extend Rune {
     }
 
     
+    /*
+     * @noThrow
+     */
     public func toAsciiLowerCase(): Rune {
         return if (this.isAsciiUpperCase()) {
             Rune(UInt32(this) + UInt32(ASCII_UPPER_TO_LOWER_DIFF))
@@ -91,6 +133,10 @@ extend Rune {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func utf8Size(arr: Array<UInt8>, index: Int64): Int64 {
         if (index >= arr.size) {
             throw IllegalArgumentException("Invalid utf8 byte sequence.")
@@ -108,6 +154,9 @@ extend Rune {
         }
         return utf8SizeUnchecked(byte)
     }
+    /*
+     * @noThrow
+     */
     static func utf8SizeUnchecked(byte: Byte): Int64 {
         return match {
             case byte < HIGH_1_UInt8 => 1
@@ -120,6 +169,9 @@ extend Rune {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public static func utf8Size(c: Rune): Int64 {
         var ch = UInt32(c)
         match {
@@ -135,6 +187,9 @@ extend Rune {
 
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     */
     public static func fromUtf8(arr: Array<UInt8>, index: Int64): (Rune, Int64) {
         if (index >= arr.size) {
             throw IllegalArgumentException("Invalid utf8 byte sequence.")
@@ -142,6 +197,9 @@ extend Rune {
         return fromUtf8(arr.rawptr, arr.start + index, arr.start + arr.len)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     static func fromUtf8(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64): (Rune, Int64) {
         let byte0: UInt8 = arrayGetUnchecked(arr, startIndex)
         return match {
@@ -157,6 +215,10 @@ extend Rune {
 
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func getPreviousFromUtf8(arr: Array<UInt8>, index: Int64): (Rune, Int64) {
         var i: Int64 = index - 1
         var nowByte: UInt8
@@ -179,6 +241,10 @@ extend Rune {
 
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func intoUtf8Array(c: Rune, arr: Array<UInt8>, index: Int64): Int64 {
         var ch = UInt32(c)
         checkIndexValid(c, arr, index)
@@ -219,6 +285,9 @@ extend Rune {
     }
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private static func checkIndexValid(c: Rune, arr: Array<UInt8>, index: Int64): Unit {
         if (index < 0) {
             throw IllegalArgumentException("The index cannot be less than 0.")
@@ -253,6 +322,9 @@ extend Rune <: Comparable<Rune> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func compare(rhs: Rune): Ordering {
         match {
             case this < rhs => Ordering.LT

@@ -31,12 +31,19 @@ public class StringBuilder <: ToString {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public init() {
         this.data = Array<UInt8>(defaultCapacity, repeat: 0)
         this.endIndex = 0
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(str: String) {
         let capacity = str.size + defaultCapacity
         this.data = Array<UInt8>(capacity, repeat: 0)
@@ -45,6 +52,10 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(r: Rune, n: Int64) {
         if (n < 0) {
             throw IllegalArgumentException("The number of rune should not be negative.")
@@ -60,6 +71,10 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(value: Array<Rune>) {
         if (value.size == 0) {
             this.data = Array<UInt8>(defaultCapacity, repeat: 0)
@@ -74,6 +89,9 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         if (capacity <= 0) {
             throw IllegalArgumentException("The capacity should be positive.")
@@ -85,6 +103,9 @@ public class StringBuilder <: ToString {
 
     @Frozen
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return this.endIndex
         }
@@ -93,6 +114,9 @@ public class StringBuilder <: ToString {
 
     @Frozen
     public prop capacity: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return this.data.size
         }
@@ -102,12 +126,19 @@ public class StringBuilder <: ToString {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return String(this.data[0..this.endIndex])
     }
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func reset(capacity!: Option<Int64> = None): Unit {
         let newCapacity = if (let Some(v) <- capacity) {
             if (v <= 0) {
@@ -123,6 +154,10 @@ public class StringBuilder <: ToString {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(r: Rune): Unit {
         let byte = UInt32(r)
         if (byte <= UTF8_1_MAX) {
@@ -139,6 +174,10 @@ public class StringBuilder <: ToString {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func append(str: String): Unit {
         if (str.isEmpty()) {
             return
@@ -152,6 +191,10 @@ public class StringBuilder <: ToString {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func append(sb: StringBuilder): Unit {
         let itemLen = sb.endIndex
         if (itemLen == 0) {
@@ -166,6 +209,10 @@ public class StringBuilder <: ToString {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func appendFromUtf8(arr: Array<Byte>): Unit {
         if (arr.size == 0) {
             return
@@ -179,6 +226,10 @@ public class StringBuilder <: ToString {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public unsafe func appendFromUtf8Unchecked(arr: Array<Byte>): Unit {
         if (arr.size == 0) {
             return
@@ -191,6 +242,10 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(runeArr: Array<Rune>): Unit {
         for (c in runeArr) {
             this.append(c)
@@ -199,11 +254,19 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func append(cstr: CString): Unit {
         this.append(cstr.toString())
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append<T>(v: T): Unit where T <: ToString {
         match (v) {
             case i64: Int64 => this.append(i64)
@@ -221,6 +284,10 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append<T>(val: Array<T>): Unit where T <: ToString {
         for (v in val) {
             this.append(v)
@@ -228,6 +295,10 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func append(b: Bool): Unit {
         if (b) {
             this.append("true")
@@ -238,6 +309,10 @@ public class StringBuilder <: ToString {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: Int64): Unit {
         var numLen: Int64 = 0
         var unum: UInt64 = if (n < 0) {
@@ -260,22 +335,38 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: Int32): Unit {
         return this.append(Int64(n))
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: Int16): Unit {
         return this.append(Int64(n))
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: Int8): Unit {
         return this.append(Int64(n))
     }
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: UInt64): Unit {
         var numLen = calcNumLen(n)
         this.grow(numLen)
@@ -284,21 +375,37 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: UInt32): Unit {
         return this.append(UInt64(n))
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: UInt16): Unit {
         return this.append(UInt64(n))
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: UInt8): Unit {
         return this.append(UInt64(n))
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: Float64): Unit {
         unsafe {
             let p: CPointer<UInt8> = CJ_CORE_Float64ToCPointer(n)
@@ -311,17 +418,29 @@ public class StringBuilder <: ToString {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: Float32): Unit {
         return this.append(Float64(n))
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(n: Float16): Unit {
         return this.append(Float64(n))
     }
 
     @Frozen
     @OverflowThrowing
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func reserve(additional: Int64): Unit {
         if (this.data.size - this.endIndex >= additional) {
             return
@@ -338,6 +457,10 @@ public class StringBuilder <: ToString {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func grow(minCapacity: Int64): Unit {
         if (this.data.size - this.endIndex >= minCapacity) {
             return
@@ -355,6 +478,10 @@ public class StringBuilder <: ToString {
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private unsafe func append(cp: CPointer<UInt8>): Unit {
         let cpSize = Int64(strlen(cp))
         if (cpSize <= 0) {
@@ -372,6 +499,9 @@ public class StringBuilder <: ToString {
 }
 
 @OverflowWrapping
+/*
+ * @noThrow
+ */
 func calcNumLen(num: UInt64): Int64 {
     var p: UInt64 = 10
     for (i in 1..19) {
@@ -387,6 +517,9 @@ func calcNumLen(num: UInt64): Int64 {
 }
 
 @OverflowWrapping
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func numberToString(number: UInt64, endIndex: Int64, buffer: Array<Byte>): Unit {
     var next = endIndex - 1
     var value = number

@@ -25,6 +25,9 @@ public enum MockSessionKind {
 
 
 class MockSession {
+    /*
+     * @noThrow
+     */
     MockSession(
         let name: String,
         let sessionKind: MockSessionKind
@@ -38,6 +41,9 @@ class MockSession {
 }
 
 class MockObject {
+    /*
+     * @noThrow
+     */
     MockObject(
         let id: UInt64,
         let ref: Object,

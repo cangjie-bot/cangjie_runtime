@@ -9,9 +9,15 @@
 package std.core
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func vectorCompare32(arr1: RawArray<Byte>, offset1: Int64, arr2: RawArray<Byte>, offset2: Int64): Int64
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func vectorIndexByte32(arr: RawArray<Byte>, offset: Int64, target: Byte): Int64
 
 @When[backend == "cjnative"]
@@ -32,12 +38,19 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     public static const empty: String = String()
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public const init() {
         (myData, start, length) = (EMPTY_UINT8_RAW_ARRAY, 0u32, 0u32)
     }
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(value: Array<Rune>) {
         if (value.size == 0) {
             (myData, start, length) = (EMPTY_UINT8_RAW_ARRAY, 0u32, 0u32)
@@ -54,6 +67,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(value: Collection<Rune>) {
         let data = RunesToUtf8Bytes.getBytes(value)
         if (data.size > Int64(UInt32.Max)) {
@@ -65,6 +82,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     init(value: RawArray<UInt8>) {
         let len = arraySize(value)
         if (len > Int64(UInt32.Max)) {
@@ -74,12 +94,18 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init(value: RawArray<UInt8>, start: UInt32, len: UInt32) {
         (this.myData, this.start, this.length) = (value, start, len)
     }
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     init(ptr: CPointer<UInt8>, cSize: Int64) {
         if (cSize > Int64(UInt32.Max)) {
             throw IllegalArgumentException("The size of String is too large.")
@@ -106,6 +132,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     init(value: Array<UInt8>) {
         if (value.len > Int64(UInt32.Max)) {
             throw IllegalArgumentException("The size of String is too large.")
@@ -114,6 +143,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func get(index: Int64): Option<Byte> {
         if (UInt64(index) >= UInt64(length)) {
             return None
@@ -123,12 +155,18 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     internal func acquireRaw(): CPointer<UInt8> {
         unsafe { acquireRawData<UInt8>(this.myData) + Int64(this.start) }
     }
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     internal func releaseRaw(ptr: CPointer<UInt8>): Unit {
         unsafe { releaseRawData<UInt8>(this.myData, ptr - Int64(start)) }
     }
@@ -138,6 +176,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toRuneArray(): Array<Rune> {
         let runeSize = utf8RuneSize(myData, Int64(start), Int64(length))
         let runes: Array<Rune> = Array<Rune>(runeSize, repeat: unsafe { zeroValue<Rune>() })
@@ -154,6 +196,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func toArray(): Array<Byte> {
         let newRawPtr = RawArray<UInt8>(this.size, repeat: 0)
         intrinsicBuiltInCopyTo<Byte>(this.myData, newRawPtr, Int64(this.start), 0, Int64(length))
@@ -161,31 +206,49 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return this
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): Iterator<Byte> {
         return StringByteIterator(StringIteratorData(unsafe { rawData() }))
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func runes(): Iterator<Rune> {
         return StringRuneIterator(StringIteratorData(unsafe { rawData() }))
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func lines(): Iterator<String> {
         return StringLineIterator(StringIteratorData(unsafe { rawData() }))
     }
     @Frozen
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             Int64(length)
         }
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return length == 0
     }
@@ -194,6 +257,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func isAscii(): Bool {
         
         for (i in size - 1..=0 : -1) {
@@ -206,6 +272,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func isAsciiBlank(): Bool {
         
         for (i in size - 1..=0 : -1) {
@@ -217,6 +286,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func clone(): String {
         let newRawPtr = RawArray<UInt8>(this.size, repeat: 0)
         intrinsicBuiltInCopyTo<UInt8>(this.myData, newRawPtr, Int64(start), 0, Int64(length))
@@ -226,6 +298,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return Int64(wyhash(myData, Int64(start), Int64(length), 0))
     }
@@ -235,21 +310,33 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public static func fromUtf8(utf8Data: Array<UInt8>): String {
         checkInvalid(utf8Data.rawptr, utf8Data.start, utf8Data.start + utf8Data.size)
         return String(utf8Data.clone())
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public unsafe func rawData(): Array<Byte> {
         return Array<Byte>(myData, Int64(start), Int64(length))
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public unsafe static func fromUtf8Unchecked(utf8Data: Array<UInt8>): String {
         return String(utf8Data.clone())
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public func indexOf(b: Byte): Option<Int64> {
         return match (indexOfImpl(b, 0)) {
             case -1 => None
@@ -257,6 +344,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public func indexOf(b: Byte, fromIndex: Int64): Option<Int64> {
         if (fromIndex >= size) {
             return None
@@ -268,6 +358,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     private func indexOfImpl(b: Byte, fromIndex: Int64): Int64 {
         return if (IS_SIMD_SUPPORTED) {
             indexOfFast(b, fromIndex)
@@ -278,6 +371,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func indexOfCommon(b: Byte, fromIndex: Int64): Int64 {
         for (i in fromIndex..size) {
             if (arrayGetUnchecked(this.myData, Int64(start) + i) == b) {
@@ -289,6 +385,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func indexOfFast(b: Byte, fromIndex: Int64): Int64 {
         var i = fromIndex
         let rawptr = this.myData
@@ -310,6 +409,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return -1
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public func indexOf(str: String): Option<Int64> {
         if (str.isEmpty()) {
             return Option<Int64>.Some(0)
@@ -324,6 +426,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return Option<Int64>.Some(index)
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public func indexOf(str: String, fromIndex: Int64): Option<Int64> {
         if (str.length == 0) {
             if (fromIndex < 0) {
@@ -349,11 +454,17 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return Option<Int64>.Some(index)
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public func lastIndexOf(b: Byte): Option<Int64> {
         return lastIndexOf(b, 0)
     }
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func lastIndexOf(b: Byte, fromIndex: Int64): Option<Int64> {
         if (fromIndex < 0) {
             return lastIndexOf(b, 0)
@@ -368,6 +479,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return None
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public func lastIndexOf(str: String): Option<Int64> {
         if (str.isEmpty()) {
             return Option<Int64>.Some(size)
@@ -379,6 +493,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return Option<Int64>.Some(index)
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public func lastIndexOf(str: String, fromIndex: Int64): Option<Int64> {
         if (str.isEmpty()) {
             if (fromIndex > size) {
@@ -400,6 +517,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func count(str: String): Int64 {
         if (str.length == 0) {
             return utf8RuneSize(myData, Int64(start), Int64(length)) + 1
@@ -420,6 +540,11 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public func split(str: String, removeEmpty!: Bool = false): Array<String> {
         if (size == 0) {
             return EMPTY_STRING_ARRAY
@@ -431,6 +556,11 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public func split(str: String, maxSplits: Int64, removeEmpty!: Bool = false): Array<String> {
         if (size == 0 || maxSplits == 0) {
             return EMPTY_STRING_ARRAY
@@ -439,6 +569,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public func lazySplit(str: String, removeEmpty!: Bool = false): Iterator<String> {
         if (size == 0) {
             return EMPTY_STRING_ARRAY.iterator()
@@ -447,6 +581,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public func lazySplit(str: String, maxSplits: Int64, removeEmpty!: Bool = false): Iterator<String> {
         if (size == 0 || maxSplits == 0) {
             return EMPTY_STRING_ARRAY.iterator()
@@ -455,6 +593,11 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public func replace(old: String, new: String): String {
         if (size == 0) {
             if (old.size == 0) {
@@ -473,6 +616,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func insertString(new: String): String {
         let newArr: Array<UInt8> = unsafe { new.rawData() }
         let newSize: Int64 = new.size
@@ -501,6 +648,11 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     private func replaceString(old: String, new: String): String {
         let oldSize: Int64 = old.size
         let newSize: Int64 = new.size
@@ -550,6 +702,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func toAsciiLower(): String {
         let newRawPtr = RawArray<UInt8>(this.size, repeat: 0)
         
@@ -566,6 +721,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func toAsciiUpper(): String {
         let newRawPtr = RawArray<UInt8>(this.size, repeat: 0)
         
@@ -582,6 +740,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func toAsciiTitle(): String {
         var i: Int64 = 0
         let newRawPtr = RawArray<UInt8>(this.size, repeat: 0)
@@ -609,12 +770,18 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func trimAscii(): String {
         this.trimAsciiStart().trimAsciiEnd()
     }
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func trimAsciiStart(): String {
         var start: Int64 = 0
         var foundFirst: Bool = false
@@ -633,6 +800,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func trimAsciiEnd(): String {
         var end: Int64 = size - 1
         var foundLast: Bool = false
@@ -651,6 +821,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func trimStart(set: Array<Rune>): String {
         var start = Int64(this.start)
         let end = start + Int64(this.length)
@@ -673,21 +847,36 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimEnd(set: Array<Rune>): String {
         String(toRuneArray().trimEnd(set))
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func trimStart(set: String): String {
         trimStart(set.toRuneArray())
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimEnd(set: String): String {
         trimEnd(set.toRuneArray())
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func trimStart(predicate: (Rune) -> Bool): String {
         var start = this.start
         var end = start + this.length
@@ -702,11 +891,19 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimEnd(predicate: (Rune) -> Bool): String {
         return String(toRuneArray().trimEnd(predicate))
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func removePrefix(prefix: String): String {
         if (this.startsWith(prefix)) {
             return this[prefix.size..]
@@ -715,6 +912,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func removeSuffix(suffix: String): String {
         if (this.endsWith(suffix)) {
             return this[0..this.size - suffix.size]
@@ -723,6 +924,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func contains(str: String): Bool {
         if (str.isEmpty()) {
             return true
@@ -734,6 +938,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func startsWith(prefix: String): Bool {
         let strLen: Int64 = prefix.size
         if (strLen == 0) {
@@ -763,6 +970,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func endsWith(suffix: String): Bool {
         let strLen: Int64 = suffix.size
         if (strLen == 0) {
@@ -796,6 +1006,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func padStart(totalWidth: Int64, padding!: String = " "): String {
         if (totalWidth < 0) {
             throw IllegalArgumentException("negative totalWidth")
@@ -819,6 +1033,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func padEnd(totalWidth: Int64, padding!: String = " "): String {
         if (totalWidth < 0) {
             throw IllegalArgumentException("negative totalWidth")
@@ -841,6 +1059,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func equalsIgnoreAsciiCase(that: String): Bool {
         if (this.length != that.length) {
             return false
@@ -860,6 +1081,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     private func byteEqualsIgnoreAsciiCase(b1: Byte, b2: Byte): Bool {
         if (b1 == b2) {
             return true
@@ -873,6 +1097,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return false
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     static const func compareBytes(ptr1: RawArray<Byte>, start1: Int64, ptr2: RawArray<Byte>, start2: Int64, num: Int64): Int64 {
         return if (IS_SIMD_SUPPORTED) {
             compareBytesFast(ptr1, start1, ptr2, start2, num)
@@ -883,6 +1110,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     static const func compareBytesCommon(ptr1: RawArray<Byte>, start1: Int64,
                                     ptr2: RawArray<Byte>, start2: Int64, num: Int64): Int64 {
         var offset1 = start1
@@ -901,6 +1131,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     static const func compareBytesFast(ptr1: RawArray<Byte>, start1: Int64,
                                     ptr2: RawArray<Byte>, start2: Int64, num: Int64): Int64 {
         var i = 0
@@ -940,6 +1173,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func compare(str: String): Ordering {
         var minSize: Int64 = if (this.size < str.size) {
             this.size
@@ -965,6 +1201,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     */
     public operator const func +(right: String): String {
         let newLen = this.size + right.size
         if (newLen > Int64(UInt32.Max)) {
@@ -978,6 +1217,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public operator const func *(count: Int64): String {
         if (count < 0) {
             throw IllegalArgumentException("Negative count.")
@@ -1000,6 +1242,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return String(newData, 0, UInt32(newLen))
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public operator const func <(right: String): Bool {
         return match (this.compare(right)) {
             case LT => return true
@@ -1007,6 +1252,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public operator const func <=(right: String): Bool {
         return match (this.compare(right)) {
             case GT => return false
@@ -1014,6 +1262,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public operator const func >(right: String): Bool {
         return match (this.compare(right)) {
             case GT => return true
@@ -1021,6 +1272,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public operator const func >=(right: String): Bool {
         return match (this.compare(right)) {
             case LT => return false
@@ -1028,6 +1282,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public operator const func ==(right: String): Bool {
         if (this.length != right.length) {
             return false
@@ -1038,6 +1295,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return compareBytes(this.myData, Int64(this.start), right.myData, Int64(right.start), Int64(this.length)) == 0
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     public operator const func !=(right: String): Bool {
         return !(this == right)
     }
@@ -1046,6 +1306,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator const func [](index: Int64): Byte {
         if (index < 0 || index >= size) {
             throw IndexOutOfBoundsException("The length of the string is ${this.size}, but the index is ${index}.")
@@ -1053,6 +1316,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         return arrayGetUnchecked(myData, index + Int64(start))
     }
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     private func sliceUnchecked(startIndex: Int64, len: Int64) {
         return String(Array<Byte>(myData, Int64(this.start) + startIndex, len))
     }
@@ -1063,6 +1329,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator const func [](range: Range<Int64>): String {
         let start: Int64 = range.start
         var end: Int64 = range.end
@@ -1097,6 +1367,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func join(strArray: Array<String>, delimiter!: String = String.empty): String {
         let strArraySize: Int64 = strArray.size
         if (strArraySize == 0) {
@@ -1132,6 +1406,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func indexOfString(str: String, startIndex!: Int64 = 0, fromLast!: Bool = false): Int64 {
         var index: Int64 = -1
         let strSize: Int64 = str.size
@@ -1155,6 +1432,11 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     private func splitOfString(str: String, maxSplits: Int64, removeEmpty: Bool): Array<String> {
         let strLen: Int64 = str.size
         if (strLen == 0) {
@@ -1193,6 +1475,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func splitOfStringForOneRune(maxSplits: Int64): Array<String> {
         let resLen = if (0 < maxSplits && maxSplits < size) {
             maxSplits
@@ -1224,6 +1510,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     private func getRealSplitLenWithRemoveEmpty(indexes: CPointer<Int64>, total: Int64, separatorLen: Int64) {
         var itemTotal: Int64 = 0
         var itemStart: Int64 = 0
@@ -1246,6 +1535,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func splitAsStringArray(
         indexes: CPointer<Int64>,
         total: Int64,
@@ -1306,6 +1598,9 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
 
 @When[backend == "cjnative"]
 @OverflowWrapping
+/*
+ * @noThrow
+ */
 func utf8RuneSize(arr: RawArray<UInt8>, start: Int64, length: Int64): Int64 {
     if (length < STRING_C_THRESHOLD) {
         var utf32Size = 0
@@ -1326,8 +1621,15 @@ func utf8RuneSize(arr: RawArray<UInt8>, start: Int64, length: Int64): Int64 {
 }
 
 @When[backend == "cjnative"]
+       /*
+        * @noThrow
+        */
 struct RunesToUtf8Bytes {
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func getBytes(runes: Array<Rune>): Array<UInt8> {
         var itemBytes: Array<UInt8> = Array<UInt8>(getSize(runes), repeat: 0)
         var itemLen: Int64 = 0
@@ -1344,6 +1646,10 @@ struct RunesToUtf8Bytes {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func getBytes(elements: Collection<Rune>): Array<UInt8> {
         let itemBytes: Array<UInt8> = Array<UInt8>(UNICODE_TO_UTF8_MAX_LEN * elements.size, repeat: 0)
         var itemLen: Int64 = 0
@@ -1361,6 +1667,9 @@ struct RunesToUtf8Bytes {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public static func getSize(runes: Array<Rune>): Int64 {
         var size: Int64 = 0
         

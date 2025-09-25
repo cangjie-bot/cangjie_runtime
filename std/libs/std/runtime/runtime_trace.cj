@@ -20,6 +20,9 @@ const TRACE_TYPE_ALL_VALUE: UInt16 = 0xff00
 struct TraceType {
     var data: UInt16
 
+    /*
+     * @noThrow
+     */
     private init(traceType: UInt16) {
         this.data = traceType
     }
@@ -27,6 +30,9 @@ struct TraceType {
     public static let schedule: TraceType = TraceType(TRACE_TYPE_SCHEDULE_VALUE)
     public static let runtime: TraceType = TraceType(TRACE_TYPE_RUNTIME_VALUE)
     public static let all: TraceType = TraceType(TRACE_TYPE_ALL_VALUE)
+    /*
+     * @noThrow
+     */
     public operator func |(traceType: TraceType): TraceType {
         TraceType(this.data | traceType.data)
     }
@@ -44,9 +50,16 @@ foreign {
 @When[backend == "cjnative" && (os == "Windows" || os == "Linux")]
 struct Trace {
     private static let traceLock: Mutex = Mutex()
+    /*
+     * @noThrow
+     */
     private init() {}
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public unsafe static func dump(out: OutputStream): Unit {
         let lenPtr = LibC.malloc<Int32>(count: 1)
         if (lenPtr.isNull()) {
@@ -68,6 +81,11 @@ struct Trace {
     }
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     */
     public static func start(traceOpenType: TraceType, out: OutputStream): Bool {
         synchronized(traceLock) {
             let result = unsafe { CJ_ScheduleStartTrace(traceOpenType.data) }
@@ -82,6 +100,9 @@ struct Trace {
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public static func stop(): Bool {
         synchronized(traceLock) {
             unsafe { return CJ_ScheduleStopTrace() }
@@ -90,6 +111,13 @@ struct Trace {
 }
 
 @When[backend == "cjnative" && (os == "Windows" || os == "Linux")]
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws FSException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws IllegalSynchronizationStateException
+ */
 func traceStartByConfig(): Bool {
     let cjTracePath = if (let Some(env) <- getVariable("cjTracePath")) {
         env
@@ -109,6 +137,9 @@ func traceStartByConfig(): Bool {
 var g_traceStartByConfigFlag: Bool = traceStartByConfig()
 
 @When[backend == "cjnative" && (os == "Windows" || os == "Linux")]
+/*
+ * @throws IllegalSynchronizationStateException
+ */
 func traceStopByConfig(): Unit {
     if (g_traceStartByConfigFlag) {
         Trace.stop()

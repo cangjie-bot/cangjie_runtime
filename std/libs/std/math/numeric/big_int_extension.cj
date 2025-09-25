@@ -41,6 +41,10 @@ extend BigInt <: Parsable<BigInt> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func parse(value: String): BigInt {
         var (isNeg, start) = parseSign(value)
         let (radix, baseLength) = (parseBase(value, start))
@@ -52,6 +56,10 @@ extend BigInt <: Parsable<BigInt> {
         return BigInt(int, arr, isNeg)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func tryParse(value: String): ?BigInt {
         try {
             return parse(value)
@@ -90,6 +98,10 @@ extend BigInt <: RadixConvertible<BigInt> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func parse(value: String, radix!: Int64): BigInt {
         if (radix < 2 || radix > 36) {
             throw IllegalArgumentException("The radix should in the range of [2, 36].")
@@ -98,6 +110,10 @@ extend BigInt <: RadixConvertible<BigInt> {
         return BigInt(int, intArr, negSign)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func tryParse(value: String, radix!: Int64): ?BigInt {
         try {
             return parse(value, radix: radix)
@@ -113,6 +129,10 @@ extend BigInt <: RadixConvertible<BigInt> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(radix!: Int64): String {
         return this.convertToString(radix)
     }
@@ -145,6 +165,10 @@ extend BigInt <: Formattable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         if (!(Verify(fmt).verifyIntFormatArg())) {
             throw IllegalArgumentException("Wrong format string '" + fmt + "' for 'UInt' type.")
@@ -155,6 +179,10 @@ extend BigInt <: Formattable {
         return paddingString(flag, width, prefix, numberString)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func paddingString(flag: Flags, width: Int64, prefix: String, numberString: String): String {
         let paddingSize = width - (prefix.size + numberString.size)
         if (paddingSize <= 0) {
@@ -176,6 +204,10 @@ extend BigInt <: Formattable {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func toNumberString(specifier: Rune, precision: Int64): String {
         func fillZeroByPrecision(numberString: String, precision: Int64): String {
             if (precision <= numberString.size) {
@@ -196,14 +228,26 @@ extend BigInt <: Formattable {
         return fillZeroByPrecision(numberString, precision)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func toBinary(): String {
         return toStringByBits(1, DECIMAL_MAP)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func toOctal(): String {
         return toStringByBits(3, DECIMAL_MAP)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func toHex(upper: Bool): String {
         let hexMap = match (upper) {
             case true => HEX_UPPER_MAP
@@ -213,6 +257,10 @@ extend BigInt <: Formattable {
         return toStringByBits(4, hexMap)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func toStringByBits(stepSize: Int64, map: Array<Byte>) {
         let reader = BitsReader(this, stepSize)
         let length = reader.caculateSteps()
@@ -224,6 +272,10 @@ extend BigInt <: Formattable {
         return unsafe { String.fromUtf8Unchecked(buffer) }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func toDecimal(): String {
         let numberStringWithSign = toString(radix: 10)
         return match (negSign) {
@@ -232,6 +284,9 @@ extend BigInt <: Formattable {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private func cacultePrefix(flag: Flags, specifier: Rune) {
         let sign = match ((this.negSign, flag)) {
             case (true, _) => "-"
@@ -262,6 +317,9 @@ extend BigInt <: Formattable {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 private func caculateBitsLen(bigInt: BigInt): Int64 {
     if (bigInt.intArr.size == 0) {
         if (bigInt.int == 0) {
@@ -289,6 +347,9 @@ class BitsReader {
 
     private var readBits = 0
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     init(bigInt: BigInt, stepSize: Int64) {
         this.int = bigInt.int
         this.intArr = bigInt.intArr
@@ -297,6 +358,9 @@ class BitsReader {
         this.intArrReadIdx = intArr.size - 1
     }
 
+    /*
+     * @noThrow
+     */
     func caculateSteps(): Int64 {
         return match (bitsLen % stepSize == 0) {
             case true => bitsLen / stepSize
@@ -304,6 +368,9 @@ class BitsReader {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func forEach(action: (Int64, Byte) -> Unit): Unit {
         var step = 0
         action(step, first())
@@ -313,6 +380,9 @@ class BitsReader {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func first(): Byte {
         var firstStepBits = bitsLen % stepSize
         if (firstStepBits == 0) {
@@ -332,6 +402,9 @@ class BitsReader {
         return next(firstStepBits)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func next(n: Int64): Byte {
         let remainLen = 64 - bufferReadIdx
         if (remainLen >= n) {
@@ -344,6 +417,9 @@ class BitsReader {
         return byte
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func fill(): Unit {
         if (intArrReadIdx < 0) {
             buffer = int
@@ -360,6 +436,9 @@ class BitsReader {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func read(n: Int64): Byte {
         let byte = UInt8((buffer << bufferReadIdx) >> (64 - n))
         bufferReadIdx += n
@@ -367,6 +446,9 @@ class BitsReader {
         return byte
     }
 
+    /*
+     * @noThrow
+     */
     private func hasNext(): Bool {
         return readBits < bitsLen
     }

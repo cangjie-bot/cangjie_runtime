@@ -213,6 +213,10 @@ public const SEEK_END: Int32 = 0x2
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func `open`(path: String, oflag: Int32, flag: UInt32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -232,6 +236,10 @@ public func `open`(path: String, oflag: Int32, flag: UInt32): Int32 {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func `open`(path: String, oflag: Int32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -254,6 +262,10 @@ public func `open`(path: String, oflag: Int32): Int32 {
 
 @When[os != "Windows" && os != "macOS"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func open64(path: String, oflag: Int32, flag: UInt32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -274,6 +286,10 @@ public func open64(path: String, oflag: Int32, flag: UInt32): Int32 {
 
 @When[os != "Windows" && os != "macOS"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func open64(path: String, oflag: Int32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -296,6 +312,10 @@ public func open64(path: String, oflag: Int32): Int32 {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func openat(fd: Int32, path: String, oflag: Int32, flag: UInt32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -317,6 +337,10 @@ public func openat(fd: Int32, path: String, oflag: Int32, flag: UInt32): Int32 {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func openat(fd: Int32, path: String, oflag: Int32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -339,6 +363,10 @@ public func openat(fd: Int32, path: String, oflag: Int32): Int32 {
 
 @When[os != "Windows" && os != "macOS"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func openat64(fd: Int32, path: String, oflag: Int32, flag: UInt32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -360,6 +388,10 @@ public func openat64(fd: Int32, path: String, oflag: Int32, flag: UInt32): Int32
 
 @When[os != "Windows" && os != "macOS"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func openat64(fd: Int32, path: String, oflag: Int32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -378,6 +410,10 @@ public func openat64(fd: Int32, path: String, oflag: Int32): Int32 {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func creat(path: String, flag: UInt32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -395,6 +431,9 @@ public func creat(path: String, flag: UInt32): Int32 {
 
 
 @Deprecated
+/*
+ * @noThrow
+ */
 public func close(fd: Int32): Int32 {
     return unsafe { CJ_OS_Close(fd) }
 }
@@ -414,6 +453,9 @@ public func close(fd: Int32): Int32 {
 
 
 @Deprecated
+/*
+ * @noThrow
+ */
 public func lseek(fd: Int32, offset: Int64, whence: Int32): Int64 {
     return unsafe { CJ_OS_Lseek(fd, offset, whence) }
 }
@@ -428,6 +470,9 @@ public func lseek(fd: Int32, offset: Int64, whence: Int32): Int64 {
 
 
 @Deprecated
+/*
+ * @noThrow
+ */
 public func dup(fd: Int32): Int32 {
     return unsafe { CJ_OS_Dup(fd) }
 }
@@ -442,6 +487,9 @@ public func dup(fd: Int32): Int32 {
 
 
 @Deprecated
+/*
+ * @noThrow
+ */
 public func dup2(fd: Int32, fd2: Int32): Int32 {
     return unsafe { CJ_OS_Dup2(fd, fd2) }
 }
@@ -461,6 +509,9 @@ public func dup2(fd: Int32, fd2: Int32): Int32 {
 
 
 @Deprecated
+/*
+ * @noThrow
+ */
 public unsafe func read(fd: Int32, buffer: CPointer<UInt8>, nbyte: UIntNative): IntNative {
     return CJ_OS_Read(fd, buffer, nbyte)
 }
@@ -482,6 +533,9 @@ public unsafe func read(fd: Int32, buffer: CPointer<UInt8>, nbyte: UIntNative): 
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public unsafe func pread(fd: Int32, buffer: CPointer<UInt8>, nbyte: UIntNative, offset: Int32): IntNative {
     return CJ_OS_Pread(fd, buffer, nbyte, offset)
 }
@@ -500,6 +554,9 @@ public unsafe func pread(fd: Int32, buffer: CPointer<UInt8>, nbyte: UIntNative, 
 
 
 @Deprecated
+/*
+ * @noThrow
+ */
 public unsafe func write(fd: Int32, buffer: CPointer<UInt8>, nbyte: UIntNative): IntNative {
     return CJ_OS_Write(fd, buffer, nbyte)
 }
@@ -520,6 +577,9 @@ public unsafe func write(fd: Int32, buffer: CPointer<UInt8>, nbyte: UIntNative):
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public unsafe func pwrite(fd: Int32, buffer: CPointer<UInt8>, nbyte: UIntNative, offset: Int32): IntNative {
     return CJ_OS_Pwrite(fd, buffer, nbyte, offset)
 }
@@ -562,6 +622,10 @@ public const S_IFSOCK: UInt32 = 0xC000
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func isType(path: String, mode: UInt32): Bool {
     if (path.contains(NULL_BYTE)) {
         return false
@@ -588,6 +652,10 @@ const SOCK: Int32 = 7
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func isReg(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
         return false
@@ -606,6 +674,10 @@ public func isReg(path: String): Bool {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func isDir(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
         return false
@@ -624,6 +696,10 @@ public func isDir(path: String): Bool {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func isChr(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
         return false
@@ -642,6 +718,10 @@ public func isChr(path: String): Bool {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func isBlk(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
         return false
@@ -660,6 +740,10 @@ public func isBlk(path: String): Bool {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func isFIFO(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
         return false
@@ -679,6 +763,10 @@ public func isFIFO(path: String): Bool {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func isSock(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
         return false
@@ -698,6 +786,10 @@ public func isSock(path: String): Bool {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func isLnk(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
         return false
@@ -717,6 +809,10 @@ public func isLnk(path: String): Bool {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func chdir(path: String): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -735,6 +831,9 @@ public func chdir(path: String): Int32 {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func fchdir(fd: Int32): Int32 {
     return unsafe { CJ_OS_Fchdir(fd) }
 }
@@ -746,6 +845,9 @@ public func fchdir(fd: Int32): Int32 {
 
 
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getcwd(): String {
     var s: CString = unsafe { CJ_OS_GetCwd() }
     try {
@@ -764,6 +866,9 @@ public func getcwd(): String {
 
 @When[os == "Linux"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getos(): String {
     unsafe {
         let os = CJ_OS_GetOs()
@@ -787,6 +892,11 @@ public func getos(): String {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func gethostname(): String {
     var strArr: Array<Rune> = Array<Rune>(1024, {_ => r'\0'})
     var array: Array<Rune> = strArr
@@ -813,6 +923,10 @@ public func gethostname(): String {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func sethostname(buf: String): Int32 {
     checkPath(buf)
     var b: CString = unsafe { LibC.mallocCString(buf) }
@@ -829,6 +943,9 @@ public func sethostname(buf: String): Int32 {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getlogin(): String {
     var s: CString = unsafe { CJ_OS_Getlogin() }
     let res: String = s.toString()
@@ -847,6 +964,10 @@ public func getlogin(): String {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func link(path: String, newpath: String): Int32 {
     checkPath(path)
     checkPath(newpath)
@@ -875,6 +996,10 @@ public func link(path: String, newpath: String): Int32 {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func unlink(path: String): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -924,6 +1049,10 @@ public const AT_FDCWD: Int32 = -2
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func linkat(fd: Int32, path: String, nfd: Int32, newPath: String, lflag: Int32): Int32 {
     checkPath(path)
     checkPath(newPath)
@@ -957,6 +1086,10 @@ public const AT_REMOVEDIR: Int32 = 0x200
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func unlinkat(fd: Int32, path: String, ulflag: Int32): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -982,6 +1115,10 @@ public func unlinkat(fd: Int32, path: String, ulflag: Int32): Int32 {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func symlink(path: String, symPath: String): Int32 {
     checkPath(path)
     checkPath(symPath)
@@ -1009,6 +1146,10 @@ public func symlink(path: String, symPath: String): Int32 {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func symlinkat(path: String, fd: Int32, symPath: String): Int32 {
     checkPath(path)
     checkPath(symPath)
@@ -1031,6 +1172,10 @@ public func symlinkat(path: String, fd: Int32, symPath: String): Int32 {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func remove(path: String): Int32 {
     checkPath(path)
     var p: CString = unsafe { LibC.mallocCString(path) }
@@ -1057,6 +1202,10 @@ public func remove(path: String): Int32 {
 
 
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func rename(oldName: String, newName: String): Int32 {
     checkPath(oldName)
     checkPath(newName)
@@ -1086,6 +1235,10 @@ public func rename(oldName: String, newName: String): Int32 {
 
 @When[os != "Windows"]
 @Deprecated
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func renameat(oldfd: Int32, oldName: String, newfd: Int32, newName: String): Int32 {
     checkPath(oldName)
     checkPath(newName)
@@ -1098,6 +1251,9 @@ public func renameat(oldfd: Int32, oldName: String, newfd: Int32, newName: Strin
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 func checkPath(path: String): Unit {
     if (path.contains(NULL_BYTE)) {
         throw IllegalArgumentException("The path cannot contain null character!")

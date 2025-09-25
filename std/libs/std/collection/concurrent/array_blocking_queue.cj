@@ -59,6 +59,10 @@ public class ArrayBlockingQueue<E> {
 
     let unsignedCapacity: UInt64
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         if (capacity <= 0) {
             throw IllegalArgumentException("Invalid size of ArrayBlockingQueue: ${capacity}.")
@@ -75,6 +79,12 @@ public class ArrayBlockingQueue<E> {
     }
 
     @Deprecated[message: "Use the other version of `init` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64, elements: Collection<E>) {
         if (capacity < elements.size) {
             throw IllegalArgumentException(
@@ -99,6 +109,9 @@ public class ArrayBlockingQueue<E> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     ~init() {
         unsafe { LibC.free(state) }
     }
@@ -110,6 +123,9 @@ public class ArrayBlockingQueue<E> {
 
 
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             let front = reserved.load()
             let rear = allocated.load()
@@ -125,10 +141,22 @@ public class ArrayBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func add(element: E): Unit` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func enqueue(element: E): Unit {
         add(element)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func add(element: E): Unit {
         while (!tryAdd(element)) {
             receiveMonitor.lock()
@@ -151,10 +179,22 @@ public class ArrayBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func add(element: E, timeout: Duration): Bool` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func enqueue(element: E, timeout: Duration): Bool {
         add(element, timeout)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func add(element: E, timeout: Duration): Bool {
         var total = timeout
         while (true) {
@@ -185,10 +225,24 @@ public class ArrayBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func remove(): E` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public func dequeue(): E {
         remove()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public func remove(): E {
         while (true) {
             if (let Some(e) <- tryRemove()) {
@@ -215,10 +269,22 @@ public class ArrayBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func remove(timeout: Duration): Option<E>` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func dequeue(timeout: Duration): Option<E> {
         remove(timeout)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func remove(timeout: Duration): Option<E> {
         var total = timeout
         while (true) {
@@ -250,10 +316,16 @@ public class ArrayBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func peek(): Option<E>` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func head(): Option<E> {
         peek()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func peek(): Option<E> {
         while (true) {
             let roundIndex = reserved.load()
@@ -287,11 +359,19 @@ public class ArrayBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func tryAdd(element: E): Bool` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryEnqueue(element: E): Bool {
         tryAdd(element)
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryAdd(element: E): Bool {
         while (true) {
             let roundIndex = allocated.load()
@@ -328,11 +408,19 @@ public class ArrayBlockingQueue<E> {
 
 
     @Deprecated[message: "Use member function `public func tryRemove(): Option<E>` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryDequeue(): Option<E> {
         tryRemove()
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryRemove(): Option<E> {
         while (true) {
             let roundIndex = reserved.load()
@@ -364,6 +452,9 @@ public class ArrayBlockingQueue<E> {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func isFull(): Bool {
         if (allocated.load() >= reserved.load() + unsignedCapacity) {
             return true
@@ -371,15 +462,24 @@ public class ArrayBlockingQueue<E> {
         return false
     }
 
+    /*
+     * @noThrow
+     */
     private func getRound(roundIndex: UInt64): UInt64 {
         return roundIndex / unsignedCapacity
     }
 
+    /*
+     * @noThrow
+     */
     private func getIndex(roundIndex: UInt64): Int64 {
         return Int64(roundIndex % unsignedCapacity)
     }
 }
 
+/*
+ * @noThrow
+ */
 func readableState(roundBit: UInt8): UInt8 {
     return if (roundBit == 1) {
         READABLE_ODD
@@ -388,6 +488,9 @@ func readableState(roundBit: UInt8): UInt8 {
     }
 }
 
+/*
+ * @noThrow
+ */
 func writeableState(roundBit: UInt8): UInt8 {
     return if (roundBit == 1) {
         WRITEABLE_EVEN
@@ -396,6 +499,9 @@ func writeableState(roundBit: UInt8): UInt8 {
     }
 }
 
+/*
+ * @noThrow
+ */
 func lockState(roundBit: UInt8): UInt8 {
     return if (roundBit == 1) {
         LOCK_ODD
@@ -405,6 +511,9 @@ func lockState(roundBit: UInt8): UInt8 {
 }
 
 
+/*
+ * @noThrow
+ */
 func matchState(round: UInt64, roundBit: UInt8, state: UInt8, expectState: UInt8) {
     if (UInt8(round & 1) == roundBit && state == expectState) {
         return true

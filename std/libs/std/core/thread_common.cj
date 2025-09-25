@@ -9,8 +9,17 @@
 package std.core
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func setThreadObject(thread: Thread): Unit
 
+/*
+ * @throws Error
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func handleException(ex: Exception): Unit {
     let exceptionHandler = Thread.exceptionHandler.load()
     try {
@@ -31,6 +40,11 @@ func handleException(ex: Exception): Unit {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws OutOfMemoryError
+ */
 func handleError(er: Error): Unit {
     try {
         match (er) {

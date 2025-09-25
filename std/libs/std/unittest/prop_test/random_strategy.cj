@@ -10,14 +10,23 @@ package std.unittest.prop_test
 import std.collection.filter
 import std.unittest.common.*
 
+              /*
+               * @noThrow
+               */
 public struct KeyRandom <: KeyFor<RandomSource> {
     public static prop random: KeyRandom {
+        /*
+         * @noThrow
+         */
         get() {
             KeyRandom()
         }
     }
 
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "random"
         }
@@ -25,7 +34,13 @@ public struct KeyRandom <: KeyFor<RandomSource> {
 }
 
 class GeneratorAsIterator<T> <: Iterator<T> {
+    /*
+     * @noThrow
+     */
     GeneratorAsIterator(private var gen: ?Generator<T>) {}
+    /*
+     * @noThrow
+     */
     public override func next(): ?T {
         let result = gen?.next()
         gen = None
@@ -43,6 +58,10 @@ public class RandomDataProvider<T> <: DataProvider<T> where T <: Arbitrary<T> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public RandomDataProvider(private let configuration: Configuration) {
         this.random = configuration.get<RandomSource>(KeyRandom.random) ??
                 throw IllegalArgumentException("RandomDataProvider initialized without configured random generator instance")
@@ -50,6 +69,9 @@ public class RandomDataProvider<T> <: DataProvider<T> where T <: Arbitrary<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     public override func provide(): Iterable<T> {
         return GeneratorAsIterator(T.arbitrary(random))
     }
@@ -59,11 +81,17 @@ public class RandomDataProvider<T> <: DataProvider<T> where T <: Arbitrary<T> {
 
 
 
+             /*
+              * @noThrow
+              */
 public class RandomDataShrinker<T> <: DataShrinker<T> {
 
 
 
 
+    /*
+     * @noThrow
+     */
     public override func shrink(value: T): Iterable<T> {
         match (value) {
             case shrinkable: Shrink<T> => shrinkable.shrink()
@@ -74,18 +102,28 @@ public class RandomDataShrinker<T> <: DataShrinker<T> {
 
 
 
+             /*
+              * @noThrow
+              */
 public class RandomDataStrategy<T> <: DataStrategy<T> where T <: Arbitrary<T> {
 
 
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public override func provider(configuration: Configuration): RandomDataProvider<T> {
         RandomDataProvider<T>(configuration)
     }
 
 
 
+    /*
+     * @noThrow
+     */
     public override func shrinker(_: Configuration): RandomDataShrinker<T> {
         RandomDataShrinker<T>()
     }
@@ -93,6 +131,9 @@ public class RandomDataStrategy<T> <: DataStrategy<T> where T <: Arbitrary<T> {
 
 
     public override prop isInfinite: Bool {
+        /*
+         * @noThrow
+         */
         get() { true }
     }
 }
@@ -100,16 +141,26 @@ public class RandomDataStrategy<T> <: DataStrategy<T> where T <: Arbitrary<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func random<T>(): RandomDataStrategy<T> where T <: Arbitrary<T> {
     RandomDataStrategy<T>()
 }
 
 public class RandomDataProviderRange<T> <: DataProvider<T> where T <: ArbitraryRange<T> {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public RandomDataProviderRange(private let configuration: Configuration, private let min: T, private let max: T) {
         this.random = configuration.get<RandomSource>(KeyRandom.random) ??
                 throw IllegalArgumentException("RandomDataProvider initialized without configured random generator instance")
     }
 
+    /*
+     * @noThrow
+     */
     public override func provide(): Iterable<T> {
         return GeneratorAsIterator(T.arbitraryRange(random, min, max))
     }
@@ -118,8 +169,14 @@ public class RandomDataProviderRange<T> <: DataProvider<T> where T <: ArbitraryR
 }
 
 public class RandomDataShrinkerRange<T> <: DataShrinker<T> where T <: Comparable<T> {
+    /*
+     * @noThrow
+     */
     RandomDataShrinkerRange(private let min: T, private let max: T) {}
 
+    /*
+     * @noThrow
+     */
     public override func shrink(value: T): Iterable<T> {
         match (value) {
             case shrinkable: Shrink<T> => shrinkable.shrink() |> filter { it => min <= it && it <= max }
@@ -129,21 +186,37 @@ public class RandomDataShrinkerRange<T> <: DataShrinker<T> where T <: Comparable
 }
 
 public class RandomDataStrategyRange<T> <: DataStrategy<T> where T <: ArbitraryRange<T> {
+    /*
+     * @noThrow
+     */
     RandomDataStrategyRange(private let min: T, private let max: T) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public override func provider(configuration: Configuration): RandomDataProviderRange<T> {
         RandomDataProviderRange<T>(configuration, min, max)
     }
 
+    /*
+     * @noThrow
+     */
     public override func shrinker(_: Configuration): RandomDataShrinkerRange<T> {
         RandomDataShrinkerRange<T>(min, max)
     }
 
     public override prop isInfinite: Bool {
+        /*
+         * @noThrow
+         */
         get() { true }
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 public func randomInRange<T>(min!: Option<T> = None, max!: Option<T> = None): RandomDataStrategyRange<T> where T <: ArbitraryRange<T> {
     if ((min ?? T.min()) > (max ?? T.max())) {
         throw IllegalArgumentException("the interval you provided is empty")

@@ -12,6 +12,9 @@ import std.time.DateTime
 import std.collection.*
 
 extend LStep <: Serializable<LStep> {
+    /*
+     * @noThrow
+     */
     public func serializeInternal(): DataModel {
         let i = match (this) {
             case BeforeAll => 0
@@ -22,6 +25,9 @@ extend LStep <: Serializable<LStep> {
         i.serializeInternal()
     }
 
+    /*
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): LStep {
         match (Int64.deserialize(dm)) {
             case 0 => BeforeAll
@@ -34,6 +40,10 @@ extend LStep <: Serializable<LStep> {
 }
 
 extend StepKind <: Serializable<StepKind> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         let dms = DataModelStruct()
         match (this) {
@@ -50,6 +60,9 @@ extend StepKind <: Serializable<StepKind> {
         dms
     }
 
+    /*
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): StepKind {
         let dms = dm.asStruct()
         if (let Some(step) <- dms.tryGet("step")) {
@@ -77,6 +90,10 @@ extend StepKind <: Serializable<StepKind> {
 }
 
 extend StepInfo <: Serializable<StepInfo> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         let dms = DataModelStruct()
         match (this) {
@@ -88,6 +105,12 @@ extend StepInfo <: Serializable<StepInfo> {
         dms
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): StepInfo {
         let dms = dm.asStruct()
         if (let Some(testArgs) <- dms.tryGet("test")) {
@@ -105,6 +128,11 @@ extend StepInfo <: Serializable<StepInfo> {
 }
 
 extend RunStepResult {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     func doSerialize(): DataModelStruct {
         return DataModelStruct()
             .add(field<StepKind>("stepKind", kind))
@@ -114,6 +142,14 @@ extend RunStepResult {
             .add(field<Int64>("duration", duration.toNanoseconds()))
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws Exception
+     * @throws ArithmeticException
+     */
     static func doDeserialize(dm: DataModel): RunStepResult {
         let dms = dm.asStruct()
         let result = RunStepResult(
@@ -128,6 +164,10 @@ extend RunStepResult {
 }
 
 extend TestCaseResult {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func doSerialize(): DataModelStruct {
         return serializeSubResults()
             .add(field<TestCaseId>("id", caseId))
@@ -136,6 +176,14 @@ extend TestCaseResult {
             .add(field<Bool>("finished", isFinished))
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws Exception
+     * @throws NoneValueException
+     */
     static func doDeserialize(dm: DataModel): TestCaseResult {
         let dms = dm.asStruct()
         let result = TestCaseResult(
@@ -154,16 +202,28 @@ extend TestCaseResult {
 }
 
 extend TestCaseReportInfo <: Serializable<TestCaseReportInfo> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         this.tags.serializeInternal()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): TestCaseReportInfo {
         TestCaseReportInfo(tags: Array<String>.deserialize(dm))
     }
 }
 
 extend TestSuiteResult {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func doSerialize(): DataModelStruct {
         return serializeSubResults()
             .add(field<TestSuiteId>("id", suiteId))
@@ -171,6 +231,14 @@ extend TestSuiteResult {
             .add(field<Bool>("finished", isFinished))
     }
 
+    /*
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws DataModelException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     static func doDeserialize(dm: DataModel): TestSuiteResult {
         let dms = dm.asStruct()
         let result = TestSuiteResult(
@@ -188,22 +256,42 @@ extend TestSuiteResult {
 }
 
 extend TestSuiteReportInfo <: Serializable<TestSuiteReportInfo> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         this.tags.serializeInternal()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): TestSuiteReportInfo {
         TestSuiteReportInfo(tags: Array<String>.deserialize(dm))
     }
 }
 
 extend TestGroupResult {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func doSerialize(): DataModelStruct {
         return serializeSubResults()
             .add(field<String>("groupName", groupName))
             .add(field<Bool>("finished", isFinished))
     }
 
+    /*
+     * @throws DataModelException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws NoneValueException
+     * @throws Exception
+     */
     static func doDeserialize(dm: DataModel): TestGroupResult {
         let dms = dm.asStruct()
         let result = TestGroupResult(String.deserialize(dms.get("groupName")), [])
@@ -223,6 +311,10 @@ private const RENDER_OPTIONS_BASELINE_KEY = "baseline"
 
 
 extend RenderOptions <: Serializable<RenderOptions> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         let dm = DataModelStruct()
             .add(field<?String>(KeyBaseline.baseline.name, baselineString))
@@ -235,6 +327,12 @@ extend RenderOptions <: Serializable<RenderOptions> {
         dm
     }
 
+    /*
+     * @throws Exception
+     * @throws DataModelException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func deserialize(dm: DataModel): RenderOptions {
         var info = None<MeasurementInfo>
         if (let Some(conv) <- dm.asStruct().tryGet("conversionTable")) {
@@ -252,11 +350,17 @@ extend RenderOptions <: Serializable<RenderOptions> {
 }
 
 struct ArrayOfTuples<A, B> <: Serializable<ArrayOfTuples<A, B>> where A <: Serializable<A>, B <: Serializable<B> {
+    /*
+     * @noThrow
+     */
     ArrayOfTuples(
         let left: Array<A>,
         let right: Array<B>
     ) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     init(col: Collection<(A, B)>) {
         let data = col.toArray()
         left = Array(data.size) { i =>
@@ -267,16 +371,29 @@ struct ArrayOfTuples<A, B> <: Serializable<ArrayOfTuples<A, B>> where A <: Seria
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func original(): Array<(A, B)> {
         left |> zip(right) |> collectArray
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct()
             .add(field("left", left))
             .add(field("right", right))
     }
 
+    /*
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): ArrayOfTuples<A, B> {
         ArrayOfTuples(
             Array<A>.deserialize(dm.asStruct().get("left")),

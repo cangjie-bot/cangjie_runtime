@@ -32,12 +32,21 @@ struct SocketState {
     static let Terminal: SocketState
     static let JustAccepted: SocketState
 
+    /*
+     * @noThrow
+     */
     SocketState(var value: UInt32) {}
 
+    /*
+     * @noThrow
+     */
     private init() {
         this(0)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     static init() {
         var s = SocketState()
         s.nativeState = SocketDisposed
@@ -52,9 +61,15 @@ struct SocketState {
 
 
     mut prop useCounter: UInt32 {
+        /*
+         * @noThrow
+         */
         get() {
             value & COUNTER_MASK
         }
+        /*
+         * @throws OverflowException
+         */
         set(newValue) {
             if ((newValue & !COUNTER_MASK) != 0) {
                 incrementFailed()
@@ -63,27 +78,42 @@ struct SocketState {
         }
     }
 
+    /*
+     * @throws OverflowException
+     */
     private static func incrementFailed(): Nothing {
         throw OverflowException("Socket usage couter overflow")
     }
 
 
     private mut prop nativeStateNum: UInt32 {
+        /*
+         * @noThrow
+         */
         get() {
             (value & NATIVE_STATE_MASK) >> NATIVE_STATE_SHIFT
         }
+        /*
+         * @noThrow
+         */
         set(newValue) {
             value = (value & !NATIVE_STATE_MASK) | ((newValue << NATIVE_STATE_SHIFT) & NATIVE_STATE_MASK)
         }
     }
 
     prop disposedOrShuttingDown: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             return nativeStateNum >= STATE_CLOSING_CODE
         }
     }
 
     mut prop nativeState: HolderState {
+        /*
+         * @noThrow
+         */
         get() {
             let nativeStateNum = nativeStateNum
             match {
@@ -93,6 +123,9 @@ struct SocketState {
                 case _ => SocketDisposed
             }
         }
+        /*
+         * @throws IllegalArgumentException
+         */
         set(newState) {
             let newValue: UInt32 = match (newState) {
                 case SocketNotCreated => STATE_NOT_CREATED_CODE
@@ -108,90 +141,144 @@ struct SocketState {
     }
 
     mut prop connected: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             check(CONNECTED_MASK)
         }
+        /*
+         * @noThrow
+         */
         set(new) {
             setBit(CONNECTED_MASK, new)
         }
     }
 
     mut prop bound: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             check(BOUND_MASK)
         }
+        /*
+         * @noThrow
+         */
         set(new) {
             setBit(BOUND_MASK, new)
         }
     }
 
     mut prop hasReaders: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             check(HAS_READER_MASK)
         }
+        /*
+         * @noThrow
+         */
         set(new) {
             setBit(HAS_READER_MASK, new)
         }
     }
 
     mut prop hasWriters: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             check(HAS_WRITER_MASK)
         }
+        /*
+         * @noThrow
+         */
         set(new) {
             setBit(HAS_WRITER_MASK, new)
         }
     }
 
     mut prop failed: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             check(FAILED_MASK)
         }
+        /*
+         * @noThrow
+         */
         set(new) {
             setBit(FAILED_MASK, new)
         }
     }
 
+    /*
+     * @throws SocketException
+     */
     func ensureNotClosed(): Unit {
         if (disposedOrShuttingDown) {
             SocketException.throwClosedException()
         }
     }
 
+    /*
+     * @throws SocketException
+     */
     func ensureConnected(): Unit {
         if (!connected) {
             SocketException.notYetConnected()
         }
     }
 
+    /*
+     * @throws SocketException
+     */
     func ensureNotConnected() {
         if (connected) {
             SocketException.alreadyConnected()
         }
     }
 
+    /*
+     * @throws SocketException
+     */
     func ensureBound(): Unit {
         if (!bound) {
             SocketException.notYetBound()
         }
     }
 
+    /*
+     * @throws SocketException
+     */
     func ensureBindInvoked(): Unit {
         if (!bound) {
             SocketException.notYetBoundNeedBind()
         }
     }
 
+    /*
+     * @throws SocketException
+     */
     func ensureNotBound(): Unit {
         if (bound) {
             SocketException.alreadyBound()
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func check(mask: UInt32): Bool {
         (value & mask) != 0
     }
 
+    /*
+     * @noThrow
+     */
     private mut func setBit(mask: UInt32, newState: Bool) {
         if (newState) {
             value |= mask

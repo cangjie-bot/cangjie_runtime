@@ -19,10 +19,16 @@ public class ArrayDeque<T> <: Deque<T> {
     var _head: Int64 = 0
     var _tail: Int64 = 0
 
+    /*
+     * @noThrow
+     */
     public init() {
         _data = Array<T>(DEFAULT_CAPACITY, repeat: unsafe { zeroValue<T>() })
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         if (capacity < 0) {
             throw IllegalArgumentException("The capacity must be greater than or equal to 0: ${capacity}.")
@@ -36,6 +42,9 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             if (_head > _tail) {
                 return _data.size - _head + _tail
@@ -45,6 +54,9 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     public prop first: ?T {
+        /*
+         * @noThrow
+         */
         get() {
             if (_head == _tail) {
                 return None
@@ -54,6 +66,9 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     public prop last: ?T {
+        /*
+         * @noThrow
+         */
         get() {
             if (_head == _tail) {
                 return None
@@ -66,16 +81,26 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     public prop capacity: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return _data.size
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return _head == _tail
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func addFirst(element: T): Unit {
         _head = if (_head == 0) {
             _data.size - 1
@@ -90,6 +115,10 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func addLast(element: T): Unit {
         _data[_tail] = element
         _tail = if (_tail == _data.size - 1) {
@@ -105,6 +134,9 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func removeFirst(): ?T {
         if (_head == _tail) {
             return None
@@ -123,6 +155,9 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func removeLast(): ?T {
         if (_head == _tail) {
             return None
@@ -140,6 +175,10 @@ public class ArrayDeque<T> <: Deque<T> {
         return res
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func grow(minCapacity: Int64, full!: Bool = false): Unit {
         let oldCapacity: Int64 = _data.size
         var newCapacity: Int64 = oldCapacity + (oldCapacity >> 1)
@@ -166,6 +205,10 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toArray(): Array<T> {
         if (_head <= _tail) {
             return _data[_head.._tail].clone()
@@ -178,6 +221,9 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func clear(): Unit {
         while (_head != _tail) {
             unsafe { _data.setUnchecked(_head, zeroValue<T>()) }
@@ -192,6 +238,10 @@ public class ArrayDeque<T> <: Deque<T> {
         incModCount()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func reserve(additional: Int64): Unit {
         let free = _data.size - size
         if (additional <= free) {
@@ -202,11 +252,17 @@ public class ArrayDeque<T> <: Deque<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): Iterator<T> {
         return ArrayDequeIterator<T>(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func incModCount(): Unit {
         _version++
     }
@@ -217,6 +273,9 @@ private class ArrayDequeIterator<T> <: Iterator<T> {
     private var myIndex: Int64
     private let lockVersion: Int64
 
+    /*
+     * @noThrow
+     */
     init(data: ArrayDeque<T>) {
         myData = data
         lockVersion = data._version
@@ -224,6 +283,9 @@ private class ArrayDequeIterator<T> <: Iterator<T> {
     }
 
     @Frozen
+    /*
+     * @throws ConcurrentModificationException
+     */
     public func next(): ?T {
         if (myData._version != lockVersion) {
             throw ConcurrentModificationException()
@@ -242,6 +304,11 @@ private class ArrayDequeIterator<T> <: Iterator<T> {
 }
 
 extend<T> ArrayDeque<T> <: ToString where T <: ToString {
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return collectionToString<ArrayDeque<T>, T>(this)
     }

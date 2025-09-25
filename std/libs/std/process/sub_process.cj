@@ -19,6 +19,9 @@ public class SubProcess <: Process {
     var _stdOut: InputStream
     var _stdErr: InputStream
 
+    /*
+     * @noThrow
+     */
     init(
         pid: Int64,
         name: ?String,
@@ -45,16 +48,25 @@ public class SubProcess <: Process {
     }
 
     public prop stdInPipe: OutputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdIn
         }
     }
     public prop stdOutPipe: InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdOut
         }
     }
     public prop stdErrPipe: InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdErr
         }
@@ -62,6 +74,9 @@ public class SubProcess <: Process {
 
     @Deprecated[message: "Use `public prop stdErrPipe: InputStream` instead."]
     public prop stdErr: InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdErr
         }
@@ -69,6 +84,9 @@ public class SubProcess <: Process {
 
     @Deprecated[message: "Use `public prop stdOutPipe: InputStream` instead."]
     public prop stdOut: InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdOut
         }
@@ -76,6 +94,9 @@ public class SubProcess <: Process {
 
     @Deprecated[message: "Use `public prop stdInPipe: OutputStream` instead."]
     public prop stdIn: OutputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdIn
         }
@@ -86,6 +107,11 @@ public class SubProcess <: Process {
 
 
 
+    /*
+     * @throws TimeoutException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     */
     public func wait(timeout!: ?Duration = None): Int64 {
         let exitCode: Int64 = getWaitExitCode(timeout ?? Duration.Zero, Int32(this.pid), this._handle)
         closeStdStream()
@@ -96,6 +122,14 @@ public class SubProcess <: Process {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws TimeoutException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     */
     public func waitOutput(): (Int64, Array<Byte>, Array<Byte>) {
         let outStreamFuture: Future<Array<Byte>> = spawn {
             => try {
@@ -123,6 +157,9 @@ public class SubProcess <: Process {
         return (exitCode, outArr, errArr)
     }
 
+    /*
+     * @throws ProcessException
+     */
     func closeStdStream(): Unit {
         if (let Some(stdInStream) <- (this._stdIn as ProcessOutputStream)) {
             if (let Some(stdInPipeOutputStream) <- (stdInStream.outputStream as PipeOutputStream)) {
@@ -202,6 +239,10 @@ func parseExitInfoPointer(waitExitInfo_cp: CPointer<ExitInfo>, pid: Int32): Int6
 }
 
 @When[os != "Windows"]
+/*
+ * @throws ArithmeticException
+ * @throws TimeoutException
+ */
 func getWaitExitCode(timeout: Duration, pid: Int32, handle: IntNative): Int64 {
     return if (timeout > Duration.Zero) {
         let future: Future<Int64> = spawn {

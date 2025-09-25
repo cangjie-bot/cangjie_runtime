@@ -12,6 +12,9 @@ import std.math.abs
 
 
 public interface Arbitrary<T> {
+    /*
+     * @noThrow
+     */
     static func arbitrary(random: RandomSource): Generator<T>
 }
 
@@ -22,6 +25,9 @@ public interface Arbitrary<T> {
 
 
 extend Unit <: Arbitrary<Unit> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(_: RandomSource): Generator<Unit> {
         Generators.single(())
     }
@@ -29,6 +35,9 @@ extend Unit <: Arbitrary<Unit> {
 
 
 extend Bool <: Arbitrary<Bool> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Bool> {
         Generators.generate { random.suggestBool() }
     }
@@ -37,6 +46,9 @@ extend Bool <: Arbitrary<Bool> {
 
 
 extend Int8 <: Arbitrary<Int8> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Int8> {
         Generators.generate { random.suggestInt8() }
     }
@@ -45,6 +57,9 @@ extend Int8 <: Arbitrary<Int8> {
 
 
 extend Int16 <: Arbitrary<Int16> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Int16> {
         Generators.generate { random.suggestInt16() }
     }
@@ -53,6 +68,9 @@ extend Int16 <: Arbitrary<Int16> {
 
 
 extend Int32 <: Arbitrary<Int32> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Int32> {
         Generators.generate { random.suggestInt32() }
     }
@@ -61,6 +79,9 @@ extend Int32 <: Arbitrary<Int32> {
 
 
 extend Int64 <: Arbitrary<Int64> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Int64> {
         Generators.generate { random.suggestInt64() }
     }
@@ -69,6 +90,9 @@ extend Int64 <: Arbitrary<Int64> {
 
 
 extend IntNative <: Arbitrary<IntNative> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<IntNative> {
         Generators.generate { random.suggestIntNative() }
     }
@@ -77,6 +101,9 @@ extend IntNative <: Arbitrary<IntNative> {
 
 
 extend UInt8 <: Arbitrary<UInt8> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<UInt8> {
         Generators.generate { random.suggestUInt8() }
     }
@@ -85,6 +112,9 @@ extend UInt8 <: Arbitrary<UInt8> {
 
 
 extend UInt16 <: Arbitrary<UInt16> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<UInt16> {
         Generators.generate { random.suggestUInt16() }
     }
@@ -93,6 +123,9 @@ extend UInt16 <: Arbitrary<UInt16> {
 
 
 extend UInt32 <: Arbitrary<UInt32> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<UInt32> {
         Generators.generate { random.suggestUInt32() }
     }
@@ -101,6 +134,9 @@ extend UInt32 <: Arbitrary<UInt32> {
 
 
 extend UInt64 <: Arbitrary<UInt64> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<UInt64> {
         Generators.generate { random.suggestUInt64() }
     }
@@ -109,6 +145,9 @@ extend UInt64 <: Arbitrary<UInt64> {
 
 
 extend UIntNative <: Arbitrary<UIntNative> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<UIntNative> {
         Generators.generate { random.suggestUIntNative() }
     }
@@ -116,6 +155,9 @@ extend UIntNative <: Arbitrary<UIntNative> {
 
 
 extend Float16 <: Arbitrary<Float16> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Float16> {
         Generators.generate { random.suggestFloat16() }
     }
@@ -123,6 +165,9 @@ extend Float16 <: Arbitrary<Float16> {
 
 
 extend Float32 <: Arbitrary<Float32> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Float32> {
         Generators.generate { random.suggestFloat32() }
     }
@@ -130,6 +175,9 @@ extend Float32 <: Arbitrary<Float32> {
 
 
 extend Float64 <: Arbitrary<Float64> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Float64> {
         Generators.generate { random.suggestFloat64() }
     }
@@ -138,6 +186,10 @@ extend Float64 <: Arbitrary<Float64> {
 
 
 extend Rune <: Arbitrary<Rune> {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func arbitrary(random: RandomSource): Generator<Rune> {
         Generators.generate { random.suggestRune() }
     }
@@ -145,6 +197,9 @@ extend Rune <: Arbitrary<Rune> {
 
 let SIZE_UPPER_LIMIT = 4000
 
+/*
+ * @throws OverflowException
+ */
 func sizeGenerator(random: RandomSource): Generator<Int64> {
     func suggestSizeUpTo(max: Int64): Int64 {
         var size = random.nextInt64()
@@ -264,6 +319,9 @@ func sizeGenerator(random: RandomSource): Generator<Int64> {
 
 
 extend<T> Array<T> <: Arbitrary<Array<T>> where T <: Arbitrary<T> {
+    /*
+     * @throws OverflowException
+     */
     public static func arbitrary(random: RandomSource): Generator<Array<T>> {
         let elementGenerator = T.arbitrary(random)
         let sizeGenerator = sizeGenerator(random)
@@ -284,6 +342,10 @@ extend<T> Array<T> <: Arbitrary<Array<T>> where T <: Arbitrary<T> {
 
 
 extend<T> ArrayList<T> <: Arbitrary<ArrayList<T>> where T <: Arbitrary<T> {
+    /*
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     */
     public static func arbitrary(random: RandomSource): Generator<ArrayList<T>> {
         let elementGenerator = T.arbitrary(random)
         let sizeGenerator = sizeGenerator(random)
@@ -304,6 +366,11 @@ extend<T> ArrayList<T> <: Arbitrary<ArrayList<T>> where T <: Arbitrary<T> {
 
 
 extend<T> HashSet<T> <: Arbitrary<HashSet<T>> where T <: Arbitrary<T> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public static func arbitrary(random: RandomSource): Generator<HashSet<T>> {
         let elementGenerator = T.arbitrary(random)
         let sizeGenerator = sizeGenerator(random)
@@ -332,6 +399,11 @@ extend<T> HashSet<T> <: Arbitrary<HashSet<T>> where T <: Arbitrary<T> {
 
 
 extend<K, V> HashMap<K, V> <: Arbitrary<HashMap<K, V>> where K <: Arbitrary<K>, V <: Arbitrary<V> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public static func arbitrary(random: RandomSource): Generator<HashMap<K, V>> {
         let keyGenerator = K.arbitrary(random)
         let valueGenerator = V.arbitrary(random)
@@ -364,6 +436,10 @@ extend<K, V> HashMap<K, V> <: Arbitrary<HashMap<K, V>> where K <: Arbitrary<K>, 
 
 
 extend String <: Arbitrary<String> {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func arbitrary(random: RandomSource): Generator<String> {
         Generators.mapped<Array<Rune>, String>(random) { it: Array<Rune> => String(it) }
     }
@@ -372,6 +448,9 @@ extend String <: Arbitrary<String> {
 
 
 extend<T> Option<T> <: Arbitrary<Option<T>> where T <: Arbitrary<T> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Option<T>> {
         Generators.weighted<Option<T>>(
             random,
@@ -385,6 +464,9 @@ extend<T> Option<T> <: Arbitrary<Option<T>> where T <: Arbitrary<T> {
 
 
 extend Ordering <: Arbitrary<Ordering> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Ordering> {
         Generators.iterable(random, [Ordering.LT, Ordering.EQ, Ordering.GT])
     }
@@ -394,6 +476,9 @@ extend Ordering <: Arbitrary<Ordering> {
 
 
 extend<R> Function0Wrapper<R> <: Arbitrary<Function0Wrapper<R>> where R <: Arbitrary<R> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<Function0Wrapper<R>> {
         Generators.mapped<R, Function0Wrapper<R>>(random) { it: R => Function0Wrapper { => it } }
     }
@@ -404,6 +489,9 @@ extend<R> Function0Wrapper<R> <: Arbitrary<Function0Wrapper<R>> where R <: Arbit
 extend<T0, T1> TupleWrapper2<T0, T1> <: Arbitrary<TupleWrapper2<T0, T1>>
         where T0 <: Arbitrary<T0>,
               T1 <: Arbitrary<T1> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<TupleWrapper2<T0, T1>> {
         let gen0 = T0.arbitrary(random)
         let gen1 = T1.arbitrary(random)
@@ -417,6 +505,9 @@ extend<T0, T1, T2> TupleWrapper3<T0, T1, T2> <: Arbitrary<TupleWrapper3<T0, T1, 
         where T0 <: Arbitrary<T0>,
               T1 <: Arbitrary<T1>,
               T2 <: Arbitrary<T2> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<TupleWrapper3<T0, T1, T2>> {
         let gen0 = T0.arbitrary(random)
         let gen1 = T1.arbitrary(random)
@@ -432,6 +523,9 @@ extend<T0, T1, T2, T3> TupleWrapper4<T0, T1, T2, T3> <: Arbitrary<TupleWrapper4<
               T1 <: Arbitrary<T1>,
               T2 <: Arbitrary<T2>,
               T3 <: Arbitrary<T3> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<TupleWrapper4<T0, T1, T2, T3>> {
         let gen0 = T0.arbitrary(random)
         let gen1 = T1.arbitrary(random)
@@ -449,6 +543,9 @@ extend<T0, T1, T2, T3, T4> TupleWrapper5<T0, T1, T2, T3, T4> <: Arbitrary<TupleW
               T2 <: Arbitrary<T2>,
               T3 <: Arbitrary<T3>,
               T4 <: Arbitrary<T4> {
+    /*
+     * @noThrow
+     */
     public static func arbitrary(random: RandomSource): Generator<TupleWrapper5<T0, T1, T2, T3, T4>> {
         let gen0 = T0.arbitrary(random)
         let gen1 = T1.arbitrary(random)

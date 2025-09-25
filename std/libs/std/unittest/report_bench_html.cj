@@ -706,6 +706,23 @@ ul li:last-child {
 var gnuplotAvailable: Bool = true
 
 extend TestGroupResult {
+    /*
+     * @throws InvalidDataException
+     * @throws ProcessException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws TimeoutException
+     * @throws OutOfMemoryError
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws JsonException
+     * @throws IllegalSynchronizationStateException
+     */
     func reportHtml(dir: Path): Unit {
         let rc = try {
             Process.run("gnuplot", ["--version"], stdOut: Discard, stdErr: Discard)
@@ -746,6 +763,12 @@ extend TestGroupResult {
         )
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     */
     func collectClassObjects(passedFQNames: Iterable<TestCaseId>): ArrayList<JsonObject> {
         let failedCases = HashSet<TestCaseId>()
         this.visitFailedSteps { step, result => failedCases.add(result.caseId) }
@@ -769,10 +792,23 @@ extend TestGroupResult {
             .into(collectArrayList<JsonObject>)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func envRow<T>(name: String, value: T): JsonObject where T <: ToString {
         object([("name", JsonString(name)), ("value", JsonString(value.toString()))])
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     */
     func collectEnvironment(): JsonArray {
         let result = JsonArray()
 
@@ -790,6 +826,9 @@ extend TestGroupResult {
         result
     }
 
+    /*
+     * @noThrow
+     */
     func tryGetNative(f: () -> String): String {
         try {
             f()
@@ -797,6 +836,22 @@ extend TestGroupResult {
             e.toString()
         }
     }
+    /*
+     * @throws InvalidDataException
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ConcurrentModificationException
+     * @throws JsonException
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws TimeoutException
+     * @throws IllegalSynchronizationStateException
+     */
     func collectAllResults(directory: Path): HashMap<TestCaseId, JsonValue> {
         let env = collectEnvironment()
         let results = HashMap<TestCaseId, JsonValue>()
@@ -848,6 +903,20 @@ extend TestGroupResult {
         results
     }
 }
+/*
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ * @throws ProcessException
+ * @throws ArithmeticException
+ * @throws ConcurrentModificationException
+ * @throws JsonException
+ * @throws IllegalArgumentException
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ * @throws TimeoutException
+ * @throws OutOfMemoryError
+ */
 func measurementModel(step: BenchStepEntry, directory: Path, index: Int64): (Float64, JsonObject) {
     let measurementValue = JsonObject()
     let mName = step.measurementInfo.name
@@ -895,6 +964,18 @@ func measurementModel(step: BenchStepEntry, directory: Path, index: Int64): (Flo
 }
 
 extend StatisticsSample {
+    /*
+     * @throws TimeoutException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     func createStatsRow(name: String, dir: Path, change!: ?Float64 = None): JsonObject {
         let fileName = name.replace(" ", "") + ".svg"
         Directory.ensureExists(dir)
@@ -912,6 +993,18 @@ extend StatisticsSample {
         result
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws TimeoutException
+     * @throws OutOfMemoryError
+     */
     func drawKde(into: Path) {
         if (!gnuplotAvailable) {
             return
@@ -974,6 +1067,19 @@ extend StatisticsSample {
 }
 
 extend BenchmarkResult {
+    /*
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws TimeoutException
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     */
     func draw(into: Path, mName: String) {
         if (!gnuplotAvailable) {
             return
@@ -1018,6 +1124,11 @@ extend BenchmarkResult {
 }
 
 extend JsonObject {
+    /*
+     * @throws JsonException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func arrayFieldAppend<T>(name: String, value: T): T where T <: JsonValue {
         let array = this.get(name)?.asArray() ?? JsonArray()
         array.add(value)
@@ -1037,6 +1148,17 @@ func getOsVersion(): String {
 }
 
 @When[os == "Linux"]
+/*
+ * @throws IllegalMemoryException
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ * @throws OutOfMemoryError
+ * @throws TimeoutException
+ * @throws FSException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws IllegalArgumentException
+ */
 func getOsVersion(): String {
     let (rc, stdout, _) = Process.runOutput("uname", ["-a"])
     if (rc != 0) { return NO_INFO }
@@ -1050,6 +1172,18 @@ func getOsVersion(): String {
 }
 
 @When[os == "Linux"]
+/*
+ * @throws OutOfMemoryError
+ * @throws TimeoutException
+ * @throws FSException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws IllegalMemoryException
+ * @throws OverflowException
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getCpuName(): String {
     let (rc, stdout, _) = Process.runOutput("lscpu", [])
     if (rc != 0) { return NO_INFO }
@@ -1078,12 +1212,35 @@ func getCpuName(): String {
     String.fromUtf8(stdout)
 }
 
+/*
+ * @throws IllegalMemoryException
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ * @throws OutOfMemoryError
+ * @throws TimeoutException
+ * @throws FSException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws IllegalArgumentException
+ */
 func getCompilerVersion(): String {
     let (rc, stdout, _) = Process.runOutput("cjc", ["--version"])
     if (rc != 0) { return NO_INFO }
     String.fromUtf8(stdout).lines().next() ?? return NO_INFO
 }
 
+/*
+ * @throws OutOfMemoryError
+ * @throws TimeoutException
+ * @throws FSException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws IllegalMemoryException
+ * @throws OverflowException
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getTargetTriple(): String {
     let (rc, stdout, _) = Process.runOutput("cjc", ["--version"])
     if (rc != 0) { return NO_INFO }
@@ -1094,10 +1251,17 @@ func getTargetTriple(): String {
     matched?.matchString(1) ?? return NO_INFO
 }
 extend<V> Iterator<V> {
+    /*
+     * @noThrow
+     */
     func into<R>(f: (Iterable<V>) -> R): R {
         f(this)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func groupBy<K>(keyFor: (V) -> K): Iterator<(K, Array<V>)>
         where K <: Hashable & Equatable<K>
     {

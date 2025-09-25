@@ -11,9 +11,18 @@ package std.reflect
 import std.collection.*
 
 public class GenericTypeInfo <: TypeInfo & Equatable<GenericTypeInfo> {
+    /*
+     * @throws ReflectException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func ==(that: GenericTypeInfo): Bool {
         return this.name == that.name
     }
+    /*
+     * @noThrow
+     */
     init(cp: CPointer<Unit>) {
         super(cp)
     }
@@ -29,12 +38,19 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
     var _annotations: Option<Collection<Annotation>> = None
     var _genericParams: Option<Collection<GenericTypeInfo>> = None
     var _declaringTypeInfo: CPointer<Unit>
+    /*
+     * @noThrow
+     */
     init(cp: CPointer<Unit>, info: CPointer<Unit>) {
         _info = cp
         _declaringTypeInfo = info
     }
 
     public prop genericParams: Collection<GenericTypeInfo> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_genericParams) {
                 case Some(params) => params
@@ -66,6 +82,9 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
 
 
     public prop name: String {
+        /*
+         * @throws NoneValueException
+         */
         get() {
             _name.getOrThrow()
         }
@@ -73,6 +92,10 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
 
 
     public prop parameters: ReadOnlyList<ParameterInfo> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_parameters) {
                 case Some(res) => res
@@ -86,6 +109,15 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
 
 
     public prop returnType: TypeInfo {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_returnType) {
                 case Some(res) => res
@@ -100,6 +132,10 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
 
 
     public prop modifiers: Collection<ModifierInfo> {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             match (_modifiers) {
                 case Some(res) => res
@@ -113,6 +149,15 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
 
 
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -128,11 +173,19 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isOpen(): Bool {
         containsModifier(modifiers, ModifierInfo.Open)
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isAbstract(): Bool {
         containsModifier(modifiers, ModifierInfo.Abstract)
     }
@@ -144,6 +197,17 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     */
     public func apply(instance: Any, args: Array<Any>): Any {
         let nullEntryPointer = methodEntryPointIsNull(_info)
         if (isAbstract() && nullEntryPointer) {
@@ -164,6 +228,17 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
         applyCJInstanceMethod(_info, instance, args)
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IllegalTypeException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     */
     public func apply(instance: Any, genericTypeArgs: Array<TypeInfo>, args: Array<Any>): Any {
         if (genericParams.size == 0) {
             throw InvocationTargetException("The function cannot be applied with `genericTypeArgs`.")
@@ -187,30 +262,75 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: InstanceFunctionInfo): Bool {
         this._info == that._info
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: InstanceFunctionInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         this._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         for (m in modifiers) {
@@ -242,12 +362,19 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
     var _modifiers: Option<Collection<ModifierInfo>> = None
     var _annotations: Option<Collection<Annotation>> = None
     var _declaringTypeInfo: CPointer<Unit>
+    /*
+     * @noThrow
+     */
     init(cp: CPointer<Unit>, declaringTypeInfo: CPointer<Unit>) {
         _info = cp
         _declaringTypeInfo = declaringTypeInfo
     }
 
     public prop genericParams: Collection<GenericTypeInfo> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_genericParams) {
                 case Some(params) => params
@@ -279,6 +406,9 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
 
 
     public prop name: String {
+        /*
+         * @throws NoneValueException
+         */
         get() {
             _name.getOrThrow()
         }
@@ -286,6 +416,10 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
 
 
     public prop parameters: ReadOnlyList<ParameterInfo> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_parameters) {
                 case Some(res) => res
@@ -299,6 +433,15 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
 
 
     public prop returnType: TypeInfo {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_returnType) {
                 case Some(res) => res
@@ -313,6 +456,10 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
 
 
     public prop modifiers: Collection<ModifierInfo> {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             match (_modifiers) {
                 case Some(res) => res
@@ -326,6 +473,15 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
 
 
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -346,6 +502,17 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalTypeException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     */
     public func apply(thisType: TypeInfo, args: Array<Any>): Any {
         try {
             if (genericParams.size > 0) {
@@ -368,6 +535,17 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
         applyCJStaticMethod(_info, args, thisType._info)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalTypeException
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     */
     public func apply(thisType: TypeInfo, genericTypeArgs: Array<TypeInfo>, args: Array<Any>): Any {
         if (genericParams.size == 0) {
             throw InvocationTargetException("The function cannot be applied with `genericTypeArgs`.")
@@ -394,30 +572,75 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: StaticFunctionInfo): Bool {
         this._info == that._info
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: StaticFunctionInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         this._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         for (m in modifiers) {
@@ -449,6 +672,9 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
     var _annotations: Option<Collection<Annotation>> = None
     var _declaringTypeInfo: CPointer<Unit>
 
+    /*
+     * @noThrow
+     */
     init(name: String, declaringTypeInfo: CPointer<Unit>) {
         _name = name
         _declaringTypeInfo = declaringTypeInfo
@@ -456,6 +682,9 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
 
 
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             _name
         }
@@ -463,6 +692,15 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
 
 
     public prop typeInfo: TypeInfo {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws NoneValueException
+         */
         get() {
             match (_typeInfo) {
                 case Some(res) => res
@@ -475,6 +713,11 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
 
 
     public prop modifiers: Collection<ModifierInfo> {
+        /*
+         * @throws NoneValueException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             match (_modifiers) {
                 case Some(res) => res
@@ -494,6 +737,15 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
 
 
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -510,21 +762,46 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
     }
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isOpen(): Bool {
         containsModifier(modifiers, ModifierInfo.Open)
     }
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isAbstract(): Bool {
         containsModifier(modifiers, ModifierInfo.Abstract)
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isMutable(): Bool {
         _setterInfo.isSome()
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     * @throws UnsupportedException
+     */
     public func getValue(instance: Any): Any {
         if (isAbstract()) {
             throw UnsupportedException("Abstract prop cannot get value.")
@@ -535,6 +812,18 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     * @throws InfoNotFoundException
+     * @throws IllegalSetException
+     */
     public func setValue(instance: Any, newValue: Any): Unit {
         if (isAbstract()) {
             throw IllegalSetException("Attempt to modify abstract variable '${name}'")
@@ -549,30 +838,75 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /*
+     * @throws NoneValueException
+     */
     public operator func ==(that: InstancePropertyInfo): Bool {
         this._getterInfo.getOrThrow()._info == that._getterInfo.getOrThrow()._info
     }
 
+    /*
+     * @throws NoneValueException
+     */
     public operator func !=(that: InstancePropertyInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @throws NoneValueException
+     */
     public func hashCode(): Int64 {
         this._getterInfo.getOrThrow()._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         for (m in modifiers) {
@@ -586,6 +920,9 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
         sb.toString()
     }
 
+    /*
+     * @noThrow
+     */
     func setFunc(isGetter: Bool, pointer: CPointer<Unit>) {
         if (isGetter) {
             _getterInfo = InstanceFunctionInfo(pointer, _declaringTypeInfo)
@@ -604,6 +941,9 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
     var _modifiers: Option<Collection<ModifierInfo>> = None
     var _annotations: Option<Collection<Annotation>> = None
     var _declaringTypeInfo: CPointer<Unit>
+    /*
+     * @noThrow
+     */
     init(name: String, declaringTypeInfo: CPointer<Unit>) {
         _name = name
         _declaringTypeInfo = declaringTypeInfo
@@ -611,6 +951,9 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
 
 
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             _name
         }
@@ -618,6 +961,15 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
 
 
     public prop typeInfo: TypeInfo {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws NoneValueException
+         */
         get() {
             match (_typeInfo) {
                 case Some(res) => res
@@ -630,6 +982,11 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
 
 
     public prop modifiers: Collection<ModifierInfo> {
+        /*
+         * @throws NoneValueException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             match (_modifiers) {
                 case Some(res) => res
@@ -649,6 +1006,15 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
 
 
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -665,11 +1031,25 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isMutable(): Bool {
         _setterInfo.isSome()
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalTypeException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     */
     public func getValue(): Any {
         if (let Some(v) <- _getterInfo) {
             return v.apply(TypeInfo.getOrCreate(_declaringTypeInfo), Array<Any>())
@@ -677,6 +1057,18 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalTypeException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     * @throws InfoNotFoundException
+     * @throws IllegalSetException
+     */
     public func setValue(newValue: Any): Unit {
         if (!isMutable()) {
             throw IllegalSetException("Attempt to modify immutable property '${name}'")
@@ -688,29 +1080,74 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
+    /*
+     * @throws NoneValueException
+     */
     public operator func ==(that: StaticPropertyInfo): Bool {
         this._getterInfo.getOrThrow()._info == that._getterInfo.getOrThrow()._info
     }
 
+    /*
+     * @throws NoneValueException
+     */
     public operator func !=(that: StaticPropertyInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @throws NoneValueException
+     */
     public func hashCode(): Int64 {
         this._getterInfo.getOrThrow()._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         for (m in modifiers) {
@@ -724,6 +1161,9 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
         sb.toString()
     }
 
+    /*
+     * @noThrow
+     */
     func setFunc(isGetter: Bool, pointer: CPointer<Unit>) {
         if (isGetter) {
             _getterInfo = StaticFunctionInfo(pointer, _declaringTypeInfo)
@@ -740,6 +1180,9 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
     var _annotations: Option<Collection<Annotation>> = None
     private var _isAbstract: Option<Bool> = None
     var _declaringTypeInfo: CPointer<Unit>
+    /*
+     * @noThrow
+     */
     init(infoPointer: CPointer<Unit>, declaringTypeInfo: CPointer<Unit>) {
         _info = infoPointer
         _declaringTypeInfo = declaringTypeInfo
@@ -747,6 +1190,10 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
 
 
     public prop parameters: ReadOnlyList<ParameterInfo> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_parameters) {
                 case Some(res) => res
@@ -760,6 +1207,15 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
 
 
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -775,6 +1231,9 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
     }
 
     private prop isAbstract: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             match (_isAbstract) {
                 case Some(res) => res
@@ -795,6 +1254,17 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     * @throws IllegalArgumentException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     */
     public func apply(args: Array<Any>): Any {
         let nullEntryPointer = methodEntryPointIsNull(_info)
         if (isAbstract || nullEntryPointer) {
@@ -806,30 +1276,71 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: ConstructorInfo): Bool {
         this._info == that._info
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: ConstructorInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         this._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder(constructorName)
         sb.append("(")
@@ -853,11 +1364,18 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
     var _returnType: Option<TypeInfo> = None
     var _annotations: Option<Collection<Annotation>> = None
 
+    /*
+     * @noThrow
+     */
     init(cp: CPointer<Unit>) {
         _info = cp
     }
 
     public prop genericParams: Collection<GenericTypeInfo> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_genericParams) {
                 case Some(params) => params
@@ -884,6 +1402,9 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
         }
     }
     public prop name: String {
+        /*
+         * @throws NoneValueException
+         */
         get() {
             _name.getOrThrow()
         }
@@ -891,6 +1412,10 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
 
 
     public prop parameters: ReadOnlyList<ParameterInfo> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_parameters) {
                 case Some(res) => res
@@ -904,6 +1429,15 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
 
 
     public prop returnType: TypeInfo {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_returnType) {
                 case Some(res) => res
@@ -916,6 +1450,15 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
         }
     }
     public prop annotations: Collection<Annotation> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_annotations) {
                 case Some(res) => res
@@ -937,6 +1480,17 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     * @throws IllegalArgumentException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     */
     public func apply(args: Array<Any>): Any {
         try {
             if (genericParams.size > 0) {
@@ -950,6 +1504,13 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
         applyCJStaticMethod(_info, args, CPointer<Unit>())
     }
 
+    /*
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalTypeException
+     * @throws InvocationTargetException
+     */
     public func apply(genericTypeArgs: Array<TypeInfo>, args: Array<Any>): Any {
         if (genericParams.size == 0) {
             throw InvocationTargetException("The function cannot be applied with `genericTypeArgs`.")
@@ -965,30 +1526,75 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
 
         applyCJGenericStaticMethod(_info, gArgs.toArray(), args, CPointer<Unit>())
     }
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: GlobalFunctionInfo): Bool {
         this._info == that._info
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: GlobalFunctionInfo): Bool {
         !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         this._info.toUIntNative().hashCode()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         sb.append("func ")
@@ -1006,6 +1612,9 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
     }
 }
 
+/*
+ * @throws InfoNotFoundException
+ */
 func getFuncName(parentPointer: CPointer<Unit>): String {
     let pointer = getMethodName(parentPointer)
     if (pointer.isNull()) {
@@ -1014,6 +1623,10 @@ func getFuncName(parentPointer: CPointer<Unit>): String {
     CString(pointer).toString()
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws InfoNotFoundException
+ */
 func getParameters(cp: CPointer<Unit>): ArrayList<ParameterInfo> {
     let actualParametersNum = getNumOfActualParameters(cp)
     ArrayList<ParameterInfo>(
@@ -1029,6 +1642,16 @@ func getParameters(cp: CPointer<Unit>): ArrayList<ParameterInfo> {
     )
 }
 
+/*
+ * @throws IllegalSynchronizationStateException
+ * @throws NoneValueException
+ * @throws InfoNotFoundException
+ * @throws ReflectException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ * @throws IllegalTypeException
+ */
 func checkMethodDeclaringClassType(instance: Any, declaringTypeInfo: CPointer<Unit>): Unit {
     let declaringClassTypeInfo = TypeInfo.getOrCreate(declaringTypeInfo)
     let instanceTypeInfo = TypeInfo.of(instance)
@@ -1038,6 +1661,9 @@ func checkMethodDeclaringClassType(instance: Any, declaringTypeInfo: CPointer<Un
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 func checkParamaterSize(genericParams: Collection<GenericTypeInfo>, actualParamSize: Int64,
     genericTypeParameters: Collection<TypeInfo>, args: Array<Any>): Unit {
     if (genericTypeParameters.size != genericParams.size) {

@@ -11,16 +11,28 @@ package std.unittest.prop_test
 
 
 enum Thunk<T> {
+      /*
+       * @noThrow
+       */
     | Uncalculated(() -> ?T)
+      /*
+       * @noThrow
+       */
     | Calculated(T)
     | EmptyThunk
 
+    /*
+     * @noThrow
+     */
     func get(): ?T {
         match (this) {
             case Calculated(value) => value
             case _ => None
         }
     }
+    /*
+     * @noThrow
+     */
     func force(): Thunk<T> {
         match (this) {
             case EmptyThunk | Calculated(_) => this
@@ -41,16 +53,25 @@ struct Lazy<T> {
     private var thunk: Thunk<T>
 
 
+    /*
+     * @noThrow
+     */
     init(value: T) {
         thunk = Calculated(value)
     }
 
 
+    /*
+     * @noThrow
+     */
     init(fun: () -> ?T) {
         thunk = Uncalculated(fun)
     }
 
 
+    /*
+     * @noThrow
+     */
     init() {
         thunk = EmptyThunk
     }
@@ -58,12 +79,18 @@ struct Lazy<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     public mut func get(): ?T {
         thunk = thunk.force()
         thunk.get()
     }
 
 
+    /*
+     * @noThrow
+     */
     static func flat<T>(body: () -> Lazy<T>): Lazy<T> {
         Lazy<T> {
             var res = body()

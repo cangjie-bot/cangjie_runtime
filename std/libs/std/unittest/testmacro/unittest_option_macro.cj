@@ -12,10 +12,36 @@ import std.collection.map
 
 let MACRO_NAME = "UnittestOption"
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws OutOfMemoryError
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws MacroException
+ */
 public macro UnittestOption(_: Tokens): Tokens {
     expandValidatorMacro(Tokens(), Tokens())
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws OutOfMemoryError
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws MacroException
+ */
 public macro UnittestOption(types: Tokens, params: Tokens): Tokens {
     expandValidatorMacro(types, params)
 }
@@ -28,23 +54,40 @@ class OptionInfo {
     var isPublic = false
 
     private prop nameStr: String {
+        /*
+         * @noThrow
+         */
         get() {
             name.identifier.value
         }
     }
 
     prop nameLiteral: Token {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             Token(TokenKind.STRING_LITERAL, nameStr)
         }
     }
 
     prop descriptionString: Tokens {
+        /*
+         * @throws Error
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             description?.toTokens() ?? quote(None<String>)
         }
     }
     prop typeToken: Token {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             let typeName = "Key" + nameStr[0..1].toAsciiUpper() + nameStr[1..]
             return Token(TokenKind.IDENTIFIER, typeName)
@@ -52,6 +95,12 @@ class OptionInfo {
     }
 
     prop validTypesAsStringArray: Tokens {
+        /*
+         * @throws IllegalMemoryException
+         * @throws OutOfMemoryError
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             let typesTokens = types |> map { tn: TypeNode =>
                     let typeStr = tn.toTokens().toString().replace(" ", "")
@@ -63,6 +112,17 @@ class OptionInfo {
     }
 
     private prop expectedValidatorParameterType: TypeNode {
+        /*
+         * @throws ConcurrentModificationException
+         * @throws ParseASTException
+         * @throws ASTException
+         * @throws Exception
+         * @throws IllegalMemoryException
+         * @throws Error
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             if (types.size == 1) {
                 types[0]
@@ -72,6 +132,18 @@ class OptionInfo {
         }
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws ParseASTException
+     * @throws ASTException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     init(types: Array<TypeNode>, rawArgs: Tokens) {
         this.types = types
         if (rawArgs.size == 0) {
@@ -113,6 +185,18 @@ class OptionInfo {
         }
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws ParseASTException
+     * @throws ASTException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     private func checkUserValidatorParameter(validator: LambdaExpr): Unit {
         let params = validator.funcParams
 
@@ -133,8 +217,17 @@ class OptionInfo {
 }
 
 struct OptionRegistratorBuilder {
+    /*
+     * @noThrow
+     */
     OptionRegistratorBuilder(private let opt: OptionInfo) {}
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func buildUserValidatorCall(validator: Expr): Tokens {
         quote(
             let status = $validator(value)
@@ -150,6 +243,14 @@ struct OptionRegistratorBuilder {
         )
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalMemoryException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func build(): Tokens {
         var userValidatorCall = Tokens()
         if (let Some(validator) <- opt.validator) {
@@ -168,10 +269,22 @@ struct OptionRegistratorBuilder {
         return registerOptionValidator + setOptionInfo
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func key(ty: TypeNode): Tokens {
         quote(ConfigurationKey.create<$ty>($(opt.nameLiteral)))
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func severalTypesCheck(userValidatorCall: Tokens): Tokens {
         var typeCases = Tokens()
         for (ty in opt.types) {
@@ -185,6 +298,12 @@ struct OptionRegistratorBuilder {
             })
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func oneTypeCheck(userValidatorCall: Tokens): Tokens {
         quote(if(let Some(value) <- (value as $(opt.types[0]))) {
             $userValidatorCall
@@ -195,6 +314,12 @@ struct OptionRegistratorBuilder {
     }
 }
 
+/*
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func generateKeyType(opt: OptionInfo): Tokens {
     var superTypes = Tokens()
     for (i in 0..opt.types.size) {
@@ -225,6 +350,19 @@ func generateKeyType(opt: OptionInfo): Tokens {
     )
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws OutOfMemoryError
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws MacroException
+ */
 func expandValidatorMacro(rawTypes: Tokens, rawArgs: Tokens): Tokens {
     if (rawTypes.size == 0) {
         throw MacroException("@${MACRO_NAME} macro require types to be specified in [].")

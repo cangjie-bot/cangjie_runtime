@@ -17,6 +17,9 @@ import std.convert.*
 struct NativeClock {
     public var sec: Int64
     public var nanosec: Int64
+    /*
+     * @noThrow
+     */
     public init(sec!: Int64, nanosec!: Int64) {
         this.sec = sec
         this.nanosec = nanosec
@@ -47,6 +50,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
     
     public static prop UnixEpoch: DateTime {
+        /*
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ArithmeticException
+         */
         get() {
             DateTime.ofUTC(
                 year: 1970,
@@ -63,6 +71,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop year: Int64 {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             getYearAndSecond()[0]
         }
@@ -71,6 +84,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop month: Month {
+        /*
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             getMonthAndDay()[0]
         }
@@ -80,6 +98,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
     @Deprecated[message: "Use `public prop month: Month` instead."]
     public prop monthValue: Int64 {
+        /*
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             month.toInteger()
         }
@@ -88,6 +111,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop dayOfMonth: Int64 {
+        /*
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             getMonthAndDay()[1]
         }
@@ -96,6 +124,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop dayOfWeek: DayOfWeek {
+        /*
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             let (yearAfter, secondAfter) = getYearAndSecond()
             let days = getDayOfWeek(yearAfter, secondAfter)
@@ -106,6 +139,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop dayOfYear: Int64 {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             let second = getYearAndSecond()[1]
             return Int64(second) / SECS_PER_DAY + 1
@@ -115,6 +153,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop hour: Int64 {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             let second = getYearAndSecond()[1]
             return Int64(second) % SECS_PER_DAY / SECS_PER_HOUR
@@ -124,6 +167,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop minute: Int64 {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             let second = getYearAndSecond()[1]
             return Int64(second) % SECS_PER_HOUR / SECS_PER_MINUTE
@@ -133,6 +181,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop second: Int64 {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             let second = getYearAndSecond()[1]
             return Int64(second) % SECS_PER_MINUTE
@@ -142,6 +195,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop nanosecond: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             Int64(d.ns)
         }
@@ -150,6 +206,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop isoWeek: (Int64, Int64) {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             let (year, sec) = getYearAndSecond()
             let vTuesday = 4
@@ -164,6 +225,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop zone: TimeZone {
+        /*
+         * @noThrow
+         */
         get() {
             tz
         }
@@ -171,6 +235,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop zoneId: String {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             if (tz.zoneId == "localtime") {
                 return tz.lookup(d.sec - SECS_OF_UNIX_TO_AD1)[0]
@@ -182,6 +251,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     public prop zoneOffset: Duration {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         * @throws ArithmeticException
+         */
         get() {
             let offset = getOffset()
             Duration.second * offset
@@ -189,12 +264,22 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     public prop date: (Int64, Month, Int64) {
+        /*
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             return getDate()
         }
     }
 
     public prop time: (Int64, Int64, Int64) {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             let second = Int64(getYearAndSecond()[1])
             return (second % SECS_PER_DAY / SECS_PER_HOUR,
@@ -209,6 +294,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     init(secs: Int64, nanos: UInt32, tz: TimeZone) {
         this.d = Duration(secs, nanos)
         this.tz = tz
@@ -219,6 +307,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public static func now(timeZone!: TimeZone = TimeZone.Local): DateTime {
         var (curSec, curNS) = systemNow()
         return DateTime(curSec + SECS_OF_UNIX_TO_AD1, UInt32(curNS), timeZone)
@@ -227,6 +318,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public static func nowUTC(): DateTime {
         return now(timeZone: TimeZone.UTC)
     }
@@ -235,6 +329,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public static func fromUnixTimeStamp(d: Duration): DateTime {
         return DateTime.UnixEpoch + d
     }
@@ -248,6 +348,10 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public static func ofEpoch(second!: Int64, nanosecond!: Int64): DateTime {
         if (nanosecond < 0 || nanosecond > MAX_NANOSECOND) {
             throw IllegalArgumentException("The nanosecond value should be in the range [0, 999,999,999].")
@@ -277,6 +381,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     public static func of(
         year!: Int64,
         month!: Int64,
@@ -305,6 +415,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     public static func of(
         year!: Int64,
         month!: Month,
@@ -340,6 +456,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public static func ofUTC(
         year!: Int64,
         month!: Int64,
@@ -366,6 +487,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public static func ofUTC(
         year!: Int64,
         month!: Month,
@@ -392,10 +518,28 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     public static func parse(str: String): DateTime {
         return parseTime(str, DateTimeFormat.RFC3339, isRFC3339: true)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     public static func tryParse(str: String): Option<DateTime> {
         try {
             parse(str)
@@ -412,11 +556,29 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     public static func parse(str: String, format: String): DateTime {
         return parseTime(str, format)
     }
 
     @Deprecated[message: "Use member funtion `public static func parse(str: String, format: String): DateTime` instead."]
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     public static func parse(str: String, format: DateTimeFormat): DateTime {
         return parseTime(str, format.format)
     }
@@ -426,6 +588,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public func inUTC(): DateTime {
         checkResultYear(d.sec)
         return this.toUTC()
@@ -436,6 +601,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func inLocal(): DateTime {
         return inTimeZone(TimeZone.Local)
     }
@@ -446,6 +617,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func inTimeZone(timeZone: TimeZone): DateTime {
         let offset = timeZone.lookup(d.sec + SECS_OF_UNIX_TO_AD1)[1]
         checkResultYear(d.sec + offset)
@@ -459,6 +636,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func toUnixTimeStamp(): Duration {
         return this - UnixEpoch
     }
@@ -466,6 +648,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let res = StringBuilder()
         res.append(addZeroPrefix(this.year, 4))
@@ -500,6 +687,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     public func format(fmt: String): String {
         let res = StringBuilder()
         let layout = fmt.toRuneArray()
@@ -515,6 +707,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     @Deprecated[message: "Use member funtion `public func format(fmt: String): String` instead."]
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(format: DateTimeFormat): String {
         let res = StringBuilder()
         for (f in format.data) {
@@ -523,6 +720,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return res.toString()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     private func toStringEx(sb: StringBuilder, fmt: FormatType) {
         match (fmt) {
             case FormatYear(length) => sb.append(toYearString(length, false))
@@ -554,6 +756,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return d.hashCode()
     }
@@ -567,6 +772,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func addYears(n: Int64): DateTime {
         let year = this.year
         if ((n > 0 && year > MAX_YEAR - n) || (n < 0 && year < MIN_YEAR - n)) {
@@ -590,6 +801,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func addMonths(n: Int64): DateTime {
         let month = this.month.toInteger()
         if (isSumOverflow(month, n)) {
@@ -624,6 +841,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func addWeeks(n: Int64): DateTime {
         checkMul(DAYS_PER_WEEK, n)
         let days = n * DAYS_PER_WEEK
@@ -636,6 +859,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func addDays(n: Int64): DateTime {
         checkMul(SECS_PER_DAY, n)
         let offset = getOffset()
@@ -659,6 +888,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func addHours(n: Int64): DateTime {
         checkMul(SECS_PER_HOUR, n)
         let seconds = n * SECS_PER_HOUR
@@ -671,6 +906,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func addMinutes(n: Int64): DateTime {
         checkMul(SECS_PER_MINUTE, n)
         let seconds = n * SECS_PER_MINUTE
@@ -683,6 +924,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func addSeconds(n: Int64): DateTime {
         if (isSumOverflow(d.sec, n)) {
             throw ArithmeticException(YEAR_OUT_OF_RANGE)
@@ -699,6 +946,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func addNanoseconds(n: Int64): DateTime {
         return this + Duration.nanosecond * n
     }
@@ -710,6 +963,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public operator func +(r: Duration): DateTime {
         checkSecAdd(d.sec, r.sec)
         var sec = d.sec + r.sec
@@ -730,6 +989,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public operator func -(r: Duration): DateTime {
         if (r.sec == Int64.Min) {
             throw ArithmeticException(YEAR_OUT_OF_RANGE)
@@ -753,6 +1018,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public operator func -(r: DateTime): Duration {
         return this.d - r.d
     }
@@ -761,6 +1029,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func ==(r: DateTime): Bool {
         return this.d == r.d
     }
@@ -769,6 +1040,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func !=(r: DateTime): Bool {
         return !(this == r)
     }
@@ -777,6 +1051,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func >=(r: DateTime): Bool {
         return this.d >= r.d
     }
@@ -785,6 +1062,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func >(r: DateTime): Bool {
         return this.d > r.d
     }
@@ -793,6 +1073,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func <=(r: DateTime): Bool {
         return this.d <= r.d
     }
@@ -801,6 +1084,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func <(r: DateTime): Bool {
         return this.d < r.d
     }
@@ -809,6 +1095,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 
 
 
+    /*
+     * @noThrow
+     */
     public func compare(rhs: DateTime): Ordering {
         match {
             case this < rhs => Ordering.LT
@@ -818,11 +1107,20 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     
+    /*
+     * @noThrow
+     */
     private func toUTC(): DateTime {
         return DateTime(d.sec, d.ns, TimeZone.UTC)
     }
 
     
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     private static func ofUnchecked(
         year: Int64,
         month: Int64,
@@ -861,6 +1159,10 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     private static func ofUTCUnchecked(
         year: Int64,
         month: Int64,
@@ -875,6 +1177,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     private func getYearAndSecond(): (Int64, UInt32) {
         let offset = getOffset()
         let (year, sec) = toYearAndSecond(d.sec + offset)
@@ -882,12 +1189,22 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func getMonthAndDay(): (Month, Int64) {
         let (yearAfter, secondAfter) = getYearAndSecond()
         let (monthAfter, dayAfter) = getDate(yearAfter, secondAfter)
         return (monthAfter, dayAfter)
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func getDate(): (Int64, Month, Int64) {
         let (yearAfter, secondAfter) = getYearAndSecond()
         let (monthAfter, dayAfter) = getDate(yearAfter, secondAfter)
@@ -895,10 +1212,20 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     private func getOffset(): Int64 {
         return this.tz.lookup(d.sec - SECS_OF_UNIX_TO_AD1)[1]
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toYearString(length: Int64, isISOYear: Bool): String {
         var yearAfter = this.year
         let isNegative = yearAfter < 0
@@ -923,6 +1250,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return temp
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toMonthString(length: Int64): String {
         return match (length) {
             case 1 | 2 => this.month.toInteger().toString().padStart(length, padding: "0")
@@ -931,6 +1263,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toHourIn12String(length: Int64): String {
         return if (hour == HOUR_24_START || hour == HOUR_12_END) {
             "12"
@@ -939,6 +1276,10 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toSecondFractionString(length: Int64): String {
 
 
@@ -949,6 +1290,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return fraction.toString().padStart(width, padding: "0")
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toDayOfWeekString(length: Int64): String {
         return match (length) {
             case 1 | 2 => this.dayOfWeek.toInteger().toString().padStart(length, padding: "0")
@@ -957,6 +1303,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
+    /*
+     * @noThrow
+     */
     func toEraString(length: Int64): String {
         return match (length) {
             case 1 => "A"
@@ -965,6 +1314,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toOffsetString(length: Int64): String {
         let offset = getOffset()
         let (off, sign): (Int64, String) = if (offset < 0) {
@@ -995,6 +1349,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return sign + convertFn(hour, 2)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     func toZoneInfoString(length: Int64): String {
         return match (length) {
             case 4 => this.zoneId
@@ -1007,6 +1366,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 
     
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     func toGMTOffsetString(length: Int64): String {
         var res = toOffsetString(length)
         let offset = getOffset()
@@ -1024,6 +1388,11 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         return "GMT${res}"
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toDayOfYearString(length: Int64): String {
         if (length == 1) {
             this.dayOfYear.toString()
@@ -1032,6 +1401,15 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     func genDateTime(zoneId: String, zoneOffset: Int64): DateTime {
         if (zoneId == "") {
             if (zoneOffset != MAX_OFFSET + 1) {
@@ -1069,6 +1447,12 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
         }
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws TimeParseException
+     */
     func checkExtraInfo(isoYear: Int64, isoWeek: Int64, dayOfWeek: Int64): Unit {
         if (isoYear != MAX_YEAR + 1) {
             if (isoYear != this.isoWeek[0]) {
@@ -1088,16 +1472,25 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
     }
 }
 
+/*
+ * @noThrow
+ */
 func isSumOverflow(left: Int64, right: Int64): Bool {
     return (right > 0 && left > Int64.Max - right) || (right < 0 && left < Int64.Min - right)
 }
 
+/*
+ * @throws ArithmeticException
+ */
 func checkSecAdd(left: Int64, right: Int64): Unit {
     if ((right > 0 && left > MAX_UTC_SECS - right) || (right < 0 && left < MIN_UTC_SECS - right)) {
         throw ArithmeticException(YEAR_OUT_OF_RANGE)
     }
 }
 
+/*
+ * @throws ArithmeticException
+ */
 func checkMul(left: Int64, right: Int64): Unit {
     if ((right > Int64.Max / left) || (right < Int64.Min / left)) {
         throw ArithmeticException(YEAR_OUT_OF_RANGE)
@@ -1107,6 +1500,10 @@ func checkMul(left: Int64, right: Int64): Unit {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func checkDateTime(
     year: Int64,
     month: Int64,
@@ -1138,6 +1535,9 @@ func checkDateTime(
 }
 
 
+/*
+ * @noThrow
+ */
 func toYearAndSecond(sec: Int64): (Int64, Int64) {
     var year = START_AD_YEAR
     var seconds = sec
@@ -1172,6 +1572,9 @@ func toYearAndSecond(sec: Int64): (Int64, Int64) {
 
 
 
+/*
+ * @throws ArithmeticException
+ */
 func toEpochSeconds(year: Int64, sec: UInt32): Int64 {
     try {
         var days = daysSinceUnix(year)
@@ -1184,6 +1587,10 @@ func toEpochSeconds(year: Int64, sec: UInt32): Int64 {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getDate(year: Int64, sec: UInt32): (Month, Int64) {
     var days = Int64(sec) / SECS_PER_DAY
     if (isLeapYear(year)) {
@@ -1216,6 +1623,9 @@ func getDate(year: Int64, sec: UInt32): (Month, Int64) {
 }
 
 
+/*
+ * @noThrow
+ */
 func getDayOfWeek(year: Int64, sec: UInt32): Int64 {
     var days = daysSinceAD1(year)
     days += Int64(sec) / SECS_PER_DAY
@@ -1229,12 +1639,18 @@ func getDayOfWeek(year: Int64, sec: UInt32): Int64 {
 }
 
 
+/*
+ * @noThrow
+ */
 func daysSinceUnix(year: Int64): Int64 {
     var days = daysSinceAD1(year)
     return days - DAYS_OF_UNIX_TO_AD1
 }
 
 
+/*
+ * @noThrow
+ */
 func daysSinceAD1(year: Int64): Int64 {
     if (year == 0) {
         return -DAYS_OF_LEAP_YEAR
@@ -1251,6 +1667,9 @@ func daysSinceAD1(year: Int64): Int64 {
 
 
 
+/*
+ * @noThrow
+ */
 func daysAD1ToYear(year: Int64): Int64 {
     let years = year - 1
     var days = 365 * years
@@ -1267,6 +1686,9 @@ func daysAD1ToYear(year: Int64): Int64 {
 
 
 
+/*
+ * @noThrow
+ */
 func adjustYearAndSecond(year: Int64, second: UInt32, offset: Int64): (Int64, UInt32) {
     if (offset == 0) {
         return (year, second)
@@ -1295,6 +1717,9 @@ func adjustYearAndSecond(year: Int64, second: UInt32, offset: Int64): (Int64, UI
 
 
 
+/*
+ * @noThrow
+ */
 func isLeapYear(year: Int64): Bool {
     return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 }
@@ -1307,6 +1732,10 @@ func isLeapYear(year: Int64): Bool {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func daysIn(month: Int64, year: Int64): Int64 {
     if (month < 1 || month > 12) {
         throw IllegalArgumentException("Month value must be in the range [1, 12].")
@@ -1319,14 +1748,23 @@ func daysIn(month: Int64, year: Int64): Int64 {
 
 
 public class TimeParseException <: Exception {
+    /*
+     * @noThrow
+     */
     public init() {
         super()
     }
 
+    /*
+     * @noThrow
+     */
     public init(message: String) {
         super(message)
     }
 
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "TimeParseException"
     }
@@ -1344,6 +1782,15 @@ public class TimeParseException <: Exception {
 
 
 
+/*
+ * @throws IllegalMemoryException
+ * @throws ArithmeticException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ * @throws InvalidDataException
+ * @throws IndexOutOfBoundsException
+ * @throws TimeParseException
+ */
 func parseTime(value: String, format: String, isRFC3339!: Bool = false): DateTime {
     var dtValue = value.toRuneArray()
     var parser = DateTimeParser(dtValue)
@@ -1393,6 +1840,9 @@ func parseTime(value: String, format: String, isRFC3339!: Bool = false): DateTim
     return utc.genDateTime(zoneInfo, zoneOffset)
 }
 
+/*
+ * @throws ArithmeticException
+ */
 func checkResultYear(seconds: Int64): Unit {
     if (seconds >= SECS_OF_MAX_TO_AD1 || seconds < SECS_OF_MIN_TO_AD1) {
         throw ArithmeticException(YEAR_OUT_OF_RANGE)
@@ -1400,15 +1850,25 @@ func checkResultYear(seconds: Int64): Unit {
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws ArithmeticException
+ */
 func toSecondsFromAD1(year: Int64, month: Int64, dayOfMonth: Int64, hour: Int64, minute: Int64, second: Int64): Int64 {
     let secInYear = toSecondInYear(year, month, dayOfMonth, hour, minute, second)
     return toEpochSeconds(year, UInt32(secInYear)) + SECS_OF_UNIX_TO_AD1
 }
 
+/*
+ * @noThrow
+ */
 func setDefaultTime(hour: Int64, minute: Int64, second: Int64, nanosecond: Int64): (Int64, Int64, Int64, Int64) {
     return (setDefault(hour), setDefault(minute), setDefault(second), setDefault(nanosecond))
 }
 
+/*
+ * @throws TimeParseException
+ */
 func adjustHour(hour: Int64, is24Hour: Bool, apmFlag: Int64): Int64 {
     if (is24Hour) {
         if (apmFlag == 1) {
@@ -1438,6 +1898,10 @@ func adjustHour(hour: Int64, is24Hour: Bool, apmFlag: Int64): Int64 {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws TimeParseException
+ */
 func adjustDate(year: Int64, month: Int64, dayOfMonth: Int64, dayOfYear: Int64): (Int64, Int64) {
     if (year == MAX_YEAR + 1) {
         throw TimeParseException("Lack of year value.")
@@ -1466,6 +1930,9 @@ func adjustDate(year: Int64, month: Int64, dayOfMonth: Int64, dayOfYear: Int64):
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func toSecondInYear(year: Int64, month: Int64, dayOfMonth: Int64, hour: Int64, minute: Int64, second: Int64): Int64 {
     var days = (DAYS_BEFORE[month - 1] + dayOfMonth - 1)
     if (month > 2 && isLeapYear(year)) {
@@ -1478,6 +1945,9 @@ func toSecondInYear(year: Int64, month: Int64, dayOfMonth: Int64, hour: Int64, m
     return secInYear
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 func genZoneNameWithOffset(offset: Int64): String {
     var (value, sign): (Int64, String) = if (offset < 0) {
         (-offset, "-")
@@ -1516,6 +1986,10 @@ func genZoneNameWithOffset(offset: Int64): String {
     return res
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws TimeParseException
+ */
 func dayOfYearToDate(dayOfYear: Int64, year: Int64): (Int64, Int64) {
     var max = if (isLeapYear(year)) {
         DAYS_OF_LEAP_YEAR
@@ -1546,6 +2020,9 @@ func dayOfYearToDate(dayOfYear: Int64, year: Int64): (Int64, Int64) {
     return (monthAfter, dayAfter)
 }
 
+/*
+ * @noThrow
+ */
 func setDefault(num: Int64): Int64 {
     if (num == -1) {
         return 0
@@ -1553,6 +2030,10 @@ func setDefault(num: Int64): Int64 {
     return num
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func addZeroPrefix(value: Int64, length: Int64): String {
     return value.toString().padStart(length, padding: "0")
 }
@@ -1562,30 +2043,52 @@ struct DateTimeParser {
     var index: Int64 = 0
     var parseLen: Int64 = 0
 
+    /*
+     * @noThrow
+     */
     init(value: Array<Rune>) {
         this.value = value
     }
 
+    /*
+     * @noThrow
+     */
     func getLenToParse(): Int64 {
         return value.size - index
     }
 
+    /*
+     * @noThrow
+     */
     func isEnd(): Bool {
         return this.index >= value.size
     }
 
+    /*
+     * @noThrow
+     */
     func isEnough(): Bool {
         return this.index + this.parseLen <= value.size
     }
 
+    /*
+     * @noThrow
+     */
     mut func move(len: Int64): Unit {
         this.index += len
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func get(offset: Int64): Rune {
         value[index + offset]
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseYear(value: Int64, length: Int64): Int64 {
         if (value != MAX_YEAR + 1) {
             throw TimeParseException("Extra year format.")
@@ -1617,6 +2120,11 @@ struct DateTimeParser {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws TimeParseException
+     */
     mut func parseMonth(value: Int64, length: Int64): Int64 {
         if (value != -1) {
             throw TimeParseException("Extra month format.")
@@ -1638,6 +2146,11 @@ struct DateTimeParser {
         return parsedMonth
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws TimeParseException
+     */
     mut func parseDayOfWeek(value: Int64, length: Int64): Int64 {
         if (value != -1) {
             throw TimeParseException("Extra dayOfWeek format.")
@@ -1652,6 +2165,11 @@ struct DateTimeParser {
         return parsedWeek
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws TimeParseException
+     */
     mut func matchValue(formats: Array<String>): Int64 {
         let val = String(value.slice(this.index, this.getLenToParse()))
         for (i in 0..formats.size) {
@@ -1665,6 +2183,11 @@ struct DateTimeParser {
         throw TimeParseException("Fail to parse dayOfWeek or month.")
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws TimeParseException
+     */
     mut func parseEra(value: Bool, length: Int64): Unit {
         if (value) {
             throw TimeParseException("Extra era value.")
@@ -1684,6 +2207,10 @@ struct DateTimeParser {
         this.move(size)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseDayOfMonth(value: Int64, length: Int64): Int64 {
         if (value != -1) {
             throw TimeParseException("Extra dayOfMonth format.")
@@ -1693,6 +2220,10 @@ struct DateTimeParser {
         return parsedMonth
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseDayOfYear(value: Int64): Int64 {
         if (value != -1) {
             throw TimeParseException("Extra dayOfYear format.")
@@ -1725,6 +2256,10 @@ struct DateTimeParser {
         return res
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseISOWeek(value: Int64, length: Int64): Int64 {
         if (value != 0) {
             throw TimeParseException("Extra isoWeek format.")
@@ -1734,6 +2269,10 @@ struct DateTimeParser {
         return isoWeek
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseHourIn12(value: Int64, length: Int64): Int64 {
         if (value != -1) {
             throw TimeParseException("Extra hour format.")
@@ -1746,6 +2285,10 @@ struct DateTimeParser {
         return hour
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseHourIn24(value: Int64, length: Int64): Int64 {
         if (value != -1) {
             throw TimeParseException("Extra hour format.")
@@ -1758,6 +2301,10 @@ struct DateTimeParser {
         return hour
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseMinute(value: Int64, length: Int64): Int64 {
         if (value != -1) {
             throw TimeParseException("Extra minute format.")
@@ -1770,6 +2317,10 @@ struct DateTimeParser {
         return minute
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseSecond(value: Int64, length: Int64, isRFC3339: Bool): (Int64, Int64) {
         if (value != -1) {
             throw TimeParseException("Extra second format.")
@@ -1787,6 +2338,10 @@ struct DateTimeParser {
         return (second, -1)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseNanosecond(value: Int64, length: Int64): Int64 {
         if (value != -1) {
             throw TimeParseException("Extra nanosecond format.")
@@ -1798,6 +2353,10 @@ struct DateTimeParser {
         return nanosecond
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseOffset(value: Int64, length: Int64): Int64 {
         if (value != MAX_OFFSET + 1) {
             throw TimeParseException("Extra zone offset format.")
@@ -1826,6 +2385,10 @@ struct DateTimeParser {
         return parseOffset(value, 2)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseOffsetDate(length: Int64): Int64 {
         var isPositive: Int64
         match (this.get(0)) {
@@ -1861,6 +2424,10 @@ struct DateTimeParser {
         return offset * isPositive
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseAmPm(flag: Int64): Int64 {
         if (flag != 0) {
             throw TimeParseException("Extra AM/PM value.")
@@ -1880,6 +2447,11 @@ struct DateTimeParser {
         return apmFlag
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws TimeParseException
+     */
     mut func parseZoneInfo(value: String, length: Int64): String {
         if (value != "") {
             throw TimeParseException("Extra zone id format.")
@@ -1891,6 +2463,10 @@ struct DateTimeParser {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     mut func parseZoneId(): String {
         var slash = false
         for (i in this.index..this.value.size) {
@@ -1912,6 +2488,10 @@ struct DateTimeParser {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     mut func parseZoneName(): String {
         for (i in this.index..this.value.size) {
             if (!value[i].isAsciiUpperCase()) {
@@ -1926,6 +2506,10 @@ struct DateTimeParser {
         return zoneName
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseGMTOffset(value: Int64, length: Int64): Int64 {
         if (value != MAX_OFFSET + 1) {
             throw TimeParseException("Extra zone offset format.")
@@ -1961,6 +2545,10 @@ struct DateTimeParser {
         parseOffset(value, length)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func checkSeperator(r: Rune): Unit {
         if (isEnd()) {
             throw TimeParseException("No value to match \"${r}\".")
@@ -1971,6 +2559,9 @@ struct DateTimeParser {
         this.move(1)
     }
 
+    /*
+     * @throws TimeParseException
+     */
     func checkEnd(): Unit {
         if (!isEnd()) {
             throw TimeParseException("Extar value, start at index ${this.index}.")
@@ -1978,6 +2569,10 @@ struct DateTimeParser {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     func getInteger(): Int64 {
         var res = 0
         for (i in this.index..this.index + this.parseLen) {
@@ -1991,6 +2586,10 @@ struct DateTimeParser {
         return res
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseExtraInteger(length: Int64): Int64 {
         return match (length) {
             case 1 =>
@@ -2004,6 +2603,10 @@ struct DateTimeParser {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseInteger(length: Int64): Int64 {
         this.parseLen = length
         if (!isEnough()) {
@@ -2013,6 +2616,10 @@ struct DateTimeParser {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws TimeParseException
+     */
     mut func parseSecFraction(length: Int64): Int64 {
         let len = if (this.getLenToParse() < length) {
             this.getLenToParse()
@@ -2037,6 +2644,9 @@ struct DateTimeParser {
         return nano * 10 ** UInt64(9 - numLen)
     }
 
+    /*
+     * @throws TimeParseException
+     */
     func checkOffsetLength(n: Int64): Unit {
         if (this.getLenToParse() < n) {
             throw TimeParseException("Illegal zone offset value.")

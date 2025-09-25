@@ -14,11 +14,20 @@ enum MatchStatus {
     Ok
     | FuncMismatch
     | ReceiverMismatch
+      /*
+       * @noThrow
+       */
     | ArgumentMismatch(  Array<Int64>)
+      /*
+       * @noThrow
+       */
     | TypeArgMismatch(  Array<Int64>)
 }
 
 struct StubDescription {
+    /*
+     * @noThrow
+     */
     StubDescription(
         let fullCall: String,
         let prefixRefName: Option<String>,
@@ -28,6 +37,12 @@ struct StubDescription {
 class InvocationMatcher {
     let positionalMatchers = ArrayList<ArgumentMatcher>()
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     InvocationMatcher(
         argumentMatchers: Array<ArgumentMatcher>,
         let typeParameters: Array<String>,
@@ -69,6 +84,10 @@ class InvocationMatcher {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func tryMatch(invocation: Invocation): MatchStatus {
         if (invocation.stubId.funcInfo.id != stubId.funcInfo.id) {
             return MatchStatus.FuncMismatch
@@ -99,6 +118,10 @@ class InvocationMatcher {
         return MatchStatus.Ok
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func matches(invocation: Invocation): Bool {
         match (tryMatch(invocation)) {
             case Ok => true

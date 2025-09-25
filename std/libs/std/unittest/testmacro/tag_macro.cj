@@ -10,12 +10,32 @@ macro package std.unittest.testmacro
 import std.ast.*
 import std.collection.*
 
+/*
+ * @throws OutOfMemoryError
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalSynchronizationStateException
+ * @throws MacroException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public macro Tag(tags: Tokens, input: Tokens): Tokens {
     verifyTagMacro(tags)
     return topLevelMacroDriver(TAG_MACRO, input, tags, { it => insideParentContext(it.macroIdentifier) })
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ * @throws Exception
+ */
 func verifyTagMacro(tokens: Tokens): Unit {
     let parser = DSLParser(Tokens(collectArray(tokens)))
     try {

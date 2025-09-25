@@ -17,22 +17,58 @@ let isNative64 = if (UInt64(!UIntNative(0)) == UInt64.Max) {
 }
 
 public interface CheckedOp<T> {
+    /*
+     * @noThrow
+     */
     func checkedAdd(y: T): ?T
+    /*
+     * @noThrow
+     */
     func checkedSub(y: T): ?T
+    /*
+     * @noThrow
+     */
     func checkedMul(y: T): ?T
+    /*
+     * @noThrow
+     */
     func checkedDiv(y: T): ?T
+    /*
+     * @noThrow
+     */
     func checkedMod(y: T): ?T
+    /*
+     * @noThrow
+     */
     func checkedInc(): ?T
+    /*
+     * @noThrow
+     */
     func checkedDec(): ?T
+    /*
+     * @noThrow
+     */
     func checkedNeg(): ?T
+    /*
+     * @noThrow
+     */
     func checkedShl(y: UInt64): ?T
+    /*
+     * @noThrow
+     */
     func checkedShr(y: UInt64): ?T
 }
 
 public interface CheckedPow {
+    /*
+     * @noThrow
+     */
     func checkedPow(y: UInt64): ?Int64
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: Int8, y: UInt64): Option<Int8> {
     if (y >= 8) {
         None
@@ -41,6 +77,9 @@ func checkedShl(x: Int8, y: UInt64): Option<Int8> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: Int16, y: UInt64): Option<Int16> {
     if (y >= 16) {
         None
@@ -49,6 +88,9 @@ func checkedShl(x: Int16, y: UInt64): Option<Int16> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: Int32, y: UInt64): Option<Int32> {
     if (y >= 32) {
         None
@@ -57,6 +99,9 @@ func checkedShl(x: Int32, y: UInt64): Option<Int32> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: Int64, y: UInt64): Option<Int64> {
     if (y >= 64) {
         None
@@ -65,6 +110,9 @@ func checkedShl(x: Int64, y: UInt64): Option<Int64> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: IntNative, y: UInt64): Option<IntNative> {
     if (isNative64) {
         if (y >= 64) {
@@ -81,6 +129,9 @@ func checkedShl(x: IntNative, y: UInt64): Option<IntNative> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: UInt8, y: UInt64): Option<UInt8> {
     if (y >= 8) {
         None
@@ -89,6 +140,9 @@ func checkedShl(x: UInt8, y: UInt64): Option<UInt8> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: UInt16, y: UInt64): Option<UInt16> {
     if (y >= 16) {
         None
@@ -97,6 +151,9 @@ func checkedShl(x: UInt16, y: UInt64): Option<UInt16> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: UInt32, y: UInt64): Option<UInt32> {
     if (y >= 32) {
         None
@@ -105,6 +162,9 @@ func checkedShl(x: UInt32, y: UInt64): Option<UInt32> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: UInt64, y: UInt64): Option<UInt64> {
     if (y >= 64) {
         None
@@ -113,6 +173,9 @@ func checkedShl(x: UInt64, y: UInt64): Option<UInt64> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShl(x: UIntNative, y: UInt64): Option<UIntNative> {
     if (isNative64) {
         if (y >= 64) {
@@ -129,6 +192,9 @@ func checkedShl(x: UIntNative, y: UInt64): Option<UIntNative> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: Int8, y: UInt64): Option<Int8> {
     if (y >= 8) {
         None
@@ -137,6 +203,9 @@ func checkedShr(x: Int8, y: UInt64): Option<Int8> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: Int16, y: UInt64): Option<Int16> {
     if (y >= 16) {
         None
@@ -145,6 +214,9 @@ func checkedShr(x: Int16, y: UInt64): Option<Int16> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: Int32, y: UInt64): Option<Int32> {
     if (y >= 32) {
         None
@@ -153,6 +225,9 @@ func checkedShr(x: Int32, y: UInt64): Option<Int32> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: Int64, y: UInt64): Option<Int64> {
     if (y >= 64) {
         None
@@ -161,6 +236,9 @@ func checkedShr(x: Int64, y: UInt64): Option<Int64> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: IntNative, y: UInt64): Option<IntNative> {
     if (isNative64) {
         if (y >= 64) {
@@ -177,6 +255,9 @@ func checkedShr(x: IntNative, y: UInt64): Option<IntNative> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: UInt8, y: UInt64): Option<UInt8> {
     if (y >= 8) {
         None
@@ -185,6 +266,9 @@ func checkedShr(x: UInt8, y: UInt64): Option<UInt8> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: UInt16, y: UInt64): Option<UInt16> {
     if (y >= 16) {
         None
@@ -193,6 +277,9 @@ func checkedShr(x: UInt16, y: UInt64): Option<UInt16> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: UInt32, y: UInt64): Option<UInt32> {
     if (y >= 32) {
         None
@@ -201,6 +288,9 @@ func checkedShr(x: UInt32, y: UInt64): Option<UInt32> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: UInt64, y: UInt64): Option<UInt64> {
     if (y >= 64) {
         None
@@ -209,6 +299,9 @@ func checkedShr(x: UInt64, y: UInt64): Option<UInt64> {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkedShr(x: UIntNative, y: UInt64): Option<UIntNative> {
     if (isNative64) {
         if (y >= 64) {

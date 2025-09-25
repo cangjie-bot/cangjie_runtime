@@ -15,6 +15,9 @@ package std.convert
 foreign func CJ_FORMAT_Float64Formatter(a: Float64, format: CString): CString
 
 public interface Formattable {
+    /*
+     * @noThrow
+     */
     func format(fmt: String): String
 }
 
@@ -28,6 +31,9 @@ protected enum Flags {
     | Sharp
     | Zero
 
+    /*
+     * @noThrow
+     */
     public operator func ==(right: Flags): Bool {
         let f = (this, right)
         return match (f) {
@@ -40,6 +46,9 @@ protected enum Flags {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(right: Flags): Bool {
         return !(this == right)
     }
@@ -56,6 +65,10 @@ extend Int64 <: Formattable {
 
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         var format = escapeControlCharacters(fmt)
         if (!(Verify(fmt).verifyIntFormatArg())) {
@@ -78,6 +91,10 @@ extend Int32 <: Formattable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         return Int64(this).format(fmt)
     }
@@ -95,6 +112,10 @@ extend Int16 <: Formattable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         return Int64(this).format(fmt)
     }
@@ -112,6 +133,10 @@ extend Int8 <: Formattable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         return Int64(this).format(fmt)
     }
@@ -130,6 +155,10 @@ extend UInt64 <: Formattable {
 
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         var format = escapeControlCharacters(fmt)
         if (!(Verify(fmt).verifyIntFormatArg())) {
@@ -152,6 +181,10 @@ extend UInt32 <: Formattable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         return UInt64(this).format(fmt)
     }
@@ -169,6 +202,10 @@ extend UInt16 <: Formattable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         return UInt64(this).format(fmt)
     }
@@ -186,6 +223,10 @@ extend UInt8 <: Formattable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         return UInt64(this).format(fmt)
     }
@@ -201,6 +242,11 @@ extend Float64 <: Formattable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         var format = escapeControlCharacters(fmt)
         if (!(Verify(fmt).verifyFloatFormatArg())) {
@@ -223,6 +269,11 @@ extend Float32 <: Formattable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         return Float64(this).format(fmt)
     }
@@ -240,6 +291,11 @@ extend Float16 <: Formattable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         return Float64(this).format(fmt)
     }
@@ -255,6 +311,10 @@ extend Rune <: Formattable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func format(fmt: String): String {
         var format = escapeControlCharacters(fmt)
         if (!(Verify(fmt).verifyCharFormatArg())) {
@@ -270,11 +330,18 @@ protected class Verify {
     var size: Int64
     var index: Int64 = 0
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public init(fmt: String) {
         this.data = fmt.toRuneArray()
         this.size = data.size
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func verifyNumFormatArg(): Bool {
         if (size == 0) {
             return true
@@ -307,6 +374,9 @@ protected class Verify {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func verifyIntFormatArg(): Bool {
         if (verifyNumFormatArg()) {
             return true
@@ -321,6 +391,9 @@ protected class Verify {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func verifyFloatFormatArg(): Bool {
         if (verifyNumFormatArg()) {
             return true
@@ -335,6 +408,9 @@ protected class Verify {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func verifyCharFormatArg(): Bool {
         if (size == 0) {
             return true
@@ -354,10 +430,16 @@ protected class Verify {
         return index == size
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func lookAhead(): Rune {
         return data[index]
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func anyOf(arr: Array<Rune>): Bool {
         var next = lookAhead()
         for (i in arr) {
@@ -370,6 +452,9 @@ protected class Verify {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func parseWidthSign(): Unit {
         for (i in index..size) {
             var temp = data[i]
@@ -386,6 +471,9 @@ protected class Verify {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func parsePrecisionSign(): Unit {
         for (i in (index + 1)..size) {
             var temp = data[i]
@@ -413,11 +501,19 @@ protected class Verify {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parser(fmt: String): FormatSpecifier {
     let (flags, width, precision, specifier) = parseFormat(fmt)
     return FormatSpecifier(flags, width, precision, specifier)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 protected func parseFormat(fmt: String): (Flags, Int64, Int64, Rune) {
     var flags: Flags = Flags.NoFlag
     var width: Int64 = -1
@@ -473,6 +569,9 @@ protected func parseFormat(fmt: String): (Flags, Int64, Int64, Rune) {
     return (flags, width, precision, specifier)
 }
 
+/*
+ * @noThrow
+ */
 func getFlags(c: Rune): Flags {
     return match (c) {
         case r'-' => Flags.Minus
@@ -489,6 +588,9 @@ func getFlags(c: Rune): Flags {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ */
 protected func escapeControlCharacters(str: String): String {
     var tmp = ""
     for (c in str.runes()) {
@@ -535,6 +637,9 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @noThrow
+     */
     init(flags: Flags, width: Int64, precision: Int64, specifier: Rune) {
         this.flags = flags
         this.width = width
@@ -552,6 +657,10 @@ class FormatSpecifier {
 
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func fmtInteger(arg: UInt64, isSigned: Bool): String {
         var u: UInt64 = 0
         var negative = isSigned && Int64(arg) < 0
@@ -592,6 +701,10 @@ class FormatSpecifier {
         return val
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func convertNumberSystem(u: UInt64): String {
         return match (specifier) {
             case r'b' | r'B' => toBinaryString(u)
@@ -603,6 +716,9 @@ class FormatSpecifier {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func getPrefixFromSharp(): String {
         return match (specifier) {
             case r'b' => "0b"
@@ -615,6 +731,9 @@ class FormatSpecifier {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     func paddingZero(negative: Bool, len: Int64): String {
         var sp = 0
         if (precision == -1) {
@@ -641,6 +760,11 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func fmtFloat(arg: Float64): String {
         var negative = false
         var str = "${arg}".toRuneArray()
@@ -692,6 +816,10 @@ class FormatSpecifier {
         return val
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func fmtCharacter(arg: Rune): String {
         var val = "${arg}"
         return writePadding(val)
@@ -703,6 +831,10 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func writePadding(s: String): String {
         var sCharArray = s.toRuneArray()
         var result = ""
@@ -728,6 +860,10 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func toBinaryString(u: UInt64): String {
         var v: UInt64 = u
         var str = ""
@@ -752,6 +888,10 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func toOctalString(u: UInt64): String {
         var v: UInt64 = u
         var str = ""
@@ -777,6 +917,10 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func toHexString(u: UInt64, isUpper: Bool): String {
         var v: UInt64 = u
         if (u > 0) {
@@ -808,6 +952,10 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     private func toScientificString(u: Float64, isUpper: Bool, precision: Int64): String {
         var v: Float64 = u
         var fmt = ""
@@ -828,6 +976,10 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     private func toGeneralString(u: Float64, isUpper: Bool, precision: Int64): String {
         var v: Float64 = u
         var fmt = ""
@@ -847,6 +999,10 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     private func toDecimalString(u: Float64, precision: Int64): String {
         var v: Float64 = u
         var fmt = "%.${precision}f"
@@ -861,6 +1017,10 @@ class FormatSpecifier {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     private func float64Formatter(a: Float64, format: String): String {
         var f = unsafe { LibC.mallocCString(format) }
         var res: CString = unsafe { CJ_FORMAT_Float64Formatter(a, f) }

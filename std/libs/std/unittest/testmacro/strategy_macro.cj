@@ -11,6 +11,18 @@ macro package std.unittest.testmacro
 import std.ast.*
 import std.collection.*
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Error
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro Strategy(input: Tokens): Tokens {
     expandStrategy(Tokens(), input)
 }
@@ -20,10 +32,34 @@ public macro Strategy(input: Tokens): Tokens {
 
 
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Error
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro Strategy(attr: Tokens, input: Tokens): Tokens {
     expandStrategy(attr, input)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Error
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func expandStrategy(attr: Tokens, input: Tokens): Tokens {
     let strategies = ArrayList(parseDSLMacro(attr))
     let builder = TokensBuilder()
@@ -70,6 +106,12 @@ func expandStrategy(attr: Tokens, input: Tokens): Tokens {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 private func checkFunc(funcItem: FuncDecl) {
     if (let Some(key) <- MacroStorage.loadAllAttrs(funcItem).keys().iterator().next()) {
         throw MacroException("@Strategy macro can't be used together with ${key}")

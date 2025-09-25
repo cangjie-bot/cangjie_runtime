@@ -16,11 +16,17 @@ type Pcre2OvectorPtr = CPointer<UIntNative>
 
 @C
 struct CompileResult {
+    /*
+     * @noThrow
+     */
     CompileResult(let re: Pcre2CodePtr, let errorCode: Int32, let errorOffset: UIntNative) {}
 }
 
 @C
 struct NameTableInfo {
+    /*
+     * @noThrow
+     */
     NameTableInfo(let nameCount: UInt32, let nameEntrySize: UInt32, let nameTable: CPointer<UInt8>) {}
 }
 

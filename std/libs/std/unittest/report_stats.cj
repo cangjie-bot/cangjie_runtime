@@ -19,13 +19,25 @@ class Details {
     var startTimestamp: DateTime = DateTime.now()
     var duration = Duration.Zero
 
+    /*
+     * @noThrow
+     */
     Details(var testcode: TestCode, var isAccountedStep: Bool) {
     }
+    /*
+     * @noThrow
+     */
     init() {
         testcode = PASS
         isAccountedStep = false
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     func add(other: Details) {
         this.testcode = testcode.mostSevereWith(other.testcode)
         if (other.isAccountedStep) {
@@ -53,12 +65,18 @@ class Details {
         this.duration = endTimestamp - startTimestamp
     }
     prop totalCount: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             failedCount + passedCount + skippedCount + errorCount
         }
     }
 
     prop isSuccess: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             !testcode.isFailure()
         }

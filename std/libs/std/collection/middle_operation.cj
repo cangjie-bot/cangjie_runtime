@@ -15,6 +15,9 @@ package std.collection
 
 
 
+/*
+ * @noThrow
+ */
 public func enumerate<T>(it: Iterable<T>): Iterator<(Int64, T)> {
     return it.iterator().enumerate()
 }
@@ -25,6 +28,9 @@ public func enumerate<T>(it: Iterable<T>): Iterator<(Int64, T)> {
 
 
 @Frozen
+/*
+ * @noThrow
+ */
 public func filter<T>(predicate: (T) -> Bool): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().filter(predicate)}
 }
@@ -34,6 +40,9 @@ public func filter<T>(predicate: (T) -> Bool): (Iterable<T>) -> Iterator<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func filterMap<T, R>(transform: (T) -> ?R): (Iterable<T>) -> Iterator<R> {
     return {it: Iterable<T> => it.iterator().filterMap<R>(transform)}
 }
@@ -44,6 +53,9 @@ public func filterMap<T, R>(transform: (T) -> ?R): (Iterable<T>) -> Iterator<R> 
 
 
 @Frozen
+/*
+ * @noThrow
+ */
 public func map<T, R>(transform: (T) -> R): (Iterable<T>) -> Iterator<R> {
     return {it: Iterable<T> => it.iterator().map<R>(transform)}
 }
@@ -53,6 +65,9 @@ public func map<T, R>(transform: (T) -> R): (Iterable<T>) -> Iterator<R> {
 
 
 
+/*
+ * @noThrow
+ */
 public func flatten<T, R>(it: Iterable<T>): Iterator<R> where T <: Iterable<R> {
     return FlattenIterator<T, R>(it)
 }
@@ -62,6 +77,9 @@ public func flatten<T, R>(it: Iterable<T>): Iterator<R> where T <: Iterable<R> {
 
 
 
+/*
+ * @noThrow
+ */
 public func flatMap<T, R>(transform: (T) -> Iterable<R>): (Iterable<T>) -> Iterator<R> {
     return {it: Iterable<T> => FlatMapIterator<T, R>(it, transform)}
 }
@@ -71,6 +89,9 @@ public func flatMap<T, R>(transform: (T) -> Iterable<R>): (Iterable<T>) -> Itera
 
 
 
+/*
+ * @noThrow
+ */
 public func zip<T, R>(other: Iterable<R>): (Iterable<T>) -> Iterator<(T, R)> {
     return {it: Iterable<T> => it.iterator().zip<R>(other.iterator())}
 }
@@ -81,6 +102,9 @@ public func zip<T, R>(other: Iterable<R>): (Iterable<T>) -> Iterator<(T, R)> {
 
 
 @Frozen
+/*
+ * @noThrow
+ */
 public func concat<T>(other: Iterable<T>): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().concat(other.iterator())}
 }
@@ -94,6 +118,9 @@ public func concat<T>(other: Iterable<T>): (Iterable<T>) -> Iterator<T> {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ */
 public func skip<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().skip(count)}
 }
@@ -103,6 +130,9 @@ public func skip<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ */
 public func take<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().take(count)}
 }
@@ -112,6 +142,9 @@ public func take<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ */
 public func step<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().step(count)}
 }
@@ -121,6 +154,9 @@ public func step<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func inspect<T>(action: (T) -> Unit): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().inspect(action)}
 }
@@ -133,6 +169,9 @@ class FlattenIterator<T, R> <: Iterator<R> where T <: Iterable<R> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(it: Iterable<T>) {
         this.it = it.iterator()
     }
@@ -141,6 +180,9 @@ class FlattenIterator<T, R> <: Iterator<R> where T <: Iterable<R> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func next(): Option<R> {
 
 
@@ -175,6 +217,9 @@ class FlatMapIterator<T, R> <: Iterator<R> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(it: Iterable<T>, transform: (T) -> Iterable<R>) {
         this.it = it.iterator()
         this.transform = transform
@@ -184,6 +229,9 @@ class FlatMapIterator<T, R> <: Iterator<R> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func next(): Option<R> {
 
 

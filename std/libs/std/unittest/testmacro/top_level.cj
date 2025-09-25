@@ -9,6 +9,20 @@ macro package std.unittest.testmacro
 
 import std.ast.*
 
+/*
+ * @throws OutOfMemoryError
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalSynchronizationStateException
+ * @throws MacroException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func topLevelMacroDriver(key: MacroKey, input: Tokens,
         args: Tokens, parentCheck: (key: MacroKey) -> Bool): Tokens {
     let tokens = key.write(input, args: args)

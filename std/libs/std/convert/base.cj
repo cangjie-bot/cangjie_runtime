@@ -186,9 +186,18 @@ enum TypeBase {
 }
 
 enum ConvertResult<T> {
+    /*
+     * @noThrow
+     */
+                 /*
+                  * @noThrow
+                  */
     Success(T) | Failure(String)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func getBaseInfos(typeBase: TypeBase, isNegative: Int64, rawData: Array<Byte>): (UInt64, UInt64, UInt64) {
     var baseInfos = match (typeBase) {
         case I8 => baseInfosInt8
@@ -210,6 +219,9 @@ func getBaseInfos(typeBase: TypeBase, isNegative: Int64, rawData: Array<Byte>): 
     return (formatBaseNum, multmin, maxAbsVal)
 }
 
+/*
+ * @noThrow
+ */
 func getBaseInfosWithRadix(typeBase: TypeBase, isNegative: Int64, radix: Int64): (UInt64, UInt64, UInt64) {
     var maxAbsVa = match ((typeBase, isNegative)) {
         case (I8, 1) => MAXVAL_I8
@@ -235,6 +247,10 @@ func getBaseInfosWithRadix(typeBase: TypeBase, isNegative: Int64, radix: Int64):
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func strToChar(data: Array<Rune>): Option<Rune> {
     if (data.size < 2 || data[0] != r'\'' || data[data.size - 1] != r'\'') {
         return None
@@ -272,6 +288,9 @@ func strToChar(data: Array<Rune>): Option<Rune> {
 
 
 
+/*
+ * @noThrow
+ */
 func charToNumber(chs: Rune): UInt64 {
     var value: UInt64 = UInt64(UInt32(chs))
     if (chs == r'A' || chs == r'B' || chs == r'C' || chs == r'D' || chs == r'E' || chs == r'F') {
@@ -284,6 +303,9 @@ func charToNumber(chs: Rune): UInt64 {
     }
 }
 
+/*
+ * @noThrow
+ */
 func checkChar(formatBaseNum: UInt64, ch: Rune): Bool {
     return match (formatBaseNum) {
         
@@ -292,6 +314,9 @@ func checkChar(formatBaseNum: UInt64, ch: Rune): Bool {
     }
 }
 
+/*
+ * @noThrow
+ */
 func charsToInteger(chars: Array<Rune>, formatBaseNum: UInt64): Option<UInt64> {
 
 
@@ -327,6 +352,10 @@ func charsToInteger(chars: Array<Rune>, formatBaseNum: UInt64): Option<UInt64> {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func unicodeToChar(data: Array<Rune>): Option<Rune> {
     if (data.size < 5 || data[3] != r'{' || data[data.size - 2] != r'}') {
         return None

@@ -15,6 +15,10 @@ package std.collection
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func collectString<T>(delimiter!: String = ""): (Iterable<T>) -> String where T <: ToString {
     return {
         it: Iterable<T> =>
@@ -43,6 +47,10 @@ public func collectString<T>(delimiter!: String = ""): (Iterable<T>) -> String w
 
 
 @Frozen
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func collectArray<T>(it: Iterable<T>): Array<T> {
     return collectArrayList<T>(it).toArray()
 }
@@ -53,6 +61,10 @@ public func collectArray<T>(it: Iterable<T>): Array<T> {
 
 
 @Frozen
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func collectArrayList<T>(it: Iterable<T>): ArrayList<T> {
     let collector: ArrayList<T> = ArrayList<T>()
     for (item in it) {
@@ -67,6 +79,10 @@ public func collectArrayList<T>(it: Iterable<T>): ArrayList<T> {
 
 
 @Frozen
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func collectHashSet<T>(it: Iterable<T>): HashSet<T> where T <: Hashable & Equatable<T> {
     let set: HashSet<T> = HashSet<T>()
     for (item in it) {
@@ -81,6 +97,10 @@ public func collectHashSet<T>(it: Iterable<T>): HashSet<T> where T <: Hashable &
 
 
 @Frozen
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func collectHashMap<K, V>(it: Iterable<(K, V)>): HashMap<K, V> where K <: Hashable & Equatable<K> {
     let map: HashMap<K, V> = HashMap<K, V>()
     for ((key, value) in it) {

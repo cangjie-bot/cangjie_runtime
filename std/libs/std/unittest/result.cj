@@ -12,13 +12,25 @@ import std.time.DateTime
 import std.collection.*
 
 interface Result <: Serializable<Result> {
+    /*
+     * @noThrow
+     */
     func visitChildren(_: (Result) -> Unit): Unit {}
 
+    /*
+     * @noThrow
+     */
     func walk(visitor: (Result) -> Unit): Unit {
         visitor(this)
         visitChildren{ x => x.walk(visitor) }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     func serializeInternal(): DataModel {
         match (this) {
             case step: RunStepResult =>
@@ -33,6 +45,16 @@ interface Result <: Serializable<Result> {
         }
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws DataModelException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws NoneValueException
+     * @throws Exception
+     */
     static func deserialize(dm: DataModel): Result {
         let dms = dm.asStruct()
         let kind = String.deserialize(dms.get("kind"))
@@ -51,12 +73,20 @@ interface Result <: Serializable<Result> {
 abstract class ResultContainer<T> <: Result where T <: Result {
     let subResults = ArrayList<T>()
 
+    /*
+     * @noThrow
+     */
     public func visitChildren(visitor: (Result) -> Unit): Unit {
         for (r in subResults) {
             visitor(r)
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     public open func add(child: T) {
         if (!finished) {
             subResults.add(child)
@@ -70,11 +100,21 @@ abstract class ResultContainer<T> <: Result where T <: Result {
     private var finished: Bool = false
 
     prop isFinished: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             finished
         }
     }
     public prop details: Details {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws ArithmeticException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalStateException
+         */
         get() {
             if (_detailsComputed) { return _details }
 
@@ -91,6 +131,9 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func finish(): Unit {
         if (finished) { return }
         visitChildren { child =>
@@ -102,12 +145,18 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         finished = true
     }
 
+    /*
+     * @noThrow
+     */
     func visitAll<V>(visitor: (V) -> Unit): Unit where V <: Result {
         walk { node =>
             visitor(node as V ?? return)
         }
     }
 
+    /*
+     * @throws NoneValueException
+     */
     private func forAllStepsWithParent(visitor: (RunStepResult, TestCaseResult) -> Unit) {
         let currentCase: Box<?TestCaseResult> = Box(None)
         visitAll<Result> { r =>
@@ -119,6 +168,9 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func visitPassedTests(visitor: (TestCaseResult) -> Unit) {
         visitAll<TestCaseResult> { r =>
             if (r.hasFailures()) { return }
@@ -126,6 +178,12 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     */
     public func visitPassedBenches(visitor: (BenchStepEntry) -> Unit) {
         forAllStepsWithParent { r, c =>
             if (r.statusCode().isFailure()) { return }
@@ -138,6 +196,9 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     */
     public func visitFailedSteps(visitor: (RunStepResult, TestCaseResult) -> Unit) {
         forAllStepsWithParent { r, c =>
             if (!r.hasFailures()) { return }
@@ -145,6 +206,10 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func serializeSubResults(): DataModelStruct{
         let serializablePieces = ArrayList<Result>()
         visitChildren{ s =>
@@ -156,6 +221,11 @@ abstract class ResultContainer<T> <: Result where T <: Result {
 }
 
 struct BenchStepEntry {
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     BenchStepEntry(
         let result: BenchmarkResult,
         let arg: ArgumentDescription,
@@ -167,6 +237,9 @@ struct BenchStepEntry {
 }
 
 class RunStepResult <: Result {
+    /*
+     * @throws ArithmeticException
+     */
     RunStepResult(
         let checksPassed: Int64,
         let startTimestamp: DateTime,
@@ -176,6 +249,9 @@ class RunStepResult <: Result {
     ) {}
 
     public prop details: Details {
+        /*
+         * @noThrow
+         */
         get() {
             let isAccountedStep = !kind.isClassLifecycle() || hasFailures()
             let d = Details(statusCode(), isAccountedStep)
@@ -193,15 +269,24 @@ class RunStepResult <: Result {
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     */
     static func simpleError(step: StepKind, check: CheckResult): RunStepResult {
         RunStepResult(0, DateTime.now(), step, Failure([check]), duration: Duration.Zero)
     }
 
+    /*
+     * @noThrow
+     */
     public func hasFailures(): Bool {
         statusCode().isFailure()
     }
 
     public prop checkResults: Array<CheckResult> {
+        /*
+         * @noThrow
+         */
         get() {
             match (info) {
                 case Failure(c) => c
@@ -210,6 +295,9 @@ class RunStepResult <: Result {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func statusCode(): TestCode {
         var code = match (kind) {
             case Skip => TestCode.SKIP
@@ -238,12 +326,20 @@ class RunStepResult <: Result {
 }
 
 class TestCaseResult <: ResultContainer<RunStepResult> {
+    /*
+     * @noThrow
+     */
     TestCaseResult(
         let caseId: TestCaseId,
         let caseInfo: TestCaseReportInfo,
         let renderOptions: RenderOptions
     ) {}
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     static func fromSingleStep(id: TestCaseId, info: TestCaseReportInfo, step: RunStepResult) {
         let caseResult = TestCaseResult(id, info, RenderOptions(None, None))
         caseResult.add(step)
@@ -253,14 +349,25 @@ class TestCaseResult <: ResultContainer<RunStepResult> {
 
     private var _output: CapturedOutput = CapturedOutput()
     prop output: CapturedOutput {
+        /*
+         * @noThrow
+         */
         get() {
             _output
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func addOutput(output: CapturedOutput): Unit {
         _output = output
     }
+    /*
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     public func addSuccessfullStep(next: RunStepResult) {
         let first = subResults[0]
         let steps = if (let Test(steps) <- first.info) {
@@ -278,6 +385,9 @@ class TestCaseResult <: ResultContainer<RunStepResult> {
         subResults[0] = newResult
     }
 
+    /*
+     * @noThrow
+     */
     public func hasFailures(): Bool {
         subResults |> any { s => s.hasFailures() }
     }
@@ -285,47 +395,83 @@ class TestCaseResult <: ResultContainer<RunStepResult> {
 
 
 struct TestCaseReportInfo {
+    /*
+     * @noThrow
+     */
     TestCaseReportInfo(let tags!: Array<String>) {}
 
+    /*
+     * @noThrow
+     */
     static func empty(): TestCaseReportInfo {
         TestCaseReportInfo(tags: [])
     }
 
     prop isEmpty: Bool {
+        /*
+         * @noThrow
+         */
         get() { this.tags.isEmpty() }
     }
 
+    /*
+     * @noThrow
+     */
     func merge(suiteInfo: TestSuiteReportInfo): TestCaseReportInfo {
         TestCaseReportInfo(tags: suiteInfo.tags.concat(this.tags))
     }
 }
 
 struct CapturedOutput {
+    /*
+     * @noThrow
+     */
     CapturedOutput(let stdout: String, let stderr: String) {}
 
+    /*
+     * @noThrow
+     */
     init() {
         this("", "")
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     init(stdout: Array<Byte>, stderr: Array<Byte>) {
         this(String.fromUtf8(stdout), String.fromUtf8(stderr))
     }
 
+    /*
+     * @noThrow
+     */
     func isEmpty(): Bool {
         stdout.isEmpty() && stderr.isEmpty()
     }
 }
 
 class TestSuiteResult <: ResultContainer<TestCaseResult> {
+    /*
+     * @noThrow
+     */
     TestSuiteResult(
         let suiteId: TestSuiteId,
         let suiteInfo: TestSuiteReportInfo
     ) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func merge(other: TestSuiteResult) {
         this.subResults.add(all: other.subResults)
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func mergeAll(suiteResults: Iterable<TestSuiteResult>): Collection<TestSuiteResult> {
         let resultById = HashMap<TestSuiteId, TestSuiteResult>()
         for (suiteResult in suiteResults) {
@@ -342,17 +488,32 @@ class TestSuiteResult <: ResultContainer<TestCaseResult> {
 
 
 struct TestSuiteReportInfo {
+    /*
+     * @noThrow
+     */
     TestSuiteReportInfo(let tags!: Array<String>) {}
 
     prop isEmpty: Bool {
+        /*
+         * @noThrow
+         */
         get() { this.tags.isEmpty() }
     }
 }
 
 enum GroupResultPart <: Result {
+      /*
+       * @noThrow
+       */
     | SuiteResult(TestSuiteResult)
+      /*
+       * @noThrow
+       */
     | ProcessError(TestProcessError)
 
+    /*
+     * @noThrow
+     */
     public func walk(visitor: (Result) -> Unit): Unit {
         match (this) {
             case SuiteResult(suiteResult) => 
@@ -362,6 +523,9 @@ enum GroupResultPart <: Result {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func visitAll<V>(visitor: (V) -> Unit): Unit where V <: Result {
         walk { grp =>
             visitor(grp as V ?? return)
@@ -369,6 +533,13 @@ enum GroupResultPart <: Result {
     }
 
     public prop details: Details {
+        /*
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws ArithmeticException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalStateException
+         */
         get() {
             match (this) {
                 case SuiteResult(suiteResult) => 
@@ -383,10 +554,19 @@ enum GroupResultPart <: Result {
 class TestProcessError <: Result & Hashable {
     let _details = Details()
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     TestProcessError(let code: Int64) {
         _details.add(Details(ERROR, true))
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
         hasher.write(code)
@@ -394,6 +574,9 @@ class TestProcessError <: Result & Hashable {
     }
 
     public prop details: Details {
+        /*
+         * @noThrow
+         */
         get() {
             _details
         }
@@ -401,11 +584,20 @@ class TestProcessError <: Result & Hashable {
 }
 
 class TestGroupResult <: ResultContainer<GroupResultPart> {
+    /*
+     * @noThrow
+     */
     TestGroupResult(
         let groupName: String,
         let nonTestOutputs: Array<NonTestOutputs>
     ) {}
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws Exception
+     */
     static func fromPackageSuites(packageName: String, suiteResults: Collection<TestSuiteResult>,
         processErrors: Array<TestProcessError>, nonTestOutputs: Array<NonTestOutputs>): TestGroupResult {
         let result = TestGroupResult(packageName, nonTestOutputs)
@@ -420,6 +612,9 @@ class TestGroupResult <: ResultContainer<GroupResultPart> {
     }
 
     prop hasProcessError: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             for (value in this.subResults) {
                 match (value) {
@@ -432,6 +627,12 @@ class TestGroupResult <: ResultContainer<GroupResultPart> {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws Exception
+     */
     func add(testSuite: Result): Unit {
         match (testSuite) {
             case suiteResultPart: TestSuiteResult => 
@@ -452,6 +653,9 @@ enum LStep <: ToString {
     | AfterAll
     | AfterEach
 
+    /*
+     * @noThrow
+     */
     operator func ==(other: LStep): Bool {
         match ((this, other)) {
             case (BeforeEach, BeforeEach) => true
@@ -462,6 +666,9 @@ enum LStep <: ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func toString() {
         match (this) {
             case BeforeEach => "BeforeEach"
@@ -474,10 +681,19 @@ enum LStep <: ToString {
 
 enum StepKind {
     | Skip | NoRun
+      /*
+       * @noThrow
+       */
     | Lifecycle(LStep)
+      /*
+       * @noThrow
+       */
     | CaseStep(ArgumentDescription)
     | UserCode
 
+    /*
+     * @noThrow
+     */
     func isClassLifecycle(): Bool {
         match (this) {
             case Lifecycle(BeforeAll) | Lifecycle(AfterAll) => true
@@ -487,6 +703,9 @@ enum StepKind {
 }
 
 struct ArgumentDescription {
+    /*
+     * @noThrow
+     */
     ArgumentDescription(
         let textDescription: ?PrettyText,
         let stepIndex: Int64,
@@ -494,6 +713,10 @@ struct ArgumentDescription {
         let randomSeed: ?Int64
     ) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func intoErrorMessage(): ?PrettyText {
         let argsText = this.textDescription ?? return None
         let messageBuilder = PrettyText("After ${this.stepIndex + 1} generation steps")
@@ -517,18 +740,33 @@ struct ArgumentDescription {
 }
 
 enum StepInfo {
+      /*
+       * @noThrow
+       */
     | Test(  Int64)
+      /*
+       * @noThrow
+       */
     | Bench(BenchmarkResult)
+      /*
+       * @noThrow
+       */
     | Failure(Array<CheckResult>)
 }
 
 
 struct RenderOptions {
+    /*
+     * @noThrow
+     */
     RenderOptions(
         let baselineString: ?String,
         let measurementInfo: ?MeasurementInfo
     ) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     static func fromConfiguration(configuration: Configuration) {
         RenderOptions(
             configuration.get(KeyBaseline.baseline),

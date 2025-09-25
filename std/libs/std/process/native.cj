@@ -94,6 +94,9 @@ struct ProcessStartInfo {
     let _stdOut: IntNative
     let _stdErr: IntNative
 
+    /*
+     * @noThrow
+     */
     init(command: CString, arguments: CPointer<CString>, arguments_size: UIntNative, workingDirectory: CString,
         environment: CPointer<CString>, environment_size: UIntNative, stdIn: IntNative, stdOut: IntNative,
         stdErr: IntNative) {
@@ -203,6 +206,9 @@ func nativeGetEnv(name: CString): Option<String> {
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func nativeGetEnv(name: CString): Option<String> {
     if (name.isNull()) {
         return None
@@ -218,6 +224,9 @@ func nativeGetEnv(name: CString): Option<String> {
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func nativeSetEnv(name: CString, value: CString, overwrite: Int32): Int32 {
     return unsafe { setenv(name, value, overwrite) }
 }
@@ -231,6 +240,9 @@ func nativeSetEnv(name: CString, value: CString, _: Int32): Int32 {
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func nativeRemoveEnv(name: CString): Int32 {
     return unsafe { unsetenv(name) }
 }

@@ -10,6 +10,18 @@ macro package std.unittest.testmacro
 import std.ast.*
 
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro AssertThrows(body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return expandAssertThrowsMacro(body, quote(Exception), insideCustom: true)
@@ -18,6 +30,18 @@ public macro AssertThrows(body: Tokens): Tokens {
 }
 
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro AssertThrows(exceptions: Tokens, body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return expandAssertThrowsMacro(body, exceptions, insideCustom: true)
@@ -26,6 +50,18 @@ public macro AssertThrows(exceptions: Tokens, body: Tokens): Tokens {
 }
 
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro ExpectThrows(body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return expandAssertThrowsMacro(body, quote(Exception), insideCustom: true, isExpect: true)
@@ -34,6 +70,18 @@ public macro ExpectThrows(body: Tokens): Tokens {
 }
 
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro ExpectThrows(exceptions: Tokens, body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return expandAssertThrowsMacro(body, exceptions, insideCustom: true, isExpect: true)
@@ -41,6 +89,18 @@ public macro ExpectThrows(exceptions: Tokens, body: Tokens): Tokens {
     return expandAssertThrowsMacro(body, exceptions, insideCustom: false, isExpect: true)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws MacroException
+ */
 func processAssertThrowBody(body: Tokens, isExpect: Bool): Tokens {
     let macroName = if (isExpect) { "@ExpectThrows" } else { "@AssertThrows" }
     if (body.size == 0) {
@@ -77,6 +137,11 @@ func processAssertThrowBody(body: Tokens, isExpect: Bool): Tokens {
     return body
 }
 
+/*
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func typeNodeToString(ty: TypeNode): String {
     let res = StringBuilder()
     for (c in ty.toTokens().toString().runes()) {
@@ -88,6 +153,12 @@ func typeNodeToString(ty: TypeNode): String {
     res.toString()
 }
 
+/*
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func obtainMacroSpecificTokens(isExpect: Bool, insideCustom: Bool) {
     let (prefix, callArgs) = if (insideCustom) {
         (quote($MACRO_CTX_VAR_NAME.), { errmesg: String, tokens: String =>
@@ -112,6 +183,13 @@ private func obtainMacroSpecificTokens(isExpect: Bool, insideCustom: Bool) {
 
 
 
+/*
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func handleExpectedErrorTypes(iter: Iterable<TypeNode>) {
     let sb = StringBuilder()
     var shouldThrowAssert: Bool = true
@@ -154,6 +232,18 @@ private func handleExpectedErrorTypes(iter: Iterable<TypeNode>) {
     return (sb.toString(), tb.toTokens())
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 private func expandAssertThrowsMacro(
     body_: Tokens, exceptions: Tokens,
     isExpect!: Bool = false,

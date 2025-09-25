@@ -19,6 +19,9 @@ import std.sync.ReentrantMutex
 private let TEMP_DIR = TempDirectory()
 
 struct WrappedProcess {
+    /*
+     * @noThrow
+     */
     WrappedProcess(
         private let process: SubProcess,
         private let stdOutFile: ?Path,
@@ -27,6 +30,16 @@ struct WrappedProcess {
 
     private let status = AtomicOptionReference<CapturedProcessResult>()
 
+    /*
+     * @throws TimeoutException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws FSException
+     */
     func wait(): Int64 {
         let exitCode = process.wait()
         if (status.load().isSome()) {
@@ -41,6 +54,11 @@ struct WrappedProcess {
         return exitCode
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     */
     func terminate(): Unit {
         if (status.load().isSome()) {
             return
@@ -49,26 +67,57 @@ struct WrappedProcess {
         process.terminateSilent(force: true)
     }
 
+    /*
+     * @noThrow
+     */
     func stdout(): Array<Byte> {
         status.load()?.stdOut ?? []
     }
 
+    /*
+     * @noThrow
+     */
     func stderr(): Array<Byte> {
         status.load()?.stdErr ?? []
     }
 }
 
 private class CapturedProcessResult {
+    /*
+     * @noThrow
+     */
     CapturedProcessResult(
         let stdOut: Array<Byte>,
         let stdErr: Array<Byte>
     ) {}
 }
+/*
+ * @throws IllegalSynchronizationStateException
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws ProcessException
+ * @throws FSException
+ */
 func processStart(ctx: MainExecutionCtx): WrappedProcess {
     Process.start(ctx)
 }
 
 extend Process {
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws ProcessException
+     * @throws FSException
+     */
     static func start(ctx: MainExecutionCtx): WrappedProcess {
         let stdout = captureFor(ctx)
         let stderr = captureFor(ctx)
@@ -87,6 +136,16 @@ extend Process {
 
         return WrappedProcess(process, stdout?.info.path, stderr?.info.path)
     }
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     */
     private static func captureFor(ctx: MainExecutionCtx): ?File {
         match (ctx.outputReporter.capture) {
             case true => TEMP_DIR.createTempFile(prefix: "test-worker-", suffix: ".stdout")
@@ -94,6 +153,9 @@ extend Process {
         }
     }
 
+    /*
+     * @noThrow
+     */
     private static func redirectFor(file: ?File): ProcessRedirect {
         match (file) {
             case Some(file) => FromFile(file)
@@ -104,6 +166,11 @@ extend Process {
 
 extend SubProcess {
     
+    /*
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     */
     func terminateSilent(force!: Bool): Unit {
         if (isAlive()) {
             try {
@@ -115,6 +182,11 @@ extend SubProcess {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 private func removeFileSilent(path: Path): Unit {
     try {
         remove(path)
@@ -122,6 +194,13 @@ private func removeFileSilent(path: Path): Unit {
     }
 }
 
+/*
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 private func readCapturedFrom(path: ?Path): Array<Byte> {
     match (path) {
         case Some(path) where exists(path) =>

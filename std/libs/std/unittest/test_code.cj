@@ -19,6 +19,9 @@ enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
     | ERROR
     | NORUN
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case PASS => "PASS"
@@ -30,6 +33,9 @@ enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func mostSevereWith(other: TestCode): TestCode {
         if (this.severity() > other.severity()) {
             this
@@ -38,6 +44,9 @@ enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func severity(): Int64 {
         match (this) {
             case PASS => 0
@@ -49,6 +58,9 @@ enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func isFailure(): Bool {
         match (this) {
             case PASS | SKIP | NORUN => false
@@ -56,6 +68,9 @@ enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func toStringTense(): String {
         match (this) {
             case PASS => "PASSED"
@@ -67,6 +82,9 @@ enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(right: TestCode): Bool {
         match ((this, right)) {
             case (PASS, PASS) => return true
@@ -79,10 +97,16 @@ enum TestCode <: ToString & PrettyPrintable & Equatable<TestCode> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(right: TestCode): Bool {
         !(this == right)
     }
 
+    /*
+     * @noThrow
+     */
     public func pprint(pp: PrettyPrinter): PrettyPrinter {
         let color = match (this) {
             case PASS | SKIP | NORUN => Color.GREEN

@@ -20,6 +20,10 @@ public enum ModifierInfo <: Equatable<ModifierInfo> & Hashable & ToString {
     | Mut
     | Static
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func byMask(mask: UInt32): Collection<ModifierInfo> {
         let result = ArrayList<ModifierInfo>()
 
@@ -34,26 +38,42 @@ public enum ModifierInfo <: Equatable<ModifierInfo> & Hashable & ToString {
         result.toArray()
     }
 
+    /*
+     * @noThrow
+     */
     static func isAbstract(mask: UInt32): Bool {
         (mask & 0x1 << 9) != 0
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @noThrow
+     */
     static func isPublic(mask: UInt32): Bool {
         ((mask & 0x1 << 3) != 0) || ((mask & 0x1 << 10) != 0)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func appendModifier(modifier: ModifierInfo, mask: UInt32, modifiers: ArrayList<ModifierInfo>) {
         if ((mask & getMask(modifier)) != 0) {
             modifiers.add(modifier)
         }
     }
 
+    /*
+     * @noThrow
+     */
     static func isMutable(mask: UInt32): Bool {
         let finalMask: UInt32 = 0x1 << 4
         (mask & finalMask) == 0
     }
 
+    /*
+     * @noThrow
+     */
     public override operator func == (that: ModifierInfo): Bool {
         match ((this, that)) {
             case (Open, Open) => true
@@ -67,10 +87,16 @@ public enum ModifierInfo <: Equatable<ModifierInfo> & Hashable & ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public override operator func != (that: ModifierInfo): Bool {
         return !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return match (this) {
             case Open => "open".hashCode()
@@ -83,6 +109,9 @@ public enum ModifierInfo <: Equatable<ModifierInfo> & Hashable & ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public override func toString(): String {
         return match (this) {
             case Open => "open"
@@ -96,6 +125,9 @@ public enum ModifierInfo <: Equatable<ModifierInfo> & Hashable & ToString {
     }
 }
 
+/*
+ * @noThrow
+ */
 func containsModifier(source: Collection<ModifierInfo>, modifier: ModifierInfo): Bool {
     for (item in source) {
         if (item == modifier) {
@@ -121,6 +153,9 @@ func containsModifier(source: Collection<ModifierInfo>, modifier: ModifierInfo):
 
 
 @When[backend == "cjnative"]
+/*
+ * @noThrow
+ */
 func getMask(modifier: ModifierInfo): UInt32 {
     match (modifier) {
         case Open => 0x1 << 6

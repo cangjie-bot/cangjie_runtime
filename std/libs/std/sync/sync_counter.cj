@@ -14,6 +14,9 @@ public class SyncCounter {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(count: Int64) {
         if (count < 0) {
             throw IllegalArgumentException("Negative count.")
@@ -24,6 +27,9 @@ public class SyncCounter {
 
 
     public prop count: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return countValue.load()
         }
@@ -32,6 +38,9 @@ public class SyncCounter {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func dec(): Unit {
         if (countValue.load() <= 0) {
             return
@@ -47,6 +56,11 @@ public class SyncCounter {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func waitUntilZero(timeout!: Duration = Duration.Max): Unit {
         syncList.waitIf({=> countValue.load() > 0}, timeout: timeout)
     }

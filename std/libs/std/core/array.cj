@@ -15,6 +15,9 @@ public struct Array<T> {
     let len: Int64
 
     @Frozen
+    /*
+     * @noThrow
+     */
     func toRawArray() {
         if (len == 0) {
             return RawArray<T>()
@@ -25,6 +28,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public const init() {
         this.start = 0
         this.rawptr = RawArray<T>()
@@ -32,6 +38,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public init(size: Int64, repeat!: T) {
         this.start = 0
         this.rawptr = RawArray<T>(size, repeat: repeat)
@@ -39,6 +48,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init(elements: Collection<T>) {
         this.start = 0
         this.rawptr = RawArray<T>(elements)
@@ -46,6 +58,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public init(size: Int64, initElement: (Int64) -> T) {
         this.start = 0
         this.rawptr = RawArray<T>(size, initElement)
@@ -53,6 +68,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init(data: RawArray<T>, start: Int64, len: Int64) {
         this.rawptr = data
         this.start = start
@@ -61,6 +79,9 @@ public struct Array<T> {
 
     @Frozen
     public prop first: Option<T> {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             if (this.len == 0) {
                 return None
@@ -71,6 +92,9 @@ public struct Array<T> {
 
     @Frozen
     public prop last: Option<T> {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             if (this.len == 0) {
                 return None
@@ -83,6 +107,9 @@ public struct Array<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func slice(start: Int64, len: Int64): Array<T> {
         if (start < 0 || len < 0 || (start + len) > this.len) {
             throw IndexOutOfBoundsException("The size of Array is ${this.len}, start is ${start}, length is ${len}.")
@@ -92,6 +119,9 @@ public struct Array<T> {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @noThrow
+     */
     public func get(index: Int64): Option<T> {
         if (UInt64(index) >= UInt64(this.len)) {
             return None<T>
@@ -103,6 +133,9 @@ public struct Array<T> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func [](index: Int64): T {
         if (UInt64(index) >= UInt64(this.len)) {
             throw IndexOutOfBoundsException("The length of the array is ${this.len}, but the index is ${index}.")
@@ -114,6 +147,9 @@ public struct Array<T> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func [](index: Int64, value!: T): Unit {
         if (UInt64(index) >= UInt64(this.len)) {
             throw IndexOutOfBoundsException("The length of the array is ${this.len}, but the index is ${index}.")
@@ -124,11 +160,18 @@ public struct Array<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func [](range: Range<Int64>): Array<T> {
         return rangeSlice(range, this.len)
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func fill(value: T): Unit {
         for (i in 0..this.len) {
             arraySetUnchecked(this.rawptr, this.start + i, value)
@@ -139,6 +182,10 @@ public struct Array<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func [](range: Range<Int64>, value!: Array<T>): Unit {
         if (range.step != 1) {
             throw IllegalArgumentException("Illegal step ${range.step}, step should be 1.")
@@ -162,6 +209,9 @@ public struct Array<T> {
     
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func reverse(): Unit {
         var i: Int64 = start
         var j: Int64 = start + len - 1
@@ -191,6 +241,10 @@ public struct Array<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func rangeSlice(range: Range<Int64>, _: Int64): Array<T> {
         if (range.step != 1) {
             throw IllegalArgumentException("Illegal step ${range.step}, step should be 1.")
@@ -204,11 +258,17 @@ public struct Array<T> {
         return Array<T>(this.rawptr, this.start + start_, end_ - start_)
     }
     @Frozen
+    /*
+     * @noThrow
+     */
     private const func isLegal(start_: Int64, end_: Int64): Bool {
         0 <= start_ && start_ <= end_ && end_ <= this.len
     }
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private const func normalize(range: Range<Int64>): (Int64, Int64) {
         var start = if (range.hasStart) {
             range.start
@@ -229,6 +289,9 @@ public struct Array<T> {
         }
         return (start, end)
     }
+    /*
+     * @noThrow
+     */
     private const func rangeToString(range: Range<Int64>): String {
         let start = if (range.hasStart) {
             range.start
@@ -250,6 +313,9 @@ public struct Array<T> {
 
     
     @Frozen
+    /*
+     * @noThrow
+     */
     public func clone(): Array<T> {
         if (len == 0) {
             return Array<T>()
@@ -262,6 +328,9 @@ public struct Array<T> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func clone(range: Range<Int64>): Array<T> {
         let (start_, end_): (Int64, Int64) = normalize(range)
         let step = range.step
@@ -290,6 +359,10 @@ public struct Array<T> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func copyTo(dst: Array<T>, srcStart: Int64, dstStart: Int64, copyLen: Int64): Unit {
         if (copyLen == 0) {
             return
@@ -313,6 +386,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func copyTo(dst: Array<T>): Unit {
         if (this.len == 0) {
             return
@@ -329,6 +405,9 @@ public struct Array<T> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func concat(other: Array<T>): Array<T> {
         if (this.len == 0) {
             return other.clone()
@@ -346,17 +425,26 @@ public struct Array<T> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     protected unsafe func getUnchecked(index: Int64): T {
         return arrayGetUnchecked(this.rawptr, start + index)
     }
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     protected unsafe func setUnchecked(index: Int64, element: T): Unit {
         return arraySetUnchecked(this.rawptr, start + index, element)
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func swap(index1: Int64, index2: Int64): Unit {
         if (index1 < 0 || len <= index1) {
             throw IllegalArgumentException("Index1 is less than 0 or not less than the size of this array.")
@@ -373,6 +461,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func splitAt(mid: Int64): (Array<T>, Array<T>) {
         if (mid < 0 || this.len < mid) {
             throw IllegalArgumentException("Mid is less than 0 or not less than the size of this array.")
@@ -386,6 +477,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func repeat(n: Int64): Array<T> {
         if (n <= 0) {
             throw IllegalArgumentException("N is less than or equal to 0.")
@@ -402,6 +496,9 @@ public struct Array<T> {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func map<R>(transform: (T) -> R): Array<R> {
         return Array<R>(this.len, {idx => transform(this[idx])})
     }
@@ -409,6 +506,9 @@ public struct Array<T> {
 
 extend<T> Array<Array<T>> {
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func flatten(): Array<T> {
         var newLen = 0
         for (i in 0..this.len) {

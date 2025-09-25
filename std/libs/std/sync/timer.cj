@@ -37,6 +37,12 @@ public class Timer <: Equatable<Timer> & Hashable {
     var endTime: MonoTime
     var isEnabled = true
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     init(delay: Duration, task: () -> ?Duration) {
         let realDelay = if (delay > Duration.Zero) {
             delay
@@ -65,6 +71,12 @@ public class Timer <: Equatable<Timer> & Hashable {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     public static func after(delay: Duration, task: () -> Option<Duration>): Timer {
         Timer(delay, task)
     }
@@ -74,6 +86,12 @@ public class Timer <: Equatable<Timer> & Hashable {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     public static func once(delay: Duration, task: () -> Unit): Timer {
         Timer(delay) {
             task()
@@ -90,6 +108,12 @@ public class Timer <: Equatable<Timer> & Hashable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public static func repeat(delay: Duration, interval: Duration, task: () -> Unit, style!: CatchupStyle = Burst): Timer {
         if (interval <= Duration.Zero) {
             throw IllegalArgumentException("Interval cannot be less than or equal to Duration.Zero.")
@@ -118,6 +142,12 @@ public class Timer <: Equatable<Timer> & Hashable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public static func repeatDuring(period: Duration, delay: Duration, interval: Duration, task: () -> Unit,
         style!: CatchupStyle = Burst): Timer {
         if (period <= Duration.Zero) {
@@ -151,6 +181,12 @@ public class Timer <: Equatable<Timer> & Hashable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public static func repeatTimes(count: Int64, delay: Duration, interval: Duration, task: () -> Unit,
         style!: CatchupStyle = Burst): Timer {
         if (count <= 0) {
@@ -177,6 +213,9 @@ public class Timer <: Equatable<Timer> & Hashable {
 
 
 
+    /*
+     * @noThrow
+     */
     public func cancel(): Unit {
         if (isEnabled) {
             isEnabled = false
@@ -185,20 +224,35 @@ public class Timer <: Equatable<Timer> & Hashable {
     }
 
 
+    /*
+     * @noThrow
+     */
     public operator func ==(rhs: Timer): Bool {
         refEq(this, rhs)
     }
 
 
+    /*
+     * @noThrow
+     */
     public operator func !=(rhs: Timer): Bool {
         !refEq(this, rhs)
     }
 
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return id
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     func reload(duration: Duration): Unit {
         endTime = MonoTime.now() + duration
         isEnabled = true
@@ -218,6 +272,9 @@ public enum CatchupStyle {
 
 
 
+/*
+ * @noThrow
+ */
 func delayStyleTick(interval: Duration): () -> ?Duration {
     return {=> interval}
 }
@@ -227,6 +284,9 @@ func delayStyleTick(interval: Duration): () -> ?Duration {
 
 
 
+/*
+ * @throws ArithmeticException
+ */
 func burstStyleTick(delay: Duration, interval: Duration): () -> ?Duration {
     let lastTime: Box<MonoTime>
     try {
@@ -253,6 +313,9 @@ func burstStyleTick(delay: Duration, interval: Duration): () -> ?Duration {
 
 
 
+/*
+ * @throws ArithmeticException
+ */
 func skipStyleTick(delay: Duration, interval: Duration): () -> ?Duration {
     let lastTime: Box<MonoTime>
     try {
@@ -277,6 +340,9 @@ func skipStyleTick(delay: Duration, interval: Duration): () -> ?Duration {
     }
 }
 
+/*
+ * @throws ArithmeticException
+ */
 func tickDuring(delay: Duration, period: Duration, nextTick: () -> ?Duration): () -> ?Duration {
     let firstTickTime: MonoTime
     try {
@@ -308,6 +374,9 @@ func tickDuring(delay: Duration, period: Duration, nextTick: () -> ?Duration): (
     }
 }
 
+/*
+ * @noThrow
+ */
 func tickTimes(count: Int64, nextTick: () -> ?Duration): () -> ?Duration {
     let cnt = Box<Int64>(1)
     return {
@@ -323,9 +392,15 @@ func tickTimes(count: Int64, nextTick: () -> ?Duration): () -> ?Duration {
 class TimerScheduler {
     private static const SCHEDULER_COUNT = 64
     private static let schedulers: Array<TimerScheduler>
+    /*
+     * @noThrow
+     */
     static init() {
         schedulers = Array<TimerScheduler>(SCHEDULER_COUNT) {_ => TimerScheduler()}
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     static func getScheduler(id: Int64) {
         schedulers[id % SCHEDULER_COUNT]
     }
@@ -336,6 +411,12 @@ class TimerScheduler {
     private let isRunning = AtomicBool(false)
     private let cancelCount = AtomicInt64(0)
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     func add(timer: Timer) {
         if (MonoTime.now() > timer.endTime) {
             execute(timer)
@@ -348,6 +429,12 @@ class TimerScheduler {
         start()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     private func start() {
         if (!isRunning.compareAndSwap(false, true)) {
             return
@@ -364,12 +451,22 @@ class TimerScheduler {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func consume() {
         while (let Some(t) <- queue.remove()) {
             heap.add(t)
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     private func schedule(): Unit {
         if (heap.isEmpty) {
             synchronized(monitor) {
@@ -397,6 +494,12 @@ class TimerScheduler {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     private func execute(timer: Timer) {
         spawn {
             var duration: ?Duration
@@ -411,10 +514,17 @@ class TimerScheduler {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func addCancelCount() {
         cancelCount.fetchAdd(1)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func clearCancelledTimers() {
         cancelCount.store(0)
         let source = heap
@@ -433,23 +543,40 @@ class TimerHeap {
 
     private let data = TimerList()
     prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return data.size
         }
     }
     prop isEmpty: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             return data.isEmpty()
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func add(e: Timer) {
         data.add(e)
         siftUp()
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func top(): Timer {
         data[0]
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func poll(): Timer {
         let top = data[0]
         data[0] = data[data.size - 1]
@@ -458,6 +585,9 @@ class TimerHeap {
         return top
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func siftUp() {
         var i = size - 1
         while (i > 0) {
@@ -470,6 +600,9 @@ class TimerHeap {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func siftDown() {
         var i = 0
         while (true) {
@@ -487,6 +620,9 @@ class TimerHeap {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func getMinIndex(index: Int64) {
         var min = index
         for (i in (index + 1)..(index + NODE_SIZE)) {
@@ -515,6 +651,9 @@ enum PushResult {
 enum PopResult {
     | BlockDone
     | NoEntry
+      /*
+       * @noThrow
+       */
     | Element(Timer)
 }
 
@@ -527,8 +666,14 @@ class TimerBlock {
     let reserved = AtomicInt64(0)
     let buffer = unsafe { Array<Timer>(TIMER_BLOCK_BUFFER_SIZE, repeat: zeroValue<Timer>()) }
 
+    /*
+     * @noThrow
+     */
     TimerBlock(let version: UInt64) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func push(element: Timer): Bool {
         if (allocated.load() >= TIMER_BLOCK_BUFFER_SIZE) {
             return false
@@ -546,6 +691,9 @@ class TimerBlock {
         return true
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func pop(): PopResult {
         while (true) {
             let index = reserved.load()
@@ -575,6 +723,9 @@ class TimerBlock {
         return BlockDone
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func front(): PopResult {
         while (true) {
             let index = reserved.load()
@@ -605,12 +756,18 @@ class TimerQueue {
     private let front: AtomicReference<TimerBlock>
     private let rear: AtomicReference<TimerBlock>
 
+    /*
+     * @noThrow
+     */
     init() {
         let block = TimerBlock(0)
         front = AtomicReference<TimerBlock>(block)
         rear = AtomicReference<TimerBlock>(block)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func add(element: Timer) {
         while (true) {
             let tailBlock = rear.load()
@@ -621,6 +778,9 @@ class TimerQueue {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func remove(): Option<Timer> {
         while (true) {
             let headBlock = front.load()
@@ -636,6 +796,9 @@ class TimerQueue {
         return None
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func peek(): Option<Timer> {
         while (true) {
             let headBlock = front.load()
@@ -651,11 +814,17 @@ class TimerQueue {
         return None
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func isEmpty(): Bool {
         peek().isNone()
     }
 }
 
+/*
+ * @noThrow
+ */
 func newBlock(tailBlock: TimerBlock, tail: AtomicReference<TimerBlock>): Unit {
     if (!tailBlock.isExtended.compareAndSwap(false, true)) {
         while (tailBlock.next.load().isNone()) {}
@@ -667,6 +836,9 @@ func newBlock(tailBlock: TimerBlock, tail: AtomicReference<TimerBlock>): Unit {
     tail.store(newBlock)
 }
 
+/*
+ * @noThrow
+ */
 func nextBlock(headBlock: TimerBlock, head: AtomicReference<TimerBlock>, tail: AtomicReference<TimerBlock>): Bool {
     if (!refEq(head.load(), headBlock)) {
         return true
@@ -683,11 +855,18 @@ class TimerList {
     private var _data: Array<Timer>
     private var _size: Int64
 
+    /*
+     * @noThrow
+     */
     init() {
         _data = Array<Timer>(TIMER_LIST_DEFAULT_CAPACITY, repeat: unsafe { zeroValue<Timer>() })
         _size = 0
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func add(element: Timer): Unit {
         if (_size == _data.size) {
             grow(_size + 1)
@@ -695,6 +874,10 @@ class TimerList {
         _data[_size] = element
         _size++
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func remove(at!: Int64): Timer {
         let len: Int64 = _size - at - 1
         let removed = _data[at]
@@ -703,23 +886,39 @@ class TimerList {
         _size--
         return removed
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     operator func [](index: Int64): Timer {
         return this._data[index]
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     operator func [](index: Int64, value!: Timer): Unit {
         _data[index] = value
     }
 
+    /*
+     * @noThrow
+     */
     func isEmpty(): Bool {
         return _size == 0
     }
 
     prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return _size
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func grow(minCapacity: Int64, startIndex!: Int64 = 0): Unit {
         let oldCapacity: Int64 = _data.size
         var newCapacity: Int64 = oldCapacity + (oldCapacity >> 1)

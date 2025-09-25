@@ -22,16 +22,46 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
     private static let counter = AtomicInt64(1)
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     TcpSocket(private let impl: SocketCommon<ActualTcpPlatformSocket>) {
         noDelay = true
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws IllegalFormatException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     public init(address: String, port: UInt16) {
         this(IPSocketAddress(resolveHelper(address), port))
     }
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     public init(address: SocketAddress) {
         this(address, localAddress: None)
     }
@@ -44,6 +74,15 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     public init(address: SocketAddress, localAddress!: ?SocketAddress) {
         checkAddress(address, "address")
         if (let Some(localAddress) <- localAddress) {
@@ -70,6 +109,13 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public override prop remoteAddress: SocketAddress {
+        /*
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         */
         get() {
             impl.remoteAddress ?? SocketException.notYetConnected()
         }
@@ -80,6 +126,13 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public override prop localAddress: SocketAddress {
+        /*
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         */
         get() {
             impl.localAddress ?? SocketException.notYetConnected()
         }
@@ -93,9 +146,17 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public override mut prop readTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             impl.readTimeout
         }
+        /*
+         * @throws IllegalArgumentException
+         * @throws ArithmeticException
+         * @throws SocketException
+         */
         set(timeout) {
             impl.readTimeout = timeout?.throwIfNegative("Read timeout").toNanosecondGranularity()
         }
@@ -110,9 +171,17 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public override mut prop writeTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             impl.writeTimeout
         }
+        /*
+         * @throws IllegalArgumentException
+         * @throws ArithmeticException
+         * @throws SocketException
+         */
         set(timeout) {
             impl.writeTimeout = timeout?.throwIfNegative("Write timeout").toNanosecondGranularity()
         }
@@ -128,9 +197,15 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public mut prop bindToDevice: ?String {
+        /*
+         * @throws SocketException
+         */
         get() {
             impl.bindToDevice
         }
+        /*
+         * @throws SocketException
+         */
         set(newDevice) {
             impl.bindToDevice = newDevice
         }
@@ -141,9 +216,20 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public mut prop keepAlive: ?SocketKeepAliveConfig {
+        /*
+         * @throws SocketException
+         */
         get() {
             impl.keepAlive
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         set(newConfig) {
             impl.keepAlive = newConfig
         }
@@ -161,9 +247,25 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public mut prop noDelay: Bool {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             impl.getSocketOptionBool(IPPROTO_TCP, SOCK_TCP_NODELAY)
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         set(newState) {
             impl.setSocketOptionBool(IPPROTO_TCP, SOCK_TCP_NODELAY, newState)
         }
@@ -185,9 +287,25 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public mut prop quickAcknowledge: Bool {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             impl.getSocketOptionBool(IPPROTO_TCP, SOCK_TCP_QUICKACK)
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         set(newState) {
             impl.setSocketOptionBool(IPPROTO_TCP, SOCK_TCP_QUICKACK, newState)
         }
@@ -205,9 +323,27 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public mut prop linger: ?Duration {
+        /*
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalMemoryException
+         */
         get() {
             impl.getLinger()
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         * @throws IllegalMemoryException
+         */
         set(newLinger) {
             impl.setLinger(newLinger)
         }
@@ -224,9 +360,25 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public mut prop sendBufferSize: Int64 {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             Int64(impl.getSocketOptionIntNative(SOL_SOCKET, SOCK_SNDBUF))
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         */
         set(newSize) {
             if (newSize <= 0) {
                 throw IllegalArgumentException("Buffer size should be positive, got ${newSize}.")
@@ -246,9 +398,25 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
     public mut prop receiveBufferSize: Int64 {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             Int64(impl.getSocketOptionIntNative(SOL_SOCKET, SOCK_RCVBUF))
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         */
         set(newSize) {
             if (newSize <= 0) {
                 throw IllegalArgumentException("Buffer size should be positive, got ${newSize}.")
@@ -265,6 +433,14 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public override func read(buffer: Array<Byte>): Int64 {
         impl.read(buffer)
     }
@@ -291,6 +467,14 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public override func write(payload: Array<Byte>): Unit {
         impl.write(payload)
     }
@@ -304,6 +488,16 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws getOrFail
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func connect(timeout!: ?Duration = None): Unit {
         impl.connect(timeout?.throwIfNegative("Timeout"))
     }
@@ -317,6 +511,14 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOption(
         level: Int32,
         option: Int32,
@@ -334,6 +536,14 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOption(
         level: Int32,
         option: Int32,
@@ -351,6 +561,14 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOptionIntNative(
         level: Int32,
         option: Int32
@@ -364,6 +582,14 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOptionIntNative(
         level: Int32,
         option: Int32,
@@ -381,6 +607,14 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOptionBool(
         level: Int32,
         option: Int32
@@ -396,6 +630,14 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOptionBool(
         level: Int32,
         option: Int32,
@@ -406,31 +648,58 @@ public class TcpSocket <: StreamingSocket & Equatable<TcpSocket> & Hashable {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func close(): Unit {
         impl.close()
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         impl.isClosed()
     }
 
+    /*
+     * @noThrow
+     */
     public override operator func ==(other: TcpSocket): Bool {
         id == other.id
     }
 
+    /*
+     * @noThrow
+     */
     public override operator func !=(other: TcpSocket): Bool {
         id != other.id
     }
 
+    /*
+     * @noThrow
+     */
     public override func hashCode(): Int64 {
         id.hashCode()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IllegalSynchronizationStateException
+     */
     public override func toString(): String {
         "TcpSocket(${impl.toString()})"
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private static func checkAddress(address: SocketAddress, name: String): SocketAddress {
         if (address.family != AddressFamily.INET && address.family != AddressFamily.INET6) {
             throw IllegalArgumentException(

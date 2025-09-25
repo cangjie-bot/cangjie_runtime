@@ -10,6 +10,12 @@
 
 package std.fs
 
+/*
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws FSException
+ */
 public func canonicalize(path: String): Path {
     Path(path).checkPath()
     if (!exists(path)) {
@@ -18,6 +24,12 @@ public func canonicalize(path: String): Path {
     return Path(processPathHeader(path, Path.canonicalizePath(path)))
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws FSException
+ */
 public func canonicalize(path: Path): Path {
     path.checkPath()
     let rawPath = path.toString()
@@ -50,6 +62,9 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
     public static const Separator: String = PATH_SEPARATOR
     public static const ListSeparator: String = PATH_LISTSEPARATOR
 
+    /*
+     * @noThrow
+     */
     public init(rawPath: String) {
         _rawPath = rawPath
     }
@@ -57,6 +72,10 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
 
 
     public prop parent: Path {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             checkPath()
             return getParent(_rawPath)
@@ -66,6 +85,10 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
 
 
     public prop fileName: String {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             checkPath()
             return getFileName(_rawPath)
@@ -75,6 +98,10 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
 
 
     public prop extensionName: String {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             checkPath()
             let name = this.fileName
@@ -88,6 +115,10 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
 
 
     public prop fileNameWithoutExtension: String {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             checkPath()
             let name = this.fileName
@@ -100,6 +131,10 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func isAbsolute(): Bool {
         checkPath()
         return isAbsolutePath(_rawPath)
@@ -107,11 +142,18 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func isRelative(): Bool {
         checkPath()
         return !isAbsolutePath(_rawPath)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private func checkWindowsSpecialPrefix(path: String) {
         if (!isWindows) {
             return
@@ -125,6 +167,11 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
     /**
      * @throws IllegalArgumentException while rawpath or path contains null character, or rawpath is empty.
      * @throws FSException if path is an absolute path.
+     */
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     * @throws IllegalArgumentException
      */
     public func join(path: String): Path {
         if (path.contains(NULL_BYTE)) {
@@ -153,14 +200,25 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
      * @throws IllegalArgumentException while path contains null character,
      * or path is empty.
      */
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     */
     public func join(path: Path): Path {
         return join(path.toString())
     }
 
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         _rawPath.isEmpty()
     }
 
+    /*
+     * @noThrow
+     */
     private func checkWindowsMiddleVolumeName(path: String): Bool {
         if (!isWindows) {
             return false
@@ -179,6 +237,9 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         return false
     }
 
+    /*
+     * @noThrow
+     */
     private func checkWindowsLeadingVolumeName(path: String): Bool {
         if (!isWindows) {
             return false
@@ -191,6 +252,10 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         return false
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func normalize(): Path {
         if (_rawPath.isEmpty()) {
             return Path(".")
@@ -241,6 +306,10 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         return Path(newPathString)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func normalizePart(part: String, newPath: Array<Byte>, partlen: Int64, newPathIdx: Int64, rootLen: Int64): Int64 {
         var newIdx = newPathIdx
         return match (part) {
@@ -260,6 +329,9 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
 
     // revert the prev part
     // newIdx point to the next position to be written
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func processDotDot(newPath: Array<Byte>, newIdx: Int64, rootLen: Int64): Int64 {
         if (newIdx == rootLen) {
             // if it's first byte after root, and the root ends with a slash, just ignore the ../ part
@@ -298,20 +370,37 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func ==(that: Path): Bool {
         this.normalize()._rawPath == that.normalize()._rawPath
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func hashCode(): Int64 {
         return this.normalize()._rawPath.hashCode()
     }
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return _rawPath
     }
 
     /**
      * @throws FSException if cPath is invalid
+     */
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
      */
     static func canonicalizePath(pathStr: String): Array<Byte> {
         unsafe {
@@ -339,6 +428,9 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     func checkPath(): Unit {
         if (_rawPath.isEmpty()) {
             throw IllegalArgumentException("The `rawPath` cannot be an empty string!")

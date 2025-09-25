@@ -17,6 +17,11 @@ foreign func CJ_TIME_ReadAllBytesFromFile(path: CPointer<Byte>, pathLen: Int64, 
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws InvalidDataException
+ * @throws IllegalArgumentException
+ */
 func loadTimeZone(name: String, source: String): TimeZone {
     return TimeZone.loadFromTZData(name, loadTZifData(name, source))
 }
@@ -24,6 +29,11 @@ func loadTimeZone(name: String, source: String): TimeZone {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws InvalidDataException
+ */
 func loadTZifData(name: String, source: String): Array<UInt8> {
     let srcLen = source.size
     if (srcLen <= 0) {
@@ -33,6 +43,10 @@ func loadTZifData(name: String, source: String): Array<UInt8> {
     return loadTZifData(path)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws InvalidDataException
+ */
 func loadTZifData(path: String): Array<UInt8> {
     unsafe {
         let cPath: CPointerHandle<UInt8> = acquireArrayRawData(path.rawData())
@@ -65,6 +79,11 @@ func loadTZifData(path: String): Array<UInt8> {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws InvalidDataException
+ */
 func parseTZinfoData(data: Array<UInt8>): (Array<LocalTime>, Array<TransTime>, String) {
     var arrReader = ArrReader(data)
 
@@ -153,6 +172,10 @@ func parseTZinfoData(data: Array<UInt8>): (Array<LocalTime>, Array<TransTime>, S
     return (zones, TransTime, footer)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws InvalidDataException
+ */
 func parseHeader(arrReader: ArrReader): (Int64, Array<Int64>) {
     let magic = arrReader.getNext(4)
     if (magic != [b'T', b'Z', b'i', b'f']) {
@@ -180,6 +203,10 @@ func parseHeader(arrReader: ArrReader): (Int64, Array<Int64>) {
 
 
 @OverflowWrapping
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws InvalidDataException
+ */
 func parseFields(arrReader: ArrReader): Array<Int64> {
     let fields = Array<Int64>(6, repeat: 0)
     let fieldCnt = 6
@@ -207,6 +234,11 @@ func parseFields(arrReader: ArrReader): Array<Int64> {
 
 
 @OverflowWrapping
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws InvalidDataException
+ */
 func parseZones(zoneNum: Int64, typeRecords: Array<UInt8>, zoneDes: Array<UInt8>): Array<LocalTime> {
     if (zoneNum <= 0) {
         throw InvalidDataException("Failed to parse the timezone file.")
@@ -239,6 +271,11 @@ func parseZones(zoneNum: Int64, typeRecords: Array<UInt8>, zoneDes: Array<UInt8>
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws InvalidDataException
+ */
 func itos(arr: Array<UInt8>, canNul: Bool): String {
     for (i in 0..arr.size) {
         if (arr[i] == 0x00) {
@@ -272,6 +309,10 @@ func itos(arr: Array<UInt8>, canNul: Bool): String {
 
 
 @OverflowWrapping
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws InvalidDataException
+ */
 func parseZoneTrans(
     timeNum: Int64,
     zoneNum: Int64,
@@ -317,10 +358,16 @@ class ArrReader {
     var arr: Array<UInt8>
     var index: Int64 = 0
 
+    /*
+     * @noThrow
+     */
     init(arr: Array<UInt8>) {
         this.arr = arr
     }
 
+    /*
+     * @throws InvalidDataException
+     */
     func skip(len: Int64): Unit {
         index += len
         if (index >= arr.size) {
@@ -328,6 +375,10 @@ class ArrReader {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws InvalidDataException
+     */
     func getNext(len: Int64): Array<UInt8> {
         var subArr = Array<UInt8>()
         try {
@@ -339,6 +390,10 @@ class ArrReader {
         return subArr
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws InvalidDataException
+     */
     func getLast(): Array<UInt8> {
         var subArr = Array<UInt8>()
         try {

@@ -17,10 +17,18 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
     var _octets = Array<Byte>(16, repeat: 0)
     let _scopeId: ?UInt32
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     init(bits: UInt128, scopeId!: ?UInt32 = None) {
         bits.writeBigEndian(_octets)
         _scopeId = scopeId
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(octets: Array<Byte>, scopeId!: ?UInt32 = None) {
         if (octets.size < 16) {
             throw IllegalArgumentException("Octets size[${octets.size}] must be at least 16.")
@@ -29,6 +37,11 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
             octets[9], octets[10], octets[11], octets[12], octets[13], octets[14], octets[15]]
         _scopeId = scopeId
     }
+    /*
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(a: UInt16, b: UInt16, c: UInt16, d: UInt16, e: UInt16, f: UInt16, g: UInt16, h: UInt16,
         scopeId!: ?UInt32 = None) {
         var addr16: Array<UInt16> = [
@@ -48,13 +61,24 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
         _scopeId = scopeId
     }
     public prop scopeId: ?UInt32 {
+        /*
+         * @noThrow
+         */
         get() {
             _scopeId
         }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toBits(): UInt128 {
         return UInt128.readBigEndian(_octets)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func segments(): Array<UInt16> {
         let dst = Array<UInt16>(8, repeat: 0)
         for (i in 0..dst.size) {
@@ -62,9 +86,16 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
         }
         return dst
     }
+    /*
+     * @throws IllegalFormatException
+     */
     public func getPrefix(prefixLen: UInt8): IPPrefix {
         return IPv6Prefix(this, prefixLen)
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toIPv4(): ?IPv4Address {
         let octs = segments()
         if (octs[0] == 0 && octs[1] == 0 && octs[2] == 0 && octs[3] == 0 && octs[4] == 0 && (octs[5] == 0 || octs[5] ==
@@ -77,6 +108,10 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
             return None
         }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toIPv4Mapped(): ?IPv4Address {
         let octs = segments()
         if (octs[0] == 0 && octs[1] == 0 && octs[2] == 0 && octs[3] == 0 && octs[4] == 0 && octs[5] == 0xffff) {
@@ -88,12 +123,20 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
             return None
         }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func scope(scopeId: ?UInt32): IPv6Address {
         if (this.scopeId == scopeId) {
             return this
         }
         return IPv6Address(_octets, scopeId: scopeId)
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func writeBigEndian(buffer: Array<Byte>): Int64 {
         if (buffer.size < 16) {
             throw IllegalArgumentException("Buffer size(${buffer.size}) is too small.")
@@ -103,48 +146,94 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
         }
         return 16
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func readBigEndian(buffer: Array<Byte>): IPv6Address {
         if (buffer.size < 16) {
             throw IllegalArgumentException("Buffer size(${buffer.size}) is too small.")
         }
         return IPv6Address(buffer)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func isGlobalUnicast(): Bool {
         this != IPv6Address.unspecified && !this.isLoopback() && !this.isMulticast() && !this.isLinkLocal()
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func isIPv4Mapped(): Bool {
         let addr16 = this.segments()
         return addr16[0] == 0 && addr16[1] == 0 && addr16[2] == 0 && addr16[3] == 0 && addr16[4] == 0 && addr16[5] ==
             0xffff
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func isLinkLocal(): Bool {
         return (this.segments()[0] & 0xffc0) == 0xfe80
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isLoopback(): Bool {
         return this == IPv6Address.localhost
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func isMulticast(): Bool {
         return (this.segments()[0] & 0xff00) == 0xff00
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isPrivate(): Bool {
         return (this._octets[0] & 0xfe) == 0xfc
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func isTeredo(): Bool {
         let addr16 = this.segments()
         return addr16[0] == 0x2001 && addr16[1] == 0
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isUnspecified(): Bool {
         return this == IPv6Address.unspecified
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func <=(rhs: IPv6Address): Bool {
         return _octets <= rhs._octets
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func ==(rhs: IPv6Address): Bool {
         return _octets == rhs._octets && this._scopeId == rhs._scopeId
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func !=(rhs: IPv6Address): Bool {
         return !(this == rhs)
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let sb = StringBuilder()
         let segments = segments()
@@ -166,6 +255,9 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
         return sb.toString()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func countZeros(segments: Array<UInt16>): (Int64, Int64) {
         var curLen = 0
         var curStart = 0
@@ -190,6 +282,10 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
         return (resStart, resLen)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func u16ArrToHexString(sb: StringBuilder, chunk: Array<UInt16>) {
         if (chunk.size > 0) {
             sb.append(chunk[0].format("x"))
@@ -204,6 +300,9 @@ public class IPv6Address <: IPAddress & ToString & Equatable<IPv6Address> & Less
 }
 
 extend UInt16 {
+    /*
+     * @throws Exception
+     */
     func toBigEndian(): UInt16 {
         match (Endian.Platform) {
             case Big => this

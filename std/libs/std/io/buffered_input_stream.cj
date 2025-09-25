@@ -22,6 +22,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(input: T) {
         this(input, DEFAULT_BUFFER_CAPACITY)
     }
@@ -32,6 +35,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(input: T, capacity: Int64) {
         if (capacity <= 0) {
             throw IllegalArgumentException("Invalid capacity size: capacity = ${capacity}.")
@@ -40,6 +46,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
         inBuf = Array<Byte>(capacity, repeat: 0)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(input: T, buffer: Array<Byte>) {
         if (buffer.size == 0) {
             throw IllegalArgumentException("The buffer cannot be empty.")
@@ -54,6 +63,10 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func read(buffer: Array<Byte>): Int64 {
         if (availLen == -1) {
             return 0
@@ -89,6 +102,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
         count
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func readByte(): ?Byte {
         if (availLen == -1) {
             return None
@@ -112,12 +128,18 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /*
+     * @noThrow
+     */
     public func reset(input: T): Unit {
         inputStream = input
         curPos = 0
         availLen = 0
     }
 
+    /*
+     * @noThrow
+     */
     func fillInBuf(): Unit {
         let readNum = inputStream.read(inBuf)
         if (readNum > 0) {
@@ -132,6 +154,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
 extend<T> BufferedInputStream<T> <: Resource where T <: Resource {
 
 
+    /*
+     * @noThrow
+     */
     public func close(): Unit {
         inputStream.close()
     }
@@ -139,6 +164,9 @@ extend<T> BufferedInputStream<T> <: Resource where T <: Resource {
 
 
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         inputStream.isClosed()
     }
@@ -151,6 +179,9 @@ extend<T> BufferedInputStream<T> <: Seekable where T <: Seekable {
 
 
 
+    /*
+     * @noThrow
+     */
     public func seek(sp: SeekPosition): Int64 {
         let pos = inputStream.seek(sp)
         curPos = 0
@@ -161,6 +192,9 @@ extend<T> BufferedInputStream<T> <: Seekable where T <: Seekable {
 
 
     public prop position: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             inputStream.seek(Current(0))
         }
@@ -168,6 +202,9 @@ extend<T> BufferedInputStream<T> <: Seekable where T <: Seekable {
 
 
     public prop remainLength: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             let oldPos = inputStream.seek(Current(0))
             let length = inputStream.seek(End(0))
@@ -181,6 +218,9 @@ extend<T> BufferedInputStream<T> <: Seekable where T <: Seekable {
 
 
     public prop length: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             let oldPos = inputStream.seek(Current(0))
             let length = inputStream.seek(End(0))

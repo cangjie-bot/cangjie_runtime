@@ -12,13 +12,22 @@ import std.sort.*
 import std.unittest.common.*
 
 class PowerAssertValue <: Serializable<PowerAssertValue> {
+    /*
+     * @noThrow
+     */
     PowerAssertValue(let kind: PowerAssertValueKind, let expression: String, let position: Int64) {}
 
+    /*
+     * @noThrow
+     */
     init(value: String, expression: String, position: Int64, isException!: Bool = false) {
         this(if (isException) { PAThrown(value) } else { PAValue(value) }, expression, position)
     }
 
     prop value: String {
+        /*
+         * @noThrow
+         */
         get() {
             match (kind) {
                 case PAValue(value) => value
@@ -30,12 +39,18 @@ class PowerAssertValue <: Serializable<PowerAssertValue> {
 
 
     prop range: Range<Int64> {
+        /*
+         * @noThrow
+         */
         get() {
             position..(position + expression.size)
         }
     }
 
     prop valuePosition: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             let exprAlign = if (expression.size % 2 == 0) { 0 } else { 1 }
             let valueAlign = match {
@@ -51,6 +66,9 @@ class PowerAssertValue <: Serializable<PowerAssertValue> {
 
 
     prop safeValueNextPosition: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             if (value.size > expression.size) {
                 max(valuePosition + value.size, position + expression.size)
@@ -60,10 +78,17 @@ class PowerAssertValue <: Serializable<PowerAssertValue> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     static func skipped(expression: String, position: Int64) {
         PowerAssertValue(PASkipped, expression, position)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         return DataModelStruct()
             .add(field<PowerAssertValueKind>("kind", kind))
@@ -71,6 +96,10 @@ class PowerAssertValue <: Serializable<PowerAssertValue> {
             .add(field<Int64>("position", position))
     }
 
+    /*
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): PowerAssertValue {
         let dms = dm.asStruct()
         let kind = PowerAssertValueKind.deserialize(dms.get("kind"))
@@ -82,18 +111,34 @@ class PowerAssertValue <: Serializable<PowerAssertValue> {
 }
 
 enum PowerAssertValueKind <: Serializable<PowerAssertValueKind> {
+      /*
+       * @noThrow
+       */
     | PAValue(String)
+      /*
+       * @noThrow
+       */
     | PAThrown(String)
     | PASkipped
 
     private static prop TYPE_KEY: String {
+        /*
+         * @noThrow
+         */
         get() { "type" }
     }
 
     private static prop VALUE_KEY: String {
+        /*
+         * @noThrow
+         */
         get() { "value" }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         let dms = DataModelStruct()
         match (this) {
@@ -108,6 +153,10 @@ enum PowerAssertValueKind <: Serializable<PowerAssertValueKind> {
         dms
     }
 
+    /*
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): PowerAssertValueKind {
         let dms = dm.asStruct()
         match (Int8.deserialize(dms.get(TYPE_KEY))) {
@@ -123,18 +172,31 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
     private let diagram: ArrayList<ArrayList<PowerAssertValue>>
     private var offset: Int64 = 0
 
+    /*
+     * @noThrow
+     */
     private init(diagram: ArrayList<ArrayList<PowerAssertValue>>) {
         this.diagram = diagram
     }
 
+    /*
+     * @noThrow
+     */
     init() {
         this.diagram = ArrayList<ArrayList<PowerAssertValue>>()
     }
 
+    /*
+     * @noThrow
+     */
     func setOffset(offset: Int64) {
         this.offset = offset
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addValue(newValue: PowerAssertValue) {
 
         let minLine = match (getValueRowByNesting(newValue)) {
@@ -156,6 +218,9 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func getSuitableIndex(value: PowerAssertValue, line: ArrayList<PowerAssertValue>): ?Int64 {
         var nextPosFromLeft = Int64.Min
         for (i in 0..line.size) {
@@ -189,6 +254,9 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func getValueRowByNesting(value: PowerAssertValue): ?Int64 {
         func nextLine(i: Int64): ?Int64 {
             if (i + 1 < diagram.size) {
@@ -213,6 +281,11 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         return 0
     }
 
+    /*
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func toLines(): Array<String> {
         var result = ArrayList<ArrayList<Rune>>()
 
@@ -239,6 +312,11 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         result |> map { line: ArrayList<Rune> => String(line.toArray()) } |> collectArray
     }
 
+    /*
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func pprint(pp: PrettyPrinter) {
         for (line in toLines()) {
             pp.appendLine(line)
@@ -246,15 +324,29 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         return pp
     }
 
+    /*
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         String.join(toLines(), delimiter: "\n")
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         return (diagram |> map { line: ArrayList<PowerAssertValue> => line.toArray() } |> collectArray)
             .serializeInternal()
     }
 
+    /*
+     * @throws DataModelException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func deserialize(dm: DataModel): PowerAssertDiagram {
         let diagramAsArray = Array<Array<PowerAssertValue>>.deserialize(dm)
         let diagram = ArrayList<ArrayList<PowerAssertValue>>()
@@ -266,6 +358,10 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         return PowerAssertDiagram(diagram)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func pprintExpression(expr: String, pp: PrettyPrinter) {
         let COLOR_COMPUTED = Color.YELLOW
         let COLOR_EXCEPTION = Color.RED
@@ -308,6 +404,9 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
     }
 
     private prop thrownValue: ?PowerAssertValue {
+        /*
+         * @noThrow
+         */
         get() {
             diagram |> flatten |>
                 filter { v: PowerAssertValue => match (v.kind) { case PAThrown(_) => true; case _ => false } } |>
@@ -316,6 +415,9 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
     }
 
 
+    /*
+     * @noThrow
+     */
     private func isPosInRange(position: Int64, range: Range<Int64>) {
         if (position < range.start) { return false }
         return position <= lastPos(range)
@@ -323,12 +425,19 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
 
 
 
+    /*
+     * @noThrow
+     */
     private func lastPos(range: Range<Int64>): Int64 {
         if (range.isClosed) { range.end } else { range.end - 1 }
     }
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func merge(positions: Iterable<Range<Int64>>): Array<Range<Int64>> {
         let posArray = positions |> collectArray
         posArray.sortBy { l, r => l.start.compare(r.start) }
@@ -346,11 +455,19 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         flattenPos.toArray()
     }
 
+    /*
+     * @throws Exception
+     */
     private func getLastLineOrThrow(result: ArrayList<ArrayList<Rune>>) {
         return (result |> last<ArrayList<Rune>>) ??
             throw Exception("Diagram's line to fill shouldn't be empty")
     }
 
+    /*
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func fillWithWhitespace(result: ArrayList<ArrayList<Rune>>, rightBound: Int64) {
         fillWithWhitespace(
             getLastLineOrThrow(result),
@@ -358,12 +475,21 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         )
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func fillWithWhitespace(currentLine: ArrayList<Rune>, rightBound: Int64) {
         for (_ in currentLine.size..rightBound) {
             currentLine.add(r' ')
         }
     }
 
+    /*
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func fillWithPipeline(result: ArrayList<ArrayList<Rune>>, lineIndex: Int64,
         needToFillWithWhitespace!: Bool = false) {
         let currentLine = getLastLineOrThrow(result)
@@ -378,6 +504,11 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         }
     }
 
+    /*
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func fillWithUnderscore(result: ArrayList<ArrayList<Rune>>, count: Int64) {
         let currentLine = getLastLineOrThrow(result)
         for (_ in 0..count) {
@@ -385,6 +516,11 @@ class PowerAssertDiagram <: ToString & Serializable<PowerAssertDiagram> & Pretty
         }
     }
 
+    /*
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func fillWithValue(result: ArrayList<ArrayList<Rune>>, value: String) {
         let currentLine = getLastLineOrThrow(result)
         for (valueChar in value.runes()) {
@@ -398,10 +534,18 @@ public class PowerAssertDiagramBuilder {
     private let expression: String
     private let diagram = PowerAssertDiagram()
 
+    /*
+     * @noThrow
+     */
     public init(expression: String) {
         this.expression = expression
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func r<T>(value: T, exprAsText: String, position: Int64): T {
         if (value is ToString) {
             let toStringValue = (value as ToString).getOrThrow()
@@ -412,22 +556,42 @@ public class PowerAssertDiagramBuilder {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func r(value: Rune, exprAsText: String, position: Int64): Rune {
         recordValue<String>("\'${shieldEscapeSeq(String(value), shieldDoubleQuote: false)}\'", exprAsText, position,
             shieldBackslash: false)
         value
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func r(value: String, exprAsText: String, position: Int64): String {
         recordValue<String>("\"${shieldEscapeSeq(value, shieldSingleQuote: false)}\"", exprAsText, position,
             shieldBackslash: false)
         value
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws AssertIntermediateException
+     */
     public func h(exception: Exception, exprAsText: String, position: Int64): Nothing {
         handleException(exception, exprAsText, position)
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws AssertException
+     */
     public func w(passed: Bool): Unit {
         if (passed) {
             Framework.withCurrentContext{ ctx => ctx.checkPassed() }
@@ -440,6 +604,9 @@ public class PowerAssertDiagramBuilder {
         throw AssertException("`${expression}` has been evaluated to false", checkResult)
     }
 
+    /*
+     * @throws AssertIntermediateException
+     */
     private func recordException(exception: Exception, expression: String): Nothing {
         let message = "`${expression}` has thrown an exception while computing"
         let originalException = match (exception) {
@@ -449,6 +616,11 @@ public class PowerAssertDiagramBuilder {
         throw AssertIntermediateException(originalException, expression, message, diagram)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func getExceptionRepresentation(exception: Exception) {
         if (wasExceptionThrown) {
             "[not computed]"
@@ -457,6 +629,10 @@ public class PowerAssertDiagramBuilder {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func recordValue<T>(value: T, exprAsText: String, position: Int64, shieldBackslash!: Bool = true): T where T <: ToString {
         let shieldedValue = shieldEscapeSeq(value.toString(), shieldSingleQuote: false, shieldDoubleQuote: false,
             shieldBackslash: shieldBackslash)
@@ -464,6 +640,11 @@ public class PowerAssertDiagramBuilder {
         value
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func recordExceptionValue(value: Exception, exprAsText: String, position: Int64) {
         let pavalue = if (wasExceptionThrown) {
             PowerAssertValue.skipped(exprAsText, position)
@@ -474,6 +655,12 @@ public class PowerAssertDiagramBuilder {
         diagram.addValue(pavalue)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws AssertIntermediateException
+     */
     private func handleException(exception: Exception, exprAsText: String, position: Int64): Nothing {
         recordExceptionValue(exception, exprAsText, position)
         wasExceptionThrown = true

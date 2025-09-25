@@ -31,16 +31,25 @@ class KVList<K, V> where K <: Equatable<K> {
 
     static const INIT_ARRAY_SIZE = 2
 
+    /*
+     * @noThrow
+     */
     init() {
         this(INIT_ARRAY_SIZE)
     }
 
+    /*
+     * @noThrow
+     */
     init(capacity: Int64) {
         mySize = 0
         let zero: KeyValue<K, V> = unsafe { zeroValue<KeyValue<K, V>>() }
         myData = Array<KeyValue<K, V>>(capacity, repeat: zero)
     }
 
+    /*
+     * @noThrow
+     */
     init(blist: KVList<K, V>) {
         myData = blist.myData.clone()
         mySize = blist.mySize
@@ -48,6 +57,9 @@ class KVList<K, V> where K <: Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func contains(hash: Int64, key: K): Int64 {
         var i = 0
         while (i < mySize) {
@@ -61,6 +73,9 @@ class KVList<K, V> where K <: Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func find(hash: Int64, key: K): ?V {
         var i = 0
         while (i < mySize) {
@@ -73,6 +88,10 @@ class KVList<K, V> where K <: Equatable<K> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func copyInsert(hash: Int64, key: K, value: V): KVList<K, V> {
         let copyList = KVList<K, V>(this)
         if (mySize == myData.size) {
@@ -83,6 +102,10 @@ class KVList<K, V> where K <: Equatable<K> {
         return copyList
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func copyPut(hash: Int64, key: K, value: V): (KVList<K, V>, ?V) {
         let i = contains(hash, key)
         if (i == -1) {
@@ -94,6 +117,9 @@ class KVList<K, V> where K <: Equatable<K> {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func copyRemove(hash: Int64, key: K, predicate: (V) -> Bool): (KVList<K, V>, ?V) {
         let i = contains(hash, key, predicate)
         if (i == -1) {
@@ -104,6 +130,9 @@ class KVList<K, V> where K <: Equatable<K> {
         return (copyList, myData[i][2])
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func copyRemoveUnChecked(idx: Int64): KVList<K, V> {
         let copyList = KVList<K, V>(this)
         var i = idx
@@ -115,6 +144,9 @@ class KVList<K, V> where K <: Equatable<K> {
         return copyList
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func copyReplace(hash: Int64, key: K, predicate: (V) -> Bool, eval: (V) -> V): (KVList<K, V>, ?V) {
         let i = contains(hash, key, predicate)
         if (i == -1) {
@@ -126,6 +158,10 @@ class KVList<K, V> where K <: Equatable<K> {
         return (copyList, myData[i][2])
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func copyEntryView(hash: Int64, key: K, fn: (entryView: MapEntryView<K, V>) -> Unit): (KVList<K, V>, ?V, ?Int64) {
         let i = contains(hash, key)
         var entryView = if (i == -1) {
@@ -152,6 +188,10 @@ class KVList<K, V> where K <: Equatable<K> {
 
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func migrate(mask: Int64, index: Int64): KVList<K, V> {
         let copyList = KVList<K, V>()
         var i = 0
@@ -165,22 +205,35 @@ class KVList<K, V> where K <: Equatable<K> {
     }
 
     prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             mySize
         }
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     operator func [](index: Int64): KeyValue<K, V> {
         myData[index]
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func appendUncheck(element: KeyValue<K, V>) {
         myData[mySize] = element
         mySize++
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func grow(): Unit {
         let oldCapacity: Int64 = myData.size
         var newCapacity: Int64 = oldCapacity + (oldCapacity >> 1)
@@ -191,6 +244,10 @@ class KVList<K, V> where K <: Equatable<K> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func append(element: KeyValue<K, V>) {
         if (mySize == myData.size) {
             grow()
@@ -200,6 +257,9 @@ class KVList<K, V> where K <: Equatable<K> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func contains(hash: Int64, key: K, predicate: (V) -> Bool): Int64 {
         var i = 0
         while (i < mySize) {
@@ -217,6 +277,9 @@ class KVList<K, V> where K <: Equatable<K> {
 
 
 enum FindKey<V> {
+      /*
+       * @noThrow
+       */
     | FIND(V)
     | NotFind
     | NotMigrate
@@ -229,6 +292,9 @@ struct Bucket<K, V> where K <: Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func find(hash: Int64, key: K): FindKey<V> {
         if (let Some(entries) <- refList()) {
             if (let Some(v) <- entries.find(hash, key)) {
@@ -239,6 +305,10 @@ struct Bucket<K, V> where K <: Equatable<K> {
         return NotMigrate
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func copyAddIfAbsent(hash: Int64, key: K, value: V): ?V {
         if (let Some(entries) <- refList()) {
             if (let Some(v) <- entries.find(hash, key)) {
@@ -254,6 +324,10 @@ struct Bucket<K, V> where K <: Equatable<K> {
         return None
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func copyPut(hash: Int64, key: K, value: V): ?V {
         var copyEntries: KVList<K, V>
         var ret = None<V>
@@ -268,6 +342,9 @@ struct Bucket<K, V> where K <: Equatable<K> {
         return ret
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func copyRemove(hash: Int64, key: K, predicate: (V) -> Bool): ?V {
         if (let Some(entries) <- refList()) {
             let (copyEntries, ret) = entries.copyRemove(hash, key, predicate)
@@ -277,6 +354,9 @@ struct Bucket<K, V> where K <: Equatable<K> {
         return None
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func copyReplace(hash: Int64, key: K, predicate: (V) -> Bool, eval: (V) -> V): ?V {
         if (let Some(entries) <- refList()) {
             let (copyEntries, ret) = entries.copyReplace(hash, key, predicate, eval)
@@ -286,6 +366,10 @@ struct Bucket<K, V> where K <: Equatable<K> {
         return None
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func copyEntryView(hash: Int64, key: K, fn: (entryView: MapEntryView<K, V>) -> Unit): (?V, ?Int64) {
         let entries = match (refList()) {
             case Some(es) => es
@@ -297,6 +381,10 @@ struct Bucket<K, V> where K <: Equatable<K> {
     }
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func migrate(optEntries: ?KVList<K, V>, mask: Int64, index: Int64): Unit {
         if (refList().isSome()) {
             return
@@ -308,6 +396,9 @@ struct Bucket<K, V> where K <: Equatable<K> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func refList(): ?KVList<K, V> {
         return atomic_ref_entries.load()
     }
@@ -318,19 +409,32 @@ class MutexLockGroup {
     let mutexes: Array<Mutex>
     private let mod: Int64
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     init(cap: Int64) {
         mutexes = Array<Mutex>(cap, {_ => Mutex()})
         mod = cap - 1
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func lock(index: Int64): Unit {
         mutexes[(index & mod)].lock()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func tryLock(index: Int64): Bool {
         mutexes[(index & mod)].tryLock()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     func unlock(index: Int64): Unit {
         mutexes[(index & mod)].unlock()
     }
@@ -352,6 +456,9 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
 
     let pre: AtomicOptionReference<HNode<K, V>>
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     init(capacity: Int64, refPre: ?HNode<K, V>, lockG: MutexLockGroup, version: Int64) {
         let zero = unsafe { zeroValue<Bucket<K, V>>() }
         buckets = Array<Bucket<K, V>>(capacity, repeat: zero)
@@ -364,6 +471,10 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
         this.pre = AtomicOptionReference(refPre)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     func freeze(index: Int64) {
         lockG.lock(index)
         freezeFlags[index] = true
@@ -373,6 +484,9 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func getValue(hash: Int64, key: K): Option<V> {
         let index = hash & (buckets.size - 1)
 
@@ -398,6 +512,11 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
 
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     func migrate(start: Int64, end: Int64, step: Int64): Unit {
         if (let Some(preHT) <- pre.load()) {
             lockG.lock(start)
@@ -413,6 +532,11 @@ class HNode<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func tryGetBucket(index: Int64): Bool {
         lockG.lock(index)
         if (freezeFlags[index]) {
@@ -439,21 +563,33 @@ class ConcurrentHashMapEntryView<K, V> <: MapEntryView<K, V> {
     var _value: ?V
     var update: Bool = false
 
+    /*
+     * @noThrow
+     */
     ConcurrentHashMapEntryView(key: K, value: ?V) {
         this._key = key
         this._value = value
     }
 
     public prop key: K {
+        /*
+         * @noThrow
+         */
         get() {
             key
         }
     }
 
     public mut prop value: ?V {
+        /*
+         * @noThrow
+         */
         get() {
             _value
         }
+        /*
+         * @noThrow
+         */
         set(val) {
             this.update = true
             this._value = val
@@ -508,6 +644,10 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public init(concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL) {
         let lockCnt = tableSizeFor(concurrencyLevel)
         this.lockG = Array<MutexLockGroup>(2, {_ => MutexLockGroup(lockCnt)})
@@ -523,6 +663,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL) {
         if (capacity < 0) {
             throw IllegalArgumentException("Invalid size of Concurrent HashMap: ${capacity}.")
@@ -538,6 +683,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL) {
         let lockCnt = tableSizeFor(concurrencyLevel)
         this.lockG = Array<MutexLockGroup>(2, {_ => MutexLockGroup(lockCnt)})
@@ -552,6 +702,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL) {
         if (size < 0) {
             throw IllegalArgumentException("Invalid size of Concurrent HashMap: ${size}.")
@@ -572,6 +727,9 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func get(key: K): ?V {
         let hash = key.hashCode()
         return head.load().getValue(hash, key)
@@ -582,6 +740,9 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(key: K): Bool {
         return match (get(key)) {
             case None => false
@@ -599,11 +760,21 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Deprecated[message: "Use member function `public func add(key: K, value: V): ?V` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func put(key: K, value: V): ?V {
         return addInternal(key, value)
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func add(key: K, value: V): ?V {
         return addInternal(key, value)
     }
@@ -621,11 +792,21 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Deprecated[message: "Use member function `public func addIfAbsent(key: K, value: V): ?V` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func putIfAbsent(key: K, value: V): ?V {
         addIfAbsent(key, value)
     }
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func addIfAbsent(key: K, value: V): ?V {
         let hash = key.hashCode()
         tryResize(hash)
@@ -658,6 +839,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func remove(key: K): ?V {
         return removeInternal(key, {_ => true})
     }
@@ -673,6 +859,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Deprecated[message: "Use member function `public func entryView(K, (MapEntryView<K, V>) -> Unit)` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func remove(key: K, predicate: (V) -> Bool): ?V {
         return removeInternal(key, predicate)
     }
@@ -688,6 +879,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func replace(key: K, value: V): ?V {
         return replaceInternel(key, {_ => true}, {_ => value})
     }
@@ -706,6 +902,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Deprecated[message: "Use member function `public func entryView(key: K, fn: (MapEntryView<K, V>)->Unit): ?V` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func replace(key: K, eval: (V) -> V): ?V {
         return replaceInternel(key, {_ => true}, eval)
     }
@@ -723,10 +924,20 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Deprecated[message: "Use member function `public func entryView(key: K, fn: (MapEntryView<K, V>)->Unit): ?V` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func replace(key: K, predicate: (V) -> Bool, eval: (V) -> V): ?V {
         return replaceInternel(key, predicate, eval)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func entryView(key: K, fn: (MapEntryView<K, V>) -> Unit): ?V {
         return entryViewInternal(key, fn)
     }
@@ -737,6 +948,10 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public operator func [](key: K): V {
         return match (this.get(key)) {
             case None => throw NoneValueException("Value does not exist!\n")
@@ -748,6 +963,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public operator func [](key: K, value!: V): Unit {
         this.add(key, value)
     }
@@ -756,6 +976,9 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     public prop size: Int64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             var cnt: Int64 = 0
             for (i in 0..(1 << COUNT_SIZE)) {
@@ -768,6 +991,9 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isEmpty(): Bool {
         return (size == 0)
     }
@@ -776,12 +1002,20 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func iterator(): ConcurrentHashMapIterator<K, V> {
         return ConcurrentHashMapIterator<K, V>(this)
     }
 
     
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     private func addInternal(key: K, value: V): ?V {
         let hash = key.hashCode()
         tryResize(hash)
@@ -802,6 +1036,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     private func replaceInternel(key: K, predicate: (V) -> Bool, eval: (V) -> V): ?V {
         let hash = key.hashCode()
         var ret = None<V>
@@ -820,6 +1059,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     private func removeInternal(key: K, predicate: (V) -> Bool): Option<V> {
         let hash = key.hashCode()
         var ret = None<V>
@@ -840,6 +1084,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         return ret
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     func entryViewInternal(key: K, fn: (MapEntryView<K, V>) -> Unit): ?V {
         let hash = key.hashCode()
         tryResize(hash)
@@ -865,6 +1114,11 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     private func tryResize(hash: Int64): Unit {
         let curHT = head.load()
         let sz = curHT.buckets.size
@@ -895,6 +1149,9 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
 
 
 
+    /*
+     * @noThrow
+     */
     private static func tableSizeFor(cap: Int64): Int64 {
         if (cap <= DEFAULT_CAPACITY) {
             return DEFAULT_CAPACITY
@@ -913,6 +1170,9 @@ public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)>
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func countInc(ret: ?V, hash: Int64): Unit {
         if (ret.isNone()) {
             counts[hash & (counts.size - 1)].fetchAdd(1);
@@ -934,6 +1194,9 @@ public class ConcurrentHashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hash
     
     private var entriesIndex: Int64 = 0
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public init(cmap: ConcurrentHashMap<K, V>) {
         curHT = cmap.head.load()
         latestValidBucket(0)
@@ -943,6 +1206,9 @@ public class ConcurrentHashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hash
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func next(): Option<(K, V)> {
         if (let Some(entries) <- curEntries) {
             let val = entries[entriesIndex]
@@ -952,6 +1218,9 @@ public class ConcurrentHashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hash
         return None<(K, V)>
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func nextElement() {
         if (let Some(entries) <- curEntries) {
             for (i in (entriesIndex + 1)..entries.size) {
@@ -966,6 +1235,9 @@ public class ConcurrentHashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hash
         latestValidBucket(start)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func latestValidBucket(start: Int64) {
         for (i in start..curHT.buckets.size) {
             let optEntries = curHT.buckets[i].refList()
@@ -986,6 +1258,9 @@ public class ConcurrentHashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hash
         curEntries = None
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func validBucket(index: Int64, entries: KVList<K, V>): Bool {
         for (i in 0..entries.size) {
             if (predicate(entries[i][0], index)) {
@@ -999,6 +1274,9 @@ public class ConcurrentHashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hash
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func predicate(hash: Int64, index: Int64): Bool {
         return ((hash & (curHT.buckets.size - 1)) == index)
     }

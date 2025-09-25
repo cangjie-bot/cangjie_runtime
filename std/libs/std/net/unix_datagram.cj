@@ -28,6 +28,13 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public init(bindAt!: String) {
         this(bindAt: UnixSocketAddress(bindAt))
     }
@@ -35,6 +42,12 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public init(bindAt!: SocketAddress) {
         checkUnixSocketAddress(bindAt, "bindAt")
 
@@ -46,6 +59,13 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
     public override prop remoteAddress: ?SocketAddress {
+        /*
+         * @throws SocketException
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         */
         get() {
             impl.remoteAddress
         }
@@ -55,6 +75,13 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
     public override prop localAddress: SocketAddress {
+        /*
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         */
         get() {
             impl.localAddress ?? SocketException.notYetBoundNeedBind()
         }
@@ -68,9 +95,17 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
     public override mut prop receiveTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             impl.readTimeout
         }
+        /*
+         * @throws IllegalArgumentException
+         * @throws ArithmeticException
+         * @throws SocketException
+         */
         set(timeout) {
             impl.readTimeout = timeout?.throwIfNegative("Receive timeout").toNanosecondGranularity()
         }
@@ -85,9 +120,17 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
     public override mut prop sendTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             impl.writeTimeout
         }
+        /*
+         * @throws IllegalArgumentException
+         * @throws ArithmeticException
+         * @throws SocketException
+         */
         set(timeout) {
             impl.writeTimeout = timeout?.throwIfNegative("Send timeout").toNanosecondGranularity()
         }
@@ -95,11 +138,19 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public override func close(): Unit {
         impl.close()
     }
 
 
+    /*
+     * @noThrow
+     */
     public override func isClosed(): Bool {
         impl.isClosed()
     }
@@ -109,6 +160,15 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     public func bind(): Unit {
         impl.bind(None)
     }
@@ -118,6 +178,17 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws getOrFail
+     * @throws IllegalSynchronizationStateException
+     */
     public func connect(remotePath: String): Unit {
         connect(UnixSocketAddress(remotePath))
     }
@@ -130,6 +201,16 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws getOrFail
+     * @throws IllegalSynchronizationStateException
+     */
     public func connect(remote: SocketAddress): Unit {
         checkUnixSocketAddress(remote, "remote")
         try {
@@ -146,6 +227,15 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func disconnect(): Unit {
         impl.disconnect()
     }
@@ -161,6 +251,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public override func receiveFrom(buffer: Array<Byte>): (SocketAddress, Int64) {
         impl.receiveFrom(buffer) ?? SocketException.throwClosedException()
     }
@@ -170,6 +268,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public override func sendTo(recipient: SocketAddress, payload: Array<Byte>): Unit {
         checkUnixSocketAddress(recipient, "recipient")
 
@@ -180,6 +286,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws SocketException
+     */
     public func send(payload: Array<Byte>): Unit {
         if (OS == "macOS") {
             impl.write(payload)
@@ -191,6 +305,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public func receive(buffer: Array<Byte>): Int64 {
         let _ = impl.remoteAddress ?? SocketException.notYetConnected()
         let (_, size) = receiveFrom(buffer)
@@ -208,9 +330,25 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
     public mut prop sendBufferSize: Int64 {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             Int64(impl.getSocketOptionIntNative(SOL_SOCKET, SOCK_SNDBUF))
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         */
         set(newSize) {
             if (newSize <= 0) {
                 throw IllegalArgumentException("Buffer size should be positive, got ${newSize}.")
@@ -230,9 +368,25 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
     public mut prop receiveBufferSize: Int64 {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             Int64(impl.getSocketOptionIntNative(SOL_SOCKET, SOCK_RCVBUF))
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         */
         set(newSize) {
             if (newSize <= 0) {
                 throw IllegalArgumentException("Buffer size should be positive, got ${newSize}.")
@@ -248,6 +402,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOption(
         level: Int32,
         option: Int32,
@@ -263,6 +425,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOption(
         level: Int32,
         option: Int32,
@@ -278,6 +448,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOptionIntNative(
         level: Int32,
         option: Int32
@@ -291,6 +469,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOptionIntNative(
         level: Int32,
         option: Int32,
@@ -308,6 +494,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOptionBool(
         level: Int32,
         option: Int32
@@ -323,6 +517,14 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOptionBool(
         level: Int32,
         option: Int32,
@@ -331,6 +533,13 @@ public class UnixDatagramSocket <: DatagramSocket {
         impl.setSocketOptionBool(level, option, value)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IllegalSynchronizationStateException
+     */
     public override func toString(): String {
         "UnixDatagramSocket(${impl.toString()})"
     }

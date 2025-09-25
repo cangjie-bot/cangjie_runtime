@@ -14,21 +14,33 @@ package std.unittest
 public class AssertException <: Exception {
     let cause: ?CheckResult
 
+    /*
+     * @noThrow
+     */
     public init() {
         super()
         this.cause = None
     }
 
+    /*
+     * @noThrow
+     */
     init(message: String, cause: CheckResult) {
         super(message)
         this.cause = cause
     }
 
+    /*
+     * @noThrow
+     */
     public init(message: String) {
         super(message)
         this.cause = None
     }
 
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "AssertException"
     }
@@ -42,6 +54,9 @@ public class AssertIntermediateException <: Exception {
     public let expression: String
     public let originalException: Exception
 
+    /*
+     * @noThrow
+     */
     init(exception: Exception, expression: String, message: String, diagram: PowerAssertDiagram) {
         super(message)
         this.originalException = exception
@@ -49,6 +64,10 @@ public class AssertIntermediateException <: Exception {
         this.diagram = diagram
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func getOriginalStackTrace(): String {
         let traceElementArray = originalException.getStackTrace()
         var result = "Thrown exception while computing assert expression:\n" + originalException.toString() + "\n"
@@ -63,6 +82,9 @@ public class AssertIntermediateException <: Exception {
         return result
     }
 
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "AssertIntermediateException"
     }

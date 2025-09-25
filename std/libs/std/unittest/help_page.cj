@@ -16,6 +16,12 @@ import std.unittest.common.*
 
 
 
+/*
+ * @throws ProcessException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws OutOfMemoryError
+ */
 func printUnittestHelpPageIfRequested(): Bool {
     if (!needToPrintHelpPage()) {
         return false
@@ -48,6 +54,12 @@ func printUnittestHelpPageIfRequested(): Bool {
     return true
 }
 
+/*
+ * @throws OutOfMemoryError
+ * @throws ProcessException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func needToPrintHelpPage(): Bool {
     let args = Process.current.arguments
     if (args.size == 0) {
@@ -61,10 +73,18 @@ private func needToPrintHelpPage(): Bool {
 private class ConsoleOptionsPrinter {
     let pp: PrettyPrinter = TerminalPrettyPrinter.fromDefaultConfiguration()
 
+    /*
+     * @throws IllegalArgumentException
+     */
     func header(str: String): Unit {
         pp.appendLine(str + ":")
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     func option(info: OptionInfo): Unit {
         pp.colored(GREEN, "--${camelCaseToKebabCase(info.name)} ")
 
@@ -89,12 +109,20 @@ private class ConsoleOptionsPrinter {
         pp.newLine()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private func optionType(ty: String): Unit {
         pp.indent {
             pp.append("[").colored(RED, "${ty}").append("]")
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     private func optionDesription(description: String): Unit {
         pp.append(" - ")
         var quoted = false

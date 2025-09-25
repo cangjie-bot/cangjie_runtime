@@ -17,6 +17,9 @@ class NotifyOnce {
     let m = Monitor()
     var notified: Bool = false
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     func notify(): Unit {
         synchronized(m) {
             if (!notified) {
@@ -26,6 +29,11 @@ class NotifyOnce {
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     func wait(timeout!: Duration = Duration.Max): Bool {
         if (timeout >= MAX_TIMEOUT_DURATION) {
             waitWithoutTimeout()
@@ -35,6 +43,11 @@ class NotifyOnce {
         return notified
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     private func waitWithoutTimeout(): Unit {
         synchronized(m) {
             while (!notified) {
@@ -43,6 +56,11 @@ class NotifyOnce {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     private func waitWithTimeout(timeout: Duration): Unit {
         var restOfTimeout = timeout
         synchronized(m) {
@@ -63,11 +81,19 @@ class SyncList {
     private var head: ?SyncNode = None
     private let m = Monitor()
 
+    /*
+     * @noThrow
+     */
     private func addWaiter(node: SyncNode) {
         node.next = head
         head = node
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     func waitIf(pred: () -> Bool, timeout!: Duration = Duration.Max): Unit {
         if (!pred()) {
             return
@@ -82,6 +108,11 @@ class SyncList {
         node.n.wait(timeout: timeout)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     func waitInLock(unlock: () -> Unit, timeout!: Duration = Duration.Max): Bool {
         let node = SyncNode()
         synchronized(m) {
@@ -90,6 +121,9 @@ class SyncList {
         unlock()
         node.n.wait(timeout: timeout)
     }
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     func notifyOne(): Bool {
         synchronized(m) {
             if (let Some(current) <- head) {
@@ -100,6 +134,9 @@ class SyncList {
             return false
         }
     }
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     func notifyAll(): Bool {
         synchronized(m) {
             if (let None <- head) {

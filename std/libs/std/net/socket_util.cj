@@ -26,6 +26,9 @@ const OS = OS_MACOS
 const OS = OS_WINDOWS
 
 extend Int64 {
+    /*
+     * @noThrow
+     */
     func clampIn(min!: Int64, max!: Int64): Int64 {
         if (this < min) {
             return min
@@ -36,6 +39,9 @@ extend Int64 {
         return this
     }
 
+    /*
+     * @noThrow
+     */
     func toUInt32In(min!: UInt32, max!: UInt32 = UInt32.Max): UInt32 {
         let clamped = clampIn(min: Int64(min), max: Int64(max))
         UInt32(clamped)
@@ -43,6 +49,9 @@ extend Int64 {
 }
 
 extend UInt64 {
+    /*
+     * @noThrow
+     */
     func atLeast(n: UInt64): UInt64 {
         if (this < n) {
             return n
@@ -51,14 +60,23 @@ extend UInt64 {
     }
 }
 
+/*
+ * @noThrow
+ */
 func unwrapOption<T>(opt: ??T): ?T {
     return opt ?? None
 }
 
+/*
+ * @throws getOrFail
+ */
 func getOrFail<T>(e: () -> Exception): (?T) -> T {
     return {it: ?T => it ?? throw e()}
 }
 
+/*
+ * @noThrow
+ */
 func formatError(errnum: Int32): String {
     unsafe {
         let result = CJ_SOCKET_GetErrMessage(errnum)
@@ -74,6 +92,10 @@ func formatError(errnum: Int32): String {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws SocketException
+ */
 func throwIfIPv4ZeroOnWindows(socketAddress: SocketAddress): Unit {
     if (OS == OS_WINDOWS) {
         let ipsa = (socketAddress as IPSocketAddress) ?? return;
@@ -83,12 +105,24 @@ func throwIfIPv4ZeroOnWindows(socketAddress: SocketAddress): Unit {
     }
 }
 
+/*
+ * @noThrow
+ */
 func zeroMemory(buffer: CPointer<UInt8>, size: Int64) {
     for (i in 0..size) {
         unsafe { buffer.write(i, 0) }
     }
 }
 
+/*
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IllegalFormatException
+ * @throws IndexOutOfBoundsException
+ * @throws SocketException
+ */
 func resolveHelper(address: String): IPAddress {
     let ips = IPAddress.resolve(address)
     if (ips.size > 0) {

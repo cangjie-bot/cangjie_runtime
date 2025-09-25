@@ -23,8 +23,21 @@ private let OUTPUT_DELIMITER: String = "\t<-%#&->\t"
 private const INT8_BYTES = 8
 
 private class ExecutionResultPartIterator <: Iterator<ExecutionResultPart> {
+    /*
+     * @noThrow
+     */
     ExecutionResultPartIterator(private let socket: TcpSocket, let limit!: ?UInt64 = None) {}
 
+    /*
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws Exception
+     */
     private func read(size: Int64): ?Array<UInt8> {
         if (size <= 0) {
             return []
@@ -46,6 +59,23 @@ private class ExecutionResultPartIterator <: Iterator<ExecutionResultPart> {
     private var receivedCount = 0u64
 
     @OverflowSaturating
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws TimeParseException
+     * @throws DataModelException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws SocketException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws JsonException
+     */
     public func next(): ?ExecutionResultPart {
         match (limit) {
             case Some(l) where receivedCount >= l => return None
@@ -74,12 +104,25 @@ private class ExecutionResultPartIterator <: Iterator<ExecutionResultPart> {
 }
 
 class TransportChannel <: Resource {
+    /*
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws SocketException
+     */
     TransportChannel(private let socket: TcpSocket, private let outputReporter: TestOutputReporter,
         private let isMain!: Bool = false) {
         socket.writeTimeout = Duration.second * WRITE_TIMEOUT_S
     }
 
     prop port: UInt16 {
+        /*
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         * @throws NoneValueException
+         */
         get() {
             let address = if (isMain) {
                 socket.localAddress as IPSocketAddress
@@ -90,14 +133,34 @@ class TransportChannel <: Resource {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func isClosed() {
         socket.isClosed()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func close(): Unit {
         socket.close()
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     func send(part: ExecutionResultPart): Unit {
         let payload = part.serializeInternal().asStruct().toJsonBytes()
         let payloadSizeBytes = Array<UInt8>(INT8_BYTES, repeat: 0u8)
@@ -112,10 +175,16 @@ class TransportChannel <: Resource {
     }
 
 
+    /*
+     * @noThrow
+     */
     func receive(limit!: ?UInt64 = None): Iterator<ExecutionResultPart> {
         return ExecutionResultPartIterator(socket, limit: limit)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func delimitOutput(): Unit {
         if (outputReporter.capture) {
             print(OUTPUT_DELIMITER, flush: true)
@@ -125,9 +194,20 @@ class TransportChannel <: Resource {
 }
 
 enum Transport <: Resource {
+      /*
+       * @noThrow
+       */
     | TChannel(TransportChannel)
+      /*
+       * @noThrow
+       */
     | TMain(TransportMain)
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func close(): Unit {
         match (this) {
             case TChannel(t) => t.close()
@@ -135,6 +215,9 @@ enum Transport <: Resource {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         match (this) {
             case TChannel(t) => t.isClosed()
@@ -143,6 +226,9 @@ enum Transport <: Resource {
     }
 
     prop channel: ?TransportChannel {
+        /*
+         * @noThrow
+         */
         get() {
             match (this) {
                 case TChannel(channel) => channel
@@ -152,6 +238,9 @@ enum Transport <: Resource {
     }
 
     prop manager: ?TransportMain {
+        /*
+         * @noThrow
+         */
         get() {
             match (this) {
                 case TMain(manager) => manager
@@ -160,6 +249,26 @@ enum Transport <: Resource {
         }
     }
 
+    /*
+     * @throws RegexException
+     * @throws JsonException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws ArithmeticException
+     * @throws IllegalMemoryException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws OutOfMemoryError
+     */
     static func fromDefaultConfiguration(): Transport {
         let outputReporter = TestOutputReporter.fromDefaultConfiguration()
 
@@ -177,27 +286,72 @@ enum Transport <: Resource {
 }
 
 class TransportMain <: Resource {
+    /*
+     * @noThrow
+     */
     private TransportMain(private let socket: TcpServerSocket, private let outputReporter: TestOutputReporter) {}
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func close(): Unit {
         socket.close()
     }
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         socket.isClosed()
     }
 
     prop port: UInt16 {
+        /*
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         * @throws NoneValueException
+         */
         get() {
             (socket.localAddress as IPSocketAddress).getOrThrow().port
         }
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws SocketException
+     */
     func accept(): TransportChannel {
         TransportChannel(socket.accept(timeout: Duration.second * CONNECTION_TIMEOUT_S), outputReporter, isMain: true)
     }
 
+    /*
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws RegexException
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws JsonException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalSynchronizationStateException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     */
     static func fromDefaultConfiguration(): TransportMain {
         let socket = TcpServerSocket(bindAt: 0u16)
         socket.bind()
@@ -206,21 +360,37 @@ class TransportMain <: Resource {
 }
 
 struct WorkerOutput {
+    /*
+     * @noThrow
+     */
     WorkerOutput(let stdout: Array<Byte>, let stderr: Array<Byte>) {}
 
     prop stdouts: Array<String> {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             stdout.split(OUTPUT_DELIMITER) |> map { it => String.fromUtf8(it) } |> collectArray
         }
     }
 
     prop stderrs: Array<String> {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             stderr.split(OUTPUT_DELIMITER) |> map { it => String.fromUtf8(it) } |> collectArray
         }
     }
 
     prop captured: Array<CapturedOutput> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalStateException
+         */
         get() {
             let outs = stdouts
             let errs = stderrs

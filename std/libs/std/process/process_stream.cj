@@ -17,6 +17,9 @@ const SEEK_CUR: Int32 = 1
 struct FileDescriptor {
     var _fileHandle: IntNative = INVALID_HANDLE
 
+    /*
+     * @noThrow
+     */
     init(fileHandle: IntNative) {
         this._fileHandle = fileHandle
     }
@@ -25,10 +28,16 @@ struct FileDescriptor {
 class ProcessInputStream <: InputStream {
     var inputStream: InputStream
 
+    /*
+     * @noThrow
+     */
     init(fileDescriptor: FileDescriptor) {
         inputStream = PipeInputStream(fileDescriptor)
     }
 
+    /*
+     * @noThrow
+     */
     public func read(buffer: Array<Byte>): Int64 {
         this.inputStream.read(buffer)
     }
@@ -37,14 +46,23 @@ class ProcessInputStream <: InputStream {
 class ProcessOutputStream <: OutputStream {
     var outputStream: OutputStream
 
+    /*
+     * @noThrow
+     */
     init(fileDescriptor: FileDescriptor) {
         outputStream = PipeOutputStream(fileDescriptor)
     }
 
+    /*
+     * @noThrow
+     */
     public func write(buffer: Array<Byte>): Unit {
         this.outputStream.write(buffer)
     }
 
+    /*
+     * @noThrow
+     */
     public func flush(): Unit {}
 }
 
@@ -52,10 +70,16 @@ class ProcessOutputStream <: OutputStream {
 class PipeOutputStream <: OutputStream & Resource {
     var _fileDescriptor: FileDescriptor = FileDescriptor(INVALID_HANDLE)
 
+    /*
+     * @noThrow
+     */
     init(fileDescriptor: FileDescriptor) {
         this._fileDescriptor = fileDescriptor
     }
 
+    /*
+     * @throws ProcessException
+     */
     public func write(buffer: Array<Byte>): Unit {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw ProcessException("The stream not opened, can not be written.")
@@ -66,12 +90,21 @@ class PipeOutputStream <: OutputStream & Resource {
         this.directWrite(buffer)
     }
 
+    /*
+     * @noThrow
+     */
     public func flush(): Unit {}
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         return !isHandleValid(_fileDescriptor._fileHandle)
     }
 
+    /*
+     * @throws ProcessException
+     */
     public func close(): Unit {
         if (isClosed()) {
             return
@@ -92,6 +125,9 @@ class PipeOutputStream <: OutputStream & Resource {
 
 
 
+    /*
+     * @throws ProcessException
+     */
     private func directWrite(buffer: Array<Byte>): Unit {
         unsafe {
             let bufSize: Int64 = buffer.size
@@ -110,10 +146,17 @@ class PipeOutputStream <: OutputStream & Resource {
 class PipeInputStream <: InputStream & Resource {
     var _fileDescriptor: FileDescriptor = FileDescriptor(INVALID_HANDLE)
 
+    /*
+     * @noThrow
+     */
     init(fileDescriptor: FileDescriptor) {
         this._fileDescriptor = fileDescriptor
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws ProcessException
+     */
     public func read(buffer: Array<Byte>): Int64 {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw ProcessException("The stream not opened, can not to read.")
@@ -130,10 +173,16 @@ class PipeInputStream <: InputStream & Resource {
         return readBytes
     }
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         return !isHandleValid(_fileDescriptor._fileHandle)
     }
 
+    /*
+     * @throws ProcessException
+     */
     public func close(): Unit {
         if (isClosed()) {
             return
@@ -151,6 +200,9 @@ class PipeInputStream <: InputStream & Resource {
 
 
 
+    /*
+     * @noThrow
+     */
     private func directRead(buffer: Array<Byte>): Int64 {
         unsafe {
             let bufPtr: CPointerHandle<Byte> = acquireArrayRawData(buffer)
@@ -165,27 +217,48 @@ class PipeInputStream <: InputStream & Resource {
 class NullProcessStream <: IOStream & Resource {
     var _fileDescriptor: FileDescriptor = FileDescriptor(INVALID_HANDLE)
 
+    /*
+     * @noThrow
+     */
     init() {}
 
+    /*
+     * @noThrow
+     */
     public func read(_: Array<Byte>): Int64 {
         return -1
     }
 
     prop length: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return 0
         }
     }
 
+    /*
+     * @throws ProcessException
+     */
     public func write(_: Array<Byte>): Unit {
         throw ProcessException("Invaild outputStream.")
     }
 
+    /*
+     * @noThrow
+     */
     public func flush(): Unit {}
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         return !isHandleValid(_fileDescriptor._fileHandle)
     }
 
+    /*
+     * @noThrow
+     */
     public func close(): Unit {}
 }

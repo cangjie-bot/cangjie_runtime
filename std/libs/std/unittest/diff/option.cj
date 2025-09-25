@@ -11,9 +11,15 @@ import std.unittest.common.PrettyPrinter
 
 extend<T> Option<T> <: AssertPrintable<Option<T>> where T <: Equatable<T> {
     public prop hasNestedDiff: Bool {
+        /*
+         * @noThrow
+         */
         get() { false }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public func pprintForAssertion(pp: PrettyPrinter, right: Option<T>, leftPrefix: String, rightPrefix: String,
         level: Int64): PrettyPrinter {
         return pp.pprintOptionDiff(this, right, leftPrefix, rightPrefix, level)
@@ -21,6 +27,9 @@ extend<T> Option<T> <: AssertPrintable<Option<T>> where T <: Equatable<T> {
 }
 
 extend PrettyPrinter {
+    /*
+     * @throws IllegalArgumentException
+     */
     func pprintOptionDiff<T>(left: Option<T>, right: Option<T>, leftPrefix: String, rightPrefix: String, level: Int64) {
         match (left) {
             case Some(l) =>

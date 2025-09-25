@@ -10,10 +10,16 @@ package std.core
 
 @When[backend == "cjnative"]
 @Intrinsic
+/*
+ * @noThrow
+ */
 func isThreadObjectInited(): Bool
 
 @When[backend == "cjnative"]
 @Intrinsic
+/*
+ * @noThrow
+ */
 func getThreadObject(): Thread
 
 @FastNative
@@ -36,10 +42,16 @@ public class Thread {
     var _threadLocalMap: Option<ThreadLocalMap> = None
     private var _rtCJThreadHandle = CPointer<Unit>()
     private let _rtCJThreadHandleRefCount = AtomicInt64(0)
+    /*
+     * @noThrow
+     */
     init() {}
 
 
 
+    /*
+     * @noThrow
+     */
     protected func setRuntimeCJThreadHandle(handle: CPointer<Unit>): Unit {
         _rtCJThreadHandle = handle
         let cjThreadId = unsafe { CJ_MRT_GetCJThreadId(handle) }
@@ -57,6 +69,9 @@ public class Thread {
 
 
 
+    /*
+     * @noThrow
+     */
     func waitForCJThreadHandle(): Unit {
         while (_id.load() == INVALID_ID) {
             intrinsicSleep(0)
@@ -65,6 +80,9 @@ public class Thread {
 
 
 
+    /*
+     * @noThrow
+     */
     func clearRuntimeCJThreadHandle(): Unit {
         while (true) {
             let old = _rtCJThreadHandleRefCount.load()
@@ -77,6 +95,9 @@ public class Thread {
 
 
 
+    /*
+     * @throws Error
+     */
     private func acquireCJThreadHandle(): CPointer<Unit> {
         while (true) {
             let old = _rtCJThreadHandleRefCount.load()
@@ -92,10 +113,16 @@ public class Thread {
         throw Error("Never reached")
     }
 
+    /*
+     * @noThrow
+     */
     private func releaseCJThreadHandle(): Unit {
         _rtCJThreadHandleRefCount.fetchAdd(-1)
     }
     public static prop currentThread: Thread {
+        /*
+         * @throws Error
+         */
         get() {
             if (isThreadObjectInited()) {
                 return getThreadObject()
@@ -113,6 +140,9 @@ public class Thread {
     }
 
     public prop id: Int64 {
+        /*
+         * @throws Error
+         */
         get() {
             var cjThreadId = _id.load()
             if (cjThreadId == INVALID_ID) {
@@ -123,9 +153,15 @@ public class Thread {
     }
 
     public mut prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             _name.load()
         }
+        /*
+         * @throws Error
+         */
         set(newName) {
             _name.store(newName)
             let handle = unsafe { acquireArrayRawData(name.rawData()) }
@@ -143,15 +179,24 @@ public class Thread {
 
 
     public prop hasPendingCancellation: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             _hasCancellation.load()
         }
     }
 
+    /*
+     * @noThrow
+     */
     func setCancellationRequest(): Unit {
         this._hasCancellation.store(true)
     }
 
+    /*
+     * @noThrow
+     */
     public static func handleUncaughtExceptionBy(exHandler: (Thread, Exception) -> Unit): Unit {
         Thread.exceptionHandler.store(exHandler)
     }

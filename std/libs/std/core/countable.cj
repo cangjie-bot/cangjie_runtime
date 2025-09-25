@@ -11,62 +11,98 @@ package std.core
 
 public interface Countable<T> {
     
+    /*
+     * @noThrow
+     */
     func next(right: Int64): T
     
+    /*
+     * @noThrow
+     */
     func position(): Int64
 }
 
 extend IntNative <: Countable<IntNative> {
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): IntNative {
         this + IntNative(right)
     }
 }
 
 extend Int64 <: Countable<Int64> {
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): Int64 {
         this + right
     }
 }
 
 extend Int32 <: Countable<Int32> {
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): Int32 {
         this + Int32(right)
     }
 }
 
 extend Int16 <: Countable<Int16> {
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): Int16 {
         this + Int16(right)
     }
 }
 
 extend Int8 <: Countable<Int8> {
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): Int8 {
         this + Int8(right)
     }
@@ -74,11 +110,17 @@ extend Int8 <: Countable<Int8> {
 
 extend UIntNative <: Countable<UIntNative> {
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): UIntNative {
         if (right < 0) {
             return this - UIntNative(-right)
@@ -89,11 +131,17 @@ extend UIntNative <: Countable<UIntNative> {
 
 extend UInt64 <: Countable<UInt64> {
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): UInt64 {
         if (right < 0) {
             return this - UInt64(-right)
@@ -103,11 +151,17 @@ extend UInt64 <: Countable<UInt64> {
 }
 
 extend UInt32 <: Countable<UInt32> {
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): UInt32 {
         if (right < 0) {
             return this - UInt32(-right)
@@ -117,11 +171,17 @@ extend UInt32 <: Countable<UInt32> {
 }
 
 extend UInt16 <: Countable<UInt16> {
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): UInt16 {
         if (right < 0) {
             return this - UInt16(-right)
@@ -131,11 +191,17 @@ extend UInt16 <: Countable<UInt16> {
 }
 
 extend UInt8 <: Countable<UInt8> {
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(this)
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): UInt8 {
         if (right < 0) {
             return this - UInt8(-right)
@@ -145,11 +211,17 @@ extend UInt8 <: Countable<UInt8> {
 }
 
 extend Rune <: Countable<Rune> {
+    /*
+     * @noThrow
+     */
     public func position(): Int64 {
         Int64(UInt32(this))
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(right: Int64): Rune {
         return Rune(UInt32(Int64(UInt32(this)) + right))
     }

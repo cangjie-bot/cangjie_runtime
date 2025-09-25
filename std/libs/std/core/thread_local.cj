@@ -11,16 +11,25 @@ package std.core
 class ThreadLocalKey <: Hashable {
     static const ALPHA = 0x61c8864680b583eb
     static let CURR = AtomicInt64(0)
+    /*
+     * @noThrow
+     */
     static func nextHash(): Int64 {
         return CURR.fetchAdd(ALPHA)
     }
 
     let code: Int64 = nextHash()
 
+    /*
+     * @noThrow
+     */
     func equals(another: ThreadLocalKey): Bool {
         return code == another.hashCode()
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return code
     }
@@ -34,6 +43,11 @@ public class ThreadLocal<T> {
     let key: ThreadLocalKey = ThreadLocalKey()
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     */
     public func get(): ?T {
         let map: ThreadLocalMap = getThreadLocalMap()
         return map.get(tlKey: key)
@@ -42,6 +56,10 @@ public class ThreadLocal<T> {
 
 
 
+    /*
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     */
     public func set(value: ?T): Unit {
         let map: ThreadLocalMap = getThreadLocalMap()
         match (value) {
@@ -51,6 +69,9 @@ public class ThreadLocal<T> {
     }
 }
 
+/*
+ * @throws Error
+ */
 func getThreadLocalMap(): ThreadLocalMap {
     return match (Thread.currentThread._threadLocalMap) {
         case Some(map) => map
@@ -65,11 +86,17 @@ struct Entry {
     let tlKey: ThreadLocalKey
     let boxedValue: Object
 
+    /*
+     * @noThrow
+     */
     init(k: ThreadLocalKey, v: Object) {
         tlKey = k
         boxedValue = v
     }
 
+    /*
+     * @noThrow
+     */
     func isValid(): Bool {
         return !tlKey.equals(EMPTY_KEY) && !tlKey.equals(DELETED_KEY)
     }
@@ -84,10 +111,17 @@ class ThreadLocalMap {
     var entries: Array<Entry>
     var size: Int64 = 0
 
+    /*
+     * @noThrow
+     */
     init() {
         entries = Array<Entry>(DEFAULT_CAPACITY, repeat: EMPTY_ENTRY)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     func get<T>(tlKey!: ThreadLocalKey): Option<T> {
         return match (findEntry(tlKey)) {
             case Some(index) => (entries[index].boxedValue as Box<T>).getOrThrow()
@@ -96,6 +130,9 @@ class ThreadLocalMap {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func set<T>(tlKey!: ThreadLocalKey, value!: T): Unit {
         let index = findIndexToInsert(tlKey, entries)
         if (entries[index].tlKey.equals(EMPTY_ENTRY.tlKey)) {
@@ -107,11 +144,17 @@ class ThreadLocalMap {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func remove(tlKey!: ThreadLocalKey): Unit {
         if (let Some(index) <- findEntry(tlKey)) {
             entries[index] = DELETED_ENTRY
         }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func findEntry(tlKey: ThreadLocalKey): Option<Int64> {
         var index = tlKey.hashCode() & (entries.size - 1)
         while (true) {
@@ -128,6 +171,9 @@ class ThreadLocalMap {
         return None
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func findIndexToInsert(tlKey: ThreadLocalKey, arr: Array<Entry>): Int64 {
         var index = tlKey.hashCode() & (arr.size - 1)
         while (true) {
@@ -145,12 +191,18 @@ class ThreadLocalMap {
     }
 
 
+    /*
+     * @noThrow
+     */
     private func needResize(): Bool {
         let threshold = (entries.size * 3) >> 2
         return size > threshold
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func resize(): Unit {
         let newCapacity = entries.size << 1
         let newEntries = Array<Entry>(newCapacity, repeat: EMPTY_ENTRY)

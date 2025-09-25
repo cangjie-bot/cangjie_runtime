@@ -9,30 +9,66 @@
 package std.net
 
 interface PlatformSocket<Self> where Self <: PlatformSocket<Self> {
+    /*
+     * @noThrow
+     */
     func write(buffer: Array<Byte>, timeout: ?Duration): Unit
 
+    /*
+     * @noThrow
+     */
     func read(buffer: Array<UInt8>, timeout: ?Duration): ?Int64
 
+    /*
+     * @noThrow
+     */
     func send(buffer: Array<Byte>, timeout: ?Duration, destination: SocketAddress): Int64
 
+    /*
+     * @noThrow
+     */
     func receiveFrom(buffer: Array<UInt8>, timeout: ?Duration): ?(SocketAddress, Int64)
 
 
 
+    /*
+     * @noThrow
+     */
     func connect(localAddress: ?SocketAddress, address: SocketAddress, timeout: ?Duration): Unit
 
+    /*
+     * @noThrow
+     */
     func disconnect(): Unit
 
+    /*
+     * @noThrow
+     */
     func bindListen(address: SocketAddress, backlogSize: ?Int32, ignoreAlreadyBound!: Bool): Unit
 
+    /*
+     * @noThrow
+     */
     func accept(timeout: ?Duration): ?Self
 
+    /*
+     * @noThrow
+     */
     func shutdown(): Unit
 
+    /*
+     * @noThrow
+     */
     func detectLocalAddress(): ?SocketAddress
 
+    /*
+     * @noThrow
+     */
     func detectRemoteAddress(): ?SocketAddress
 
+    /*
+     * @noThrow
+     */
     unsafe func getSocketOption(
         level: Int32,
         option: Int32,
@@ -40,6 +76,9 @@ interface PlatformSocket<Self> where Self <: PlatformSocket<Self> {
         valueLength: CPointer<UIntNative>
     ): Unit
 
+    /*
+     * @noThrow
+     */
     unsafe func setSocketOption(
         level: Int32,
         option: Int32,
@@ -47,17 +86,26 @@ interface PlatformSocket<Self> where Self <: PlatformSocket<Self> {
         valueLength: UIntNative
     ): Unit
 
+    /*
+     * @noThrow
+     */
     func getSocketOptionIntNative(
         level: Int32,
         option: Int32
     ): IntNative
 
+    /*
+     * @noThrow
+     */
     func setSocketOptionIntNative(
         level: Int32,
         option: Int32,
         value: IntNative
     ): Unit
 
+    /*
+     * @noThrow
+     */
     func setKeepAlive(config: ?SocketKeepAliveConfig): Bool
 
 
@@ -66,8 +114,14 @@ interface PlatformSocket<Self> where Self <: PlatformSocket<Self> {
 
 
 
+    /*
+     * @noThrow
+     */
     unsafe func dispose(): Unit
 
+    /*
+     * @noThrow
+     */
     static func create(
         net: SocketNet,
         kind: AddressFamily,
@@ -90,11 +144,17 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
     private var remoteAddress_ = ExternallyLockedLazy<?SocketAddress, SocketHolder<NS>>()
     private var localAddress_ = ExternallyLockedLazy<?SocketAddress, SocketHolder<NS>>()
 
+    /*
+     * @noThrow
+     */
     private SocketCommon(
         private let holder: SocketHolder<NS>,
         let kind: AddressFamily
     ) {}
 
+    /*
+     * @noThrow
+     */
     private init(
         create: () -> NS,
         kind: AddressFamily
@@ -102,6 +162,9 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         this(SocketHolder<NS>(create), kind)
     }
 
+    /*
+     * @noThrow
+     */
     init(
         net: SocketNet,
         kind: AddressFamily,
@@ -113,6 +176,9 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         )
     }
 
+    /*
+     * @noThrow
+     */
     private init(
         existing: NS,
         kind: AddressFamily
@@ -123,10 +189,23 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
 
 
     mut prop localAddress: ?SocketAddress {
+        /*
+         * @throws SocketException
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         */
         get() {
             checkNotClosed()
             localAddress_.compute(addressLock, holder, lazyLocalAddress)
         }
+        /*
+         * @throws SocketException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         */
         set(newAddress) {
             checkNotClosed()
             checkNotBound()
@@ -134,6 +213,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     private static func lazyLocalAddress(holder: SocketHolder<NS>): ?SocketAddress {
         holder.use<?SocketAddress> {
             socket, state =>
@@ -145,10 +232,23 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
 
 
     mut prop remoteAddress: ?SocketAddress {
+        /*
+         * @throws SocketException
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         */
         get() {
             checkNotClosed()
             remoteAddress_.compute(addressLock, holder, lazyRemoteAddress)
         }
+        /*
+         * @throws SocketException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         */
         set(newAddress) {
             checkNotClosed()
             checkNotConnected()
@@ -156,6 +256,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     private static func lazyRemoteAddress(holder: SocketHolder<NS>): ?SocketAddress {
         holder.use<?SocketAddress> {
             socket, state =>
@@ -165,10 +273,16 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
     }
 
     mut prop bindToDevice: ?String {
+        /*
+         * @throws SocketException
+         */
         get() {
             checkNotClosed()
             bindToDevice_
         }
+        /*
+         * @throws SocketException
+         */
         set(newDevice) {
             checkNotClosed()
             checkNotBound()
@@ -177,33 +291,54 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
     }
 
     prop isBound: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             holder.state.bound
         }
     }
 
     prop isConnected: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             holder.state.connected
         }
     }
+    /*
+     * @throws SocketException
+     */
     func checkNotClosed() {
         holder.state.ensureNotClosed()
     }
 
+    /*
+     * @throws SocketException
+     */
     func checkNotBound() {
         holder.state.ensureNotBound()
     }
 
+    /*
+     * @throws SocketException
+     */
     func checkNotConnected() {
         holder.state.ensureNotConnected()
     }
 
     mut prop readTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             checkNotClosed()
             readTimeout_
         }
+        /*
+         * @throws SocketException
+         */
         set(newTimeout) {
             checkNotClosed()
             readTimeout_ = newTimeout
@@ -211,10 +346,16 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
     }
 
     mut prop writeTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             checkNotClosed()
             writeTimeout_
         }
+        /*
+         * @throws SocketException
+         */
         set(newTimeout) {
             checkNotClosed()
             writeTimeout_ = newTimeout
@@ -222,10 +363,21 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
     }
 
     mut prop keepAlive: ?SocketKeepAliveConfig {
+        /*
+         * @throws SocketException
+         */
         get() {
             checkNotClosed()
             keepAlive_
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         set(newValue) {
             holder.use<Unit> {
                 socket, _ => if (socket.setKeepAlive(newValue)) {
@@ -235,6 +387,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     func write(payload: Array<Byte>): Unit {
         holder.write<Unit> {
             socket, state =>
@@ -243,6 +403,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? SocketException.throwClosedException()
     }
 
+    /*
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     func read(buffer: Array<Byte>): Int64 {
         if (buffer.isEmpty()) {
             emptyBufferException()
@@ -255,10 +423,21 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? 0
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private static func emptyBufferException(): Nothing {
         throw IllegalArgumentException("Buffer shouldn't be empty")
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     func send(payload: Array<Byte>, destination: SocketAddress): Int64 {
         return holder.write<Int64> {
             socket, state =>
@@ -267,6 +446,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? SocketException.throwClosedException()
     }
 
+    /*
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     */
     func receiveFrom(buffer: Array<UInt8>): ?(SocketAddress, Int64) {
         if (buffer.isEmpty()) {
             throw IllegalArgumentException("Buffer shouldn't be empty")
@@ -279,6 +466,16 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? None
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws getOrFail
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     func connect(
         timeout: ?Duration,
         shouldBeBound!: Bool = false,
@@ -308,6 +505,16 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
             }
         } ?? SocketException.throwClosedException()
     }
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws getOrFail
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     */
     private func connectImpl(socket: NS, state: SocketState, timeout: ?Duration): Unit {
         let address = remoteAddress_.directValue |> unwrapOption |>
             getOrFail<SocketAddress> {
@@ -330,6 +537,15 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         remoteAddress_.clearWithoutLock()
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     func disconnect(): Unit {
         holder.write<Unit> {
             socket, state =>
@@ -357,6 +573,15 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? SocketException.throwClosedException()
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     private func restoreLocalAddress(socket: NS, before: SocketAddress) {
         if (before.family == AddressFamily.UNIX) {
             return
@@ -367,6 +592,9 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         localAddress_.directValue = None
     }
 
+    /*
+     * @noThrow
+     */
     private func populateLocalAddressUnderLock(socket: NS): ?SocketAddress {
         try {
             let address = socket.detectLocalAddress()
@@ -377,6 +605,15 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     func bind(backlogSize: ?Int32): Unit {
         if (let Some(backlogSize) <- backlogSize) {
             if (backlogSize < 0) {
@@ -404,6 +641,15 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
             }
         } ?? SocketException.throwClosedException()
     }
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     private func bindImpl(
         socket: NS,
         backlogSize: ?Int32,
@@ -419,6 +665,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     func accept(timeout: ?Duration): ?SocketCommon<NS> {
         let accepted = holder.read {
             socket: NS, state: SocketState =>
@@ -433,6 +687,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         return None
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     unsafe func getSocketOption(
         level: Int32,
         option: Int32,
@@ -444,6 +706,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? SocketException.throwClosedException()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     unsafe func setSocketOption(
         level: Int32,
         option: Int32,
@@ -455,6 +725,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? SocketException.throwClosedException()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     func getSocketOptionIntNative(
         level: Int32,
         option: Int32
@@ -464,6 +742,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? SocketException.throwClosedException()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     func setSocketOptionIntNative(
         level: Int32,
         option: Int32,
@@ -474,6 +760,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         } ?? SocketException.throwClosedException()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     func getSocketOptionBool(
         level: Int32,
         option: Int32
@@ -481,6 +775,14 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         getSocketOptionIntNative(level, option) != 0
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     func setSocketOptionBool(
         level: Int32,
         option: Int32,
@@ -493,14 +795,29 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         })
     }
 
+    /*
+     * @noThrow
+     */
     public override func isClosed(): Bool {
         holder.isClosed()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public override func close(): Unit {
         holder.close()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IllegalSynchronizationStateException
+     */
     public override func toString(): String {
         var state = match (holder.state.nativeState) {
             case SocketNotCreated => return "unconnected, unbound"
@@ -544,6 +861,15 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     private func applyBindToDevice() {
         if (OS == OS_WINDOWS) {
             return
@@ -569,6 +895,12 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
 
 struct ExternallyLockedLazy<T, Arg> {
     private var value: ?T = None
+    /*
+     * @throws IllegalStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     mut func compute(lock: NonReentrantReadWriteMutex, arg: Arg, provider: (Arg) -> T): T {
         if (let Some(value) <- tryGet(lock)) {
             return value
@@ -577,24 +909,44 @@ struct ExternallyLockedLazy<T, Arg> {
     }
 
     mut prop directValue: ?T {
+        /*
+         * @noThrow
+         */
         get() {
             value
         }
+        /*
+         * @noThrow
+         */
         set(newValue) {
             value = newValue
         }
     }
 
+    /*
+     * @noThrow
+     */
     mut func clearWithoutLock(): Unit {
         value = None
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     mut func putValue(lock: NonReentrantReadWriteMutex, value: T): Unit {
         lock.writeMutex.lock()
         this.value = value
         lock.writeMutex.unlock()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IllegalSynchronizationStateException
+     */
     private func tryGet(lock: NonReentrantReadWriteMutex): ?T {
         lock.readMutex.lock()
         try {
@@ -607,6 +959,11 @@ struct ExternallyLockedLazy<T, Arg> {
         return None
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     private mut func doCompute(lock: NonReentrantReadWriteMutex, arg: Arg, provider: (Arg) -> T): T {
         lock.writeMutex.lock()
         try {

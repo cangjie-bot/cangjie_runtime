@@ -23,6 +23,12 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
     var entryCount: Int32
     var isclosed = AtomicBool(false)
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     public init(options: Options<T>) {
         this.options = options
         entryQueue = LinkedBlockingQueue<Entry<T>>(Int64(options.maxSize))
@@ -35,9 +41,15 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
 
 
     public mut prop maxSize: Int32 {
+        /*
+         * @noThrow
+         */
         get() {
             options.maxSize
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             if (value <= 0) {
                 options.maxSize = Int32.Max
@@ -50,9 +62,15 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
 
 
     public mut prop maxIdleSize: Int32 {
+        /*
+         * @noThrow
+         */
         get() {
             options.maxIdleSize
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             if (value <= 0) {
                 options.maxIdleSize = Int32.Max
@@ -62,16 +80,38 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     func backgroundCheckIdleLife() {
         ticker.cancel()
         ticker = Timer.repeat(Duration.second, options.keepaliveTime, checkLife, style: Delay)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws SqlException
+     */
     func checkLife(): Unit {
         checkMaxLifeTime()
         checkIdleTimeout()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws SqlException
+     */
     func checkMaxLifeTime() {
         let count: Int64
         synchronized(mux) {
@@ -92,6 +132,14 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws SqlException
+     */
     func checkIdleTimeout() {
         let idleCount: Int64
         synchronized(mux) {
@@ -116,6 +164,15 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         }
     }
 
+    /*
+     * @throws getOrThrow
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     * @throws SqlException
+     */
     func getIdleEntry(timeout: Duration): Entry<T> {
         var item = idleEntry.dequeue(timeout)
 
@@ -137,6 +194,15 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         }
     }
 
+    /*
+     * @throws SqlException
+     * @throws getOrThrow
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     */
     public func acquire(timeout: Duration): Option<Entry<T>> {
         mux.lock()
         if (idleEntry.size == 0 && entryCount < options.maxSize) {
@@ -148,6 +214,14 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         return getIdleEntry(timeout)
     }
 
+    /*
+     * @throws getOrThrow
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     */
     func createEntry(): Entry<T> {
         var value = options.constructor()
         match (value) {
@@ -159,6 +233,13 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws SqlException
+     */
     public func release(entry: Entry<T>): Option<Unit> {
         match (entry.pool as ResourcePool<T>) {
             case Some(p) => if (p != this) {
@@ -176,6 +257,10 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         return
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws SqlException
+     */
     public func discard(entry: Entry<T>): Option<Unit> {
         match (entry.pool as ResourcePool<T>) {
             case Some(p) => if (p != this) {
@@ -192,10 +277,19 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         return
     }
 
+    /*
+     * @noThrow
+     */
     public func isClosed() {
         return isclosed.load()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws SqlException
+     * @throws OutOfMemoryError
+     */
     public func close() {
         if (!isclosed.compareAndSwap(false, true)) {
             return
@@ -215,14 +309,28 @@ class ResourcePool<T> <: Pool<T> & Equatable<ResourcePool<T>> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(rhs: ResourcePool<T>): Bool {
         return !(this == rhs)
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(rhs: ResourcePool<T>): Bool {
         return refEq(this, rhs)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws SqlException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func appendLegalIdleEntry(v: Entry<T>, idleCount: Int64, list: ArrayList<Entry<T>>): Unit {
         var idle = v.idleDuration()
         if ((idle > options.idleTimeout || Int32(idleCount) > options.maxIdleSize) || (DateTime.now().

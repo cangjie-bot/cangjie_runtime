@@ -22,10 +22,16 @@ public class BufferedOutputStream<T> <: OutputStream where T <: OutputStream {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(output: T) {
         this(output, DEFAULT_BUFFER_CAPACITY)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(output: T, buffer: Array<Byte>) {
         if (buffer.size == 0) {
             throw IllegalArgumentException("The buffer cannot be empty.")
@@ -42,6 +48,9 @@ public class BufferedOutputStream<T> <: OutputStream where T <: OutputStream {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(output: T, capacity: Int64) {
         if (capacity <= 0) {
             throw IllegalArgumentException("Invalid capacity size: capacity = ${capacity}.")
@@ -55,6 +64,10 @@ public class BufferedOutputStream<T> <: OutputStream where T <: OutputStream {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func write(buffer: Array<Byte>): Unit {
         let len = buffer.size
         if (len == 0) {
@@ -78,6 +91,9 @@ public class BufferedOutputStream<T> <: OutputStream where T <: OutputStream {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func writeByte(v: Byte): Unit {
         let outBufSize = outBuf.size
         if (curPos == outBufSize) {
@@ -87,6 +103,9 @@ public class BufferedOutputStream<T> <: OutputStream where T <: OutputStream {
         curPos++
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func flushOutBuf(): Unit {
         if (curPos > 0) {
             outputStream.write(outBuf.slice(0, curPos))
@@ -95,6 +114,9 @@ public class BufferedOutputStream<T> <: OutputStream where T <: OutputStream {
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func flush(): Unit {
         flushOutBuf()
         outputStream.flush()
@@ -104,6 +126,9 @@ public class BufferedOutputStream<T> <: OutputStream where T <: OutputStream {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func reset(output: T): Unit {
         flush()
         outputStream = output
@@ -114,6 +139,9 @@ public class BufferedOutputStream<T> <: OutputStream where T <: OutputStream {
 extend<T> BufferedOutputStream<T> <: Resource where T <: Resource {
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func close(): Unit {
         if (!isClosed()) {
             flush()
@@ -124,6 +152,9 @@ extend<T> BufferedOutputStream<T> <: Resource where T <: Resource {
 
 
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         outputStream.isClosed()
     }
@@ -136,6 +167,9 @@ extend<T> BufferedOutputStream<T> <: Seekable where T <: Seekable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func seek(sp: SeekPosition): Int64 {
         this.flush()
         outputStream.seek(sp)
@@ -143,6 +177,9 @@ extend<T> BufferedOutputStream<T> <: Seekable where T <: Seekable {
 
 
     public prop position: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             outputStream.seek(Current(0))
         }
@@ -150,6 +187,9 @@ extend<T> BufferedOutputStream<T> <: Seekable where T <: Seekable {
 
 
     public prop remainLength: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             let oldPos = outputStream.seek(Current(0))
             let length = outputStream.seek(End(0))
@@ -163,6 +203,9 @@ extend<T> BufferedOutputStream<T> <: Seekable where T <: Seekable {
 
 
     public prop length: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             let oldPos = outputStream.seek(Current(0))
             let length = outputStream.seek(End(0))

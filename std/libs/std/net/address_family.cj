@@ -24,18 +24,30 @@ public struct AddressFamily <: ToString & Equatable<AddressFamily> {
     public static const NETLINK: AddressFamily = AddressFamily("NETLINK", 16)
     public let name: String
     public let value: UInt16
+    /*
+     * @noThrow
+     */
     public const init(name: String, value: UInt16) {
         this.name = name
         this.value = value
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(rhs: AddressFamily): Bool {
         this.value == rhs.value
     }
+    /*
+     * @noThrow
+     */
     public operator func !=(rhs: AddressFamily): Bool {
         this.value != rhs.value
     }
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return name
     }

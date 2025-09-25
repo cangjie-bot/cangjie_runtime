@@ -16,6 +16,9 @@ struct Options<T> {
     var keepaliveTime: Duration
     let constructor: () -> Option<T>
     let destructor: (T) -> Option<Unit>
+    /*
+     * @noThrow
+     */
     init(
         maxIdleSize: Int32,
         maxSize: Int32,

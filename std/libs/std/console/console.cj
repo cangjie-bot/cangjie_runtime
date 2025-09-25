@@ -22,21 +22,33 @@ foreign func CJ_BUFFER_Float64ToCPointer(num: Float64, buf: CPointer<UInt8>, buf
 
 @Deprecated[message: "Use related global functions in the std.env instead."]
 public class Console {
+    /*
+     * @noThrow
+     */
     init() {}
     private static let outConsole: ConsoleWriter = ConsoleWriter(Int32(1))
     private static let errConsole: ConsoleWriter = ConsoleWriter(Int32(2))
     private static let inConsole: ConsoleReader = ConsoleReader()
     public static prop stdIn: ConsoleReader {
+        /*
+         * @noThrow
+         */
         get() {
             inConsole
         }
     }
     public static prop stdOut: ConsoleWriter {
+        /*
+         * @noThrow
+         */
         get() {
             outConsole
         }
     }
     public static prop stdErr: ConsoleWriter {
+        /*
+         * @noThrow
+         */
         get() {
             errConsole
         }

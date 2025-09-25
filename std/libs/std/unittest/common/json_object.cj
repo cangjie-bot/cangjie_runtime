@@ -19,6 +19,9 @@ const SPACE: Rune = r' '
 const INDENT_SIZE: Int64 = 2
 
 
+                /*
+                 * @noThrow
+                 */
 protected class JsonNull <: JsonValue {
 
 
@@ -26,6 +29,9 @@ protected class JsonNull <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func kind(): JsonKind {
         return JsNull
     }
@@ -35,6 +41,9 @@ protected class JsonNull <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return "null"
     }
@@ -44,6 +53,9 @@ protected class JsonNull <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toJsonString(): String {
         return toString()
     }
@@ -60,6 +72,9 @@ protected class JsonBool <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(bv: Bool) {
         this.value = bv
     }
@@ -69,6 +84,9 @@ protected class JsonBool <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): Bool {
         return value
     }
@@ -78,6 +96,9 @@ protected class JsonBool <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func kind(): JsonKind {
         return JsBool
     }
@@ -87,6 +108,9 @@ protected class JsonBool <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return value.toString()
     }
@@ -96,6 +120,9 @@ protected class JsonBool <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toJsonString(): String {
         return toString()
     }
@@ -112,6 +139,9 @@ protected class JsonInt <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(iv: Int64) {
         this.value = iv
     }
@@ -121,6 +151,9 @@ protected class JsonInt <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): Int64 {
         return value
     }
@@ -130,6 +163,9 @@ protected class JsonInt <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func kind(): JsonKind {
         return JsInt
     }
@@ -139,6 +175,9 @@ protected class JsonInt <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return value.toString()
     }
@@ -148,6 +187,9 @@ protected class JsonInt <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toJsonString(): String {
         return toString()
     }
@@ -164,6 +206,9 @@ protected class JsonFloat <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(fv: Float64) {
         this.value = fv
     }
@@ -174,6 +219,9 @@ protected class JsonFloat <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(v: Int64) {
         this.value = Float64(v)
     }
@@ -183,6 +231,9 @@ protected class JsonFloat <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): Float64 {
         return value
     }
@@ -192,6 +243,9 @@ protected class JsonFloat <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func kind(): JsonKind {
         return JsFloat
     }
@@ -201,6 +255,9 @@ protected class JsonFloat <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return value.toString()
     }
@@ -210,6 +267,9 @@ protected class JsonFloat <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toJsonString(): String {
         return toString()
     }
@@ -226,6 +286,9 @@ protected class JsonString <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(sv: String) {
         this.value = sv
     }
@@ -235,6 +298,9 @@ protected class JsonString <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): String {
         return value
     }
@@ -244,6 +310,9 @@ protected class JsonString <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func kind(): JsonKind {
         return JsString
     }
@@ -253,6 +322,11 @@ protected class JsonString <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let buff = WriteBuffer(value.size + 2)
         jsonWriteWithoutFormat(this, buff)
@@ -264,6 +338,11 @@ protected class JsonString <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toJsonString(): String {
         let buff = WriteBuffer(value.size + 2)
         jsonWriteWithoutFormat(this, buff)
@@ -280,10 +359,16 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     init(capacity: Int64) {
         items = ArrayList<JsonValue>(capacity)
     }
 
+    /*
+     * @noThrow
+     */
     public init() {
         items = ArrayList<JsonValue>()
     }
@@ -294,6 +379,9 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(list: ArrayList<JsonValue>) {
         items = list
     }
@@ -304,6 +392,9 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(list: Array<JsonValue>) {
         items = ArrayList<JsonValue>(list)
     }
@@ -313,6 +404,9 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func kind(): JsonKind {
         return JsArray
     }
@@ -324,6 +418,11 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toJsonString(): String {
         return toJsonString(0)
     }
@@ -336,6 +435,11 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toJsonString(depth: Int64, bracketInNewLine!: Bool = false, indent!: String = "  "): String {
         if (depth < 0) {
             throw IllegalArgumentException("Depth cannot be negative.")
@@ -355,6 +459,11 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let buff = WriteBuffer(asumecapacity(this))
         jsonWriteWithoutFormat(this, buff)
@@ -366,6 +475,9 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func size(): Int64 {
         return items.size
     }
@@ -375,6 +487,10 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(jv: JsonValue): JsonArray {
         items.add(jv)
         return this
@@ -386,6 +502,9 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func get(index: Int64): Option<JsonValue> {
         return items.get(index)
     }
@@ -398,6 +517,9 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @throws JsonException
+     */
     public operator func [](index: Int64): JsonValue {
         return match (items.get(index)) {
             case Some(v) => v
@@ -410,6 +532,9 @@ protected class JsonArray <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getItems(): ArrayList<JsonValue> {
         return items
     }
@@ -424,10 +549,16 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init() {
         fields = HashMap<String, JsonValue>()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     init(capacity: Int64) {
         fields = HashMap<String, JsonValue>(capacity)
     }
@@ -438,6 +569,9 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(map: HashMap<String, JsonValue>) {
         fields = map
     }
@@ -447,6 +581,9 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func kind(): JsonKind {
         return JsObject
     }
@@ -458,6 +595,11 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toJsonString(): String {
         return toJsonString(0)
     }
@@ -470,6 +612,11 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toJsonString(depth: Int64, bracketInNewLine!: Bool = false, indent!: String = "  "): String {
         if (depth < 0) {
             throw IllegalArgumentException("Depth cannot be negative.")
@@ -489,6 +636,11 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let buff = WriteBuffer(asumecapacity(this))
         jsonWriteWithoutFormat(this, buff)
@@ -500,6 +652,9 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func size(): Int64 {
         return fields.size
     }
@@ -510,6 +665,9 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func containsKey(key: String): Bool {
         return fields.contains(key)
     }
@@ -520,6 +678,10 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func put(key: String, v: JsonValue): Unit {
         fields.add(key, v)
     }
@@ -530,6 +692,9 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func get(key: String): Option<JsonValue> {
         return fields.get(key)
     }
@@ -542,6 +707,10 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws JsonException
+     */
     public operator func [](key: String): JsonValue {
         return match (fields.get(key)) {
             case Some(v) => v
@@ -554,12 +723,18 @@ protected class JsonObject <: JsonValue {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getFields(): HashMap<String, JsonValue> {
         return fields
     }
 }
 
 extend String {
+    /*
+     * @noThrow
+     */
     func isContainOnlySpaceAndTab() {
         for (i in this) {
             if (i != b' ' && i != b'\t') {

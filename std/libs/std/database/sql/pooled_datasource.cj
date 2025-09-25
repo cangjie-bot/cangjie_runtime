@@ -28,6 +28,12 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     public init(datasource: Datasource) {
         this.datasource = datasource
         func newConn(): Option<Connection> {
@@ -53,9 +59,15 @@ public class PooledDatasource <: Datasource {
 
 
     public mut prop idleTimeout: Duration {
+        /*
+         * @noThrow
+         */
         get() {
             pool.options.idleTimeout
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             pool.options.idleTimeout = value
         }
@@ -65,9 +77,15 @@ public class PooledDatasource <: Datasource {
 
 
     public mut prop maxLifeTime: Duration {
+        /*
+         * @noThrow
+         */
         get() {
             pool.options.maxLifeTime
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             pool.options.maxLifeTime = value
         }
@@ -77,9 +95,15 @@ public class PooledDatasource <: Datasource {
 
 
     public mut prop keepaliveTime: Duration {
+        /*
+         * @noThrow
+         */
         get() {
             pool.options.keepaliveTime
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             pool.options.keepaliveTime = value
         }
@@ -90,9 +114,15 @@ public class PooledDatasource <: Datasource {
 
 
     public mut prop maxSize: Int32 {
+        /*
+         * @noThrow
+         */
         get() {
             pool.maxSize
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             pool.maxSize = value
         }
@@ -102,9 +132,15 @@ public class PooledDatasource <: Datasource {
 
 
     public mut prop maxIdleSize: Int32 {
+        /*
+         * @noThrow
+         */
         get() {
             pool.maxIdleSize
         }
+        /*
+         * @noThrow
+         */
         set(value) {
             pool.maxIdleSize = value
         }
@@ -116,9 +152,15 @@ public class PooledDatasource <: Datasource {
 
 
     public mut prop connectionTimeout: Duration {
+        /*
+         * @noThrow
+         */
         get() {
             _connTimeout
         }
+        /*
+         * @throws ArithmeticException
+         */
         set(value) {
             _connTimeout = value
             datasource.setOption(SqlOption.ConnectionTimeout, _connTimeout.toMilliseconds().toString())
@@ -128,6 +170,9 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /*
+     * @noThrow
+     */
     public func setOption(key: String, value: String): Unit {
         datasource.setOption(key, value)
     }
@@ -137,6 +182,15 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /*
+     * @throws getOrThrow
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     * @throws SqlException
+     */
     public func connect(): Connection {
         var item = pool.acquire(_connTimeout)
         match (item) {
@@ -150,6 +204,9 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         return isclosed.load()
     }
@@ -157,6 +214,12 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws SqlException
+     * @throws OutOfMemoryError
+     */
     public func close(): Unit {
         if (isclosed.load()) {
             return

@@ -10,9 +10,15 @@ package std.unittest.common
 import std.collection.fold
 
 protected interface TextWidth {
+    /*
+     * @noThrow
+     */
     func width(): Int64
 }
 
+/*
+ * @noThrow
+ */
 private func isFullWidth(r: Rune): Bool {
     let ch = UInt32(r)
     return ch >= 0x1100 &&
@@ -31,12 +37,18 @@ private func isFullWidth(r: Rune): Bool {
 }
 
 extend Rune <: TextWidth {
+    /*
+     * @noThrow
+     */
     public func width(): Int64 {
         if (isFullWidth(this)) { 2 } else { 1 }
     }
 }
 
 extend String <: TextWidth {
+    /*
+     * @noThrow
+     */
     public func width(): Int64 {
         this.runes() |> fold(0) { acc: Int64, r: Rune => acc + r.width() }
     }

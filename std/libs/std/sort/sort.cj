@@ -17,6 +17,10 @@ import std.collection.*
 
 
 @Frozen
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T> {
     if (descending) {
         let comparator = {l: T, r: T => r.compare(l)}
@@ -42,6 +46,10 @@ public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = f
 
 
 @Frozen
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit {
     var comparator = by
     if (descending) {
@@ -66,6 +74,10 @@ public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = fal
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func sort<T>(data: Array<T>, lessThan!: (T, T) -> Bool, stable!: Bool = false, descending!: Bool = false): Unit {
     let comparator = {l: T, r: T => match (lessThan(l, r)) {
             case true => LT
@@ -86,6 +98,10 @@ public func sort<T>(data: Array<T>, lessThan!: (T, T) -> Bool, stable!: Bool = f
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func sort<T, K>(data: Array<T>, key!: (T) -> K, stable!: Bool = false, descending!: Bool = false): Unit where K <: Comparable<K> {
     let comparator = if (descending) {
         {l: T, r: T => key(r).compare(key(l))}
@@ -105,6 +121,10 @@ public func sort<T, K>(data: Array<T>, key!: (T) -> K, stable!: Bool = false, de
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func sort<T>(data: List<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T> {
     var dataArray = data.toArray()
     sort(dataArray, stable: stable, descending: descending)
@@ -121,6 +141,10 @@ public func sort<T>(data: List<T>, stable!: Bool = false, descending!: Bool = fa
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func sort<T>(data: List<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit {
     var dataArray = data.toArray()
     data.clear()
@@ -137,6 +161,10 @@ public func sort<T>(data: List<T>, by!: (T, T) -> Ordering, stable!: Bool = fals
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func sort<T>(data: List<T>, lessThan!: (T, T) -> Bool, stable!: Bool = false, descending!: Bool = false): Unit {
     var dataArray = data.toArray()
     data.clear()
@@ -153,6 +181,10 @@ public func sort<T>(data: List<T>, lessThan!: (T, T) -> Bool, stable!: Bool = fa
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func sort<T, K>(data: List<T>, key!: (T) -> K, stable!: Bool = false, descending!: Bool = false): Unit where K <: Comparable<K> {
     var dataArray = data.toArray()
     data.clear()
@@ -168,6 +200,10 @@ public func sort<T, K>(data: List<T>, key!: (T) -> K, stable!: Bool = false, des
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T> {
     unsafe {
         var dataArray = data.getRawArray()
@@ -183,6 +219,10 @@ public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func sort<T>(data: ArrayList<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit {
     unsafe {
         var dataArray = data.getRawArray()
@@ -198,6 +238,10 @@ public func sort<T>(data: ArrayList<T>, by!: (T, T) -> Ordering, stable!: Bool =
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func sort<T>(data: ArrayList<T>, lessThan!: (T, T) -> Bool, stable!: Bool = false, descending!: Bool = false): Unit {
     unsafe {
         var dataArray = data.getRawArray()
@@ -213,6 +257,10 @@ public func sort<T>(data: ArrayList<T>, lessThan!: (T, T) -> Bool, stable!: Bool
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func sort<T, K>(data: ArrayList<T>, key!: (T) -> K, stable!: Bool = false, descending!: Bool = false): Unit where K <: Comparable<K> {
     unsafe {
         var dataArray = data.getRawArray()
@@ -229,6 +277,9 @@ public interface SortByExtension<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     func sortBy(comparator!: (T, T) -> Ordering): Unit
 
 
@@ -237,6 +288,9 @@ public interface SortByExtension<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     func sortBy(stable!: Bool, comparator!: (T, T) -> Ordering): Unit
 }
 
@@ -246,6 +300,9 @@ public interface SortExtension {
 
 
 
+    /*
+     * @noThrow
+     */
     func sort(): Unit
 
 
@@ -253,11 +310,17 @@ public interface SortExtension {
 
 
 
+    /*
+     * @noThrow
+     */
     func sort(stable!: Bool): Unit
 
 
 
 
+    /*
+     * @noThrow
+     */
     func sortDescending(): Unit
 
 
@@ -265,16 +328,27 @@ public interface SortExtension {
 
 
 
+    /*
+     * @noThrow
+     */
     func sortDescending(stable!: Bool): Unit
 }
 
 extend<T> Array<T> <: SortByExtension<T> {
     @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func sortBy(comparator!: (T, T) -> Ordering): Unit {
         unstableSort(this, comparator)
     }
 
     @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func sortBy(stable!: Bool, comparator!: (T, T) -> Ordering): Unit {
         if (stable) {
             stableSort(this, comparator)
@@ -286,11 +360,19 @@ extend<T> Array<T> <: SortByExtension<T> {
 
 extend<T> Array<T> <: SortExtension where T <: Comparable<T> {
     @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func sort(): Unit {
         unstableSort(this)
     }
 
     @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func sort(stable!: Bool): Unit {
         if (stable) {
             stableSort(this)
@@ -300,12 +382,20 @@ extend<T> Array<T> <: SortExtension where T <: Comparable<T> {
     }
 
     @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func sortDescending(): Unit {
         let comparator = {l: T, r: T => r.compare(l)}
         unstableSort(this, comparator)
     }
 
     @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func sortDescending(stable!: Bool): Unit {
         let comparator = {l: T, r: T => r.compare(l)}
         if (stable) {

@@ -36,19 +36,31 @@ private const DEFAULT_WIDTH = STATIC_SIZED_AREA_WIDTH + DEFAULT_PROGRESS_INDICAT
 private const MIN_WIDTH = STATIC_SIZED_AREA_WIDTH + MIN_PROGRESS_INDICATOR_WIDTH + MIN_NAMED_AREA_WIDTH
 private const MIN_HEIGHT = 4
 
+/*
+ * @noThrow
+ */
 private func namedAreaWidth(total: Int64): Int64 {
     total - STATIC_SIZED_AREA_WIDTH - progressIndicatorWidth(total)
 }
 
+/*
+ * @noThrow
+ */
 private func progressIndicatorWidth(total: Int64): Int64 {
     let v = (total - STATIC_SIZED_AREA_WIDTH) * 36 / 100
     max(min(v, MAX_PROGRESS_INDICATOR_WIDTH), MIN_PROGRESS_INDICATOR_WIDTH)
 }
 
+/*
+ * @noThrow
+ */
 private func groupNameWidth(total: Int64): Int64 {
     namedAreaWidth(total) - GROUP_WORD.size - 4 
 }
 
+/*
+ * @noThrow
+ */
 private func testCaseNameWidth(total: Int64): Int64 {
     total - TEST_WORD.size - 4  - 10  - MARK_WIDTH - 2 
 }
@@ -63,20 +75,38 @@ class TestProgressReporter <: UTProgressReporter {
 
     private let booker: TestProgressCollector
 
+    /*
+     * @noThrow
+     */
     TestProgressReporter(let testCasesParallelism: Int64, let isBrief!: Bool, let entriesLimit!: ?UInt64 = None) {
         booker = TestProgressCollector(testCasesParallelism)
     }
 
     public override prop updateQueue: NonBlockingQueue<UTProgress> {
+        /*
+         * @noThrow
+         */
         get() {
             booker.updateQueue
         }
     }
 
+    /*
+     * @noThrow
+     */
     public override func start(): Unit {
         booker.start()
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws OutOfMemoryError
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func report(terminalHeight: ?UInt64, terminalWidth: ?UInt64): PrettyText {
         booker.flushChanges()
         let report = PrettyText()
@@ -93,6 +123,13 @@ class TestProgressReporter <: UTProgressReporter {
         report
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws NoneValueException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func buildPackagesReport(): PrettyText {
         let text = PrettyText()
         let packages = booker.currentPackages
@@ -123,6 +160,12 @@ class TestProgressReporter <: UTProgressReporter {
         return text
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func buildTestCasesReport(): PrettyText {
         let text = PrettyText()
         let cases = booker.currentTestCases
@@ -140,6 +183,11 @@ class TestProgressReporter <: UTProgressReporter {
         return text
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func buildFailedCaseReport(): PrettyText {
         let text = PrettyText()
         if (let Some(failedCase) <- booker.lastFailedStep) {
@@ -153,6 +201,11 @@ class TestProgressReporter <: UTProgressReporter {
         return text
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func buildSummaryReport(): PrettyText {
         let text = PrettyText()
         let summary = booker.summary
@@ -193,17 +246,26 @@ class TestProgressReporter <: UTProgressReporter {
     }
 
     private prop packagesHeightLimit: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             height - testCasesHeightLimit - 2
         }
     }
 
     private prop testCasesHeightLimit: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             min(height - 2 - 1, testCasesParallelism)
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func adjustSize(terminalHeight: ?UInt64, terminalWidth: ?UInt64) {
         let prevWidth = width
         let prevHeight = height
@@ -260,59 +322,91 @@ private class TestProgressCollector {
 
     private let finishedPackages = ArrayList<String>()
 
+    /*
+     * @noThrow
+     */
     TestProgressCollector(testCasesParallelism: Int64) {
         casesOrder = Array<?Int64>(testCasesParallelism, repeat: None)
     }
 
     prop totalCasesCount: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             _totalCasesCount
         }
     }
 
     prop finishedCasesCount: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             _finishedCasesCount
         }
     }
 
     prop passedCasesCount: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             _passedCasesCount
         }
     }
 
     prop failedCasesCount: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             _failedCasesCount
         }
     }
 
     prop crashedWorkersCount: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             _crashedWorkers
         }
     }
 
     prop registeredPackagesCount: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             UInt64(totalPackageCasesCount.size)
         }
     }
 
     prop currentPackagesCount: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             UInt64(packagesOrder.size)
         }
     }
 
     prop lastFailedStep: ?FailedTestCaseProgressData {
+        /*
+         * @noThrow
+         */
         get() {
             _lastFailedStep
         }
     }
 
     prop currentPackages: Array<PackageProgressData> {
+        /*
+         * @throws NoneValueException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             packagesOrder |> filterMap<String, PackageProgressData> { name: String =>
                 let totalCases = totalPackageCasesCount[name]
@@ -330,6 +424,11 @@ private class TestProgressCollector {
     }
 
     prop currentTestCases: Array<TestCaseProgressData> {
+        /*
+         * @throws NoneValueException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             casesOrder |> filterMap<?Int64, TestCaseProgressData> { id_: ?Int64 =>
                 let id = id_ ?? return None
@@ -339,6 +438,9 @@ private class TestProgressCollector {
     }
 
     prop summary: SummaryProgressData {
+        /*
+         * @noThrow
+         */
         get() {
             SummaryProgressData(
                 passedCases: _passedCasesCount,
@@ -352,10 +454,20 @@ private class TestProgressCollector {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func start() {
         startTime = MonoTime.now()
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     * @throws NoneValueException
+     */
     func flushChanges() {
         clearFinishedPackages()
         while (true) {
@@ -375,10 +487,18 @@ private class TestProgressCollector {
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func addWorkerCrash(): Unit {
         _crashedWorkers += 1
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func registerWorkerIfRequired(cases: UInt64, id!: Int64, pack!: String) {
         if (cases == 0) {
             totalPackageCasesCount.addIfAbsent(pack, 0u64)
@@ -399,6 +519,10 @@ private class TestProgressCollector {
         }
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     */
     private func clearFinishedPackages() {
         for (pack in finishedPackages) {
             packagesOrder.removeIf { p: String => p == pack }
@@ -409,6 +533,12 @@ private class TestProgressCollector {
         finishedPackages.clear()
     }
 
+    /*
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func updateBody(body: ExecutionResultBody, workerId: Int64) {
         executing.remove(workerId)
         match (casesOrder.indexOf(workerId)) {
@@ -452,6 +582,12 @@ private class TestProgressCollector {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     * @throws NoneValueException
+     */
     private func updateHeader(header: ExecutionResultHeader, workerId: Int64) {
         if (executing.add(workerId, TestCaseProgressData(header.toCaseName(), suiteId: header.suiteId, startTime: header.startTime)).isNone()) {
             match (casesOrder.indexOf(None)) {
@@ -474,12 +610,21 @@ private class TestProgressCollector {
 }
 
 struct TestProgressData <: UTProgress {
+    /*
+     * @noThrow
+     */
     TestProgressData(let data: ExecutionResultPart, let workerId!: Int64 = 0) {}
 }
 
 private struct UniqueWorkerId <: Hashable & Equatable<UniqueWorkerId> {
+    /*
+     * @noThrow
+     */
     UniqueWorkerId(let id!: Int64, let pack!: String) {}
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         var hasher = DefaultHasher()
         hasher.write(id)
@@ -487,16 +632,25 @@ private struct UniqueWorkerId <: Hashable & Equatable<UniqueWorkerId> {
         return hasher.finish()
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(other: UniqueWorkerId): Bool {
         this.id == other.id && this.pack == other.pack
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(other: UniqueWorkerId): Bool {
         !(this == other)
     }
 }
 
 private struct PackageProgressData {
+    /*
+     * @noThrow
+     */
     PackageProgressData(
         let name: String,
         let totalCases!: UInt64,
@@ -507,26 +661,46 @@ private struct PackageProgressData {
     ) {}
 
     prop finishPercent: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             if (totalCases == 0) { 0u64 } else { 100 * finishedCases / totalCases }
         }
     }
 
     prop duration: Duration {
+        /*
+         * @throws ArithmeticException
+         */
         get() {
             DateTime.now() - startTime
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func trimmed(limit: Int64): String {
         trimPackage(name, limit: limit)
     }
 }
 
 private enum TestCaseName <: ToString {
+      /*
+       * @noThrow
+       */
     | CaseName(TestCaseId)
+      /*
+       * @noThrow
+       */
     | CNStep(LStep)
 
+    /*
+     * @noThrow
+     */
     public override func toString() {
         match (this) {
             case CaseName(s) => s.caseName
@@ -536,18 +710,32 @@ private enum TestCaseName <: ToString {
 }
 
 private struct TestCaseProgressData {
+    /*
+     * @noThrow
+     */
     TestCaseProgressData(let name: TestCaseName, let suiteId!: TestSuiteId, let startTime!: DateTime) {}
 
     prop duration: Duration {
+        /*
+         * @throws ArithmeticException
+         */
         get() {
             DateTime.now() - startTime
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func trimmed(limit: Int64): String {
         trim(suiteId, name, limit: limit)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func trim(suiteId: TestSuiteId, name: TestCaseName, limit!: Int64): String {
         let fullname = "${suiteId.suiteName}" + match (name) {
             case CaseName(_) => "."
@@ -558,8 +746,16 @@ private struct TestCaseProgressData {
 }
 
 private struct FailedTestCaseProgressData {
+    /*
+     * @noThrow
+     */
     FailedTestCaseProgressData(let name: TestCaseName, let suiteId!: TestSuiteId, let check!: RunStepResult) {}
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func trimmed(limit: Int64): String {
         let caseTrimmed = TestCaseProgressData.trim(suiteId, name, limit: limit)
         trimPackage(suiteId.groupName, limit: limit - caseTrimmed.size) + "." + caseTrimmed
@@ -567,6 +763,9 @@ private struct FailedTestCaseProgressData {
 }
 
 private struct SummaryProgressData {
+    /*
+     * @noThrow
+     */
     SummaryProgressData(
         let passedCases!: UInt64,
         let failedCases!: UInt64,
@@ -578,18 +777,27 @@ private struct SummaryProgressData {
     ) {}
 
     prop finishPercent: UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             if (totalCases == 0) { 0u64 } else { 100 * finishedCases / totalCases }
         }
     }
 
     prop isFailed: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             failedCases > 0u64
         }
     }
 
     prop duration: Duration {
+        /*
+         * @throws ArithmeticException
+         */
         get() {
             MonoTime.now() - startTime
         }
@@ -597,6 +805,10 @@ private struct SummaryProgressData {
 }
 
 extend ExecutionResultPart {
+    /*
+     * @throws NoneValueException
+     * @throws Exception
+     */
     func toCaseName(): TestCaseName {
         match (this) {
             case h: TestCaseExecutionResultHeader => CaseName(h.caseId)
@@ -612,6 +824,9 @@ extend ExecutionResultPart {
 
 extend ExecutionResultBody {
     prop isSkip: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             stepResult.subResults |> any { it: RunStepResult =>
                 match(it.kind) {
@@ -623,6 +838,9 @@ extend ExecutionResultBody {
     }
 
     prop isFailed: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             stepResult.subResults |> any { it: RunStepResult =>
                 it.hasFailures()
@@ -631,6 +849,9 @@ extend ExecutionResultBody {
     }
 
     prop firstFailedStep: RunStepResult {
+        /*
+         * @throws Exception
+         */
         get() {
             (stepResult.subResults |> filter { it: RunStepResult =>
                 it.hasFailures()
@@ -639,6 +860,9 @@ extend ExecutionResultBody {
     }
 
     prop isPassed: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             stepResult.subResults |> all { it: RunStepResult =>
                 match ((it.info, it.kind)) {
@@ -652,12 +876,18 @@ extend ExecutionResultBody {
     }
 
     prop isClassLifecycle: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             stepResult.subResults |> any { it: RunStepResult => it.kind.isClassLifecycle() }
         }
     }
 
     prop isBeforeAll: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             stepResult.subResults |> any { it: RunStepResult =>
                 match (it.kind) {
@@ -670,18 +900,28 @@ extend ExecutionResultBody {
 }
 
 extend TestCaseId {
+    /*
+     * @noThrow
+     */
     func toDisplayString() {
         "${suiteId.toDisplayString()}.${caseName}"
     }
 }
 
 extend TestSuiteId {
+    /*
+     * @noThrow
+     */
     func toDisplayString() {
         "${groupName}.${suiteName}"
     }
 }
 
 extend Duration {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toStringFormatted(): String {
         let hh = toHours().toString().padStart(2, padding: "0")
         let mm = (toMinutes() % 60).toString().padStart(2, padding: "0")
@@ -690,6 +930,11 @@ extend Duration {
     }
 }
 
+/*
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func trimPackage(pack: String, limit!: Int64): String {
     if (pack.size <= limit) { return pack }
     let levels = pack.split(".")
@@ -709,6 +954,10 @@ private func trimPackage(pack: String, limit!: Int64): String {
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func percentString(percent: UInt64, width!: Int64 = PERCENT_VALUE_WIDTH): String {
     percent.toString().padStart(width) + "%"
 }
@@ -736,6 +985,10 @@ private class Progress <: PrettyPrintable {
 
     private var prevPieceStatus = true
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     Progress(var totalPieces!: Int64) {
         pieces.reserve(totalPieces)
     }
@@ -744,6 +997,10 @@ private class Progress <: PrettyPrintable {
     private let NEGATIVE_COLOR = Color.RED
     private let GRAY_COLOR = Color.GRAY
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func update(positive!: Bool = true): Unit {
         if (pieces.size >= totalPieces) { return }
 
@@ -751,11 +1008,19 @@ private class Progress <: PrettyPrintable {
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func expand(extendBy: UInt64) {
         pieces.reserve(Int64(extendBy))
         totalPieces += Int64(extendBy)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func pprint(to: PrettyPrinter, crashedWorkers!: UInt64 = 0, width!: Int64, mainBar!: Bool = false): PrettyPrinter {
         if (prevWidth != width) {
             text = PrettyText()
@@ -794,14 +1059,24 @@ private class Progress <: PrettyPrintable {
         return to
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func pprint(to: PrettyPrinter): PrettyPrinter {
         pprint(to, width: DEFAULT_PROGRESS_INDICATOR_WIDTH)
     }
 
+    /*
+     * @noThrow
+     */
     private func progressPercent(ofIdx: Int64): Int64 {
         (ofIdx + 1) * 100 / totalPieces
     }
 
+    /*
+     * @noThrow
+     */
     private func progressWidth(ofIdx: Int64, fullWidth!: Int64): Int64 {
         progressPercent(ofIdx) * fullWidth / 100 - barIdx
     }

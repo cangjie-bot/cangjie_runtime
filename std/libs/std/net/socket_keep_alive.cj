@@ -25,6 +25,10 @@ public struct SocketKeepAliveConfig <: ToString & Equatable<SocketKeepAliveConfi
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public init(
         idle!: Duration = Duration.second * 45,
         interval!: Duration = Duration.second * 5,
@@ -35,14 +39,23 @@ public struct SocketKeepAliveConfig <: ToString & Equatable<SocketKeepAliveConfi
         this.count = count
     }
 
+    /*
+     * @noThrow
+     */
     public override func toString(): String {
         "SocketKeepAliveConfig(idle: ${idle}, interval: ${interval}, count: ${count})"
     }
 
+    /*
+     * @noThrow
+     */
     public override operator func ==(other: SocketKeepAliveConfig): Bool {
         idle == other.idle && interval == other.interval && count == other.count
     }
 
+    /*
+     * @noThrow
+     */
     public override operator func !=(other: SocketKeepAliveConfig): Bool {
         !(this == other)
     }

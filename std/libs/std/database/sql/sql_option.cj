@@ -9,6 +9,9 @@
 package std.database.sql
 
 
+             /*
+              * @noThrow
+              */
 public class SqlOption {
 
 

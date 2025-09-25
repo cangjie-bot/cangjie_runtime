@@ -11,45 +11,74 @@ package std.ast
 import std.collection.ArrayList
 
 public open class TypeNode <: Node {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token) {
         super()
         typeParameterName_ = typeParameterName
         colon_ = colon
     }
+    /*
+     * @noThrow
+     */
     init() {
         super()
     }
     private var typeParameterName_: Token = Token(TokenKind.IDENTIFIER, "")
     private var colon_: Token = Token(TokenKind.COLON)
     public mut prop typeParameterName: Token {
+        /*
+         * @noThrow
+         */
         get() {
             typeParameterName_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             typeParameterName_ = v
         }
     }
     public mut prop colon: Token {
+        /*
+         * @noThrow
+         */
         get() {
             colon_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, COLON)
             colon_ = v
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func toTokens(): Tokens {
         if (typeParameterName_.value.isEmpty()) {
             return Tokens()
         }
         return Tokens().append(typeParameterName_).append(colon_)
     }
+    /*
+     * @noThrow
+     */
     public open func traverse(v: Visitor): Unit {
         v.visit(this)
         return
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected open func dump(indent: UInt16): String {
         var ret: String = ""
         if (!typeParameterName_.value.isEmpty()) {
@@ -61,6 +90,17 @@ public open class TypeNode <: Node {
 }
 
 public class PrimitiveType <: TypeNode {
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseType(inputs) as PrimitiveType) {
@@ -79,30 +119,53 @@ public class PrimitiveType <: TypeNode {
             }
         }
     }
+    /*
+     * @noThrow
+     */
     public init() {}
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, keyword: Token) {
         super(typeParameterName, colon)
         this.keyword_ = keyword
     }
     private var keyword_: Token = Token()
     public mut prop keyword: Token {
+        /*
+         * @noThrow
+         */
         get() {
             keyword_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkPrimitiveType(v)
             keyword_ = v
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         return super.toTokens().append(keyword_)
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         return
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "PrimitiveType {\n"
         currentIndent = indent
@@ -117,6 +180,9 @@ public class PrimitiveType <: TypeNode {
 }
 
 public class RefType <: TypeNode {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, identifier: Token, lAngle: Token, typeArguments: ArrayList<TypeNode>,
         commas: Tokens, rAngle: Token) {
         super(typeParameterName, colon)
@@ -126,6 +192,17 @@ public class RefType <: TypeNode {
         commas_ = commas
         rAngle_ = rAngle
     }
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseType(inputs) as RefType) {
@@ -148,6 +225,9 @@ public class RefType <: TypeNode {
             }
         }
     }
+    /*
+     * @noThrow
+     */
     public init() {}
 
     private var identifier_: Token = Token()
@@ -156,49 +236,83 @@ public class RefType <: TypeNode {
     private var commas_: Tokens = Tokens()
     private var rAngle_: Token = Token()
     public mut prop identifier: Token {
+        /*
+         * @noThrow
+         */
         get() {
             identifier_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             identifier_ = v
         }
     }
     public mut prop lAngle: Token {
+        /*
+         * @noThrow
+         */
         get() {
             lAngle_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, LT)
             lAngle_ = v
         }
     }
     public mut prop typeArguments: ArrayList<TypeNode> {
+        /*
+         * @noThrow
+         */
         get() {
             typeArguments_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             typeArguments_ = v
         }
     }
     public mut prop commas: Tokens {
+        /*
+         * @noThrow
+         */
         get() {
             commas_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokensType(v, COMMA)
             commas_ = v
         }
     }
     public mut prop rAngle: Token {
+        /*
+         * @noThrow
+         */
         get() {
             rAngle_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, GT)
             rAngle_ = v
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = super.toTokens().append(identifier_)
         if (!typeArguments_.isEmpty()) {
@@ -213,6 +327,9 @@ public class RefType <: TypeNode {
         ret
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -224,6 +341,10 @@ public class RefType <: TypeNode {
         return
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "RefType {\n"
         currentIndent = indent
@@ -242,6 +363,9 @@ public class RefType <: TypeNode {
 }
 
 public class QualifiedType <: TypeNode {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, baseType: TypeNode, dot: Token, identifier: Token, lAngle: Token,
         typeArguments: ArrayList<TypeNode>, commas: Tokens, rAngle: Token) {
         super(typeParameterName, colon)
@@ -253,6 +377,17 @@ public class QualifiedType <: TypeNode {
         commas_ = commas
         rAngle_ = rAngle
     }
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseType(inputs) as QualifiedType) {
@@ -277,6 +412,9 @@ public class QualifiedType <: TypeNode {
             }
         }
     }
+    /*
+     * @noThrow
+     */
     public init() {}
     private var baseType_: TypeNode = TypeNode()
     private var dot_: Token = Token(TokenKind.DOT)
@@ -287,65 +425,111 @@ public class QualifiedType <: TypeNode {
     private var rAngle_: Token = Token()
 
     public mut prop baseType: TypeNode {
+        /*
+         * @noThrow
+         */
         get() {
             baseType_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             baseType_ = v
         }
     }
     public mut prop dot: Token {
+        /*
+         * @noThrow
+         */
         get() {
             dot_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, DOT)
             dot_ = v
         }
     }
     public mut prop identifier: Token {
+        /*
+         * @noThrow
+         */
         get() {
             identifier_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             identifier_ = v
         }
     }
     public mut prop lAngle: Token {
+        /*
+         * @noThrow
+         */
         get() {
             lAngle_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, LT)
             lAngle_ = v
         }
     }
     public mut prop typeArguments: ArrayList<TypeNode> {
+        /*
+         * @noThrow
+         */
         get() {
             typeArguments_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             typeArguments_ = v
         }
     }
     public mut prop commas: Tokens {
+        /*
+         * @noThrow
+         */
         get() {
             commas_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokensType(v, COMMA)
             commas_ = v
         }
     }
     public mut prop rAngle: Token {
+        /*
+         * @noThrow
+         */
         get() {
             rAngle_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, GT)
             rAngle_ = v
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = super.toTokens().append(baseType_.toTokens()).append(dot_).append(identifier_)
         if (!typeArguments_.isEmpty()) {
@@ -360,6 +544,9 @@ public class QualifiedType <: TypeNode {
         ret
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -372,6 +559,10 @@ public class QualifiedType <: TypeNode {
         return
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "QualifiedType {\n"
         currentIndent = indent
@@ -392,13 +583,30 @@ public class QualifiedType <: TypeNode {
 }
 
 public class ParenType <: TypeNode {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, lParen: Token, parenthesizedType: TypeNode, rParen: Token) {
         super(typeParameterName, colon)
         lParen_ = lParen
         this.ty_ = parenthesizedType
         rParen_ = rParen
     }
+    /*
+     * @noThrow
+     */
     public init() {}
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseType(inputs) as ParenType) {
@@ -423,35 +631,60 @@ public class ParenType <: TypeNode {
     private var ty_: TypeNode = TypeNode()
     private var rParen_: Token = Token(TokenKind.RPAREN)
     public mut prop lParen: Token {
+        /*
+         * @noThrow
+         */
         get() {
             lParen_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, LPAREN)
             lParen_ = v
         }
     }
     public mut prop parenthesizedType: TypeNode {
+        /*
+         * @noThrow
+         */
         get() {
             ty_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             ty_ = v
         }
     }
     public mut prop rParen: Token {
+        /*
+         * @noThrow
+         */
         get() {
             rParen_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, RPAREN)
             rParen_ = v
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         super.toTokens().append(lParen_).append(ty_.toTokens()).append(rParen_)
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -461,6 +694,10 @@ public class ParenType <: TypeNode {
         return
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ParenType {\n"
         currentIndent = indent
@@ -476,6 +713,9 @@ public class ParenType <: TypeNode {
 }
 
 public class TupleType <: TypeNode {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, lParen: Token, types: ArrayList<TypeNode>, commas: Tokens,
         rParen: Token) {
         super(typeParameterName, colon)
@@ -484,6 +724,17 @@ public class TupleType <: TypeNode {
         commas_ = commas
         rParen_ = rParen
     }
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseType(inputs) as TupleType) {
@@ -505,37 +756,62 @@ public class TupleType <: TypeNode {
             }
         }
     }
+    /*
+     * @noThrow
+     */
     public init() {}
     private var lParen_: Token = Token(TokenKind.LPAREN)
     private var types_: ArrayList<TypeNode> = ArrayList<TypeNode>()
     private var commas_: Tokens = Tokens()
     private var rParen_: Token = Token(TokenKind.RPAREN)
     public mut prop lParen: Token {
+        /*
+         * @noThrow
+         */
         get() {
             lParen_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, LPAREN)
             lParen_ = v
         }
     }
     public mut prop types: ArrayList<TypeNode> {
+        /*
+         * @noThrow
+         */
         get() {
             types_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             types_ = v
         }
     }
     public mut prop rParen: Token {
+        /*
+         * @noThrow
+         */
         get() {
             rParen_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, RPAREN)
             rParen_ = v
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = super.toTokens().append(lParen_)
         if (commas_.size == 0) {
@@ -550,6 +826,9 @@ public class TupleType <: TypeNode {
         ret.append(rParen_)
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -561,6 +840,10 @@ public class TupleType <: TypeNode {
         return
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "TupleType {\n"
         currentIndent = indent
@@ -578,10 +861,24 @@ public class TupleType <: TypeNode {
 }
 
 public class ThisType <: TypeNode {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, keyword: Token) {
         super(typeParameterName, colon)
         keyword_ = keyword
     }
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         let tokens = Tokens()
         tokens.append(quote(class tmp)).append(Token(LCURL)).append(quote(func f():)).append(inputs).append(quote({}}))
@@ -596,26 +893,46 @@ public class ThisType <: TypeNode {
             case None => throw ASTException("Cannot construct the 'ThisType' node.")
         }
     }
+    /*
+     * @noThrow
+     */
     public init() {
     }
     private var keyword_: Token = Token(TokenKind.THISTYPE)
     public mut prop keyword: Token {
+        /*
+         * @noThrow
+         */
         get() {
             keyword_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             keyword_ = v
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         super.toTokens().append(keyword_)
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         return
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ThisType {\n"
         currentIndent = indent
@@ -630,11 +947,25 @@ public class ThisType <: TypeNode {
 }
 
 public class PrefixType <: TypeNode {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, prefixOps: Tokens, baseType: TypeNode) {
         super(typeParameterName, colon)
         prefixOps_ = prefixOps
         baseType_ = baseType
     }
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseType(inputs) as PrefixType) {
@@ -654,29 +985,51 @@ public class PrefixType <: TypeNode {
             }
         }
     }
+    /*
+     * @noThrow
+     */
     public init() {}
     private var prefixOps_: Tokens = Tokens()
     private var baseType_: TypeNode = TypeNode()
     public mut prop prefixOps: Tokens {
+        /*
+         * @noThrow
+         */
         get() {
             prefixOps_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             prefixOps_ = v
         }
     }
     public mut prop baseType: TypeNode {
+        /*
+         * @noThrow
+         */
         get() {
             baseType_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             baseType_ = v
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         super.toTokens().append(prefixOps).append(baseType_)
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -686,6 +1039,10 @@ public class PrefixType <: TypeNode {
         return
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "PrefixType {\n"
         currentIndent = indent
@@ -704,6 +1061,9 @@ public class PrefixType <: TypeNode {
 }
 
 public class FuncType <: TypeNode {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, keyword: Token, lParen: Token, types: ArrayList<TypeNode>,
         commas: Tokens, rParen: Token, arrow: Token, returnType: TypeNode) {
         super(typeParameterName, colon)
@@ -715,6 +1075,17 @@ public class FuncType <: TypeNode {
         this.arrow_ = arrow
         this.retTy_ = returnType
     }
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseType(inputs) as FuncType) {
@@ -739,6 +1110,9 @@ public class FuncType <: TypeNode {
             }
         }
     }
+    /*
+     * @noThrow
+     */
     public init() {}
     private var keyword_: Token = Token()
     private var lParen_: Token = Token(TokenKind.LPAREN)
@@ -748,65 +1122,111 @@ public class FuncType <: TypeNode {
     private var arrow_: Token = Token(TokenKind.ARROW)
     private var retTy_: TypeNode = TypeNode()
     public mut prop keyword: Token {
+        /*
+         * @noThrow
+         */
         get() {
             keyword_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             keyword_ = v
         }
     }
     public mut prop lParen: Token {
+        /*
+         * @noThrow
+         */
         get() {
             lParen_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, LPAREN)
             lParen_ = v
         }
     }
     public mut prop types: ArrayList<TypeNode> {
+        /*
+         * @noThrow
+         */
         get() {
             types_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             types_ = v
         }
     }
     public mut prop commas: Tokens {
+        /*
+         * @noThrow
+         */
         get() {
             commas_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokensType(v, COMMA)
             commas_ = v
         }
     }
     public mut prop rParen: Token {
+        /*
+         * @noThrow
+         */
         get() {
             rParen_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, RPAREN)
             rParen_ = v
         }
     }
     public mut prop arrow: Token {
+        /*
+         * @noThrow
+         */
         get() {
             arrow_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, ARROW)
             arrow_ = v
         }
     }
     public mut prop returnType: TypeNode {
+        /*
+         * @noThrow
+         */
         get() {
             retTy_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             retTy_ = v
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = super.toTokens()
 
@@ -827,6 +1247,9 @@ public class FuncType <: TypeNode {
         ret
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -839,6 +1262,10 @@ public class FuncType <: TypeNode {
         return
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "FuncType {\n"
         currentIndent = indent
@@ -860,6 +1287,9 @@ public class FuncType <: TypeNode {
 }
 
 public class VArrayType <: TypeNode {
+    /*
+     * @noThrow
+     */
     init(typeParameterName: Token, colon: Token, keyword: Token, lAngle: Token, elementTy: TypeNode, dollar: Token,
         size: Token, rAngle: Token) {
         super(typeParameterName, colon)
@@ -870,6 +1300,17 @@ public class VArrayType <: TypeNode {
         constant_ = size
         rAngle_ = rAngle
     }
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseType(inputs) as VArrayType) {
@@ -893,6 +1334,9 @@ public class VArrayType <: TypeNode {
             }
         }
     }
+    /*
+     * @noThrow
+     */
     public init() {}
     private var keyword_: Token = Token(TokenKind.VARRAY)
     private var lAngle_: Token = Token(TokenKind.LT)
@@ -901,56 +1345,96 @@ public class VArrayType <: TypeNode {
     private var constant_: Token = Token()
     private var rAngle_: Token = Token(TokenKind.GT)
     public mut prop keyword: Token {
+        /*
+         * @noThrow
+         */
         get() {
             keyword_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             keyword_ = v
         }
     }
     public mut prop lAngle: Token {
+        /*
+         * @noThrow
+         */
         get() {
             lAngle_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, LT)
             lAngle_ = v
         }
     }
     public mut prop elementTy: TypeNode {
+        /*
+         * @noThrow
+         */
         get() {
             elementTy_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             elementTy_ = v
         }
     }
     public mut prop dollar: Token {
+        /*
+         * @noThrow
+         */
         get() {
             dollar_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, DOLLAR)
             dollar_ = v
         }
     }
     public mut prop size: Token {
+        /*
+         * @noThrow
+         */
         get() {
             constant_
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             constant_ = v
         }
     }
     public mut prop rAngle: Token {
+        /*
+         * @noThrow
+         */
         get() {
             rAngle_
         }
+        /*
+         * @throws ASTException
+         */
         set(v) {
             checkTokenType(v, GT)
             rAngle_ = v
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var comma = Token(TokenKind.COMMA).addPosition(elementTy_.endPos.fileID, elementTy_.endPos.line,
             elementTy_.endPos.column + 1)
@@ -965,6 +1449,9 @@ public class VArrayType <: TypeNode {
             .append(rAngle_)
     }
 
+    /*
+     * @noThrow
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -974,6 +1461,10 @@ public class VArrayType <: TypeNode {
         return
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "VArrayType {\n"
         currentIndent = indent

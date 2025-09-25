@@ -14,6 +14,9 @@ public class StackOverflowError <: Error {
     private let BottomFolded: UInt64 = 2
     private var FoldedFlag: UInt64 = NotFolded
 
+    /*
+     * @noThrow
+     */
     private func getIsFolded() {
         let size = arraySize(pcArray)
         if (size % 3 == 1) {
@@ -21,18 +24,32 @@ public class StackOverflowError <: Error {
         }
     }
 
+    /*
+     * @noThrow
+     */
     init() {
         super()
         getIsFolded()
     }
+    /*
+     * @noThrow
+     */
     init(message: String) {
         super(message)
         getIsFolded()
     }
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "StackOverflowError"
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func printStackTrace(): Unit {
         eprintln("An exception has occurred:")
         eprintln(toString())

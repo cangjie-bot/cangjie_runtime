@@ -21,6 +21,9 @@ import std.time.MonoTime
 public class Mutex <: UniqueLock {
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public init() {
         var isNull = mutexInit(this)
         if (isNull) {
@@ -30,6 +33,9 @@ public class Mutex <: UniqueLock {
 
 
 
+    /*
+     * @noThrow
+     */
     public func lock(): Unit {
         mutexLock(this)
     }
@@ -37,6 +43,9 @@ public class Mutex <: UniqueLock {
 
 
 
+    /*
+     * @noThrow
+     */
     public func tryLock(): Bool {
         return mutexTryLock(this)
     }
@@ -44,6 +53,9 @@ public class Mutex <: UniqueLock {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func unlock(): Unit {
         checkMutexStatus()
         mutexUnlock(this)
@@ -51,12 +63,18 @@ public class Mutex <: UniqueLock {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func condition(): Condition {
         checkMutexStatus()
         return MutexCondition(this)
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     func checkMutexStatus(): Unit {
         let status = mutexCheckStatus(this)
         if (!status) {
@@ -69,12 +87,18 @@ public class Mutex <: UniqueLock {
 class MutexCondition <: Condition {
     private let condition: Monitor
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     init(mutex: Mutex) {
         condition = Monitor(mutex)
     }
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func wait(): Unit {
         condition.checkMutexStatus()
         monitorWait(condition, MAX_TIMEOUT_NS)
@@ -85,6 +109,11 @@ class MutexCondition <: Condition {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func wait(timeout!: Duration): Bool {
         let timeoutNanos = getTimeoutNanos(timeout)
         condition.checkMutexStatus()
@@ -93,6 +122,9 @@ class MutexCondition <: Condition {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func waitUntil(predicate: () -> Bool): Unit {
         condition.checkMutexStatus()
         while (!predicate()) {
@@ -102,6 +134,11 @@ class MutexCondition <: Condition {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     */
     public func waitUntil(predicate: () -> Bool, timeout!: Duration): Bool {
         let timeoutNanos = getTimeoutNanos(timeout)
         condition.checkMutexStatus()
@@ -124,6 +161,9 @@ class MutexCondition <: Condition {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func notify(): Unit {
         condition.checkMutexStatus()
         monitorNotify(condition)
@@ -131,11 +171,18 @@ class MutexCondition <: Condition {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public func notifyAll(): Unit {
         condition.checkMutexStatus()
         monitorNotifyAll(condition)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     func getTimeoutNanos(timeout: Duration): Int64 {
         if (timeout <= Duration.Zero) {
             throw IllegalArgumentException("Timeout cannot be less than or equal to `Duration.Zero`.")

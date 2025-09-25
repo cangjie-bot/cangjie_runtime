@@ -18,6 +18,10 @@ class TestSuiteExecutor {
     private let suiteConfiguration: Configuration
     private let suiteInfo: TestSuiteReportInfo
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     TestSuiteExecutor(
         private let externalConfiguration: Configuration,
         private let suiteId: TestSuiteId,
@@ -28,6 +32,30 @@ class TestSuiteExecutor {
         this.suiteInfo = TestSuiteReportInfo(tags: this.suiteConfiguration.tags)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws InvalidDataException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws MockFrameworkException
+     * @throws IllegalSynchronizationStateException
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws Exception
+     */
     func execute(): TestSuiteResult {
         let result = TestSuiteResult(suiteId, suiteInfo)
 
@@ -74,14 +102,44 @@ class TestSuiteExecutor {
         result
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func shallNotRunLifecycle(testCases: Collection<CaseOrBench>): Bool {
         suiteConfiguration.skip || externalConfiguration.noRun || testCases.isEmpty() || allSkipped(testCases)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func allSkipped(testCases: Collection<CaseOrBench>): Bool {
         testCases |> all<CaseOrBench> { it => it.caseConfiguration.skip }
     }
 
+    /*
+     * @throws MockFrameworkInternalError
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws ExpectationFailedException
+     * @throws EnvException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws JsonException
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws IllegalStateException
+     * @throws AssertException
+     */
     private func tryRun(testOrBench: CaseOrBench): TestCaseResult {
         let caseId = TestCaseId(suiteId, testOrBench.name, isBench: testOrBench.isBench)
         let caseInfo = TestCaseReportInfo(tags: testOrBench.caseConfiguration.tags)
@@ -106,6 +164,20 @@ class TestSuiteExecutor {
         runTestCaseStep(caseId, caseInfo, suiteInfo, caseConfiguration, caseRunner)
     }
 
+    /*
+     * @throws AssertException
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     */
     private static func runNonTestBodyStep(
         suiteId: TestSuiteId, suiteInfo: TestSuiteReportInfo,
         stepKind: LStep, stepBody: () -> Unit
@@ -122,10 +194,31 @@ class TestSuiteExecutor {
         return result
     }
 
+    /*
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func runLifecycleStep(step: LStep, stepBody: () -> Unit): RunStepResult {
         Framework.runStepBody(Lifecycle(step), Test(0), stepBody)
     }
 
+    /*
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     */
     private static func runTestCaseStep(
         caseId: TestCaseId,
         caseInfo: TestCaseReportInfo,
@@ -142,14 +235,38 @@ class TestSuiteExecutor {
         return testCaseResult
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     func runSkip(testCaseResult: TestCaseResult): Unit {
         testCaseResult.add(RunStepResult(0, DateTime.now(), StepKind.Skip, Test(0), duration: Duration.Zero))
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     func runNoRun(testCaseResult: TestCaseResult): Unit {
         testCaseResult.add(RunStepResult(0, DateTime.now(), StepKind.NoRun, Test(0), duration: Duration.Zero))
     }
 
+    /*
+     * @throws ExpectationFailedException
+     * @throws MockFrameworkException
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     func runSingleCase(caseConfiguration: Configuration, executor: Executor): (TestCaseResult) -> Unit {
         return { result =>
             let caseId = result.caseId
@@ -171,6 +288,27 @@ class TestSuiteExecutor {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws EnvException
+     * @throws OverflowException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws JsonException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws IllegalStateException
+     * @throws AssertException
+     */
     private static func runConsideringTimeout(
         caseConfiguration: Configuration,
         duration: Duration,
@@ -192,6 +330,27 @@ class TestSuiteExecutor {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws EnvException
+     * @throws OverflowException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws JsonException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws IllegalStateException
+     * @throws AssertException
+     */
     private static func onTimeout(
         caseConfiguration: Configuration, 
         testCaseResult: TestCaseResult, 
@@ -211,6 +370,21 @@ class TestSuiteExecutor {
         }
     }
 
+    /*
+     * @throws AssertException
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws EnvException
+     */
     private static func exitOnTimeout(testCaseResult: TestCaseResult) {
         Framework.withCurrentContext { ctx: RunContext => 
             let msg = "Test case ended with timeout."
@@ -237,17 +411,28 @@ class TestSuiteExecutor {
 
 extend TestSuite {
     prop wholeConfiguration: Configuration {
+        /*
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             Configuration.merge(this.template?.wholeConfiguration ?? Configuration(), this.suiteConfiguration)
         }
     }
 
     prop allCasesIterator: Iterable<CaseOrBench> {
+        /*
+         * @noThrow
+         */
         get() {
             chain(template?.allCasesIterator ?? Array<CaseOrBench>().iterator(), cases)
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func allCasesToBeExecuted(filterService: FilterService, suiteId: TestSuiteId): Array<CaseOrBench> {
         allCasesIterator |> filter { cob: CaseOrBench =>
             let caseKey = CaseFilterKey.fromTestCase(suiteId, cob, config: cob.caseConfiguration)
@@ -255,10 +440,22 @@ extend TestSuite {
         } |> collectArray
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func casesCountToBeExecuted(filterService: FilterService, suiteId: TestSuiteId): Int64 {
         allCasesToBeExecuted(filterService, suiteId).size
     }
 
+    /*
+     * @throws ExpectationFailedException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func runBeforeEach(caseShortName: String): Unit {
         try {
             MockFramework.openSession("func beforeEach", Forbidden)
@@ -268,6 +465,9 @@ extend TestSuite {
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func runBeforeEachMocked(caseShortName: String): Unit {
         this.template?.runBeforeEachMocked(caseShortName)
         for (c in beforeEachs) {
@@ -275,6 +475,9 @@ extend TestSuite {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func runAfterEach(caseShortName: String): Unit {
         for (c in afterEachs) {
             c(caseShortName)
@@ -282,6 +485,9 @@ extend TestSuite {
         this.template?.runAfterEach(caseShortName)
     }
 
+    /*
+     * @noThrow
+     */
     func runBeforeAll(): Unit {
         this.template?.runBeforeAll()
         for (c in beforeAlls) {
@@ -289,6 +495,9 @@ extend TestSuite {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func runAfterAll(): Unit {
         for (c in afterAlls) {
             c()
@@ -299,6 +508,9 @@ extend TestSuite {
 
 extend Configuration {
     prop skip: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             this.get(KeySkip.skip) ?? false
         }

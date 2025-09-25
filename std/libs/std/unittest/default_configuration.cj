@@ -15,6 +15,12 @@ import std.random.Random
 import std.unittest.prop_test.*
 import std.unittest.common.KeyTags
 
+/*
+ * @throws IllegalArgumentException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws ArithmeticException
+ */
 func fillAbsentValues(config: Configuration) {
     config.setIfAbsent(KeyGenerationSteps.generationSteps, 200)
     config.setIfAbsent(KeyReductionSteps.reductionSteps, 200)
@@ -26,6 +32,11 @@ func fillAbsentValues(config: Configuration) {
     config.setIfAbsent(KeyMeasurementInfo.measurementInfo, TimeNow().info)
 }
 
+/*
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func kebabCaseToCamelCase(str: String) {
     let sb: StringBuilder = StringBuilder()
     let split = str.lazySplit("-", removeEmpty: true)
@@ -39,6 +50,10 @@ func kebabCaseToCamelCase(str: String) {
     return sb.toString()
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func camelCaseToKebabCase(str: String): String {
     let sb = StringBuilder()
     for (c in str.runes()) {
@@ -53,6 +68,12 @@ func camelCaseToKebabCase(str: String): String {
     return sb.toString()
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func setValueWithGuessedType(configuration: Configuration, key: String, value: String) {
     try {
         let jsv = JsonValue.fromStr(value)
@@ -68,6 +89,20 @@ func setValueWithGuessedType(configuration: Configuration, key: String, value: S
     }
 }
 
+/*
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws UnittestCliOptionsFormatException
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ */
 func buildDefaultConfiguration(): Configuration {
     let programArgs = Process.current.arguments
     let result = Configuration()
@@ -106,6 +141,20 @@ var defaultConfigurationCached: AtomicOptionReference<Configuration> = AtomicOpt
 
 
 
+/*
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws UnittestCliOptionsFormatException
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ */
 public func defaultConfiguration(): Configuration {
     match (defaultConfigurationCached.load()) {
         case Some(c) => return c
@@ -119,6 +168,14 @@ public func defaultConfiguration(): Configuration {
             }
     }
 }
+/*
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws UnittestCliOptionsFormatException
+ */
 func setValuesFromJsonConfiguration(configuration: Configuration, rawJson: String) {
     let jsonObject = JsonValue.fromStr(rawJson).asObject()
     for ((key, jsonValue) in jsonObject.getFields()) {
@@ -135,8 +192,14 @@ func setValuesFromJsonConfiguration(configuration: Configuration, rawJson: Strin
 
 private enum Guesser {
     | Success
+      /*
+       * @noThrow
+       */
     | Fail(Exception)
 
+    /*
+     * @noThrow
+     */
     static func tryDefault(cb: () -> Unit): Guesser {
         try {
             cb()
@@ -146,6 +209,9 @@ private enum Guesser {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func orTry(cb: () -> Unit): Guesser {
         match (this) {
             case Success => Success
@@ -159,6 +225,9 @@ private enum Guesser {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func orFail(): Unit {
         match (this) {
             case Success => ()
@@ -168,6 +237,11 @@ private enum Guesser {
 }
 
 extend Configuration {
+    /*
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     func setIfAbsent<T>(key: KeyFor<T>, value: T): Unit {
         match (get<T>(key)) {
             case Some(_) => ()
@@ -175,6 +249,11 @@ extend Configuration {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     func setIfAbsentByName<T>(name: String, value: T): Unit {
         match (getByName<T>(name)) {
             case Some(_) => ()
@@ -182,6 +261,11 @@ extend Configuration {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     func guessInteger(name: String, value: Int64): Unit {
         Guesser.tryDefault { setByName(name, value) }
             .orTry { setByName(name, Int32(value)) }
@@ -194,6 +278,11 @@ extend Configuration {
             .orFail()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     func guessFloat(name: String, value: Float64): Unit {
         Guesser.tryDefault { setByName(name, value) }
             .orTry { setByName(name, Float32(value)) }
@@ -202,6 +291,9 @@ extend Configuration {
     }
 }
 
+/*
+ * @noThrow
+ */
 func typeValidator<T>(name: String): (Any) -> OptionValidity {
     { x: Any =>
         match (x) {
@@ -211,6 +303,13 @@ func typeValidator<T>(name: String): (Any) -> OptionValidity {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws NoneValueException
+ * @throws IllegalSynchronizationStateException
+ */
 func registerUnittestOption<T>(
     key: KeyFor<T>,
     description!: ?String = None,

@@ -12,6 +12,15 @@ import std.unittest.mock.*
 import std.collection.ArrayList
 import std.random.Random
 
+/*
+ * @throws OutOfMemoryError
+ * @throws ExpectationFailedException
+ * @throws IllegalSynchronizationStateException
+ * @throws IndexOutOfBoundsException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ * @throws MockFrameworkException
+ */
 func runTestStep(
     caseId: TestCaseId, f: () -> Unit
 ): Unit {
@@ -26,26 +35,47 @@ func runTestStep(
 
 extend Configuration {
     prop coverageGuided: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyCoverageGuided.coverageGuided) ?? false }
     }
     prop coverageGuidedInitialSeeds: Int64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyCoverageGuidedInitialSeeds.coverageGuidedInitialSeeds) ?? 20 }
     }
     prop coverageGuidedMaxCandidates: Int64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyCoverageGuidedMaxCandidates.coverageGuidedMaxCandidates) ?? 200 }
     }
     prop coverageGuidedBaselineScore: Int64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyCoverageGuidedBaselineScore.coverageGuidedBaselineScore) ?? 2000 }
     }
     prop coverageGuidedNewCoverageScore: Int64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyCoverageGuidedNewCoverageScore.coverageGuidedNewCoverageScore) ?? 4000 }
     }
     prop coverageGuidedNewCoverageBonus: Int64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyCoverageGuidedNewCoverageBonus.coverageGuidedNewCoverageBonus) ?? 500 }
     }
 }
 
 interface Executor {
+    /*
+     * @noThrow
+     */
     func execute(suiteInfo: TestSuiteReportInfo, caseResult: TestCaseResult, configuration: Configuration): Unit
 }
 
@@ -54,6 +84,9 @@ class TestCaseExecutor<T> <: Executor {
     var randomSeed = None<Int64>
     var hasMoreParameters: Bool = true
 
+    /*
+     * @noThrow
+     */
     TestCaseExecutor(
         private let strategy: DataStrategyProcessor<T>,
         private let body: (T) -> Unit
@@ -61,6 +94,14 @@ class TestCaseExecutor<T> <: Executor {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     */
     private func nextIterationOrBreak(
         currentResult: TestCaseResult,
         configuration: Configuration
@@ -86,17 +127,39 @@ class TestCaseExecutor<T> <: Executor {
         return true
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func putToQue(que: ArrayList<(CovRandomSource, Int64)>,
         varg: Array<(element: CovRandomSource, score: Int64)>) {
         que.add(all: varg)
         que.sortBy { l, r => l[1].compare(r[1]) }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func popFromQue(que: ArrayList<(CovRandomSource, Int64)>): (CovRandomSource, Int64) {
         let last = que.remove(at: que.size - 1)
         last
     }
 
+    /*
+     * @throws ExpectationFailedException
+     * @throws MockFrameworkException
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws Exception
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     private func coverageGuidedLoop(
         tcase: TestCaseResult,
         progress: ProgressOutput,
@@ -141,6 +204,20 @@ class TestCaseExecutor<T> <: Executor {
         progress.verboseLine("")
     }
 
+    /*
+     * @throws ExpectationFailedException
+     * @throws MockFrameworkException
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws Exception
+     * @throws OutOfMemoryError
+     * @throws IllegalStateException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     private func executeGuided(result: TestCaseResult, configuration: Configuration): Unit {
         let progress = ProgressOutput(configuration)
         unsafe { CJ_MICROFUZZ_RESET_ALL_COVERAGE_INFO() }
@@ -186,10 +263,27 @@ class TestCaseExecutor<T> <: Executor {
         coverageGuidedLoop(result, progress, localConfiguration, random, que, actualBody)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func argDescription(param: Array<InputParameter>) {
         ArgumentDescription(formatArguments(param), generationStep - 1, strategy.currentReduction, randomSeed)
     }
 
+    /*
+     * @throws ExpectationFailedException
+     * @throws MockFrameworkException
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     private func executeFiniteSubstrategy(
         result: TestCaseResult,
         configuration: Configuration,
@@ -243,6 +337,20 @@ class TestCaseExecutor<T> <: Executor {
         hasMoreParameters = false
     }
 
+    /*
+     * @throws ExpectationFailedException
+     * @throws MockFrameworkException
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws ArithmeticException
+     */
     public func execute(_: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
         generationStep = 0
         hasMoreParameters = true
@@ -264,6 +372,10 @@ class TestCaseExecutor<T> <: Executor {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func formatArguments(inputs: Array<InputParameter>): ?PrettyText {
         if (inputs.isNoArg()) {
             return None
@@ -279,12 +391,20 @@ class TestCaseExecutor<T> <: Executor {
 }
 
 extend RunStepResult {
+    /*
+     * @throws ArithmeticException
+     */
     func withUpdatedStep(newKind: StepKind): RunStepResult {
         RunStepResult(checksPassed, startTimestamp, newKind, info, duration: duration)
     }
 }
 
 extend Exception {
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func asCheckResult(): ?CheckResult {
         match (this) {
             case mockException: PrettyException => MockFrameworkCheckResult(PrettyText.of(mockException))
@@ -306,6 +426,13 @@ extend Exception {
     }
 }
 
+/*
+ * @throws IllegalSynchronizationStateException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ArithmeticException
+ */
 func strategyErrorAsResult(e: Exception, descr: ArgumentDescription): RunStepResult {
     let existingChecks = Framework.collectUnattachedFailures()
     let errorCheckResults = e.asCheckResult() ??

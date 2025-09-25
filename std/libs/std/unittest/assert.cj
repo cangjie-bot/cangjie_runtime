@@ -19,6 +19,14 @@ import std.unittest.common.*
 
 
 
+/*
+ * @throws Error
+ * @throws UnittestTimeoutException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws AssertException
+ */
 public func assertEqual<T>(
     leftStr: String,
     rightStr: String,
@@ -39,6 +47,14 @@ public func assertEqual<T>(
 
 
 
+/*
+ * @throws Error
+ * @throws UnittestTimeoutException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws AssertException
+ */
 public func assertEqual<T>(
     leftStr: String,
     rightStr: String,
@@ -72,6 +88,13 @@ public func assertEqual<T>(
 
 
 
+/*
+ * @throws Error
+ * @throws UnittestTimeoutException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func expectEqual<T>(
     leftStr: String,
     rightStr: String,
@@ -90,6 +113,13 @@ public func expectEqual<T>(
 
 
 
+/*
+ * @throws Error
+ * @throws UnittestTimeoutException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func expectEqual<T>(
     leftStr: String,
     rightStr: String,
@@ -114,6 +144,9 @@ public func expectEqual<T>(
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 func buildCheckResult<T>(
     leftStr: String,
     rightStr: String,

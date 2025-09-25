@@ -22,11 +22,20 @@ public class ConsoleReader <: InputStream {
     private var buffer: Array<Byte> = Array<Byte>(defaultCapacity, repeat: 0) 
     private var endIndex: Int64 = 0
     private var startIndex: Int64 = 0
+    /*
+     * @noThrow
+     */
     init() {}
 
 
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     */
     public func read(): ?Rune {
         synchronized(mutex) {
             if (endIndex == startIndex && !readFromConsole()) {
@@ -40,6 +49,12 @@ public class ConsoleReader <: InputStream {
     }
 
     
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func readln(): ?String {
         if (let Some(line) <- readUntil(r'\n')) {
             let size = line.size
@@ -55,18 +70,36 @@ public class ConsoleReader <: InputStream {
     }
 
     
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func readToEnd(): ?String {
         return readUntil({_ => false})
     }
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func readUntil(ch: Rune): ?String {
         return readUntil({it => it == ch})
     }
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func readUntil(predicate: (Rune) -> Bool): ?String {
         let result: StringBuilder = StringBuilder()
         synchronized(mutex) {
@@ -94,6 +127,12 @@ public class ConsoleReader <: InputStream {
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func read(arr: Array<Byte>): Int64 {
         let arraySize = arr.size
         synchronized(mutex) {
@@ -112,6 +151,11 @@ public class ConsoleReader <: InputStream {
         return arraySize
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     */
     private func readFromConsole(): Bool {
         let line: CPointer<StructureString> = unsafe { CJ_CONSOLE_Readline() }
         if (line.isNull()) {
@@ -133,6 +177,9 @@ public class ConsoleReader <: InputStream {
     }
 
 
+    /*
+     * @noThrow
+     */
     private func findFirstOf(predicate: (Rune) -> Bool): ?Int64 {
         var byteOffset = startIndex
         while (byteOffset < endIndex) {
@@ -146,6 +193,11 @@ public class ConsoleReader <: InputStream {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     */
     unsafe func append(str: StructureString): Unit {
         let itemLen = Int64(str.length)
         this.reserve(itemLen)
@@ -169,6 +221,10 @@ public class ConsoleReader <: InputStream {
     }
 
     @OverflowThrowing
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func reserve(addition: Int64): Unit {
         let rightRemain = this.buffer.size - this.endIndex
         if (rightRemain >= addition) {
@@ -185,6 +241,10 @@ public class ConsoleReader <: InputStream {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func grow(minCapacity: Int64): Unit {
         let oldCapacity = this.buffer.size
         var newCapacity = oldCapacity + (oldCapacity >> 1)

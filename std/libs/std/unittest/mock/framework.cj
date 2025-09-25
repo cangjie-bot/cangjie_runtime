@@ -22,6 +22,10 @@ public class MockFramework {
     private let globalLock = ReentrantMutex()
     private let objCounter = AtomicUInt64(0)
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     init() {
         CallHandler.recordStatic(CallHandlerImpl(objCounter.fetchAdd(1), GLOBAL_SESSION_NAME))
     }
@@ -34,6 +38,13 @@ public class MockFramework {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public static func openSession(name: String, sessionKind: MockSessionKind): Unit {
         return _FRAMEWORK.doOpen(name, sessionKind)
     }
@@ -45,14 +56,28 @@ public class MockFramework {
 
 
 
+    /*
+     * @throws ExpectationFailedException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public static func closeSession(): Unit {
         return _FRAMEWORK.doClose()
     }
 
+    /*
+     * @noThrow
+     */
     func generateUniqueId(): UInt64 {
         return objCounter.fetchAdd(1)
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     private func lock<T>(body: () -> T): T {
         try {
             globalLock.lock()
@@ -62,6 +87,13 @@ public class MockFramework {
         }
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     private func doOpen(name: String, sessionKind: MockSessionKind): Unit {
         lock {
             match (currentSession().sessionKind) {
@@ -73,10 +105,24 @@ public class MockFramework {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalSynchronizationStateException
+     */
     static func session<T>(body: (MockSession) -> T): T {
         return _FRAMEWORK.lock { body(_FRAMEWORK.currentSession()) }
     }
 
+    /*
+     * @throws ExpectationFailedException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     private func doClose(): Unit {
         lock {
             let lastSessionIndex = match (sessions.size) {
@@ -95,10 +141,22 @@ public class MockFramework {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     private func currentSession(): MockSession {
         return sessions.get(sessions.size - 1) ?? internalError("Should always have global session open")
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     * @throws IllegalSynchronizationStateException
+     */
     static func recordCall<R>(
         recordingInfo: RecordingInfo, dummyCall: () -> R
     ): RecordedCall {
@@ -111,6 +169,12 @@ public class MockFramework {
         }
     }
 
+    /*
+     * @throws MockFrameworkException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func getAction(
         sc: Scenario, currentSession: MockSession, invocation: Invocation, call: Call
     ): OnCall {
@@ -131,6 +195,12 @@ public class MockFramework {
         }
     }
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     private func handleCall(call: Call, objId: UInt64, objectCreatedAtSessionName: ?String): OnCall {
         let currentSession = currentSession()
         let obj = if (objId != 0) {
@@ -165,6 +235,12 @@ public class MockFramework {
         return defaultBehaviour
     }
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     private func handleUnstubbed(invocation: Invocation, log: MutableLog, unmatchedChains: UnmatchedChains): OnCall {
         let mockObject = match (invocation.mockObject) {
             case Some(o) => o
@@ -204,23 +280,43 @@ public class MockFramework {
         )
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func logAndThrow(log: MutableLog, invocation: Invocation, error: PrettyException): Nothing {
         log.newEntry(LogEntry(invocation, Failure(error)))
         throw error
     }
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     func handleSync(call: Call, objId: UInt64, objectCreatedAtSessionName: ?String): OnCall {
         lock {
             handleCall(call, objId, objectCreatedAtSessionName)
         }
     }
 
+    /*
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     func registerObject(mockObject: MockObject) {
         lock {
             currentSession().objectRegistry[mockObject.id] = mockObject
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func findObjectById(id: UInt64): Option<MockObject> {
         for (session in sessions) {
             if (let Some(obj) <- session.objectRegistry.get(id)) {
@@ -230,12 +326,21 @@ public class MockFramework {
         return None
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     func findObjectIdsByRefs(referencesToFind: Array<Object>): Set<UInt64> {
         lock {
             doFindObjectIdsByRefs(referencesToFind)
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func doFindObjectIdsByRefs(referencesToFind: Array<Object>) {
         let ids = HashSet<UInt64>()
         for (session in sessions) {
@@ -248,6 +353,11 @@ public class MockFramework {
         return ids
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     private func getSingleArg(call: Call): Any {
         if (call.args.size != 1) {
             internalError(InconsistentState("Setters must have a single argument."))
@@ -255,6 +365,12 @@ public class MockFramework {
         return call.args[0]
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     protected func throwNotAMockObject() {
         let recordingInfo = recording?.info ??
             internalError(InternalError.InconsistentState("There is no recording call info before actual calling"))
@@ -263,6 +379,9 @@ public class MockFramework {
 }
 
 extend MockObject {
+    /*
+     * @noThrow
+     */
     func hasMode(mode: StubMode) {
         for (m in modes) {
             match ((m, mode)) {
@@ -277,12 +396,18 @@ extend MockObject {
 
 extend Invocation {
     prop isDefaultEnabled: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             (mockObject?.hasMode(ReturnsDefaults) ?? false) && !call.funcInfo.isSetter
         }
     }
 
     prop canReturnDefaultValue: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             isDefaultEnabled && call.funcInfo.hasDefaultValue
         }
@@ -290,16 +415,32 @@ extend Invocation {
 }
 
 class CallHandlerImpl <: CallHandler {
+    /*
+     * @noThrow
+     */
     CallHandlerImpl(
         private let objId: UInt64,
         private let objectCreatedAtSessionName: ?String
     ) {}
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func onCall(call: Call): OnCall {
         _FRAMEWORK.handleSync(call, objId, objectCreatedAtSessionName)
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func requireMockObject<T>(obj: T): T {
         if (obj is Mocked) {
             return obj
@@ -309,9 +450,17 @@ class CallHandlerImpl <: CallHandler {
     }
 }
 
+      /*
+       * @noThrow
+       */
 class MockScopeViolation <: FailureReport {
     static let HINT = "Hint: accessing mock objects outside its intended use scope can lead to unstable tests"
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func reportInaccessible(createdAtSessionName: ?String, whereSessionName: ?String) {
         let message = build {
             errorHeader("Illegal mock object access")

@@ -36,11 +36,23 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public init(bindAt!: UInt16) {
         this(bindAt: IPSocketAddress(IPv4Address.unspecified, bindAt))
     }
 
 
+    /*
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public init(bindAt!: SocketAddress) {
         checkAddress(bindAt, "bindAt")
         impl = SocketCommon(SocketNet.UDP, bindAt.family, DatagramMode)
@@ -51,6 +63,13 @@ public class UdpSocket <: DatagramSocket {
 
 
     public override prop remoteAddress: ?SocketAddress {
+        /*
+         * @throws SocketException
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         */
         get() {
             impl.remoteAddress
         }
@@ -60,6 +79,13 @@ public class UdpSocket <: DatagramSocket {
 
 
     public override prop localAddress: SocketAddress {
+        /*
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         */
         get() {
             impl.localAddress ?? SocketException.notYetBoundNeedBind()
         }
@@ -73,9 +99,17 @@ public class UdpSocket <: DatagramSocket {
 
 
     public override mut prop receiveTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             impl.readTimeout
         }
+        /*
+         * @throws IllegalArgumentException
+         * @throws ArithmeticException
+         * @throws SocketException
+         */
         set(timeout) {
             impl.readTimeout = timeout?.throwIfNegative("Receive timeout").toNanosecondGranularity()
         }
@@ -90,9 +124,17 @@ public class UdpSocket <: DatagramSocket {
 
 
     public override mut prop sendTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             impl.writeTimeout
         }
+        /*
+         * @throws IllegalArgumentException
+         * @throws ArithmeticException
+         * @throws SocketException
+         */
         set(timeout) {
             impl.writeTimeout = timeout?.throwIfNegative("Send timeout").toNanosecondGranularity()
         }
@@ -100,16 +142,33 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public override func close(): Unit {
         impl.close()
     }
 
 
+    /*
+     * @noThrow
+     */
     public override func isClosed(): Bool {
         impl.isClosed()
     }
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     public func bind(): Unit {
         impl.bind(None)
     }
@@ -126,6 +185,17 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws getOrFail
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     public func connect(remote: SocketAddress): Unit {
         throwIfIPv4ZeroOnWindows(remote)
         checkAddress(remote, "remote")
@@ -147,6 +217,15 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func disconnect(): Unit {
         impl.disconnect()
     }
@@ -163,6 +242,14 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public override func receiveFrom(buffer: Array<Byte>): (SocketAddress, Int64) {
         impl.receiveFrom(buffer) ?? SocketException.throwClosedException()
     }
@@ -175,6 +262,15 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     public override func sendTo(recipient: SocketAddress, payload: Array<Byte>): Unit {
         throwIfIPv4ZeroOnWindows(
             recipient as IPSocketAddress ?? throw IllegalArgumentException(
@@ -201,6 +297,15 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws SocketException
+     */
     public func send(payload: Array<Byte>): Unit {
         if (OS == "macOS") {
             impl.write(payload)
@@ -215,6 +320,14 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public func receive(buffer: Array<Byte>): Int64 {
         let _ = impl.remoteAddress ?? SocketException.notYetConnected()
         let (_, size) = receiveFrom(buffer)
@@ -226,9 +339,25 @@ public class UdpSocket <: DatagramSocket {
 
 
     public mut prop reusePort: Bool {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             impl.getSocketOptionBool(SOL_SOCKET, SOCK_REUSEPORT)
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         set(reuse) {
             impl.setSocketOptionBool(SOL_SOCKET, SOCK_REUSEPORT, reuse)
         }
@@ -238,9 +367,25 @@ public class UdpSocket <: DatagramSocket {
 
 
     public mut prop reuseAddress: Bool {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             impl.getSocketOptionBool(SOL_SOCKET, SOCK_REUSEADDR)
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         set(reuse) {
             impl.setSocketOptionBool(SOL_SOCKET, SOCK_REUSEADDR, reuse)
         }
@@ -257,9 +402,25 @@ public class UdpSocket <: DatagramSocket {
 
 
     public mut prop sendBufferSize: Int64 {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             Int64(impl.getSocketOptionIntNative(SOL_SOCKET, SOCK_SNDBUF))
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         */
         set(newSize) {
             if (newSize <= 0) {
                 throw IllegalArgumentException("Buffer size should be positive, got ${newSize}.")
@@ -279,9 +440,25 @@ public class UdpSocket <: DatagramSocket {
 
 
     public mut prop receiveBufferSize: Int64 {
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         */
         get() {
             Int64(impl.getSocketOptionIntNative(SOL_SOCKET, SOCK_RCVBUF))
         }
+        /*
+         * @throws ArithmeticException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalStateException
+         * @throws OverflowException
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         */
         set(newSize) {
             if (newSize <= 0) {
                 throw IllegalArgumentException("Buffer size should be positive, got ${newSize}.")
@@ -297,6 +474,14 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOption(
         level: Int32,
         option: Int32,
@@ -312,6 +497,14 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOption(
         level: Int32,
         option: Int32,
@@ -327,6 +520,14 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOptionIntNative(
         level: Int32,
         option: Int32
@@ -340,6 +541,14 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOptionIntNative(
         level: Int32,
         option: Int32,
@@ -357,6 +566,14 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOptionBool(
         level: Int32,
         option: Int32
@@ -372,6 +589,14 @@ public class UdpSocket <: DatagramSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOptionBool(
         level: Int32,
         option: Int32,
@@ -380,10 +605,20 @@ public class UdpSocket <: DatagramSocket {
         impl.setSocketOptionBool(level, option, value)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IllegalSynchronizationStateException
+     */
     public override func toString(): String {
         "UdpSocket(${impl.toString()})"
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private static func checkAddress(address: SocketAddress, name: String): SocketAddress {
         if (!(address is IPSocketAddress)) {
             throw IllegalArgumentException(

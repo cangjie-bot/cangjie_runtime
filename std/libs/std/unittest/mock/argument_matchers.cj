@@ -14,25 +14,40 @@ public abstract class ArgumentMatcher {
     private var description: Option<String> = None
     private var parameterName: Option<String> = None
 
+    /*
+     * @noThrow
+     */
     ArgumentMatcher() {}
 
+    /*
+     * @noThrow
+     */
     func getDescription(): Option<String> {
         description
     }
 
 
 
+    /*
+     * @noThrow
+     */
     public func withDescription(description: String): ArgumentMatcher {
         this.description = Some(description)
         return this
     }
 
+    /*
+     * @noThrow
+     */
     func getParameterName(): Option<String> {
         parameterName
     }
 
 
 
+    /*
+     * @noThrow
+     */
     public func forParameter(name: String): ArgumentMatcher {
         this.parameterName = Some(name)
         return this
@@ -40,6 +55,9 @@ public abstract class ArgumentMatcher {
 
 
 
+    /*
+     * @noThrow
+     */
     public func matchesAny(arg: Any): Bool
 }
 
@@ -51,14 +69,23 @@ interface ListeningMatcher {
 
 
 public abstract class TypedMatcher<T> <: ArgumentMatcher {
+    /*
+     * @noThrow
+     */
     TypedMatcher(
         private let expectedBooleanValue: Bool
     ) {}
 
 
 
+    /*
+     * @noThrow
+     */
     public func matches(arg: T): Bool
 
+    /*
+     * @noThrow
+     */
     public override func matchesAny(arg: Any): Bool {
         match (unwrapValue<T>(arg)) {
             case Some(typed) => matches(typed) == expectedBooleanValue
@@ -68,6 +95,9 @@ public abstract class TypedMatcher<T> <: ArgumentMatcher {
 }
 
 class PredicateMatcher<T> <: TypedMatcher<T> & ListeningMatcher {
+    /*
+     * @noThrow
+     */
     PredicateMatcher(
         private let predicate: (T) -> Bool,
         private let expectedBooleanValue!: Bool = true,
@@ -76,17 +106,29 @@ class PredicateMatcher<T> <: TypedMatcher<T> & ListeningMatcher {
         super(expectedBooleanValue)
     }
 
+    /*
+     * @noThrow
+     */
     public override func matches(arg: T): Bool {
         return predicate(arg)
     }
 
     public prop valueListener: Option<ListenerInternal> {
+        /*
+         * @noThrow
+         */
         get() { listener }
     }
 }
 
 
+             /*
+              * @noThrow
+              */
 public class AnyMatcher <: ArgumentMatcher {
+    /*
+     * @noThrow
+     */
     public func matchesAny(_: Any) {
         return true
     }
@@ -95,11 +137,17 @@ public class AnyMatcher <: ArgumentMatcher {
 
 
 public class Matchers {
+    /*
+     * @noThrow
+     */
     private Matchers() {}
 
 
 
 
+    /*
+     * @noThrow
+     */
     public static func argThat<T>(predicate: (T) -> Bool): TypedMatcher<T> {
         return PredicateMatcher(predicate, expectedBooleanValue: true)
     }
@@ -107,6 +155,9 @@ public class Matchers {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func argThatNot<T>(predicate: (T) -> Bool): TypedMatcher<T> {
         return PredicateMatcher(predicate, expectedBooleanValue: false)
     }
@@ -118,6 +169,11 @@ public class Matchers {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public static func argThat<T>(listener: ValueListener<T>, predicate: (T) -> Bool): TypedMatcher<T> {
         if (let Some(listener) <- (listener as ListenerInternal)) {
             return PredicateMatcher<T>(predicate, expectedBooleanValue: true, listener: Some(listener))
@@ -130,6 +186,9 @@ public class Matchers {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func same<T>(target: T): TypedMatcher<T> where T <: Object {
         return argThat<T> {
             arg: T => refEq(target, arg)
@@ -140,6 +199,9 @@ public class Matchers {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func eq<T>(target: T): TypedMatcher<T> where T <: Equatable<T> {
         return argThat<T> {
             arg: T => target == arg
@@ -149,6 +211,9 @@ public class Matchers {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func ofType<T>(): TypedMatcher<T> {
         return argThat<T> {
             arg: T => true
@@ -158,6 +223,9 @@ public class Matchers {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func any(): AnyMatcher {
         return AnyMatcher()
     }
@@ -167,6 +235,11 @@ public class Matchers {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public static func capture<T>(listener: ValueListener<T>): TypedMatcher<T> {
         if (let Some(listener) <- (listener as ListenerInternal)) {
             return PredicateMatcher<T>({any: T => true}, listener: listener)
@@ -182,6 +255,11 @@ public class Matchers {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public static func default<T>(target: T): TypedMatcher<T> {
         match (target) {
             case equatable: Equatable<T> =>
@@ -204,12 +282,18 @@ public class Matchers {
 
 
 extend<T> TypedMatcher<T> {
+    /*
+     * @noThrow
+     */
     public func value(): T {
         return unsafe { zeroValue<T>() }
     }
 }
 
 extend AnyMatcher {
+    /*
+     * @noThrow
+     */
     public func value<T>(): T {
         return unsafe { zeroValue<T>() }
     }

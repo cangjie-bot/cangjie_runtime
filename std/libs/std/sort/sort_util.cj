@@ -11,6 +11,9 @@ package std.sort
 import std.math.*
 
 extend<T> Array<T> where T <: Comparable<T> {
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func compareSwap3(i1: Int64, i2: Int64, i3: Int64) {
         var a: T = this[i1]
         var b: T = this[i2]
@@ -36,6 +39,9 @@ extend<T> Array<T> where T <: Comparable<T> {
         this[i3] = c
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func insertionSort(begin: Int64, end: Int64): Unit {
         var i: Int64 = begin + 1
         while (i <= end) {
@@ -55,6 +61,9 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func heapify(begin: Int64, end: Int64, root: Int64): Unit {
         var fi: Int64 = root
         var si = (fi << 1) + 1
@@ -83,6 +92,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func heapSort(begin: Int64, end: Int64): Unit {
         let len = end - begin + 1
         var i = (len >> 1) - 1
@@ -98,6 +111,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func getSequenceLength(begin: Int64, end: Int64, temp: TempArray<T>): Int64 {
         var b: Int64 = begin
         var equalNum: Int64 = 1
@@ -212,6 +229,10 @@ extend<T> Array<T> where T <: Comparable<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func binaryInsertionSort(begin: Int64, end: Int64, n: Int64) {
         var i = begin + n
         while (i <= end) {
@@ -234,6 +255,9 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func binaryQueryGT(point: T, start: Int64, len: Int64): Int64 {
         var l = start
         var r = start + len
@@ -248,6 +272,9 @@ extend<T> Array<T> where T <: Comparable<T> {
         return l
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func binaryQueryLT(point: T, start: Int64, len: Int64): Int64 {
         var l = start
         var r = start + len
@@ -262,6 +289,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         return l
     }
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func queryGT(point: T, start: Int64, len: Int64, r: Bool) {
         var gallopMax = len
         if (r) {
@@ -314,6 +345,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func queryLT(point: T, start: Int64, len: Int64, r: Bool) {
         var gallopMax = len
         if (r) {
@@ -368,6 +403,9 @@ extend<T> Array<T> where T <: Comparable<T> {
 }
 
 extend<T> Array<T> {
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func compareSwap2(i1: Int64, i2: Int64, comparator: (T, T) -> Ordering) {
         let a: T = this[i1]
         let b: T = this[i2]
@@ -378,6 +416,9 @@ extend<T> Array<T> {
             case _ => ()
         }
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func compareSwap3(i1: Int64, i2: Int64, i3: Int64, comparator: (T, T) -> Ordering) {
         var a: T = this[i1]
         var b: T = this[i2]
@@ -410,6 +451,9 @@ extend<T> Array<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     func getMinRunLength() {
         var n = this.size
         var r: Int64 = 0
@@ -421,6 +465,9 @@ extend<T> Array<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     func depth(): Int64 {
         var x: Int64 = this.size
         var res: Int64 = 0
@@ -431,6 +478,9 @@ extend<T> Array<T> {
         return res * 2
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func insertionSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         var i: Int64 = begin + 1
         while (i <= end) {
@@ -449,6 +499,10 @@ extend<T> Array<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func getSequenceLength(begin: Int64, end: Int64, temp: TempArray<T>, comparator: (T, T) -> Ordering): Int64 {
         var b: Int64 = begin
         var equalNum: Int64 = 1
@@ -571,6 +625,10 @@ extend<T> Array<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func binaryInsertionSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering, n: Int64) {
         var i = begin + n
         while (i <= end) {
@@ -593,6 +651,9 @@ extend<T> Array<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func heapify(begin: Int64, end: Int64, root: Int64, comparator: (T, T) -> Ordering): Unit {
         var fi: Int64 = root
         var si = (fi << 1) + 1
@@ -621,6 +682,10 @@ extend<T> Array<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func heapSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         let len = end - begin + 1
         var i = (len >> 1) - 1
@@ -636,6 +701,9 @@ extend<T> Array<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func binaryQueryGT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering): Int64 {
         var l = start
         var r = start + len
@@ -649,6 +717,9 @@ extend<T> Array<T> {
         return l
     }
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func binaryQueryLT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering): Int64 {
         var l = start
         var r = start + len
@@ -662,6 +733,10 @@ extend<T> Array<T> {
         return l
     }
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func queryGT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering, r: Bool) {
         var gallopMax = len
         if (r) {
@@ -714,6 +789,10 @@ extend<T> Array<T> {
         }
     }
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func queryLT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering, r: Bool) {
         var gallopMax = len
         if (r) {

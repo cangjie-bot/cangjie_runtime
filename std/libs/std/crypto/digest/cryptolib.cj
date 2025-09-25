@@ -20,16 +20,28 @@ public interface Digest {
 
     prop algorithm: String
 
+    /*
+     * @noThrow
+     */
     func write(buffer: Array<Byte>): Unit
 
+    /*
+     * @noThrow
+     */
     func finish(to!: Array<Byte>): Unit
 
+    /*
+     * @noThrow
+     */
     func finish(): Array<Byte> {
         let buf = Array<Byte>(size, repeat: 0)
         this.finish(to: buf)
         return buf
     }
 
+    /*
+     * @noThrow
+     */
     func reset(): Unit
 }
 
@@ -40,10 +52,17 @@ public interface Digest {
 
 
 @Deprecated[message: "Use global function `public func digest<T>(algorithm: T, input: InputStream): Array<Byte> where T <: Digest` instead."]
+/*
+ * @noThrow
+ */
 public func digest<T>(algorithm: T, data: String): Array<Byte> where T <: Digest {
     digest(algorithm, data.toArray())
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func digest<T>(algorithm: T, input: InputStream): Array<Byte> where T <: Digest {
     var buffer = Array<Byte>(algorithm.blockSize, repeat: 0)
     while (true) {
@@ -58,6 +77,9 @@ public func digest<T>(algorithm: T, input: InputStream): Array<Byte> where T <: 
     return result
 }
 
+/*
+ * @noThrow
+ */
 public func digest<T>(algorithm: T, data: Array<Byte>): Array<Byte> where T <: Digest {
     var algorithmMutable = algorithm
     algorithmMutable.reset()

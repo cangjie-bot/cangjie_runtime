@@ -13,14 +13,23 @@ public interface KeyFor<T> {
     prop name: String
 }
 
+              /*
+               * @noThrow
+               */
 public struct KeyTags <: KeyFor<Array<String>> {
     public static prop tags: KeyTags {
+        /*
+         * @noThrow
+         */
         get() {
             KeyTags()
         }
     }
 
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             "tags"
         }
@@ -28,34 +37,58 @@ public struct KeyTags <: KeyFor<Array<String>> {
 }
 
 sealed abstract class ConfigurationKey <: Equatable<ConfigurationKey> & Hashable {
+    /*
+     * @noThrow
+     */
     protected ConfigurationKey(public let name: String) {}
 
+    /*
+     * @noThrow
+     */
     public override func hashCode(): Int64 {
         name.hashCode()
     }
 
+    /*
+     * @noThrow
+     */
     protected func equals(that: ConfigurationKey): Bool
 
+    /*
+     * @noThrow
+     */
     public override operator func ==(that: ConfigurationKey) {
         equals(that)
     }
 
+    /*
+     * @noThrow
+     */
     public override operator func !=(that: ConfigurationKey) {
         !equals(that)
     }
 }
 
 class TypedConfigurationKey<T> <: ConfigurationKey {
+    /*
+     * @noThrow
+     */
     TypedConfigurationKey(name: String) {
         super(name)
     }
 
+    /*
+     * @noThrow
+     */
     protected override func equals(that: ConfigurationKey): Bool {
         that is TypedConfigurationKey<T> && this.name == that.name
     }
 }
 
 extend ConfigurationKey {
+    /*
+     * @noThrow
+     */
     public static func create<T>(name: String): ConfigurationKey {
         TypedConfigurationKey<T>(name)
     }
@@ -67,11 +100,17 @@ extend ConfigurationKey {
 public class Configuration <: ToString {
     private static let TAGS_CONCAT_KEY: ConfigurationKey = ConfigurationKey.create<Array<String>>("tags")
 
+    /*
+     * @noThrow
+     */
     private Configuration(
         private let storage: HashMap<ConfigurationKey, Any>
     ) {}
 
 
+    /*
+     * @noThrow
+     */
     public init() {
         this(HashMap<ConfigurationKey, Any>())
     }
@@ -85,6 +124,9 @@ public class Configuration <: ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func get<T>(key: KeyFor<T>): ?T {
         getByName<T>(key.name)
     }
@@ -96,6 +138,9 @@ public class Configuration <: ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func getByName<T>(name: String): ?T {
         let configurationKey = ConfigurationKey.create<T>(name)
         match (storage.get(configurationKey)) {
@@ -112,6 +157,11 @@ public class Configuration <: ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public func set<T>(key: KeyFor<T>, value: T): Unit {
         let configurationKey = checkOptionValueAndGetConfigurationKey(key, value)
         storage[configurationKey] = value
@@ -122,6 +172,11 @@ public class Configuration <: ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public func setByName<T>(name: String, value: T): Unit {
         let configurationKey = checkOptionValueByNameAndGetConfigurationKey(name, value)
         storage[configurationKey] = value
@@ -136,6 +191,9 @@ public class Configuration <: ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func remove<T>(key: KeyFor<T>): ?T {
         removeByName(key.name)
     }
@@ -146,6 +204,9 @@ public class Configuration <: ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func removeByName<T>(key: String): ?T {
         let configurationKey = ConfigurationKey.create<T>(key)
         match (storage.remove(configurationKey)) {
@@ -156,6 +217,9 @@ public class Configuration <: ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public func clone(): Configuration {
         Configuration(storage.clone())
     }
@@ -163,6 +227,11 @@ public class Configuration <: ToString {
 
 
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         func printEntry(sb: StringBuilder, entry: (ConfigurationKey, Any)) {
             let (k, v) = entry
@@ -183,6 +252,10 @@ public class Configuration <: ToString {
         sb.append(")")
         return sb.toString()
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func merge(parent: Configuration, child: Configuration): Configuration {
         let clone = parent.clone()
         for ((k, v) in child.storage) {

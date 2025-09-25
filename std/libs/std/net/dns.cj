@@ -17,6 +17,11 @@ const AI_ALL: Int32 = 0x00000100
 const DOMAIN_MAX_LEN = 255
 const SUB_DOMAIN_LIST_LEN = 63
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws OutOfMemoryError
+ */
 func isDomainValid(domainStr: String): Bool {
     if (domainStr.size > DOMAIN_MAX_LEN) {
         return false
@@ -47,6 +52,12 @@ func isDomainValid(domainStr: String): Bool {
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws IllegalFormatException
+ */
 func resolveDomain(family: AddressFamily, domain: String): Array<IPAddress> {
     if (domain.contains(NULL_BYTE)) {
         throw IllegalFormatException("Domain cannot contain null character!")
@@ -94,6 +105,9 @@ func resolveDomain(family: AddressFamily, domain: String): Array<IPAddress> {
     return iparr
 }
 
+/*
+ * @noThrow
+ */
 func sortIPAddr(lhs: IPAddress, rhs: IPAddress): Ordering {
     match ((lhs, rhs)) {
         case (_: IPv4Address, _: IPv4Address) => Ordering.EQ

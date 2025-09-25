@@ -48,11 +48,20 @@ let TMP_FILE = "/tmpFileXXXXXX\0".toArray()
 
 
 @When[os != "Windows"]
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func isAbsolutePath(path: String): Bool {
     return isSlash(path[0])
 }
 
 @When[os != "Windows"]
+/*
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws FSException
+ * @throws IllegalArgumentException
+ */
 func toAbsolutePath(path: Path): Path {
     path.checkPath()
     let raw = path.toString()
@@ -63,26 +72,41 @@ func toAbsolutePath(path: Path): Path {
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func isSlash(byte: Byte) {
     return byte == b'/'
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func isRootPath(path: String) {
     return path == "/"
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func containsSlash(path: String): Bool {
     return path.contains(SLASH_CHAR)
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func isHandleValid(fileHandle: FileHandle): Bool {
     return fileHandle > 0
 }
 
 @When[os != "Windows"]
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func skipEndSlash(path: String): Int64 {
     var lastLetterIdx = path.size - 1
     while (lastLetterIdx >= 0 && isSlash(path[lastLetterIdx])) {
@@ -92,6 +116,9 @@ func skipEndSlash(path: String): Int64 {
 }
 
 @When[os != "Windows"]
+/*
+ * @throws IllegalArgumentException
+ */
 func processPathHeader(_: String, canonicalPath: Array<Byte>): String {
     return String.fromUtf8(canonicalPath)
 }
@@ -169,6 +196,10 @@ func lastIndexOfSlash(path: String): Option<Int64> {
     return tempPath.lastIndexOf(SLASH_CHAR)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getParent(path: String): Path {
     let rootLen = getRootLen(path)
     var end = path.size - 1
@@ -193,6 +224,10 @@ func getParent(path: String): Path {
     return Path(path[..end + 1])
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getFileName(path: String): String {
     let rootLen = getRootLen(path)
     var end = path.size - 1
@@ -213,6 +248,9 @@ func getFileName(path: String): String {
 }
 
 @When[os != "Windows"]
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func getRootLen(path: String): Int64 {
     if (path.size > 0 && isSlash(path[0])) {
         return 1
@@ -332,10 +370,18 @@ func concatPath(prefix: String, old: String): String {
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func fixLongPath(path: String): String {
     return path
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 func callNativeFunc(path: String, nativeFunc: CFunc<(CString) -> CPointer<FsError>>, errMsgPrefix: String): Unit {
     unsafe {
         let cPath = LibC.mallocCString(path)
@@ -358,6 +404,11 @@ func callNativeFunc(path: String, nativeFunc: CFunc<(CString) -> CPointer<FsErro
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 func callNativeFunc(
     path1: String,
     path2: String,
@@ -375,6 +426,9 @@ func callNativeFunc(
 }
 
 extend Array<Byte> {
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func equalsIgnoreCaseAndSlash(that: String): Bool {
         var (b1, b2): (Byte, Byte)
         for (i in 0..this.size) {
@@ -393,6 +447,9 @@ extend Array<Byte> {
         return true
     }
 
+    /*
+     * @noThrow
+     */
     func byteEqualsIgnoreAsciiCase(b1: Byte, b2: Byte): Bool {
         if (b1 == b2) {
             return true

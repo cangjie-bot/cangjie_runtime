@@ -221,6 +221,9 @@ struct SockKeepAliveCfgS {
 
     
     var count: UInt32
+    /*
+     * @noThrow
+     */
     init(keep_alive!: UInt32, idle!: UInt32, interval!: UInt32, count!: UInt32) {
         this.keep_alive = keep_alive
         this.idle = idle
@@ -256,6 +259,9 @@ foreign {
     func CJ_RawAddressDestroy(addrPtr: CPointer<SockAddr>): Unit
 }
 
+/*
+ * @throws SocketException
+ */
 func getAddrPointer(addr: Array<Byte>): (CPointerHandle<Byte>, CPointer<SockAddr>) {
     unsafe {
         let handle = acquireArrayRawData(addr)
@@ -268,6 +274,9 @@ func getAddrPointer(addr: Array<Byte>): (CPointerHandle<Byte>, CPointer<SockAddr
     }
 }
 
+/*
+ * @noThrow
+ */
 func releaseAddrPointer(handle: CPointerHandle<Byte>, addrPtr: CPointer<SockAddr>): Unit {
     unsafe {
         releaseArrayRawData(handle)

@@ -11,6 +11,9 @@ package std.net
 import std.overflow.*
 
 extend Byte {
+    /*
+     * @noThrow
+     */
     func toDigit(radix: UInt32): ?UInt32 {
         var digit = UInt32(this).wrappingSub(UInt32(b'0'))
         if (radix > 10) {

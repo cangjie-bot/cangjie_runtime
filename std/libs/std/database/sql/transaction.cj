@@ -22,6 +22,9 @@ public enum TransactionIsoLevel <: ToString & Hashable & Equatable<TransactionIs
     | Linearizable
     | Chaos
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case Unspecified => "Unspecified"
@@ -35,6 +38,9 @@ public enum TransactionIsoLevel <: ToString & Hashable & Equatable<TransactionIs
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(rhs: TransactionIsoLevel): Bool {
         match ((this, rhs)) {
             case (Unspecified, Unspecified) => true
@@ -49,10 +55,16 @@ public enum TransactionIsoLevel <: ToString & Hashable & Equatable<TransactionIs
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(rhs: TransactionIsoLevel): Bool {
         return !(this == rhs)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return this.toString().hashCode()
     }
@@ -64,6 +76,9 @@ public enum TransactionAccessMode <: ToString & Hashable & Equatable<Transaction
     | ReadWrite
     | ReadOnly
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case Unspecified => "Unspecified"
@@ -72,6 +87,9 @@ public enum TransactionAccessMode <: ToString & Hashable & Equatable<Transaction
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(rhs: TransactionAccessMode): Bool {
         match ((this, rhs)) {
             case (Unspecified, Unspecified) => true
@@ -81,10 +99,16 @@ public enum TransactionAccessMode <: ToString & Hashable & Equatable<Transaction
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(rhs: TransactionAccessMode): Bool {
         return !(this == rhs)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return this.toString().hashCode()
     }
@@ -96,6 +120,9 @@ public enum TransactionDeferrableMode <: ToString & Hashable & Equatable<Transac
     | Deferrable
     | NotDeferrable
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case Unspecified => "Unspecified"
@@ -104,6 +131,9 @@ public enum TransactionDeferrableMode <: ToString & Hashable & Equatable<Transac
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(rhs: TransactionDeferrableMode): Bool {
         match ((this, rhs)) {
             case (Unspecified, Unspecified) => true
@@ -113,10 +143,16 @@ public enum TransactionDeferrableMode <: ToString & Hashable & Equatable<Transac
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(rhs: TransactionDeferrableMode): Bool {
         return !(this == rhs)
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return this.toString().hashCode()
     }
@@ -136,25 +172,43 @@ public interface Transaction {
 
 
 
+    /*
+     * @noThrow
+     */
     func begin(): Unit
 
 
 
+    /*
+     * @noThrow
+     */
     func commit(): Unit
 
 
 
+    /*
+     * @noThrow
+     */
     func rollback(): Unit
 
 
 
+    /*
+     * @noThrow
+     */
     func rollback(savePointName: String): Unit
 
 
 
+    /*
+     * @noThrow
+     */
     func save(savePointName: String): Unit
 
 
 
+    /*
+     * @noThrow
+     */
     func release(savePointName: String): Unit
 }

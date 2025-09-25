@@ -30,6 +30,9 @@ public class ByteBuffer <: IOStream & Seekable {
     private static const DEFAULT_CAPACITY: Int64 = 32
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init() {
         this(DEFAULT_CAPACITY)
     }
@@ -39,6 +42,9 @@ public class ByteBuffer <: IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         if (capacity < 0) {
             throw IllegalArgumentException("The capacity must be greater than or equal to 0: ${capacity}.")
@@ -48,12 +54,18 @@ public class ByteBuffer <: IOStream & Seekable {
         this._length = 0
     }
 
+    /*
+     * @noThrow
+     */
     public init(source: Array<Byte>) {
         this.myData = source
         this.start = 0
         this._length = source.size
     }
 
+    /*
+     * @noThrow
+     */
     private init(bytes: Array<Byte>, start: Int64, length: Int64) {
         this.myData = bytes
         this.start = start
@@ -62,18 +74,27 @@ public class ByteBuffer <: IOStream & Seekable {
 
 
     public prop capacity: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return myData.size
         }
     }
 
 
+    /*
+     * @noThrow
+     */
     public func clone(): ByteBuffer {
         let itemDats = myData.clone()
         return ByteBuffer(itemDats, start, _length)
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func clear(): Unit {
         for (i in 0..(start + _length)) {
             myData[i] = 0
@@ -83,6 +104,9 @@ public class ByteBuffer <: IOStream & Seekable {
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func bytes(): Array<Byte> {
         return myData.slice(start, _length)
     }
@@ -93,6 +117,10 @@ public class ByteBuffer <: IOStream & Seekable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func read(buffer: Array<Byte>): Int64 {
         if (_length == 0) {
             return 0
@@ -117,6 +145,9 @@ public class ByteBuffer <: IOStream & Seekable {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func readByte(): ?Byte {
         if (_length == 0) {
             return None
@@ -131,6 +162,11 @@ public class ByteBuffer <: IOStream & Seekable {
 
 
     @OverflowWrapping
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func write(buffer: Array<Byte>): Unit {
         let bufSize = buffer.size
         reserve(bufSize)
@@ -147,6 +183,11 @@ public class ByteBuffer <: IOStream & Seekable {
 
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func writeByte(v: Byte): Unit {
         reserve(1)
         if (_length >= 0) {
@@ -158,6 +199,11 @@ public class ByteBuffer <: IOStream & Seekable {
         }
     }
 
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func setLength(length: Int64): Unit {
         if (length < 0) {
             throw IllegalArgumentException("The length must be greater than or equal to 0.")
@@ -183,6 +229,11 @@ public class ByteBuffer <: IOStream & Seekable {
 
 
 
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func reserve(addition: Int64): Unit {
         if (addition < 0) {
             throw IllegalArgumentException("The additional must be greater than or equal to 0.")
@@ -214,6 +265,9 @@ public class ByteBuffer <: IOStream & Seekable {
 
 
 
+    /*
+     * @throws IOException
+     */
     public func seek(sp: SeekPosition): Int64 {
         let pos: Int64 = match (sp) {
             case Current(offset) => this.start + offset
@@ -231,6 +285,11 @@ public class ByteBuffer <: IOStream & Seekable {
         this.start
     }
 
+    /*
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func grow(minCapacity: Int64): Unit {
         let oldCapacity = myData.size
         var newCapacity = checkGrowSize(oldCapacity, (oldCapacity >> 1))
@@ -243,6 +302,9 @@ public class ByteBuffer <: IOStream & Seekable {
         myData = itemData
     }
 
+    /*
+     * @throws OverflowException
+     */
     private func checkGrowSize(oldSize: Int64, addition: Int64): Int64 {
         try {
             return oldSize + addition

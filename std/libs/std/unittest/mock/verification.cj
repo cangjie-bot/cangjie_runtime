@@ -21,9 +21,21 @@ enum Orderedness {
 }
 
 enum VerificationResult {
+              /*
+               * @noThrow
+               */
     Success | Failure(VerificationFailedReason)
 }
 
+/*
+ * @throws IllegalSynchronizationStateException
+ * @throws NoneValueException
+ * @throws MockFrameworkException
+ * @throws IndexOutOfBoundsException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ * @throws VerificationFailedException
+ */
 func performVerification(statements: Array<VerifyStatement>, orderedness: Orderedness, exhaustiveness: Exhaustiveness) {
     if (statements.isEmpty()) {
         VerifyMisconfiguration().fail(EmptyVerifyBlock)
@@ -52,6 +64,14 @@ func performVerification(statements: Array<VerifyStatement>, orderedness: Ordere
     }
 }
 
+/*
+ * @throws IllegalSynchronizationStateException
+ * @throws MockFrameworkException
+ * @throws IndexOutOfBoundsException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ * @throws VerificationFailedException
+ */
 func verifyNoInteractions(objectRefs: Array<Object>) {
     ensureDistinctReferences(objectRefs)
 
@@ -76,6 +96,11 @@ func verifyNoInteractions(objectRefs: Array<Object>) {
     )
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MockFrameworkException
+ */
 func ensureDistinctReferences(refs: Array<Object>) {
     if (refs.isEmpty()) {
         illegalInput("Invalid input: empty object array")
@@ -90,6 +115,10 @@ func ensureDistinctReferences(refs: Array<Object>) {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func collectObjectsIds(statements: Array<VerifyStatement>): HashSet<UInt64> {
     let objectIds = HashSet<UInt64>()
     for (statement in statements) {
@@ -98,6 +127,11 @@ func collectObjectsIds(statements: Array<VerifyStatement>): HashSet<UInt64> {
     return objectIds
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MockFrameworkException
+ */
 func checkMatchersConsistency(statement: VerifyStatement) {
     for (matcher in statement.invocationMatcher.positionalMatchers) {
         if (let Some(listeningMatcher) <- (matcher as ListeningMatcher)) {

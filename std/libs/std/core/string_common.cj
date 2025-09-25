@@ -55,6 +55,9 @@ const STRING_C_THRESHOLD = 32
 
 
 
+/*
+ * @throws IllegalArgumentException
+ */
 func checkUtf8Of2Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64): Rune {
     if (startIndex + 2 > endIndex) {
         throw IllegalArgumentException("Invalid utf8 byte sequence.")
@@ -72,6 +75,9 @@ func checkUtf8Of2Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64)
 
 
 
+/*
+ * @throws IllegalArgumentException
+ */
 func checkUtf8Of3Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64): Rune {
     if (startIndex + 3 > endIndex) {
         throw IllegalArgumentException("Invalid utf8 byte sequence.")
@@ -101,6 +107,9 @@ func checkUtf8Of3Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64)
 
 
 
+/*
+ * @throws IllegalArgumentException
+ */
 func checkUtf8Of4Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64): Rune {
     if (startIndex + 4 > endIndex) {
         throw IllegalArgumentException("Invalid utf8 byte sequence.")
@@ -135,6 +144,9 @@ func checkUtf8Of4Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64)
 
 
 
+/*
+ * @throws IllegalArgumentException
+ */
 func checkInvalid(arr: RawArray<Byte>, startIndex: Int64, endIndex: Int64): Unit {
     var i = startIndex
     while (i < endIndex) {
@@ -161,12 +173,18 @@ class StringIteratorData {
     var end: Int64
     var nextPos: Int64 = 0
 
+    /*
+     * @noThrow
+     */
     init(data: Array<UInt8>) {
         this.myData = data
         this.end = myData.size
         this.nextPos = 0
     }
 
+    /*
+     * @noThrow
+     */
     init(data: RawArray<UInt8>) {
         this.myData = toArray(data)
         this.end = myData.size
@@ -175,6 +193,9 @@ class StringIteratorData {
 }
 class StringRuneIterator <: Iterator<Rune> {
     @Frozen
+    /*
+     * @noThrow
+     */
     StringRuneIterator(let iteratorData: StringIteratorData) {}
 
 
@@ -182,6 +203,9 @@ class StringRuneIterator <: Iterator<Rune> {
 
     @OverflowWrapping
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public func next(): Option<Rune> {
         if (iteratorData.nextPos >= iteratorData.end) {
             return None
@@ -193,6 +217,9 @@ class StringRuneIterator <: Iterator<Rune> {
 }
 class StringByteIterator <: Iterator<Byte> {
     @Frozen
+    /*
+     * @noThrow
+     */
     StringByteIterator(let iteratorData: StringIteratorData) {}
 
 
@@ -200,6 +227,9 @@ class StringByteIterator <: Iterator<Byte> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     public func next(): Option<Byte> {
         if (iteratorData.nextPos >= iteratorData.end) {
             return None
@@ -212,10 +242,17 @@ class StringByteIterator <: Iterator<Byte> {
 
 class StringLineIterator <: Iterator<String> {
     @Frozen
+    /*
+     * @noThrow
+     */
     StringLineIterator(let iteratorData: StringIteratorData) {}
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func next(): Option<String> {
         if (iteratorData.nextPos >= iteratorData.end) {
             return None
@@ -266,6 +303,10 @@ class StringLazySplitIterator <: Iterator<String> {
     private var itemTotal: Int64 = 0
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     init(orgStrData: Array<UInt8>, orgStrSize: Int64, str: String, maxSplits: Int64, removeEmpty: Bool) {
         this.orgData = orgStrData
         this.separatorLen = str.size
@@ -303,6 +344,10 @@ class StringLazySplitIterator <: Iterator<String> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func next(): Option<String> {
         if (this.separatorLen == 0) {
             if (itemStart >= orgData.size || nextPos >= resLen) {
@@ -335,6 +380,10 @@ class StringLazySplitIterator <: Iterator<String> {
 
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func getString(): String {
         if (this.resLen == 1 && this.itemArr.isEmpty()) {
             return unsafe { String.fromUtf8Unchecked(this.orgData) }
@@ -371,6 +420,9 @@ class StringLazySplitIterator <: Iterator<String> {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func convertCPointer2Array(res: CPointer<Int64>, maxSplits: Int64, removeEmpty: Bool) {
         var total = unsafe { res.read(0) }
         var indexes: CPointer<Int64> = unsafe { res + 1 }

@@ -22,6 +22,9 @@ struct NonReentrantReadWriteMutex {
     let readMutex: NonReentrantReadLock
     let writeMutex: NonReentrantWriteLock
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     init() {
         let m = Monitor()
         let useCounter = AtomicInt64(0)
@@ -32,17 +35,30 @@ struct NonReentrantReadWriteMutex {
 }
 
 struct NonReentrantReadLock <: IReentrantMutex {
+    /*
+     * @noThrow
+     */
     NonReentrantReadLock(
         private let m: Monitor,
         private let useCounter: AtomicInt64
     ) {}
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public override func lock(): Unit {
         if (!tryLock()) {
             lockSlowpath()
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     private func lockSlowpath(): Unit {
         synchronized(m) {
             while (!tryLock()) {
@@ -51,6 +67,9 @@ struct NonReentrantReadLock <: IReentrantMutex {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public override func tryLock(): Bool {
         while (true) {
             let current = useCounter.load()
@@ -65,6 +84,10 @@ struct NonReentrantReadLock <: IReentrantMutex {
         return false
     }
 
+    /*
+     * @throws IllegalStateException
+     * @throws IllegalSynchronizationStateException
+     */
     public override func unlock(): Unit {
         if (decrementAndGet() == 0) {
             synchronized(m) {
@@ -74,6 +97,9 @@ struct NonReentrantReadLock <: IReentrantMutex {
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalStateException
+     */
     private func decrementAndGet(): Int64 {
         var value: Int64 = 0
 
@@ -92,31 +118,53 @@ struct NonReentrantReadLock <: IReentrantMutex {
         return value
     }
 
+    /*
+     * @throws IllegalStateException
+     */
     private static func beforeCheckFailed(): Nothing {
         throw IllegalStateException("Unbalanced lock-unlock invocations")
     }
 
+    /*
+     * @noThrow
+     */
     private static func hasActiveWriter(counter: Int64) {
         counter < 0
     }
 }
 
 struct NonReentrantWriteLock <: IReentrantMutex {
+    /*
+     * @noThrow
+     */
     NonReentrantWriteLock(
         private let m: Monitor,
         private let useCounter: AtomicInt64
     ) {}
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     init() {
         this(Monitor(), AtomicInt64(0))
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public override func lock(): Unit {
         if (!tryLock()) {
             lockSlowpath()
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     private func lockSlowpath(): Unit {
         synchronized(m) {
             while (!tryLock()) {
@@ -125,6 +173,9 @@ struct NonReentrantWriteLock <: IReentrantMutex {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public override func tryLock(): Bool {
         while (true) {
             let current = useCounter.load()
@@ -141,6 +192,9 @@ struct NonReentrantWriteLock <: IReentrantMutex {
         return false
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public override func unlock(): Unit {
         useCounter.compareAndSwap(WRITER_MARK, 0)
         synchronized(m) {
@@ -149,6 +203,9 @@ struct NonReentrantWriteLock <: IReentrantMutex {
     }
 
     private static const WRITER_MARK = -1
+    /*
+     * @noThrow
+     */
     private static func hasActiveCompetetors(count: Int64): Bool {
         count != 0
     }

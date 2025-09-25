@@ -15,12 +15,19 @@ struct SampledAssertValue {
     let endingOmitted: Bool
     let beginningOmittedCharsAmount: Int64
 
+    /*
+     * @noThrow
+     */
     init(sampledStr: String, endingOmitted!: Bool = false, beginningOmittedCharsAmount!: Int64 = 0) {
         this.sampledStr = sampledStr
         this.endingOmitted = endingOmitted
         this.beginningOmittedCharsAmount = beginningOmittedCharsAmount
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addPrefixAndSuffix(out: ArrayList<Rune>): (Int64, Int64) {
         var prefixLen = 0
         var suffixLen = 0
@@ -43,6 +50,9 @@ struct SampledAssertValue {
         return (prefixLen, suffixLen)
     }
 
+    /*
+     * @noThrow
+     */
     private func getOmittedPrefix(): String {
         if (beginningOmittedCharsAmount != 0) {
             "(${beginningOmittedCharsAmount.toString()} characters omitted...)"
@@ -51,19 +61,37 @@ struct SampledAssertValue {
 }
 
 enum Edit<T> {
+      /*
+       * @noThrow
+       */
     | Insert(T)
+      /*
+       * @noThrow
+       */
     | Remove(T)
+      /*
+       * @noThrow
+       */
     | Keep(T)
+      /*
+       * @noThrow
+       */
     | Modify(T, T)
 }
 
 extend PrettyPrinter {
+    /*
+     * @noThrow
+     */
     func pprintNotEqual(left: String, right: String, needToQuote!: Bool = false): PrettyPrinter {
         if (needToQuote) { append("\"").colored(YELLOW, left).append("\"") } else { colored(YELLOW, left) }
         append(" != ")
         if (needToQuote) { append("\"").colored(YELLOW, right).append("\"") } else { colored(YELLOW, right) }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     func pprintLeftRight(left: Any, right: Any, leftPrefix: String, rightPrefix: String) {
         pprintNotEqual(leftPrefix, rightPrefix).newLine()
         indent {
@@ -72,6 +100,9 @@ extend PrettyPrinter {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     func pprintForAssertionOrSimple<T>(left: T, right: T, leftPrefix: String, rightPrefix: String, level: Int64) {
         match (left) {
             case l: AssertPrintable<T> =>

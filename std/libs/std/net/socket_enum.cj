@@ -14,6 +14,9 @@ public enum SocketNet <: ToString & Equatable<SocketNet> {
     | UDP
     | UNIX
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case TCP => return "tcp"
@@ -22,6 +25,9 @@ public enum SocketNet <: ToString & Equatable<SocketNet> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: SocketNet): Bool {
         match ((this, that)) {
             case (TCP, TCP) => true
@@ -31,6 +37,9 @@ public enum SocketNet <: ToString & Equatable<SocketNet> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: SocketNet): Bool {
         return !(this == that)
     }
@@ -41,6 +50,9 @@ enum SocketMode <: Equal<SocketMode> {
     | DatagramMode
     | SequentialMode
 
+    /*
+     * @noThrow
+     */
     public override operator func ==(other: SocketMode): Bool {
         match ((this, other)) {
             case (StreamingMode, StreamingMode) => true
@@ -52,6 +64,9 @@ enum SocketMode <: Equal<SocketMode> {
 }
 
 extend Duration {
+    /*
+     * @throws IllegalArgumentException
+     */
     func throwIfNegative(what: String): Duration {
         if (this < Duration.Zero) {
             throw IllegalArgumentException("${what} duration cannot be negative.")
@@ -62,6 +77,9 @@ extend Duration {
         return this
     }
 
+    /*
+     * @noThrow
+     */
     func bumpAtLeast(other: Duration): Duration {
         if (this < other) {
             return other
@@ -70,6 +88,9 @@ extend Duration {
         return this
     }
 
+    /*
+     * @throws ArithmeticException
+     */
     func toNanosecondGranularity(): Duration {
         this.toNanoseconds() * Duration.nanosecond
     }

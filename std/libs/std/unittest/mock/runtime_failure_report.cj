@@ -11,12 +11,29 @@ import std.collection.*
 import std.unittest.mock.internal.FuncInfo
 import std.unittest.common.PrettyText
 enum RuntimeFailureReason {
+      /*
+       * @noThrow
+       */
     | UnstubbedDeclaration(FuncInfo)
+      /*
+       * @noThrow
+       */
     | NoneMatchedArguments(Array<(StubChain, Array<Int64>)>)
+      /*
+       * @noThrow
+       */
     | TooManyInvocationsForStubChain(StubChain)
+      /*
+       * @noThrow
+       */
     | UnwantedInteraction(StubChain)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ */
 func unhandledInvocationReport(
     invocation: Invocation,
     unmatchedChains: UnmatchedChains,
@@ -43,6 +60,11 @@ func unhandledInvocationReport(
     )
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ */
 func invocationLimitExceededReport(currentInvocation: Invocation, chain: StubChain, invocationLog: LogSnapshot): PrettyException {
     let message = RuntimeFailureReport(
         invocationLog,
@@ -51,6 +73,11 @@ func invocationLimitExceededReport(currentInvocation: Invocation, chain: StubCha
     return ExpectationFailedException(message)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ */
 func runtimeUnwantedInteraction(currentInvocation: Invocation, sc: Scenario, invocationLog: LogSnapshot): PrettyException {
     let message = RuntimeFailureReport(
         invocationLog,
@@ -60,6 +87,9 @@ func runtimeUnwantedInteraction(currentInvocation: Invocation, sc: Scenario, inv
 }
 
 class RuntimeFailureReport <: FailureReport {
+    /*
+     * @noThrow
+     */
     RuntimeFailureReport(
         invocationLog: LogSnapshot,
         nameRegistry: MockNameRegistry
@@ -67,6 +97,11 @@ class RuntimeFailureReport <: FailureReport {
         super(invocationLog, nameRegistry)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     func render(invocation: Invocation, reason: RuntimeFailureReason): PrettyText {
         build {
             match (reason) {
@@ -86,6 +121,11 @@ class RuntimeFailureReport <: FailureReport {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     private func renderReason(invocation: Invocation, reason: RuntimeFailureReason): Unit {
         match (reason) {
             case UnstubbedDeclaration(funcInfo) =>
@@ -152,6 +192,10 @@ class RuntimeFailureReport <: FailureReport {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func findInvocationsHandledByChain(stubChain: StubChain): Array<Invocation> {
         invocationLog.entries |>
             filter { entry: LogEntry => entry.wasHandledBy(stubChain) } |>

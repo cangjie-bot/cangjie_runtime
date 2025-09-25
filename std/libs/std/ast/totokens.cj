@@ -9,6 +9,9 @@
 package std.ast
 
 public interface ToTokens {
+    /*
+     * @noThrow
+     */
     func toTokens(): Tokens
 }
 
@@ -19,18 +22,29 @@ public interface ToTokens {
 
 
 extend Token <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         return this + Tokens()
     }
 }
 
 extend Tokens <: ToTokens {
+    /*
+     * @noThrow
+     */
     public func toTokens(): Tokens {
         return this
     }
 }
 
 extend Int64 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         if (this < 0) {
             return Tokens().append(Token(TokenKind.SUB)).append(Token(TokenKind.INTEGER_LITERAL, this.toString()[1..]))
@@ -41,6 +55,10 @@ extend Int64 <: ToTokens {
 }
 
 extend Int32 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         if (this < 0) {
             return Tokens().append(Token(TokenKind.SUB)).append(Token(TokenKind.INTEGER_LITERAL, this.toString()[1..]))
@@ -51,6 +69,10 @@ extend Int32 <: ToTokens {
 }
 
 extend Int16 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         if (this < 0) {
             return Tokens().append(Token(TokenKind.SUB)).append(Token(TokenKind.INTEGER_LITERAL, this.toString()[1..]))
@@ -61,6 +83,10 @@ extend Int16 <: ToTokens {
 }
 
 extend Int8 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         if (this < 0) {
             return Tokens().append(Token(TokenKind.SUB)).append(Token(TokenKind.INTEGER_LITERAL, this.toString()[1..]))
@@ -71,6 +97,10 @@ extend Int8 <: ToTokens {
 }
 
 extend UInt64 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let tok: Token = Token(TokenKind.INTEGER_LITERAL, this.toString())
         return tok.toTokens()
@@ -78,6 +108,10 @@ extend UInt64 <: ToTokens {
 }
 
 extend UInt32 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let tok: Token = Token(TokenKind.INTEGER_LITERAL, this.toString())
         return tok.toTokens()
@@ -85,6 +119,10 @@ extend UInt32 <: ToTokens {
 }
 
 extend UInt16 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let tok: Token = Token(TokenKind.INTEGER_LITERAL, this.toString())
         return tok.toTokens()
@@ -92,6 +130,10 @@ extend UInt16 <: ToTokens {
 }
 
 extend UInt8 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let tok: Token = Token(TokenKind.INTEGER_LITERAL, this.toString())
         return tok.toTokens()
@@ -99,6 +141,10 @@ extend UInt8 <: ToTokens {
 }
 
 extend Float64 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let strPtr = unsafe { CJ_AST_Float64ToCPointer(this) }
         var floatStr = String()
@@ -115,6 +161,10 @@ extend Float64 <: ToTokens {
 }
 
 extend Float32 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         if (this < 0.0) {
             return Tokens().append(Token(TokenKind.SUB)).append(Token(TokenKind.FLOAT_LITERAL, this.toString()[1..]))
@@ -125,6 +175,10 @@ extend Float32 <: ToTokens {
 }
 
 extend Float16 <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         if (this < 0.0) {
             return Tokens().append(Token(TokenKind.SUB)).append(Token(TokenKind.FLOAT_LITERAL, this.toString()[1..]))
@@ -135,6 +189,10 @@ extend Float16 <: ToTokens {
 }
 
 extend Bool <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let tok: Token = Token(TokenKind.BOOL_LITERAL, this.toString())
         return tok.toTokens()
@@ -142,6 +200,10 @@ extend Bool <: ToTokens {
 }
 
 extend Rune <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         var tok: Token = Token(TokenKind.RUNE_LITERAL, this.toString())
         tok.isSingleQuote = true
@@ -149,6 +211,9 @@ extend Rune <: ToTokens {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 func countDelimiter(charArray: Array<Rune>): (UInt16, String, String) {
     var delimiterNum: UInt16 = 0
     var prefix = "\""
@@ -166,6 +231,10 @@ func countDelimiter(charArray: Array<Rune>): (UInt16, String, String) {
 }
 
 extend String <: ToTokens {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let charArray = this.toRuneArray()
         if (charArray.size > 6 && this.startsWith("\"\"\"\n") && this.endsWith("\"\"\"")) {

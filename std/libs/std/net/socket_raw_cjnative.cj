@@ -31,6 +31,9 @@ public class RawSocket {
     var remoteAddr_: ?RawAddress = None
 
     prop sockFd: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             this.sockImpl.sockFd
         }
@@ -39,6 +42,10 @@ public class RawSocket {
     
     @Deprecated[message: "Use `public prop localAddress: RawAddress` instead."]
     public prop localAddr: RawAddress {
+        /*
+         * @throws IllegalArgumentException
+         * @throws SocketException
+         */
         get() {
             throwIfClosed()
             localAddr_ ?? getLocalAddress()
@@ -47,6 +54,10 @@ public class RawSocket {
 
     
     public prop localAddress: RawAddress {
+        /*
+         * @throws IllegalArgumentException
+         * @throws SocketException
+         */
         get() {
             throwIfClosed()
             localAddr_ ?? getLocalAddress()
@@ -56,6 +67,10 @@ public class RawSocket {
     
     @Deprecated[message: "Use `public prop remoteAddress: RawAddress` instead."]
     public prop remoteAddr: RawAddress {
+        /*
+         * @throws IllegalArgumentException
+         * @throws SocketException
+         */
         get() {
             throwIfClosed()
             remoteAddr_ ?? getPeerAddress()
@@ -64,6 +79,10 @@ public class RawSocket {
 
     
     public prop remoteAddress: RawAddress {
+        /*
+         * @throws IllegalArgumentException
+         * @throws SocketException
+         */
         get() {
             throwIfClosed()
             remoteAddr_ ?? getPeerAddress()
@@ -72,10 +91,17 @@ public class RawSocket {
 
     
     public mut prop readTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             throwIfClosed()
             this.readTimeout_
         }
+        /*
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         */
         set(v) {
             throwIfClosed()
             this.readTimeout_ = v?.throwIfNegative("Read timeout")
@@ -84,16 +110,26 @@ public class RawSocket {
 
     
     public mut prop writeTimeout: ?Duration {
+        /*
+         * @throws SocketException
+         */
         get() {
             throwIfClosed()
             this.writeTimeout_
         }
+        /*
+         * @throws SocketException
+         * @throws IllegalArgumentException
+         */
         set(v) {
             throwIfClosed()
             this.writeTimeout_ = v?.throwIfNegative("Write timeout")
         }
     }
 
+    /*
+     * @noThrow
+     */
     private init(fd: Int64) {
         this.sockImpl = RawSocketImpl(fd)
     }
@@ -105,6 +141,12 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     public init(domain: SocketDomain, `type`: SocketType, protocol: ProtocolType) {
         unsafe {
             let cNet = LibC.mallocCString("raw")
@@ -122,6 +164,11 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws SocketTimeoutException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public func bind(addr: RawAddress): Unit {
         throwIfClosed()
         match (localAddr_) {
@@ -137,6 +184,10 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     public func listen(backlog: Int32): Unit {
         throwIfClosed()
         let sockFd = unsafe { CJ_MRT_SockListen(this.sockFd, backlog) }
@@ -156,6 +207,12 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     public func accept(timeout!: ?Duration = None): RawSocket {
         let val = getTimeout(timeout)
         throwIfClosed()
@@ -190,6 +247,12 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     public func connect(addr: RawAddress, timeout!: ?Duration = None): Unit {
         throwIfClosed()
         let val = getTimeout(timeout)
@@ -201,6 +264,9 @@ public class RawSocket {
     }
 
     
+    /*
+     * @noThrow
+     */
     public func close(): Unit {
         if (this.isClosed) {
             return
@@ -217,6 +283,11 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     public func sendTo(addr: RawAddress, buffer: Array<Byte>, flags: Int32): Unit {
         throwIfClosed()
         let timeout = this.writeTimeout_?.toNanoseconds() ?? -1
@@ -231,6 +302,12 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     public func receiveFrom(buffer: Array<Byte>, flags: Int32): (RawAddress, Int64) {
         throwIfClosed()
         let timeout = this.readTimeout_?.toNanoseconds() ?? -1
@@ -249,6 +326,11 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     public func send(buffer: Array<Byte>, flags: Int32): Unit {
         throwIfClosed()
         let timeout = this.writeTimeout_?.toNanoseconds() ?? -1
@@ -263,6 +345,11 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     public func receive(buffer: Array<Byte>, flags: Int32): Int64 {
         throwIfClosed()
         let timeout = this.readTimeout_?.toNanoseconds() ?? -1
@@ -277,6 +364,9 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws SocketException
+     */
     public unsafe func setSocketOption(level: Int32, option: Int32, value: CPointer<Byte>, len: Int32): Unit {
         throwIfClosed()
         let ret = CJ_SockOptionSet(this.sockFd, level, option, CPointer<Unit>(value), len)
@@ -294,6 +384,9 @@ public class RawSocket {
 
 
 
+    /*
+     * @throws SocketException
+     */
     public unsafe func getSocketOption(level: Int32, option: Int32, value: CPointer<Byte>, len: CPointer<Int32>): Unit {
         throwIfClosed()
         let ret = CJ_SockOptionGet(this.sockFd, level, option, CPointer<Unit>(value), len)
@@ -303,12 +396,19 @@ public class RawSocket {
         }
     }
 
+    /*
+     * @throws SocketException
+     */
     private func throwIfClosed(): Unit {
         if (isClosed) {
             SocketException.throwClosedException()
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     private func getLocalAddress(): RawAddress {
         throwIfClosed()
         let addr = getAddress(this.sockFd, localAddrGet, "local")
@@ -317,6 +417,10 @@ public class RawSocket {
         return localAddr
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     private func getPeerAddress(): RawAddress {
         throwIfClosed()
         let addr = getAddress(this.sockFd, peerAddrGet, "remote")
@@ -330,10 +434,17 @@ public class RawSocket {
 class RawSocketImpl {
     var sockFd: Int64
 
+    /*
+     * @noThrow
+     */
     init(sockFd: Int64) {
         this.sockFd = sockFd
     }
 
+    /*
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     func bind(addr: RawAddress): Unit {
         let (handle, addrPtr) = getAddrPointer(addr.addr)
         let sockFd = unsafe { CJ_MRT_SockBind(this.sockFd, addrPtr, 0) }
@@ -344,6 +455,10 @@ class RawSocketImpl {
         this.sockFd = sockFd
     }
 
+    /*
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     func connect(addr: RawAddress, timeout: Int64): Unit {
         let (handle, remotePtr) = getAddrPointer(addr.addr)
         let localPtr = CPointer<SockAddr>()
@@ -359,6 +474,10 @@ class RawSocketImpl {
         this.sockFd = sockFd
     }
 
+    /*
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     func sendTo(addr: Array<Byte>, buffer: Array<Byte>, flags: Int32, timeout: Int64): Unit {
         let totalSize = buffer.size
         var totalSent: Int64 = 0
@@ -389,6 +508,10 @@ class RawSocketImpl {
         }
     }
 
+    /*
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     func send(buffer: Array<Byte>, flags: Int32, timeout: Int64): Unit {
         let totalSize = buffer.size
         var totalSent: Int64 = 0
@@ -416,6 +539,10 @@ class RawSocketImpl {
         }
     }
 
+    /*
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     func receiveFrom(size: Int64, buffer: Array<Byte>, flags: Int32, timeout: Int64): (RawAddress, Int64) {
         var recvSize: Int32 = 0
         let addrArr = Array<Byte>(size, repeat: 0)
@@ -438,6 +565,10 @@ class RawSocketImpl {
         return (RawAddress(addrArr), Int64(recvSize))
     }
 
+    /*
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     func receive(buffer: Array<Byte>, flags: Int32, timeout: Int64): Int64 {
         var recvSize: Int32 = 0
         while (true) {
@@ -457,6 +588,10 @@ class RawSocketImpl {
         return Int64(recvSize)
     }
 
+    /*
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     func processSendResult(timeout: Int64): Unit {
         unsafe {
             if (CJ_SockErrnoGet() != ERRNO_SOCK_EAGAIN) {
@@ -474,6 +609,10 @@ class RawSocketImpl {
         }
     }
 
+    /*
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     func processRecvResult(timeout: Int64): Unit {
         unsafe {
             if (CJ_SockErrnoGet() != ERRNO_SOCK_EAGAIN) {
@@ -491,6 +630,9 @@ class RawSocketImpl {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func close(): Unit {
         unsafe { CJ_MRT_SockClose(this.sockFd) }
     }
@@ -723,6 +865,9 @@ func getSocketOptionInt32(sockFd: Int64, level: Int32, option: Int32): Int32 {
     }
 }
 
+/*
+ * @noThrow
+ */
 func getOnceSendSize(size: Int64): Int64 {
     if (size < Int64(SOCK_WRITE_BUFFER_SIZE)) {
         size

@@ -189,6 +189,9 @@ public const SIGSYS: Int32 = 0xC
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getgid(): UInt32 {
     return unsafe { CJ_OS_Getgid() }
 }
@@ -201,6 +204,9 @@ public func getgid(): UInt32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getuid(): UInt32 {
     return unsafe { CJ_OS_Getuid() }
 }
@@ -214,6 +220,9 @@ public func getuid(): UInt32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func setgid(id: UInt32): Int32 {
     return unsafe { CJ_OS_Setgid(id) }
 }
@@ -227,6 +236,9 @@ public func setgid(id: UInt32): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func setuid(id: UInt32): Int32 {
     return unsafe { CJ_OS_Setuid(id) }
 }
@@ -240,6 +252,9 @@ public func setuid(id: UInt32): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getpgid(pid: Int32): Int32 {
     return unsafe { CJ_OS_Getpgid(pid) }
 }
@@ -256,6 +271,9 @@ public func getpgid(pid: Int32): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public unsafe func getgroups(size: Int32, gidArray: CPointer<UInt32>): Int32 {
     return CJ_OS_Getgroups(size, gidArray)
 }
@@ -268,6 +286,9 @@ public unsafe func getgroups(size: Int32, gidArray: CPointer<UInt32>): Int32 {
 
 @When[os == "Linux" || os == "Windows" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getpid(): Int32 {
     return unsafe { CJ_OS_Getpid() }
 }
@@ -280,6 +301,9 @@ public func getpid(): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getppid(): Int32 {
     return unsafe { CJ_OS_Getppid() }
 }
@@ -293,6 +317,9 @@ public func getppid(): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func getpgrp(): Int32 {
     return unsafe { CJ_OS_Getpgrp() }
 }
@@ -306,6 +333,9 @@ public func getpgrp(): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func setpgrp(): Int32 {
     return unsafe { CJ_OS_Setpgrp() }
 }
@@ -321,6 +351,9 @@ public func setpgrp(): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func setpgid(pid: Int32, pgrp: Int32): Int32 {
     return unsafe { CJ_OS_Setpgid(pid, pgrp) }
 }
@@ -336,6 +369,9 @@ public func setpgid(pid: Int32, pgrp: Int32): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func nice(inc: Int32): Int32 {
     return unsafe { CJ_OS_Nice(inc) }
 }
@@ -355,6 +391,9 @@ public func nice(inc: Int32): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func kill(pid: Int32, sig: Int32): Int32 {
     return unsafe { CJ_OS_Kill(pid, sig) }
 }
@@ -369,6 +408,9 @@ public func kill(pid: Int32, sig: Int32): Int32 {
 
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
+/*
+ * @noThrow
+ */
 public func killpg(pgid: Int32, sig: Int32): Int32 {
     return unsafe { CJ_OS_Killpg(pgid, sig) }
 }

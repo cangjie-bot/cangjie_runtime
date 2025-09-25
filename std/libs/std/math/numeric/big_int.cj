@@ -26,6 +26,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
     public prop sign: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             if (int == 0 && intArr.size == 0) {
                 return 0
@@ -44,6 +47,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
     public prop bitLen: Int64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             if (sign == 0) {
                 return 1
@@ -72,6 +78,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     BigInt(
         let int: UInt64,
         let intArr: Array<UInt32>,
@@ -86,6 +95,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func randomProbablePrime(bitLen: Int64, certainty: UInt64, rand!: Random = Random()): BigInt {
         if (bitLen <= 1) {
             throw IllegalArgumentException("The bitLen of the BigInt must > 1.")
@@ -104,6 +118,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(bytes: Array<Byte>) {
         if (bytes.size == 0) {
             throw IllegalArgumentException("The size of bytes cannot be zero!")
@@ -135,6 +153,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(sign: Bool, magnitude: Array<Byte>) {
         this.negSign = !sign
         let byteArray = removeLeftZero(magnitude)
@@ -159,6 +181,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: Int8) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -175,6 +200,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: Int16) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -191,6 +219,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: Int32) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -207,6 +238,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: Int64) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -223,6 +257,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: UInt8) {
         this(UInt64(n))
     }
@@ -230,6 +267,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: UInt16) {
         this(UInt64(n))
     }
@@ -237,6 +277,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: UInt32) {
         this(UInt64(n))
     }
@@ -244,6 +287,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: UInt64) {
         this.int = n
         this.intArr = EMPTY_ARRAY
@@ -253,6 +299,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: UIntNative) {
         this(UInt64(n))
     }
@@ -260,6 +309,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(n: IntNative) {
         this.intArr = EMPTY_ARRAY
         (this.int, this.negSign) = if (n >= 0) {
@@ -277,6 +329,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public init(n: Float16) {
         let tmp = Decimal(n).toBigInt()
         (this.int, this.intArr, this.negSign) = (tmp.int, tmp.intArr, tmp.negSign)
@@ -286,6 +345,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public init(n: Float32) {
         let tmp = Decimal(n).toBigInt()
         (this.int, this.intArr, this.negSign) = (tmp.int, tmp.intArr, tmp.negSign)
@@ -295,6 +361,13 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public init(n: Float64) {
         let tmp = Decimal(n).toBigInt()
         (this.int, this.intArr, this.negSign) = (tmp.int, tmp.intArr, tmp.negSign)
@@ -308,6 +381,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(sign: Bool, bitLen: Int64, rand!: Random = Random()) {
         if (bitLen <= 0) {
             throw IllegalArgumentException("The bitLen of the BigInt must > 0.")
@@ -370,6 +447,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
     @Deprecated[message: "Use member function `public static func parse(value: String, radix!: Int64): BigInt` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(s: String, base!: Int64 = 10) {
         if (base < 2 || base > 36) {
             throw IllegalArgumentException("The base should in the range of [2, 36].")
@@ -384,6 +465,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func testBit(index: Int64): Bool {
         if (index < 0) {
             throw IllegalArgumentException("The index must >= 0.")
@@ -420,6 +505,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
     @Deprecated[message: "Use global function `public func trailingZeros(x: BigInt): Int64` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func lowestOneBit(): Int64 {
         return trailingZeros(this)
     }
@@ -431,6 +519,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func setBit(index: Int64): BigInt {
         if (index < 0) {
             throw IllegalArgumentException("The index must >= 0.")
@@ -471,6 +563,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func clearBit(index: Int64): BigInt {
         if (index < 0) {
             throw IllegalArgumentException("The index must >= 0.")
@@ -502,6 +598,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func flipBit(index: Int64): BigInt {
         if (index < 0) {
             throw IllegalArgumentException("The index must >= 0.")
@@ -520,6 +620,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func isProbablePrime(certainty: UInt64): Bool {
         if (certainty == 0) {
             return true
@@ -549,6 +654,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return true
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func checkCertaintyTimes(certainty: Int64): Bool {
         for (_ in 0..Int64(certainty)) {
             var a: BigInt
@@ -567,6 +677,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func +(that: BigInt): BigInt {
         if (this.sign == 0) {
             return BigInt(that.int, that.intArr.clone(), that.negSign)
@@ -588,6 +702,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func -(that: BigInt): BigInt {
         if (this.sign == 0) {
             return -that
@@ -609,6 +727,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func *(that: BigInt): BigInt {
         if (this.sign == 0 || that.sign == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
@@ -626,6 +748,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public operator func /(that: BigInt): BigInt {
         let (dInt, dArr, dNegSign) = div(that.int, that.intArr, that.negSign)
         return BigInt(dInt, dArr, dNegSign)
@@ -642,6 +769,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func %(that: BigInt): BigInt {
         let (mInt, mArr) = mod(int, intArr, that.int, that.intArr)
         let mNegSign = if (mInt == 0 && mArr.size == 0) {
@@ -660,6 +791,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public func divAndMod(that: BigInt): (BigInt, BigInt) {
         let (dInt, dArr, dNegSign, mInt, mArr, mNegSign) = privateDivAndMod(that.int, that.intArr, that.negSign)
         return (BigInt(dInt, dArr, dNegSign), BigInt(mInt, mArr, mNegSign))
@@ -674,6 +810,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
     @Deprecated[message: "Use member function `public func divAndMod(that: BigInt): (BigInt, BigInt)` instead."]
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func quo(that: BigInt): BigInt {
         let (dInt, dArr, dNegSign, mInt, mArr, _) = privateDivAndMod(that.int, that.intArr, that.negSign)
         if (sign == -1 && !(mInt == 0 && mArr.size == 0)) {
@@ -692,6 +833,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
     @Deprecated[message: "Use member function `public func divAndMod(that: BigInt): (BigInt, BigInt)` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func rem(that: BigInt): BigInt {
         let (mInt, mArr) = mod(int, intArr, that.int, that.intArr)
         if (sign == -1 && !(mInt == 0 && mArr.size == 0)) {
@@ -709,6 +854,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
     @Deprecated[message: "Use member function `public func divAndMod(that: BigInt): (BigInt, BigInt)` instead."]
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func quoAndRem(that: BigInt): (BigInt, BigInt) {
         let (dInt, dArr, dNegSign, mInt, mArr, _) = privateDivAndMod(that.int, that.intArr, that.negSign)
         if (sign == -1 && !(mInt == 0 && mArr.size == 0)) {
@@ -726,6 +876,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func modInverse(that: BigInt): BigInt {
         if (that.int == 1 && that.intArr.size == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
@@ -744,6 +899,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func -(): BigInt {
         if (sign == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
@@ -756,6 +914,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func **(n: UInt64): BigInt {
         if (n == 0) {
             return BigInt(1, EMPTY_ARRAY, false)
@@ -792,6 +954,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public func modPow(n: BigInt, m!: ?BigInt = None): BigInt {
         if (n.sign == -1) {
             throw IllegalArgumentException("The exponent can not be negative.")
@@ -835,6 +1002,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func &(that: BigInt): BigInt {
         if (sign == 0 || that.sign == 0) {
             return BigInt(0, EMPTY_ARRAY, false)
@@ -869,6 +1040,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func |(that: BigInt): BigInt {
         if (sign == 0) {
             return BigInt(that.int, that.intArr.clone(), that.negSign)
@@ -910,6 +1085,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func ^(that: BigInt): BigInt {
         if (sign == 0) {
             return BigInt(that.int, that.intArr.clone(), that.negSign)
@@ -959,6 +1138,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func !(): BigInt {
         if (!negSign) {
             let (rInt, rArr) = addOneAndOverSize(int, intArr.clone())
@@ -973,6 +1156,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public operator func >>(n: Int64): BigInt {
         if (n < 0) {
             throw ArithmeticException("The parameter n must >= 0.")
@@ -1026,6 +1214,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     public operator func <<(n: Int64): BigInt {
         if (n < 0) {
             throw ArithmeticException("The parameter n must >= 0.")
@@ -1056,6 +1249,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func ==(that: BigInt): Bool {
         return this.sign == that.sign && this.int == that.int && this.intArr == that.intArr
     }
@@ -1065,6 +1261,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func !=(that: BigInt): Bool {
         return !(this == that)
     }
@@ -1074,6 +1273,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func >(that: BigInt): Bool {
         if (this.sign > that.sign) {
             return true
@@ -1096,6 +1298,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func >=(that: BigInt): Bool {
         if (this.sign > that.sign) {
             return true
@@ -1121,6 +1326,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func <(that: BigInt): Bool {
         return !(this >= that)
     }
@@ -1130,6 +1338,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func <=(that: BigInt): Bool {
         return !(this > that)
     }
@@ -1139,6 +1350,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func compare(that: BigInt): Ordering {
         match {
             case this < that => Ordering.LT
@@ -1151,6 +1365,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func hashCode(): Int64 {
         var hashCode: UInt64 = 0
         for (i in intArr.size - 1..=0 : -1) {
@@ -1167,12 +1384,20 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return convertToString(10)
     }
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toBytes(): Array<Byte> {
         if (sign == 0) {
             return Array<Byte>(1, repeat: 0)
@@ -1219,6 +1444,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func convertToString(radix: Int64): String {
         if (radix < 2 || radix > 36) {
             throw IllegalArgumentException("The radix should in the range of [2, 36].")
@@ -1263,6 +1492,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws OverflowException
+     */
     public func toInt8(overflowHandling!: OverflowStrategy = Throwing): Int8 {
         if (this.intArr.isEmpty()) {
             if (!this.negSign && this.int <= 127) {
@@ -1285,6 +1517,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func toInt8Wrapping(): Int8 {
         if (!this.negSign) {
             return Int8(this.int)
@@ -1301,6 +1536,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws OverflowException
+     */
     public func toInt16(overflowHandling!: OverflowStrategy = Throwing): Int16 {
         if (this.intArr.isEmpty()) {
             if (!this.negSign && this.int <= 32767) {
@@ -1323,6 +1561,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func toInt16Wrapping(): Int16 {
         if (!this.negSign) {
             return Int16(this.int)
@@ -1339,6 +1580,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws OverflowException
+     */
     public func toInt32(overflowHandling!: OverflowStrategy = Throwing): Int32 {
         if (this.intArr.isEmpty()) {
             if (!this.negSign && this.int <= 2147483647) {
@@ -1361,6 +1605,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func toInt32Wrapping(): Int32 {
         if (!this.negSign) {
             return Int32(this.int)
@@ -1377,6 +1624,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws OverflowException
+     */
     public func toInt64(overflowHandling!: OverflowStrategy = Throwing): Int64 {
         if (this.intArr.isEmpty()) {
             if (!this.negSign && this.int <= 9223372036854775807) {
@@ -1402,6 +1652,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func toInt64Wrapping(): Int64 {
         if (!this.negSign) {
             return Int64(this.int)
@@ -1411,6 +1664,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
+    /*
+     * @throws OverflowException
+     * @throws Exception
+     */
     public func toIntNative(overflowHandling!: OverflowStrategy = Throwing): IntNative {
         let len: IntNative = intNativeLen()
         return match (len) {
@@ -1420,18 +1677,42 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toFloat16(): Float16 {
         return Decimal(this).toFloat16()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toFloat32(): Float32 {
         return Decimal(this).toFloat32()
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toFloat64(): Float64 {
         return Decimal(this).toFloat64()
     }
 
+    /*
+     * @noThrow
+     */
     private func intNativeLen(): IntNative {
         var num: IntNative = 0
         var n: IntNative = IntNative.Max
@@ -1449,6 +1730,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws OverflowException
+     */
     public func toUInt8(overflowHandling!: OverflowStrategy = Throwing): UInt8 {
         if (this.intArr.isEmpty() && !this.negSign && this.int <= 255) {
             return UInt8(this.int)
@@ -1466,6 +1750,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func toUInt8Wrapping(): UInt8 {
         if (!this.negSign) {
             return UInt8(this.int)
@@ -1482,6 +1769,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws OverflowException
+     */
     public func toUInt16(overflowHandling!: OverflowStrategy = Throwing): UInt16 {
         if (this.intArr.isEmpty() && !this.negSign && this.int <= 65535) {
             return UInt16(this.int)
@@ -1499,6 +1789,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func toUInt16Wrapping(): UInt16 {
         if (!this.negSign) {
             return UInt16(this.int)
@@ -1515,6 +1808,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws OverflowException
+     */
     public func toUInt32(overflowHandling!: OverflowStrategy = Throwing): UInt32 {
         if (this.intArr.isEmpty() && !this.negSign && this.int <= 4294967295) {
             return UInt32(this.int)
@@ -1532,6 +1828,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func toUInt32Wrapping(): UInt32 {
         if (!this.negSign) {
             return UInt32(this.int)
@@ -1548,6 +1847,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+    /*
+     * @throws OverflowException
+     */
     public func toUInt64(overflowHandling!: OverflowStrategy = Throwing): UInt64 {
         if (this.intArr.isEmpty() && !this.negSign) {
             return this.int
@@ -1565,6 +1867,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func toUInt64Wrapping(): UInt64 {
         if (!this.negSign) {
             return this.int
@@ -1574,6 +1879,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
+    /*
+     * @throws OverflowException
+     * @throws Exception
+     */
     public func toUIntNative(overflowHandling!: OverflowStrategy = Throwing): UIntNative {
         let len: UIntNative = uintNativeLen()
         return match (len) {
@@ -1583,6 +1892,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func uintNativeLen(): UIntNative {
         var num: UIntNative = 0
         var n: UIntNative = UIntNative.Max
@@ -1592,11 +1904,17 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
         return num
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func calculateStrArrSize(anyBase: UInt64): Int64 {
         let powerOfTwo = 64 - leadingZeros(anyBase) - 1
         return (32 * (intArr.size + 2) / Int64(powerOfTwo) + 1)
     }
 
+    /*
+     * @noThrow
+     */
     private func calculateBaseStrSize(base: Int64): Int64 {
         let u64Base = UInt64(base)
         var n: UInt64 = 1
@@ -1609,6 +1927,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return size
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func isPowerOfTwo(): Bool {
         if (intArr.size == 0) {
             return (UInt64(1) << trailingZeros(int)) == int
@@ -1625,6 +1946,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     func div(thatInt: UInt64, thatArr: Array<UInt32>, thatNegSign: Bool): (UInt64, Array<UInt32>, Bool) {
         if (thatInt == 0 && thatArr.size == 0) {
             throw ArithmeticException("Divided by zero!")
@@ -1663,6 +1989,11 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return (rInt, rArr, this.negSign != thatNegSign)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     private func privateDivAndMod(thatInt: UInt64, thatArr: Array<UInt32>, thatNegSign: Bool): (UInt64, Array<UInt32>, 
         Bool, UInt64, Array<UInt32>, Bool) {
         if (thatInt == 0 && thatArr.size == 0) {
@@ -1706,6 +2037,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         }
         return (rInt, rArr, this.negSign != thatNegSign, remInt, remArr, this.negSign)
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func knuthDivAndMod(thatInt: UInt64, thatArr: Array<UInt32>, needMod!: Bool = true): (UInt64, Array<UInt32>, 
         UInt64, Array<UInt32>) {
         let sizeDD = intArr.size + 1 + 2
@@ -1736,6 +2071,10 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         let remInt = UInt64(remArr[0]) + (UInt64(remArr[1]) << 32)
         return (rInt, normalize(rArr), remInt, normalize(remArr[2..]))
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func knuthDivAndMod(that: UInt64, needMod!: Bool = true): (UInt64, Array<UInt32>, UInt64, Array<UInt32>) {
         let sizeDD = intArr.size + 1 + 2
         let l = leadingZeros(that)
@@ -1765,6 +2104,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return (rInt, normalize(rArr), remInt, normalize(remArr[2..]))
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func compareMagnitude(that: BigInt): Int64 {
         let c = compareAbsArr(this.intArr, that.intArr, 0)
         if (c == 0) {
@@ -1779,11 +2121,19 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
         return c
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     */
     func compareDouble(that: BigInt): Int64 {
         let double = that << 1
         return -compareMagnitude(double)
     }
 
+    /*
+     * @noThrow
+     */
     func isOdd() {
         return (this.int & 1) == 1
     }
@@ -1792,6 +2142,9 @@ public struct BigInt <: Comparable<BigInt> & Hashable & ToString {
 
 
 
+/*
+ * @noThrow
+ */
 public func abs(i: BigInt): BigInt {
     return BigInt(i.int, i.intArr.clone(), false)
 }
@@ -1802,6 +2155,11 @@ public func abs(i: BigInt): BigInt {
 
 
 
+/*
+ * @throws ArithmeticException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func sqrt(i: BigInt): BigInt {
     if (i.sign == 0) {
         return BigInt(0, EMPTY_ARRAY, false)
@@ -1850,6 +2208,10 @@ public func sqrt(i: BigInt): BigInt {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func gcd(i1: BigInt, i2: BigInt): BigInt {
     if (i1.sign == 0) {
         return BigInt(i2.int, i2.intArr.clone(), false)
@@ -1868,6 +2230,11 @@ public func gcd(i1: BigInt, i2: BigInt): BigInt {
 
 
 
+/*
+ * @throws ArithmeticException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func lcm(i1: BigInt, i2: BigInt): BigInt {
     if (i1.sign == 0 || i2.sign == 0) {
         return BigInt(0, EMPTY_ARRAY, false)
@@ -1879,6 +2246,9 @@ public func lcm(i1: BigInt, i2: BigInt): BigInt {
 }
 
 @Deprecated[message: "Use global function `public func countOnes(i: BigInt): Int64` instead."]
+/*
+ * @throws IndexOutOfBoundsException
+ */
 public func countOne(i: BigInt): Int64 {
     return countOnes(i)
 }
@@ -1889,6 +2259,9 @@ public func countOne(i: BigInt): Int64 {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 public func countOnes(i: BigInt): Int64 {
     if (i.sign == 0) {
         return 0
@@ -1931,6 +2304,9 @@ public func countOnes(i: BigInt): Int64 {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 public func trailingZeros(x: BigInt): Int64 {
     if (x.sign == 0) {
         return -1
@@ -1953,6 +2329,9 @@ enum Operator {
     | Xor
     | Or
 
+    /*
+     * @noThrow
+     */
     func op(x: UInt64, y: UInt64): UInt64 {
         match (this) {
             case Xor => return x ^ y
@@ -1960,6 +2339,9 @@ enum Operator {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func op(x: UInt32, y: UInt32): UInt32 {
         match (this) {
             case Xor => return x ^ y
@@ -1968,6 +2350,9 @@ enum Operator {
     }
 }
 
+/*
+ * @noThrow
+ */
 func countOnes(int64: UInt64): Int64 {
     var count64 = 0
     var val = int64
@@ -1978,6 +2363,9 @@ func countOnes(int64: UInt64): Int64 {
     return count64
 }
 
+/*
+ * @noThrow
+ */
 func countOnes(int: UInt32): Int64 {
     var count32 = 0
     var val = int
@@ -1989,6 +2377,9 @@ func countOnes(int: UInt32): Int64 {
 }
 
 
+/*
+ * @noThrow
+ */
 func countZero(int64: UInt64): Int64 {
     var countZero64 = 0
     var val = int64
@@ -1999,6 +2390,9 @@ func countZero(int64: UInt64): Int64 {
     return countZero64
 }
 
+/*
+ * @noThrow
+ */
 func countZero(int: UInt32): Int64 {
     var countZero32 = 0
     var val = int
@@ -2009,6 +2403,9 @@ func countZero(int: UInt32): Int64 {
     return countZero32
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func and(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     let rInt = thisInt & thatInt
     let size = min(thisArr.size, thatArr.size)
@@ -2022,6 +2419,9 @@ func and(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Arra
     return (rInt, rArr)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func orOrXor(thisBig: BigInt, thatBig: BigInt, bitOperator: Operator): (UInt64, Array<UInt32>) {
     let rInt = bitOperator.op(thisBig.int, thatBig.int)
     if (thisBig.intArr.size == 0 && thatBig.intArr.size == 0) {
@@ -2042,6 +2442,10 @@ func orOrXor(thisBig: BigInt, thatBig: BigInt, bitOperator: Operator): (UInt64, 
     return (rInt, rArr)
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func subOneAnd(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     var rInt: UInt64
     let rArr: Array<UInt32>
@@ -2061,6 +2465,9 @@ func subOneAnd(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr
     return (rInt, rArr)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func subOneOrOrXor(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>,
     bitOperator: Operator): (UInt64, Array<UInt32>) {
     var rInt: UInt64
@@ -2081,6 +2488,9 @@ func subOneOrOrXor(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, tha
     return (rInt, rArr)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func subOne(int: UInt64, intArr: Array<UInt32>, shouldClone: Bool): (UInt64, Array<UInt32>) {
     let rInt: UInt64
     let rArr: Array<UInt32>
@@ -2099,6 +2509,10 @@ func subOne(int: UInt64, intArr: Array<UInt32>, shouldClone: Bool): (UInt64, Arr
     return (rInt, rArr)
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func resetSizeAndSubOne(int: UInt64, intArr: Array<UInt32>, size: Int64, shouldClone: Bool): (UInt64, Array<UInt32>) {
     let rInt: UInt64
     let rArr: Array<UInt32>
@@ -2133,6 +2547,10 @@ func resetSizeAndSubOne(int: UInt64, intArr: Array<UInt32>, size: Int64, shouldC
     }
     return (rInt, rArr)
 }
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func addOneAndOverSize(int: UInt64, intArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     if (int == 0xFFFF_FFFF_FFFF_FFFF) {
         for (i in intArr.size - 1..=0 : -1) {
@@ -2147,6 +2565,10 @@ func addOneAndOverSize(int: UInt64, intArr: Array<UInt32>): (UInt64, Array<UInt3
     return (int + 1, intArr)
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func negBitOrOrXor(thisBig: BigInt, index: Int64, bitOperator: Operator): BigInt {
     if (index == 0 && thisBig.int == 0xFFFF_FFFF_FFFF_FFFF) {
         var rArrPlus = thisBig.intArr.clone()
@@ -2182,6 +2604,10 @@ func negBitOrOrXor(thisBig: BigInt, index: Int64, bitOperator: Operator): BigInt
     return BigInt(thisBig.int, normalize(bitArr), true)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func posBitOrOrXor(thisBig: BigInt, index: Int64, bitOperator: Operator): BigInt {
     if (index < 64) {
         return BigInt(bitOperator.op((UInt64(1) << index), thisBig.int), thisBig.intArr.clone(), false)
@@ -2194,13 +2620,22 @@ func posBitOrOrXor(thisBig: BigInt, index: Int64, bitOperator: Operator): BigInt
     return BigInt(thisBig.int, normalize(bitArr), false)
 }
 
+/*
+ * @noThrow
+ */
 func arrIndexAndU32Index(index: Int64): (Int64, Int64) {
     return ((index - 64) >> 5, (index - 64) & 0x1F)
 }
 
+/*
+ * @noThrow
+ */
 func deltaSizeAndU32Shift(index: Int64): (Int64, Int64) {
     return (index >> 5, index & 0x1F)
 }
+/*
+ * @noThrow
+ */
 func shiftLeftUInt64(int: UInt64, shift64: Int64): (UInt32, UInt32, UInt32) {
     let carry: UInt32
     let rArr0: UInt32
@@ -2222,6 +2657,9 @@ func shiftLeftUInt64(int: UInt64, shift64: Int64): (UInt32, UInt32, UInt32) {
     }
     return (carry, rArr0, left)
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func shiftRightToUInt64(int: UInt64, intArr: Array<UInt32>, delta: Int64, shift: Int64, carryRight: UInt32): UInt64 {
     var rInt: UInt64 = 0
     var carry = carryRight
@@ -2257,6 +2695,10 @@ func shiftRightToUInt64(int: UInt64, intArr: Array<UInt32>, delta: Int64, shift:
     }
     return rInt
 }
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func removeLeftZero(bytes: Array<Byte>): Array<Byte> {
     var i = 0
     while (i < bytes.size) {
@@ -2267,6 +2709,9 @@ func removeLeftZero(bytes: Array<Byte>): Array<Byte> {
     }
     return bytes[i..]
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func compToMag(bytes: Array<Byte>): Array<Byte> {
     let mag = Array<Byte>(bytes.size, {i => !bytes[i]})
     for (i in mag.size - 1..=0 : -1) {
@@ -2279,6 +2724,9 @@ func compToMag(bytes: Array<Byte>): Array<Byte> {
     }
     return mag
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func fromBigBytesToSmallU32Array(bytes: Array<Byte>): Array<UInt32> {
     if (bytes.size == 0) {
         return EMPTY_ARRAY
@@ -2309,6 +2757,9 @@ func fromBigBytesToSmallU32Array(bytes: Array<Byte>): Array<UInt32> {
     }
     return smallU32
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func fromBigBytesToU64(bytes: Array<Byte>): UInt64 {
     if (bytes.size == 0) {
         return 0
@@ -2320,6 +2771,9 @@ func fromBigBytesToU64(bytes: Array<Byte>): UInt64 {
     }
     return u64
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func fromU64ToBigBytes(byteArr: Array<Byte>, int: UInt64) {
     var j = 0
     for (i in byteArr.size - 1..=0 : -1) {
@@ -2330,6 +2784,9 @@ func fromU64ToBigBytes(byteArr: Array<Byte>, int: UInt64) {
         j++
     }
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func fromSmallU32ArrayToBigBytes(byteArr: Array<Byte>, intArr: Array<UInt32>) {
     var i = byteArr.size - 1
     var j = 0
@@ -2348,6 +2805,9 @@ func fromSmallU32ArrayToBigBytes(byteArr: Array<Byte>, intArr: Array<UInt32>) {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func isAllZero(intArr: Array<UInt32>): Bool {
     for (i in intArr.size - 1..=0 : -1) {
         if (intArr[i] != 0) {
@@ -2356,6 +2816,9 @@ func isAllZero(intArr: Array<UInt32>): Bool {
     }
     return true
 }
+/*
+ * @noThrow
+ */
 func uInt64Mul(thisInt: UInt64, thatInt: UInt64): (UInt64, UInt32, UInt32) {
     let thisInt0: UInt64 = thisInt & 0xFFFF_FFFF
     let thisInt1: UInt64 = thisInt >> 32
@@ -2374,6 +2837,9 @@ func uInt64Mul(thisInt: UInt64, thatInt: UInt64): (UInt64, UInt32, UInt32) {
     let int = resultInt0 | (resultInt1 << 32)
     return (int, UInt32(resultInt2), UInt32(resultInt3))
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func calculateStrArr(stringArr: Array<UInt64>, big: BigInt, bound: Int64, anyBase: UInt64): Int64 {
     var stringArrBound = bound
     var i = big.intArr.size - 1
@@ -2385,6 +2851,9 @@ func calculateStrArr(stringArr: Array<UInt64>, big: BigInt, bound: Int64, anyBas
     return calculateStrArr(stringArr, big.int & 0xFFFF_FFFF, stringArrBound, anyBase)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func calculateStrArr(stringArr: Array<UInt64>, int: UInt64, bound: Int64, anyBase: UInt64): Int64 {
     var stringArrBound = bound
     for (j in stringArrBound - 1..=0 : -1) {
@@ -2405,6 +2874,9 @@ func calculateStrArr(stringArr: Array<UInt64>, int: UInt64, bound: Int64, anyBas
     }
     return stringArrBound
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func toBaseString(stringUtf8Arr: Array<Byte>, index: Int64, int: UInt64, base: UInt64): Int64 {
     var i = index
     var quo = int
@@ -2421,6 +2893,10 @@ func toBaseString(stringUtf8Arr: Array<Byte>, index: Int64, int: UInt64, base: U
     return i
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func normalize(value: Array<UInt32>): Array<UInt32> {
     var preZeroNum = value.size - 1
     while (preZeroNum >= 0 && value[preZeroNum] == 0) {
@@ -2429,6 +2905,10 @@ func normalize(value: Array<UInt32>): Array<UInt32> {
     return value[..=preZeroNum]
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parseString(s: String, base: UInt64): (UInt64, Array<UInt32>, Bool) {
     let (isNeg, start) = parseSign(s)
     let (int, arr) = parseDigits(s, start, base)
@@ -2439,6 +2919,10 @@ func parseString(s: String, base: UInt64): (UInt64, Array<UInt32>, Bool) {
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parseDigits(s: String, idx: Int64, radix: UInt64): (UInt64, Array<UInt32>) {
     if (idx >= s.size) {
         throw IllegalArgumentException("Invalid string.")
@@ -2461,6 +2945,10 @@ func parseDigits(s: String, idx: Int64, radix: UInt64): (UInt64, Array<UInt32>) 
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parseSign(s: String): (Bool, Int64) {
     if (s.size == 0) {
         throw IllegalArgumentException("Invalid string.")
@@ -2473,6 +2961,10 @@ func parseSign(s: String): (Bool, Int64) {
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parseBase(s: String, idx: Int64): (UInt64, Int64) {
     if (idx >= s.size) {
         throw IllegalArgumentException("Invalid string.")
@@ -2488,6 +2980,9 @@ func parseBase(s: String, idx: Int64): (UInt64, Int64) {
     }
 }
 
+/*
+ * @noThrow
+ */
 func calculateLenAndBase(base: UInt64): (Int64, UInt64) {
     var anyBase = base
     var digits = 1
@@ -2500,6 +2995,10 @@ func calculateLenAndBase(base: UInt64): (Int64, UInt64) {
     return (digits, anyBase)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func calculateUInt32Arr(size: Int64, numberArray: Array<UInt8>, base: UInt64): (UInt64, Array<UInt32>) {
     let resultArr = Array<UInt32>(size, repeat: 0)
     var int: UInt64 = 0
@@ -2539,6 +3038,10 @@ func calculateUInt32Arr(size: Int64, numberArray: Array<UInt8>, base: UInt64): (
     return (int, normalize(resultArr))
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func initNumArray(s: String, index: Int64, base: UInt8): Array<UInt8> {
     let numberArray = Array<UInt8>(s.size, repeat: 0)
     for (i in index..s.size) {
@@ -2554,6 +3057,10 @@ func initNumArray(s: String, index: Int64, base: UInt8): Array<UInt8> {
     }
     return numberArray
 }
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func modAddAbsOfDivisor(int: UInt64, intArr: Array<UInt32>, thatBig: BigInt): BigInt {
     let isIntNeg: Bool
     var resultIntAbs: UInt64
@@ -2572,6 +3079,10 @@ func modAddAbsOfDivisor(int: UInt64, intArr: Array<UInt32>, thatBig: BigInt): Bi
     subInSitu(resultArr, intArr, 0)
     return BigInt(resultIntAbs, normalize(resultArr), false)
 }
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func addAbs(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     let (resultInt, carry) = addUInt64(thisInt, thatInt)
     if (thisArr.size == 0 && thatArr.size == 0) {
@@ -2591,6 +3102,9 @@ func addAbs(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: A
     return (resultInt, normalize(resultArr))
 }
 
+/*
+ * @noThrow
+ */
 func addUInt64(thisInt: UInt64, thatInt: UInt64): (UInt64, UInt64) {
     var resultInt = (thisInt & 0x7FFF_FFFF_FFFF_FFFF) + (thatInt & 0x7FFF_FFFF_FFFF_FFFF)
     let leftResult = (resultInt >> 63) + (thisInt >> 63) + (thatInt >> 63)
@@ -2609,6 +3123,10 @@ func addUInt64(thisInt: UInt64, thatInt: UInt64): (UInt64, UInt64) {
     return (resultInt, carry)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func addInSitu(summand: Array<UInt32>, addend: Array<UInt32>, carry: UInt64): Array<UInt32> {
     var c: UInt64 = carry
     for (i in 0..addend.size) {
@@ -2627,6 +3145,10 @@ func addInSitu(summand: Array<UInt32>, addend: Array<UInt32>, carry: UInt64): Ar
     return normalize(summand)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func subAbs(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>, negSign: Bool): (UInt64, 
     Array<UInt32>, Bool) {
     let isIntNeg: Bool
@@ -2663,12 +3185,19 @@ func subAbs(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: A
     return (resultIntAbs, normalize(resultArr), isArrNeg != negSign)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func subInSitu(minuend: Array<UInt32>, subtrahend: Array<UInt32>, offset: Int64): Array<UInt32> {
     for (i in 0..subtrahend.size) {
         subAndBorrow(minuend, i + offset, subtrahend[i])
     }
     return normalize(minuend)
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func subAndBorrow(minuend: Array<UInt32>, index: Int64, subtrahend: UInt32): Unit {
     minuend[index] = if (minuend[index] >= subtrahend) {
         minuend[index] - subtrahend
@@ -2683,6 +3212,10 @@ func subAndBorrow(minuend: Array<UInt32>, index: Int64, subtrahend: UInt32): Uni
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func knuthNormalize(size: Int64, int: UInt64, intArr: Array<UInt32>, l: Int64): Array<UInt32> {
     let normalized = Array<UInt32>(size, repeat: 0)
     intArr.copyTo(normalized, 0, 2, intArr.size)
@@ -2691,6 +3224,9 @@ func knuthNormalize(size: Int64, int: UInt64, intArr: Array<UInt32>, l: Int64): 
     shiftLeftInSitu(normalized, l)
     return normalized
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func shiftLeftInSitu(arr: Array<UInt32>, shift: Int64): Array<UInt32> {
     if (shift == 0) {
         return arr
@@ -2703,6 +3239,9 @@ func shiftLeftInSitu(arr: Array<UInt32>, shift: Int64): Array<UInt32> {
     }
     return arr
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func shiftLeftInSitu(int: UInt64, rArr: Array<UInt32>, shift: Int64, deltaSize: Int64): (UInt64, Array<UInt32>) {
     let shift64 = shift & 0x3F
     let shift32 = shift & 0x1F
@@ -2749,6 +3288,9 @@ func shiftLeftInSitu(int: UInt64, rArr: Array<UInt32>, shift: Int64, deltaSize: 
     }
     return (rInt, rArr)
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func shiftRightInSitu(arr: Array<UInt32>, shift: Int64): Array<UInt32> {
     if (shift == 0) {
         return arr
@@ -2762,6 +3304,9 @@ func shiftRightInSitu(arr: Array<UInt32>, shift: Int64): Array<UInt32> {
     return arr
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func divBy2Insitu(int: UInt64, arr: Array<UInt32>): (UInt64, Array<UInt32>) {
     var carry: UInt32 = 0
     for (i in arr.size - 1..=0 : -1) {
@@ -2773,6 +3318,10 @@ func divBy2Insitu(int: UInt64, arr: Array<UInt32>): (UInt64, Array<UInt32>) {
     return (rInt, arr)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func divByUInt32InSitu(dividend: Array<UInt32>, divisor: UInt64): (Array<UInt32>, UInt64) {
     var rem: UInt64 = 0
     for (i in dividend.size - 1..=0 : -1) {
@@ -2783,6 +3332,9 @@ func divByUInt32InSitu(dividend: Array<UInt32>, divisor: UInt64): (Array<UInt32>
     return (normalize(dividend), rem)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func modByUInt32(dividend: Array<UInt32>, divisor: UInt64): UInt64 {
     var rem: UInt64 = 0
     for (i in dividend.size - 1..=0 : -1) {
@@ -2791,6 +3343,10 @@ func modByUInt32(dividend: Array<UInt32>, divisor: UInt64): UInt64 {
     }
     return rem
 }
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func mod(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     if (thisArr.size == 0 && thatArr.size == 0) {
         return (thisInt % thatInt, EMPTY_ARRAY)
@@ -2828,6 +3384,10 @@ func mod(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Arra
     return (remInt, remArr)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func modOption(int: UInt64, intArr: Array<UInt32>, m: ?BigInt): (UInt64, Array<UInt32>) {
     if (let Some(m_) <- m) {
         if (!isNoLessThan(m_.int, m_.intArr, int, intArr)) {
@@ -2836,6 +3396,10 @@ func modOption(int: UInt64, intArr: Array<UInt32>, m: ?BigInt): (UInt64, Array<U
     }
     return (int, intArr)
 }
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func knuthMod(normalizedDividend: Array<UInt32>, normalizedDivisor: Array<UInt32>, shift: Int64): (UInt64, Array<UInt32>) {
     let sizeDD = normalizedDividend.size
     let sizeD = normalizedDivisor.size
@@ -2848,6 +3412,10 @@ func knuthMod(normalizedDividend: Array<UInt32>, normalizedDivisor: Array<UInt32
     let remInt = UInt64(remArr[0]) + (UInt64(remArr[1]) << 32)
     return (remInt, normalize(remArr[2..]))
 }
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func knuthMod(normalizedDividend: Array<UInt32>, normalizedDivisor: UInt64, shift: Int64): (UInt64, Array<UInt32>) {
     let sizeDD = normalizedDividend.size
     var j = sizeDD - 2 - 1
@@ -2861,6 +3429,10 @@ func knuthMod(normalizedDividend: Array<UInt32>, normalizedDivisor: UInt64, shif
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func mulByUInt32InSitu(multiplicand: Array<UInt32>, multiplicator: UInt64): Array<UInt32> {
     var carry: UInt64 = 0
     for (i in 0..multiplicand.size) {
@@ -2871,6 +3443,9 @@ func mulByUInt32InSitu(multiplicand: Array<UInt32>, multiplicator: UInt64): Arra
     return normalize(multiplicand)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func mulByUInt32InSitu(rArr: Array<UInt32>, multiplicand: Array<UInt32>, multiplicator: UInt64, index: Int64) {
     var carry: UInt64 = 0
     for (i in 0..multiplicand.size) {
@@ -2886,6 +3461,10 @@ func mulByUInt32InSitu(rArr: Array<UInt32>, multiplicand: Array<UInt32>, multipl
         i++
     }
 }
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func mul(mInt: UInt64, mArr: Array<UInt32>, mulInt: UInt64, mulArr: Array<UInt32>): (UInt64, Array<UInt32>) {
     let (int, rArr0, rArr1) = uInt64Mul(mInt, mulInt)
     if (mArr.size == 0 && mulArr.size == 0) {
@@ -2908,6 +3487,9 @@ func mul(mInt: UInt64, mArr: Array<UInt32>, mulInt: UInt64, mulArr: Array<UInt32
     }
     return (int, normalize(rArr))
 }
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func compareAbsArr(thisArr: Array<UInt32>, thatArr: Array<UInt32>, offset: Int64): Int64 {
     if (thisArr.size > thatArr.size + offset) {
         return 1
@@ -2929,6 +3511,10 @@ func compareAbsArr(thisArr: Array<UInt32>, thatArr: Array<UInt32>, offset: Int64
     return 0
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func isNoLessThan(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, thatArr: Array<UInt32>): Bool {
     let c = compareAbsArr(normalize(thisArr), normalize(thatArr), 0)
     if (c == 0) {
@@ -2936,6 +3522,10 @@ func isNoLessThan(thisInt: UInt64, thisArr: Array<UInt32>, thatInt: UInt64, that
     }
     return c == 1
 }
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func gcd(int1: UInt64, int1Arr: Array<UInt32>, int2: UInt64, int2Arr: Array<UInt32>): (UInt64, Array<UInt32>) {
     if (int1Arr.size == 0 && int2Arr.size == 0) {
         return (gcd(int1, int2), EMPTY_ARRAY)
@@ -2981,6 +3571,11 @@ func gcd(int1: UInt64, int1Arr: Array<UInt32>, int2: UInt64, int2Arr: Array<UInt
     return (i1Int, normalize(i1Arr))
 }
 
+/*
+ * @throws ArithmeticException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func exgcdToInverse(thisBig: BigInt, thatBig: BigInt): (BigInt, BigInt) {
     if (thatBig.sign == 0) {
         if (thisBig.int != 1 || thisBig.intArr.size != 0) {
@@ -2993,6 +3588,10 @@ func exgcdToInverse(thisBig: BigInt, thatBig: BigInt): (BigInt, BigInt) {
     return (y, x - quo * y)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func knuthDivGuessQ(normalizedDividend: Array<UInt32>, normalizedDivisor: Array<UInt32>, sizeD: Int64, j: Int64): UInt64 {
     let dd = (UInt64(normalizedDividend[sizeD + j]) << 32) + UInt64(normalizedDividend[sizeD + j - 1])
     let d = UInt64(normalizedDivisor[sizeD - 1])
@@ -3024,6 +3623,10 @@ func knuthDivGuessQ(normalizedDividend: Array<UInt32>, normalizedDivisor: Array<
     return q
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func knuthDivGuessQ(normalizedDividend: Array<UInt32>, normalizedDivisor: UInt64, j: Int64): UInt64 {
     let dd = (UInt64(normalizedDividend[j + 2]) << 32) + UInt64(normalizedDividend[j + 1])
     let d = normalizedDivisor >> 32
@@ -3052,6 +3655,11 @@ func knuthDivGuessQ(normalizedDividend: Array<UInt32>, normalizedDivisor: UInt64
 
 
 
+/*
+ * @throws ArithmeticException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func witness(a: BigInt, n: BigInt): Bool {
     let (subOneInt, subOneArr) = subOne(n.int, n.intArr, false)
     let subOne = BigInt(subOneInt, normalize(subOneArr), false)
@@ -3084,6 +3692,9 @@ func witness(a: BigInt, n: BigInt): Bool {
 extend BigInt <: Number<BigInt> {}
 
 extend BigInt <: Integer<BigInt> {
+    /*
+     * @noThrow
+     */
     public static func isSigned(): Bool {
         true
     }

@@ -19,6 +19,9 @@ public interface Datasource <: Resource {
 
 
 
+    /*
+     * @noThrow
+     */
     func setOption(key: String, value: String): Unit
 
 
@@ -26,5 +29,8 @@ public interface Datasource <: Resource {
 
 
 
+    /*
+     * @noThrow
+     */
     func connect(): Connection
 }

@@ -21,22 +21,37 @@ public struct SocketDomain <: Equatable<SocketDomain> & ToString & Hashable {
     public static let NETLINK: SocketDomain = SocketDomain(AF_NETLINK)
     public static let PACKET: SocketDomain = SocketDomain(AF_PACKET)
 
+    /*
+     * @noThrow
+     */
     private init(domain: Int16) {
         this(Int32(domain))
     }
 
+    /*
+     * @noThrow
+     */
     public init(domain: Int32) {
         this.val = domain
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(r: SocketDomain): Bool {
         return this.val == r.val
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(r: SocketDomain): Bool {
         return !(this == r)
     }
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return match {
             case val == Int32(AF_INET) => "IPv4"
@@ -48,6 +63,9 @@ public struct SocketDomain <: Equatable<SocketDomain> & ToString & Hashable {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return Int64(val)
     }
@@ -100,18 +118,30 @@ public struct SocketType <: Equatable<SocketType> & ToString & Hashable {
     public static let RAW: SocketType = SocketType(SOCKET_RAW)
     public static let SEQPACKET: SocketType = SocketType(SOCKET_SEQPACKET)
 
+    /*
+     * @noThrow
+     */
     public init(`type`: Int32) {
         this.val = `type`
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(r: SocketType): Bool {
         return this.val == r.val
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(r: SocketType): Bool {
         return !(this == r)
     }
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return match {
             case val == SOCKET_STREAM => "STREAM"
@@ -122,6 +152,9 @@ public struct SocketType <: Equatable<SocketType> & ToString & Hashable {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return Int64(val)
     }
@@ -139,18 +172,30 @@ public struct ProtocolType <: Equatable<ProtocolType> & ToString & Hashable {
     public static let UDP: ProtocolType = ProtocolType(IPPROTO_UDP)
     public static let RAW: ProtocolType = ProtocolType(IPPROTO_RAW)
 
+    /*
+     * @noThrow
+     */
     public init(protocol: Int32) {
         this.val = protocol
     }
 
+    /*
+     * @noThrow
+     */
     public operator func ==(r: ProtocolType): Bool {
         return this.val == r.val
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(r: ProtocolType): Bool {
         return !(this == r)
     }
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return match {
             case val == 0 => "Unspecified"
@@ -164,12 +209,18 @@ public struct ProtocolType <: Equatable<ProtocolType> & ToString & Hashable {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return Int64(val)
     }
 }
 
 
+              /*
+               * @noThrow
+               */
 public struct OptionLevel {
     public static const IP: Int32 = IPPROTO_IP
     public static const TCP: Int32 = IPPROTO_TCP
@@ -180,6 +231,9 @@ public struct OptionLevel {
 }
 
 
+              /*
+               * @noThrow
+               */
 public struct OptionName {
     public static const IP_HDRINCL: Int32 = SOCK_IP_HDRINCL
     public static const IP_TOS: Int32 = SOCK_IP_TOS
@@ -209,6 +263,9 @@ public struct RawAddress {
 
     
     public prop addr: Array<Byte> {
+        /*
+         * @noThrow
+         */
         get() {
             this.addr_
         }
@@ -218,11 +275,18 @@ public struct RawAddress {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(addr: Array<Byte>) {
         this.addr_ = addr
     }
 }
 
+/*
+ * @throws ArithmeticException
+ * @throws IllegalArgumentException
+ */
 func getTimeout(timeout: Option<Duration>): Int64 {
     match (timeout) {
         case Some(v) =>

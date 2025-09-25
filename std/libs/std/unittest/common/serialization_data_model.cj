@@ -14,9 +14,15 @@ package std.unittest.common
 import std.collection.ArrayList
 
 
+                         /*
+                          * @noThrow
+                          */
 protected abstract class DataModel {}
 
 
+                /*
+                 * @noThrow
+                 */
 protected class DataModelNull <: DataModel {}
 
 
@@ -31,6 +37,9 @@ protected class DataModelBool <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(bv: Bool) {
         this.value = bv
     }
@@ -40,6 +49,9 @@ protected class DataModelBool <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): Bool {
         return value
     }
@@ -57,6 +69,9 @@ protected class DataModelInt <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(iv: Int64) {
         this.value = iv
     }
@@ -66,6 +81,9 @@ protected class DataModelInt <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): Int64 {
         return value
     }
@@ -83,10 +101,16 @@ protected class DataModelFloat <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(fv: Float64) {
         this.value = fv
     }
 
+    /*
+     * @noThrow
+     */
     public init(v: Int64) {
         this.value = Float64(v)
     }
@@ -96,6 +120,9 @@ protected class DataModelFloat <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): Float64 {
         return value
     }
@@ -113,6 +140,9 @@ protected class DataModelString <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(sv: String) {
         this.value = sv
     }
@@ -122,6 +152,9 @@ protected class DataModelString <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getValue(): String {
         return value
     }
@@ -137,6 +170,9 @@ protected class DataModelSeq <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public init() {
         items = ArrayList<DataModel>()
     }
@@ -147,6 +183,9 @@ protected class DataModelSeq <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(list: ArrayList<DataModel>) {
         items = list
     }
@@ -156,6 +195,9 @@ protected class DataModelSeq <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getItems(): ArrayList<DataModel> {
         return items
     }
@@ -165,6 +207,10 @@ protected class DataModelSeq <: DataModel {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(dm: DataModel) {
         items.add(dm)
     }
@@ -180,6 +226,9 @@ protected class DataModelStruct <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public init() {
         fields = ArrayList<Field>()
     }
@@ -190,6 +239,9 @@ protected class DataModelStruct <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(list: ArrayList<Field>) {
         fields = list
     }
@@ -199,6 +251,9 @@ protected class DataModelStruct <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getFields(): ArrayList<Field> {
         return fields
     }
@@ -209,6 +264,10 @@ protected class DataModelStruct <: DataModel {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(fie: Field): DataModelStruct {
         let key = fie.getName()
         for (field in fields) {
@@ -227,6 +286,9 @@ protected class DataModelStruct <: DataModel {
 
 
 
+    /*
+     * @noThrow
+     */
     public func get(key: String): DataModel {
         for (fie in fields) {
             if (fie.getName() == key) {
@@ -254,6 +316,9 @@ protected class Field {
 
 
 
+    /*
+     * @noThrow
+     */
     public init(name: String, data: DataModel) {
         this.name = name
         this.data = data
@@ -264,6 +329,9 @@ protected class Field {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getName(): String {
         return name
     }
@@ -273,6 +341,9 @@ protected class Field {
 
 
 
+    /*
+     * @noThrow
+     */
     public func getData(): DataModel {
         return data
     }
@@ -283,6 +354,10 @@ protected class Field {
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func createDataModelSeq<T>(list: Collection<T>): DataModelSeq where T <: Serializable<T> {
     let dms: ArrayList<DataModel> = ArrayList<DataModel>(list.size)
     for (i in list) {
@@ -299,6 +374,9 @@ func createDataModelSeq<T>(list: Collection<T>): DataModelSeq where T <: Seriali
 
 
 
+/*
+ * @noThrow
+ */
 protected func field<T>(name: String, data: T): Field where T <: Serializable<T> {
     return Field(name, data.serializeInternal())
 }
@@ -307,14 +385,23 @@ protected func field<T>(name: String, data: T): Field where T <: Serializable<T>
 
 
 protected class DataModelException <: Exception {
+    /*
+     * @noThrow
+     */
     public init() {
         super()
     }
 
+    /*
+     * @noThrow
+     */
     public init(message: String) {
         super(message)
     }
 
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "DataModelException"
     }

@@ -23,12 +23,18 @@ let OP_EXCLUDE_TAGS_KEY = kebabCaseToCamelCase(OP_EXCLUDE_TAGS_NAME)
 let OP_BENCH = "--${KeyBench().name}"
 
 struct SuiteFilterKey {
+    /*
+     * @noThrow
+     */
     SuiteFilterKey(
         let suiteId: TestSuiteId,
         let tags!: Array<String> = Array(),
         let topLevelFunc!: ?String = None
     ) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     static func fromTestSuite(groupName: String, suite: TestSuite) {
         let name: ?String = if (suite.suiteConfiguration.fromTopLevel) {
             suite.cases.get(0)?.name
@@ -43,12 +49,18 @@ struct SuiteFilterKey {
 }
 
 struct CaseFilterKey {
+    /*
+     * @noThrow
+     */
     CaseFilterKey(
         let caseId: TestCaseId,
         let tags!: Array<String> = Array(),
         let isTopLevel!: Bool = false
     ) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     static func fromTestCase(suiteId: TestSuiteId, cob: CaseOrBench, config!: ?Configuration = None) {
         let testCaseId = TestCaseId(suiteId, cob.name, isBench: cob.isBench)
         let currConfig = config ?? cob.caseConfiguration
@@ -62,15 +74,35 @@ struct CaseFilterKey {
 }
 
 struct FilterService {
+    /*
+     * @noThrow
+     */
     FilterService(
         let userFilter: TestFilter,
         let frameworkFilter: FrameworkTestFilter
     ) {}
 
+    /*
+     * @noThrow
+     */
     func register(filterKey: SuiteFilterKey, suite: TestSuite): Unit {
         frameworkFilter.register(filterKey, suite)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     static func fromDefaultConfiguration(): FilterService {
         let userFilter: TestFilter = UserTestFilter.fromDefaultConfiguration()
         let frameworkFilter: FrameworkTestFilter = match(TestProcessKind.fromDefaultConfiguration()) {
@@ -84,13 +116,24 @@ struct FilterService {
 }
 
 interface TestFilter {
+    /*
+     * @noThrow
+     */
     func shouldSkipTestClass(suiteFilterKey: SuiteFilterKey): Bool
+    /*
+     * @noThrow
+     */
     func shouldSkipTestCase(caseFilterKey: CaseFilterKey): Bool
 }
 
 
 
 interface UserTestFilter <: TestFilter {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     static func fromConfiguration(config: Configuration): TestFilter {
         CompositeTestFilter([
             TagsTestFilter.fromConfiguration(config),
@@ -98,6 +141,20 @@ interface UserTestFilter <: TestFilter {
         ])
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     static func fromDefaultConfiguration(): TestFilter {
         fromConfiguration(defaultConfiguration())
     }
@@ -108,18 +165,44 @@ interface UserTestFilter <: TestFilter {
 
 
 interface FrameworkTestFilter <: TestFilter {
+    /*
+     * @noThrow
+     */
     func register(_: SuiteFilterKey, _: TestSuite): Unit {}
 }
 
 class BenchTestFilter <: FrameworkTestFilter {
+    /*
+     * @noThrow
+     */
     BenchTestFilter(private let benchEnabled: Bool) {}
 
+    /*
+     * @noThrow
+     */
     public override func shouldSkipTestClass(_: SuiteFilterKey): Bool { false }
 
+    /*
+     * @noThrow
+     */
     public override func shouldSkipTestCase(filterKey: CaseFilterKey): Bool {
         filterKey.caseId.isBench != benchEnabled
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     static func fromDefaultConfiguration(): BenchTestFilter {
         let configuration = defaultConfiguration()
         let benchEnabled = configuration.bench
@@ -130,6 +213,9 @@ class BenchTestFilter <: FrameworkTestFilter {
 private struct FilterOption {
     public static let ACCEPTING = FilterOption(_classRegex: "*", _funcRegex: "*")
 
+    /*
+     * @noThrow
+     */
     FilterOption(
         private let _classRegex!: String = "*",
         private let _funcRegex!: String = "*",
@@ -137,6 +223,11 @@ private struct FilterOption {
         let isFuncFilter!: Bool = false
     ) {}
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     */
     public static func fromString(str: String): FilterOption {
         let exclude: Bool = str.startsWith(SYM_NEG)
         let s = if (exclude) { str[1..str.size] } else { str }
@@ -150,12 +241,18 @@ private struct FilterOption {
     }
 
     prop classFilter: String {
+        /*
+         * @noThrow
+         */
         get() {
             _classRegex
         }
     }
 
     prop funcFilter: String {
+        /*
+         * @noThrow
+         */
         get() {
             "${_classRegex}${SYM_DOT}${_funcRegex}"
         }
@@ -166,8 +263,16 @@ class FilterOptionTestFilter <: UserTestFilter {
     private let includeFilters: ArrayList<FilterOption> = ArrayList()
     private let excludeFilters: ArrayList<FilterOption> = ArrayList()
 
+    /*
+     * @noThrow
+     */
     init() {}
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     */
     init(filterArgs: Array<String>) {
         filterArgs |>
             map { it: String => FilterOption.fromString(it.trimAscii()) } |>
@@ -183,6 +288,11 @@ class FilterOptionTestFilter <: UserTestFilter {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public static redef func fromConfiguration(config: Configuration): FilterOptionTestFilter {
         match (config.get(KeyFilter.filter)?.trimAscii().split(SYM_COMMA, removeEmpty: true)) {
             case None => FilterOptionTestFilter()
@@ -190,10 +300,28 @@ class FilterOptionTestFilter <: UserTestFilter {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public static redef func fromDefaultConfiguration(): FilterOptionTestFilter {
         fromConfiguration(defaultConfiguration())
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func shouldSkipTestClass(filterKey: SuiteFilterKey): Bool {
         let suiteId = filterKey.suiteId
         let name = filterKey.topLevelFunc ?? suiteId.suiteName
@@ -220,6 +348,10 @@ class FilterOptionTestFilter <: UserTestFilter {
         return true
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func shouldSkipTestCase(filterKey: CaseFilterKey): Bool {
         if (filterKey.isTopLevel) {
             return false
@@ -245,6 +377,10 @@ class FilterOptionTestFilter <: UserTestFilter {
         return true
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func dynamicFullMatch(s: String, p: String): Bool {
         if (!p.contains("*")) {
             return s == p
@@ -271,10 +407,18 @@ class FilterOptionTestFilter <: UserTestFilter {
 }
 
 private class TagsFilterOption {
+    /*
+     * @noThrow
+     */
     TagsFilterOption(
         let tags!: HashSet<String> = HashSet()
     ) {}
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     static func fromString(input: String): TagsFilterOption {
         let result = TagsFilterOption()
         input.split(SYM_PLUS, removeEmpty: true) |>
@@ -289,6 +433,11 @@ class TagsTestFilter <: UserTestFilter {
     private let includeTagFilters: ArrayList<TagsFilterOption> = ArrayList<TagsFilterOption>()
     private let excludeTagFilters: ArrayList<TagsFilterOption> = ArrayList<TagsFilterOption>()
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     init(
         includeArgs!: Array<String> = Array(),
         excludeArgs!: Array<String> = Array()
@@ -306,6 +455,11 @@ class TagsTestFilter <: UserTestFilter {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static redef func fromConfiguration(config: Configuration): TagsTestFilter {
         let includeTags = config.get(KeyIncludeTags.includeTags)?.trimAscii().split(SYM_COMMA, removeEmpty: true) ??
             Array()
@@ -314,10 +468,27 @@ class TagsTestFilter <: UserTestFilter {
         TagsTestFilter(includeArgs: includeTags, excludeArgs: excludeTags)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public static redef func fromDefaultConfiguration(): TagsTestFilter {
         fromConfiguration(defaultConfiguration())
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public override func shouldSkipTestClass(filterKey: SuiteFilterKey) {
 
         let suiteId = filterKey.suiteId
@@ -330,6 +501,9 @@ class TagsTestFilter <: UserTestFilter {
         return false
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public override func shouldSkipTestCase(filterKey: CaseFilterKey) {
         let caseId = filterKey.caseId
         let tags = filterKey.tags
@@ -351,18 +525,30 @@ class TagsTestFilter <: UserTestFilter {
         return true
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private static func containsCount(target: HashSet<String>, tags: Array<String>): Bool {
         (tags |> filter { it => target.contains(it) } |> count) == target.size
     }
 }
 
 class CompositeTestFilter <: TestFilter {
+    /*
+     * @noThrow
+     */
     CompositeTestFilter(private let filters: Array<TestFilter>) {}
 
+    /*
+     * @noThrow
+     */
     public override func shouldSkipTestClass(filterKey: SuiteFilterKey): Bool {
         filters |> any<TestFilter> { filter => filter.shouldSkipTestClass(filterKey) }
     }
 
+    /*
+     * @noThrow
+     */
     public override func shouldSkipTestCase(filterKey: CaseFilterKey): Bool {
         filters |> any<TestFilter> { filter => filter.shouldSkipTestCase(filterKey) }
     }
@@ -370,18 +556,27 @@ class CompositeTestFilter <: TestFilter {
 
 extend Configuration {
     prop parallel: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             get<Bool>(KeyParallel.parallel) ?? false
         }
     }
 
     prop fromTopLevel: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             get(KeyFromTopLevel.fromTopLevel) ?? false
         }
     }
 
     prop tags: Array<String> {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             get(KeyTags.tags) ?? Array()
         }
@@ -394,11 +589,18 @@ class WorkerTestFilter <: FrameworkTestFilter {
     private var testEntityIdx = -1
     private var testCaseIdx = -1
 
+    /*
+     * @noThrow
+     */
     WorkerTestFilter(
         private let defaultFilter: FrameworkTestFilter, private let workerId: Int64,
         private let nWorkers: Int64, private let nCasesSkip: Int64
     ) {}
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func register(filterKey: SuiteFilterKey, suite: TestSuite): Unit {
         defaultFilter.register(filterKey, suite)
         if (suite.suiteConfiguration.parallel) {
@@ -408,6 +610,10 @@ class WorkerTestFilter <: FrameworkTestFilter {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func registerParallelTestClass(filterKey: SuiteFilterKey, suite: TestSuite): Unit {
         var anyCaseToExecute = false
         if (!defaultFilter.shouldSkipTestClass(filterKey)) {
@@ -421,6 +627,10 @@ class WorkerTestFilter <: FrameworkTestFilter {
         shouldSkipClassCache.add(filterKey.suiteId, !anyCaseToExecute)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func registerParallelTestCase(filterKey: CaseFilterKey): Bool {
         let shouldSkipCase = if (defaultFilter.shouldSkipTestCase(filterKey)) { true } else {
             let caseEntityIdx = this.acquireEntityIdx()
@@ -433,6 +643,10 @@ class WorkerTestFilter <: FrameworkTestFilter {
         shouldSkipCase
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func registerRegularTestClass(filterKey: SuiteFilterKey, suite: TestSuite): Unit {
         var anyCaseToExecute = false
         if (!defaultFilter.shouldSkipTestClass(filterKey)) {
@@ -449,6 +663,10 @@ class WorkerTestFilter <: FrameworkTestFilter {
         shouldSkipClassCache.add(filterKey.suiteId, !anyCaseToExecute)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func registerRegularTestCase(filterKey: CaseFilterKey): Bool {
         let shouldSkipCase = if (defaultFilter.shouldSkipTestCase(filterKey)) { true } else {
             let caseIdx = this.acquireTestCaseIdx()
@@ -458,32 +676,55 @@ class WorkerTestFilter <: FrameworkTestFilter {
         shouldSkipCase
     }
 
+    /*
+     * @noThrow
+     */
     private func acquireEntityIdx(): Int64 {
         testEntityIdx++
         testEntityIdx
     }
 
+    /*
+     * @noThrow
+     */
     private func acquireTestCaseIdx(): Int64 {
         testCaseIdx++
         testCaseIdx
     }
 
+    /*
+     * @noThrow
+     */
     private func entityBelongsToCurrentWorker(entityIdx: Int64): Bool {
         entityIdx % nWorkers == workerId
     }
 
+    /*
+     * @noThrow
+     */
     private func caseIsSkipped(caseIdx: Int64): Bool {
         caseIdx < nCasesSkip
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     public override func shouldSkipTestClass(filterKey: SuiteFilterKey): Bool {
         shouldSkipClassCache.get(filterKey.suiteId) ?? reportNoRegister(filterKey.suiteId)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     public override func shouldSkipTestCase(filterKey: CaseFilterKey): Bool {
         shouldSkipCaseCache.get(filterKey.caseId) ?? reportNoRegister(filterKey.caseId)
     }
 
+    /*
+     * @throws Exception
+     */
     private static func reportNoRegister(printable: ToString): Nothing {
         throw Exception("${printable} was not registered in the bunch filter")
     }

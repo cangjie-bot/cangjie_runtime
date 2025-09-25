@@ -11,10 +11,17 @@ import std.collection.*
 import std.unittest.common.PrettyPrintable
 
 class LogSnapshot {
+    /*
+     * @noThrow
+     */
     LogSnapshot(
         let entries: Array<LogEntry>
     ) {}
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func invocations(): Array<Invocation> {
         entries |> map { entry: LogEntry => entry.invocation } |> collectArray
     }
@@ -23,11 +30,17 @@ class LogSnapshot {
 }
 
 struct LogEntry {
+    /*
+     * @noThrow
+     */
     LogEntry(
         let invocation: Invocation,
         let origin: BehaviourSource
     ) {}
 
+    /*
+     * @noThrow
+     */
     func wasHandledBy(thatChain: StubChain): Bool {
         match (origin) {
             case Stub(thisChain) => refEq(thisChain, thatChain)
@@ -37,8 +50,14 @@ struct LogEntry {
 }
 
 enum BehaviourSource {
+      /*
+       * @noThrow
+       */
     | Stub(StubChain)
     | Default
+      /*
+       * @noThrow
+       */
     | Failure(PrettyException)
 }
 
@@ -46,14 +65,26 @@ class MutableLog {
     private let entries = ArrayList<LogEntry>()
     private var lastClearIndex: Int64 = 0
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func newEntry(entry: LogEntry): Unit {
         entries.add(entry)
     }
 
+    /*
+     * @noThrow
+     */
     func clear(): Unit {
         lastClearIndex = entries.size
     }
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func snapshotSinceLastClear(scope: Set<UInt64>): LogSnapshot {
         validateLog()
         let snapshotEntries = ArrayList<LogEntry>()
@@ -70,11 +101,21 @@ class MutableLog {
         )
     }
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func fullLog(): LogSnapshot {
         validateLog()
         return LogSnapshot(entries.toArray())
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func validateLog() {
         for (entry in entries) {
             match (entry.origin) {
@@ -86,7 +127,15 @@ class MutableLog {
     }
 }
 
+      /*
+       * @noThrow
+       */
 class LogCorruptedReport <: FailureReport {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func fail(originalMessage: PrettyPrintable): Nothing {
         let message = build {
             errorHeader("Invocation log contains errors")

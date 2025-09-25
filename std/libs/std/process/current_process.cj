@@ -20,6 +20,9 @@ const NULL_BYTE = "\0"
 let mtx: Mutex = Mutex()
 
 @When[backend == "cjnative"]
+/*
+ * @noThrow
+ */
 func getCommandLineArgsFromRuntime(): CPointer<CPointer<UInt8>> {
     unsafe {
         let argv = CJ_MRT_GetCommandLineArgs()
@@ -38,6 +41,9 @@ public class CurrentProcess <: Process {
     let _stdOut: OutputStream = ProcessOutputStream(FileDescriptor(getStdOutHandle()))
     let _stdErr: OutputStream = ProcessOutputStream(FileDescriptor(getStdErrHandle()))
 
+    /*
+     * @noThrow
+     */
     init(pid: Int64, name: ?String, command: ?String, arguments: ?Array<String>, commandLine: ?Array<String>,
         workingDirectory: ?Path, environment: ?Map<String, String>) {
         super(pid, name, command, arguments, commandLine, workingDirectory, environment)
@@ -51,30 +57,46 @@ public class CurrentProcess <: Process {
     }
 
     public prop stdErr: OutputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdErr
         }
     }
 
     public prop stdOut: OutputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdOut
         }
     }
 
     public prop stdIn: InputStream {
+        /*
+         * @noThrow
+         */
         get() {
             this._stdIn
         }
     }
 
     public prop arguments: Array<String> {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             this.getArgs()
         }
     }
 
     public prop homeDirectory: Path {
+        /*
+         * @noThrow
+         */
         get() {
             var homeDir: CString = unsafe { CJ_OS_HomeDir() }
             var dir: Path = Path(homeDir.toString())
@@ -83,6 +105,11 @@ public class CurrentProcess <: Process {
     }
 
     public prop tempDirectory: Path {
+        /*
+         * @throws IllegalMemoryException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         */
         get() {
             var e: Option<String> = getTempDir(this.getEnv("TMPDIR"), this.getEnv("TMP"), this.getEnv("TEMP"),
                 this.getEnv("TEMPDIR"))
@@ -90,6 +117,9 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func transOp(opt1: Option<String>, opt2: Option<String>): Option<String> {
         match (opt1) {
             case Some(_) => opt1
@@ -97,10 +127,18 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func getTempDir(opt1: Option<String>, opt2: Option<String>, opt3: Option<String>, opt4: Option<String>): Option<String> {
         transOp(transOp(transOp(opt1, opt2), opt3), opt4)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func getEnv(key: String): Option<String> {
         if (key.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")
@@ -118,6 +156,11 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func setEnv(k: String, v: String): Unit {
         if (k.contains(NULL_BYTE) || v.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")
@@ -132,6 +175,11 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func removeEnv(k: String): Unit {
         if (k.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")
@@ -146,6 +194,10 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func getArgs(): Array<String> {
         let argv = getCommandLineArgsFromRuntime()
         if (argv.isNull()) {
@@ -183,6 +235,9 @@ public class CurrentProcess <: Process {
 
 
 
+    /*
+     * @noThrow
+     */
     public func atExit(callback: () -> Unit): Unit {
         CJ_CORE_AddAtexitCallback(callback)
     }
@@ -191,6 +246,12 @@ public class CurrentProcess <: Process {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     */
     public func exit(code: Int64): Nothing {
         var c: Int64 = code
         if (c < RTN_CODE_MIN_VAL) {
@@ -211,6 +272,12 @@ public class CurrentProcess <: Process {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     */
     protected func terminateAliveProcess(pid: Int32, force: Bool): Unit {
         let status: Int8 = unsafe { CJ_OS_GetProcessAliveStatus(Int32(pid), this._startTime) }
         if (status == PROCESS_STATUS_ALIVE) {
@@ -228,6 +295,9 @@ public class CurrentProcess <: Process {
 }
 
 @When[backend == "cjnative"]
+/*
+ * @throws ProcessException
+ */
 func processExit(exitCode: Int32): Nothing {
     unsafe {
         FiniCJRuntime()

@@ -11,6 +11,9 @@ package std.unicode
 import std.collection.*
 
 struct CaseRange {
+    /*
+     * @noThrow
+     */
     CaseRange(
         var start: Int32,
         var end: Int32,
@@ -21,6 +24,9 @@ struct CaseRange {
 }
 
 struct UnicodeRange {
+    /*
+     * @noThrow
+     */
     UnicodeRange(var start: Int32, var end: Int32) {}
 }
 
@@ -2563,6 +2569,9 @@ public enum CasingOption {
     | LT
     | Other
 
+    /*
+     * @noThrow
+     */
     operator func ==(right: CasingOption): Bool {
         match ((this, right)) {
             case (TR, TR) => true
@@ -2574,6 +2583,9 @@ public enum CasingOption {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func findCaseRange(rune: Rune): ?CaseRange {
     let codePosition: Int32 = Int32(UInt32(rune))
     var leftInterval: Int64 = 0
@@ -2597,6 +2609,9 @@ func findCaseRange(rune: Rune): ?CaseRange {
     return None
 }
 
+/*
+ * @noThrow
+ */
 func findRune(rune: Rune, caseRange: CaseRange, caseType: CaseType): Rune {
     let start = caseRange.start
     let codePosition: Int32 = Int32(UInt32(rune))
@@ -2619,6 +2634,9 @@ func findRune(rune: Rune, caseRange: CaseRange, caseType: CaseType): Rune {
     }
 }
 
+/*
+ * @noThrow
+ */
 func caseChangeForLetterI(codePosition: Int32, caseRange: CaseRange, caseType: CaseType, opt: CasingOption): Rune {
     match (caseType) {
         case Upper =>
@@ -2642,6 +2660,9 @@ func caseChangeForLetterI(codePosition: Int32, caseRange: CaseRange, caseType: C
     }
 }
 
+/*
+ * @noThrow
+ */
 func findRuneWithOption(rune: Rune, caseRange: CaseRange, caseType: CaseType, opt: CasingOption): Rune {
     let start = caseRange.start
     let codePosition: Int32 = Int32(UInt32(rune))
@@ -2664,6 +2685,10 @@ func findRuneWithOption(rune: Rune, caseRange: CaseRange, caseType: CaseType, op
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws NoneValueException
+ */
 func findRuneArray(rune: Rune, caseRange: CaseRange, caseType: CaseType): Array<UInt32> {
     let start = caseRange.start
     let codePosition: Int32 = Int32(UInt32(rune))
@@ -2686,6 +2711,9 @@ func findRuneArray(rune: Rune, caseRange: CaseRange, caseType: CaseType): Array<
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func toCase(rune: Rune, caseType: CaseType): Rune {
     match (findCaseRange(rune)) {
         case Some(caseRange) => findRune(rune, caseRange, caseType)
@@ -2693,6 +2721,9 @@ func toCase(rune: Rune, caseType: CaseType): Rune {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func toCaseWithOption(rune: Rune, caseType: CaseType, opt: CasingOption): Rune {
     match (findCaseRange(rune)) {
         case Some(caseRange) => findRuneWithOption(rune, caseRange, caseType, opt)
@@ -2700,6 +2731,10 @@ func toCaseWithOption(rune: Rune, caseType: CaseType, opt: CasingOption): Rune {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws NoneValueException
+ */
 func toCaseSpecialArray(rune: Rune, caseType: CaseType): Array<UInt32> {
     match (findCaseRange(rune)) {
         case Some(caseRange) => findRuneArray(rune, caseRange, caseType)
@@ -2708,6 +2743,9 @@ func toCaseSpecialArray(rune: Rune, caseType: CaseType): Array<UInt32> {
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func isRuneInRange(arr: Array<UnicodeRange>, rune: Rune): Bool {
     
     let codePosition: Int32 = Int32(UInt32(rune))
@@ -2733,17 +2771,53 @@ func isRuneInRange(arr: Array<UnicodeRange>, rune: Rune): Bool {
 
 
 public interface UnicodeRuneExtension {
+    /*
+     * @noThrow
+     */
     func isLetter(): Bool
+    /*
+     * @noThrow
+     */
     func isNumber(): Bool
+    /*
+     * @noThrow
+     */
     func isLowerCase(): Bool
+    /*
+     * @noThrow
+     */
     func isUpperCase(): Bool
+    /*
+     * @noThrow
+     */
     func isTitleCase(): Bool
+    /*
+     * @noThrow
+     */
     func isWhiteSpace(): Bool
+    /*
+     * @noThrow
+     */
     func toUpperCase(): Rune
+    /*
+     * @noThrow
+     */
     func toLowerCase(): Rune
+    /*
+     * @noThrow
+     */
     func toTitleCase(): Rune
+    /*
+     * @noThrow
+     */
     func toUpperCase(opt: CasingOption): Rune
+    /*
+     * @noThrow
+     */
     func toLowerCase(opt: CasingOption): Rune
+    /*
+     * @noThrow
+     */
     func toTitleCase(opt: CasingOption): Rune
 }
 
@@ -2751,6 +2825,9 @@ extend Rune <: UnicodeRuneExtension {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isLetter(): Bool {
         return isRuneInRange(LOWER_CASE_LETTER, this) ||
                isRuneInRange(UPPER_CASE_LETTER, this) ||
@@ -2761,6 +2838,9 @@ extend Rune <: UnicodeRuneExtension {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isNumber(): Bool {
         return isRuneInRange(DECIMAL_NUMBER, this) ||
                isRuneInRange(LETTER_NUMBER, this) ||
@@ -2768,41 +2848,65 @@ extend Rune <: UnicodeRuneExtension {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isLowerCase(): Bool {
         return isRuneInRange(LOWER_CASE_LETTER, this) || isRuneInRange(OTHER_LOWER_CASE, this)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isUpperCase(): Bool {
         return isRuneInRange(UPPER_CASE_LETTER, this) || isRuneInRange(OTHER_UPPER_CASE, this)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isTitleCase(): Bool {
         return isRuneInRange(TITLE_CASE_LETTER, this)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isWhiteSpace(): Bool {
         return isRuneInRange(WHITE_SPACE, this)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toUpperCase(): Rune {
         return toCase(this, CaseType.Upper)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toLowerCase(): Rune {
         return toCase(this, CaseType.Lower)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toTitleCase(): Rune {
         return toCase(this, CaseType.Title)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toUpperCase(opt: CasingOption): Rune {
         match (opt) {
             case Other => return toCase(this, CaseType.Upper)
@@ -2811,6 +2915,9 @@ extend Rune <: UnicodeRuneExtension {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toLowerCase(opt: CasingOption): Rune {
         match (opt) {
             case Other => return toCase(this, CaseType.Lower)
@@ -2819,6 +2926,9 @@ extend Rune <: UnicodeRuneExtension {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toTitleCase(opt: CasingOption): Rune {
         match (opt) {
             case Other => return toCase(this, CaseType.Title)
@@ -2828,27 +2938,66 @@ extend Rune <: UnicodeRuneExtension {
 }
 
 public interface UnicodeStringExtension {
+    /*
+     * @noThrow
+     */
     func isBlank(): Bool
+    /*
+     * @noThrow
+     */
     func toLower(): String
+    /*
+     * @noThrow
+     */
     func toLower(opt: CasingOption): String
+    /*
+     * @noThrow
+     */
     func toTitle(): String
+    /*
+     * @noThrow
+     */
     func toTitle(opt: CasingOption): String
+    /*
+     * @noThrow
+     */
     func toUpper(): String
+    /*
+     * @noThrow
+     */
     func toUpper(opt: CasingOption): String
+    /*
+     * @noThrow
+     */
     func trim(): String
 
     @Deprecated[message: "Use member function `func trimEnd(): String` instead."]
+    /*
+     * @noThrow
+     */
     func trimRight(): String
 
     @Deprecated[message: "Use member function `func trimStart(): String` instead."]
+    /*
+     * @noThrow
+     */
     func trimLeft(): String
+    /*
+     * @noThrow
+     */
     func trimStart(): String
+    /*
+     * @noThrow
+     */
     func trimEnd(): String
 }
 
 extend String <: UnicodeStringExtension {
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func isBlank(): Bool {
         for (i in this.runes()) {
             if (!i.isWhiteSpace()) {
@@ -2862,6 +3011,11 @@ extend String <: UnicodeStringExtension {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toLower(): String {
         return toCaseInternal(Lower)
     }
@@ -2870,6 +3024,11 @@ extend String <: UnicodeStringExtension {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toUpper(): String {
         return toCaseInternal(Upper)
     }
@@ -2878,6 +3037,11 @@ extend String <: UnicodeStringExtension {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTitle(): String {
         return toCaseInternal(Title)
     }
@@ -2886,6 +3050,11 @@ extend String <: UnicodeStringExtension {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toLower(opt: CasingOption): String {
         match (opt) {
             case Other => return toCaseInternal(Lower)
@@ -2897,6 +3066,11 @@ extend String <: UnicodeStringExtension {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toUpper(opt: CasingOption): String {
         match (opt) {
             case Other => return toCaseInternal(Upper)
@@ -2908,6 +3082,11 @@ extend String <: UnicodeStringExtension {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTitle(opt: CasingOption): String {
         match (opt) {
             case Other => return toCaseInternal(Title)
@@ -2915,6 +3094,9 @@ extend String <: UnicodeStringExtension {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func isGreekChar(rune: Rune): Bool {
         if ((UInt32(rune) < GREECE_RUNE_LEFT_INTERVAL) || (UInt32(rune) > GREECE_RUNE_RIGHT_INTERVAL)) {
             return false
@@ -2925,6 +3107,9 @@ extend String <: UnicodeStringExtension {
         return true
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func isNeedChange(srcData: Array<UInt8>, pos: Int64, num: Int64): Bool {
         if (pos == 0) {
             return false
@@ -2941,6 +3126,10 @@ extend String <: UnicodeStringExtension {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     private func getUInt32Arr(ct: CaseType, rune: Rune, itemBytes: Array<UInt8>, param: (Int64, Int64)): Array<UInt32> {
         return match (ct) {
             case Upper => toCaseSpecialArray(rune, Upper)
@@ -2954,6 +3143,11 @@ extend String <: UnicodeStringExtension {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func toCaseInternal(ct: CaseType): String {
         let result = ArrayList<UInt8>()
         let itemBytes = this.toArray()
@@ -2971,6 +3165,9 @@ extend String <: UnicodeStringExtension {
         return String.fromUtf8(result.toArray())
     }
 
+    /*
+     * @noThrow
+     */
     private func isDotFollow(data: Array<UInt8>, pos: Int64): Bool {
         if (pos >= data.size) {
             return false
@@ -2979,6 +3176,9 @@ extend String <: UnicodeStringExtension {
         return rune == Rune(DOT_ABOVE)
     }
 
+    /*
+     * @noThrow
+     */
     private func dotFollowChangeI(data: Array<UInt8>, pos: Int64): (UInt32, Bool) {
         if (isDotFollow(data, pos)) {
             (SMALL_I, true)
@@ -2987,6 +3187,10 @@ extend String <: UnicodeStringExtension {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     private func toSpecialChange(rune: Rune, ct: CaseType, opt: CasingOption): Array<UInt32> {
         if ((opt == TR || opt == AZ) && (rune == Rune(SMALL_I))) {
             [CAPITAL_I_WITH_DOT_ABOVE]
@@ -2995,6 +3199,10 @@ extend String <: UnicodeStringExtension {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     private func getUInt32ArrWithOption(ct: CaseType, rune: Rune, itemBytes: Array<UInt8>,
         param: (Int64, Int64), opt: CasingOption): (Array<UInt32>, Bool) {
         var jumpNext = false
@@ -3017,6 +3225,11 @@ extend String <: UnicodeStringExtension {
         return (uint32arr, jumpNext)
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func toCaseInternalWithOption(ct: CaseType, opt: CasingOption): String {
         let itemBytes = this.toArray()
         let result = ArrayList<UInt8>()
@@ -3044,6 +3257,10 @@ extend String <: UnicodeStringExtension {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trim(): String {
         trimInternal(true, true)
     }
@@ -3051,6 +3268,10 @@ extend String <: UnicodeStringExtension {
 
 
     @Deprecated[message: "Use member function ` public func trimStart(): String` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimLeft(): String {
         return trimInternal(true, false)
     }
@@ -3058,22 +3279,38 @@ extend String <: UnicodeStringExtension {
 
 
     @Deprecated[message: "Use member function ` public func trimEnd(): String` instead."]
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimRight(): String {
         return trimInternal(false, true)
     }
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimStart(): String {
         return trimInternal(true, false)
     }
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func trimEnd(): String {
         return trimInternal(false, true)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func trimInternal(left: Bool, right: Bool): String {
         let myData = this.toArray()
         var start = 0

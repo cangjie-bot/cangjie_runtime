@@ -19,6 +19,20 @@ private const ADJUST_TERMINAL_SIZE_FREQ_REDRAWS = 5
 
 class ProgressReporter {
     private let reporter: UTProgressReporter
+    /*
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws UnittestOptionValidationException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws UnittestCliOptionsFormatException
+     * @throws Exception
+     */
     private ProgressReporter() {
         this.reporter = match (getDefaultUTProgressReporter()) {
             case Some(r) => r
@@ -37,12 +51,23 @@ class ProgressReporter {
     private let isActive = AtomicBool(false)
 
     prop updateQueue: NonBlockingQueue<UTProgress> {
+        /*
+         * @noThrow
+         */
         get() {
             reporter.updateQueue
         }
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws Error
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     func startReporting() {
         if (!isActive.compareAndSwap(false, true)) {
             return
@@ -89,6 +114,10 @@ class ProgressReporter {
         }
     }
 
+    /*
+     * @throws Error
+     * @throws ArithmeticException
+     */
     private func reportLoop(render: () -> Unit) {
         var tact = 0
         while (!Thread.currentThread.hasPendingCancellation) {
@@ -109,6 +138,10 @@ class ProgressReporter {
         }
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     */
     func stopAndClear() {
         if (!isActive.compareAndSwap(true, false)) { return }
         if (let Some(job) <- reporterJob) {
@@ -125,6 +158,9 @@ class ProgressReporter {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     private func clearDynamicArea() {
         printer.clearAhead()
         printer.saveCursorPos()
@@ -132,6 +168,20 @@ class ProgressReporter {
         printer.restoreCursorPos()
     }
 
+    /*
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws UnittestOptionValidationException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws UnittestCliOptionsFormatException
+     * @throws Exception
+     */
     static func fromDefaultConfiguration(): ?ProgressReporter {
         let config = defaultConfiguration()
         if (!config.isDynamicProgressEnabled || TestProcessKind.fromDefaultConfiguration().isWorker) {
@@ -143,18 +193,29 @@ class ProgressReporter {
 
 extend Configuration {
     prop isDynamicProgressEnabled: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             !(get(KeyNoProgress.noProgress) ?? false) && !bench && !noRun
         }
     }
 
     prop isDynamicProgressBrief: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             get(KeyProgressBrief.progressBrief) ?? false
         }
     }
 
     prop dynamicProgressEntriesLimit: ?UInt64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws UnittestCliOptionsFormatException
+         */
         get() {
             match (get(KeyProgressEntriesLimit.progressEntriesLimit)) {
                 case Some(0) | None => None
@@ -172,16 +233,39 @@ interface UTProgressReporter {
 
 
 
+    /*
+     * @noThrow
+     */
     func start(): Unit {}
 
+    /*
+     * @noThrow
+     */
     func report(terminalHeight: ?UInt64, terminalWidth: ?UInt64): PrettyText
 
 
+    /*
+     * @noThrow
+     */
     func reset(): Unit {}
 }
 
 interface UTProgress {}
 
+/*
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws UnittestOptionValidationException
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws UnittestCliOptionsFormatException
+ */
 private func getDefaultUTProgressReporter(): ?UTProgressReporter {
     let defaultConfig = defaultConfiguration()
     match {

@@ -16,6 +16,9 @@ package std.collection
 
 
 @Frozen
+/*
+ * @noThrow
+ */
 public func reduce<T>(operation: (T, T) -> T): (Iterable<T>) -> Option<T> {
     return {
         it: Iterable<T> =>
@@ -34,6 +37,9 @@ public func reduce<T>(operation: (T, T) -> T): (Iterable<T>) -> Option<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func fold<T, R>(initial: R, operation: (R, T) -> R): (Iterable<T>) -> R {
     return {
         it: Iterable<T> =>
@@ -50,6 +56,9 @@ public func fold<T, R>(initial: R, operation: (R, T) -> R): (Iterable<T>) -> R {
 
 
 
+/*
+ * @noThrow
+ */
 public func isEmpty<T>(it: Iterable<T>): Bool {
     return match (it.iterator().next()) {
         case None => true
@@ -62,6 +71,9 @@ public func isEmpty<T>(it: Iterable<T>): Bool {
 
 
 
+/*
+ * @noThrow
+ */
 public func count<T>(it: Iterable<T>): Int64 {
     var count: Int64 = 0
     for (_ in it) {
@@ -75,6 +87,9 @@ public func count<T>(it: Iterable<T>): Int64 {
 
 
 
+/*
+ * @noThrow
+ */
 public func contains<T>(element: T): (Iterable<T>) -> Bool where T <: Equatable<T> {
     return {
         it: Iterable<T> =>
@@ -92,6 +107,9 @@ public func contains<T>(element: T): (Iterable<T>) -> Bool where T <: Equatable<
 
 
 
+/*
+ * @noThrow
+ */
 public func max<T>(it: Iterable<T>): Option<T> where T <: Comparable<T> {
     var result: Option<T> = None
     for (item in it) {
@@ -111,6 +129,9 @@ public func max<T>(it: Iterable<T>): Option<T> where T <: Comparable<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func min<T>(it: Iterable<T>): Option<T> where T <: Comparable<T> {
     var result: Option<T> = None
     for (item in it) {
@@ -130,6 +151,9 @@ public func min<T>(it: Iterable<T>): Option<T> where T <: Comparable<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func all<T>(predicate: (T) -> Bool): (Iterable<T>) -> Bool {
     return {
         it: Iterable<T> =>
@@ -147,6 +171,9 @@ public func all<T>(predicate: (T) -> Bool): (Iterable<T>) -> Bool {
 
 
 
+/*
+ * @noThrow
+ */
 public func any<T>(predicate: (T) -> Bool): (Iterable<T>) -> Bool {
     return {
         it: Iterable<T> =>
@@ -164,6 +191,9 @@ public func any<T>(predicate: (T) -> Bool): (Iterable<T>) -> Bool {
 
 
 
+/*
+ * @noThrow
+ */
 public func none<T>(predicate: (T) -> Bool): (Iterable<T>) -> Bool {
     return {
         it: Iterable<T> =>
@@ -181,6 +211,9 @@ public func none<T>(predicate: (T) -> Bool): (Iterable<T>) -> Bool {
 
 
 
+/*
+ * @noThrow
+ */
 public func first<T>(it: Iterable<T>): Option<T> {
     return it.iterator().next()
 }
@@ -190,6 +223,9 @@ public func first<T>(it: Iterable<T>): Option<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func last<T>(it: Iterable<T>): Option<T> {
     var result: Option<T> = None
     for (item in it) {
@@ -203,6 +239,9 @@ public func last<T>(it: Iterable<T>): Option<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func at<T>(n: Int64): (Iterable<T>) -> Option<T> {
     return {
         it: Iterable<T> =>
@@ -225,6 +264,9 @@ public func at<T>(n: Int64): (Iterable<T>) -> Option<T> {
 
 
 
+/*
+ * @noThrow
+ */
 public func forEach<T>(action: (T) -> Unit): (Iterable<T>) -> Unit {
     return {
         it: Iterable<T> => for (item in it) {

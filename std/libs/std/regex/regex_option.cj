@@ -20,6 +20,9 @@ public enum RegexFlag {
     | MultiLine
     | Unicode
 
+    /*
+     * @noThrow
+     */
     func value(): UInt32 {
         return match (this) {
             case IgnoreCase => REGEX_IGNORECASE
@@ -28,6 +31,9 @@ public enum RegexFlag {
         }
     }
 
+    /*
+     * @noThrow
+     */
     static func getValue(flags: Array<RegexFlag>): UInt32 {
         var value = REGEX_NORMAL
         for (flag in flags) {
@@ -41,20 +47,33 @@ public enum RegexFlag {
 public class RegexOption <: ToString {
     private var option: UInt32
 
+    /*
+     * @noThrow
+     */
     public init() {
         option = REGEX_NORMAL
     }
 
+    /*
+     * @noThrow
+     */
     public func ignoreCase(): RegexOption {
         option |= REGEX_IGNORECASE
         return this
     }
 
+    /*
+     * @noThrow
+     */
     public func multiLine(): RegexOption {
         option |= REGEX_MULTILINE
         return this
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         if (option == REGEX_NORMAL) {
             return "NORMAL"
@@ -72,6 +91,10 @@ public class RegexOption <: ToString {
         return String.join(options.toArray(), delimiter: ",")
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toFlags(): Array<RegexFlag> {
         var flags = ArrayList<RegexFlag>()
         if ((option & REGEX_IGNORECASE) == REGEX_IGNORECASE) {

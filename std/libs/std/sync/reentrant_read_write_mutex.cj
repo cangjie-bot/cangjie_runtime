@@ -19,6 +19,9 @@ public class ReentrantReadWriteMutex {
     private let readMutex_: ReentrantReadMutex
     private let writeMutex_: ReentrantWriteMutex
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     public init(mode!: ReadWriteMutexMode = ReadWriteMutexMode.Unfair) {
         let isFair: Bool = match (mode) {
             case Unfair => false
@@ -30,12 +33,18 @@ public class ReentrantReadWriteMutex {
     }
 
     public prop readMutex: ReentrantReadMutex {
+        /*
+         * @noThrow
+         */
         get() {
             return readMutex_
         }
     }
 
     public prop writeMutex: ReentrantWriteMutex {
+        /*
+         * @noThrow
+         */
         get() {
             return writeMutex_
         }
@@ -46,6 +55,9 @@ public class ReentrantReadWriteMutex {
 public class ReentrantReadMutex <: ReentrantMutex {
     private let rwMutex: ReadWriteLockImpl
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     init(rwMutex: ReadWriteLockImpl) {
         this.rwMutex = rwMutex
     }
@@ -60,6 +72,14 @@ public class ReentrantReadMutex <: ReentrantMutex {
 
 
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     */
     public func lock(): Unit {
         rwMutex.readLock()
     }
@@ -68,6 +88,12 @@ public class ReentrantReadMutex <: ReentrantMutex {
 
 
 
+    /*
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryLock(): Bool {
         return rwMutex.tryReadLock()
     }
@@ -76,6 +102,13 @@ public class ReentrantReadMutex <: ReentrantMutex {
 
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func unlock(): Unit {
         rwMutex.readUnlock()
     }
@@ -85,6 +118,9 @@ public class ReentrantReadMutex <: ReentrantMutex {
 public class ReentrantWriteMutex <: ReentrantMutex {
     private let rwMutex: ReadWriteLockImpl
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     init(rwMutex: ReadWriteLockImpl) {
         this.rwMutex = rwMutex
     }
@@ -93,6 +129,14 @@ public class ReentrantWriteMutex <: ReentrantMutex {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func lock(): Unit {
         rwMutex.writeLock()
     }
@@ -101,6 +145,10 @@ public class ReentrantWriteMutex <: ReentrantMutex {
 
 
 
+    /*
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryLock(): Bool {
         return rwMutex.tryWriteLock()
     }
@@ -112,6 +160,10 @@ public class ReentrantWriteMutex <: ReentrantMutex {
 
 
 
+    /*
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func unlock(): Unit {
         rwMutex.writeUnlock()
     }
@@ -124,37 +176,64 @@ class ReadWriteLockImpl {
     private static let WRITE_UNIT: UInt64 = 1
     private static let NO_THREAD = -1
 
+    /*
+     * @noThrow
+     */
     init(isFair!: Bool) {
         this.isFair = isFair
     }
+    /*
+     * @noThrow
+     */
     private static func decodeWriteCount(state: UInt64): Int64 {
         return Int64(state & 0xFFFFFFFF)
     }
 
+    /*
+     * @noThrow
+     */
     private static func decodeShareCount(state: UInt64): Int64 {
         return Int64(state >> 32)
     }
 
+    /*
+     * @noThrow
+     */
     func getWriteCount(): Int64 {
         return decodeWriteCount(state.load())
     }
 
+    /*
+     * @noThrow
+     */
     private func incWriteCount(writeCount!: Int64 = 1): Unit {
         state.fetchAdd(WRITE_UNIT * UInt64(writeCount))
     }
 
+    /*
+     * @noThrow
+     */
     private func decWriteCount(writeCount!: Int64 = 1): Unit {
         state.fetchSub(WRITE_UNIT * UInt64(writeCount))
     }
 
+    /*
+     * @noThrow
+     */
     private func getShareCount(): Int64 {
         return decodeShareCount(state.load())
     }
 
+    /*
+     * @noThrow
+     */
     private func incShareCount(): Unit {
         state.fetchAdd(SHARE_UNIT)
     }
 
+    /*
+     * @noThrow
+     */
     private func decShareCount(): Unit {
         state.fetchSub(SHARE_UNIT)
     }
@@ -162,6 +241,11 @@ class ReadWriteLockImpl {
     private let waitingWriters = AtomicInt64(0)
     private let threadReadCount = ThreadLocal<Int64>()
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     */
     private func getThreadReadCount(): Int64 {
         match (threadReadCount.get()) {
             case Some(v) => return v
@@ -169,6 +253,11 @@ class ReadWriteLockImpl {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     */
     private func incThreadReadCount(): Unit {
         match (threadReadCount.get()) {
             case Some(v) => threadReadCount.set(v + 1)
@@ -176,6 +265,12 @@ class ReadWriteLockImpl {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     */
     private func decThreadReadCount(): Unit {
         match (threadReadCount.get()) {
             case Some(v) =>
@@ -189,6 +284,14 @@ class ReadWriteLockImpl {
     private let readerSyncList = SyncList()
     private let writerSyncList = SyncList()
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     */
     func readLock(): Unit {
         let currThread = Thread.currentThread.id
         if (writeOwner.load() == currThread) {
@@ -227,6 +330,12 @@ class ReadWriteLockImpl {
         }
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     func tryReadLock(): Bool {
         let currThread = Thread.currentThread.id
         if (writeOwner.load() == currThread) {
@@ -252,6 +361,13 @@ class ReadWriteLockImpl {
         return false
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     func readUnlock(): Unit {
         let currThread = Thread.currentThread.id
         if (getThreadReadCount() < 1) {
@@ -281,6 +397,14 @@ class ReadWriteLockImpl {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     func writeLock(writeCount!: Int64 = 1): Unit {
         let currThread = Thread.currentThread.id
         if (writeOwner.load() == currThread) {
@@ -315,6 +439,10 @@ class ReadWriteLockImpl {
         }
     }
 
+    /*
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     func tryWriteLock(): Bool {
         let currThread = Thread.currentThread.id
         if (writeOwner.load() == currThread) {
@@ -345,6 +473,10 @@ class ReadWriteLockImpl {
         return false
     }
 
+    /*
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     func checkWriteLockStatus(): Unit {
         let currThread = Thread.currentThread.id
         if (writeOwner.load() != currThread) {
@@ -352,11 +484,18 @@ class ReadWriteLockImpl {
         }
     }
 
+    /*
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     func writeUnlock(): Unit {
         checkWriteLockStatus()
         writeUnlock(writeCount: 1)
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     func writeUnlock(writeCount!: Int64): Unit {
         let currState = state.load()
         if (decodeWriteCount(currState) == writeCount) {

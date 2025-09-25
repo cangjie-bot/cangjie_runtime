@@ -10,12 +10,21 @@ package std.unittest.mock
 import std.unittest.mock.internal.*
 
 class RecordingHandler {
+    /*
+     * @noThrow
+     */
     RecordingHandler(
         let info: RecordingInfo
     ) {}
 
     private var data: ?RecordedCall = None
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func record(call: Call, object: Option<MockObject>) {
         let isStatic = match (call.funcInfo.kind) {
             case DeclKind.TopLevelFunction(_) => true
@@ -36,12 +45,21 @@ class RecordingHandler {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func getRecorded(): RecordedCall {
         return data ?? RecordingFailureReport().fail(info, NotAMock, UnmockableCallable)
     }
 }
 
 struct RecordedCall {
+    /*
+     * @noThrow
+     */
     RecordedCall(
         let object: Option<MockObject>,
         let stubId: StubId,
@@ -55,6 +73,9 @@ enum RecordingTarget {
 }
 
 struct RecordingInfo {
+    /*
+     * @noThrow
+     */
     RecordingInfo(
         let target: RecordingTarget,
         let prefixRefName: Option<String>,
@@ -66,7 +87,16 @@ enum RecordingFailureReason {
     NotAMock | UnmockableCallable
 }
 
+      /*
+       * @noThrow
+       */
 class RecordingFailureReport <: FailureReport {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func fail(info: RecordingInfo, possibleReasons: Array<RecordingFailureReason>): Nothing {
         let message = build {
             match (info.target) {

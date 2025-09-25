@@ -9,8 +9,17 @@
 package std.net
 
 enum Result<T> {
+    /*
+     * @noThrow
+     */
+            /*
+             * @noThrow
+             */
     Ok(T) | Err(Exception)
 
+    /*
+     * @noThrow
+     */
     func isOk(): Bool {
         match (this) {
             case Ok(v) => true
@@ -18,10 +27,16 @@ enum Result<T> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func isErr(): Bool {
         return !isOk()
     }
 
+    /*
+     * @noThrow
+     */
     func unwrap(): T {
         match (this) {
             case Ok(v) => return v
@@ -29,6 +44,9 @@ enum Result<T> {
         }
     }
 
+    /*
+     * @throws Exception
+     */
     func unwrapErr(): Exception {
         match (this) {
             case Ok(v) => throw Exception("called `Result.unwrapErr()` on an `Ok` value")
@@ -36,6 +54,9 @@ enum Result<T> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func toOption(): Option<T> {
         match (this) {
             case Ok(v) => v
@@ -45,6 +66,9 @@ enum Result<T> {
 }
 
 extend<T> Result<T> <: ToString where T <: ToString {
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case Ok(v) => return v.toString()

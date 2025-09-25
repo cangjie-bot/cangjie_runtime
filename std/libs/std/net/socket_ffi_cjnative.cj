@@ -46,16 +46,26 @@ const ERRNO_SOCK_CREATE: Int32 = 0x100C0006
 const ERRNO_SOCK_EAGAIN: Int32 = 0x100C0007
 const ERRNO_SOCK_CLOSED: Int32 = 269484036
 
+/*
+ * @noThrow
+ */
 func localAddrGet(handle: Int64, addr: CPointer<SockAddr>): Int32 {
     unsafe { CJ_MRT_SockLocalAddrGet(handle, addr) }
 }
 
+/*
+ * @noThrow
+ */
 func peerAddrGet(handle: Int64, addr: CPointer<SockAddr>): Int32 {
     unsafe { CJ_MRT_SockPeerAddrGet(handle, addr) }
 }
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws SocketException
+ */
 func getAddress(handle: Int64, getAddressFunc: (Int64, CPointer<SockAddr>) -> Int32, msg: String): SockAddr {
     var addr = SockAddr()
     let res: Int32 = getAddressFunc(handle, inout addr)
@@ -67,6 +77,11 @@ func getAddress(handle: Int64, getAddressFunc: (Int64, CPointer<SockAddr>) -> In
     return addr
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws SocketException
+ */
 func getLocalAddress(handle: Int64): SocketAddress {
     let addr = getAddress(handle, localAddrGet, "local")
     let local = unsafe { addr.toSocketAddress() }
@@ -74,6 +89,11 @@ func getLocalAddress(handle: Int64): SocketAddress {
     return local
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws SocketException
+ */
 func getRemoteAddress(handle: Int64): SocketAddress {
     let addr = getAddress(handle, peerAddrGet, "remote")
     let local = unsafe { addr.toSocketAddress() }
@@ -139,6 +159,9 @@ foreign {
 enum ErrnoLabel <: ToString {
     Accept | Connect | Read | Write | CreateSock | Bind | Listen
 
+    /*
+     * @noThrow
+     */
     public override func toString(): String {
         match (this) {
             case Accept => "accept"
@@ -152,10 +175,17 @@ enum ErrnoLabel <: ToString {
     }
 }
 
+/*
+ * @noThrow
+ */
 func getSocketError(): Int32 {
     unsafe { CJ_SockErrnoGet() }
 }
 
+/*
+ * @throws SocketException
+ * @throws SocketTimeoutException
+ */
 func socketProcessErrno(label: ErrnoLabel): Nothing {
     let errno = getSocketError()
     if (errno == ERRNO_SOCK_TIMEOUT) {
@@ -168,6 +198,9 @@ func socketProcessErrno(label: ErrnoLabel): Nothing {
     throw SocketException("Failed to ${label} ${errno}: ${sockError(errno)}.")
 }
 
+/*
+ * @noThrow
+ */
 func sockError(errno: Int32): String {
     if (errno == 0) {
         return ""
@@ -188,6 +221,9 @@ const ERRNO_EINVAL: Int32 = 0x16
 @When[os == "Windows"]
 const ERRNO_EINVAL: Int32 = 0x2726
 
+/*
+ * @noThrow
+ */
 func isSocketErrorInvalidArgument(errno: Int32): Bool {
     errno == ERRNO_SOCK_ARG_INVALID || errno == ERRNO_EINVAL
 }

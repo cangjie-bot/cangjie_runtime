@@ -50,6 +50,11 @@ class ZoneRule {
     var rMon: Int64 = 0 
     var rTime: Int64 = 0 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     */
     func parse(footer: String): String {
         if (footer[0] == b'J') {
             let (jday, rest) = getNum(footer[1..])
@@ -101,8 +106,14 @@ class LocalTime {
     
     var isDST: Bool = false
 
+    /*
+     * @noThrow
+     */
     init() {}
 
+    /*
+     * @noThrow
+     */
     init(des: String, offset: Int32, isDST: Bool) {
         this.des = des
         this.offset = offset
@@ -118,8 +129,14 @@ class TransTime {
 
     var index: UInt8 = 0
 
+    /*
+     * @noThrow
+     */
     init() {}
 
+    /*
+     * @noThrow
+     */
     init(trans: Int64, index: UInt8) {
         this.trans = trans
         this.index = index
@@ -146,6 +163,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
     var cache: Option<(Int64, Int64, LocalTime)> = None
 
     public prop id: String {
+        /*
+         * @noThrow
+         */
         get() {
             this.zoneId
         }
@@ -157,6 +177,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(id: String, offset: Int32) {
         this.zoneId = id
         this.localTimes = Array<LocalTime>(1, repeat: LocalTime(id, offset, false))
@@ -171,6 +194,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(id: String, offset: Duration) {
         if (id.size == 0) {
             throw IllegalArgumentException("Invalid timezone id.")
@@ -194,6 +220,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private init(localTimes: Array<LocalTime>, transTimes: Array<TransTime>, id: String, footer: String) {
         this.zoneId = id
         this.localTimes = localTimes
@@ -217,6 +246,13 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     */
     public static func load(id: String): TimeZone {
         if (id.size == 0 || id.size > MAXPATHLEN) {
             throw IllegalArgumentException("Invalid timezone id.")
@@ -256,6 +292,11 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws InvalidDataException
+     * @throws IllegalArgumentException
+     */
     public static func loadFromPaths(id: String, tzpaths: Array<String>): TimeZone {
         if (id.size == 0 || id.size > MAXPATHLEN) {
             throw IllegalArgumentException("Invalid timezone id.")
@@ -294,6 +335,11 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws InvalidDataException
+     * @throws IllegalArgumentException
+     */
     public static func loadFromTZData(id: String, data: Array<UInt8>): TimeZone {
         if (id.size == 0) {
             throw IllegalArgumentException("Invalid timezone id.")
@@ -330,6 +376,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return this.zoneId
     }
@@ -340,6 +389,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func ==(r: TimeZone): Bool {
         return refEq(this, r)
     }
@@ -350,6 +402,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func !=(r: TimeZone): Bool {
         return !(this == r)
     }
@@ -361,6 +416,11 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     func lookup(epochSecond: Int64): (String, Int64, Int64, Int64) {
         match (cache) {
             case Some(v) =>
@@ -403,6 +463,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private func binarySearch(epochSecond: Int64): (Int64, Int64) {
         var end = Int64.Max
         var low = 0
@@ -425,6 +488,9 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func inferZoneIndex(): Int64 {
         
         var flag = false
@@ -468,6 +534,11 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     */
     func lookupName(name: String, unix: Int64): Int64 {
         var offset = Int64.Min
         for (zone in localTimes) {
@@ -499,6 +570,11 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws InvalidDataException
+ */
 func parseTZ(footer: String, end: Int64, epochSecond: Int64): (String, Int64, Int64, Int64) {
     var stdName: String = ""
     var dstName: String = ""
@@ -570,6 +646,9 @@ func parseTZ(footer: String, end: Int64, epochSecond: Int64): (String, Int64, In
 }
 
 
+/*
+ * @noThrow
+ */
 func swap<T>(left: T, right: T): (T, T) {
     return (right, left)
 }
@@ -580,6 +659,11 @@ func swap<T>(left: T, right: T): (T, T) {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws InvalidDataException
+ */
 func parseTZName(footer: String): (String, String) {
     let strLen = footer.size
     if (footer[0] == b'<') {
@@ -611,6 +695,11 @@ func parseTZName(footer: String): (String, String) {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws InvalidDataException
+ */
 func parseTZOffset(footer: String): (Int64, String) {
     if (footer.size == 0) {
         throw InvalidDataException("Failed to parse the timezone data.")
@@ -667,6 +756,11 @@ func parseTZOffset(footer: String): (Int64, String) {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws InvalidDataException
+ */
 func parseTZRule(footer: String): (ZoneRule, String) {
     var rule = ZoneRule()
     if (footer.size == 0) {
@@ -693,6 +787,11 @@ func parseTZRule(footer: String): (ZoneRule, String) {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws InvalidDataException
+ */
 func getNum(footer: String): (Int64, String) {
     let strLen = footer.size
     if (strLen == 0) {
@@ -727,6 +826,10 @@ func getNum(footer: String): (Int64, String) {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws InvalidDataException
+ */
 func transToSecOfYear(year: Int64, rule: ZoneRule, off: Int64): Int64 {
     if (year <= 0) {
         throw InvalidDataException("Failed to parse the timezone data")
@@ -774,14 +877,23 @@ func transToSecOfYear(year: Int64, rule: ZoneRule, off: Int64): Int64 {
 }
 
 public class InvalidDataException <: Exception {
+    /*
+     * @noThrow
+     */
     public init() {
         super()
     }
 
+    /*
+     * @noThrow
+     */
     public init(message: String) {
         super(message)
     }
 
+    /*
+     * @noThrow
+     */
     protected override func getClassName(): String {
         return "InvalidDataException"
     }

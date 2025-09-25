@@ -8,10 +8,16 @@
 package std.unittest.mock
 
 interface UntypedOption {
+    /*
+     * @noThrow
+     */
     func value(): ?Any
 }
 
 extend<T> Option<T> <: UntypedOption {
+    /*
+     * @noThrow
+     */
     public func value(): ?Any {
         match (this) {
             case Some(v) => Some(v)
@@ -23,6 +29,9 @@ extend<T> Option<T> <: UntypedOption {
 
 
 
+/*
+ * @noThrow
+ */
 func unwrapValue<T>(value: Any): ?T {
     match (value) {
         case ofRequiredType: T => ofRequiredType

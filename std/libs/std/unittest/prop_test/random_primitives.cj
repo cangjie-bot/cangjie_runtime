@@ -11,10 +11,16 @@ import std.random.Random
 import std.math.*
 
 interface FromFloat64<T> {
+    /*
+     * @noThrow
+     */
     static func fromFloat64(f: Float64): T
 }
 
 extend Int16 <: FromFloat64<Int16> {
+    /*
+     * @noThrow
+     */
     public static func fromFloat64(f: Float64): Int16 {
         if (f > Float64(Int16.Max)) {
             return Int16.Max
@@ -28,6 +34,9 @@ extend Int16 <: FromFloat64<Int16> {
 }
 
 extend Int32 <: FromFloat64<Int32> {
+    /*
+     * @noThrow
+     */
     public static func fromFloat64(f: Float64): Int32 {
         if (f > Float64(Int32.Max)) {
             return Int32.Max
@@ -41,6 +50,9 @@ extend Int32 <: FromFloat64<Int32> {
 }
 
 extend Int64 <: FromFloat64<Int64> {
+    /*
+     * @noThrow
+     */
     public static func fromFloat64(f: Float64): Int64 {
         if (f > Float64(Int64.Max)) {
             return Int64.Max
@@ -54,6 +66,9 @@ extend Int64 <: FromFloat64<Int64> {
 }
 
 extend IntNative <: FromFloat64<IntNative> {
+    /*
+     * @noThrow
+     */
     public static func fromFloat64(f: Float64): IntNative {
         if (f > Float64(IntNative.Max)) {
             return IntNative.Max
@@ -67,6 +82,9 @@ extend IntNative <: FromFloat64<IntNative> {
 }
 
 extend UInt16 <: FromFloat64<UInt16> {
+    /*
+     * @noThrow
+     */
     public static func fromFloat64(f_: Float64): UInt16 {
         let f = abs(f_)
         if (f > Float64(UInt16.Max)) {
@@ -78,6 +96,9 @@ extend UInt16 <: FromFloat64<UInt16> {
 }
 
 extend UInt32 <: FromFloat64<UInt32> {
+    /*
+     * @noThrow
+     */
     public static func fromFloat64(f_: Float64): UInt32 {
         let f = abs(f_)
         if (f > Float64(UInt32.Max)) {
@@ -89,6 +110,9 @@ extend UInt32 <: FromFloat64<UInt32> {
 }
 
 extend UInt64 <: FromFloat64<UInt64> {
+    /*
+     * @noThrow
+     */
     public static func fromFloat64(f_: Float64): UInt64 {
         let f = abs(f_)
         if (f > Float64(UInt64.Max)) {
@@ -100,6 +124,9 @@ extend UInt64 <: FromFloat64<UInt64> {
 }
 
 extend UIntNative <: FromFloat64<UIntNative> {
+    /*
+     * @noThrow
+     */
     public static func fromFloat64(f_: Float64): UIntNative {
         let f = abs(f_)
         if (f > Float64(UIntNative.Max)) {
@@ -110,12 +137,20 @@ extend UIntNative <: FromFloat64<UIntNative> {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func nextImaginableInteger<T>(random: Random, sigma: Float64): T where T <: FromFloat64<T> {
     let nextFloat = random.nextGaussianFloat64(mean: 0.0, sigma: sigma)
 
     return T.fromFloat64(nextFloat)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func generateBool(random: Random): Bool {
     return random.nextBool()
 }
@@ -193,6 +228,10 @@ private let UINT64_TABLE = WeightTable<(Random) -> UInt64>(
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func nextImaginableFloat64(random: Random): Float64 {
     let INTEGER_STRETCHING = 3.0
     var nextGaussian = random.nextGaussianFloat64(mean: 0.0, sigma: INTEGER_STRETCHING)
@@ -210,6 +249,10 @@ func nextImaginableFloat64(random: Random): Float64 {
     return sign * (integerPart + fractionalPart)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func nextDenseFloat16(random: Random): Float16 {
     let inRange = random.nextUInt16() >> (16 - 10)
     let rangeMax = 1 << 10
@@ -239,6 +282,10 @@ private let FLOAT16_TABLE = WeightTable<(Random) -> Float16>(
     (24, { random: Random => Float16(nextImaginableFloat64(random)) })
 )
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func nextDenseFloat32(random: Random): Float32 {
     let inRange = random.nextUInt16() >> (32 - 23)
     let rangeMax = 1 << 23
@@ -267,6 +314,10 @@ private let FLOAT32_TABLE = WeightTable<(Random) -> Float32>(
     (40, nextDenseFloat32),
     (33, { random: Random => Float32(nextImaginableFloat64(random)) })
 )
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func nextDenseFloat64(random: Random): Float64 {
     let inRange = random.nextUInt16() >> (64 - 52)
     let rangeMax = 1 << 52
@@ -296,6 +347,10 @@ private let FLOAT64_TABLE = WeightTable<(Random) -> Float64>(
     (33, nextImaginableFloat64)
 )
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func nextFloat16(random: Random, l: Float16, r: Float16): Float16 {
     if (l.isNaN() || r.isNaN()) {
         throw IllegalArgumentException("cannot pass nan as border value")
@@ -319,6 +374,10 @@ private func nextFloat16(random: Random, l: Float16, r: Float16): Float16 {
     return max(l, min(l - l * x + r * x, r))
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func nextFloat32(random: Random, l: Float32, r: Float32): Float32 {
     if (l.isNaN() || r.isNaN()) {
         throw IllegalArgumentException("cannot pass nan as border value")
@@ -342,6 +401,10 @@ private func nextFloat32(random: Random, l: Float32, r: Float32): Float32 {
     return max(l, min(l - l * x + r * x, r))
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func nextFloat64(random: Random, l: Float64, r: Float64): Float64 {
     if (l.isNaN() || r.isNaN()) {
         throw IllegalArgumentException("cannot pass nan as border value")
@@ -494,107 +557,235 @@ private let UINT_NATIVE_TABLE_RANGE = WeightTable<(Random, UIntNative, UIntNativ
 )
 
 extend Random <: RandomSource {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func suggestBool(): Bool {
         generateBool(this)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func suggestBiasedPrimitive<T>(fromTable: WeightTable<(Random) -> T>) {
         this.pickWeighted(fromTable)(this)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestInt8(): Int8 {
         suggestBiasedPrimitive(INT8_TABLE)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestInt16(): Int16 {
         suggestBiasedPrimitive(INT16_TABLE)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestInt32(): Int32 {
         suggestBiasedPrimitive(INT32_TABLE)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestInt64(): Int64 {
         suggestBiasedPrimitive(INT64_TABLE)
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestIntNative(): IntNative {
         IntNative(suggestInt64())
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUInt8(): UInt8 {
         suggestBiasedPrimitive(UINT8_TABLE)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUInt16(): UInt16 {
         suggestBiasedPrimitive(UINT16_TABLE)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUInt32(): UInt32 {
         suggestBiasedPrimitive(UINT32_TABLE)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUInt64(): UInt64 {
         suggestBiasedPrimitive(UINT64_TABLE)
     }
 
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUIntNative(): UIntNative {
         UIntNative(suggestUInt64())
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestFloat16(): Float16 {
         suggestBiasedPrimitive(FLOAT16_TABLE)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestFloat32(): Float32 {
         suggestBiasedPrimitive(FLOAT32_TABLE)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestFloat64(): Float64 {
         suggestBiasedPrimitive(FLOAT64_TABLE)
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func suggestRune(): Rune {
         randomBiasedRune(this)
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextIntNative(): IntNative {
         IntNative(this.nextInt64())
     }
 
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextUIntNative(): UIntNative {
         UIntNative(this.nextUInt64())
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func suggestBiasedPrimitive<T>(fromTable: WeightTable<(Random, T, T) -> T>, l: T, r: T) {
         this.pickWeighted(fromTable)(this, l, r)
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestInt64(l: Int64, r: Int64): Int64 {
         remap(l, r, suggestBiasedPrimitive(INT64_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUInt64(l: UInt64, r: UInt64): UInt64 {
         remap(l, r, suggestBiasedPrimitive(UINT64_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestInt32(l: Int32, r: Int32): Int32 {
         remap(l, r, suggestBiasedPrimitive(INT32_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUInt32(l: UInt32, r: UInt32): UInt32 {
         remap(l, r, suggestBiasedPrimitive(UINT32_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestInt16(l: Int16, r: Int16): Int16 {
         remap(l, r, suggestBiasedPrimitive(INT16_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUInt16(l: UInt16, r: UInt16): UInt16 {
         remap(l, r, suggestBiasedPrimitive(UINT16_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestInt8(l: Int8, r: Int8): Int8 {
         remap(l, r, suggestBiasedPrimitive(INT8_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUInt8(l: UInt8, r: UInt8): UInt8 {
         remap(l, r, suggestBiasedPrimitive(UINT8_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestIntNative(l: IntNative, r: IntNative): IntNative {
         remap(l, r, suggestBiasedPrimitive(INT_NATIVE_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func suggestUIntNative(l: UIntNative, r: UIntNative): UIntNative {
         remap(l, r, suggestBiasedPrimitive(UINT_NATIVE_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func suggestFloat64(l: Float64, r: Float64): Float64 {
         remap(l, r, suggestBiasedPrimitive(FLOAT64_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func suggestFloat32(l: Float32, r: Float32): Float32 {
         remap(l, r, suggestBiasedPrimitive(FLOAT32_TABLE_RANGE, l, r))
     }
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func suggestFloat16(l: Float16, r: Float16): Float16 {
         remap(l, r, suggestBiasedPrimitive(FLOAT16_TABLE_RANGE, l, r))
     }

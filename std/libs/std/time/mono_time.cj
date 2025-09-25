@@ -23,12 +23,18 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func now(): MonoTime {
         let (sec, ns) = monoNow()
         return MonoTime(Duration(sec, UInt32(ns)))
     }
 
 
+    /*
+     * @noThrow
+     */
     private init(d: Duration) {
         this.d = d
     }
@@ -37,6 +43,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public operator func +(r: Duration): MonoTime {
         if (r > Duration.Max - d || r < Duration.Zero - d) {
             throw ArithmeticException("The result exceeds the range of 'MonoTime'.")
@@ -48,6 +57,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public operator func -(r: Duration): MonoTime {
         if (d - Duration.Max > r || d < r) {
             throw ArithmeticException("The result exceeds the range of 'MonoTime'.")
@@ -59,6 +71,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @throws ArithmeticException
+     */
     public operator func -(r: MonoTime): Duration {
         return this.d - r.d
     }
@@ -67,6 +82,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func ==(r: MonoTime): Bool {
         return this.d == r.d
     }
@@ -75,6 +93,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func !=(r: MonoTime): Bool {
         return this.d != r.d
     }
@@ -83,6 +104,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func >=(r: MonoTime): Bool {
         return this.d >= r.d
     }
@@ -91,6 +115,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func >(r: MonoTime): Bool {
         return this.d > r.d
     }
@@ -99,6 +126,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func <=(r: MonoTime): Bool {
         return this.d <= r.d
     }
@@ -107,6 +137,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public operator func <(r: MonoTime): Bool {
         return this.d < r.d
     }
@@ -115,6 +148,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func compare(rhs: MonoTime): Ordering {
         match {
             case this < rhs => Ordering.LT
@@ -126,6 +162,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func hashCode(): Int64 {
         return d.hashCode()
     }

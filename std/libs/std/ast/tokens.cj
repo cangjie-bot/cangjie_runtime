@@ -17,6 +17,9 @@ public class TokensIterator <: Iterator<Token> {
 
     
 
+    /*
+     * @noThrow
+     */
     public init(tokens: Tokens) {
         data = tokens
     }
@@ -24,6 +27,9 @@ public class TokensIterator <: Iterator<Token> {
     
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func peek(): Option<Token> {
         if (position >= data.size || position < 0) {
             return None<Token>
@@ -32,6 +38,9 @@ public class TokensIterator <: Iterator<Token> {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func seeing(kind: TokenKind): Bool {
         return match (this.peek()) {
             case Some(obj) => obj.kind == kind
@@ -40,6 +49,9 @@ public class TokensIterator <: Iterator<Token> {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func next(): Option<Token> {
         if (position < data.size) {
             position = position + 1
@@ -48,6 +60,12 @@ public class TokensIterator <: Iterator<Token> {
     }
 }
 
+/*
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func refreshTokensPosition(tks: Tokens) {
     return tks.refreshPosition()
 }
@@ -58,6 +76,12 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
     
     protected var tokens: ArrayList<Token> = ArrayList<Token>(0)
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func refreshPosition() {
         var newTokens: ArrayList<Token> = ArrayList<Token>(0)
         for (tk in tokens) {
@@ -70,10 +94,17 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
     
 
     
+    /*
+     * @noThrow
+     */
     public init() {
     }
 
     
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     init(buf: Array<UInt8>) {
         if (buf.size == 0) {
             return
@@ -113,11 +144,19 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(tokArray: Array<Token>) {
         tokens.add(all: tokArray)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(tokArrayList: ArrayList<Token>) {
         tokens.add(all: tokArrayList)
     }
@@ -126,12 +165,18 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
 
     
     public open prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return tokens.size
         }
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public open func get(index: Int64): Token {
         if (index < 0 || index >= tokens.size) {
             throw IndexOutOfBoundsException("index is ${index} but the size of tokens is ${tokens.size}")
@@ -140,11 +185,17 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
     }
 
     
+    /*
+     * @noThrow
+     */
     public func iterator(): TokensIterator {
         return TokensIterator(this)
     }
 
     
+    /*
+     * @noThrow
+     */
     public func concat(tokens: Tokens): Tokens {
         return ConcatTokens(this, tokens)
     }
@@ -152,26 +203,44 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
     
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func [](index: Int64): Token {
         return this.get(index)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public open operator func [](range: Range<Int64>): Tokens {
         return Tokens(tokens[range])
     }
 
     
+    /*
+     * @noThrow
+     */
     public operator func +(r: Tokens): Tokens {
         return this.concat(r)
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func +(r: Token): Tokens {
         var rts: Tokens = Tokens(Array<Token>(1, repeat: r))
         return this.concat(rts)
     }
 
     
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func append(tokens: Tokens): Tokens {
         for (tk in tokens) {
             this.tokens.add(tk)
@@ -180,22 +249,38 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
     }
 
     
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func append(token: Token): Tokens {
         tokens.add(token)
         return this
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(node: Node): Tokens {
         this.append(node.toTokens())
         return this
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func remove(index: Int64): Tokens {
         tokens.remove(at: index)
         return this
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public func dump(): Unit {
         for (tk in this) {
             tk.dump()
@@ -203,6 +288,11 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public func toString(): String {
         if (size == 0) {
             return ""
@@ -242,6 +332,9 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         return toStr
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toBytes(): Array<UInt8> {
         let numberOfTokens: Int64 = this.size
         if (numberOfTokens == 0) {
@@ -261,6 +354,9 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         return arr
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func toBytes(startFrom: Int64): Array<UInt8> {
         let numberOfTokens: Int64 = this.size - startFrom
         if (numberOfTokens <= 0) {
@@ -280,6 +376,9 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
         return arr
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func getSize(startFrom!: Int64 = 0) {
         let numberOfTokens: Int64 = this.size
         var size = 0;
@@ -291,6 +390,9 @@ public open class Tokens <: ToString & Iterable<Token> & ToBytes {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 func tokenToString(tk: Token): String {
     var ret: String = " "
     let quoteMark: String = if (tk.isSingleQuote) {
@@ -340,6 +442,9 @@ class ConcatTokens <: Tokens {
     
 
     
+    /*
+     * @noThrow
+     */
     init(lc: Tokens, rc: Tokens) {
 
         leftChild = lc
@@ -351,12 +456,18 @@ class ConcatTokens <: Tokens {
 
     
     public override prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return cachedSize
         }
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public override func get(index: Int64): Token {
         if (index < 0 || index >= size) {
             throw IndexOutOfBoundsException("index is ${index} but the size of tokens is ${size}")
@@ -369,6 +480,10 @@ class ConcatTokens <: Tokens {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func [](range: Range<Int64>): Tokens {
         if (range.step != 1) {
             throw IllegalArgumentException("Illegal step ${range.step}, step should be 1")
@@ -389,6 +504,9 @@ class ConcatTokens <: Tokens {
     }
 
     
+    /*
+     * @noThrow
+     */
     public override func append(tks: Tokens): Tokens {
         rightChild = rightChild + tks
         cachedSize += tks.size
@@ -396,6 +514,10 @@ class ConcatTokens <: Tokens {
     }
 
     
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public override func append(tk: Token): Tokens {
         rightChild = rightChild + tk
         cachedSize += 1

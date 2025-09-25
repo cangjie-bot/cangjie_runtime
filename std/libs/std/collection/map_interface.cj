@@ -16,12 +16,30 @@ public interface MapEntryView<K, V> {
 }
 
 public interface ReadOnlyMap<K, V> <: Collection<(K, V)> {
+    /*
+     * @noThrow
+     */
     func get(key: K): ?V
+    /*
+     * @noThrow
+     */
     func contains(key: K): Bool
+    /*
+     * @noThrow
+     */
     func contains(all!: Collection<K>): Bool
+    /*
+     * @noThrow
+     */
     func keys(): EquatableCollection<K>
+    /*
+     * @noThrow
+     */
     func values(): Collection<V>
 
+    /*
+     * @noThrow
+     */
     operator func [](key: K): V
 }
 
@@ -37,6 +55,9 @@ public interface Map<K, V> <: ReadOnlyMap<K, V> {
 
 
 
+    /*
+     * @noThrow
+     */
     func add(key: K, value: V): ?V
 
 
@@ -45,6 +66,9 @@ public interface Map<K, V> <: ReadOnlyMap<K, V> {
 
 
 
+    /*
+     * @noThrow
+     */
     func add(all!: Collection<(K, V)>): Unit
 
 
@@ -53,6 +77,9 @@ public interface Map<K, V> <: ReadOnlyMap<K, V> {
 
 
 
+    /*
+     * @noThrow
+     */
     func remove(key: K): Option<V>
 
 
@@ -60,6 +87,9 @@ public interface Map<K, V> <: ReadOnlyMap<K, V> {
 
 
 
+    /*
+     * @noThrow
+     */
     func remove(all!: Collection<K>): Unit
 
 
@@ -67,11 +97,17 @@ public interface Map<K, V> <: ReadOnlyMap<K, V> {
 
 
 
+    /*
+     * @noThrow
+     */
     func removeIf(predicate: (K, V) -> Bool): Unit
 
 
 
 
+    /*
+     * @noThrow
+     */
     func clear(): Unit
 
 
@@ -80,8 +116,14 @@ public interface Map<K, V> <: ReadOnlyMap<K, V> {
 
 
 
+    /*
+     * @noThrow
+     */
     operator func [](key: K, value!: V): Unit
 
+    /*
+     * @noThrow
+     */
     func entryView(k: K): MapEntryView<K, V>
 
 
@@ -95,6 +137,9 @@ public interface Map<K, V> <: ReadOnlyMap<K, V> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     func addIfAbsent(key: K, value: V): ?V {
         var view = entryView(key)
         return match (view.value) {
@@ -118,6 +163,9 @@ public interface Map<K, V> <: ReadOnlyMap<K, V> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     func replace(key: K, value: V): ?V {
         var view = entryView(key)
         return match (view.value) {
@@ -140,6 +188,9 @@ public interface EquatableCollection<T> <: Collection<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     func contains(element: T): Bool
 
 
@@ -148,15 +199,30 @@ public interface EquatableCollection<T> <: Collection<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     func contains(all!: Collection<T>): Bool
 }
 
 public interface OrderedMap<K, V> <: Map<K, V> {
     prop first: ?(K, V)
     prop last: ?(K, V)
+    /*
+     * @noThrow
+     */
     func removeFirst(): ?(K, V)
+    /*
+     * @noThrow
+     */
     func removeLast(): ?(K, V)
 
+    /*
+     * @noThrow
+     */
     func backward(mark: K, inclusive!: Bool): Iterator<(K, V)>
+    /*
+     * @noThrow
+     */
     func forward(mark: K, inclusive!: Bool): Iterator<(K, V)>
 }

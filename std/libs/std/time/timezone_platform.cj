@@ -48,6 +48,14 @@ func initLocal(): TimeZone {
 }
 
 @When[os != "Windows"]
+/*
+ * @throws ArithmeticException
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws OutOfMemoryError
+ * @throws InvalidDataException
+ * @throws IllegalArgumentException
+ */
 func initLocal(): TimeZone {
     var timeZ = unsafe { LibC.mallocCString("TZ") }
     let ctz = unsafe { CJ_TIME_GetEnvVariable(timeZ) }
@@ -84,6 +92,10 @@ func initLocal(): TimeZone {
     }
     initLocalDefault()
 }
+/*
+ * @throws ArithmeticException
+ * @throws IllegalArgumentException
+ */
 func initLocalDefault(): TimeZone {
     let offset = unsafe { CJ_TIME_GetLocalTimeOffset() }
     if (offset == 0) {
@@ -102,6 +114,10 @@ func initLocalDefault(): TimeZone {
 
 
 @When[os != "Windows"]
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getTimeZoneName(path: String): String {
     if (let Some(pos) <- path.lastIndexOf("zoneinfo")) {
         var substring = path[(pos + 8)..path.size]

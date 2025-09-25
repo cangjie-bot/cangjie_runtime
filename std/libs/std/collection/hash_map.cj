@@ -17,6 +17,9 @@ struct HashMapEntry<K, V> {
     public let value: V
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init(h: Int64, n: Int64, k: K, v: V) {
         hash = h
         next = n
@@ -25,6 +28,9 @@ struct HashMapEntry<K, V> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init() {
         hash = -1
         next = -1
@@ -40,6 +46,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
     private let map: HashMap<K, V>
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init(m: HashMap<K, V>) {
         map = m
     }
@@ -51,6 +60,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
 
     @Frozen
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return map.size
         }
@@ -62,6 +74,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return map.isEmpty()
     }
@@ -73,6 +88,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(element: K): Bool {
         return map.contains(element)
     }
@@ -84,6 +102,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(all!: Collection<K>): Bool {
         return map.contains(all: all)
     }
@@ -94,12 +115,18 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): Iterator<K> {
         return map.iterator().map<K> {i: (K, V) => i[0]}
     }
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toArray(): Array<K> {
         let keys = Array<K>(size, repeat: unsafe { zeroValue<K>() })
         var index = 0
@@ -122,6 +149,9 @@ class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
     private let map: HashMap<K, V>
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init(m: HashMap<K, V>) {
         map = m
     }
@@ -133,6 +163,9 @@ class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return map.size
         }
@@ -144,6 +177,9 @@ class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return map.isEmpty()
     }
@@ -154,12 +190,18 @@ class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): Iterator<V> {
         return map.iterator().map<V> {i: (K, V) => i[1]}
     }
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toArray(): Array<V> {
         let values = Array<V>(size, repeat: unsafe { zeroValue<V>() })
         var index = 0
@@ -187,6 +229,9 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
     private var lockVersion: Int64
 
     @Frozen
+    /*
+     * @noThrow
+     */
     init(isAbsent: Bool, key: K, hash: Int64, index: Int64, map: HashMap<K, V>) {
         this._isAbsent = isAbsent
         this._key = key
@@ -198,6 +243,9 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
 
     @Frozen
     public prop key: K {
+        /*
+         * @throws ConcurrentModificationException
+         */
         get() {
             getKey()
         }
@@ -205,9 +253,19 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
 
     @Frozen
     public mut prop value: ?V {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws ConcurrentModificationException
+         */
         get() {
             getValue()
         }
+        /*
+         * @throws NoneValueException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws ConcurrentModificationException
+         */
         set(value) {
             return if (value.isNone()) {
                 map.remove(_key)
@@ -224,6 +282,9 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
 
 
     @Frozen
+    /*
+     * @throws ConcurrentModificationException
+     */
     func getKey(): K {
         if (lockVersion != map.version()) {
             throw ConcurrentModificationException()
@@ -237,6 +298,10 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     func getValue(): ?V {
         if (lockVersion != map.version()) {
             throw ConcurrentModificationException()
@@ -255,6 +320,11 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ConcurrentModificationException
+     */
     private func setValue(v: V) {
         if (lockVersion != map.version()) {
             throw ConcurrentModificationException()
@@ -324,6 +394,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public init() {
         buckets = Array<Int64>(DEFAULT_CAPACITY, repeat: -1)
         entries = Array<HashMapEntry<K, V>>(
@@ -338,6 +411,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public init(elements: Collection<(K, V)>) {
         let bucketSize: Int64 = elements.size + (elements.size >> 1)
         buckets = Array<Int64>(tableSizeFor(bucketSize), repeat: -1)
@@ -353,6 +429,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public init(elements: Array<(K, V)>) {
         let bucketSize: Int64 = elements.size + (elements.size >> 1)
         buckets = Array<Int64>(tableSizeFor(bucketSize), repeat: -1)
@@ -370,6 +449,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         if (capacity < 0) {
             throw IllegalArgumentException("Invalid size of HashMap: ${capacity}.")
@@ -388,6 +470,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(size: Int64, initElement: (Int64) -> (K, V)) {
         if (size < 0) {
             throw IllegalArgumentException("Invalid size of HashMap: ${size}.")
@@ -402,6 +488,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     private init(other: HashMap<K, V>) {
         buckets = other.buckets.clone()
         entries = other.entries.clone()
@@ -417,6 +506,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func get(key: K): ?V {
         let hash: Int64 = getHash(key.hashCode())
         let index: Int64 = getIndex(hash, buckets.size)
@@ -441,6 +533,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(key: K, value: V): Option<V> {
         let hash: Int64 = getHash(key.hashCode())
         var bucketIndex: Int64 = getIndex(hash, buckets.size)
@@ -474,6 +570,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     protected func putWithoutResize(key: K, value: V): Unit {
         let hash: Int64 = getHash(key.hashCode())
         var bucketIndex: Int64 = getIndex(hash, buckets.size)
@@ -502,6 +601,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func entryView(key: K): MapEntryView<K, V> {
         let hash: Int64 = getHash(key.hashCode())
         var index: Int64 = getIndex(hash, buckets.size)
@@ -522,6 +624,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(all!: Collection<(K, V)>): Unit {
         if (all.size > entries.size) {
             resize(all.size)
@@ -539,6 +645,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func remove(key: K): Option<V> {
         let NULL_KEY: K = unsafe { zeroValue<K>() }
         let NULL_VALUE: V = unsafe { zeroValue<V>() }
@@ -573,6 +682,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func remove(all!: Collection<K>): Unit {
         for (key in all) {
             remove(key)
@@ -586,6 +698,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     public func removeIf(predicate: (K, V) -> Bool): Unit {
         let NULL_KEY: K = unsafe { zeroValue<K>() }
         let NULL_VALUE: V = unsafe { zeroValue<V>() }
@@ -626,6 +742,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func clear(): Unit {
         for (i in 0..entries.size where entries[i].hash >= 0) {
             entries[i] = HashMapEntry<K, V>()
@@ -649,6 +768,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func reserve(additional: Int64): Unit {
         if (additional <= 0 || size + additional < capacity) {
             return
@@ -666,6 +789,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     public prop capacity: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return entries.size
         }
@@ -678,6 +804,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(all!: Collection<K>): Bool {
         for (key in all where !contains(key)) {
             return false
@@ -692,6 +821,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func contains(key: K): Bool {
         if (appendIndex - freeSize == 0) {
             return false
@@ -714,6 +846,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func clone(): HashMap<K, V> {
         return HashMap<K, V>(this)
     }
@@ -724,6 +859,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func keys(): EquatableCollection<K> {
         return HashMapKeys<K, V>(this)
     }
@@ -734,6 +872,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func values(): Collection<V> {
         return HashMapValues<K, V>(this)
     }
@@ -747,6 +888,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public operator func [](key: K): V {
         return match (get(key)) {
             case None => throw NoneValueException("Value does not exist!\n")
@@ -761,6 +906,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func [](key: K, value!: V): Unit {
         add(key, value)
     }
@@ -775,6 +924,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     func getIndex(hash: Int64, size: Int64): Int64 {
         return hash & (size - 1)
     }
@@ -787,6 +939,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func getHash(hashCode: Int64): Int64 {
         hashCode ^ (hashCode >> 32)
     }
@@ -798,6 +953,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             return appendIndex - freeSize
         }
@@ -809,6 +967,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): HashMapIterator<K, V> {
         return HashMapIterator<K, V>(this)
     }
@@ -819,6 +980,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         return (appendIndex - freeSize) == 0
     }
@@ -829,11 +993,17 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     func version(): Int64 {
         return modCount
     }
 
     @Frozen
+    /*
+     * @noThrow
+     */
     private func max(l: Int64, r: Int64) {
         return if (l >= r) {
             l
@@ -844,6 +1014,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func toArray(): Array<(K, V)> {
         let arr = Array<(K, V)>(size, repeat: unsafe { (zeroValue<K>(), zeroValue<V>()) })
         var index = 0
@@ -866,6 +1039,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func resize(argCap: Int64): Bool {
         var isRehash: Bool = false
         let oldBucketsSize = buckets.size
@@ -903,6 +1080,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     private static func tableSizeFor(cap: Int64): Int64 {
         if (cap <= DEFAULT_CAPACITY) {
             return DEFAULT_CAPACITY
@@ -922,6 +1102,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func removePosition(hash: Int64, pos: Int64) {
         let index: Int64 = getIndex(hash, buckets.size)
         var bucket: Int64 = buckets[index]
@@ -947,6 +1130,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 extend<K, V> HashMap<K, V> <: ToString where V <: ToString, K <: ToString {
     @Frozen
+    /*
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         if (size == 0) {
             return "[]"
@@ -978,6 +1167,9 @@ extend<K, V> HashMap<K, V> <: ToString where V <: ToString, K <: ToString {
 
 extend<K, V> HashMap<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func ==(right: HashMap<K, V>): Bool {
         if (refEq(this, right)) {
             return true
@@ -998,6 +1190,9 @@ extend<K, V> HashMap<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
     }
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public operator func !=(right: HashMap<K, V>): Bool {
         if (size != right.size) {
             return true
@@ -1031,6 +1226,9 @@ public class HashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equ
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public init(map: HashMap<K, V>) {
         isRemoved = true
         data = map
@@ -1046,6 +1244,10 @@ public class HashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equ
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     public func next(): ?(K, V) {
         if (lockVersion != data.version()) {
             throw ConcurrentModificationException()
@@ -1073,6 +1275,10 @@ public class HashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equ
 
 
     @Frozen
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     public func remove(): Option<(K, V)> {
         if (lockVersion != data.version()) {
             throw ConcurrentModificationException()

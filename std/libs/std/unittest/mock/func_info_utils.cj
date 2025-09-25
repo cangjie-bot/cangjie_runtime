@@ -11,6 +11,11 @@ import std.unittest.mock.internal.FuncInfo
 
 extend FuncInfo {
     prop hasSetter: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws MockFrameworkInternalError
+         */
         get() {
             match (kind) {
                 case FieldGetter(_, hasIt) => hasIt
@@ -22,6 +27,9 @@ extend FuncInfo {
     }
 
     prop isGetter: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             match (kind) {
                 case FieldGetter(_, _) => true
@@ -32,6 +40,9 @@ extend FuncInfo {
     }
 
     prop isSetter: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             match (kind) {
                 case FieldSetter(_) => true
@@ -42,6 +53,9 @@ extend FuncInfo {
     }
 
     prop presentableName: String {
+        /*
+         * @noThrow
+         */
         get() {
             match (kind) {
                 case FieldGetter(name, _) => name

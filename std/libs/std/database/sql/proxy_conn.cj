@@ -16,25 +16,42 @@ class ProxyConnection <: Connection {
     var poolEntry: Entry<Connection>
     var isReleased = AtomicBool(false)
 
+    /*
+     * @noThrow
+     */
     init(conn: Connection, poolEntry: Entry<Connection>) {
         this.delegate = conn
         this.poolEntry = poolEntry
     }
 
     public prop state: ConnectionState {
+        /*
+         * @noThrow
+         */
         get() {
             return delegate.state
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func getMetaData(): Map<String, String> {
         return delegate.getMetaData()
     }
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         return isReleased.load()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func close(): Unit {
         if (isReleased.load()) {
             return
@@ -43,6 +60,9 @@ class ProxyConnection <: Connection {
         poolEntry.release()
     }
 
+    /*
+     * @throws SqlException
+     */
     public func prepareStatement(sql: String): Statement {
         if (isClosed()) {
             throw SqlException("Connection closed")
@@ -50,6 +70,9 @@ class ProxyConnection <: Connection {
         return delegate.prepareStatement(sql)
     }
 
+    /*
+     * @throws SqlException
+     */
     public func createTransaction(): Transaction {
         if (isClosed()) {
             throw SqlException("Connection closed")

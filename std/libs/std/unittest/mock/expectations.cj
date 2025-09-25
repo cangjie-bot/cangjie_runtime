@@ -11,6 +11,13 @@ import std.collection.*
 import std.unittest.common.PrettyText
 
 extend MockSession {
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws ExpectationFailedException
+     */
     func verifyExpectations(): Unit {
         let logSnapshot = invocationLog.fullLog()
         let failures = ArrayList<ExpectationFailedReason>()
@@ -24,6 +31,12 @@ extend MockSession {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func checkForMisconfigurationIssues(): Unit {
         for (chain in chainsByStubId.values() |> flatten) {
             chain.ensureActivated()
@@ -38,6 +51,11 @@ extend MockSession {
 }
 
 extend StubChain {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func verifyExpectations(): ?ExpectationFailedReason {
         let totalCardinality = getTotalCardinality()
         let totalInvocationCount = getTotalInvocationCount()
@@ -47,6 +65,11 @@ extend StubChain {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     func getTotalCardinality(): Cardinality {
         var minInvocations = 0
         var maxInvocations = Some(0)
@@ -66,6 +89,11 @@ extend StubChain {
         Cardinality(min: minInvocations, max: maxInvocations)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func getTotalInvocationCount() {
         var actualInvocations = 0
         for (sc in scenarios) {
@@ -76,10 +104,16 @@ extend StubChain {
 }
 
 enum ExpectationFailedReason {
+    /*
+     * @noThrow
+     */
     TooFewInvocationsForStubChain(StubChain, Cardinality, Int64)
 }
 
 class ExpectationFailedReport <: FailureReport {
+    /*
+     * @noThrow
+     */
     ExpectationFailedReport(
         log: LogSnapshot,
         nameRegistry: MockNameRegistry
@@ -87,6 +121,12 @@ class ExpectationFailedReport <: FailureReport {
         super(log, nameRegistry)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws ExpectationFailedException
+     */
     static func fail(log: LogSnapshot, failures: ArrayList<ExpectationFailedReason>): Nothing {
         let nameRegistry = MockNameRegistry(
             failures |>
@@ -102,6 +142,11 @@ class ExpectationFailedReport <: FailureReport {
         )
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     func renderExpectationFailures(failures: ArrayList<ExpectationFailedReason>): PrettyText {
         let howManyExpectations = match (failures.size) {
             case 1 => "Expectation"
@@ -117,6 +162,11 @@ class ExpectationFailedReport <: FailureReport {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     func renderExpectationFailedReason(reason: ExpectationFailedReason): Unit {
         match (reason) {
             case TooFewInvocationsForStubChain(thisChain, requiredCardinality, actualInvocations) =>
@@ -170,6 +220,11 @@ class ExpectationFailedReport <: FailureReport {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     func renderInvocationListWithHandledByHints(entries: Array<LogEntry>) {
         for (entry in entries) {
             listEntry { renderLocation(entry.invocation.location) }
@@ -191,6 +246,10 @@ class ExpectationFailedReport <: FailureReport {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func findEntriesByStubId(stubId: StubId): ArrayList<LogEntry> {
         let matchingEntries = ArrayList<LogEntry>()
         for (entry in invocationLog.entries) {

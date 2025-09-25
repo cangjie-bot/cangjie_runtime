@@ -9,6 +9,12 @@ package std.unittest.mock
 
 import std.collection.*
 
+/*
+ * @throws NoneValueException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func verifyUnordered(
     exhastiveness: Exhaustiveness,
     statements: Array<VerifyStatement>,
@@ -58,6 +64,11 @@ func verifyUnordered(
     return Success
 }
 
+/*
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func batchMatch(
     statements: Array<VerifyStatement>, invocations: Array<Invocation>
 ): BatchMatchResult {
@@ -87,11 +98,22 @@ func batchMatch(
 }
 
 enum BatchMatchResult {
+    /*
+     * @noThrow
+     */
+                                                                     /*
+                                                                      * @noThrow
+                                                                      */
     DisjointMatching(Array<Option<VerifyStatement>>, Array<Int64>) | Ambiguity(VerifyStatement, VerifyStatement,
         Invocation)
 }
 
 extend<T> Array<T> {
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     func groupIndexedBy<K>(toKey: (T) -> K): HashMap<K, ArrayList<Int64>> where K <: Hashable & Equatable<K> {
         let result = HashMap<K, ArrayList<Int64>>()
         for ((index, value) in this |> enumerate) {

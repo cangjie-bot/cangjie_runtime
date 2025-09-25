@@ -17,9 +17,18 @@ import std.sort.*
 const MEASUREMENTS_LIMIT = 5000
 const MAX_BATCH_SIZE = 2 ** 60
 
+               /*
+                * @noThrow
+                */
 private struct EmptyBenchmark <: BenchmarkWrapper {
+    /*
+     * @noThrow
+     */
     public func measureLoopOnce(_: Int64, _: Int64): Float64 { 0.0 }
 
+    /*
+     * @noThrow
+     */
     public func timeLoopOnce(_: Int64, _: Int64): Float64 { 0.0 }
 }
 
@@ -38,6 +47,11 @@ class BenchRunner {
     private var ema0 = Ema(0)
     private var ema1 = Ema(0)
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public BenchRunner(let configuration: Configuration, let progress: ProgressOutput) {
         if (configuration.get<Measurement>(KeyMeasurement.measurement).isSome()) {
             let warning = "Warning: configuring measurement via @Configure[measurement: <Measurement>] is deprecated and not used any more. " +
@@ -46,6 +60,11 @@ class BenchRunner {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     private func warmupFixedSize(warmupCount: Int64): Float64 {
         if (warmupCount < 0) {
             throw IllegalArgumentException("Number of warmup iterations must be non negative")
@@ -71,6 +90,12 @@ class BenchRunner {
         return ema.result
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func warmupAndEstimate(): Float64 {
         if (let Some(warmupCount) <- configuration.get<Int64>(KeyWarmup.warmup)) {
             return warmupFixedSize(warmupCount)
@@ -105,6 +130,15 @@ class BenchRunner {
         ema.result
     }
 
+    /*
+     * @throws getOrThrow
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     func runBench() {
         this.explicitGC = configuration.get(KeyExplicitGC.explicitGC) ?? ExplicitGcType.Light
 
@@ -132,6 +166,14 @@ class BenchRunner {
         }
     }
 
+    /*
+     * @throws getOrThrow
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func runBenchInner(): Unit {
         if (this.batchSize.end <= 0) {
             throw IllegalArgumentException("batchSize must be positive")
@@ -170,10 +212,17 @@ class BenchRunner {
         ExplicitGcType.Heavy.invoke()
     }
 
+    /*
+     * @noThrow
+     */
     private func avgIterTime(estimation: Float64): Float64 {
         estimation + overheadPerIteration * 2.0 + overheadPerBatch / Float64(batchSize.end)
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     func calcBatchSize(estimation: Float64): (Range<Int64>, Int64) {
         let targetDurationNs = max(Float64(targetDuration.toNanoseconds()), 0.0)
 
@@ -201,6 +250,9 @@ class BenchRunner {
         (range, Int64(ceil(finalBatches)))
     }
 
+    /*
+     * @noThrow
+     */
     private func runMultipleAndEstimateTime(times: Int64): Float64 {
         let baseWithRun = benchmark.timeLoopOnce(times, times)
         let baseLoopOnly = benchmark.timeLoopOnce(0, times)
@@ -211,6 +263,11 @@ class BenchRunner {
         max((baseWithRun - baseLoopOnly) / Float64(times), 0.001)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     private func runMultipleAndMeasure(times: Int64, max: Int64) {
         let dur = benchmark.measureLoopOnce(times, max)
 
@@ -247,17 +304,29 @@ class BenchRunner {
 struct Ema {
     var result: Float64 = 0.0
     private var currentLength: Float64 = 0.0
+    /*
+     * @noThrow
+     */
     Ema(let maxLength: Int64) {}
 
+    /*
+     * @noThrow
+     */
     mut func reset() {
         result = 0.0
         currentLength = 0.0
     }
 
+    /*
+     * @noThrow
+     */
     func reachedMax(): Bool {
         currentLength >= Float64(maxLength - 1)
     }
 
+    /*
+     * @noThrow
+     */
     mut func append(next: Float64) {
         result = (result * currentLength + next) / (currentLength + 1.0)
         currentLength = min(currentLength + 1.0, Float64(maxLength - 1))
@@ -266,29 +335,47 @@ struct Ema {
 
 
 public interface Measurement {
+    /*
+     * @noThrow
+     */
     func setup() {}
 
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     func measure(): Float64 { 0.0 }
 
 
     prop conversionTable: MeasurementUnitTable {
+        /*
+         * @noThrow
+         */
         get() { [(1.0, "")] }
     }
 
 
     prop name: String {
+        /*
+         * @noThrow
+         */
         get() { "Measurement" }
     }
 
 
     prop textDescription: String {
+        /*
+         * @noThrow
+         */
         get() { "Measures ${name}" }
     }
 
     prop info: MeasurementInfo {
+        /*
+         * @noThrow
+         */
         get() {
             MeasurementInfo(
                 conversionTable, name, textDescription
@@ -298,6 +385,9 @@ public interface Measurement {
 }
 
 public struct MeasurementInfo {
+    /*
+     * @noThrow
+     */
     MeasurementInfo(
         public let conversionTable: MeasurementUnitTable,
         public let name: String,
@@ -316,12 +406,20 @@ let RADIX_UNIT_TABLE: MeasurementUnitTable = [
 ]
 
 
+/*
+ * @throws ArithmeticException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func printDuration(dur: Duration): String {
     let duration = Float64(dur.toNanoseconds())
     TimeNow().conversionTable.toString(duration)
 }
 
 extend MeasurementUnitTable {
+    /*
+     * @throws IllegalArgumentException
+     */
     private func adjustMeasurementPrecision(value: Float64): String {
         let precision = 3 - Int64(log10(clamp(value, 0.0001, 1000.0)))
         if (precision <= 5) {
@@ -332,12 +430,19 @@ extend MeasurementUnitTable {
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toString(value: Float64): String {
         let (boundary, unit) = suitablePair(value)
         toString(value, boundary: boundary, unit: unit)
     }
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     func toString(value: Float64, boundary!: Float64, unit!: String): String {
         if (value.isInf() || value.isNaN()) {
             return value.toString()
@@ -352,6 +457,10 @@ extend MeasurementUnitTable {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func suitablePair(value: Float64): (Float64, String) {
         this.sortBy(comparator: { a, b =>
             let (aMultiplier, _) = a
@@ -374,6 +483,9 @@ extend MeasurementUnitTable {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     func minToNonAdjustedPair(value: Float64): (Float64, String) {
         let (minK, minUnit) = if (this.isEmpty()) {
             (1.0, "")
@@ -396,19 +508,33 @@ public struct TimeNow <: Measurement {
     var unit: ?TimeUnit = None
 
 
+    /*
+     * @noThrow
+     */
     public init(unit: ?TimeUnit) {
         this.unit = unit
     }
 
 
+    /*
+     * @noThrow
+     */
     public init() {}
 
     @Frozen
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func measure(): Float64 {
         Float64(DateTime.now().toUnixTimeStamp().toNanoseconds())
     }
 
     public prop conversionTable: MeasurementUnitTable {
+        /*
+         * @noThrow
+         */
         get() {
             match (unit) {
                 case Some(u) => [(u.inNanos(), u.toString())]
@@ -418,6 +544,9 @@ public struct TimeNow <: Measurement {
     }
 
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() {
             let unitStr = match (unit) {
                 case None => ""
@@ -428,6 +557,9 @@ public struct TimeNow <: Measurement {
     }
 
     public prop textDescription: String {
+        /*
+         * @noThrow
+         */
         get() {
             "Measures execution time using std.time.DateTime"
         }
@@ -441,6 +573,9 @@ public enum TimeUnit <: ToString {
     | Millis
     | Seconds
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case Nanos => "ns"
@@ -450,6 +585,9 @@ public enum TimeUnit <: ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func inNanos(): Float64 {
         match (this) {
             case Nanos => 1.0
@@ -459,6 +597,9 @@ public enum TimeUnit <: ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func conversionRow(): (Float64, String) {
         (inNanos(), toString())
     }
@@ -471,6 +612,9 @@ public enum ExplicitGcType <: ToString {
     | Light
     | Heavy
 
+    /*
+     * @noThrow
+     */
     func invoke() {
         match (this) {
             case Disabled => ()
@@ -479,6 +623,9 @@ public enum ExplicitGcType <: ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case Disabled => "Disabled"
@@ -494,23 +641,41 @@ foreign func GetRdtsc(): UInt64
 @When[arch == "x86_64"]
 foreign func GetRdtscp(): UInt64
 @When[arch == "x86_64"]
+              /*
+               * @noThrow
+               */
 public struct CpuCycles <: Measurement {
     @Frozen
+    /*
+     * @noThrow
+     */
     public func measure(): Float64 {
         unsafe { Float64(GetRdtscp()) }
     }
 
+    /*
+     * @noThrow
+     */
     public func setup() {}
 
     public prop conversionTable: MeasurementUnitTable {
+        /*
+         * @noThrow
+         */
         get() { [(1.0, "cycles")] }
     }
 
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() { "CpuCycles" }
     }
 
     public prop textDescription: String {
+        /*
+         * @noThrow
+         */
         get() {
             "Measures how many CPU cycles are taken by function execution using baremetal x86 RDTSCP instruction"
         }
@@ -526,12 +691,21 @@ foreign func ReadPerf(): UInt64
 
 @When[os == "Linux"]
 public struct Perf <: Measurement {
+    /*
+     * @noThrow
+     */
     public Perf(var counter: PerfCounter) {}
 
+    /*
+     * @noThrow
+     */
     public init() {
         this(PerfCounter.HW_INSTRUCTIONS)
     }
 
+    /*
+     * @throws Exception
+     */
     public func setup() {
         let rc = unsafe { InitPerf(counter.asRaw()) }
         match (rc) {
@@ -552,6 +726,9 @@ On systemd distributions it can be done with:
     }
 
     @Frozen
+    /*
+     * @throws Exception
+     */
     public func measure(): Float64 {
         let result = unsafe { ReadPerf() }
         if (result == UInt64.Max) {
@@ -561,14 +738,23 @@ On systemd distributions it can be done with:
     }
 
     public prop conversionTable: MeasurementUnitTable {
+        /*
+         * @noThrow
+         */
         get() { [(1.0, counter.unit())] }
     }
 
     public prop name: String {
+        /*
+         * @noThrow
+         */
         get() { "Perf(${counter.unit()})" }
     }
 
     public prop textDescription: String {
+        /*
+         * @throws IllegalArgumentException
+         */
         get() {
             "Measures how many ${counter.description()} has happened during the execution using linux perf facility with ${counter} counter.\n"+
             "For more details about specific counter see documentation for perf_event_open linux syscall"
@@ -596,6 +782,9 @@ public enum PerfCounter <: ToString {
     | SW_PAGE_FAULTS_MAJ
     | SW_EMULATION_FAULTS
 
+    /*
+     * @noThrow
+     */
     func asRaw(): IntNative {
         match (this) {
             case HW_CPU_CYCLES => 0
@@ -619,6 +808,9 @@ public enum PerfCounter <: ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func unit(): String {
         match (this) {
             case HW_CPU_CYCLES => "cycles"
@@ -642,6 +834,9 @@ public enum PerfCounter <: ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         match (this) {
             case HW_CPU_CYCLES => "PERF_COUNT_HW_CPU_CYCLES"
@@ -665,6 +860,9 @@ public enum PerfCounter <: ToString {
         }
     }
 
+    /*
+     * @noThrow
+     */
     func description(): String {
         match (this) {
             case HW_CPU_CYCLES => "raw CPU cycles"

@@ -21,6 +21,10 @@ public class DateTimeFormat {
     let data = ArrayList<FormatType>()
     let rawString: String
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     init(formatString: String) {
         rawString = formatString
         let layout = rawString.toRuneArray()
@@ -36,12 +40,19 @@ public class DateTimeFormat {
     }
 
     @Deprecated["Use member function `init(formatString: String)` instead."]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func of(format: String): DateTimeFormat {
         return DateTimeFormat(format)
     }
 
     @Deprecated["The prop is deprecated, no substitutions."]
     public prop format: String {
+        /*
+         * @noThrow
+         */
         get() {
             rawString
         }
@@ -57,29 +68,86 @@ enum Numeric {
 }
 
 enum FormatType {
+      /*
+       * @noThrow
+       */
     | FormatYear(Int64)
+      /*
+       * @noThrow
+       */
     | FormatISOYear(Int64)
+      /*
+       * @noThrow
+       */
     | FormatMonth(Int64)
+      /*
+       * @noThrow
+       */
     | FormatDayOfMonth(Int64)
+      /*
+       * @noThrow
+       */
     | FormatHourIn24(Int64)
+      /*
+       * @noThrow
+       */
     | FormatHourIn12(Int64)
+      /*
+       * @noThrow
+       */
     | FormatMinute(Int64)
+      /*
+       * @noThrow
+       */
     | FormatSecond(Int64)
+      /*
+       * @noThrow
+       */
     | FormatSecondFraction(Int64)
+      /*
+       * @noThrow
+       */
     | FormatOffset(Int64)
+      /*
+       * @noThrow
+       */
     | FormatZoneInfo(Int64)
+      /*
+       * @noThrow
+       */
     | FormatGMTOffset(Int64)
+      /*
+       * @noThrow
+       */
     | FormatDayOfYear(Int64)
+      /*
+       * @noThrow
+       */
     | FormatAmPm(Int64)
+      /*
+       * @noThrow
+       */
     | FormatDayOfWeek(Int64)
+      /*
+       * @noThrow
+       */
     | FormatISOWeek(Int64)
+      /*
+       * @noThrow
+       */
     | FormatEra(Int64)
+      /*
+       * @noThrow
+       */
     | Separator(Rune)
     | Termination
 
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     func checkLength(): Unit {
         match (this) {
             case FormatYear(length) => checkFormatLength(length, 9, r'y')
@@ -103,6 +171,9 @@ enum FormatType {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     func checkFormatLength(length: Int64, maxLen: Int64, r: Rune): Unit {
         if (length > maxLen) {
             throw IllegalArgumentException("The number of character \"${r}\" can not exceed ${maxLen}.")
@@ -110,6 +181,10 @@ enum FormatType {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parseFormat(formatString: String): ArrayList<FormatType> {
     let data = ArrayList<FormatType>()
     let layout = formatString.toRuneArray()
@@ -130,6 +205,9 @@ func parseFormat(formatString: String): ArrayList<FormatType> {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func parseFormat(layout: Array<Rune>, index: Int64): (Int64, FormatType) {
     let size = layout.size
     for (idx in index..size) {
@@ -159,6 +237,9 @@ func parseFormat(layout: Array<Rune>, index: Int64): (Int64, FormatType) {
     return (index, Termination)
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ */
 func findFormat(start: Int64, layout: Array<Rune>) {
     var pos = start + 1
     while (pos < layout.size && layout[pos] == layout[start]) {

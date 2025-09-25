@@ -9,11 +9,17 @@
 package std.net
 
 @When[os != "macOS"]
+/*
+ * @noThrow
+ */
 unsafe func setFamily(ptr: CPointer<Unit>, v: Int16): Unit {
     CPointer<Int16>(ptr).write(v)
 }
 
 @When[os != "macOS"]
+/*
+ * @noThrow
+ */
 unsafe func readFamily(ptr: CPointer<Unit>): Int16 {
     CPointer<Int16>(ptr).read()
 }
@@ -38,6 +44,9 @@ struct SockAddr {
     private static const socket_address_un_len: UInt32 = 110
     private static const socket_address_all_len: Int64 = 120
 
+    /*
+     * @throws SocketException
+     */
     init(buffer: CPointer<Unit>, length: Int64) {
         ptr = buffer
         len = UInt32(length)
@@ -46,6 +55,10 @@ struct SockAddr {
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     init() {
         let buffer = CPointer<Unit>(LibC.malloc<UInt8>(count: socket_address_all_len))
         if (buffer.isNull()) {
@@ -60,6 +73,11 @@ struct SockAddr {
 
 
     @When[backend == "cjnative"]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws SocketException
+     */
     init(sa: SocketAddress) {
         unsafe {
             match {
@@ -97,12 +115,18 @@ struct SockAddr {
 
     @When[backend == "cjnative"]
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private unsafe func setPort(port: UInt16) {
         CPointer<UInt8>(ptr).write(2, UInt8(port >> 8))
         CPointer<UInt8>(ptr).write(3, UInt8(port))
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private unsafe func setIpv4(addr: Array<UInt8>, port: UInt16) {
         setFamily(ptr, AF_INET)
         setPort(port)
@@ -113,6 +137,9 @@ struct SockAddr {
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private unsafe func setIpv6(addr: Array<UInt8>, port: UInt16) {
         setFamily(ptr, AF_INET6)
         setPort(port)
@@ -125,6 +152,9 @@ struct SockAddr {
 
 
     @When[backend == "cjnative"]
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     private unsafe func setUnix(addr: Array<UInt8>) {
         setFamily(ptr, AF_UNIX)
         for (i in 0..min(SOCK_ADDR_DOMAIN_LEN, addr.size)) {
@@ -133,21 +163,33 @@ struct SockAddr {
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @noThrow
+     */
     public unsafe func free(): Unit {
         LibC.free(ptr)
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @noThrow
+     */
     private unsafe func getIpv4(): Array<UInt8> {
         return Array<UInt8>(SOCK_ADDR_IPV4_LEN, {i => CPointer<UInt8>(ptr).read(4 + i)})
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @noThrow
+     */
     private unsafe func getIpv6(): Array<UInt8> {
         return Array<UInt8>(SOCK_ADDR_IPV6_LEN, {i => CPointer<UInt8>(ptr).read(8 + i)})
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @noThrow
+     */
     private unsafe func getPort(): UInt16 {
         let high = CPointer<UInt8>(ptr).read(2)
         let low = CPointer<UInt8>(ptr).read(3)
@@ -155,12 +197,18 @@ struct SockAddr {
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @noThrow
+     */
     private unsafe func getDomain(): Array<UInt8> {
         return Array<UInt8>(SOCK_ADDR_DOMAIN_LEN, {i => CPointer<UInt8>(ptr).read(2 + i)})
     }
 
     @When[backend == "cjnative"]
     prop family: Int16 {
+        /*
+         * @noThrow
+         */
         get() {
             unsafe {
                 readFamily(ptr)
@@ -169,6 +217,11 @@ struct SockAddr {
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws SocketException
+     */
     unsafe func toSocketAddress(): SocketAddress {
         match {
             case family == AF_INET =>
@@ -181,6 +234,9 @@ struct SockAddr {
     }
 
     @When[backend == "cjnative"]
+    /*
+     * @noThrow
+     */
     unsafe func toRawAddress(): RawAddress {
         let remoteArr = Array<Byte>(Int64(len), {i => CPointer<Byte>(ptr).read(i)})
         return RawAddress(remoteArr)

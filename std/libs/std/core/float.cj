@@ -9,6 +9,9 @@
 package std.core
 
 @Intrinsic
+/*
+ * @noThrow
+ */
 func bitCast<From, To>(val: From): To where From <: BitCastRange, To <: BitCastRange
 
 extend Float64 {
@@ -17,6 +20,9 @@ extend Float64 {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func fromBits(bits: UInt64): Float64 {
         bitCast(bits)
     }
@@ -25,6 +31,9 @@ extend Float64 {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toBits(): UInt64 {
         bitCast(this)
     }
@@ -36,6 +45,9 @@ extend Float32 {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func fromBits(bits: UInt32): Float32 {
         bitCast(bits)
     }
@@ -44,6 +56,9 @@ extend Float32 {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toBits(): UInt32 {
         bitCast(this)
     }
@@ -55,6 +70,9 @@ extend Float16 {
 
 
 
+    /*
+     * @noThrow
+     */
     public static func fromBits(bits: UInt16): Float16 {
         bitCast(bits)
     }
@@ -63,6 +81,9 @@ extend Float16 {
 
 
 
+    /*
+     * @noThrow
+     */
     public func toBits(): UInt16 {
         bitCast(this)
     }

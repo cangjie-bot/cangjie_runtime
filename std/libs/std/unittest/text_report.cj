@@ -25,10 +25,17 @@ let OP_VERBOSE = "--${OP_VERBOSE_NAME}"
 let VERBOSE_KEY = OP_VERBOSE_NAME
 
 extend PrettyPrinter {
+    /*
+     * @noThrow
+     */
     func appendName(name: String): PrettyPrinter {
         this.colored(YELLOW, name)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func appendSuiteInfo(id: TestSuiteId, info: TestSuiteReportInfo, config: Configuration): PrettyPrinter {
         if (!id.isFromTopLevelFunc) {
             this.appendTags(info.tags, config)
@@ -36,10 +43,18 @@ extend PrettyPrinter {
         this
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func appendCaseInfo(info: TestCaseReportInfo, config: Configuration): PrettyPrinter {
         this.appendTags(info.tags, config)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func appendTags(tags: Array<String>, config: Configuration): PrettyPrinter {
         if (config.noRun || config.showTags) {
             if (let Some(string) <- tagsToString(tags)) {
@@ -50,6 +65,10 @@ extend PrettyPrinter {
     }
 }
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func tagsToString(tags: Array<String>): ?String {
     if (tags.isEmpty()) { None } else {
         "(tags: ${String.join(tags.removeDuplicatesStable(), delimiter: ", ")})"
@@ -58,37 +77,64 @@ func tagsToString(tags: Array<String>): ?String {
 
 extend Configuration {
     prop bench: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyBench.bench) ?? false }
     }
 
     prop captureOutput: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyCaptureOutput.captureOutput) ?? false }
     }
 
     prop noCaptureOutput: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyNoCaptureOutput.noCaptureOutput) ?? false }
     }
 
     prop showAllOutput: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyShowAllOutput.showAllOutput) ?? false }
     }
 
     prop noRun: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() { get(KeyDryRun.dryRun) ?? false }
     }
 
     prop showTags: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get() { get(KeyShowTags.showTags) ?? false }
     }
 
     prop verbose: Bool {
+        /*
+         * @throws IndexOutOfBoundsException
+         */
         get(){ get(KeyVerbose.verbose) ?? false }
     }
 }
 
 class TestOutputReporter {
+    /*
+     * @noThrow
+     */
     private TestOutputReporter(let capture: Bool, let showAllOutput: Bool, let verbose: Bool) {}
 
+    /*
+     * @noThrow
+     */
     func report(pp: PrettyPrinter, prefix: PrettyText, output: CapturedOutput, success!: Bool): PrettyPrinter {
         if (!success || showAllOutput) {
             if (!output.stdout.isEmpty()) {
@@ -103,6 +149,9 @@ class TestOutputReporter {
         pp
     }
 
+    /*
+     * @noThrow
+     */
     private static func appendStream(pp: PrettyPrinter, stream: String): PrettyPrinter {
         for (line in stream.lines()) {
             pp.appendLine(line)
@@ -110,6 +159,20 @@ class TestOutputReporter {
         pp
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     static func fromConfiguration(conf: Configuration): TestOutputReporter {
         if (conf.captureOutput && conf.noCaptureOutput) {
             reportInconsistentOptions(OP_CAPTURE_OUTPUT, OP_NO_CAPTURE_OUTPUT)
@@ -122,10 +185,27 @@ class TestOutputReporter {
         TestOutputReporter(capture, conf.showAllOutput, conf.verbose)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     static func fromDefaultConfiguration(): TestOutputReporter {
         fromConfiguration(defaultConfiguration())
     }
 
+    /*
+     * @throws UnittestCliOptionsFormatException
+     */
     private static func reportInconsistentOptions(first: String, second: String): Nothing {
         throw UnittestCliOptionsFormatException(
             "Should not use both ${first} and ${second} options at once."
@@ -133,6 +213,13 @@ class TestOutputReporter {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ * @throws InvalidDataException
+ * @throws ArithmeticException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalStateException
+ */
 private func allSkipped(suiteResult: TestSuiteResult): Bool {
     suiteResult.details.totalCount == suiteResult.details.skippedCount &&
     suiteResult.details.totalCount != 0
@@ -142,6 +229,9 @@ class PackageTextReport {
     var baselineReport = HashMap<String, Float64>()
     var baselineId: String = ""
     var failures = HashMap<TestCaseId, Int64>()
+    /*
+     * @noThrow
+     */
     PackageTextReport(
         let pp: PrettyPrinter,
         let outputReporter: TestOutputReporter,
@@ -149,6 +239,27 @@ class PackageTextReport {
         let detailed!: Bool
     ) {}
 
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     func printPackage(packageResult: TestGroupResult): Unit {
         loadBaseline(packageResult.groupName)
         pp.append("TP: ").appendName(packageResult.groupName)
@@ -178,6 +289,24 @@ class PackageTextReport {
         }
     }
 
+    /*
+     * @throws OverflowException
+     * @throws FSException
+     * @throws IllegalStateException
+     * @throws DataModelException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws RegexException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws IllegalMemoryException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     */
     private func loadBaseline(groupName: String) {
         if (!defaultConfiguration().bench) { return }
 
@@ -200,6 +329,23 @@ class PackageTextReport {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws DataModelException
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws IllegalMemoryException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     private func saveBaseline(groupName: String) {
         if (!defaultConfiguration().bench) { return }
 
@@ -213,6 +359,16 @@ class PackageTextReport {
         File.writeTo(filePath, data.toArray())
     }
 
+    /*
+     * @throws ConcurrentModificationException
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     */
     private func printTestSuite(suiteResult: TestSuiteResult): Unit {
         if (suiteResult.details.totalCount == 0) {
             pp.append("TCS: ")
@@ -239,6 +395,15 @@ class PackageTextReport {
         printNegatives(suiteResult)
     }
 
+    /*
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     */
     private func printNegatives(suiteResult: TestSuiteResult) {
         suiteResult.visitAll<TestCaseResult> { tcr =>
             if (!tcr.hasFailures()) { return }
@@ -256,6 +421,14 @@ class PackageTextReport {
         }
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws Exception
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func printPositives(suiteResult: TestSuiteResult): Unit {
         if (!detailed) { return }
 
@@ -270,6 +443,10 @@ class PackageTextReport {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func failEntry(rp: RunStepResult, caseId: TestCaseId, caseInfo: TestCaseReportInfo): TextReportEntry {
         var caseName = caseId.caseName
         let message = match (rp.kind) {
@@ -287,6 +464,12 @@ class PackageTextReport {
         TextReportEntry(rp, caseName, caseInfo, bodyMessage: message) 
     }
 
+    /*
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     private func printEntry(
         entry: TextReportEntry
     ): Unit {
@@ -324,6 +507,9 @@ class PackageTextReport {
 }
 
 
+/*
+ * @noThrow
+ */
 func appendDashLine(pp: PrettyPrinter): PrettyPrinter {
     if (pp.isTopLevel) {
         pp.appendLine(
@@ -338,6 +524,10 @@ class TextReportEntry {
     let statusCode: TestCode
     let preamble: PrettyText
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     TextReportEntry(
         source: RunStepResult,
         caseName: String,
@@ -356,12 +546,36 @@ class TextReportEntry {
 }
 
 class ProjectTextReport {
+    /*
+     * @noThrow
+     */
     ProjectTextReport(
         private let pp: PrettyPrinter,
         private let outputReporter: TestOutputReporter,
         private let config: Configuration
     ) {}
 
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     */
     func printProject(projectResult: ProjectExecutionResult): Unit {
         appendDashLine(pp)
         pp.append("Project tests finished")
@@ -373,6 +587,27 @@ class ProjectTextReport {
         appendDashLine(pp)
     }
 
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws UnittestOptionValidationException
+     * @throws OutOfMemoryError
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     private func printModuleDetails(moduleResult: ModuleExecutionResult): Unit {
         pp.append("TP: ").appendName(moduleResult.moduleName).append(".*")
             .timeElapsed(moduleResult.details, config).appendLine(", RESULT:")
@@ -381,6 +616,27 @@ class ProjectTextReport {
         }
     }
 
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws UnittestOptionValidationException
+     * @throws OutOfMemoryError
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     private func printPackages(moduleResult: ModuleExecutionResult): Unit {
         let packageResults = moduleResult.subResults
         printEmptyPackages(packageResults)
@@ -389,6 +645,13 @@ class ProjectTextReport {
         printErrorPackages(packageResults)
     }
     
+    /*
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     private func printEmptyPackages(packageResults: ArrayList<TestGroupResult>): Unit {
         var first = true
         for (packageResult in packageResults where
@@ -402,6 +665,27 @@ class ProjectTextReport {
         }
     }
 
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     private func printPassedPackages(packageResults: ArrayList<TestGroupResult>): Unit {
         var first = true
         for (packageResult in packageResults where
@@ -424,6 +708,27 @@ class ProjectTextReport {
         }
     }
 
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     private func printFailedPackages(packageResults: ArrayList<TestGroupResult>): Unit {
         var first = true
         for (packageResult in packageResults where
@@ -444,6 +749,13 @@ class ProjectTextReport {
         }
     }
 
+    /*
+     * @throws InvalidDataException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     private func printErrorPackages(packageResults: ArrayList<TestGroupResult>): Unit {
         var first = true
         for (packageResult in packageResults where 
@@ -464,7 +776,31 @@ class ProjectTextReport {
     }
 }
 
+      /*
+       * @noThrow
+       */
 class TextReports {
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     static func printDefaultReport(
         pp: PrettyPrinter,
         packageResult: TestGroupResult,
@@ -476,6 +812,28 @@ class TextReports {
         appendDashLine(pp)
     }
 
+    /*
+     * @throws OverflowException
+     * @throws UnittestOptionValidationException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws OutOfMemoryError
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     */
     static func printProjectSummaryReport(
         projectResult: ProjectExecutionResult,
         outputReporter: TestOutputReporter,
@@ -487,6 +845,27 @@ class TextReports {
         }
     }
 
+    /*
+     * @throws OverflowException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws IllegalMemoryException
+     */
     static func printIntermediatePackageResult(
         pp: TerminalPrettyPrinter,
         packageResult: TestGroupResult,
@@ -506,6 +885,9 @@ class TextReports {
     }
 }
 
+/*
+ * @noThrow
+ */
 private func stepName(step: LStep): String {
     match (step) {
         case BeforeEach => "Before each"
@@ -515,6 +897,9 @@ private func stepName(step: LStep): String {
     }
 }
 
+/*
+ * @throws IllegalArgumentException
+ */
 func lifecycleStageFailedText(ls: LStep, newLine!: Bool = false): PrettyText {
     let stepName = stepName(ls)
 
@@ -531,6 +916,14 @@ func lifecycleStageFailedText(ls: LStep, newLine!: Bool = false): PrettyText {
     text
 }
 
+/*
+ * @throws InvalidDataException
+ * @throws ArithmeticException
+ * @throws NoneValueException
+ * @throws IllegalStateException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func listFailures<T>(pp: PrettyPrinter, results: ResultContainer<T>, config: Configuration): Unit where T <: Result {
     results.visitAll<TestSuiteResult> { tsr =>
         tsr.visitAll<TestCaseResult>{ tcr =>
@@ -539,6 +932,14 @@ private func listFailures<T>(pp: PrettyPrinter, results: ResultContainer<T>, con
     }
 }
 
+/*
+ * @throws InvalidDataException
+ * @throws ArithmeticException
+ * @throws NoneValueException
+ * @throws IllegalStateException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func printFailure(pp: PrettyPrinter, tsr: TestSuiteResult, tcr: TestCaseResult, config: Configuration): Unit {
     let caseId = tcr.caseId
     if (!tcr.hasFailures() ) { return }
@@ -566,6 +967,14 @@ private func printFailure(pp: PrettyPrinter, tsr: TestSuiteResult, tcr: TestCase
         .newLine()
 }
 
+/*
+ * @throws InvalidDataException
+ * @throws ArithmeticException
+ * @throws NoneValueException
+ * @throws IllegalStateException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func printSummary<T>(pp: PrettyPrinter, result: ResultContainer<T>, config: Configuration, printFailures!: Bool): Unit where T <: Result {
     let details = result.details
     pp.append("Summary: TOTAL: ${details.totalCount}")
@@ -593,6 +1002,11 @@ func printSummary<T>(pp: PrettyPrinter, result: ResultContainer<T>, config: Conf
 }
 
 extend CheckResult <: PrettyPrintable {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public func pprintWithFailedPrefix(pp: PrettyPrinter): PrettyPrinter {
         if (let Some(aecr) <- (this as AssertExpectCheckResult)) {
             match (aecr.kind) {
@@ -607,6 +1021,11 @@ extend CheckResult <: PrettyPrintable {
         pp
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public func pprint(pp: PrettyPrinter): PrettyPrinter {
         match (this) {
             case cr: AssertExpectCheckResult =>
@@ -627,6 +1046,11 @@ extend CheckResult <: PrettyPrintable {
         pp
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     private func printAssertExpectFailed(cr: AssertExpectCheckResult, pp: PrettyPrinter) {
         match (cr) {
             case resultValue: PlainCompareCheckResult =>
@@ -671,6 +1095,10 @@ extend CheckResult <: PrettyPrintable {
 }
 
 extend PrettyPrinter {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     func timeElapsed(details: Details, config: Configuration) {
         let duration = details.duration
         if (duration == Duration.Zero || config.noRun) {

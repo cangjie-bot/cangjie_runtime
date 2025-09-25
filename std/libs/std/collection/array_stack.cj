@@ -20,6 +20,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         if (capacity < 0) {
             throw IllegalArgumentException("The capacity must be greater than or equal to 0: ${capacity}.")
@@ -33,6 +36,9 @@ public class ArrayStack<T> <: Stack<T> {
     }
 
 
+    /*
+     * @noThrow
+     */
     public init() {
         _data = Array<T>(DEFAULT_CAPACITY, repeat: unsafe { zeroValue<T>() })
     }
@@ -40,6 +46,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func peek(): ?T {
         if (_size > 0) {
             return _data[_size - 1]
@@ -50,6 +59,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func remove(): ?T {
         if (_size > 0) {
             let result = _data[_size - 1]
@@ -64,6 +76,10 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(element: T): Unit {
         if (_size == _data.size) {
             grow(_size + 1)
@@ -77,6 +93,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
     public prop capacity: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             _data.size
         }
@@ -86,6 +105,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
     public prop size: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             _size
         }
@@ -94,6 +116,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         _size == 0
     }
@@ -101,6 +126,10 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func reserve(additional: Int64): Unit {
         if (_data.size - _size >= additional) {
             return
@@ -110,6 +139,9 @@ public class ArrayStack<T> <: Stack<T> {
     }
 
 
+    /*
+     * @noThrow
+     */
     public func clear(): Unit {
         for (i in 0.._size) {
             unsafe { _data.setUnchecked(i, zeroValue<T>()) }
@@ -121,6 +153,10 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toArray(): Array<T> {
         let arr = _data[0..size].clone()
         arr.reverse()
@@ -131,10 +167,17 @@ public class ArrayStack<T> <: Stack<T> {
 
 
     @Frozen
+    /*
+     * @noThrow
+     */
     public func iterator(): Iterator<T> {
         return ArrayStackIterator<T>(this)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func grow(minCapacity: Int64, startIndex!: Int64 = 0): Unit {
         let oldCapacity: Int64 = _data.size
         var newCapacity: Int64 = oldCapacity + (oldCapacity >> 1)
@@ -147,6 +190,9 @@ public class ArrayStack<T> <: Stack<T> {
     }
 
     @OverflowWrapping
+    /*
+     * @noThrow
+     */
     private func incModCount(): Unit {
         _version++
     }
@@ -159,6 +205,9 @@ class ArrayStackIterator<T> <: Iterator<T> {
 
 
 
+    /*
+     * @noThrow
+     */
     init(data: ArrayStack<T>) {
         _stack = data
         _position = data._size
@@ -170,6 +219,10 @@ class ArrayStackIterator<T> <: Iterator<T> {
 
     @Frozen
     @OverflowWrapping
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     public func next(): Option<T> {
         if (_stack._version != _lockVersion) {
             throw ConcurrentModificationException()
@@ -184,6 +237,10 @@ class ArrayStackIterator<T> <: Iterator<T> {
 }
 
 extend<T> ArrayStack<T> <: ToString where T <: ToString {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         if (size == 0) {
             return "[]"

@@ -26,6 +26,9 @@ public interface Connection <: Resource {
 
 
 
+    /*
+     * @noThrow
+     */
     func getMetaData(): Map<String, String>
 
 
@@ -36,11 +39,17 @@ public interface Connection <: Resource {
 
 
 
+    /*
+     * @noThrow
+     */
     func prepareStatement(sql: String): Statement
 
 
 
 
 
+    /*
+     * @noThrow
+     */
     func createTransaction(): Transaction
 }

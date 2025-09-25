@@ -23,12 +23,18 @@ public class ObjectPool<T> where T <: Object {
     let newFunc: () -> T
     let resetFunc: Option<(T) -> T>
 
+    /*
+     * @noThrow
+     */
     public init(newFunc: () -> T, resetFunc!: Option<(T) -> T> = None) {
         pool = Array(Int64(POOL_COUNT), {_ => ConcurrentLinkedQueue<T>()})
         this.newFunc = newFunc
         this.resetFunc = resetFunc
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func get(): T {
         if (let Some(object) <- pool[Int64(unsafe { CJ_Gettid() } % POOL_COUNT)].remove()) {
             if (let Some(resetFn) <- resetFunc) {
@@ -43,6 +49,9 @@ public class ObjectPool<T> where T <: Object {
         return newFunc()
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     */
     public func put(item: T): Unit {
         pool[Int64(unsafe { CJ_Gettid() } % POOL_COUNT)].add(item)
     }

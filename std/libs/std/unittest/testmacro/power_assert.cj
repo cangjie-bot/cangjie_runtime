@@ -12,6 +12,18 @@ import std.collection.*
 import std.unittest.common.shieldEscapeSeq
 import std.unicode.*
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro PowerAssert(input: Tokens): Tokens {
     let macroName = "@PowerAssert"
     let args = parseCommaSeparatedExpressions(input)
@@ -36,14 +48,26 @@ public macro PowerAssert(input: Tokens): Tokens {
 }
 
 private struct MacroExpander {
+    /*
+     * @noThrow
+     */
     MacroExpander(
         let isSuitable: (Array<Expr>, Tokens) -> Bool,
         let expand: (Array<Expr>, Tokens, String) -> Tokens
     ) {}
 }
 
+/*
+ * @noThrow
+ */
 private func oneArgIsSuitable(args: Array<Expr>, input: Tokens) { args.size == 1 }
 
+/*
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func oneArgExpandMacro(args: Array<Expr>, input: Tokens, macroName: String) {
     let parsedExpr = args[0]
     let result = PowerAssertWrapper.wrapNode(parsedExpr, isImplicitEquality: false)
@@ -51,6 +75,18 @@ private func oneArgExpandMacro(args: Array<Expr>, input: Tokens, macroName: Stri
     return commonPowerAssertDiagramBuilderInvocation(result)
 }
 
+/*
+ * @throws MacroException
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func twoArgsDeltaExpandMacro(args: Array<Expr>, input: Tokens, macroName: String) {
     let (deltaExpansion, opLiteral) = DeltaMacroExpander.expandCompareExpr(args, macroName)
     let result = PowerAssertWrapper.wrapNode(
@@ -60,8 +96,22 @@ private func twoArgsDeltaExpandMacro(args: Array<Expr>, input: Tokens, macroName
     return commonPowerAssertDiagramBuilderInvocation(result)
 }
 
+/*
+ * @noThrow
+ */
 private func areTwoArgsSuitable(args: Array<Expr>, input: Tokens) { args.size == 2 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func twoArgsExpandMacro(args: Array<Expr>, input: Tokens, macroName: String) {
     let left = args[0].toTokens()
     let right = args[1].toTokens()
@@ -72,6 +122,17 @@ private func twoArgsExpandMacro(args: Array<Expr>, input: Tokens, macroName: Str
     return commonPowerAssertDiagramBuilderInvocation(result)
 }
 
+/*
+ * @throws ConcurrentModificationException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ */
 private func threeArgsDeltaExpandMacro(args: Array<Expr>, input: Tokens, macroName: String) {
     let (deltaExpansion, opLiteral) = DeltaMacroExpander.expandTwoArgsIntoEq(args)
     let result = PowerAssertWrapper.wrapNode(
@@ -83,6 +144,12 @@ private func threeArgsDeltaExpandMacro(args: Array<Expr>, input: Tokens, macroNa
 
 
 
+/*
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func commonPowerAssertDiagramBuilderInvocation(result: VisitorResult): Tokens {
     quote(
         { $(PowerAssertWrapper.variableName): PowerAssertDiagramBuilder =>
@@ -99,6 +166,9 @@ private abstract class PowerAssertWrapper <: Visitor {
     static let recordValue = Token(TokenKind.IDENTIFIER, "r")
 
     prop isTopLevel: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             match (visitorParams) {
                 case Some(p) => p.isTopLevel
@@ -107,128 +177,674 @@ private abstract class PowerAssertWrapper <: Visitor {
         }
     }
 
+    /*
+     * @noThrow
+     */
     protected func wrap(_: IsExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: AsExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: LitConstExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: UnaryExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: BinaryExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ParenExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: CallExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: RefExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ReturnExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: AssignExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: MemberAccess, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: IfExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: LetPatternExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: MatchExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: WhileExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: LambdaExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: SpawnExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: SynchronizedExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: TrailingClosureExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: TypeConvExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ForInExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: PrimitiveTypeExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ArrayLiteral, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: TupleLiteral, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: SubscriptExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: RangeExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: Block, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: DoWhileExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: JumpExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: IncOrDecExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: TryExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ThrowExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: OptionalExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: WildcardExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: VArrayExpr, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: FuncDecl, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: VarDecl, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: FuncParam, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: RefType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: PrimitiveType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: FuncType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ThisType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ParenType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: QualifiedType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: PrefixType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: TupleType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: VArrayType, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ConstPattern, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: WildcardPattern, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: VarPattern, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: VarOrEnumPattern, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: ExceptTypePattern, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: TypePattern, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: EnumPattern, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: TuplePattern, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: GenericParam, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: GenericConstraint, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: MatchCase, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: Argument, wrapper: SeqWrapper): Unit
+    /*
+     * @noThrow
+     */
     protected func wrap(_: Modifier, wrapper: SeqWrapper): Unit
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: IsExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: AsExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: LitConstExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: UnaryExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: BinaryExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: ParenExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: CallExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: RefExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: ReturnExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: AssignExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: MemberAccess): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: IfExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: LetPatternExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: MatchExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: WhileExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: LambdaExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: SpawnExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: SynchronizedExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: TrailingClosureExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: TypeConvExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: ForInExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: PrimitiveTypeExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: ArrayLiteral): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: TupleLiteral): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: SubscriptExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: RangeExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: Block): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: DoWhileExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: JumpExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: IncOrDecExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: TryExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: ThrowExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: OptionalExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: WildcardExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(expr: VArrayExpr): Unit { wrap { w => wrap(expr, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(decl: FuncDecl): Unit { wrap { w => wrap(decl, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(decl: VarDecl): Unit { wrap { w => wrap(decl, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(decl: FuncParam): Unit { wrap { w => wrap(decl, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: RefType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: PrimitiveType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: FuncType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: ThisType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: ParenType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: QualifiedType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: PrefixType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: TupleType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: VArrayType): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(pattern: ConstPattern): Unit { wrap { w => wrap(pattern, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(pattern: WildcardPattern): Unit { wrap { w => wrap(pattern, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(pattern: VarPattern): Unit { wrap { w => wrap(pattern, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(pattern: VarOrEnumPattern): Unit { wrap { w => wrap(pattern, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(pattern: ExceptTypePattern): Unit { wrap { w => wrap(pattern, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(pattern: TypePattern): Unit { wrap { w => wrap(pattern, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(pattern: EnumPattern): Unit { wrap { w => wrap(pattern, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(pattern: TuplePattern): Unit { wrap { w => wrap(pattern, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: GenericParam): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: GenericConstraint): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: MatchCase): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: Argument): Unit { wrap { w => wrap(node, w) } }
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func visit(node: Modifier): Unit { wrap { w => wrap(node, w) } }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func wrapTryCatch(tokensToWrap: Tokens, expr: String, position!: Int64) {
         quote(
             try {
@@ -239,10 +855,22 @@ private abstract class PowerAssertWrapper <: Visitor {
         )
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func wrapRecordValue(tokensToWrap: Tokens, expr: String, position!: Int64) {
         quote($variableName.$recordValue($tokensToWrap, $(expr.asCodeInStringLiteral()), $position))
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func getWrappingCall(wrappedTokens: Tokens, expr: String, params: VisitorParams) {
         if (!params.wrapItself) {
             return wrappedTokens
@@ -256,6 +884,12 @@ private abstract class PowerAssertWrapper <: Visitor {
         }
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func wrap(wrapper: (SeqWrapper) -> Unit) {
         let params = visitorParams.getOrThrow()
 
@@ -265,6 +899,12 @@ private abstract class PowerAssertWrapper <: Visitor {
         breakTraverse()
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func wrapSeq(position: Int64, action: (SeqWrapper) -> Unit): VisitorResult {
         let seqWrapper = SeqWrapper(
             position,
@@ -292,6 +932,9 @@ private abstract class PowerAssertWrapper <: Visitor {
 
     private var visitorResult: ?VisitorResult = None
 
+    /*
+     * @throws NoneValueException
+     */
     private func traverse(node: Node, params!: VisitorParams): VisitorResult {
         visitorParams = params.copy(wrapItself: shouldWrapItself(node, params.wrapItself))
         node.traverse(this)
@@ -300,6 +943,9 @@ private abstract class PowerAssertWrapper <: Visitor {
         result
     }
 
+    /*
+     * @throws NoneValueException
+     */
     static func wrapNode(node: Node, isImplicitEquality!: Bool, isDelta!: Bool = false, deltaOpLiteral!: String = ""): VisitorResult {
         let wrapper = PowerAssertWrapperImpl(isDelta: isDelta, deltaOpLiteral: deltaOpLiteral, hasImplicitTopLevelEquality: isImplicitEquality)
         wrapper.traverse(node, params: VisitorParams(isTopLevel: true))
@@ -310,6 +956,9 @@ private class SeqWrapper {
     private let resultBuilder = VisitResultBuilder()
     private var pos: Int64
 
+    /*
+     * @noThrow
+     */
     SeqWrapper(
         initialPosition: Int64,
         let wrapper!: (node: Node, params: VisitorParams) -> VisitorResult,
@@ -318,23 +967,44 @@ private class SeqWrapper {
         this.pos = initialPosition
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func wrap(node: Node, wrapItself!: Bool = true): Unit {
         let result = wrapper(node, VisitorParams(wrapItself: wrapItself, position: pos))
         pos += resultBuilder.append(result)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func wrap(tokens: Tokens, view!: String = tokens.toString(), padBefore!: Bool = true, padAfter!: Bool = true): Unit {
         pos += resultBuilder.append(tokens, view: view, padBefore: padBefore, padAfter: padAfter)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func wrap(token: Token, padBefore!: Bool = true, padAfter!: Bool = true): Unit {
         wrap(token.toTokens(), padBefore: padBefore, padAfter: padAfter)
     }
 
+    /*
+     * @noThrow
+     */
     private func ifTrueThenEmptyElse(condition!: Bool, value!: String) {
         if (condition) { "" } else { value }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func wrapDelta(node: Node, wrapItself!: Bool, isViewIgnored!: Bool = false): Unit {
         let result = wrapper(node, VisitorParams(wrapItself: wrapItself, position: pos))
         let view = ifTrueThenEmptyElse(condition: isViewIgnored, value: result.exprView)
@@ -343,11 +1013,21 @@ private class SeqWrapper {
         )
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func wrapDelta(token: Token, isViewIgnored!: Bool = false): Unit {
         let view = ifTrueThenEmptyElse(condition: isViewIgnored, value: token.value)
         pos += resultBuilder.append(token.toTokens(), view: view, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func wrapDeltaDelimiter(token: Token, isViewIgnored!: Bool, delimiterIndex!: Int, deltaOpLiteral!: String): Unit {
         let actualView = match(delimiterIndex) {
             case 0 => " ${deltaOpLiteral}"
@@ -358,6 +1038,11 @@ private class SeqWrapper {
         pos += resultBuilder.append(token.toTokens(), view: actualView, padBefore: false, padAfter: true)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func wrapDeltaArgs<T>(nodes: ArrayList<T>, opLiteral!: String) where T <: Node {
         let delimiter = Token(COMMA)
         var isViewIgnored = false
@@ -375,6 +1060,11 @@ private class SeqWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func wrap<T>(
         nodes: ArrayList<T>,
         delimiter!: Token = Token(COMMA),
@@ -390,10 +1080,21 @@ private class SeqWrapper {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func space() {
         pos += resultBuilder.append(" ", padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func catchNoWrapping(node: Node) {
         let nodeView = wrapper(node, VisitorParams(wrapItself: false, position: pos)).exprView
         let isBlock = node is Block
@@ -411,6 +1112,10 @@ private class SeqWrapper {
     }
 
     prop result: VisitorResult {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
         get() {
             resultBuilder.build()
         }
@@ -418,32 +1123,60 @@ private class SeqWrapper {
 }
 
 private class PowerAssertWrapperImpl <: PowerAssertWrapper {
+    /*
+     * @noThrow
+     */
     PowerAssertWrapperImpl(isDelta!: Bool = false, deltaOpLiteral!: String, let hasImplicitTopLevelEquality!: Bool) {
         deltaParams.isDelta = isDelta
         deltaParams.opLiteral = deltaOpLiteral
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: IsExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.expr)
         wrapper.wrap(expr.keyword)
         wrapper.wrap(expr.shiftType)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: AsExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.expr)
         wrapper.wrap(expr.keyword)
         wrapper.wrap(expr.shiftType)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: LitConstExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: UnaryExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.op, padBefore: false, padAfter: false)
         wrapper.wrap(expr.expr)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: BinaryExpr, wrapper: SeqWrapper) {
 
 
@@ -462,12 +1195,23 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(rexpr)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: ParenExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
         wrapper.wrap(expr.parenthesizedExpr)
         wrapper.wrap(expr.rParen, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: CallExpr, wrapper: SeqWrapper) {
         let params = visitorParams.getOrThrow()
         
@@ -485,6 +1229,11 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: RefExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.identifier, padBefore: false, padAfter: false)
         if (!expr.typeArguments.isEmpty()) {
@@ -494,16 +1243,32 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: ReturnExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false)
         wrapper.wrap(expr.expr)
     }
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: AssignExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.leftExpr, wrapItself: false)
         wrapper.wrap(expr.assign)
         wrapper.wrap(expr.rightExpr)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: MemberAccess, wrapper: SeqWrapper) {
         if (let Some(refBaseExpr) <- (expr.baseExpr as RefExpr)) {
             let runes = refBaseExpr.identifier.value.toRuneArray()
@@ -521,6 +1286,12 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.field, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ASTException
+     */
     protected override func wrap(expr: IfExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keywordI, padBefore: false)
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
@@ -534,6 +1305,11 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: LetPatternExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false)
         wrapper.wrap(expr.pattern, wrapItself: false)
@@ -541,6 +1317,12 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.expr)
     }
 
+    /*
+     * @throws ASTException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: MatchExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false)
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
@@ -551,6 +1333,13 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.rBrace, padAfter: false)
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: WhileExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false)
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
@@ -559,6 +1348,11 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.catchNoWrapping(expr.block)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: LambdaExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.lBrace, padBefore: false)
         wrapper.wrap(expr.funcParams, wrapNodes: false)
@@ -572,6 +1366,12 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.rBrace, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: SpawnExpr, wrapper: SeqWrapper) {
         let hasContext = expr.hasThreadContext
         wrapper.wrap(expr.keyword, padBefore: false, padAfter: !hasContext)
@@ -584,6 +1384,11 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.lambdaExpr, wrapItself: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: SynchronizedExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false)
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
@@ -592,12 +1397,21 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.block)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: TrailingClosureExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.expr, wrapItself: false)
         wrapper.space()
         wrapper.wrap(expr.lambdaExpr, wrapItself: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: TypeConvExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.targetType, wrapItself: false)
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
@@ -605,6 +1419,14 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.rParen, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ASTException
+     */
     protected override func wrap(expr: ForInExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keywordF, padBefore: false)
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
@@ -619,22 +1441,42 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.catchNoWrapping(expr.block)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: PrimitiveTypeExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: ArrayLiteral, wrapper: SeqWrapper) {
         wrapper.wrap(expr.lSquare, padBefore: false, padAfter: false)
         wrapper.wrap(expr.elements)
         wrapper.wrap(expr.rSquare, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: TupleLiteral, wrapper: SeqWrapper) {
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
         wrapper.wrap(expr.elements)
         wrapper.wrap(expr.rParen, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: SubscriptExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.baseExpr)
         wrapper.wrap(expr.lSquare, padBefore: false, padAfter: false)
@@ -642,6 +1484,12 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.rSquare, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ASTException
+     */
     protected override func wrap(expr: RangeExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.start)
         wrapper.wrap(expr.op, padBefore: false, padAfter: false)
@@ -652,6 +1500,11 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: Block, wrapper: SeqWrapper) {
         if (expr.hasLCurl) {
             wrapper.wrap(expr.lBrace, padBefore: false)
@@ -664,6 +1517,13 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: DoWhileExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keywordD, padBefore: false)
         wrapper.catchNoWrapping(expr.block)
@@ -673,15 +1533,31 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.rParen, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: JumpExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: IncOrDecExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.expr, wrapItself: false)
         wrapper.wrap(expr.op, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     protected override func wrap(expr: TryExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keywordT, padBefore: false)
 
@@ -707,20 +1583,40 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: ThrowExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false)
         wrapper.wrap(expr.expr)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: OptionalExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.baseExpr)
         wrapper.wrap(expr.quest, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: WildcardExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: VArrayExpr, wrapper: SeqWrapper) {
         wrapper.wrap(expr.vArrayType, wrapItself: false)
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
@@ -728,6 +1624,14 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.rParen, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws ASTException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: FuncDecl, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false)
         wrapper.wrap(expr.identifier, padBefore: false, padAfter: false)
@@ -743,6 +1647,12 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.catchNoWrapping(expr.block)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ASTException
+     */
     protected override func wrap(expr: VarDecl, wrapper: SeqWrapper) {
         if (expr.hasKeyword) {
             wrapper.wrap(expr.keyword, padBefore: false)
@@ -767,6 +1677,12 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: FuncParam, wrapper: SeqWrapper) {
         wrapper.wrap(expr.modifiers, wrapNodes: false)
         if (!expr.modifiers.isEmpty()) {
@@ -792,70 +1708,149 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(node: RefType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(node: PrimitiveType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     protected override func wrap(node: FuncType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     protected override func wrap(node: ThisType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(node: ParenType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(node: QualifiedType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(node: PrefixType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(node: TupleType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(node: VArrayType, wrapper: SeqWrapper) {
         wrapper.wrap(node.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: ConstPattern, wrapper: SeqWrapper) {
         wrapper.wrap(expr.litConstExpr, wrapItself: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: WildcardPattern, wrapper: SeqWrapper) {
         wrapper.wrap(expr.wildcard, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: VarPattern, wrapper: SeqWrapper) {
         wrapper.wrap(expr.identifier, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: VarOrEnumPattern, wrapper: SeqWrapper) {
         wrapper.wrap(expr.identifier, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: ExceptTypePattern, wrapper: SeqWrapper) {
         wrapper.wrap(expr.pattern, wrapItself: false)
         wrapper.wrap(expr.colon, padBefore: false)
         wrapper.wrap(expr.types, delimiter: Token(BITOR), wrapNodes: false, padBefore: true, padAfter: true)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: TypePattern, wrapper: SeqWrapper) {
         wrapper.wrap(expr.pattern, wrapItself: false)
         wrapper.wrap(expr.colon, padBefore: false)
         wrapper.wrap(expr.patternType, wrapItself: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: EnumPattern, wrapper: SeqWrapper) {
         wrapper.wrap(expr.constructor, wrapItself: false)
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
@@ -863,12 +1858,22 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.rParen, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: TuplePattern, wrapper: SeqWrapper) {
         wrapper.wrap(expr.lParen, padBefore: false, padAfter: false)
         wrapper.wrap(expr.patterns, wrapNodes: false)
         wrapper.wrap(expr.rParen, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func wrap(expr: GenericParam, wrapper: SeqWrapper) {
         if (expr.parameters.size > 0) {
             wrapper.wrap(expr.lAngle, padBefore: false, padAfter: false)
@@ -882,10 +1887,21 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: GenericConstraint, wrapper: SeqWrapper) {
         wrapper.wrap(expr.toTokens(), padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     protected override func wrap(expr: MatchCase, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keywordC, padBefore: false)
 
@@ -903,6 +1919,12 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.block)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: Argument, wrapper: SeqWrapper) {
         if (expr.hasKeyword) {
             wrapper.wrap(expr.keyword, padBefore: false)
@@ -915,15 +1937,28 @@ private class PowerAssertWrapperImpl <: PowerAssertWrapper {
         wrapper.wrap(expr.expr)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected override func wrap(expr: Modifier, wrapper: SeqWrapper) {
         wrapper.wrap(expr.keyword, padBefore: false, padAfter: false)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func wrapBodyNodes(nodes: ArrayList<Node>, wrapper: SeqWrapper): Unit {
         wrapper.wrap(nodes, delimiter: Token(SEMI), padBefore: false)
     }
 }
 
+/*
+ * @noThrow
+ */
 private func shouldWrapItself(node: Node, fallback: Bool): Bool {
     match (node) {
         case _: Argument => false
@@ -942,18 +1977,30 @@ private func shouldWrapItself(node: Node, fallback: Bool): Bool {
 }
 
 private class DeltaParams {
+    /*
+     * @noThrow
+     */
     DeltaParams(var isDelta!: Bool = false, var opLiteral!: String = "") {}
 }
 
 private class VisitorParams {
+    /*
+     * @noThrow
+     */
     VisitorParams(let isTopLevel!: Bool = false, let position!: Int64 = 0, let wrapItself!: Bool = true) {}
 
+    /*
+     * @noThrow
+     */
     func copy(isTopLevel!: Bool = this.isTopLevel, position!: Int64 = this.position, wrapItself!: Bool = this.wrapItself) {
         VisitorParams(isTopLevel: isTopLevel, position: position, wrapItself: wrapItself)
     }
 }
 
 private class VisitorResult {
+    /*
+     * @noThrow
+     */
     VisitorResult(let wrapped!: Tokens, let exprView!: String) {}
 }
 
@@ -961,10 +2008,18 @@ private class VisitResultBuilder {
     private let view = StringBuilder()
     private let wrapped = Tokens()
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func build(): VisitorResult {
         VisitorResult(wrapped: wrapped, exprView: view.toString())
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func append(result: VisitorResult) {
         wrapped.append(result.wrapped)
         view.append(result.exprView)
@@ -972,6 +2027,10 @@ private class VisitResultBuilder {
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func append(view: String, padBefore!: Bool = true, padAfter!: Bool = true): Int64 {
         if (padBefore) { this.view.append(' ') }
         this.view.append(view)
@@ -979,6 +2038,11 @@ private class VisitResultBuilder {
         view.size + if (padBefore && padAfter) { 2 } else if (padBefore || padAfter) { 1 } else { 0 }
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func append(tokens: Tokens, view!: String = tokens.toString(), padBefore!: Bool = true, padAfter!: Bool = true) {
         wrapped.append(tokens)
         append(view, padBefore: padBefore, padAfter: padAfter)
@@ -987,6 +2051,9 @@ private class VisitResultBuilder {
 
 extend IfExpr {
     prop hasElse: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             keywordE.kind == TokenKind.ELSE
         }
@@ -995,17 +2062,27 @@ extend IfExpr {
 
 extend Block {
     prop hasLCurl: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             lBrace.kind == TokenKind.LCURL
         }
     }
 
     prop hasRCurl: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             rBrace.kind == TokenKind.RCURL
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func toTokensWithoutBraces(): Tokens {
         let tokens = Tokens()
         for (node in nodes) {
@@ -1018,12 +2095,18 @@ extend Block {
 
 extend MatchCase {
     prop hasGuard: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             keywordW.kind == TokenKind.WHERE
         }
     }
 
     prop hasExpr: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { expr; true } catch(_) { false }
         }
@@ -1032,6 +2115,9 @@ extend MatchCase {
 
 extend SpawnExpr {
     prop hasThreadContext: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { threadContext; true } catch(_) { false }
         }
@@ -1040,6 +2126,9 @@ extend SpawnExpr {
 
 extend LambdaExpr {
     prop hasDoubleArrow: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             doubleArrow.kind == TokenKind.DOUBLE_ARROW
         }
@@ -1048,6 +2137,9 @@ extend LambdaExpr {
 
 extend ForInExpr {
     prop hasGuard: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { patternGuard; true } catch(_) { false }
         }
@@ -1056,6 +2148,9 @@ extend ForInExpr {
 
 extend RangeExpr {
     prop hasStep: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { step; true } catch(_) { false }
         }
@@ -1064,6 +2159,9 @@ extend RangeExpr {
 
 extend TryExpr {
     prop hasFinally: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { finallyBlock; true } catch(_) { false }
         }
@@ -1072,6 +2170,9 @@ extend TryExpr {
 
 extend FuncDecl {
     prop hasReturnType: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { declType; true } catch(_) { false }
         }
@@ -1080,12 +2181,18 @@ extend FuncDecl {
 
 extend Decl {
     prop hasKeyword: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             keyword.kind != TokenKind.ILLEGAL
         }
     }
 
     prop hasIdentifier: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             identifier.kind != TokenKind.ILLEGAL
         }
@@ -1094,18 +2201,27 @@ extend Decl {
 
 extend VarDecl {
     prop hasPattern: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { pattern; true } catch (_) { false }
         }
     }
 
     prop hasDeclType: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { declType; true } catch (_) { false }
         }
     }
 
     prop hasExpr: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { expr; true } catch (_) { false }
         }
@@ -1114,12 +2230,19 @@ extend VarDecl {
 
 extend FuncParam {
     prop hasValue: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try { expr; true } catch (_) { false }
         }
     }
 
     prop hasType: Bool {
+        /*
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             paramType.toTokens().size != 0
         }
@@ -1128,6 +2251,9 @@ extend FuncParam {
 
 extend Argument {
     prop isNamed: Bool {
+        /*
+         * @throws ASTException
+         */
         get() {
             try {
                 this.identifier
@@ -1139,6 +2265,9 @@ extend Argument {
     }
 
     prop hasKeyword: Bool {
+        /*
+         * @noThrow
+         */
         get() {
             keyword.kind != TokenKind.ILLEGAL
         }
@@ -1146,6 +2275,10 @@ extend Argument {
 }
 
 extend String {
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func asCodeInStringLiteral(): Token {
         Token(STRING_LITERAL, shieldEscapeSeq(this))
     }

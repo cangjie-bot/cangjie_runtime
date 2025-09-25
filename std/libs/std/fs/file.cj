@@ -27,6 +27,9 @@ public enum OpenMode <: ToString & Equatable<OpenMode> {
     | Append
     | ReadWrite
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: OpenMode): Bool {
         return match ((this, that)) {
             case (Read, Read)           => true
@@ -37,10 +40,16 @@ public enum OpenMode <: ToString & Equatable<OpenMode> {
         }
     }
 
+    /*
+     * @noThrow
+     */
     public operator func !=(that: OpenMode): Bool {
         return !(this == that)
     }
 
+    /*
+     * @noThrow
+     */
     public func toString(): String {
         return match (this) {
             case Read      => "Read"
@@ -56,6 +65,9 @@ public struct FileDescriptor {
     var _fileHandle: IntNative = InvalidHandle
 
     public prop fileHandle: IntNative {
+        /*
+         * @noThrow
+         */
         get() {
             _fileHandle
         }
@@ -70,6 +82,9 @@ public class File <: Resource & IOStream & Seekable {
     private var _canWrite: Bool = true
     private var _canSeek: Bool = true
 
+    /*
+     * @noThrow
+     */
     ~init() {
         if (isHandleValid(_fileDescriptor._fileHandle)) {
             unsafe { CJ_FS_CloseFile(_fileDescriptor._fileHandle) }
@@ -87,6 +102,12 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     */
     public init(path: String, mode: OpenMode) {
         if (path.isEmpty()) {
             throw IllegalArgumentException("The file path cannot be empty.")
@@ -114,10 +135,22 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     */
     public init(path: Path, mode: OpenMode) {
         this(path.toString(), mode)
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     private init(path: String, mode: OpenMode, fd: FileHandle) {
         if (!isHandleValid(fd)) {
             throw FSException("Invalid File Handle!")
@@ -129,32 +162,51 @@ public class File <: Resource & IOStream & Seekable {
     }
 
     public prop info: FileInfo {
+        /*
+         * @noThrow
+         */
         get() {
             _fileInfo
         }
     }
 
     public prop fileDescriptor: FileDescriptor {
+        /*
+         * @noThrow
+         */
         get() {
             _fileDescriptor
         }
     }
 
     mut prop fileHandle: FileHandle {
+        /*
+         * @noThrow
+         */
         get() {
             _fileDescriptor._fileHandle
         }
+        /*
+         * @noThrow
+         */
         set(v) {
             _fileDescriptor._fileHandle = v
         }
     }
 
     public prop length: Int64 {
+        /*
+         * @noThrow
+         */
         get() {
             getsize()
         }
     }
 
+    /*
+     * @throws FSException
+     * @throws IllegalArgumentException
+     */
     public func setLength(length: Int64): Unit {
         if (length < 0) {
             throw IllegalArgumentException("Invalid length: ${length}.")
@@ -189,6 +241,10 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws FSException
+     * @throws IllegalArgumentException
+     */
     public func read(buffer: Array<Byte>): Int64 {
         checkCanRead()
         if (buffer.size == 0) {
@@ -206,6 +262,9 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws FSException
+     */
     public func write(buffer: Array<Byte>): Unit {
         if (!isHandleValid(fileHandle)) {
             throw FSException("The file not opened, can not be written.")
@@ -219,11 +278,17 @@ public class File <: Resource & IOStream & Seekable {
         directWrite(buffer)
     }
 
+    /*
+     * @noThrow
+     */
     public func flush(): Unit {}
 
 
 
 
+    /*
+     * @throws FSException
+     */
     public func seek(sp: SeekPosition): Int64 {
         if (!canSeek()) {
             throw FSException("The file can not seek.")
@@ -240,6 +305,9 @@ public class File <: Resource & IOStream & Seekable {
         return val
     }
 
+    /*
+     * @noThrow
+     */
     private func canSeek(): Bool {
         if (isClosed()) {
             return false
@@ -247,6 +315,9 @@ public class File <: Resource & IOStream & Seekable {
         return _canSeek
     }
 
+    /*
+     * @noThrow
+     */
     public func canRead(): Bool {
         if (isClosed()) {
             return false
@@ -254,6 +325,9 @@ public class File <: Resource & IOStream & Seekable {
         return _canRead
     }
 
+    /*
+     * @noThrow
+     */
     public func canWrite(): Bool {
         if (isClosed()) {
             return false
@@ -262,6 +336,9 @@ public class File <: Resource & IOStream & Seekable {
     }
 
 
+    /*
+     * @throws FSException
+     */
     public func close(): Unit {
         if (!isHandleValid(fileHandle)) {
             return
@@ -275,18 +352,33 @@ public class File <: Resource & IOStream & Seekable {
         fileHandle = InvalidHandle
     }
 
+    /*
+     * @noThrow
+     */
     public func isClosed(): Bool {
         return !isHandleValid(fileHandle)
     }
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public static func create(path: Path): File {
         return create(path.toString())
     }
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public static func create(path: String): File {
         if (exists(path)) {
             throw FSException("The file already exists!")
@@ -296,12 +388,24 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     */
     public static func createTemp(directoryPath: String): File {
         return createTemp(Path(directoryPath))
     }
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     */
     public static func createTemp(directoryPath: Path): File {
         var utf8View = unsafe { canonicalize(directoryPath).toString().rawData() }
         var appendStrUtf8View = TMP_FILE
@@ -324,6 +428,12 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func copy(sourcePath: String, destinationPath: String, overwrite: Bool): Unit {
         if (overwrite) {
             callNativeFunc(sourcePath, destinationPath, CJ_FS_CopyREF,
@@ -338,6 +448,13 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     */
     public static func readFrom(path: Path): Array<Byte> {
         File.readFrom(path.toString())
     }
@@ -346,6 +463,13 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     */
     public static func readFrom(path: String): Array<Byte> {
         var file = File(path, Read)
         try {
@@ -358,6 +482,12 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public static func writeTo(path: Path, buffer: Array<Byte>): Unit {
         writeTo(path.toString(), buffer)
     }
@@ -365,6 +495,12 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public static func writeTo(path: String, buffer: Array<Byte>): Unit {
         writeTo(path, buffer, Write)
     }
@@ -372,6 +508,12 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public static func appendTo(path: Path, buffer: Array<Byte>): Unit {
         appendTo(path.toString(), buffer)
     }
@@ -379,6 +521,12 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public static func appendTo(path: String, buffer: Array<Byte>): Unit {
         writeTo(path, buffer, OpenMode.Append)
     }
@@ -386,6 +534,12 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     private static func writeTo(path: String, buffer: Array<Byte>, mode: OpenMode): Unit {
         var file = File(path, mode)
         try {
@@ -403,6 +557,11 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     private func openFile(): Unit {
         let isExists = exists(_fileInfo.path)
         let (r, w, s, openMode): (Bool, Bool, Bool, Int32) = match ((_openMode, isExists)) {
@@ -445,6 +604,9 @@ public class File <: Resource & IOStream & Seekable {
         }
     }
 
+    /*
+     * @noThrow
+     */
     private func getsize(): Int64 {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             return -1
@@ -456,6 +618,9 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws FSException
+     */
     private func checkCanRead(): Unit {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw FSException("The file not opened, can not to read.")
@@ -467,6 +632,9 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws FSException
+     */
     private func checkCanTruncate(): Unit {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw FSException("The file not opened, can not to read.")
@@ -484,6 +652,9 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @noThrow
+     */
     private func directRead(buffer: Array<Byte>): Int64 {
         unsafe {
             let bufPtr: CPointerHandle<Byte> = acquireArrayRawData(buffer)
@@ -500,6 +671,9 @@ public class File <: Resource & IOStream & Seekable {
 
 
 
+    /*
+     * @throws FSException
+     */
     private func directWrite(buffer: Array<Byte>): Unit {
         unsafe {
             let bufSize: Int64 = buffer.size

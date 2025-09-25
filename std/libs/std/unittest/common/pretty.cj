@@ -20,6 +20,9 @@ public enum Color <: Equatable<Color> {
     | GRAY
     | DEFAULT_COLOR
 
+    /*
+     * @noThrow
+     */
     public operator func ==(that: Color): Bool {
         match (this) {
             case RED => if (let RED <- that) { true } else { false }
@@ -32,6 +35,9 @@ public enum Color <: Equatable<Color> {
             case DEFAULT_COLOR => if (let DEFAULT_COLOR <- that) { true } else { false }
         }
     }
+    /*
+     * @noThrow
+     */
     public operator func !=(that: Color) { !(this == that) }
 }
 
@@ -41,15 +47,24 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public PrettyPrinter(let indentationSize!: UInt64 = 4, let startingIndent!: UInt64 = 0) {
         currentIndent = " " * Int64(indentationSize) * Int64(startingIndent)
     }
 
 
 
+    /*
+     * @noThrow
+     */
     protected func put(s: String): Unit
 
 
+    /*
+     * @noThrow
+     */
     protected open func putNewLine(): Unit {
         put("\n")
     }
@@ -57,6 +72,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @noThrow
+     */
     protected func setColor(color: Color): Unit
 
 
@@ -72,6 +90,9 @@ public abstract class PrettyPrinter {
 
 
     public prop isTopLevel: Bool {
+        /*
+         * @noThrow
+         */
         get() { currentIndent.isEmpty() }
     }
 
@@ -85,6 +106,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public func indent(body: () -> Unit): PrettyPrinter {
         indent(1, body)
     }
@@ -100,6 +124,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public func indent(indents: UInt64, body: () -> Unit): PrettyPrinter {
         customOffset(indents * indentationSize, body)
     }
@@ -118,6 +145,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public func customOffset(symbols: UInt64, body: () -> Unit): PrettyPrinter {
         let savedIndent = currentIndent
         currentIndent += " " * Int64(symbols)
@@ -140,6 +170,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @noThrow
+     */
     public func colored(color: Color, body: () -> Unit): PrettyPrinter {
         if (color == currentColor) {
             body()
@@ -163,6 +196,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @noThrow
+     */
     public open func fillLimitedSpace(spaceSize: Int64, body: () -> Unit): PrettyPrinter {
         body()
 
@@ -172,6 +208,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @noThrow
+     */
     public func colored(color: Color, text: String): PrettyPrinter {
         if (currentColor == color) {
             return append(text)
@@ -188,6 +227,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @noThrow
+     */
     public func append(text: String): PrettyPrinter {
         if (needIndent) {
             put(currentIndent)
@@ -201,6 +243,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public func appendCentered(text: String, space: UInt64): PrettyPrinter {
         let actualSize = UInt64(text.size)
         let leftSpaces = (space - actualSize) / 2
@@ -208,16 +253,25 @@ public abstract class PrettyPrinter {
         appendPadded(text, leftSpaces, space)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public func appendLeftAligned(text: String, space: UInt64): PrettyPrinter {
         appendPadded(text, 0, space)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public func appendRightAligned(text: String, space: UInt64): PrettyPrinter {
         let actualSize = UInt64(text.size)
         let dd = space - actualSize
         appendPadded(text, dd, space)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private func appendPadded(text: String, leftSpaces: UInt64, space: UInt64): PrettyPrinter {
         if (UInt64(text.size) >= space) {
             return append(text)
@@ -230,6 +284,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @noThrow
+     */
     public func append<PP>(value: PP): PrettyPrinter where PP <: PrettyPrintable {
         if (needIndent) {
             put(currentIndent)
@@ -240,6 +297,9 @@ public abstract class PrettyPrinter {
     }
 
 
+    /*
+     * @noThrow
+     */
     public func newLine(): PrettyPrinter {
         putNewLine()
         needIndent = true
@@ -248,6 +308,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @noThrow
+     */
     public func appendLine(text: String): PrettyPrinter {
         append(text)
         newLine()
@@ -256,6 +319,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /*
+     * @noThrow
+     */
     public func appendLine<PP>(value: PP): PrettyPrinter where PP <: PrettyPrintable {
         append(value)
         newLine()
@@ -269,7 +335,13 @@ public abstract class PrettyPrinter {
 
 
 enum PrettyPrintableTextChunk {
+      /*
+       * @noThrow
+       */
     | PPTextPiece(String)
+      /*
+       * @noThrow
+       */
     | PPColorSwitch(Color)
     | PPNewLine
 }
@@ -278,14 +350,24 @@ enum PrettyPrintableTextChunk {
 
 
 public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
+    /*
+     * @throws IllegalArgumentException
+     */
     PrettyText(let data: ArrayList<PrettyPrintableTextChunk>) {}
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public init() {
         this(ArrayList())
     }
 
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public init(string: String) {
         this()
         put(string)
@@ -293,6 +375,9 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
 
 
 
+    /*
+     * @throws IllegalArgumentException
+     */
     public static func of<PP>(pp: PP) where PP <: PrettyPrintable {
         let result = PrettyText()
         pp.pprint(result)
@@ -300,25 +385,43 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
     }
 
 
+    /*
+     * @noThrow
+     */
     public func isEmpty(): Bool {
         data.isEmpty()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func put(s: String): Unit {
         if (!s.isEmpty()) {
             data.add(PPTextPiece(s))
         }
     }
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func setColor(color: Color): Unit {
         data.add(PPColorSwitch(color))
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func putNewLine(): Unit {
         data.add(PPNewLine)
     }
 
 
 
+    /*
+     * @noThrow
+     */
     public func pprint(to: PrettyPrinter): PrettyPrinter {
         for (element in data) {
             match (element) {
@@ -332,6 +435,10 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
 
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let result = StringBuilder()
         for (element in data) {
@@ -351,11 +458,17 @@ public interface PrettyPrintable {
 
 
 
+    /*
+     * @noThrow
+     */
     func pprint(to: PrettyPrinter): PrettyPrinter
 }
 
 
 extend<T> Array<T> <: PrettyPrintable where T <: PrettyPrintable {
+    /*
+     * @noThrow
+     */
     public func pprint(to: PrettyPrinter): PrettyPrinter {
         for (e in this) {
             e.pprint(to)
@@ -366,6 +479,9 @@ extend<T> Array<T> <: PrettyPrintable where T <: PrettyPrintable {
 
 
 extend<T> ArrayList<T> <: PrettyPrintable where T <: PrettyPrintable {
+    /*
+     * @noThrow
+     */
     public func pprint(to: PrettyPrinter): PrettyPrinter {
         for (e in this) {
             e.pprint(to)
@@ -376,10 +492,16 @@ extend<T> ArrayList<T> <: PrettyPrintable where T <: PrettyPrintable {
 
 protected const NOT_PRINTABLE_PLACEHOLDER = "<value not printable>"
 
+/*
+ * @noThrow
+ */
 protected func toStringOrPlaceholder<T>(value: T) {
     return (value as ToString)?.toString() ?? NOT_PRINTABLE_PLACEHOLDER
 }
 
+/*
+ * @noThrow
+ */
 protected func toStringQuotedOrPlaceholder<T>(value: T) {
     return match (value) {
         case vStr: String => quoteString(vStr)
@@ -387,6 +509,9 @@ protected func toStringQuotedOrPlaceholder<T>(value: T) {
     }
 }
 
+/*
+ * @noThrow
+ */
 protected func quoteString<T>(value: T) where T <: ToString {
     return "\"${value}\""
 }

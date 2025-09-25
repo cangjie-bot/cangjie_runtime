@@ -10,15 +10,30 @@ package std.unittest.mock
 import std.collection.ArrayList
 
 enum Action {
+      /*
+       * @noThrow
+       */
     | Return(() -> Any)
+      /*
+       * @noThrow
+       */
     | Throw(() -> Exception)
     | CallOriginal
     | Fail
+      /*
+       * @noThrow
+       */
     | GetField(SyntheticFieldDescription)
+      /*
+       * @noThrow
+       */
     | SetField(SyntheticFieldDescription)
 }
 
 struct ScenarioConfiguration {
+    /*
+     * @noThrow
+     */
     ScenarioConfiguration(
         let action: Action,
         let cardinality: Cardinality
@@ -26,17 +41,31 @@ struct ScenarioConfiguration {
 }
 
 enum ScenarioStatus {
+      /*
+       * @noThrow
+       */
     | Created(Option<Action>, Option<Cardinality>)
+      /*
+       * @noThrow
+       */
     | Active(ScenarioConfiguration, Box<Int64>)
 }
 
 class Scenario {
     private var status: ScenarioStatus
 
+    /*
+     * @noThrow
+     */
     Scenario(let parentChain: StubChain) {
         status = Created(None, None)
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func setAction(selectedAction: Action) {
         match (status) {
             case Created(None, cardinality) =>
@@ -45,6 +74,12 @@ class Scenario {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func setCardinality(cardinality: Cardinality) {
         match ((cardinality.min, cardinality.max)) {
             case (0, None) => ()
@@ -60,6 +95,11 @@ class Scenario {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func tryRegisterInvocation(): Bool {
         match (status) {
             case Active(config, count) =>
@@ -74,6 +114,12 @@ class Scenario {
         }
     }
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func activate() {
         match (status) {
             case Created(None, _) =>
@@ -85,6 +131,11 @@ class Scenario {
     }
 
     prop invocationCount: Int64 {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws MockFrameworkInternalError
+         */
         get() {
             match (status) {
                 case Active(_, count) => count.value
@@ -94,6 +145,11 @@ class Scenario {
     }
 
     prop action: Action {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws MockFrameworkInternalError
+         */
         get() {
             match (status) {
                 case Active(config, _) => config.action
@@ -103,6 +159,11 @@ class Scenario {
     }
 
     prop cardinality: Cardinality {
+        /*
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws MockFrameworkInternalError
+         */
         get() {
             match (status) {
                 case Active(config, _) => config.cardinality
@@ -111,6 +172,11 @@ class Scenario {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     private func defaultCardinality(action: Action) {
         if (let Fail <- action) {
             return Cardinality.times(0)
@@ -123,12 +189,23 @@ class Scenario {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     private func requireVerifiableSession() {
         if (!parentChain.isVerifiable()) {
             StubModeViolation().cardinalitySpecifierNotAllowed(parentChain)
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     private func mustBeActive(): Nothing {
         internalError(InconsistentState("Scenario must be active"))
     }
@@ -137,6 +214,9 @@ class Scenario {
 class StubChain {
     private var wasActivated: Bool = false
 
+    /*
+     * @noThrow
+     */
     StubChain(
         let invocationMatcher: InvocationMatcher,
         let objectKind: MockKind,
@@ -144,6 +224,11 @@ class StubChain {
     ) {}
 
     let scenarios: ArrayList<Scenario> = ArrayList()
+    /*
+     * @throws MockFrameworkException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addScenario(_: MockSession): Scenario {
         if (wasActivated) {
             StubMisconfiguration().fail(this, CannotModifyActive)
@@ -154,6 +239,12 @@ class StubChain {
         return newScenario
     }
 
+    /*
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func ensureActivated() {
         if (!wasActivated) {
             for (sc in scenarios) {
@@ -163,6 +254,11 @@ class StubChain {
         }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func isVerifiable(): Bool {
         match (parentSession.sessionKind) {
             case Verifiable => true

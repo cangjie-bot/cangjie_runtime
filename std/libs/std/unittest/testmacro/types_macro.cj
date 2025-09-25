@@ -17,11 +17,30 @@ import std.collection.*
 
 
 
+/*
+ * @throws OutOfMemoryError
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalSynchronizationStateException
+ * @throws MacroException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ */
 public macro Types(dsl: Tokens, input: Tokens) {
     return topLevelMacroDriver(TYPES_MACRO, input, dsl, {it => insideParentContext(it.macroIdentifier)})
 }
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func parseTypesMacro(params: Tokens): Array<(String, Array<Tokens>)> {
     let parser = DSLParser(Tokens(collectArray(params)))
     let result = ArrayList<(String, Array<Tokens>)>()
@@ -56,6 +75,11 @@ func parseTypesMacro(params: Tokens): Array<(String, Array<Tokens>)> {
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func walkTypeParameters(
     left: Array<Token>,
     typeSubst: HashMap<String, Array<Tokens>>,
@@ -83,6 +107,11 @@ func walkTypeParameters(
 
 
 
+/*
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws MacroException
+ */
 func checkTypeSubstitution(
     genericArgs: Array<Token>,
     typeSubst: HashMap<String, Array<Tokens>>
@@ -113,6 +142,10 @@ func checkTypeSubstitution(
 
 
 
+/*
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func typesToString(types: Tokens) {
     let result = StringBuilder()
     for (token in types) {

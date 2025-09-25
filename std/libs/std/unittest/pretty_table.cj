@@ -17,6 +17,10 @@ class PrettyTable <: PrettyPrintable {
     var column: Int64 = 0
     let leftAlignedColumns = HashSet<Int64>()
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     PrettyTable(
         let names: ArrayList<String>
     ) {
@@ -31,6 +35,10 @@ class PrettyTable <: PrettyPrintable {
         }))
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     init() {
         names = ArrayList()
         columnSizes = ArrayList()
@@ -38,18 +46,30 @@ class PrettyTable <: PrettyPrintable {
         this.nextRow()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addColumns<T>(names: T) where T <: Iterable<String> {
         for (name in names) {
             addColumn(name)
         }
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addColumn(name: String) {
         rows[0].add((" ${name} ", DEFAULT_COLOR))
         rows[1].add(("", DEFAULT_COLOR))
         columnSizes.add(max(MIN_COLUMN_WIDTH, name.runes() |> count))
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func removeLastColumn() {
         let rowIdx = columnSizes.size - 1
         columnSizes.remove(at: rowIdx)
@@ -57,23 +77,43 @@ class PrettyTable <: PrettyPrintable {
         rows[1].remove(at: rowIdx)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func alignColumnLeft(idx: Int64) {
         leftAlignedColumns.add(idx)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addEmptyRow() {
         rows.add(ArrayList<(String, Color)>(columnSizes.size, {_ => ("", DEFAULT_COLOR)}))
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func nextRow() {
         this.column = 0
         rows.add(ArrayList())
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func removeCurrentRow() {
         rows.remove(at: rows.size - 1)
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addCell(value: String, color!: Color = DEFAULT_COLOR) {
 
         rows[rows.size - 1].add((" ${value} ", color))
@@ -85,12 +125,19 @@ class PrettyTable <: PrettyPrintable {
         column += 1
     }
 
+    /*
+     * @noThrow
+     */
     private func displaySize(str: String): Int64 {
         str.runes()
             .map { r: Rune => r.width() }
             .fold(0) { a, b => a + b }
     }
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func pprint(pp: PrettyPrinter): PrettyPrinter {
         for (row in 0..rows.size) {
             for (col in 0..columnSizes.size) {
@@ -114,6 +161,9 @@ class PrettyTable <: PrettyPrintable {
         pp
     }
 
+    /*
+     * @throws IllegalArgumentException
+     */
     private func printCell(pp: PrettyPrinter, data: String, width: Int64, color: Color, alignLeft: Bool) {
         let nonAsciiShift = data.size - displaySize(data)
         pp.colored(color) {
@@ -129,6 +179,9 @@ class PrettyTable <: PrettyPrintable {
 }
 
 extend<T> Range<T> where T <: Comparable<T> {
+    /*
+     * @noThrow
+     */
     func contains(v: T): Bool {
         v >= this.start && v <= this.end
     }

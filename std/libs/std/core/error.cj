@@ -13,25 +13,40 @@ public open class Error <: ToString {
     var pcArray: RawArray<UInt64> = RawArray<UInt64>(1, repeat: 0)
     var traceElementArray: Array<StackTraceElement> = []
 
+    /*
+     * @noThrow
+     */
     init() {
         pcArray = fillInStackTrace(RawArray<UInt64>(1, repeat: 0), detailMessage.toArray().rawptr)
     }
 
+    /*
+     * @noThrow
+     */
     init(message: String) {
         detailMessage = message
         pcArray = fillInStackTrace(RawArray<UInt64>(1, repeat: 0), detailMessage.toArray().rawptr)
     }
 
+    /*
+     * @noThrow
+     */
     protected open func getClassName(): String {
         return "Error"
     }
 
     public open prop message: String {
+        /*
+         * @noThrow
+         */
         get() {
             return detailMessage
         }
     }
 
+    /*
+     * @noThrow
+     */
     public open func toString(): String {
         let className: String = getClassName()
         let message: String = this.message
@@ -41,10 +56,19 @@ public open class Error <: ToString {
         return "${className}: ${message}"
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public open func printStackTrace(): Unit {
         eprintln("An exception has occurred: ${getStackTraceMessage()}")
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func getStackTraceMessage(): String {
         let message = StringBuilder()
         message.append(toString() + "\n")
@@ -59,6 +83,10 @@ public open class Error <: ToString {
         return message.toString()
     }
 
+    /*
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func getStackTrace(): Array<StackTraceElement> {
         getStackTraceImpl(pcArray)
     }

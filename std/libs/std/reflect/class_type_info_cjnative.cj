@@ -21,10 +21,24 @@ public class ClassTypeInfo <: TypeInfo {
     var _superClass: Option<Option<ClassTypeInfo>> = None
     var _sealedSubclasses: Option<Collection<ClassTypeInfo>> = None
 
+    /*
+     * @noThrow
+     */
     init(cp: CPointer<Unit>) {
         super(cp)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalTypeException
+     */
     public redef static func get(qualifiedName: String): ClassTypeInfo {
         match (TypeInfo.get(qualifiedName)) {
             case typ: ClassTypeInfo => return typ
@@ -32,6 +46,16 @@ public class ClassTypeInfo <: TypeInfo {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalTypeException
+     */
     public redef static func of(a: Any): ClassTypeInfo {
         match (TypeInfo.of(a)) {
             case typ: ClassTypeInfo => return typ
@@ -39,10 +63,29 @@ public class ClassTypeInfo <: TypeInfo {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     public static func of(a: Object): ClassTypeInfo {
         return TypeInfo.of(a)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalTypeException
+     */
     public redef static func of<T>(): ClassTypeInfo {
         match (TypeInfo.of<T>()) {
             case typ: ClassTypeInfo => return typ
@@ -52,6 +95,13 @@ public class ClassTypeInfo <: TypeInfo {
 
 
     public prop constructors: Collection<ConstructorInfo> {
+        /*
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws NoneValueException
+         */
         get() {
             match (_constructors) {
                 case Some(res) => res
@@ -64,6 +114,9 @@ public class ClassTypeInfo <: TypeInfo {
 
 
     public prop instanceVariables: Collection<InstanceVariableInfo> {
+        /*
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_instanceVariables) {
                 case Some(res) => res
@@ -88,6 +141,15 @@ public class ClassTypeInfo <: TypeInfo {
 
 
     public prop staticVariables: Collection<StaticVariableInfo> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_staticVariables) {
                 case Some(res) => res
@@ -112,6 +174,16 @@ public class ClassTypeInfo <: TypeInfo {
 
 
     public prop superClass: Option<ClassTypeInfo> {
+        /*
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws MisMatchException
+         * @throws InfoNotFoundException
+         */
         get() {
             match (_superClass) {
                 case Some(res) => res
@@ -134,6 +206,16 @@ public class ClassTypeInfo <: TypeInfo {
 
 
     public prop sealedSubclasses: Collection<ClassTypeInfo> {
+        /*
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalMemoryException
+         * @throws NoneValueException
+         * @throws InfoNotFoundException
+         * @throws ReflectException
+         * @throws OutOfMemoryError
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         */
         get() {
             match (_sealedSubclasses) {
                 case Some(res) => res
@@ -156,6 +238,17 @@ public class ClassTypeInfo <: TypeInfo {
 
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalTypeException
+     * @throws IllegalArgumentException
+     * @throws ReflectException
+     * @throws InvocationTargetException
+     */
     public func construct(args: Array<Any>): Any {
         if (this.isAbstract()) {
             throw InvocationTargetException("Constructing abstract classes is not allowed.")
@@ -168,21 +261,42 @@ public class ClassTypeInfo <: TypeInfo {
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isOpen(): Bool {
         containsModifier(modifiers, ModifierInfo.Open)
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isAbstract(): Bool {
         containsModifier(modifiers, ModifierInfo.Abstract)
     }
 
 
+    /*
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isSealed(): Bool {
         containsModifier(modifiers, ModifierInfo.Sealed)
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InfoNotFoundException
+     */
     public func getConstructor(parameterTypes: Array<TypeInfo>): ConstructorInfo {
         getByNameAndParamTypes(constructors, constructorName, parameterTypes, "Can not find the specified constructor") {
             constructor => (constructorName, constructor.parameters)
@@ -190,6 +304,14 @@ public class ClassTypeInfo <: TypeInfo {
     }
 
 
+    /*
+     * @throws ReflectException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws InfoNotFoundException
+     */
     public func getInstanceVariable(name: String): InstanceVariableInfo {
         getByName(instanceVariables, name, "instance variable '${name}' in class ${qualifiedName} not found") {
             instanceVariable => instanceVariable.name
@@ -197,6 +319,16 @@ public class ClassTypeInfo <: TypeInfo {
     }
 
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws InfoNotFoundException
+     */
     public func getStaticVariable(name: String): StaticVariableInfo {
         getByName(staticVariables, name, "static variable '${name}' in class ${qualifiedName} not found") {
             staticVariable => staticVariable.name

@@ -27,6 +27,13 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
     private static var _instance: ?TerminalPrettyPrinter = None
     private static let lock = ReentrantMutex()
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     * @throws IllegalSynchronizationStateException
+     */
     private static func globalInitializeAnsi(): Bool {
         synchronized(globalAnsiLock) {
             match (globalAnsiEnabled) {
@@ -51,16 +58,37 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
     private static let ESC_C_MAGENTA_MODE = "${ESC}[35m"
     private static let ESC_C_CYAN_MODE = "${ESC}[36m"
     private static let ESC_C_GRAY_MODE = "${ESC}[90m"
+    /*
+     * @noThrow
+     */
     private static func escLinesUp(lines: Int64) { "${ESC}[${lines}F" }
+    /*
+     * @noThrow
+     */
     private static func escLinesDown(lines: Int64) { "${ESC}[${lines}E" }
+    /*
+     * @noThrow
+     */
     private static func escCursorHorizontalPos(column: Int64) { "${ESC}[${column}G" }
+    /*
+     * @noThrow
+     */
     private static func escCursorRight(shift: Int64) { "${ESC}[${shift}C" }
     private static let ESC_CURSOR_SAVE = "${ESC}7"
     private static let ESC_CURSOR_RESTORE = "${ESC}8"
     private static let ESC_CURSOR_HIDE = "${ESC}[?25l"
     private static let ESC_CURSOR_SHOW = "${ESC}[?25h"
+    /*
+     * @noThrow
+     */
     private static func escSetScrollableMargins(start: Int64, endInclusive: Int64) { "${ESC}[${start};${endInclusive}r" }
+    /*
+     * @noThrow
+     */
     private static func escSetScrollableMarginsEnd(endInclusive!: Int64) { "${ESC}[1;${endInclusive}r" }
+    /*
+     * @noThrow
+     */
     private static func escSetScrollableMarginsStart(start!: Int64) { "${ESC}[${start};r" }
     private static let ESC_RESET_SCROLLABLE_MARGINS = "${ESC}[;r"
     private static let ESC_CLEAR_AHEAD = "${ESC}[0J"
@@ -71,6 +99,13 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
 
 
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     * @throws IllegalSynchronizationStateException
+     */
     TerminalPrettyPrinter(isColored: Bool, isOtherAnsiAble!: Bool = true) {
         let isAnsiEnabled = globalInitializeAnsi()
         this.areColorsEnabled = isColored && isAnsiEnabled
@@ -78,12 +113,22 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
         isConsoleUtf8 = setUtf8OutputCP()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     * @throws IllegalSynchronizationStateException
+     */
     init(configuration: Configuration) {
         this(!(configuration.get(KeyNoColor.noColor) ?? false))
     }
 
 
     prop terminalHeight: ?UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             match (unsafe { GetTerminalHeight() }) {
                 case 0u64 => None
@@ -94,6 +139,9 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
 
 
     prop terminalWidth: ?UInt64 {
+        /*
+         * @noThrow
+         */
         get() {
             match (unsafe { GetTerminalWidth() }) {
                 case 0u64 => None
@@ -102,6 +150,9 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
         }
     }
 
+    /*
+     * @throws IllegalSynchronizationStateException
+     */
     func exclusive<T>(action: (TerminalPrettyPrinter) -> T): T {
         synchronized(lock) {
             action(this)
@@ -109,50 +160,77 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func up(lines: Int64) {
         if (!areOtherAnsiEnabled || lines <= 0) { return }
         put(escLinesUp(lines))
     }
 
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func down(lines: Int64) {
         if (!areOtherAnsiEnabled || lines <= 0) { return }
         put(escLinesDown(lines))
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func toBottom() {
         down(9999)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func setColumn(column!: Int64 = 1) {
         if (!areOtherAnsiEnabled) { return }
         put(escCursorHorizontalPos(column))
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func saveCursorPos() {
         if (!areOtherAnsiEnabled) { return }
         put(ESC_CURSOR_SAVE)
         flush()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func restoreCursorPos() {
         if (!areOtherAnsiEnabled) { return }
         put(ESC_CURSOR_RESTORE)
         flush()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func hideCursor() {
         if (!areOtherAnsiEnabled) { return }
         put(ESC_CURSOR_HIDE)
         flush()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func showCursor() {
         if (!areOtherAnsiEnabled) { return }
         put(ESC_CURSOR_SHOW)
         flush()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func setScrollableMargins(start!: ?Int64 = None, end!: ?Int64 = None) {
         if (!areOtherAnsiEnabled) { return }
 
@@ -165,24 +243,39 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
         flush()
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func clearAhead() {
         if (!areOtherAnsiEnabled) { return }
         put(ESC_CLEAR_AHEAD)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     func clearLine() {
         if (!areOtherAnsiEnabled) { return }
         put(ESC_CLEAR_LINE)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     protected override open func put(s: String): Unit {
         print(s)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     protected func flush(): Unit {
         print("", flush: true)
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     protected override func setColor(color: Color): Unit {
         if (!areColorsEnabled) {
             return
@@ -202,6 +295,21 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
     }
 
     static prop instance: TerminalPrettyPrinter {
+        /*
+         * @throws IllegalMemoryException
+         * @throws Exception
+         * @throws UnittestCliOptionsFormatException
+         * @throws getOrThrow
+         * @throws JsonException
+         * @throws OutOfMemoryError
+         * @throws IllegalArgumentException
+         * @throws RegexException
+         * @throws UnittestOptionValidationException
+         * @throws IndexOutOfBoundsException
+         * @throws ArithmeticException
+         * @throws ProcessException
+         * @throws IllegalSynchronizationStateException
+         */
         get() {
             synchronized(lock) {
                 match (_instance) {
@@ -216,6 +324,9 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
         }
     }
 
+    /*
+     * @throws OutOfMemoryError
+     */
     public func fillLimitedSpace(spaceSize: Int64, body: () -> Unit): PrettyPrinter {
         if (areOtherAnsiEnabled && areColorsEnabled) {
             put(ESC_CURSOR_SAVE)
@@ -228,12 +339,30 @@ open class TerminalPrettyPrinter <: PrettyPrinter {
         return this
     }
 
+    /*
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws IllegalSynchronizationStateException
+     */
     static func fromDefaultConfiguration(): TerminalPrettyPrinter {
         instance
     }
 }
 
 @When[os != "Windows"]
+/*
+ * @noThrow
+ */
 func setUtf8OutputCP(): Bool { true }
 
 @When[os == "Windows"]
