@@ -68,6 +68,10 @@ struct UInt128 {
     public operator func !(): UInt128 {
         return UInt128(!this._hi, !this._lo)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toU16(): Array<UInt16> {
         let src = toBigEndian()
         let dst = Array<UInt16>(src.size / 2, repeat: 0)
@@ -76,6 +80,10 @@ struct UInt128 {
         }
         return dst
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func fromU16(src: Array<UInt16>): UInt128 {
         let dst = Array<UInt8>(src.size * 2, repeat: 0)
         for (i in 0..src.size) {
@@ -83,27 +91,51 @@ struct UInt128 {
         }
         return UInt128.readBigEndian(dst)
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func readBigEndian(buf: Array<UInt8>): UInt128 {
         return UInt128(UInt64.readBigEndian(buf), UInt64.readBigEndian(buf[8..]))
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func writeBigEndian(buf: Array<UInt8>): Int64 {
         _hi.writeBigEndian(buf)
         _lo.writeBigEndian(buf[8..])
         return 16
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func readLittleEndian(buf: Array<UInt8>): UInt128 {
         return UInt128(UInt64.readLittleEndian(buf[8..]), UInt64.readLittleEndian(buf[..8]))
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func writeLittleEndian(buf: Array<UInt8>): Int64 {
         _lo.writeLittleEndian(buf)
         _hi.writeLittleEndian(buf[8..])
         return 16
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toBigEndian(): Array<UInt8> {
         let buf = Array<Byte>(16, repeat: 0)
         writeBigEndian(buf)
         return buf
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toLittleEndian(): Array<UInt8> {
         let buf = Array<Byte>(16, repeat: 0)
         writeLittleEndian(buf)
@@ -118,6 +150,10 @@ struct UInt128 {
     public operator func !=(rhs: UInt128): Bool {
         return !(this == rhs)
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let octets = toLittleEndian()
         let sb = StringBuilder()

@@ -29,18 +29,34 @@ open class FailureReport {
         textBuilder
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderStatement(statement: VerifyStatement) {
         renderMatcher(statement.invocationMatcher, prefixString: "statement", atString: "declared at")
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderStub(stubChain: StubChain) {
         renderMatcher(stubChain.invocationMatcher, prefixString: "stub", atString: "declared at")
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderMatcher(invocationMatcher: InvocationMatcher, atString!: String = "at", prefixString!: String = "") {
         renderStubDescription(invocationMatcher.description, atString: atString, prefixString: prefixString)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderStubDescription(description: StubDescription, atString!: String, prefixString!: String) {
         if (!prefixString.isEmpty()) {
             text(prefixString)
@@ -50,6 +66,10 @@ open class FailureReport {
         renderLocation(description.location)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func renderMatchingInvocations(invocationMatcher: InvocationMatcher) {
         let matchingInvocations = findMatchingInvocations(invocationMatcher)
         if (matchingInvocations.isEmpty()) {
@@ -62,6 +82,10 @@ open class FailureReport {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func findMatchingInvocations(invocationMatcher: InvocationMatcher) {
         let matchingInvocations = ArrayList<Invocation>()
         for (entry in invocationLog.entries) {
@@ -73,18 +97,30 @@ open class FailureReport {
         return matchingInvocations
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderInvocationList(invocations: Collection<Invocation>) {
         for (invocation in invocations) {
             listEntry { renderLocation(invocation.location) }
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderInvocationWithLocation(invocation: Invocation, atString!: String = "at"): Unit {
         renderInvocation(invocation)
         text(atString)
         renderLocation(invocation.location)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderInvocation(invocation: Invocation): Unit {
         let objectName = match (nameRegistry.get(invocation.stubId.receiverId)) {
             case Some(name) => name
@@ -102,10 +138,18 @@ open class FailureReport {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderLocation(location: Location): Unit {
         userCode(location.fileNameAndLine())
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderDeclarationNameAndKind(info: FuncInfo, getterSetterPrefix!: Bool) {
         let name = info.presentableName
         match (info.kind) {
@@ -142,6 +186,10 @@ open class FailureReport {
         userCode(name)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func reportArgumentMismatch(invocationMatcher: InvocationMatcher, unmatchedArgumentIndices: Array<Int64>) {
         let longestName = max(invocationMatcher.stubId.funcInfo.params |> map { p: ParameterInfo => p.name.size }) ?? 0
         for ((argPosition, argMatcher) in invocationMatcher.positionalMatchers |> enumerate) {
@@ -166,6 +214,11 @@ open class FailureReport {
         }
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderCardinalityMin(cardinality: Cardinality) {
         match ((cardinality.min, cardinality.max)) {
             case (min, Some(max)) where min == max =>
@@ -177,6 +230,11 @@ open class FailureReport {
         }
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderCardinalityMax(cardinality: Cardinality) {
         match ((cardinality.min, cardinality.max)) {
             case (min, Some(max)) where min == max =>
@@ -190,6 +248,10 @@ open class FailureReport {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func renderRequiredActual(actualInvocations: Int64, renderCardinality: () -> Unit): Unit {
         listEntry {
             text("Required:")
@@ -201,6 +263,11 @@ open class FailureReport {
         }
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func timesStr(i: Int64): Unit {
         if (i < 0) {
             internalError("Invalid argument: ${i}")
@@ -214,27 +281,46 @@ open class FailureReport {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func indent(body: () -> Unit): Unit {
         textBuilder.indent {
             body()
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func line(str: String): Unit {
         text(str)
         nl()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func line(body: () -> Unit): Unit {
         body()
         nl()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func listEntry(body: () -> Unit) {
         body()
         nl(ensureDotAtTheEnd: false)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func nl(ensureDotAtTheEnd!: Bool = true) {
         if (ensureDotAtTheEnd && lastSymbol != r'.' && lastSymbol != r':') {
             append(".")
@@ -243,26 +329,46 @@ open class FailureReport {
         lastSymbol = r'\n'
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func text(str: String) {
         ensureSpacing()
         append(str)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func ensureSpacing() {
         if (lastSymbol != r' ' && lastSymbol != r'\n') {
             space()
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func space() {
         append(" ")
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(str: String): Unit {
         lastSymbol = str.lastRune() ?? return ()
         textBuilder.append(str)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func userCode(userCode: ToString): Unit {
         ensureSpacing()
         let str = userCode.toString()
@@ -270,6 +376,10 @@ open class FailureReport {
         textBuilder.colored(Color.YELLOW, str)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func error(errorText: ToString): Unit {
         ensureSpacing()
         let str = errorText.toString()
@@ -277,6 +387,10 @@ open class FailureReport {
         textBuilder.colored(Color.RED, str)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func success(successText: ToString): Unit {
         ensureSpacing()
         let str = successText.toString()
@@ -284,10 +398,18 @@ open class FailureReport {
         textBuilder.colored(Color.GREEN, str)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func errorLine(text: String) {
         line { error(text) }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func errorHeader(text: String) {
         error(text)
         nl(ensureDotAtTheEnd: false)
@@ -311,6 +433,9 @@ class MockNameRegistry {
         idToName.addIfAbsent(invocationMatcher.stubId.receiverId, invocationMatcher.description.prefixRefName)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func get(objId: UInt64): ?String {
         return idToName.get(objId) ?? Option<String>.None
     }
@@ -319,6 +444,10 @@ class MockNameRegistry {
 }
 
 extend String {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func lastRune(): ?Rune {
         if (isEmpty()) {
             return None

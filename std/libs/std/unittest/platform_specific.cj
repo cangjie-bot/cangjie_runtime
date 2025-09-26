@@ -18,6 +18,12 @@ extend Process {
 
 @When[os != "Windows"]
 extend Process {
+        /**
+         * @throws OutOfMemoryError
+         * @throws ProcessException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     static prop currentArgs: Array<String> {
         get() {
             var cmdl = Process.current.commandLine

@@ -164,6 +164,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Deprecated[message: "Use member function `public static func parse(value: String): Decimal` instead."]
     public init(val: String) {
         if (val.isEmpty()) {
@@ -262,6 +267,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: BigInt, scale: Int32) {
         var val_precision = calcNumberOfDigits(val)
         this._scale = scale
@@ -270,6 +279,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         this._sign = this._value.sign
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: BigInt) {
         var val_precision = calcNumberOfDigits(val)
         this._scale = 0
@@ -285,6 +298,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: Int8) {
         this(Int64(val))
     }
@@ -296,6 +313,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: Int16) {
         this(Int64(val))
     }
@@ -307,6 +328,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: Int32) {
         this(Int64(val))
     }
@@ -318,6 +343,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: IntNative) {
         this(Int64(val))
     }
@@ -329,6 +358,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: Int64) {
         var val_precision: Int64 = calcNumberOfDigits(val)
         var val_scale: Int32 = 0
@@ -346,6 +379,9 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: UInt8) {
         this(UInt64(val))
     }
@@ -357,6 +393,9 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: UInt16) {
         this(UInt64(val))
     }
@@ -368,6 +407,9 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: UInt32) {
         this(UInt64(val))
     }
@@ -379,6 +421,9 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: UIntNative) {
         this(UInt64(val))
     }
@@ -390,6 +435,9 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public init(val: UInt64) {
         var val_precision: Int64 = calcNumberOfDigits(val)
         var val_scale: Int32 = 0
@@ -415,6 +463,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(val: Float16) {
         this(Float32(val))
     }
@@ -436,6 +489,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(val: Float32) {
         if (val.isNaN() || val.isInf()) {
             throw IllegalArgumentException("Float value cannot be Inf or NaN.")
@@ -487,6 +545,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     */
     public init(val: Float64) {
         if (val.isNaN() || val.isInf()) {
             throw IllegalArgumentException("Float value cannot be Inf or NaN.")
@@ -544,6 +607,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     func add(d: Decimal): Decimal {
         let resValue: BigInt
         let valPrecision: Int64
@@ -580,6 +648,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public operator func +(d: Decimal): Decimal {
         return this.add(d)
     }
@@ -596,10 +669,20 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     func sub(d: Decimal): Decimal {
         return this.add(d.neg())
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public operator func -(d: Decimal): Decimal {
         return this.add(d.neg())
     }
@@ -616,6 +699,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     func mul(d: Decimal): Decimal {
         let resScale: Int32 = checkScaleOverFlow(Int64(this._scale) + Int64(d.scale))
 
@@ -628,10 +716,21 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Decimal(resValue, resScale, resPrecision)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func *(d: Decimal): Decimal {
         return this.mul(d)
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     func mul(d: Decimal, precision: Int64, roundingMode: RoundingMode) {
         var resScale: Int32 = checkScaleOverFlow(Int64(this._scale) + Int64(d.scale))
 
@@ -670,10 +769,24 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     func div(d: Decimal): Decimal {
         divWithContext(d, RoundingMode.HalfEven)
     }
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public operator func /(d: Decimal): Decimal {
         return this.div(d)
     }
@@ -692,6 +805,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func divWithPrecision(d: Decimal, precision: Int64, roundingMode!: RoundingMode = HalfEven): Decimal {
         if (precision == 0) {
             return divWithContext(d, roundingMode)
@@ -707,6 +827,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return div(this, d, expectedScale, precision, roundingMode, false)
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     @Deprecated[message: "Use member function `public func divAndMod(d: Decimal): (BigInt, Decimal)` instead."]
     public func divAndRem(d: Decimal): (BigInt, Decimal) {
         return divAndMod(d)
@@ -724,6 +851,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func divAndMod(d: Decimal): (BigInt, Decimal) {
         var qu = this.divForRem(d)
         let re = this.sub(qu.mul(d))
@@ -757,6 +891,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func shiftPoint(n: Int32): Decimal {
         if (n == 0) {
             return this
@@ -778,6 +917,12 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func roundWithPrecision(precision: Int64, roundingMode!: RoundingMode = RoundingMode.HalfEven): Decimal {
         if (precision == 0 || precision >= this.precision) {
             return this
@@ -803,6 +948,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func <(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.LT => true
@@ -817,6 +967,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func >(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.GT => true
@@ -831,6 +986,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func <=(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.GT => false
@@ -845,6 +1005,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func >=(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.LT => false
@@ -859,6 +1024,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func ==(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.EQ => true
@@ -873,6 +1043,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public operator func !=(d: Decimal): Bool {
         return match (this.compare(d)) {
             case Ordering.EQ => false
@@ -887,6 +1062,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func compare(d: Decimal): Ordering {
         if (this.sign == 0 && this.sign == d.sign) {
             return Ordering.EQ
@@ -938,6 +1118,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     func pow(n: Int64): Decimal {
         if (n == 0) {
             return Decimal(BIGINT_ONE, 0)
@@ -958,6 +1145,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public operator func **(n: Int64): Decimal {
         return this.pow(n)
     }
@@ -975,6 +1169,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     public func powWithPrecision(n: Int64, precision: Int64, roundingMode!: RoundingMode = RoundingMode.HalfEven): Decimal {
         if (n == 0) {
             return Decimal(BIGINT_ONE, 0)
@@ -1018,6 +1219,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     */
     public func sqrtWithPrecision(precision: Int64, roundingMode!: RoundingMode = RoundingMode.HalfEven): Decimal {
         if (this._sign == 0) {
             return Decimal(BIGINT_ZERO, this._scale >> 1)
@@ -1089,6 +1297,12 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public func hashCode(): Int64 {
         let rmvTrailingZerosDecimal = this.removeTrailingZeros()
@@ -1101,6 +1315,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func toString(): String {
         if (this._scale == 0) {
             return this._value.toString()
@@ -1169,6 +1388,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func reScale(newScale: Int32, roundingMode!: RoundingMode = HalfEven): Decimal {
         let oldScale = this.scale
         if (newScale == oldScale) {
@@ -1194,6 +1420,12 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func removeTrailingZeros(): Decimal {
         if (this.sign == 0) {
             return Decimal(BigInt("0"), 0, 1)
@@ -1230,6 +1462,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isInteger(): Bool {
         if (this.sign == 0 || this.scale <= 0) {
             return true
@@ -1263,6 +1500,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func toInt8(overflowHandling!: OverflowStrategy = Throwing): Int8 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -8) {
             return 0
@@ -1281,6 +1525,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toInt16(overflowHandling!: OverflowStrategy = Throwing): Int16 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -16) {
             return 0
@@ -1299,6 +1550,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toInt32(overflowHandling!: OverflowStrategy = Throwing): Int32 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -32) {
             return 0
@@ -1317,6 +1575,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toInt64(overflowHandling!: OverflowStrategy = Throwing): Int64 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -64) {
             return 0
@@ -1335,6 +1600,14 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws Exception
+     */
     public func toIntNative(overflowHandling!: OverflowStrategy = Throwing): IntNative {
         var nativeLen = 64
         if (Int64(IntNative.Max) == Int64(Int32.Max)) {
@@ -1358,6 +1631,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func toUInt8(overflowHandling!: OverflowStrategy = Throwing): UInt8 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -8) {
             return 0
@@ -1376,6 +1656,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toUInt16(overflowHandling!: OverflowStrategy = Throwing): UInt16 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -16) {
             return 0
@@ -1394,6 +1681,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toUInt32(overflowHandling!: OverflowStrategy = Throwing): UInt32 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -32) {
             return 0
@@ -1412,6 +1706,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toUInt64(overflowHandling!: OverflowStrategy = Throwing): UInt64 {
         if (this.sign == 0 || Int64(this.scale) >= this.precision || this.scale <= -64) {
             return 0
@@ -1430,6 +1731,14 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws Exception
+     */
     public func toUIntNative(overflowHandling!: OverflowStrategy = Throwing): UIntNative {
         var nativeLen = 64
         if (Int64(IntNative.Max) == Int64(Int32.Max)) {
@@ -1449,6 +1758,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public func toBigInt(): BigInt {
         if (this.sign == 0 || Int64(this.scale) >= this.precision) {
             return BIGINT_ZERO
@@ -1464,6 +1780,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toFloat16(): Float16 {
         if (this.scale <= 0 && this.precision - Int64(this.scale) <= 18) {
             if (this.sign > 0) {
@@ -1483,6 +1806,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toFloat32(): Float32 {
         if (this.scale <= 0 && this.precision - Int64(this.scale) <= 18) {
             if (this.sign > 0) {
@@ -1502,6 +1832,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     public func toFloat64(): Float64 {
         if (this.scale <= 0 && this.precision - Int64(this.scale) <= 18) {
             if (this.sign > 0) {
@@ -1520,6 +1857,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toEngString(): String {
         let valArr: Array<Byte> = abs(this.value).toString().toArray()
         var resultExponent: Int64 = this.precision - 1 - Int64(this.scale)
@@ -1568,6 +1909,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toSciString(): String {
         let valArr: Array<Byte> = abs(this.value).toString().toArray()
         let resultExponent: Int64 = this.precision - 1 - Int64(this.scale)
@@ -1586,6 +1931,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return stringBuilder.toString()
     }
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     private func div(
         dividend: Decimal,
         divisor: Decimal,
@@ -1616,6 +1968,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return res.roundWithPrecision(cpn, roundingMode: roundingMode)
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws PrecisionMismatchException
+     */
     private func divideAndRound(
         dividend: BigInt,
         divisor: BigInt,
@@ -1647,6 +2006,12 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Decimal(qu, scale)
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     */
     func removeExtraZero(v: BigInt, scale: Int32, expectedScale: Int32): Decimal {
         var bd = v
         var scl = scale
@@ -1665,11 +2030,20 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Decimal(bd, scl)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     */
     private func needIncrement(divisor: BigInt, rdm: RoundingMode, qsign: Int64, qu: BigInt, re: BigInt): Bool {
         let cmpDouble = divisor.compareDouble(re)
         return needCarry(rdm, qsign, cmpDouble, qu.isOdd())
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func checkPrecisionOverFlow(arr: Array<Int64>): Int64 {
         try {
             var sum: Int64 = Int64(ceil(Float64(arr[0]) / 3.0f64 * 10.0f64))
@@ -1682,6 +2056,10 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func compareBySamePrecision(x: BigInt, xscale: Int64, y: BigInt, yscale: Int64): Int64 {
         let diff = xscale - yscale
         if (diff < 0) {
@@ -1696,6 +2074,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return Int32(scale)
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     private func divForRem(d: Decimal): Decimal {
         let expectedScale: Int32 = saturateI32(Int64(this._scale) - Int64(d.scale))
         if (this.compareAbsolute(d) < 0) {
@@ -1713,6 +2098,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return res
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowThrowing
     private func compareAbsolute(d: Decimal): Int64 {
         if (this.sign == 0 && this.sign == d.sign) {
@@ -1746,6 +2136,13 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
         return ailgnBigValue(this.value, -diffScale).compareMagnitude(d.value)
     }
 
+    /**
+     * @throws PrecisionMismatchException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     private func divWithContext(d: Decimal, rdm: RoundingMode): Decimal {
         if (d.sign == 0) {
             throw ArithmeticException("Divided by zero!")
@@ -1777,6 +2174,11 @@ public struct Decimal <: Comparable<Decimal> & Hashable & ToString {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 func parseExponent(val: String, offset: Int64): Int64 {
     var isPositive = true
     var expOffset = offset
@@ -1824,6 +2226,9 @@ func parseExponent(val: String, offset: Int64): Int64 {
     return exponent
 }
 
+/**
+ * @throws OverflowException
+ */
 func checkScaleOverFlow(scale: Int64): Int32 {
     try {
         return Int32(scale)
@@ -1832,6 +2237,9 @@ func checkScaleOverFlow(scale: Int64): Int32 {
     }
 }
 
+/**
+ * @throws OverflowException
+ */
 @OverflowWrapping
 func checkAndRtnScale(scale: Int32, adjustScale: Int64): Int32 {
     let newScale = Int64(scale) - adjustScale
@@ -1841,6 +2249,11 @@ func checkAndRtnScale(scale: Int32, adjustScale: Int64): Int32 {
     return Int32(newScale)
 }
 
+/**
+ * @throws ArithmeticException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func doRoundWithCtx(val_bigint: BigInt, roundPrecision: Int64, roundingMode: RoundingMode): BigInt {
     let tenPowerDivisior = tenPowerN(roundPrecision)
     let (quotient, remainder): (BigInt, BigInt) = val_bigint.divAndMod(tenPowerDivisior)
@@ -1856,6 +2269,10 @@ func doRoundWithCtx(val_bigint: BigInt, roundPrecision: Int64, roundingMode: Rou
     return quotient
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func calcNumberOfDigits(val_bigint: BigInt): Int64 {
     if (val_bigint.sign == 0) {
         return 1
@@ -1875,6 +2292,9 @@ func calcNumberOfDigits(val_bigint: BigInt): Int64 {
     return digitCount
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func calcNumberOfDigits(value: UInt64): Int64 {
     if (value == 0) {
         return 1
@@ -1887,10 +2307,17 @@ func calcNumberOfDigits(value: UInt64): Int64 {
     return valueNumCount
 }
 
+/**
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ */
 func calcNumberOfDigits(value: Int64): Int64 {
     return calcNumberOfDigits(toUInt64(value))
 }
 
+/**
+ * @throws OverflowException
+ */
 func toUInt64(i64: Int64): UInt64 {
     if (i64 == Int64.Min) {
         return 0x8000000000000000u64
@@ -1899,6 +2326,10 @@ func toUInt64(i64: Int64): UInt64 {
     return UInt64(abs(i64))
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func tenPowerN(n: Int64): BigInt {
     if (n < 0) {
         return BIGINT_ZERO
@@ -1978,6 +2409,10 @@ func parseFloat64Bits(f64Bits: Int64): (Int64, Int64, Int64) {
     return (sign, exponent, fraction)
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func ailgnBigValue(val: BigInt, diffScale: Int64): BigInt {
     if (diffScale <= 0) {
         return val
@@ -2021,6 +2456,13 @@ public func abs(d: Decimal): Decimal {
 
 
 
+/**
+ * @throws ArithmeticException
+ * @throws PrecisionMismatchException
+ * @throws IllegalArgumentException
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ */
 public func round(d: Decimal, roundingMode!: RoundingMode = RoundingMode.HalfEven): Decimal {
     if (Int64(d.scale) >= d.precision) {
         return d.reScale(0, roundingMode: roundingMode)
@@ -2045,6 +2487,13 @@ public func round(d: Decimal, roundingMode!: RoundingMode = RoundingMode.HalfEve
 
 
 
+/**
+ * @throws PrecisionMismatchException
+ * @throws ArithmeticException
+ * @throws IndexOutOfBoundsException
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 public func sqrt(d: Decimal): Decimal {
     if (d.sign == 0) {
         return Decimal(BIGINT_ZERO, d.scale >> 1)

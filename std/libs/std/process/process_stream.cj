@@ -56,6 +56,9 @@ class PipeOutputStream <: OutputStream & Resource {
         this._fileDescriptor = fileDescriptor
     }
 
+    /**
+     * @throws ProcessException
+     */
     public func write(buffer: Array<Byte>): Unit {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw ProcessException("The stream not opened, can not be written.")
@@ -72,6 +75,9 @@ class PipeOutputStream <: OutputStream & Resource {
         return !isHandleValid(_fileDescriptor._fileHandle)
     }
 
+    /**
+     * @throws ProcessException
+     */
     public func close(): Unit {
         if (isClosed()) {
             return
@@ -92,6 +98,9 @@ class PipeOutputStream <: OutputStream & Resource {
 
 
 
+    /**
+     * @throws ProcessException
+     */
     private func directWrite(buffer: Array<Byte>): Unit {
         unsafe {
             let bufSize: Int64 = buffer.size
@@ -114,6 +123,10 @@ class PipeInputStream <: InputStream & Resource {
         this._fileDescriptor = fileDescriptor
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ProcessException
+     */
     public func read(buffer: Array<Byte>): Int64 {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             throw ProcessException("The stream not opened, can not to read.")
@@ -134,6 +147,9 @@ class PipeInputStream <: InputStream & Resource {
         return !isHandleValid(_fileDescriptor._fileHandle)
     }
 
+    /**
+     * @throws ProcessException
+     */
     public func close(): Unit {
         if (isClosed()) {
             return
@@ -177,6 +193,9 @@ class NullProcessStream <: IOStream & Resource {
         }
     }
 
+    /**
+     * @throws ProcessException
+     */
     public func write(_: Array<Byte>): Unit {
         throw ProcessException("Invaild outputStream.")
     }

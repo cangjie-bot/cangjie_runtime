@@ -39,6 +39,10 @@ public struct DeriveInterfaceOption <: ToTokens & ToString {
         get() { parsedConstraints?.explicitConstraints ?? [] }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         let tkns = Tokens(interfaceName.token)
         if (let Some(ec) <- parsedConstraints) {
@@ -47,6 +51,11 @@ public struct DeriveInterfaceOption <: ToTokens & ToString {
         return tkns
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public func toString(): String {
         toTokens().toString()
     }
@@ -58,6 +67,10 @@ public struct ParsedExplicitConstraints <: ToString & ToTokens {
         public let explicitConstraints: Array<ParsedGenericConstraint>
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         let tkns = Tokens(whereKeyword)
         for ((index, ec) in explicitConstraints |> enumerate) {
@@ -69,6 +82,11 @@ public struct ParsedExplicitConstraints <: ToString & ToTokens {
         return tkns
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public func toString(): String {
         return toTokens().toString()
     }
@@ -80,6 +98,9 @@ public struct ParsedGenericConstraint <: ToString & ToTokens {
         public let upperBounds: Array<TypeNode>
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public func toDerivingGeneric(decl: GenericDecl): DerivingGenericSettings {
         if (genericParameter != decl.identifier) {
             throw IllegalArgumentException("The generic parameter name should match")
@@ -88,19 +109,40 @@ public struct ParsedGenericConstraint <: ToString & ToTokens {
         return DerivingGenericSettings(decl, upperBounds)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public func toAst(): GenericConstraint {
         toDerivingGeneric(GenericDecl(genericParameter)).toNode()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         toAst().toTokens()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public func toString(): String {
         toTokens().toString()
     }
 }
 
+/**
+ * @throws Error
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws ASTException
+ * @throws IllegalStateException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func parseDeriveOptions(input: Tokens, logger: Logger): Array<DeriveInterfaceOption> {
     return DeriveInputParser.params(input, logger)
 }
@@ -109,14 +151,41 @@ public struct DeriveInputParser {
     private DeriveInputParser(private let it: PushbackTokensIterator, private let logger: Logger) {
     }
 
+    /**
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func params(input: Tokens, logger: Logger): Array<DeriveInterfaceOption> {
         params(PushbackTokensIterator(repalceWrongTokens(input)), logger)
     }
 
+    /**
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func params(input: PushbackTokensIterator, logger: Logger): Array<DeriveInterfaceOption> {
         DeriveInputParser(input, logger).parseParams()
     }
 
+    /**
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func parseParams(): Array<DeriveInterfaceOption> {
         let result = ArrayList<DeriveInterfaceOption>()
         while (let Some(first) <- it.next()) {
@@ -136,6 +205,15 @@ public struct DeriveInputParser {
         return result.toArray()
     }
 
+    /**
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func consumeComma(): Unit {
         let shouldBeComma = it.next() ?? return;
         if (shouldBeComma.kind == TokenKind.COMMA) { return }
@@ -148,6 +226,15 @@ public struct DeriveInputParser {
         }
     }
 
+    /**
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func paramsRecover(first: Token): Unit {
         if (first.kind == TokenKind.WHERE) {
             parseConstraint(first)
@@ -159,6 +246,11 @@ public struct DeriveInputParser {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func parseInterfaceRef(first: Token): Array<Token> {
         let result = ArrayList<Token>()
         result.add(first)
@@ -182,6 +274,9 @@ public struct DeriveInputParser {
         return result.toArray()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func recoverAfterBrokenInterfaceName() {
         while (let Some(next) <- it.next()) {
             if (next.kind == TokenKind.WHERE || next.kind == TokenKind.COMMA) {
@@ -190,6 +285,15 @@ public struct DeriveInputParser {
         }
     }
 
+    /**
+     * @throws ASTException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func parseNextParam(first: Token): ?DeriveInterfaceOption {
         let interfaceRef = parseInterfaceRef(first)
         let interfaceName = Identifier(interfaceRef.iterator().last() ?? return None)
@@ -234,6 +338,15 @@ public struct DeriveInputParser {
             whereTok, constraints.toArray())
     }
 
+    /**
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func parseConstraint(lastTok: Token): ?ParsedGenericConstraint {
         match (it.next()) {
             case None =>
@@ -257,6 +370,15 @@ public struct DeriveInputParser {
         }
     }
 
+    /**
+     * @throws ASTException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     */
     private func expectedUpperBoundError(id: Token): Unit {
         var reported = false
         if (it.seeing(TokenKind.LT)) {
@@ -285,6 +407,14 @@ public struct DeriveInputParser {
         }
     }
 
+    /**
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func parseUpperBounds(): Array<TypeNode> {
         let result = ArrayList<TypeNode>()
         result.add(parseType() ?? return [])
@@ -295,6 +425,9 @@ public struct DeriveInputParser {
         return result.toArray()
     }
 
+    /**
+     * @throws ASTException
+     */
     private func createFuncType(
         params: ArrayList<TypeNode>,
         returnType: TypeNode,
@@ -317,6 +450,10 @@ public struct DeriveInputParser {
         return f
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     private func createTupleType(
         components: ArrayList<TypeNode>,
         lParen: ?Token,
@@ -336,6 +473,12 @@ public struct DeriveInputParser {
         return t
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func createPrefixOptionType(node: TypeNode): TypeNode {
         let quest = PrefixType()
         quest.baseType = node
@@ -343,6 +486,14 @@ public struct DeriveInputParser {
         return quest
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     */
     private func parseSeq(close!: TokenKind): (ArrayList<TypeNode>, ?Token) {
         let result = ArrayList<TypeNode>()
         var endFound: ?Token = None
@@ -361,6 +512,14 @@ public struct DeriveInputParser {
         return (result, endFound)
     }
 
+    /**
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ASTException
+     */
     private func parseRef(id: Token): RefType {
         let ref = RefType()
         ref.identifier = id
@@ -374,6 +533,14 @@ public struct DeriveInputParser {
         return ref
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws Exception
+     */
     private func parseRef(): ?RefType {
         if (let Some(id) <- it.next()) {
             if (id.kind != TokenKind.IDENTIFIER) {
@@ -385,6 +552,14 @@ public struct DeriveInputParser {
         reportEof("Expected type identifier but got end")
         return None
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     private func parseType(): ?TypeNode {
         match (it.next()) {
             case Some(lParen) where lParen.kind == TokenKind.LPAREN =>
@@ -408,11 +583,23 @@ public struct DeriveInputParser {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     private func reportEof(message: String): Unit {
         let at = it.last() ?? throw Exception("Failed to parse type: no tokens passed")
         logger.error(at, message)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     private func parseFuncOrTupleType(lParen: Token): ?TypeNode {
         let (seq, rParen) = parseSeq(close: TokenKind.RPAREN)
         if (it.seeing(TokenKind.ARROW)) {
@@ -427,6 +614,14 @@ public struct DeriveInputParser {
         return createTupleType(seq, lParen, rParen)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ASTException
+     * @throws Error
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     private func parseQualifiedType(firstId: Token): ?TypeNode {
         var current: TypeNode = parseRef(firstId)
         while (it.seeing(TokenKind.DOT)) {
@@ -465,6 +660,10 @@ public struct DeriveInputParser {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func repalceWrongTokens(input: Tokens): Tokens {
         input |> flatMap { tkn: Token =>
             match (tkn.kind) {

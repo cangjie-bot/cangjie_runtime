@@ -26,6 +26,10 @@ class OneLineDiffBuilder {
     private static let prefixSuffixFactor = 0.25
     private static let minPrefixSuffixSimilarity = 0.75
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func recordMarkedChar(
         markedChars: ArrayList<Edit<Rune>>,
         dg: Float64, dn: Float64, rt: Float64,
@@ -54,6 +58,10 @@ class OneLineDiffBuilder {
         (i, j, k)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func computeDiff(
         sampledLeft: SampledAssertValue,
         sampledRight: SampledAssertValue
@@ -129,6 +137,10 @@ class OneLineDiffBuilder {
         result
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func fillOutputByMarkedChars(
         diff: ArrayList<Edit<Rune>>,
         aout: ArrayList<Rune>,
@@ -175,21 +187,37 @@ class OneLineDiffBuilder {
         return prefixSuffixSize > Int64(Float64(diffSize) * prefixSuffixFactor * minPrefixSuffixSimilarity)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func isPrefixSimilar(diff: ArrayList<Edit<Rune>>) {
         let rightBorder = Int64(Float64(diff.size) * prefixSuffixFactor)
         return isSuffixPrefixSimilar(diff[..rightBorder].filterKeep().size, diff.size)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func isSuffixSimilar(diff: ArrayList<Edit<Rune>>) {
         let diffSize = Float64(diff.size)
         let leftBorder = Int64(diffSize - diffSize * prefixSuffixFactor)
         return isSuffixPrefixSimilar(diff[leftBorder..].filterKeep().size, diff.size)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func areStringsSimilar(diff: ArrayList<Edit<Rune>>) {
         return diff.filterKeep().size > Int64(Float64(diff.size) * minSimilarity)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func buildWithoutDiff(
         left: ArrayList<Rune>, right: ArrayList<Rune>
     ): DiffBuilderResult {
@@ -200,6 +228,10 @@ class OneLineDiffBuilder {
         )
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func build(
         left: String, right: String
     ): DiffBuilderResult {
@@ -250,6 +282,10 @@ class OneLineDiffBuilder {
         return (aout, bout, colors, textualDiff)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func allignColorsByPrefixAndSuffix(
         aPrefixSuffixLen: (Int64, Int64),
         bPrefixSuffixLen: (Int64, Int64),
@@ -285,6 +321,10 @@ class OneLineDiffBuilder {
         return (bytes, chars)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func sampleStrings(left: String, right: String): (SampledAssertValue, SampledAssertValue) {
         if (left.size > 150 || right.size > 150) {
             let (bytePrefix, commonPrefixLen) = commonPrefix(left, right)
@@ -303,6 +343,10 @@ class OneLineDiffBuilder {
 }
 
 extend PrettyPrinter {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func printOneLineDiff(
         left: String,
         right: String,
@@ -331,6 +375,10 @@ extend PrettyPrinter {
         this
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func coloredWithBuffer<T>(chunks: ArrayList<T>, colors: ArrayList<ColorChunk>) where T <: ToString {
         var buffer = ""
         var currentColor = Option<Color>.None
@@ -374,6 +422,9 @@ extend PrettyPrinter {
 }
 
 extend<T> Array<T> where T <: Comparable<T> {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func min() {
         var result = this[0]
         for (e in this) {
@@ -386,6 +437,10 @@ extend<T> Array<T> where T <: Comparable<T> {
 }
 
 extend ArrayList<Edit<Rune>> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func filterKeep(): ArrayList<Edit<Rune>> {
         return this |> filter<Edit<Rune>> { e =>
             match (e) {
@@ -397,6 +452,10 @@ extend ArrayList<Edit<Rune>> {
 }
 
 extend ArrayList<Rune> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addRightPadded(r: Rune, width: Int64, paddingWith!: Rune = r' '): Unit {
         let rWidth = r.width()
         this.add(r)

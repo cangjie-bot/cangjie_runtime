@@ -29,6 +29,33 @@ struct MainExecutionCtx {
     }
 }
 
+/**
+ * @throws MockFrameworkInternalError
+ * @throws EnvException
+ * @throws ExpectationFailedException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws TimeoutException
+ * @throws InvalidDataException
+ * @throws JsonException
+ * @throws IndexOutOfBoundsException
+ * @throws OverflowException
+ * @throws AssertException
+ * @throws IllegalStateException
+ * @throws MockFrameworkException
+ * @throws getOrThrow
+ * @throws UnittestCliOptionsFormatException
+ * @throws IllegalSynchronizationStateException
+ * @throws ArithmeticException
+ * @throws FSException
+ * @throws ProcessException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws NoneValueException
+ * @throws SocketException
+ */
 func executeSmart(
     packageName: String,
     tests: Array<TestSuite>,
@@ -50,6 +77,21 @@ func executeSmart(
     }
 }
 
+/**
+ * @throws SocketException
+ * @throws OutOfMemoryError
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws FSException
+ * @throws ProcessException
+ * @throws ArithmeticException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalStateException
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func initWorkersMain(ctx: MainExecutionCtx): Array<WorkerProcess> {
     let workers = 0..ctx.nWorkers |> mapParallelOrdered(ctx.nWorkers) { workerId: Int64 =>
         WorkerProcess.createAndRegister(workerId, ctx)
@@ -57,6 +99,24 @@ func initWorkersMain(ctx: MainExecutionCtx): Array<WorkerProcess> {
     return workers
 }
 
+/**
+ * @throws TimeoutException
+ * @throws InvalidDataException
+ * @throws JsonException
+ * @throws IllegalMemoryException
+ * @throws IllegalStateException
+ * @throws IndexOutOfBoundsException
+ * @throws OverflowException
+ * @throws IllegalSynchronizationStateException
+ * @throws OutOfMemoryError
+ * @throws Exception
+ * @throws ProcessException
+ * @throws FSException
+ * @throws ArithmeticException
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws SocketException
+ */
 func executeMain(workers: Array<WorkerProcess>, packageName: String, ctx: MainExecutionCtx): TestGroupResult {
     let workerResults = workers |> mapParallelOrdered(ctx.nWorkers) { worker: WorkerProcess =>
         WorkerProcess.executeRestarting(worker, ctx)
@@ -83,6 +143,10 @@ func executeMain(workers: Array<WorkerProcess>, packageName: String, ctx: MainEx
     return TestGroupResult.fromPackageSuites(packageName, mergedTestSuiteResults, uniqueCrahes, uniqueNonTestOuputs)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func uniqueValues<T>(collection: Collection<T>): Array<T> where T <: Hashable {
     let hashToValue = HashMap<Int64, T>()
     for (target in collection) {
@@ -91,6 +155,30 @@ func uniqueValues<T>(collection: Collection<T>): Array<T> where T <: Hashable {
     return hashToValue.values() |> collectArray
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws InvalidDataException
+ * @throws ProcessException
+ * @throws Exception
+ * @throws AssertException
+ * @throws IllegalStateException
+ * @throws IndexOutOfBoundsException
+ * @throws OverflowException
+ * @throws MockFrameworkInternalError
+ * @throws EnvException
+ * @throws ExpectationFailedException
+ * @throws getOrThrow
+ * @throws UnittestCliOptionsFormatException
+ * @throws IllegalSynchronizationStateException
+ * @throws MockFrameworkException
+ * @throws IllegalArgumentException
+ * @throws SocketException
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws ArithmeticException
+ */
 func executeWorker(packageName: String, suites: Array<TestSuite>, filterService: FilterService): TestGroupResult {
     let suitesToBeExecuted = registerTestSuites(packageName, suites, filterService)
     let testGroupResult = TestGroupResult(packageName, [])
@@ -102,6 +190,25 @@ func executeWorker(packageName: String, suites: Array<TestSuite>, filterService:
     testGroupResult
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws OverflowException
+ * @throws IllegalStateException
+ * @throws UnittestOptionValidationException
+ * @throws OutOfMemoryError
+ * @throws InvalidDataException
+ * @throws IllegalArgumentException
+ * @throws SocketException
+ * @throws JsonException
+ * @throws getOrThrow
+ * @throws UnittestCliOptionsFormatException
+ * @throws IllegalSynchronizationStateException
+ * @throws ArithmeticException
+ * @throws Exception
+ * @throws ProcessException
+ */
 private func registerTestSuites(packageName: String, suites: Array<TestSuite>, filterService: FilterService): Array<TestSuite> {
     let suitesToBeExecuted = suites |> filter { suite: TestSuite =>
         let suiteKey = SuiteFilterKey.fromTestSuite(packageName, suite)
@@ -132,6 +239,20 @@ enum TestProcessKind {
     | Main
     | Worker(Int64, Int64, Int64, UInt16)
 
+    /**
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws IllegalMemoryException
+     * @throws UnittestCliOptionsFormatException
+     * @throws Exception
+     */
     static func fromDefaultConfiguration(): TestProcessKind {
         let config = defaultConfiguration()
         match ((
@@ -218,6 +339,10 @@ class WorkerProcess {
     ) {}
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     func waitCasesRegistration() {
         match (transportChannel?.receive(limit: 1u64).next()) {
             case Some(Some(p: TestCasesRegistrationPart)) => progressQueue?.add(TestProgressData(p, workerId: workerId))
@@ -227,10 +352,27 @@ class WorkerProcess {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func commitCasesRegistrationFailure() {
         progressQueue?.add(TestProgressData(TestCasesRegistrationFailed(), workerId: workerId))
     }
  
+    /**
+     * @throws OutOfMemoryError
+     * @throws TimeoutException
+     * @throws InvalidDataException
+     * @throws ProcessException
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     */
     private func waitExecution(): BunchExecutionResult {
         let messages: Array<ExecutionResultPart> = if (let Some(transportChannel) <- transportChannel) {
             transportChannel.receive() |> inspect { part: ExecutionResultPart =>
@@ -263,10 +405,29 @@ class WorkerProcess {
         }
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     private func continueExecution() {
         transportChannel?.send(ExecutionPermitPart())
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     private func merge(
         bunchResults: Array<ExecutionResult>, output: WorkerOutput
     ): (beforeTests: CapturedOutput, lastOutput: CapturedOutput) {
@@ -300,6 +461,17 @@ class WorkerProcess {
         (outputBeforeTests, outputAfterTests)
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws FSException
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     static func create(ctx: MainExecutionCtx, workerId: Int64, progressQueue: ?ConcurrentLinkedQueue<UTProgress>,
         connect: () -> TransportChannel): WorkerProcess {
         let process = Process.start(ctx)
@@ -313,6 +485,21 @@ class WorkerProcess {
         return WorkerProcess(process, connection, progressQueue, ctx.outputReporter, workerId)
     }
 
+    /**
+     * @throws SocketException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     * @throws ProcessException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     static func createAndRegister(workerId: Int64, ctx: MainExecutionCtx): WorkerProcess {
         ctx.workersQuota.doWith {
             let execution = startWorker(workerId: workerId, ctx: ctx)
@@ -325,6 +512,24 @@ class WorkerProcess {
         }
     }
 
+    /**
+     * @throws TimeoutException
+     * @throws InvalidDataException
+     * @throws JsonException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws IllegalMemoryException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws SocketException
+     */
     static func executeRestarting(initialWorker: WorkerProcess, ctx: MainExecutionCtx): ExecuteRestartingResult {
         ctx.workersQuota.doWith {
             var currentTestIdx = 0
@@ -361,6 +566,21 @@ class WorkerProcess {
         }
     }
 
+    /**
+     * @throws SocketException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws ProcessException
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func startWorker(workerId!: Int64, startingTestIdx!: Int64 = 0, ctx!: MainExecutionCtx): WorkerProcess {
         let workerCommand = ctx.executeCommand.withArgs(
             "--${KeyInternalWorkerId().name}=${workerId}",
@@ -370,6 +590,11 @@ class WorkerProcess {
         Framework.initWorker(ctx.withCommand(workerCommand), workerId: workerId)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     private static func commitCrashResult(
         bunchResults: HashMap<TestSuiteId, TestSuiteResult>,
         crashResult: ExecutionResult
@@ -389,6 +614,11 @@ class WorkerProcess {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     private static func commitResults(
         bunchResults: HashMap<TestSuiteId, TestSuiteResult>,
         results: Array<ExecutionResult>
@@ -401,6 +631,13 @@ class WorkerProcess {
         }
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws Exception
+     */
     private static func mkCrashResult(header: ExecutionResultHeader, output: CapturedOutput, code: Int64): ExecutionResult {
         let crash = RunStepResult(0, header.startTime, crashStepKindOf(header), Failure([CrashedCheckResult(code)]))
         let caseResult = match (header) {
@@ -416,6 +653,9 @@ class WorkerProcess {
         result
     }
 
+    /**
+     * @throws Exception
+     */
     private static func crashStepKindOf(header: ExecutionResultHeader): StepKind {
         match (header) {
             case header: LifecycleExecutionResultHeader => Lifecycle(header.step)
@@ -424,6 +664,12 @@ class WorkerProcess {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     private static func reportWorkerInternalCrash(output: WorkerOutput, code: Int64): Nothing {
         printDebugOutput(output)
         throw Exception(
@@ -432,6 +678,11 @@ class WorkerProcess {
         )
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     private static func printDebugOutput(output: WorkerOutput): Unit {
         eprintln("STDOUT:")
         for (out in output.stdouts) {
@@ -451,6 +702,12 @@ class WorkerProcess {
 }
 
 abstract class ExecutionResultPart <: Serializable<ExecutionResultPart> {
+    /**
+     * @throws InvalidDataException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public func serializeInternal(): DataModel {
         match (this) {
             case thiz: TestCaseExecutionResultHeader =>
@@ -485,6 +742,19 @@ abstract class ExecutionResultPart <: Serializable<ExecutionResultPart> {
         }
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws TimeParseException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): ExecutionResultPart {
         let dms = dm.asStruct()
         match (Int8.deserialize(dms.get("tag"))) {
@@ -600,6 +870,11 @@ private struct ExecutionResult {
         this.body.stepResult.addOutput(output)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     static func combine(parts: Array<ExecutionResultPart>): ExecutionsParseResult {
         if (parts.isEmpty()) {
             return ParsedComplete([])

@@ -24,6 +24,12 @@ public class DriverManager {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws SqlException
+     */
     public static func register(driverName: String, driver: Driver): Unit {
         synchronized(_regMut) {
             if (_drivers.contains(driverName)) {
@@ -36,6 +42,10 @@ public class DriverManager {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public static func deregister(driverName: String): Unit {
         synchronized(_regMut) {
             _drivers.remove(driverName)
@@ -46,6 +56,10 @@ public class DriverManager {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public static func getDriver(driverName: String): Option<Driver> {
         synchronized(_regMut) {
             _drivers.get(driverName)
@@ -55,6 +69,11 @@ public class DriverManager {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public static func drivers(): Array<String> {
         synchronized(_regMut) {
             let arr = _drivers.keys().toArray()

@@ -11,6 +11,10 @@ import std.deriving.api.Identifier
 import std.ast.*
 import std.collection.*
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func collectHashMap<K, V>(it: Iterable<(K, V)>): HashMap<Identifier, V> where K <: Decl {
     let map = HashMap<Identifier, V>()
 
@@ -21,6 +25,10 @@ func collectHashMap<K, V>(it: Iterable<(K, V)>): HashMap<Identifier, V> where K 
     return map
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func associateBy<T>(key: (T) -> Identifier): (Iterable<T>) -> HashMap<Identifier, T> {{ it =>
     let map = HashMap<Identifier, T>()
 
@@ -66,6 +74,10 @@ class MapNotNoneIterator<F, T> <: Iterator<T> {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func collectTokens(iterator: Iterable<Token>): Tokens {
     Tokens(iterator |> collectArray)
 }

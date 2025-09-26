@@ -24,6 +24,9 @@ class DeltaMacroExpander {
         get() { EXPANDED_FUNC_NAME }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private static func deltaIndex(args: Array<Expr>, input: Tokens) {
         let argsLastInd = args.size - 1
         if (argsLastInd < 0) {
@@ -32,6 +35,11 @@ class DeltaMacroExpander {
         input.size - args[argsLastInd].toTokens().size - 2
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     private static func isDeltaSuitable(args: Array<Expr>, input: Tokens): Bool {
         let deltaIndex = deltaIndex(args, input)
 
@@ -40,6 +48,11 @@ class DeltaMacroExpander {
             input[deltaIndex + 1].toTokens().toString() == ":"
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     static func areTwoArgsSuitable(args: Array<Expr>, input: Tokens): Bool {
         if (args.size != 2) {
             return false
@@ -47,6 +60,18 @@ class DeltaMacroExpander {
         return isDeltaSuitable(args, input)
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws ParseASTException
+     * @throws ASTException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MacroException
+     */
     static func expandCompareExpr(args: Array<Expr>, macroName: String): (FullMacroExpansion, OpLiteral) {
         let expr = parseDeltaAssertFirstArg(args[0].toTokens(), macroName)
         let (l, r) = (quote(($(expr.leftExpr))), quote(($(expr.rightExpr))))
@@ -67,6 +92,11 @@ class DeltaMacroExpander {
         (deltaCompareTokens, opLiteral)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     static func areThreeArgsSuitable(args: Array<Expr>, input: Tokens): Bool {
         if (args.size != 3) {
             return false
@@ -74,11 +104,29 @@ class DeltaMacroExpander {
         return isDeltaSuitable(args, input)
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func expandTwoArgsIntoEq(args: Array<Expr>): (FullMacroExpansion, OpLiteral) {
         let funcName = Token(IDENTIFIER, EXPANDED_FUNC_NAME)
         (quote($funcName($(args[0]), $(args[1]), delta: $(args[2]), cmpType: "EQ")), "==") 
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws MacroException
+     */
     private static func parseDeltaAssertFirstArg(input: Tokens, macroName: String): BinaryExpr {
         try {
             let expr = BinaryExpr(input)

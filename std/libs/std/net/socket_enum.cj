@@ -52,6 +52,9 @@ enum SocketMode <: Equal<SocketMode> {
 }
 
 extend Duration {
+    /**
+     * @throws IllegalArgumentException
+     */
     func throwIfNegative(what: String): Duration {
         if (this < Duration.Zero) {
             throw IllegalArgumentException("${what} duration cannot be negative.")
@@ -70,6 +73,9 @@ extend Duration {
         return this
     }
 
+    /**
+     * @throws ArithmeticException
+     */
     func toNanosecondGranularity(): Duration {
         this.toNanoseconds() * Duration.nanosecond
     }

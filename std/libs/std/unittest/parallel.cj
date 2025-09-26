@@ -23,6 +23,20 @@ enum ParallelInfo {
     | NoParallel
     | Parallel(Int64)
 
+    /**
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws UnittestOptionValidationException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws UnittestCliOptionsFormatException
+     */
     static func fromDefaultConfiguration(): ParallelInfo {
         let result = if (let Some(nCores) <- defaultConfiguration().get<Int64>(KeyParallel.parallel)) {
             if (nCores < 1) {
@@ -63,6 +77,10 @@ enum ParallelInfo {
         max(1, min(MAX_N_PROCESSES, value))
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestCliOptionsFormatException
+     */
     private static func reportError(actual: String): Nothing {
         throw UnittestCliOptionsFormatException(
             OP_PARALLEL, actual: actual,
@@ -72,6 +90,12 @@ enum ParallelInfo {
         )
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func parseMultiplicationPattern(raw: String): ?Float64 {
         if (let Some(data) <- N_CORES_MULTIPLICATION_PATTERN.matcher(raw).fullMatch()) {
             Float64.parse(data.matchString(1))

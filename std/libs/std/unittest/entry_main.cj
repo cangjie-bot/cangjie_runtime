@@ -17,6 +17,9 @@ private let OP_INTERNAL_TESTRUNNER_INPUT_PATH_NAME = camelCaseToKebabCase(KeyInt
 private let OP_INTERNAL_TESTRUNNER_INPUT_PATH = "--${OP_INTERNAL_TESTRUNNER_INPUT_PATH_NAME}"
 
 extend Configuration {
+        /**
+         * @throws IndexOutOfBoundsException
+         */
     prop launchedWithTestRunner: Bool {
         get() {
             get(KeyInternalTestrunnerInputPath.internalTestrunnerInputPath).isSome()
@@ -26,6 +29,38 @@ extend Configuration {
 
 private let MAX_N_WORKERS_PER_PACKAGE = 5
 
+/**
+ * @throws IllegalFormatException
+ * @throws Exception
+ * @throws UnittestCliOptionsFormatException
+ * @throws getOrThrow
+ * @throws MockFrameworkException
+ * @throws JsonException
+ * @throws DataModelException
+ * @throws InvalidDataException
+ * @throws NoneValueException
+ * @throws ProcessException
+ * @throws IllegalSynchronizationStateException
+ * @throws SocketException
+ * @throws OutOfMemoryError
+ * @throws getOrFail
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws AssertException
+ * @throws RegexException
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws FSException
+ * @throws ArithmeticException
+ * @throws OverflowException
+ * @throws ExpectationFailedException
+ * @throws IllegalStateException
+ * @throws EnvException
+ * @throws IllegalArgumentException
+ * @throws TimeoutException
+ * @throws MockFrameworkInternalError
+ */
 public func entryMain(testPackage: TestPackage): Int64 {
     if (printUnittestHelpPageIfRequested()) {
         return 0
@@ -55,6 +90,33 @@ public func entryMain(testPackage: TestPackage): Int64 {
     }
     errorCode(result.details)
 }
+/**
+ * @throws OverflowException
+ * @throws FSException
+ * @throws DataModelException
+ * @throws InvalidDataException
+ * @throws IllegalStateException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws ProcessException
+ * @throws ArithmeticException
+ * @throws IndexOutOfBoundsException
+ * @throws getOrFail
+ * @throws TimeoutException
+ * @throws UnittestOptionValidationException
+ * @throws ConcurrentModificationException
+ * @throws RegexException
+ * @throws IllegalFormatException
+ * @throws SocketException
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ * @throws JsonException
+ * @throws UnittestCliOptionsFormatException
+ * @throws getOrThrow
+ * @throws IllegalSynchronizationStateException
+ */
 protected func testRunnerEntryMain(): Int64 {
     let nWorkers = ParallelInfo.fromDefaultConfiguration().nWorkers
     let semaphore = Semaphore(nWorkers)
@@ -93,10 +155,18 @@ private struct ExecutableTestProject <: Serializable<ExecutableTestProject> {
     ExecutableTestProject(let testModules: Array<ExecutableTestModule>) {}
     static let API_VERSION = 2
 
+    /**
+     * @throws Exception
+     */
     public func serializeInternal(): DataModel {
         throw Exception("Implemented in CJPM")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): ExecutableTestProject {
         let dms = dm as DataModelStruct ?? throw Exception("Data is expected to be a DataModelStruct")
         if (Int64.deserialize(dms.get("apiVersion")) != API_VERSION) {
@@ -107,6 +177,14 @@ private struct ExecutableTestProject <: Serializable<ExecutableTestProject> {
         )
     }
 
+    /**
+     * @throws JsonException
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws Exception
+     */
     static func fromJson(string: String): ExecutableTestProject {
         string |>
             JsonValue.fromStr |>
@@ -114,6 +192,24 @@ private struct ExecutableTestProject <: Serializable<ExecutableTestProject> {
             ExecutableTestProject.deserialize
     }
 
+    /**
+     * @throws RegexException
+     * @throws ArithmeticException
+     * @throws IllegalMemoryException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws OutOfMemoryError
+     * @throws DataModelException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws UnittestOptionValidationException
+     * @throws IllegalArgumentException
+     * @throws JsonException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     */
     static func fromDefaultConfiguration(): ExecutableTestProject {
         if (let Some(path) <- defaultConfiguration().get(KeyInternalTestrunnerInputPath.internalTestrunnerInputPath)) {
             Path(path) |> File.readFrom |> String.fromUtf8 |> ExecutableTestProject.fromJson
@@ -123,6 +219,30 @@ private struct ExecutableTestProject <: Serializable<ExecutableTestProject> {
         }
     }
 
+    /**
+     * @throws OverflowException
+     * @throws FSException
+     * @throws IllegalMemoryException
+     * @throws ConcurrentModificationException
+     * @throws RegexException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws TimeoutException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws SocketException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws JsonException
+     * @throws getOrThrow
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestCliOptionsFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     func execute(parallelCtx: ParallelCtx, reportCtx: ReportCtx): ProjectExecutionResult {
         this.testModules |> mapParallelOrdered(this.testModules.size) { testModule =>
             testModule.registerTestCases(parallelCtx, reportCtx)
@@ -141,10 +261,18 @@ private struct ExecutableTestProject <: Serializable<ExecutableTestProject> {
 private struct ExecutableTestModule <: Serializable<ExecutableTestModule> {
     ExecutableTestModule(let name: String, let testPackages: Array<ExecutableTestPackage>) {}
 
+    /**
+     * @throws Exception
+     */
     public func serializeInternal(): DataModel {
         throw Exception("Implemented in CJPM")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): ExecutableTestModule {
         let dms = dm as DataModelStruct ?? throw Exception("Data is expected to be a DataModelStruct")
         ExecutableTestModule(
@@ -153,12 +281,51 @@ private struct ExecutableTestModule <: Serializable<ExecutableTestModule> {
         )
     }
 
+    /**
+     * @throws SocketException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws FSException
+     * @throws ProcessException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func registerTestCases(parallelCtx: ParallelCtx, reportCtx: ReportCtx): Unit {
         this.testPackages |> mapParallelOrdered(this.testPackages.size) { testPackage =>
             testPackage.registerTestCases(parallelCtx, reportCtx)
         } |> collectArray
     }
 
+    /**
+     * @throws OverflowException
+     * @throws FSException
+     * @throws IllegalMemoryException
+     * @throws ConcurrentModificationException
+     * @throws RegexException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws TimeoutException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws SocketException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws JsonException
+     * @throws getOrThrow
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestCliOptionsFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     func execute(parallelCtx: ParallelCtx, reportCtx: ReportCtx): ModuleExecutionResult {
         let packageResults = ModuleExecutionResult(name)
         this.testPackages |> mapParallelOrdered(this.testPackages.size) { testPackage =>
@@ -174,10 +341,19 @@ private struct ExecutableTestModule <: Serializable<ExecutableTestModule> {
 private struct ExecutableTestPackage <: Serializable<ExecutableTestPackage> {
     ExecutableTestPackage(let name: String, let executeCommand: TestPackageExecuteCommand) {}
 
+    /**
+     * @throws Exception
+     */
     public func serializeInternal(): DataModel {
         throw Exception("Implemented in CJPM")
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): ExecutableTestPackage {
         let dms = dm as DataModelStruct ?? throw Exception("Data is expected to be a DataModelStruct")
         ExecutableTestPackage(
@@ -188,6 +364,13 @@ private struct ExecutableTestPackage <: Serializable<ExecutableTestPackage> {
 
     private let registeredWorkers = ArrayList<WorkerProcess>()
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     private func buildExecutionContext(parallelCtx: ParallelCtx, reportCtx: ReportCtx): MainExecutionCtx {
         let inheritingCommand = this.executeCommand
             .overridingCurrentEnv()
@@ -201,10 +384,43 @@ private struct ExecutableTestPackage <: Serializable<ExecutableTestPackage> {
         )
     }
 
+    /**
+     * @throws SocketException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws FSException
+     * @throws ProcessException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func registerTestCases(parallelCtx: ParallelCtx, reportCtx: ReportCtx): Unit {
         registeredWorkers.add(all: initWorkersMain(buildExecutionContext(parallelCtx, reportCtx)))
     }
 
+    /**
+     * @throws TimeoutException
+     * @throws InvalidDataException
+     * @throws JsonException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws Exception
+     * @throws ProcessException
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     func execute(parallelCtx: ParallelCtx, reportCtx: ReportCtx): PackageExecutionResult {
         let ctx = buildExecutionContext(parallelCtx, reportCtx)
         let result = PackageExecutionResult(executeMain(registeredWorkers.toArray(), this.name, ctx))
@@ -219,10 +435,19 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
         public let env: Map<String, String>
     ) {}
 
+    /**
+     * @throws Exception
+     */
     public func serializeInternal(): DataModel {
         throw Exception("Implemented in CJPM")
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): TestPackageExecuteCommand {
         let dms = dm as DataModelStruct ?? throw Exception("Data is expected to be a DataModelStruct")
         TestPackageExecuteCommand(
@@ -232,6 +457,12 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
         )
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func overridingCurrentEnv(): TestPackageExecuteCommand {
         let env = HashMap<String, String>()
         try {
@@ -241,6 +472,12 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
         TestPackageExecuteCommand(command, args, env)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func withJsonConfiguration(): TestPackageExecuteCommand {
         let args = ArrayList<String>()
         args.add(all: this.args)
@@ -251,6 +488,13 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
     }
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     func withRunnerOption(): TestPackageExecuteCommand {
         for (arg in Process.currentArgs where arg.contains(OP_INTERNAL_TESTRUNNER_INPUT_PATH)) {
             return TestPackageExecuteCommand(command, args + arg, env)
@@ -258,6 +502,10 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
         throw Exception("Expected test runner input")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func withArgs(newArgs: Array<String>): TestPackageExecuteCommand {
         let args = ArrayList<String>()
         args.add(all: this.args)
@@ -265,6 +513,12 @@ struct TestPackageExecuteCommand <: Serializable<TestPackageExecuteCommand> {
         TestPackageExecuteCommand(command, args.toArray(), env)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws ProcessException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func fromCurrentProcess(): TestPackageExecuteCommand {
         let env = HashMap<String, String>()
         try {
@@ -285,6 +539,28 @@ struct ReportCtx {
 class PerPackageReporter {
     PerPackageReporter(private let format: ?ReportFormat, private let outputReporter: TestOutputReporter) {}
 
+    /**
+     * @throws OverflowException
+     * @throws FSException
+     * @throws IllegalMemoryException
+     * @throws ConcurrentModificationException
+     * @throws RegexException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws DataModelException
+     * @throws JsonException
+     * @throws getOrThrow
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestCliOptionsFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     func printIntermediateResult(executionResult: PackageExecutionResult) {
         let pp = TerminalPrettyPrinter.fromDefaultConfiguration()
         pp.exclusive { pp =>
@@ -298,6 +574,20 @@ class PerPackageReporter {
     }
 }
 
+/**
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws IllegalMemoryException
+ * @throws UnittestCliOptionsFormatException
+ * @throws Exception
+ */
 private func errorCode(details: Details): Int64 {
     if (TestProcessKind.fromDefaultConfiguration().isWorker) {
         0
@@ -306,10 +596,38 @@ private func errorCode(details: Details): Int64 {
     }
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws UnittestCliOptionsFormatException
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ */
 private func needStartWorker(tests: Array<TestSuite>, outputReporter: TestOutputReporter): Bool {
     isParallelEnabled() || deathAwareEnabled() || anyTimeout(tests) || outputReporter.capture
 }
 
+/**
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws UnittestOptionValidationException
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws UnittestCliOptionsFormatException
+ */
 private func isParallelEnabled(): Bool {
     let parallelInfo = ParallelInfo.fromDefaultConfiguration()
     match (parallelInfo) {
@@ -318,10 +636,38 @@ private func isParallelEnabled(): Bool {
     }
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws UnittestCliOptionsFormatException
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ */
 private func deathAwareEnabled(): Bool {
     defaultConfiguration().get(KeyDeathAware.deathAware) ?? false
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws UnittestCliOptionsFormatException
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ */
 private func anyTimeout(suites: Array<TestSuite>): Bool {
     if (defaultConfiguration().timeout.isSome()) {
         return true

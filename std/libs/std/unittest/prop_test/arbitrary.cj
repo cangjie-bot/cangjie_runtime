@@ -138,6 +138,10 @@ extend Float64 <: Arbitrary<Float64> {
 
 
 extend Rune <: Arbitrary<Rune> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func arbitrary(random: RandomSource): Generator<Rune> {
         Generators.generate { random.suggestRune() }
     }
@@ -145,6 +149,9 @@ extend Rune <: Arbitrary<Rune> {
 
 let SIZE_UPPER_LIMIT = 4000
 
+/**
+ * @throws OverflowException
+ */
 func sizeGenerator(random: RandomSource): Generator<Int64> {
     func suggestSizeUpTo(max: Int64): Int64 {
         var size = random.nextInt64()
@@ -264,6 +271,9 @@ func sizeGenerator(random: RandomSource): Generator<Int64> {
 
 
 extend<T> Array<T> <: Arbitrary<Array<T>> where T <: Arbitrary<T> {
+    /**
+     * @throws OverflowException
+     */
     public static func arbitrary(random: RandomSource): Generator<Array<T>> {
         let elementGenerator = T.arbitrary(random)
         let sizeGenerator = sizeGenerator(random)
@@ -284,6 +294,10 @@ extend<T> Array<T> <: Arbitrary<Array<T>> where T <: Arbitrary<T> {
 
 
 extend<T> ArrayList<T> <: Arbitrary<ArrayList<T>> where T <: Arbitrary<T> {
+    /**
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     */
     public static func arbitrary(random: RandomSource): Generator<ArrayList<T>> {
         let elementGenerator = T.arbitrary(random)
         let sizeGenerator = sizeGenerator(random)
@@ -304,6 +318,11 @@ extend<T> ArrayList<T> <: Arbitrary<ArrayList<T>> where T <: Arbitrary<T> {
 
 
 extend<T> HashSet<T> <: Arbitrary<HashSet<T>> where T <: Arbitrary<T> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public static func arbitrary(random: RandomSource): Generator<HashSet<T>> {
         let elementGenerator = T.arbitrary(random)
         let sizeGenerator = sizeGenerator(random)
@@ -332,6 +351,11 @@ extend<T> HashSet<T> <: Arbitrary<HashSet<T>> where T <: Arbitrary<T> {
 
 
 extend<K, V> HashMap<K, V> <: Arbitrary<HashMap<K, V>> where K <: Arbitrary<K>, V <: Arbitrary<V> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     public static func arbitrary(random: RandomSource): Generator<HashMap<K, V>> {
         let keyGenerator = K.arbitrary(random)
         let valueGenerator = V.arbitrary(random)
@@ -364,6 +388,10 @@ extend<K, V> HashMap<K, V> <: Arbitrary<HashMap<K, V>> where K <: Arbitrary<K>, 
 
 
 extend String <: Arbitrary<String> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func arbitrary(random: RandomSource): Generator<String> {
         Generators.mapped<Array<Rune>, String>(random) { it: Array<Rune> => String(it) }
     }

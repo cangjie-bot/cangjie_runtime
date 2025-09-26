@@ -11,14 +11,47 @@ import std.deriving.api.*
 import std.ast.*
 import std.collection.*
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Error
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func resolveFields(decl: ClassDecl): Array<(VarDecl, ?TypeNode)> {
     resolveFields(decl.body)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Error
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func resolveFields(decl: StructDecl): Array<(VarDecl, ?TypeNode)> {
     resolveFields(decl.body)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Error
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func resolveFields(body: Body): Array<(VarDecl, ?TypeNode)> {
     let classScope = Scope(None, kind: ClassLikeScope)
     bodyDecl(body, classScope)
@@ -32,12 +65,34 @@ func resolveFields(body: Body): Array<(VarDecl, ?TypeNode)> {
         } |> collectArray
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 func blockType(block: Block, scope: Scope): TypeNode {
     let blockScope = Scope(scope)
     flow(block.nodes, blockScope)
     return blockScope.scopeType
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func callType(call: CallExpr, scope: Scope): ?TypeNode {
     match (constExprType(call.callFunc, scope)) {
         case Some(f: FuncType) => return f.returnType
@@ -53,6 +108,17 @@ func callType(call: CallExpr, scope: Scope): ?TypeNode {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func spawnType(s: SpawnExpr, scope: Scope): ?TypeNode {
     let t = lambdaType(s.lambdaExpr, scope) ?? return None
     let funcType = t as FuncType ?? return None
@@ -60,6 +126,17 @@ func spawnType(s: SpawnExpr, scope: Scope): ?TypeNode {
     return myParseType(quote(Future<$resultType>))
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 func flow(nodes: Iterable<Node>, blockScope: Scope): Unit {
     var lastExprType: ?TypeNode = None
 
@@ -78,6 +155,17 @@ func flow(nodes: Iterable<Node>, blockScope: Scope): Unit {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ */
 public func bodyDecl(body: Body, classScope: Scope): Unit {
     for (decl in body.declsUnwrapped()) {
         match (decl) {
@@ -121,12 +209,34 @@ public func bodyDecl(body: Body, classScope: Scope): Unit {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 func constructorDecl(c: PrimaryCtorDecl, parent: Scope): Unit {
     let scope = Scope(parent, kind: FuncScope)
     scope.appendParams(c.funcParams)
     flow(c.block.nodes, scope)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ */
 func funcDecl(f: FuncDecl, parent: Scope): Unit {
     let returnType = if (f.colon.kind == TokenKind.COLON) {
         f.declType
@@ -146,6 +256,9 @@ func funcDecl(f: FuncDecl, parent: Scope): Unit {
 }
 
 extend Scope {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func appendParams(funcParams: Iterable<FuncParam>): Unit {
         let parent = root
         for (p in funcParams) {
@@ -153,6 +266,9 @@ extend Scope {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func append(p: FuncParam, parent: ?Scope): Unit {
         if (p.identifier.kind == TokenKind.IDENTIFIER) {
             let id = Identifier(p.identifier)
@@ -166,6 +282,17 @@ extend Scope {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ */
 func varDecl(a: VarDecl, scope: Scope): Unit {
     if (a.identifier.kind != TokenKind.IDENTIFIER) {
         return
@@ -191,6 +318,17 @@ func varDecl(a: VarDecl, scope: Scope): Unit {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 func propDecl(p: PropDecl, scope: Scope): Unit {
     if (let Some(root) <- scope.root) {
         root.append(Identifier(p.identifier), p.declType)
@@ -206,6 +344,17 @@ func propDecl(p: PropDecl, scope: Scope): Unit {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 func propSetter(p: PropDecl, setter: FuncDecl, scope: Scope): Unit {
     let newScope = Scope(scope, kind: FuncScope)
     if (setter.funcParams.size != 1) {
@@ -217,6 +366,17 @@ func propSetter(p: PropDecl, setter: FuncDecl, scope: Scope): Unit {
     flow(setter.block.nodes, newScope)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ */
 func assign(assign: AssignExpr, scope: Scope): Unit {
     let target = assign.leftExpr
     if (target is WildcardExpr) {
@@ -234,6 +394,17 @@ func assign(assign: AssignExpr, scope: Scope): Unit {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func memberAccess(member: MemberAccess, scope: Scope): ?TypeNode {
     if (let Some(item) <- extractOptionType(member)) {
         return item
@@ -245,6 +416,9 @@ func memberAccess(member: MemberAccess, scope: Scope): ?TypeNode {
     return None
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func memberAccess(ref: RefExpr, scope: Scope): ?TypeNode {
     match (scope.lookup(ref.identifier)) {
         case Unresolved(_) => None
@@ -253,6 +427,17 @@ func memberAccess(ref: RefExpr, scope: Scope): ?TypeNode {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func extractOptionType(member: MemberAccess): ?TypeNode {
     match (member.baseExpr) {
         case ref: RefExpr where isOption(ref) &&

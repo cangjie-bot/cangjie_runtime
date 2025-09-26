@@ -18,6 +18,17 @@ public class InterfaceTypeInfo <: TypeInfo {
         super(cp)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalTypeException
+     */
     public redef static func get(qualifiedName: String): InterfaceTypeInfo {
         match (TypeInfo.get(qualifiedName)) {
             case typ: InterfaceTypeInfo => return typ
@@ -25,6 +36,16 @@ public class InterfaceTypeInfo <: TypeInfo {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     * @throws IllegalTypeException
+     */
     public redef static func of(a: Any): InterfaceTypeInfo {
         match (TypeInfo.of(a)) {
             case typ: InterfaceTypeInfo => return typ
@@ -32,6 +53,16 @@ public class InterfaceTypeInfo <: TypeInfo {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     * @throws IllegalTypeException
+     */
     public redef static func of<T>(): InterfaceTypeInfo {
         match (TypeInfo.of<T>()) {
             case typ: InterfaceTypeInfo => return typ
@@ -40,6 +71,16 @@ public class InterfaceTypeInfo <: TypeInfo {
     }
 
 
+        /**
+         * @throws IllegalSynchronizationStateException
+         * @throws InfoNotFoundException
+         * @throws IllegalMemoryException
+         * @throws NoneValueException
+         * @throws ReflectException
+         * @throws OutOfMemoryError
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop sealedSubtypes: Collection<TypeInfo> {
         get() {
             match (_sealedSubtypes) {
@@ -56,11 +97,25 @@ public class InterfaceTypeInfo <: TypeInfo {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func isSealed(): Bool {
         containsModifier(modifiers, ModifierInfo.Sealed)
     }
 }
 
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws InfoNotFoundException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws ReflectException
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func findSubtypeFromPackage<T>(curType: TypeInfo): Array<T> where T <: TypeInfo {
     func getSubtypes<T>(typeInfos: Collection<TypeInfo>): ArrayList<T> {
         let subtypes = ArrayList<T>()

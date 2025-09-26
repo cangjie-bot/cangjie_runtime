@@ -48,10 +48,16 @@ public struct Position <: ToBytes {
     }
 
     
+    /**
+     * @throws OutOfMemoryError
+     */
     public func dump(): Unit {
         print("fileID: ${fileID}, line: ${line}, column: ${column}\n")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func toBytes(): Array<UInt8> {
         var b1: Array<UInt8> = castUInt32ToBytes(this.fileID)
         var b2: Array<UInt8> = castInt32ToBytes(this.line)
@@ -60,6 +66,9 @@ public struct Position <: ToBytes {
         return concatBytes(b12, b3)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func toBytes(arr: Array<UInt8>, start1: Int64) {
         var start = start1
         start = castUInt32ToBytes(arr, start, this.fileID)
@@ -76,6 +85,9 @@ public struct Position <: ToBytes {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 func getMacroPosition(macroObjPtr: CPointer<Unit>) {
     var fileID: UInt32 = 0
     var line: Int32 = 0

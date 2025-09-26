@@ -118,6 +118,11 @@ public class Matchers {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public static func argThat<T>(listener: ValueListener<T>, predicate: (T) -> Bool): TypedMatcher<T> {
         if (let Some(listener) <- (listener as ListenerInternal)) {
             return PredicateMatcher<T>(predicate, expectedBooleanValue: true, listener: Some(listener))
@@ -167,6 +172,11 @@ public class Matchers {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public static func capture<T>(listener: ValueListener<T>): TypedMatcher<T> {
         if (let Some(listener) <- (listener as ListenerInternal)) {
             return PredicateMatcher<T>({any: T => true}, listener: listener)
@@ -182,6 +192,11 @@ public class Matchers {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public static func default<T>(target: T): TypedMatcher<T> {
         match (target) {
             case equatable: Equatable<T> =>

@@ -26,6 +26,9 @@ public enum DayOfWeek <: ToString & Equatable<DayOfWeek> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func of(dayOfWeek: Int64): DayOfWeek {
         return match (dayOfWeek) {
             case 0 => Sunday
@@ -66,6 +69,9 @@ public enum DayOfWeek <: ToString & Equatable<DayOfWeek> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func toString(): String {
         return LONG_DAY_OF_WEEK_FORM[this.toInteger()]
     }
@@ -90,10 +96,16 @@ public enum DayOfWeek <: ToString & Equatable<DayOfWeek> {
         return this.toInteger() != r.toInteger()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public operator func +(n: Int64): DayOfWeek {
         return DayOfWeek.of((this.toInteger() + n % DAYS_PER_WEEK + DAYS_PER_WEEK) % DAYS_PER_WEEK)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public operator func -(n: Int64): DayOfWeek {
         return DayOfWeek.of((this.toInteger() - n % DAYS_PER_WEEK + DAYS_PER_WEEK) % DAYS_PER_WEEK)
     }
@@ -116,6 +128,9 @@ public enum Month <: ToString & Equatable<Month> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func of(mon: Int64): Month {
         return match (mon) {
             case 1 => January
@@ -166,6 +181,9 @@ public enum Month <: ToString & Equatable<Month> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func toString(): String {
         return LONG_MONTH_FORM[this.toInteger() - 1]
     }
@@ -175,6 +193,9 @@ public enum Month <: ToString & Equatable<Month> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public operator func +(n: Int64): Month {
         return Month.of((this.toInteger() - 1 + n % MONTHS_PER_YEAR + MONTHS_PER_YEAR) % MONTHS_PER_YEAR + 1)
     }
@@ -184,6 +205,9 @@ public enum Month <: ToString & Equatable<Month> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public operator func -(n: Int64): Month {
         return Month.of((this.toInteger() - 1 - n % MONTHS_PER_YEAR + MONTHS_PER_YEAR) % MONTHS_PER_YEAR + 1)
     }

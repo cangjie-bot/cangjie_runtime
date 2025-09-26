@@ -41,6 +41,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public PrettyPrinter(let indentationSize!: UInt64 = 4, let startingIndent!: UInt64 = 0) {
         currentIndent = " " * Int64(indentationSize) * Int64(startingIndent)
     }
@@ -85,6 +88,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public func indent(body: () -> Unit): PrettyPrinter {
         indent(1, body)
     }
@@ -100,6 +106,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public func indent(indents: UInt64, body: () -> Unit): PrettyPrinter {
         customOffset(indents * indentationSize, body)
     }
@@ -118,6 +127,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public func customOffset(symbols: UInt64, body: () -> Unit): PrettyPrinter {
         let savedIndent = currentIndent
         currentIndent += " " * Int64(symbols)
@@ -201,6 +213,9 @@ public abstract class PrettyPrinter {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public func appendCentered(text: String, space: UInt64): PrettyPrinter {
         let actualSize = UInt64(text.size)
         let leftSpaces = (space - actualSize) / 2
@@ -208,16 +223,25 @@ public abstract class PrettyPrinter {
         appendPadded(text, leftSpaces, space)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public func appendLeftAligned(text: String, space: UInt64): PrettyPrinter {
         appendPadded(text, 0, space)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public func appendRightAligned(text: String, space: UInt64): PrettyPrinter {
         let actualSize = UInt64(text.size)
         let dd = space - actualSize
         appendPadded(text, dd, space)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     private func appendPadded(text: String, leftSpaces: UInt64, space: UInt64): PrettyPrinter {
         if (UInt64(text.size) >= space) {
             return append(text)
@@ -278,14 +302,24 @@ enum PrettyPrintableTextChunk {
 
 
 public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
+    /**
+     * @throws IllegalArgumentException
+     */
     PrettyText(let data: ArrayList<PrettyPrintableTextChunk>) {}
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init() {
         this(ArrayList())
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public init(string: String) {
         this()
         put(string)
@@ -293,6 +327,9 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func of<PP>(pp: PP) where PP <: PrettyPrintable {
         let result = PrettyText()
         pp.pprint(result)
@@ -304,15 +341,27 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
         data.isEmpty()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func put(s: String): Unit {
         if (!s.isEmpty()) {
             data.add(PPTextPiece(s))
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func setColor(color: Color): Unit {
         data.add(PPColorSwitch(color))
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func putNewLine(): Unit {
         data.add(PPNewLine)
     }
@@ -332,6 +381,10 @@ public class PrettyText <: PrettyPrinter & PrettyPrintable & ToString {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let result = StringBuilder()
         for (element in data) {

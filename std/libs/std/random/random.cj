@@ -46,6 +46,9 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public init() {
         this(getSeed())
     }
@@ -55,6 +58,9 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public init(seed: UInt64) {
         this._seed = seed
         nextGaussian = Option<Float64>.None
@@ -81,6 +87,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Deprecated["Use member function `public func nextBits(bits: UInt64): UInt64` instead."]
     public func next(bits: UInt64): UInt64 {
         if (bits > 64) {
@@ -113,6 +123,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextBits(bits: UInt64): UInt64 {
         if (bits > 64) {
             throw IllegalArgumentException("Bits must be less than or equal to 64.")
@@ -143,6 +157,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextBool(): Bool {
         return nextBits(1) != 0
     }
@@ -152,6 +170,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func nextUInt8(): UInt8 {
         return UInt8(nextBits(8))
@@ -162,6 +184,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func nextUInt16(): UInt16 {
         return UInt16(nextBits(16))
@@ -172,6 +198,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func nextUInt32(): UInt32 {
         return UInt32(nextBits(32))
@@ -182,6 +212,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextUInt64(): UInt64 {
         return nextBits(64)
     }
@@ -191,6 +225,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func nextInt8(): Int8 {
         return Int8(nextBits(8))
@@ -201,6 +239,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func nextInt16(): Int16 {
         return Int16(nextBits(16))
@@ -211,6 +253,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func nextInt32(): Int32 {
         return Int32(nextBits(32))
@@ -221,6 +267,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func nextInt64(): Int64 {
         return Int64(nextBits(64))
@@ -235,6 +285,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextUInt8(upper: UInt8): UInt8 {
         if (upper == 0) {
             throw IllegalArgumentException("Upper must be positive, got: ${upper}.")
@@ -251,6 +305,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextUInt16(upper: UInt16): UInt16 {
         if (upper == 0) {
             throw IllegalArgumentException("Upper must be positive, got: ${upper}.")
@@ -267,6 +325,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextUInt32(upper: UInt32): UInt32 {
         if (upper == 0) {
             throw IllegalArgumentException("Upper must be positive, got: ${upper}.")
@@ -283,6 +345,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextUInt64(upper: UInt64): UInt64 {
         if (upper == 0) {
             throw IllegalArgumentException("Upper must be positive, got: ${upper}.")
@@ -299,6 +365,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextInt8(upper: Int8): Int8 {
         if (upper <= 0) {
             throw IllegalArgumentException("Upper must be positive, got: ${upper}.")
@@ -319,6 +389,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextInt16(upper: Int16): Int16 {
         if (upper <= 0) {
             throw IllegalArgumentException("Upper must be positive, got: ${upper}.")
@@ -339,6 +413,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextInt32(upper: Int32): Int32 {
         if (upper <= 0) {
             throw IllegalArgumentException("Upper must be positive, got: ${upper}.")
@@ -359,6 +437,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextInt64(upper: Int64): Int64 {
         if (upper <= 0) {
             throw IllegalArgumentException("Upper must be positive, got: ${upper}.")
@@ -375,6 +457,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Deprecated["Use member function `public func nextBytes(arr: Array<Byte>): Unit` instead."]
     public func nextUInt8s(array: Array<UInt8>): Array<UInt8> {
         for (i in 0..array.size) {
@@ -384,6 +470,10 @@ public class Random {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func nextBytes(bytes: Array<Byte>): Unit {
         for (i in 0..bytes.size) {
             bytes[i] = this.nextUInt8()
@@ -391,6 +481,10 @@ public class Random {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextBytes(length: Int32): Array<Byte> {
         if (length <= 0) {
             throw IllegalArgumentException("Length must be positive.")
@@ -403,6 +497,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextFloat16(): Float16 {
         return Float16(Float64(nextBits(11)) / Float64(1 << 11))
     }
@@ -412,6 +510,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextFloat32(): Float32 {
         return Float32(Float64(nextBits(24)) / Float64(1 << 24))
     }
@@ -421,10 +523,17 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextFloat64(): Float64 {
         return Float64(nextBits(53)) / Float64(1 << 53)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func returnNext(bits: UInt64): UInt64 {
         var yy = mt[mti]
         mti++
@@ -442,6 +551,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextGaussianFloat16(mean!: Float16 = 0.0, sigma!: Float16 = 1.0): Float16 {
         return Float16(gaussian()) * sigma + mean
     }
@@ -453,6 +566,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextGaussianFloat32(mean!: Float32 = 0.0, sigma!: Float32 = 1.0): Float32 {
         return Float32(gaussian()) * sigma + mean
     }
@@ -464,6 +581,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func nextGaussianFloat64(mean!: Float64 = 0.0, sigma!: Float64 = 1.0): Float64 {
         return gaussian() * sigma + mean
     }
@@ -472,6 +593,10 @@ public class Random {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func gaussian(): Float64 {
         match (nextGaussian) {
             case Some(v) =>
@@ -488,6 +613,9 @@ public class Random {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 func initialMtArray(mt: Array<UInt64>): Array<UInt64> {
     var mti = 1 

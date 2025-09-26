@@ -15,6 +15,11 @@ public sealed abstract class ActionSelector {
         let sc: Scenario
     ) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func mustBeSpy(actionName: String) {
         match (sc.parentChain.objectKind) {
             case Spy => ()
@@ -22,24 +27,53 @@ public sealed abstract class ActionSelector {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func throwsImpl(exception: Exception) {
         sc.setAction(Action.Throw { exception })
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func throwsFactoryImpl(exceptionFactory: () -> Exception) {
         requireVerifiable("throws(exceptionFactory)")
         sc.setAction(Action.Throw(exceptionFactory))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func returnsImpl<TRet>(value: TRet) {
         sc.setAction(Action.Return { value })
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func returnsFactoryImpl<TRet>(factory: () -> TRet) {
         requireVerifiable("returns(valueFactory)")
         sc.setAction(Action.Return { factory() })
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func returnsCollectionImpl<TRet>(values: Collection<TRet>) {
         requireVerifiable("returnsConsecutively")
         let copy = values.toArray()
@@ -51,10 +85,21 @@ public sealed abstract class ActionSelector {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func fails(): Unit {
         sc.setAction(Action.Fail)
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     */
     private func requireVerifiable(actionName: String) {
         if (!sc.parentChain.isVerifiable()) {
             StubModeViolation().statefulStubAction(actionName, sc.parentChain)
@@ -85,6 +130,11 @@ public class MethodActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func throws(exception: Exception): CardinalitySelector<MethodActionSelector<TRet>> {
         throwsImpl(exception)
         cardinalitySelector()
@@ -93,6 +143,12 @@ public class MethodActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func throws(exceptionFactory: () -> Exception): CardinalitySelector<MethodActionSelector<TRet>> {
         throwsFactoryImpl(exceptionFactory)
         cardinalitySelector()
@@ -101,6 +157,11 @@ public class MethodActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returns(value: TRet): CardinalitySelector<MethodActionSelector<TRet>> {
         returnsImpl(value)
         cardinalitySelector()
@@ -109,6 +170,12 @@ public class MethodActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returns(valueFactory: () -> TRet): CardinalitySelector<MethodActionSelector<TRet>> {
         returnsFactoryImpl(valueFactory)
         cardinalitySelector()
@@ -118,6 +185,13 @@ public class MethodActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returnsConsecutively(values: Array<TRet>): Continuation<MethodActionSelector<TRet>> {
         returnsCollectionImpl(values)
         continuation()
@@ -127,6 +201,13 @@ public class MethodActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returnsConsecutively(values: ArrayList<TRet>): Continuation<MethodActionSelector<TRet>> {
         returnsCollectionImpl(values)
         continuation()
@@ -136,6 +217,11 @@ public class MethodActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func callsOriginal(): CardinalitySelector<MethodActionSelector<TRet>> {
         mustBeSpy("callsOriginal")
         sc.setAction(Action.CallOriginal)
@@ -166,6 +252,11 @@ public class GetterActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func throws(exception: Exception): CardinalitySelector<GetterActionSelector<TRet>> {
         throwsImpl(exception)
         cardinalitySelector()
@@ -174,6 +265,12 @@ public class GetterActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func throws(exceptionFactory: () -> Exception): CardinalitySelector<GetterActionSelector<TRet>> {
         throwsFactoryImpl(exceptionFactory)
         cardinalitySelector()
@@ -182,6 +279,11 @@ public class GetterActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returns(value: TRet): CardinalitySelector<GetterActionSelector<TRet>> {
         returnsImpl(value)
         cardinalitySelector()
@@ -190,6 +292,12 @@ public class GetterActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returns(valueFactory: () -> TRet): CardinalitySelector<GetterActionSelector<TRet>> {
         returnsFactoryImpl(valueFactory)
         cardinalitySelector()
@@ -199,6 +307,13 @@ public class GetterActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returnsConsecutively(values: Array<TRet>): Continuation<GetterActionSelector<TRet>> {
         returnsCollectionImpl(values)
         continuation()
@@ -208,6 +323,13 @@ public class GetterActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returnsConsecutively(values: ArrayList<TRet>): Continuation<GetterActionSelector<TRet>> {
         returnsCollectionImpl(values)
         continuation()
@@ -217,6 +339,11 @@ public class GetterActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func getsOriginal(): CardinalitySelector<GetterActionSelector<TRet>> {
         mustBeSpy("getsOriginal")
         sc.setAction(Action.CallOriginal)
@@ -226,6 +353,11 @@ public class GetterActionSelector<TRet> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func getsField(field: SyntheticField<TRet>): CardinalitySelector<GetterActionSelector<TRet>> {
         sc.setAction(Action.GetField(field.description))
         cardinalitySelector()
@@ -249,6 +381,11 @@ public class SetterActionSelector<TArg> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func throws(exception: Exception): CardinalitySelector<SetterActionSelector<TArg>> {
         throwsImpl(exception)
         cardinalitySelector()
@@ -257,6 +394,12 @@ public class SetterActionSelector<TArg> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func throws(exceptionFactory: () -> Exception): CardinalitySelector<SetterActionSelector<TArg>> {
         throwsFactoryImpl(exceptionFactory)
         cardinalitySelector()
@@ -264,6 +407,11 @@ public class SetterActionSelector<TArg> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func doesNothing(): CardinalitySelector<SetterActionSelector<TArg>> {
         sc.setAction(Action.Return { () })
         cardinalitySelector()
@@ -273,6 +421,11 @@ public class SetterActionSelector<TArg> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func setsOriginal(): CardinalitySelector<SetterActionSelector<TArg>> {
         mustBeSpy("setsOriginal")
         sc.setAction(Action.CallOriginal)
@@ -282,6 +435,11 @@ public class SetterActionSelector<TArg> <: ActionSelector {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func setsField(field: SyntheticField<TArg>): CardinalitySelector<SetterActionSelector<TArg>> {
         sc.setAction(Action.SetField(field.description))
         cardinalitySelector()
@@ -292,6 +450,11 @@ extend MethodActionSelector<Unit> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func returns(): CardinalitySelector<MethodActionSelector<Unit>> {
         returnsImpl(())
         cardinalitySelector()

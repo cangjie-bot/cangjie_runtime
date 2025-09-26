@@ -21,6 +21,10 @@ public class DateTimeFormat {
     let data = ArrayList<FormatType>()
     let rawString: String
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     init(formatString: String) {
         rawString = formatString
         let layout = rawString.toRuneArray()
@@ -35,6 +39,10 @@ public class DateTimeFormat {
         data.add(FormatType.Termination)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Deprecated["Use member function `init(formatString: String)` instead."]
     public static func of(format: String): DateTimeFormat {
         return DateTimeFormat(format)
@@ -80,6 +88,9 @@ enum FormatType {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func checkLength(): Unit {
         match (this) {
             case FormatYear(length) => checkFormatLength(length, 9, r'y')
@@ -103,6 +114,9 @@ enum FormatType {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func checkFormatLength(length: Int64, maxLen: Int64, r: Rune): Unit {
         if (length > maxLen) {
             throw IllegalArgumentException("The number of character \"${r}\" can not exceed ${maxLen}.")
@@ -110,6 +124,10 @@ enum FormatType {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parseFormat(formatString: String): ArrayList<FormatType> {
     let data = ArrayList<FormatType>()
     let layout = formatString.toRuneArray()
@@ -130,6 +148,9 @@ func parseFormat(formatString: String): ArrayList<FormatType> {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func parseFormat(layout: Array<Rune>, index: Int64): (Int64, FormatType) {
     let size = layout.size
     for (idx in index..size) {
@@ -159,6 +180,9 @@ func parseFormat(layout: Array<Rune>, index: Int64): (Int64, FormatType) {
     return (index, Termination)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func findFormat(start: Int64, layout: Array<Rune>) {
     var pos = start + 1
     while (pos < layout.size && layout[pos] == layout[start]) {

@@ -29,6 +29,9 @@ enum Result<T> {
         }
     }
 
+    /**
+     * @throws Exception
+     */
     func unwrapErr(): Exception {
         match (this) {
             case Ok(v) => throw Exception("called `Result.unwrapErr()` on an `Ok` value")

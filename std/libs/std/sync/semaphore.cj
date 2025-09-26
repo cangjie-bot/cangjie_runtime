@@ -15,6 +15,10 @@ public class Semaphore {
 
 
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public init(count: Int64) {
         if (count < 0) {
             throw IllegalArgumentException("Negative count.")
@@ -37,6 +41,11 @@ public class Semaphore {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func acquire(amount!: Int64 = 1): Unit {
         if (amount < 0 || amount > initValue) {
             throw IllegalArgumentException("Invalid amount to acquire.")
@@ -53,6 +62,10 @@ public class Semaphore {
 
 
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func tryAcquire(amount!: Int64 = 1): Bool {
         if (amount < 0 || amount > initValue) {
             throw IllegalArgumentException("Invalid amount to acquire.")
@@ -72,6 +85,10 @@ public class Semaphore {
 
 
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func release(amount!: Int64 = 1): Unit {
         if (amount < 0 || amount > initValue) {
             throw IllegalArgumentException("Invalid amount to acquire.")

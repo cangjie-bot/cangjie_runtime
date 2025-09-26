@@ -65,6 +65,9 @@ public class Scope <: Equatable<Scope> & ToString {
         counter++
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func lookup(name: Identifier): ScopeResolveResult {
         match (memebers.get(name)) {
             case Some(resolved) => ResolvedType(name, resolved, this)
@@ -76,25 +79,43 @@ public class Scope <: Equatable<Scope> & ToString {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func lookup(name: Token): ScopeResolveResult {
         return lookup(Identifier(name))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func lookup(name: String): ScopeResolveResult {
         return lookup(Identifier(name))
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func append(name: Identifier): Unit {
         if (!memebers.contains(name)) {
             invalids.add(name)
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func append(name: Identifier, t: TypeNode): Unit {
         memebers.addIfAbsent(name, t)
         invalids.remove(name)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public func appendScopeType(t: TypeNode): Unit {
         if (scopeType_.isNone()) {
             scopeType_ = t
@@ -131,6 +152,10 @@ public class Scope <: Equatable<Scope> & ToString {
         } }
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop allInvalids: Array<Identifier> {
         get() {
             invalids |> collectArray
@@ -158,6 +183,10 @@ public class Scope <: Equatable<Scope> & ToString {
         !refEq(this, other)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func toString(): String {
         let items = allItems() |> map<(Identifier, TypeNode), ToString> { pair =>
             "${pair[0]}:${pair[1].toTokens()}"
@@ -166,6 +195,10 @@ public class Scope <: Equatable<Scope> & ToString {
         return "Scope(${id}, ${items})"
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func parents(): Iterable<Scope> {
         let result = ArrayList<Scope>()
         var scope = this
@@ -176,6 +209,10 @@ public class Scope <: Equatable<Scope> & ToString {
         return result
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func allItems(): Iterable<(Identifier, TypeNode)> {
         parents() |> map<Scope, Iterable<(Identifier, TypeNode)>> { scope =>
             scope.memebers

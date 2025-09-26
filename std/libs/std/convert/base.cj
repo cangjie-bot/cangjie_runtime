@@ -189,6 +189,9 @@ enum ConvertResult<T> {
     Success(T) | Failure(String)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func getBaseInfos(typeBase: TypeBase, isNegative: Int64, rawData: Array<Byte>): (UInt64, UInt64, UInt64) {
     var baseInfos = match (typeBase) {
         case I8 => baseInfosInt8
@@ -235,6 +238,10 @@ func getBaseInfosWithRadix(typeBase: TypeBase, isNegative: Int64, radix: Int64):
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func strToChar(data: Array<Rune>): Option<Rune> {
     if (data.size < 2 || data[0] != r'\'' || data[data.size - 1] != r'\'') {
         return None
@@ -327,6 +334,10 @@ func charsToInteger(chars: Array<Rune>, formatBaseNum: UInt64): Option<UInt64> {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func unicodeToChar(data: Array<Rune>): Option<Rune> {
     if (data.size < 5 || data[3] != r'{' || data[data.size - 2] != r'}') {
         return None

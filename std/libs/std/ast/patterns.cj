@@ -29,6 +29,17 @@ public class ConstPattern <: Pattern {
     init(litConstExpr: LitConstExpr) {
         litConstExpr_ = litConstExpr
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parsePattern(inputs) as ConstPattern) {
@@ -56,6 +67,10 @@ public class ConstPattern <: Pattern {
             litConstExpr_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(litConstExpr_)
     }
@@ -69,6 +84,10 @@ public class ConstPattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ConstPattern {\n"
         currentIndent = indent
@@ -83,6 +102,10 @@ public class ConstPattern <: Pattern {
 }
 
 public class WildcardPattern <: Pattern {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     public init(keyword: Tokens) {
         if (keyword.size == 0) {
             throw ASTException("Cannot construct the 'WildcardPattern' node. (Empty Input)")
@@ -94,6 +117,9 @@ public class WildcardPattern <: Pattern {
     }
     public init() {}
     private var keyWord_: Token = Token(TokenKind.WILDCARD)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop wildcard: Token {
         get() {
             keyWord_
@@ -103,6 +129,10 @@ public class WildcardPattern <: Pattern {
             keyWord_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(keyWord_)
     }
@@ -112,6 +142,10 @@ public class WildcardPattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "WildcardPattern {\n"
         currentIndent = indent
@@ -125,6 +159,9 @@ public class WildcardPattern <: Pattern {
 }
 
 public class VarPattern <: Pattern {
+    /**
+     * @throws ASTException
+     */
     public init(identifier: Token) {
         identifier_ = identifier
         checkTokenType(identifier_, IDENTIFIER)
@@ -133,6 +170,9 @@ public class VarPattern <: Pattern {
     }
     public init() {}
     private var identifier_: Token = Token(TokenKind.IDENTIFIER, "")
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop identifier: Token {
         get() {
             identifier_
@@ -142,6 +182,10 @@ public class VarPattern <: Pattern {
             identifier_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(identifier_)
     }
@@ -151,6 +195,10 @@ public class VarPattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "VarPattern {\n"
         currentIndent = indent
@@ -164,6 +212,9 @@ public class VarPattern <: Pattern {
 }
 
 public class VarOrEnumPattern <: Pattern {
+    /**
+     * @throws ASTException
+     */
     public init(identifier: Token) {
         identifier_ = identifier
         checkTokenType(identifier_, IDENTIFIER)
@@ -172,6 +223,9 @@ public class VarOrEnumPattern <: Pattern {
     }
     public init() {}
     private var identifier_ = Token(TokenKind.IDENTIFIER, "")
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop identifier: Token {
         get() {
             identifier_
@@ -181,6 +235,10 @@ public class VarOrEnumPattern <: Pattern {
             identifier_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(identifier_)
     }
@@ -190,6 +248,10 @@ public class VarOrEnumPattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "VarOrEnumPattern {\n"
         currentIndent = indent
@@ -210,6 +272,17 @@ public class ExceptTypePattern <: Pattern {
         bitOr_ = bitOr
     }
     public init() {}
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             let tokens = Tokens()
@@ -252,6 +325,9 @@ public class ExceptTypePattern <: Pattern {
             pattern_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -269,6 +345,10 @@ public class ExceptTypePattern <: Pattern {
             types_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(pattern_).append(colon_)
         if (bitOr_.size == 0) {
@@ -292,6 +372,10 @@ public class ExceptTypePattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ExceptTypePattern {\n"
         currentIndent = indent
@@ -318,6 +402,17 @@ public class CommandTypePattern <: Pattern {
         bitOr_ = bitOr
     }
     public init() {}
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             let tokens = Tokens()
@@ -354,6 +449,9 @@ public class CommandTypePattern <: Pattern {
             pattern_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -371,6 +469,10 @@ public class CommandTypePattern <: Pattern {
             types_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(pattern_).append(colon_)
         if (bitOr_.size == 0) {
@@ -394,6 +496,10 @@ public class CommandTypePattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "CommandTypePattern {\n"
         currentIndent = indent
@@ -419,6 +525,17 @@ public class TypePattern <: Pattern {
         type_ = ty
     }
     public init() {}
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parsePattern(inputs) as TypePattern) {
@@ -449,6 +566,9 @@ public class TypePattern <: Pattern {
             pattern_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -466,6 +586,10 @@ public class TypePattern <: Pattern {
             type_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(pattern_).append(colon_).append(type_)
     }
@@ -480,6 +604,10 @@ public class TypePattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "TypePattern {\n"
         currentIndent = indent
@@ -505,6 +633,17 @@ public class EnumPattern <: Pattern {
         rParen_ = rParen
     }
     public init() {}
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parsePattern(inputs) as EnumPattern) {
@@ -539,6 +678,9 @@ public class EnumPattern <: Pattern {
             constructor_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -556,6 +698,9 @@ public class EnumPattern <: Pattern {
             patterns_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop commas: Tokens {
         get() {
             commas_
@@ -565,6 +710,9 @@ public class EnumPattern <: Pattern {
             commas_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -574,6 +722,10 @@ public class EnumPattern <: Pattern {
             rParen_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(constructor_)
         if (!patterns_.isEmpty()) {
@@ -602,6 +754,10 @@ public class EnumPattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "EnumPattern {\n"
         currentIndent = indent
@@ -627,6 +783,17 @@ public class TuplePattern <: Pattern {
         rParen_ = rParen
     }
     public init() {}
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parsePattern(inputs) as TuplePattern) {
@@ -652,6 +819,9 @@ public class TuplePattern <: Pattern {
     private var patterns_: ArrayList<Pattern> = ArrayList<Pattern>()
     private var commas_: Tokens = Tokens()
     private var rParen_: Token = Token(TokenKind.RPAREN)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -669,6 +839,9 @@ public class TuplePattern <: Pattern {
             patterns_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop commas: Tokens {
         get() {
             commas_
@@ -678,6 +851,9 @@ public class TuplePattern <: Pattern {
             commas_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -687,6 +863,10 @@ public class TuplePattern <: Pattern {
             rParen_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(lParen_)
         if (!patterns_.isEmpty()) {
@@ -714,6 +894,10 @@ public class TuplePattern <: Pattern {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "TuplePattern {\n"
         currentIndent = indent

@@ -92,6 +92,10 @@ enum MacroPlacement {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func formatError(k: MacroKey): String {
         match (this) {
             case TopLevel =>
@@ -126,10 +130,21 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         let allowedModifiers: Array<TokenKind>
     ) {}
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func write(decl: Tokens, args!: Tokens = Tokens()): Tokens {
         MacroStorage.saveAsAttribute(this, decl, args)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func create(
         macroName: String,
         allowedTarget: MacroTarget,
@@ -144,6 +159,12 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         newKey
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MacroException
+     */
     public func verifyDecl(decl: Decl) {
         let errors = MacroErrors()
         check(decl, errors, [], MacroAttrs())
@@ -173,6 +194,11 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func check(decl: Decl, errors: MacroErrors, implicitKeys: Array<MacroKey>, parentAttrs: MacroAttrs): Unit {
         let attrs = MacroStorage.loadAllAttrs(decl)
         for (key in implicitKeys) {
@@ -193,6 +219,10 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func checkAttrsApplicability(attrs: MacroAttrs, decl: Decl, errors: MacroErrors): Unit {
         for ((key, values) in attrs) {
             if (!key.allowedTarget.accepts(decl)) {
@@ -206,6 +236,10 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func checkConflicts(attrs: MacroAttrs, errors: MacroErrors): Unit {
         let entities = attrs.keys() |> filter { key: MacroKey => key.isOfKind(TestEntity) } |> collectArray
         if (entities.isEmpty()) {
@@ -236,6 +270,11 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func checkModifiers(attrs: MacroAttrs, decl: Decl, errors: MacroErrors) {
         for (modifier in decl.modifiers) {
             let kind = modifier.keyword.kind
@@ -252,6 +291,10 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func checkPlacement(attrs: MacroAttrs, parentAttrs: MacroAttrs, errors: MacroErrors) {
         for ((k, _) in attrs) {
             match (k.placement) {
@@ -266,6 +309,10 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func allCompatibleEntities(mustBeCompatible: MacroKey): String {
         let allOfKind = SUPPORTED_MACROS |>
             filter { it: MacroKey => it.isOfKind(TestEntity) && !it.conflictsWith(mustBeCompatible) } |>
@@ -285,6 +332,9 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         this.macroName.hashCode()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func conflictsWith(that: MacroKey) {
         this.conflicts.contains(that) || that.conflicts.contains(this)
     }
@@ -293,6 +343,10 @@ struct MacroKey <: ToString & Equatable<MacroKey> & Hashable {
         SUPPORTED_MACROS
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop macroIdentifier: String {
         get() { macroName.removePrefix("@") }
     }
@@ -333,16 +387,30 @@ extend Decl {
 class MacroErrors {
     private let errors = HashSet<String>()
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func add(str: String): Unit {
         errors.add(str)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MacroException
+     */
     func report() {
         if (!errors.isEmpty()) {
             doThrow(errors.toArray())
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MacroException
+     */
     static func doThrow(lines: Array<String>): Nothing {
         throw MacroException(String.join(lines, delimiter: "\n"))
     }

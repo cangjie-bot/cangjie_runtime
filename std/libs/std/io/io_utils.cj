@@ -23,6 +23,10 @@ public enum SeekPosition {
     | End(Int64) 
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws ContentFormatException
+ */
 public func readString<T>(from: T): String where T <: InputStream & Seekable {
     var data = Array<Byte>(from.remainLength, repeat: 0)
     return try {
@@ -33,12 +37,20 @@ public func readString<T>(from: T): String where T <: InputStream & Seekable {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 public unsafe func readStringUnchecked<T>(from: T): String where T <: InputStream & Seekable {
     var data = Array<Byte>(from.remainLength, repeat: 0)
     from.read(data)
     String.fromUtf8Unchecked(data)
 }
 
+/**
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 public func readToEnd<T>(from: T): Array<Byte> where T <: InputStream & Seekable {
     let sum = from.length
@@ -85,6 +97,9 @@ public func readToEnd<T>(from: T): Array<Byte> where T <: InputStream & Seekable
     arr.slice(0, readSize)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func copy(from: InputStream, to!: OutputStream): Int64 {
     let tempArr = Array<Byte>(BLOCK_SIZE, repeat: 0)
     var readCount = 0

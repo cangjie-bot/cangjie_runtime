@@ -13,6 +13,9 @@ public enum Option<T> {
     | None
 
 
+    /**
+     * @throws NoneValueException
+     */
     @Frozen
     public func getOrThrow(): T {
         match (this) {
@@ -22,6 +25,9 @@ public enum Option<T> {
     }
 
 
+    /**
+     * @throws getOrThrow
+     */
     @Frozen
     public func getOrThrow(exception: () -> Exception): T {
         match (this) {

@@ -12,6 +12,12 @@ enum SessionHandleResult {
 }
 
 extend MockSession {
+    /**
+     * @throws MockFrameworkException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     * @throws IndexOutOfBoundsException
+     */
     func handle(invocation: Invocation, unmatchedChains: UnmatchedChains): SessionHandleResult {
         let chains = chainsByStubId.get(invocation.stubId) ?? return Unhandled
 
@@ -45,6 +51,9 @@ extend MockSession {
 }
 
 extend StubChain {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func runListeners(invocation: Invocation) {
         for (i in 0..invocation.call.args.size) {
             if (let Some(listeningMatcher) <- (invocationMatcher.positionalMatchers[i] as ListeningMatcher)) {

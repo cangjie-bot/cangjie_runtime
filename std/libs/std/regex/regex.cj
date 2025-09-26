@@ -35,6 +35,11 @@ class FindIterator <: Iterator<MatchData> {
     private let group: Bool
     private let pcre2md: Pcre2MatchDataPtr
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     init(regex: Regex, input: String, group!: Bool = false) {
         this.regex = regex
         this.input = input
@@ -55,6 +60,11 @@ class FindIterator <: Iterator<MatchData> {
         release(pcre2md)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func next(): Option<MatchData> {
         let result = regex.find(input, inputCString, pcre2md, offset, group: group)
         if (let Some(md) <- result) {
@@ -78,6 +88,11 @@ public class Regex {
 
     private var namedGroups: Option<HashMap<String, Int64>> = None
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     public init(pattern: String, flags: Array<RegexFlag>) {
         this.pattern = pattern
         this.flags = flags
@@ -116,6 +131,12 @@ public class Regex {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws RegexException
+     */
     @Deprecated[message: "Use member funtion `public Regex(let pattern: String, flags: Array<RegexFlag>)` instead."]
     public init(pattern: String, option: RegexOption) {
         this(pattern, option.toFlags())
@@ -127,6 +148,11 @@ public class Regex {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     @Deprecated[message: "`Matcher` has been marked as deprecated."]
     public func matcher(input: String): Matcher {
         return Matcher(this, input)
@@ -135,6 +161,11 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     public func matches(input: String): Bool {
         unsafe {
             let inputCString = LibC.mallocCString(input)
@@ -157,6 +188,11 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws RegexException
+     */
     public func getNamedGroups(): Map<String, Int64> {
         if (let Some(map) <- namedGroups) {
             return map
@@ -195,6 +231,11 @@ public class Regex {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws RegexException
+     * @throws IllegalArgumentException
+     */
     private func nameToIndex(name: String): Int64 {
         let map = getNamedGroups()
         return map.get(name) ?? throw IllegalArgumentException("Capture group `${name}` not found.")
@@ -204,6 +245,11 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     */
     public func find(input: String, group!: Bool = false): Option<MatchData> {
         let inputCString = unsafe { LibC.mallocCString(input) }
         if (inputCString.isNull()) {
@@ -227,6 +273,10 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     */
     func find(input: String, inputCString: CString, pcre2md: Pcre2MatchDataPtr, offset: Int64, group!: Bool = false): Option<MatchData> {
         unsafe {
             var md: Option<MatchData> = None
@@ -251,6 +301,11 @@ public class Regex {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     func allCount(input: String, begin: Int64, end: Int64): Int64 {
         unsafe {
             let inputCString = LibC.mallocCString(input)
@@ -274,6 +329,12 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws RegexException
+     */
     public func findAll(input: String, group!: Bool = false): Array<MatchData> {
         let list = ArrayList<MatchData>()
         unsafe {
@@ -327,6 +388,11 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     public func lazyFindAll(input: String, group!: Bool = false): Iterator<MatchData> {
         return FindIterator(this, input, group: group)
     }
@@ -337,6 +403,12 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func replace(input: String, replacement: String): String {
         return replace(input, replacement, 0)
     }
@@ -350,6 +422,12 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func replace(input: String, replacement: String, index: Int64): String {
         if (index < 0 || index >= input.size) {
             throw IndexOutOfBoundsException("Invalid index: ${index} against size: ${input.size}.")
@@ -391,6 +469,12 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func replaceAll(input: String, replacement: String): String {
         replaceAll(input, replacement, -1)
     }
@@ -406,6 +490,12 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func replaceAll(input: String, replacement: String, limit: Int64): String {
         if (limit == 0) {
             return input
@@ -437,6 +527,12 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func split(input: String): Array<String> {
         let mds = findAll(input, group: false)
         let list = ArrayList<String>(mds.size + 1)
@@ -459,6 +555,12 @@ public class Regex {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func split(input: String, limit: Int64): Array<String> {
         if (limit <= 0) {
             return split(input)

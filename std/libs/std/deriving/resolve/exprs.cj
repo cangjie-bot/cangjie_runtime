@@ -12,10 +12,32 @@ import std.ast.*
 import std.collection.*
 import std.convert.Parsable
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 public func expressionType(expression: Expr): ?TypeNode {
     constExprType(expression, Scope(None))
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 func constExprTypeOpt(expr: ?Expr, scope: Scope): ?TypeNode {
     match (expr) {
         case Some(expr) => constExprType(expr, scope)
@@ -23,6 +45,17 @@ func constExprTypeOpt(expr: ?Expr, scope: Scope): ?TypeNode {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 public func constExprType(expr: Expr, scope: Scope): ?TypeNode {
     match (expr) {
         case _: IsExpr => Types.BoolType
@@ -71,6 +104,17 @@ public func constExprType(expr: Expr, scope: Scope): ?TypeNode {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 private func visitReturn(scope: Scope, r: ReturnExpr): Unit {
     if (let Some(f) <- scope.funcScope) {
         let retExpr = try { r.expr } catch (_: Exception) { parseExpr(quote(())) }
@@ -80,6 +124,17 @@ private func visitReturn(scope: Scope, r: ReturnExpr): Unit {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 func lambdaType(expr: LambdaExpr, scope: Scope): ?TypeNode {
     let newScope = Scope(scope, kind: FuncScope)
     newScope.appendParams(expr.funcParams)
@@ -92,6 +147,17 @@ func lambdaType(expr: LambdaExpr, scope: Scope): ?TypeNode {
     return f
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ * @throws ASTException
+ */
 private func literalType(expr: LitConstExpr): ?TypeNode {
     match (expr.literal.kind) {
         case TokenKind.INTEGER_LITERAL => integerLiteralType(expr.literal.value)
@@ -108,6 +174,17 @@ private func literalType(expr: LitConstExpr): ?TypeNode {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ * @throws ASTException
+ */
 private func integerLiteralType(value: String): TypeNode {
     if (value.endsWith("i8")) {
         return PrimitiveType(quote(Int8))
@@ -136,6 +213,17 @@ private func integerLiteralType(value: String): TypeNode {
     return Types.Int64Type
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ * @throws ASTException
+ */
 private func floatLiteralType(value: String): TypeNode {
     if (value.endsWith("f32")) {
         return PrimitiveType(quote(Float32))
@@ -159,6 +247,17 @@ extend LitConstExpr {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Error
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func tupleType(tuple: TupleLiteral, scope: Scope): ?TypeNode {
     let componentTypes = tuple.elements |>
         map<Expr, ?TypeNode> { e => constExprType(e, scope) } |>
@@ -177,6 +276,17 @@ private func tupleType(tuple: TupleLiteral, scope: Scope): ?TypeNode {
     return tt
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 private func binaryType(op: BinaryExpr, scope: Scope): ?TypeNode {
     let leftType = constExprType(op.leftExpr, scope) ?? return None
     let rightType = constExprType(op.rightExpr, scope) ?? return None
@@ -192,6 +302,17 @@ private func binaryType(op: BinaryExpr, scope: Scope): ?TypeNode {
     return None
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 private func unaryType(op: UnaryExpr, scope: Scope): ?TypeNode {
     let t = constExprType(op.expr, scope) ?? return None
     if (Types.isIntType(t) || Types.isFloatType(t)) {
@@ -201,6 +322,17 @@ private func unaryType(op: UnaryExpr, scope: Scope): ?TypeNode {
     return None
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func arrayType(array: ArrayLiteral, scope: Scope): ?TypeNode {
     let elementType = array.elements |>
         map<Expr, ?TypeNode> { element => constExprType(element, scope) } |>
@@ -217,6 +349,17 @@ private func arrayType(array: ArrayLiteral, scope: Scope): ?TypeNode {
     return None
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ */
 private func subscriptExpr(s: SubscriptExpr, scope: Scope): ?TypeNode {
     let baseType = constExprType(s.baseExpr, scope) ?? return None
 
@@ -235,6 +378,17 @@ private func subscriptExpr(s: SubscriptExpr, scope: Scope): ?TypeNode {
     return None
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ */
 private func rangeType(range: RangeExpr, scope: Scope): ?TypeNode {
     let start: ?Expr = try { range.start } catch (_) { None }
     let end: ?Expr = try { range.end } catch (_) { None }
@@ -249,6 +403,17 @@ private func rangeType(range: RangeExpr, scope: Scope): ?TypeNode {
     return None
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ */
 private func ifType(ifExpr: IfExpr, parent: Scope): ?TypeNode {
     func letPattern(l: LetPatternExpr): Scope {
         let newScope = Scope(parent)
@@ -277,6 +442,17 @@ private func ifType(ifExpr: IfExpr, parent: Scope): ?TypeNode {
     return unionApprox(ifBlockType, elseType)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ */
 private func matchType(matchExpr: MatchExpr, scope: Scope): ?TypeNode {
     let selectorType: ?TypeNode = try {
         constExprType(matchExpr.selector, scope)
@@ -314,6 +490,9 @@ extend VarDecl {
 }
 
 extend Expr {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func isFieldAccess(scope: Scope): ?ScopeResolveResult {
         match (this) {
             case member: MemberAccess => isFieldAccess1(member, scope)
@@ -323,6 +502,9 @@ extend Expr {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private static func isFieldAccess1(lvalue: MemberAccess, scope: Scope): ?ScopeResolveResult {
         if (lvalue.baseExpr.isThisRef()) {
             let id = Identifier(lvalue.field)
@@ -332,6 +514,9 @@ extend Expr {
         return None
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private static func isFieldAccess1(lvalue: RefExpr, scope: Scope): ?ScopeResolveResult {
         if (lvalue.identifier.kind != TokenKind.IDENTIFIER) {
             return None

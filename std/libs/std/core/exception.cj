@@ -22,6 +22,10 @@ struct StackTraceData {
     let lineNumber: Int64 = 0
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func getStackTraceImpl(pcArray: RawArray<UInt64>): Array<StackTraceElement> {
     let frameSize = arraySize(pcArray) / 3
     let emptyElement = StackTraceElement("", "", "", 0)
@@ -80,6 +84,11 @@ public open class Exception <: ToString {
         return "${className}: ${message}"
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func printStackTrace(): Unit {
         eprintln("An exception has occurred:")
         eprintln(toString())
@@ -95,6 +104,10 @@ public open class Exception <: ToString {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func getStackTrace(): Array<StackTraceElement> {
         getStackTraceImpl(pcArray)
     }

@@ -72,6 +72,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func contains(element: K): Bool {
         return map.contains(element)
@@ -83,6 +86,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func contains(all!: Collection<K>): Bool {
         return map.contains(all: all)
@@ -99,6 +105,9 @@ class HashMapKeys<K, V> <: EquatableCollection<K> where K <: Hashable & Equatabl
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func toArray(): Array<K> {
         let keys = Array<K>(size, repeat: unsafe { zeroValue<K>() })
@@ -159,6 +168,9 @@ class HashMapValues<K, V> <: Collection<V> where K <: Hashable & Equatable<K> {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func toArray(): Array<V> {
         let values = Array<V>(size, repeat: unsafe { zeroValue<V>() })
@@ -196,6 +208,9 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
         this.lockVersion = map.version()
     }
 
+        /**
+         * @throws ConcurrentModificationException
+         */
     @Frozen
     public prop key: K {
         get() {
@@ -203,6 +218,12 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
         }
     }
 
+    /**
+     * @throws [set] IllegalArgumentException
+     * @throws [set] NoneValueException
+     * @throws [get|set] ConcurrentModificationException
+     * @throws [get|set] IndexOutOfBoundsException
+     */
     @Frozen
     public mut prop value: ?V {
         get() {
@@ -223,6 +244,9 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
 
 
 
+    /**
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     func getKey(): K {
         if (lockVersion != map.version()) {
@@ -236,6 +260,10 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     func getValue(): ?V {
         if (lockVersion != map.version()) {
@@ -254,6 +282,11 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     private func setValue(v: V) {
         if (lockVersion != map.version()) {
@@ -337,6 +370,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public init(elements: Collection<(K, V)>) {
         let bucketSize: Int64 = elements.size + (elements.size >> 1)
@@ -352,6 +388,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public init(elements: Array<(K, V)>) {
         let bucketSize: Int64 = elements.size + (elements.size >> 1)
@@ -369,6 +408,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public init(capacity: Int64) {
         if (capacity < 0) {
@@ -387,6 +429,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public init(size: Int64, initElement: (Int64) -> (K, V)) {
         if (size < 0) {
@@ -416,6 +462,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func get(key: K): ?V {
         let hash: Int64 = getHash(key.hashCode())
@@ -439,6 +488,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     public func add(key: K, value: V): Option<V> {
@@ -472,6 +525,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return Option<V>.None
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     protected func putWithoutResize(key: K, value: V): Unit {
@@ -501,6 +557,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func entryView(key: K): MapEntryView<K, V> {
         let hash: Int64 = getHash(key.hashCode())
@@ -521,6 +580,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func add(all!: Collection<(K, V)>): Unit {
         if (all.size > entries.size) {
@@ -537,6 +600,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     public func remove(key: K): Option<V> {
@@ -572,6 +638,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func remove(all!: Collection<K>): Unit {
         for (key in all) {
@@ -584,6 +653,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     @OverflowWrapping
     public func removeIf(predicate: (K, V) -> Bool): Unit {
@@ -624,6 +697,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     public func clear(): Unit {
@@ -648,6 +724,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func reserve(additional: Int64): Unit {
         if (additional <= 0 || size + additional < capacity) {
@@ -677,6 +757,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func contains(all!: Collection<K>): Bool {
         for (key in all where !contains(key)) {
@@ -691,6 +774,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func contains(key: K): Bool {
         if (appendIndex - freeSize == 0) {
@@ -746,6 +832,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     @Frozen
     public operator func [](key: K): V {
         return match (get(key)) {
@@ -760,6 +850,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func [](key: K, value!: V): Unit {
         add(key, value)
@@ -843,6 +937,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func toArray(): Array<(K, V)> {
         let arr = Array<(K, V)>(size, repeat: unsafe { (zeroValue<K>(), zeroValue<V>()) })
@@ -864,6 +961,10 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     func resize(argCap: Int64): Bool {
@@ -921,6 +1022,9 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     func removePosition(hash: Int64, pos: Int64) {
         let index: Int64 = getIndex(hash, buckets.size)
@@ -946,6 +1050,12 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
 
 
 extend<K, V> HashMap<K, V> <: ToString where V <: ToString, K <: ToString {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func toString(): String {
         if (size == 0) {
@@ -977,6 +1087,9 @@ extend<K, V> HashMap<K, V> <: ToString where V <: ToString, K <: ToString {
 
 
 extend<K, V> HashMap<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func ==(right: HashMap<K, V>): Bool {
         if (refEq(this, right)) {
@@ -997,6 +1110,9 @@ extend<K, V> HashMap<K, V> <: Equatable<HashMap<K, V>> where V <: Equatable<V> {
         return true
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func !=(right: HashMap<K, V>): Bool {
         if (size != right.size) {
@@ -1045,6 +1161,10 @@ public class HashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equ
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     public func next(): ?(K, V) {
         if (lockVersion != data.version()) {
@@ -1072,6 +1192,10 @@ public class HashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hashable & Equ
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     public func remove(): Option<(K, V)> {
         if (lockVersion != data.version()) {

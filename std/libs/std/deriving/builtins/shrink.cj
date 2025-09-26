@@ -29,6 +29,9 @@ class ShrinkDeriving <: Deriving {
         get() { [SHRINK_NAME] }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public override func queryInterfaceInfo(interfaceName: QualifiedName): DerivingInterfaceInfo {
         if (interfaceName != SHRINK_NAME) {
             throw IllegalArgumentException("Interface ${interfaceName} is not supported")
@@ -36,6 +39,17 @@ class ShrinkDeriving <: Deriving {
         return SHRINK_INFO
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws ASTException
+     * @throws ParseASTException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func derive(
         _: Tokens,
         target: DerivingTarget,
@@ -102,6 +116,12 @@ class ShrinkDeriving <: Deriving {
     }
 }
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func matchBodyEnumShrink(
     target: DerivingTarget,
     ctorArgTransform: (TypeNode, Int64)->ToTokens,
@@ -125,6 +145,17 @@ private func matchBodyEnumShrink(
     )
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 private func constructorShrink(
     ofType: TypeNode,
     extraCandidates: Iterable<ToTokens>,

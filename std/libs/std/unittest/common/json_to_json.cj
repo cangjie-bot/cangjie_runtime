@@ -46,6 +46,11 @@ extend DataModel <: ToJson {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     public static func fromJson(jv: JsonValue): DataModel {
         match (jv) {
             case jb: JsonBool => DataModelBool(jb.getValue())
@@ -62,6 +67,11 @@ extend DataModel <: ToJson {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     */
     private static func buildDMSeq(ja: JsonArray): DataModelSeq {
         let dms: DataModelSeq = DataModelSeq()
         let list: ArrayList<DataModel> = dms.getItems()
@@ -75,6 +85,11 @@ extend DataModel <: ToJson {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     private static func buildDMStruct(jo: JsonObject): DataModelStruct {
         let dms: DataModelStruct = DataModelStruct()
         let list: ArrayList<Field> = dms.getFields()
@@ -94,6 +109,11 @@ extend DataModel <: ToJson {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws JsonException
+     */
     public func toJson(): JsonValue {
         match (this) {
             case _: DataModelNull => return JsonNull()
@@ -110,6 +130,11 @@ extend DataModel <: ToJson {
 
 
 
+    /**
+     * @throws JsonException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func toJson(dmseq: DataModelSeq): JsonArray {
         let ji = dmseq.getItems()
         let jv: JsonArray = JsonArray(ji.size)
@@ -122,6 +147,11 @@ extend DataModel <: ToJson {
 
 
 
+    /**
+     * @throws JsonException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func toJson(dms: DataModelStruct): JsonObject {
         let ji = dms.getFields()
         let jo: JsonObject = JsonObject(ji.size)

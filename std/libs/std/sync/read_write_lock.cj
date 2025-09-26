@@ -42,12 +42,33 @@ public class ReadWriteLock {
 class ReadLock <: Lock {
     ReadLock(private let _readWriteLockImpl: ReadWriteLockImpl) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     public func lock(): Unit {
         _readWriteLockImpl.readLock()
     }
+    /**
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryLock(): Bool {
         _readWriteLockImpl.tryReadLock()
     }
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     */
     public func unlock(): Unit {
         _readWriteLockImpl.readUnlock()
     }
@@ -56,16 +77,36 @@ class ReadLock <: Lock {
 class WriteLock <: UniqueLock {
     WriteLock(private let _readWriteLockImpl: ReadWriteLockImpl) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func lock(): Unit {
         _readWriteLockImpl.writeLock()
     }
+    /**
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func tryLock(): Bool {
         _readWriteLockImpl.tryWriteLock()
     }
+    /**
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func unlock(): Unit {
         _readWriteLockImpl.writeUnlock()
     }
 
+    /**
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func condition(): Condition {
         _readWriteLockImpl.checkWriteLockStatus()
         return ReadWriteLockCondition(_readWriteLockImpl)
@@ -78,10 +119,26 @@ class ReadWriteLockCondition <: Condition {
     ReadWriteLockCondition(private let lock: ReadWriteLockImpl) {
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Error
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func wait(): Unit {
         wait(timeout: Duration.Max)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Error
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func wait(timeout!: Duration): Bool {
         if (timeout <= Duration.Zero) {
             throw IllegalArgumentException("Timeout cannot be less than or equal to `Duration.Zero`.")
@@ -94,6 +151,14 @@ class ReadWriteLockCondition <: Condition {
         return success
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Error
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func waitUntil(predicate: () -> Bool): Unit {
         lock.checkWriteLockStatus()
         while (!predicate()) {
@@ -101,6 +166,14 @@ class ReadWriteLockCondition <: Condition {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public func waitUntil(predicate: () -> Bool, timeout!: Duration): Bool {
         if (timeout <= Duration.Zero) {
             throw IllegalArgumentException("Timeout cannot be less than or equal to `Duration.Zero`.")
@@ -123,11 +196,19 @@ class ReadWriteLockCondition <: Condition {
         return true
     }
 
+    /**
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func notify(): Unit {
         lock.checkWriteLockStatus()
         waitQueue.notifyOne()
     }
 
+    /**
+     * @throws Error
+     * @throws IllegalSynchronizationStateException
+     */
     public func notifyAll(): Unit {
         lock.checkWriteLockStatus()
         waitQueue.notifyAll()

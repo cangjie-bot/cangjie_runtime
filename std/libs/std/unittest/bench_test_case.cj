@@ -38,6 +38,11 @@ class BenchRunner {
     private var ema0 = Ema(0)
     private var ema1 = Ema(0)
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public BenchRunner(let configuration: Configuration, let progress: ProgressOutput) {
         if (configuration.get<Measurement>(KeyMeasurement.measurement).isSome()) {
             let warning = "Warning: configuring measurement via @Configure[measurement: <Measurement>] is deprecated and not used any more. " +
@@ -46,6 +51,11 @@ class BenchRunner {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     private func warmupFixedSize(warmupCount: Int64): Float64 {
         if (warmupCount < 0) {
             throw IllegalArgumentException("Number of warmup iterations must be non negative")
@@ -71,6 +81,12 @@ class BenchRunner {
         return ema.result
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     */
     private func warmupAndEstimate(): Float64 {
         if (let Some(warmupCount) <- configuration.get<Int64>(KeyWarmup.warmup)) {
             return warmupFixedSize(warmupCount)
@@ -105,6 +121,15 @@ class BenchRunner {
         ema.result
     }
 
+    /**
+     * @throws getOrThrow
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     func runBench() {
         this.explicitGC = configuration.get(KeyExplicitGC.explicitGC) ?? ExplicitGcType.Light
 
@@ -132,6 +157,14 @@ class BenchRunner {
         }
     }
 
+    /**
+     * @throws getOrThrow
+     * @throws OutOfMemoryError
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     func runBenchInner(): Unit {
         if (this.batchSize.end <= 0) {
             throw IllegalArgumentException("batchSize must be positive")
@@ -174,6 +207,10 @@ class BenchRunner {
         estimation + overheadPerIteration * 2.0 + overheadPerBatch / Float64(batchSize.end)
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     func calcBatchSize(estimation: Float64): (Range<Int64>, Int64) {
         let targetDurationNs = max(Float64(targetDuration.toNanoseconds()), 0.0)
 
@@ -211,6 +248,11 @@ class BenchRunner {
         max((baseWithRun - baseLoopOnly) / Float64(times), 0.001)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     */
     private func runMultipleAndMeasure(times: Int64, max: Int64) {
         let dur = benchmark.measureLoopOnce(times, max)
 
@@ -316,12 +358,20 @@ let RADIX_UNIT_TABLE: MeasurementUnitTable = [
 ]
 
 
+/**
+ * @throws ArithmeticException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func printDuration(dur: Duration): String {
     let duration = Float64(dur.toNanoseconds())
     TimeNow().conversionTable.toString(duration)
 }
 
 extend MeasurementUnitTable {
+    /**
+     * @throws IllegalArgumentException
+     */
     private func adjustMeasurementPrecision(value: Float64): String {
         let precision = 3 - Int64(log10(clamp(value, 0.0001, 1000.0)))
         if (precision <= 5) {
@@ -332,12 +382,19 @@ extend MeasurementUnitTable {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toString(value: Float64): String {
         let (boundary, unit) = suitablePair(value)
         toString(value, boundary: boundary, unit: unit)
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func toString(value: Float64, boundary!: Float64, unit!: String): String {
         if (value.isInf() || value.isNaN()) {
             return value.toString()
@@ -352,6 +409,10 @@ extend MeasurementUnitTable {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func suitablePair(value: Float64): (Float64, String) {
         this.sortBy(comparator: { a, b =>
             let (aMultiplier, _) = a
@@ -374,6 +435,9 @@ extend MeasurementUnitTable {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func minToNonAdjustedPair(value: Float64): (Float64, String) {
         let (minK, minUnit) = if (this.isEmpty()) {
             (1.0, "")
@@ -403,6 +467,11 @@ public struct TimeNow <: Measurement {
 
     public init() {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     @Frozen
     public func measure(): Float64 {
         Float64(DateTime.now().toUnixTimeStamp().toNanoseconds())
@@ -532,6 +601,9 @@ public struct Perf <: Measurement {
         this(PerfCounter.HW_INSTRUCTIONS)
     }
 
+    /**
+     * @throws Exception
+     */
     public func setup() {
         let rc = unsafe { InitPerf(counter.asRaw()) }
         match (rc) {
@@ -551,6 +623,9 @@ On systemd distributions it can be done with:
         }
     }
 
+    /**
+     * @throws Exception
+     */
     @Frozen
     public func measure(): Float64 {
         let result = unsafe { ReadPerf() }
@@ -568,6 +643,9 @@ On systemd distributions it can be done with:
         get() { "Perf(${counter.unit()})" }
     }
 
+        /**
+         * @throws IllegalArgumentException
+         */
     public prop textDescription: String {
         get() {
             "Measures how many ${counter.description()} has happened during the execution using linux perf facility with ${counter} counter.\n"+

@@ -10,6 +10,17 @@ macro package std.unittest.testmacro
 import std.ast.*
 import std.collection.*
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ * @throws ASTException
+ */
 func parseNamedCommaSeparatedExpressions(params: Tokens): Array<(Token, Expr)> {
     let paramSpec = parseExpr(quote(foo($params)))
     let callExpr = (paramSpec as CallExpr).getOrThrow()
@@ -21,6 +32,18 @@ func parseNamedCommaSeparatedExpressions(params: Tokens): Array<(Token, Expr)> {
 }
 
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func parseConfigurationMacro(params: Tokens): Array<(Token, Expr)> {
     try {
         parseNamedCommaSeparatedExpressions(params)
@@ -32,6 +55,18 @@ func parseConfigurationMacro(params: Tokens): Array<(Token, Expr)> {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func parseMeasurements(params: ArrayList<Tokens>): Array<Expr> {
     let measurements = ArrayList<Expr>()
     for (measureEntry in params) {
@@ -53,6 +88,9 @@ func parseMeasurements(params: ArrayList<Tokens>): Array<Expr> {
     measurements.toArray()
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func skipNl(tokens: Tokens, pos: Int64): Int64 {
     var next = pos
     while (next < tokens.size && tokens[next].kind == NL) {
@@ -62,6 +100,18 @@ func skipNl(tokens: Tokens, pos: Int64): Int64 {
 }
 
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func parseDSLMacro(params_: ?Tokens): Array<(String, Tokens)> {
     let params = params_ ?? return []
     try {
@@ -75,6 +125,17 @@ func parseDSLMacro(params_: ?Tokens): Array<(String, Tokens)> {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws Exception
+ */
 func parseDSL(params: Tokens): Array<(String, Tokens)> {
     var i = 0
     let result = ArrayList<(String, Tokens)>()
@@ -109,6 +170,12 @@ func parseDSL(params: Tokens): Array<(String, Tokens)> {
 
 
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func createOptionFQName(identifier: Token): Tokens {
     let nameStr = identifier.value
 
@@ -123,6 +190,12 @@ private func createOptionFQName(identifier: Token): Tokens {
 
 
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func buildConfiguration(
     raw: Array<(Token, Expr)>,
     variableName: Token,
@@ -147,6 +220,13 @@ func buildConfiguration(
 
 
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func buildDataStrategy(
     raw: ArrayList<(String, Tokens)>,
     argNames: Array<String>,
@@ -176,6 +256,13 @@ func buildDataStrategy(
     builder
 }
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func buildDataStrategyForArgs(
     raw: ArrayList<(String, Tokens)>,
     argNames: Array<String>,

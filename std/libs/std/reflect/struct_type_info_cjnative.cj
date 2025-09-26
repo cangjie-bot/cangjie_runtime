@@ -20,6 +20,17 @@ public class StructTypeInfo <: TypeInfo {
         super(cp)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalTypeException
+     */
     public static redef func get(qualifiedName: String): StructTypeInfo {
         match (TypeInfo.get(qualifiedName)) {
             case typ: StructTypeInfo => return typ
@@ -27,6 +38,16 @@ public class StructTypeInfo <: TypeInfo {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     * @throws IllegalTypeException
+     */
     public static redef func of(a: Any): StructTypeInfo {
         match (TypeInfo.of(a)) {
             case typ: StructTypeInfo => return typ
@@ -34,6 +55,16 @@ public class StructTypeInfo <: TypeInfo {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     * @throws IllegalTypeException
+     */
     public static redef func of<T>(): StructTypeInfo {
         match (TypeInfo.of<T>()) {
             case typ: StructTypeInfo => return typ
@@ -42,6 +73,13 @@ public class StructTypeInfo <: TypeInfo {
     }
 
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws NoneValueException
+         */
     public prop constructors: Collection<ConstructorInfo> {
         get() {
             if (_constructors.isNone()) {
@@ -52,6 +90,9 @@ public class StructTypeInfo <: TypeInfo {
     }
 
 
+        /**
+         * @throws InfoNotFoundException
+         */
     public prop instanceVariables: Collection<InstanceVariableInfo> {
         get() {
             match (_instanceVariables) {
@@ -76,6 +117,15 @@ public class StructTypeInfo <: TypeInfo {
     }
 
 
+        /**
+         * @throws OutOfMemoryError
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws IllegalSynchronizationStateException
+         * @throws InfoNotFoundException
+         */
     public prop staticVariables: Collection<StaticVariableInfo> {
         get() {
             match (_staticVariables) {
@@ -105,6 +155,17 @@ public class StructTypeInfo <: TypeInfo {
 
 
 
+    /**
+     * @throws IllegalTypeException
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws InvocationTargetException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InfoNotFoundException
+     */
     public func construct(args: Array<Any>): Any {
         let parameterTypes = ArrayList<TypeInfo>()
         for (i in 0..args.size) {
@@ -114,6 +175,15 @@ public class StructTypeInfo <: TypeInfo {
     }
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InfoNotFoundException
+     */
     public func getConstructor(parameterTypes: Array<TypeInfo>): ConstructorInfo {
         getByNameAndParamTypes(constructors, constructorName, parameterTypes, "Constructor not found.") {
             constructor => (constructorName, constructor.parameters)
@@ -121,6 +191,14 @@ public class StructTypeInfo <: TypeInfo {
     }
 
 
+    /**
+     * @throws ReflectException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws InfoNotFoundException
+     */
     public func getInstanceVariable(name: String): InstanceVariableInfo {
         getByName(instanceVariables, name, "Instance variable '${name}' in struct ${qualifiedName} not found.") {
             instanceVariable => instanceVariable.name
@@ -128,6 +206,16 @@ public class StructTypeInfo <: TypeInfo {
     }
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws InfoNotFoundException
+     */
     public func getStaticVariable(name: String): StaticVariableInfo {
         getByName(staticVariables, name, "Static variable '${name}' in struct ${qualifiedName} not found.") {
             staticVariable => staticVariable.name

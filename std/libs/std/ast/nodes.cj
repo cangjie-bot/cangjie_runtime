@@ -37,6 +37,9 @@ abstract sealed class Node <: ToTokens {
 
     public func traverse(v: Visitor): Unit
 
+    /**
+     * @throws OutOfMemoryError
+     */
     public func dump(): Unit {
         beginNode = true
         print(dump(0))
@@ -57,6 +60,17 @@ public class Annotation <: Node {
         attrs_ = attrs
         cond_ = cond
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super()
         try {
@@ -84,6 +98,9 @@ public class Annotation <: Node {
     private var attrs_: Tokens = Tokens()
     private var cond_: Option<Expr> = None<Expr>
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop at: Token {
         get() {
             at_
@@ -119,6 +136,9 @@ public class Annotation <: Node {
             attrs_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop condition: Expr {
         get() {
             match (cond_) {
@@ -131,6 +151,12 @@ public class Annotation <: Node {
         }
     }
 
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         ret.append(at_).append(identifier_)
@@ -173,6 +199,10 @@ public class Annotation <: Node {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "Annotation {\n"
         currentIndent = indent
@@ -218,6 +248,10 @@ public class Modifier <: Node {
             kind_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         return Tokens().append(kind_)
     }
@@ -226,6 +260,10 @@ public class Modifier <: Node {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "Modifier {\n"
         ret += getTokenIndent("-keyword", kind_, indent + 1)
@@ -251,6 +289,9 @@ public class GenericParam <: Node {
     private var parameters_: Tokens = Tokens()
     private var rAngle_: Token = Token(TokenKind.GT)
     private var commas_: Tokens = Tokens()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lAngle: Token {
         get() {
             lAngle_
@@ -268,6 +309,9 @@ public class GenericParam <: Node {
             parameters_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rAngle: Token {
         get() {
             rAngle_
@@ -277,6 +321,10 @@ public class GenericParam <: Node {
             rAngle_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         if (parameters_.size == 0) {
@@ -299,6 +347,10 @@ public class GenericParam <: Node {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "GenericParam {\n"
         currentIndent = indent
@@ -332,6 +384,9 @@ public class GenericConstraint <: Node {
     private var upbound_: Token = Token(TokenKind.UPPERBOUND)
     private var upperBounds_: ArrayList<TypeNode> = ArrayList<TypeNode>()
     private var bitAnds_: Tokens = Tokens()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyword_
@@ -349,6 +404,9 @@ public class GenericConstraint <: Node {
             ty_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop upperBound: Token {
         get() {
             upbound_
@@ -366,6 +424,9 @@ public class GenericConstraint <: Node {
             upperBounds_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop bitAnds: Tokens {
         get() {
             bitAnds_
@@ -375,6 +436,10 @@ public class GenericConstraint <: Node {
             bitAnds_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         if (isValidToken(keyword_)) {
@@ -403,6 +468,10 @@ public class GenericConstraint <: Node {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "GenericConstraint {\n"
         currentIndent = indent
@@ -442,6 +511,9 @@ public class Body <: Node {
     private var lBrace_: Token = Token(TokenKind.LCURL)
     private var decls_: ArrayList<Decl> = ArrayList<Decl>()
     private var rBrace_: Token = Token(TokenKind.RCURL)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lBrace: Token {
         get() {
             lBrace_
@@ -459,6 +531,9 @@ public class Body <: Node {
             decls_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rBrace: Token {
         get() {
             rBrace_
@@ -468,6 +543,12 @@ public class Body <: Node {
             rBrace_ = v
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         ret.append(lBrace_).append(Token(TokenKind.NL))
@@ -497,6 +578,11 @@ public class Body <: Node {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "Body {\n"
         currentIndent = indent
@@ -538,6 +624,9 @@ public class Argument <: Node {
             inout_ = v
         }
     }
+    /**
+     * @throws [get|set] ASTException
+     */
     public mut prop identifier: Token {
         get() {
             if (identifier_.kind != IDENTIFIER || identifier_.value.isEmpty()) {
@@ -552,6 +641,9 @@ public class Argument <: Node {
             identifier_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -570,6 +662,11 @@ public class Argument <: Node {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         if (isValidToken(inout_)) {
@@ -601,6 +698,10 @@ public class Argument <: Node {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "Argument {\n"
         currentIndent = indent
@@ -651,6 +752,9 @@ public class MatchCase <: Node {
     private var patternGuard_: Option<Expr> = None<Expr>
     private var arrow_: Token = Token(TokenKind.DOUBLE_ARROW)
     private var exprOrDecl_: Block = Block()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordC: Token {
         get() {
             case_
@@ -660,6 +764,9 @@ public class MatchCase <: Node {
             case_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop expr: Expr {
         get() {
             match (expr_) {
@@ -679,6 +786,9 @@ public class MatchCase <: Node {
             patterns_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop bitOrs: Tokens {
         get() {
             bitOrs_
@@ -688,6 +798,9 @@ public class MatchCase <: Node {
             bitOrs_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordW: Token {
         get() {
             where_
@@ -697,6 +810,9 @@ public class MatchCase <: Node {
             where_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop patternGuard: Expr {
         get() {
             match (patternGuard_) {
@@ -708,6 +824,9 @@ public class MatchCase <: Node {
             patternGuard_ = Some(v)
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop arrow: Token {
         get() {
             arrow_
@@ -725,6 +844,10 @@ public class MatchCase <: Node {
             exprOrDecl_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(case_)
         if (patterns_.isEmpty()) {
@@ -771,6 +894,10 @@ public class MatchCase <: Node {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "MatchCase {\n"
         currentIndent = indent
@@ -811,6 +938,17 @@ public class Program <: Node {
         importLists_ = importLists
         decls_ = decls
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             var program = parseProgram(inputs)
@@ -852,6 +990,12 @@ public class Program <: Node {
             decls_ = v
         }
     }
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(pkgHeader_)
         if (!importLists_.isEmpty()) {
@@ -881,6 +1025,11 @@ public class Program <: Node {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "Program {\n"
         currentIndent = indent
@@ -915,6 +1064,17 @@ public class PackageHeader <: Node {
         prefixDots_ = prefixDots
         pkgIdentifier_ = pkgIdentifier
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             var pkg = parseProgram(inputs).packageHeader
@@ -930,9 +1090,17 @@ public class PackageHeader <: Node {
             throw ASTException("Cannot construct the 'PackageHeader' node.")
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init() {
         pkgIdentifier_ = Token(TokenKind.IDENTIFIER, "default")
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     init(isFromDerivation: Bool) {
         pkgIdentifier_ = Token(TokenKind.IDENTIFIER, "default")
         isFromDerivation_ = isFromDerivation
@@ -952,6 +1120,9 @@ public class PackageHeader <: Node {
             accessibleToken_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordM: Token {
         get() {
             macroToken_
@@ -961,6 +1132,9 @@ public class PackageHeader <: Node {
             macroToken_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordP: Token {
         get() {
             keyword_
@@ -978,6 +1152,9 @@ public class PackageHeader <: Node {
             prefixPaths_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop prefixDots: Tokens {
         get() {
             prefixDots_
@@ -995,6 +1172,10 @@ public class PackageHeader <: Node {
             pkgIdentifier_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         if (!isFromDerivation_) {
@@ -1014,6 +1195,10 @@ public class PackageHeader <: Node {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         currentIndent = indent
         if (indent != 0 || beginNode) {
@@ -1040,6 +1225,10 @@ public class PackageHeader <: Node {
         ret
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addPackageTokens(input: Tokens): Tokens {
         for (i in 0..prefixPaths_.size) {
             input.append(prefixPaths_[i])
@@ -1108,6 +1297,9 @@ public class ImportContent <: Node {
             prefixPaths_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop prefixDots: Tokens {
         get() {
             prefixDots_
@@ -1133,6 +1325,9 @@ public class ImportContent <: Node {
             importAlias_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lBrace: Token {
         get() {
             leftCurl_
@@ -1150,6 +1345,9 @@ public class ImportContent <: Node {
             items_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop commas: Tokens {
         get() {
             commas_
@@ -1159,6 +1357,9 @@ public class ImportContent <: Node {
             commas_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rBrace: Token {
         get() {
             rightCurl_
@@ -1196,6 +1397,10 @@ public class ImportContent <: Node {
             false
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         for (i in 0..prefixPaths_.size) {
@@ -1231,6 +1436,10 @@ public class ImportContent <: Node {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         currentIndent = indent
         var ret: String = ""
@@ -1267,6 +1476,17 @@ public class ImportList <: Node {
         import_ = imp
         content_ = content
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             let importLists = parseProgram(inputs.append(innerToken_)).importLists
@@ -1316,6 +1536,10 @@ public class ImportList <: Node {
     public func isImportMulti(): Bool {
         return content_.isImportMulti()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         if (import_.pos != beginPos && isValidToken(reExportToken_)) {
@@ -1333,6 +1557,10 @@ public class ImportList <: Node {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         currentIndent = indent
         if (indent != 0 || beginNode) {
@@ -1393,6 +1621,9 @@ public class Constructor <: Node {
             identifier_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -1410,6 +1641,9 @@ public class Constructor <: Node {
             params_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -1419,6 +1653,12 @@ public class Constructor <: Node {
             rParen_ = v
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         for (i in 0..annotations_.size) {
@@ -1461,6 +1701,10 @@ public class Constructor <: Node {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "Constructor {\n"
         currentIndent = indent
@@ -1482,6 +1726,12 @@ public class Constructor <: Node {
 }
 
 extend<T> ArrayList<T> <: ToTokens {
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         match (this) {
@@ -1566,6 +1816,10 @@ extend<T> ArrayList<T> <: ToTokens {
 }
 
 extend<T> Array<T> <: ToTokens {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         match (this) {
             case elems: Array<Int8> =>

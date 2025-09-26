@@ -25,6 +25,13 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+        /**
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         */
     public override prop localAddress: SocketAddress {
         get() {
             impl.localAddress ?? SocketException.notYetBound()
@@ -33,12 +40,28 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public init(bindAt!: UInt16) {
         this(bindAt: IPSocketAddress(IPv4Address.unspecified, bindAt))
     }
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public init(bindAt!: SocketAddress) {
         checkAddress(bindAt, "bindAt")
 
@@ -53,6 +76,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws [get|set] SocketException
+     * @throws [get|set] OverflowException
+     * @throws [get|set] IllegalStateException
+     * @throws [get|set] IllegalSynchronizationStateException
+     * @throws [get|set] IllegalArgumentException
+     * @throws [get|set] ArithmeticException
+     */
     public mut prop reuseAddress: Bool {
         get() {
             impl.getSocketOptionBool(SOL_SOCKET, SOCK_REUSEADDR)
@@ -70,6 +101,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws [get|set] SocketException
+     * @throws [get|set] OverflowException
+     * @throws [get|set] IllegalStateException
+     * @throws [get|set] IllegalSynchronizationStateException
+     * @throws [get|set] IllegalArgumentException
+     * @throws [get|set] ArithmeticException
+     */
     public mut prop reusePort: Bool {
         get() {
             impl.getSocketOptionBool(SOL_SOCKET, SOCK_REUSEPORT)
@@ -89,6 +128,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws [get|set] SocketException
+     * @throws [get|set] OverflowException
+     * @throws [get|set] IllegalStateException
+     * @throws [get|set] IllegalSynchronizationStateException
+     * @throws [get|set] IllegalArgumentException
+     * @throws [get|set] ArithmeticException
+     */
     public mut prop sendBufferSize: Int64 {
         get() {
             Int64(impl.getSocketOptionIntNative(SOL_SOCKET, SOCK_SNDBUF))
@@ -111,6 +158,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws [get|set] SocketException
+     * @throws [get|set] OverflowException
+     * @throws [get|set] IllegalStateException
+     * @throws [get|set] IllegalSynchronizationStateException
+     * @throws [get|set] IllegalArgumentException
+     * @throws [get|set] ArithmeticException
+     */
     public mut prop receiveBufferSize: Int64 {
         get() {
             Int64(impl.getSocketOptionIntNative(SOL_SOCKET, SOCK_RCVBUF))
@@ -126,6 +181,9 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws [get|set] SocketException
+     */
     public mut prop bindToDevice: ?String {
         get() {
             impl.bindToDevice
@@ -138,6 +196,10 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws [set] IllegalArgumentException
+     * @throws [set] SocketException
+     */
     public mut prop backlogSize: Int64 {
         get() {
             Int64(backlogSize_)
@@ -156,6 +218,15 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalSynchronizationStateException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     */
     public override func bind(): Unit {
         impl.bind(backlogSize_)
     }
@@ -176,6 +247,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public override func accept(timeout!: ?Duration): TcpSocket {
         let accepted = impl.accept(timeout) ?? SocketException.throwClosedException()
         return TcpSocket(accepted)
@@ -193,12 +272,25 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public override func accept(): TcpSocket {
         accept(timeout: None)
     }
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public override func close(): Unit {
         impl.close()
     }
@@ -215,6 +307,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOption(
         level: Int32,
         option: Int32,
@@ -228,6 +328,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOption(
         level: Int32,
         option: Int32,
@@ -241,6 +349,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOptionIntNative(
         level: Int32,
         option: Int32
@@ -252,6 +368,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOptionIntNative(
         level: Int32,
         option: Int32,
@@ -267,6 +391,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func getSocketOptionBool(
         level: Int32,
         option: Int32
@@ -280,6 +412,14 @@ public class TcpServerSocket <: ServerSocket {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws SocketException
+     */
     public func setSocketOptionBool(
         level: Int32,
         option: Int32,
@@ -288,10 +428,20 @@ public class TcpServerSocket <: ServerSocket {
         impl.setSocketOptionBool(level, option, value)
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public override func toString(): String {
         "TcpServerSocket(${impl.toString()})"
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     private static func checkAddress(address: SocketAddress, name: String): SocketAddress {
         if (!(address is IPSocketAddress)) {
             throw IllegalArgumentException(

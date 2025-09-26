@@ -25,6 +25,9 @@ class ToStringDeriving <: Deriving {
         get() { [toStringInfo.name]}
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public override func queryInterfaceInfo(interfaceName: QualifiedName): DerivingInterfaceInfo {
         if (interfaceName != toStringInfo.name) {
             throw IllegalArgumentException("Unsupported interface ${interfaceName}")
@@ -36,6 +39,17 @@ class ToStringDeriving <: Deriving {
     private static let toStringInfo = DerivingInterfaceInfo(
         QualifiedName("std.core.ToString"), [], GenericsInjector.noGenerics())
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public override func derive(
         _: Tokens,
         target: DerivingTarget,
@@ -89,6 +103,12 @@ class ToStringDeriving <: Deriving {
         return ext.toTokens()
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func namedAppendsFor(target: DerivingTarget): Iterator<Tokens> {
         target.namedFields |> map { field: TargetNamedAttribute =>
             let idToken = field.identifier.token
@@ -101,6 +121,12 @@ class ToStringDeriving <: Deriving {
         }
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func enumCaseAppends(enumCase: TargetEnumCase, target: DerivingTarget): Tokens {
         func varNameFor(field: TargetEnumField): Token {
             let prefix = match {
@@ -142,6 +168,12 @@ class ToStringDeriving <: Deriving {
         )
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func joinAppends(ifEmpty!: Tokens): (Iterable<Tokens>) -> Tokens {{ iter =>
         iter |> joinTokens(
             prefix: quote(

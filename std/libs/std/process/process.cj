@@ -59,6 +59,12 @@ public open class Process {
 
 
 
+        /**
+         * @throws OutOfMemoryError
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ProcessException
+         */
     @Deprecated[message: "CurrentProcess has been marked as deprecated, use related global functions in the std.env instead."]
     public static prop current: CurrentProcess {
         get() {
@@ -72,17 +78,28 @@ public open class Process {
         }
     }
 
+        /**
+         * @throws ProcessException
+         */
     public prop name: String {
         get() {
             this._name ?? throw ProcessException("Can not get process name.")
         }
     }
 
+        /**
+         * @throws ProcessException
+         */
     public prop command: String {
         get() {
             this._command ?? throw ProcessException("Can not get process command.")
         }
     }
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         */
     public prop startTime: DateTime {
         get() {
             return if (this._startTimeSinceUnixEpoch == -1) {
@@ -106,6 +123,9 @@ public open class Process {
         }
     }
 
+        /**
+         * @throws ProcessException
+         */
     @Deprecated
     public open prop arguments: Array<String> {
         get() {
@@ -113,6 +133,9 @@ public open class Process {
         }
     }
 
+        /**
+         * @throws ProcessException
+         */
     @Deprecated[message: "Use global function `public func getCommandLine(): Array<String>` in std.env instead."]
     public prop commandLine: Array<String> {
         get() {
@@ -120,6 +143,9 @@ public open class Process {
         }
     }
 
+        /**
+         * @throws ProcessException
+         */
     @Deprecated[message: "Use global function `public func getHomeDirectory(): Path` in std.env instead."]
     public prop workingDirectory: Path {
         get() {
@@ -127,6 +153,11 @@ public open class Process {
         }
     }
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ProcessException
+         */
     @Deprecated[message: "Use global function `public func getVariables(): Array<(String, String)>` in std.env instead."]
     public prop environment: Map<String, String> {
         get() {
@@ -137,6 +168,12 @@ public open class Process {
 
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     */
     @Deprecated[message: "Use global function `public func findProcess(pid: Int64): Process` instead."]
     public static func of(pid: Int64): Process {
         if (pid > Int64(Int32.Max) || pid < 0) {
@@ -157,6 +194,14 @@ public open class Process {
 
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     */
     @Deprecated[message: "Use global function `public func launch(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit, stdErr!: ProcessRedirect = Inherit): SubProcess` instead."]
     public static func start(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
         environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit,
@@ -210,6 +255,16 @@ public open class Process {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws TimeoutException
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     */
     @Deprecated[message: "Use global function `public func execute(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit, stdErr!: ProcessRedirect = Inherit, timeout!: ?Duration = None): Int64` instead."]
     public static func run(command: String, arguments: Array<String>, 
             workingDirectory!: ?Path = None, 
@@ -226,6 +281,17 @@ public open class Process {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws TimeoutException
+     * @throws FSException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     */
     @Deprecated[message: "Use global function `public func executeWithOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None, environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Pipe, stdErr!: ProcessRedirect = Pipe): (Int64, Array<Byte>, Array<Byte>)` instead."]
     public static func runOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
         environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Pipe,
@@ -238,6 +304,12 @@ public open class Process {
 
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     */
     static func buildCurrentProcess(): CurrentProcess {
         let current_pid: Int32 = unsafe { CJ_OS_GetCurrentPid() }
         let processInfo_cp: CPointer<ProcessInfo> = unsafe { CJ_OS_GetProcessInfoByPid(current_pid) }
@@ -262,6 +334,12 @@ public open class Process {
 
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     */
     static func buildProcess(pid: Int32): Process {
         let processInfo_cp: CPointer<ProcessInfo> = unsafe { CJ_OS_GetProcessInfoByPid(pid) }
         if (processInfo_cp.isNull()) {
@@ -278,6 +356,10 @@ public open class Process {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func getEnvironments(): ?Map<String, String> {
         let processInfoC: CPointer<ProcessInfo> = unsafe { CJ_OS_GetProcessInfoByPid(Int32(this._pid)) }
         if (processInfoC.isNull()) {
@@ -306,6 +388,10 @@ public open class Process {
 
 
 
+    /**
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     */
     public func terminate(force!: Bool = false): Unit {
         if (this._pid > Int64(Int32.Max) || this._pid < 0) {
             throw IllegalArgumentException("Invaild pid, \"${this._pid}\".")
@@ -322,6 +408,9 @@ public open class Process {
 
 
 
+    /**
+     * @throws ProcessException
+     */
     protected open func terminateAliveProcess(pid: Int32, force: Bool): Unit {
         let processStatus: Int8 = unsafe { CJ_OS_GetProcessAliveStatus(pid, this._startTime) }
         if (processStatus == PROCESS_STATUS_ALIVE) {
@@ -388,6 +477,11 @@ func getProcessStartTime(pid: Int32): Int64 {
     return unsafe { CJ_OS_GetStartTimeFromBoot(pid) }
 }
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func getProcessInfo(processInfo: ProcessInfo): (Option<String>, Option<String>, Option<Path>, Option<Array<String>>, 
     Option<Array<String>>, Option<Map<String, String>>) {
     let command: ?String = cStringToOption(processInfo.command)
@@ -717,6 +811,14 @@ func initStdStream(processRtnData: ProcessRtnData): (OutputStream, InputStream, 
     return (stdInStream, stdOutStream, stdErrStream)
 }
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws FSException
+ * @throws ProcessException
+ */
 @When[os != "Windows"]
 func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CString, environment: ?Map<String, String>,
     std_redirects: Array<ProcessRedirect>): SubProcess {
@@ -823,6 +925,13 @@ func buildSubProcess(command: String, arguments: Array<String>, workingDir_c: CS
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws FSException
+ * @throws ProcessException
+ */
 func matchRedirectFileHandle(redirect: ProcessRedirect, stdio: StdIO): IntNative {
     return match (redirect) {
         case ProcessRedirect.Pipe => INVALID_HANDLE
@@ -845,6 +954,12 @@ func matchRedirectFileHandle(redirect: ProcessRedirect, stdio: StdIO): IntNative
     }
 }
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws ProcessException
+ * @throws IllegalArgumentException
+ */
 public func findProcess(pid: Int64): Process {
     if (pid > Int64(Int32.Max) || pid < 0) {
         throw IllegalArgumentException("Invaild pid: \"${pid}\", can not get process.")
@@ -863,6 +978,14 @@ public func findProcess(pid: Int64): Process {
 
 
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ * @throws ProcessException
+ * @throws IllegalArgumentException
+ */
 public func launch(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit,
     stdErr!: ProcessRedirect = Inherit): SubProcess {
@@ -915,6 +1038,16 @@ public func launch(command: String, arguments: Array<String>, workingDirectory!:
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ * @throws TimeoutException
+ * @throws FSException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ */
 public func execute(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Inherit,
     stdErr!: ProcessRedirect = Inherit, timeout!: ?Duration = None): Int64 {
@@ -925,6 +1058,17 @@ public func execute(command: String, arguments: Array<String>, workingDirectory!
 
 
 
+/**
+ * @throws IllegalMemoryException
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ * @throws TimeoutException
+ * @throws FSException
+ * @throws ArithmeticException
+ * @throws ProcessException
+ */
 public func executeWithOutput(command: String, arguments: Array<String>, workingDirectory!: ?Path = None,
     environment!: ?Map<String, String> = None, stdIn!: ProcessRedirect = Inherit, stdOut!: ProcessRedirect = Pipe,
     stdErr!: ProcessRedirect = Pipe): (Int64, Array<Byte>, Array<Byte>) {

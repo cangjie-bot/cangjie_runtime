@@ -34,6 +34,9 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws InfoNotFoundException
+         */
     public prop name: String {
         get() {
             match (_name) {
@@ -51,6 +54,15 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws OutOfMemoryError
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws IllegalSynchronizationStateException
+         * @throws InfoNotFoundException
+         */
     public prop typeInfo: TypeInfo {
         get() {
             match (_typeInfo) {
@@ -65,6 +77,15 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws OutOfMemoryError
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws IllegalSynchronizationStateException
+         * @throws InfoNotFoundException
+         */
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -81,14 +102,41 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
     }
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
@@ -105,6 +153,15 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
         this._info.toUIntNative().hashCode()
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public func toString(): String {
         typeInfo.toString()
     }

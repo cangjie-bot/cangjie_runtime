@@ -35,24 +35,36 @@ public class ConsoleWriter <: OutputStream {
         this.fd_ = fd
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func flush(): Unit {
         synchronized(mutex) {
             unsafe { CJ_CONSOLE_Flush(this.fd_) }
         }
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(buffer: Array<Byte>): Unit {
         synchronized(mutex) {
             directWrite(buffer, buffer.size)
         }
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(buffer: Array<Byte>): Unit {
         synchronized(mutex) {
             directWrite(buffer, buffer.size, newline: true)
         }
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: String): Unit {
         if (v.isEmpty()) {
             return
@@ -60,10 +72,16 @@ public class ConsoleWriter <: OutputStream {
         write(unsafe { v.rawData() })
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func write<T>(v: T): Unit where T <: ToString {
         write(v.toString())
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Bool): Unit {
         write(if (v) {
             "true"
@@ -72,64 +90,122 @@ public class ConsoleWriter <: OutputStream {
         })
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Int8): Unit {
         write(Int64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Int16): Unit {
         write(Int64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Int32): Unit {
         write(Int64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Int64): Unit {
         writeInt64(v, newline: false)
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func write(v: UInt8): Unit {
         write(UInt64(v))
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func write(v: UInt16): Unit {
         write(UInt64(v))
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func write(v: UInt32): Unit {
         write(UInt64(v))
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func write(v: UInt64): Unit {
         writeUInt64(v, newline: false)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Float16): Unit {
         write(Float64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Float32): Unit {
         write(Float64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Float64): Unit {
         writeFloat64(v, newline: false)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func write(v: Rune): Unit {
         var itemBytes: Array<UInt8> = Array<UInt8>(6, repeat: 0)
         let len = Rune.intoUtf8Array(v, itemBytes, 0)
         write(itemBytes[..len])
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: String): Unit {
         writeln(unsafe { v.rawData() })
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln<T>(v: T): Unit where T <: ToString {
         writeln(v.toString())
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Bool): Unit {
         writeln(if (v) {
             "true"
@@ -138,56 +214,109 @@ public class ConsoleWriter <: OutputStream {
         })
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Int8): Unit {
         writeln(Int64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Int16): Unit {
         writeln(Int64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Int32): Unit {
         writeln(Int64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Int64): Unit {
         writeInt64(v, newline: true)
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func writeln(v: UInt8): Unit {
         writeln(UInt64(v))
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func writeln(v: UInt16): Unit {
         writeln(UInt64(v))
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func writeln(v: UInt32): Unit {
         writeln(UInt64(v))
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func writeln(v: UInt64): Unit {
         writeUInt64(v, newline: true)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Float16): Unit {
         writeln(Float64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Float32): Unit {
         writeln(Float64(v))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Float64): Unit {
         writeFloat64(v, newline: true)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func writeln(v: Rune): Unit {
         var itemBytes: Array<UInt8> = Array<UInt8>(6, repeat: 0)
         let len = Rune.intoUtf8Array(v, itemBytes, 0)
         writeln(itemBytes[..len])
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     private func writeInt64(v: Int64, newline!: Bool = false): Unit {
         synchronized(mutex) {
             var writePos: Int64
@@ -204,6 +333,10 @@ public class ConsoleWriter <: OutputStream {
         }
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     */
     private func writeUInt64(v: UInt64, newline!: Bool = false): Unit {
         synchronized(mutex) {
             var writePos: Int64
@@ -220,6 +353,10 @@ public class ConsoleWriter <: OutputStream {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     private func writeFloat64(v: Float64, newline!: Bool = false): Unit {
         synchronized(mutex) {
             var writePos: Int64

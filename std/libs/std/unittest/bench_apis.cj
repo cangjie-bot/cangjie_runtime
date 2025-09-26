@@ -42,6 +42,9 @@ public struct BatchInputProvider<T> <: BenchInputProvider<T> {
     @Frozen
     public BatchInputProvider(let builder: () -> T) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public mut func reset(max: Int64) {
         if (data.size >= max) {
@@ -54,6 +57,9 @@ public struct BatchInputProvider<T> <: BenchInputProvider<T> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public mut func get(idx: Int64): T { data[idx] }
 }
@@ -68,6 +74,9 @@ public struct BatchSizeOneInputProvider<T> <: BenchInputProvider<T> {
         data = builder()
     }
 
+    /**
+     * @throws IllegalStateException
+     */
     @Frozen
     public mut func reset(max: Int64) {
         if (max > 1) {
@@ -99,6 +108,9 @@ struct SimpleBenchWrapper<T> <: BenchmarkWrapper {
         f(input, times, max)
     }
 
+    /**
+     * @throws ArithmeticException
+     */
     public func timeLoopOnce(times: Int64, max: Int64): Float64 {
         let tmp = DateTime.now()
         f(input, times, max)
@@ -122,10 +134,20 @@ public interface BenchmarkConfig {
 }
 
 extend Configuration <: BenchmarkConfig {
+    /**
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func batchSize(b: Int64) {
         batchSize(b..=b)
     }
 
+    /**
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func batchSize(x: Range<Int64>) {
         if (x.end < 1 || x.end > MAX_BATCH_SIZE) {
             throw IllegalArgumentException("batch size must be in range from 1 to ${MAX_BATCH_SIZE}")
@@ -133,22 +155,47 @@ extend Configuration <: BenchmarkConfig {
         this.set(KeyBatchSize.batchSize, x)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public func warmup(x: Int64) {
         this.set(KeyWarmup.warmup, x)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public func warmup(x: Duration) {
         this.set(KeyWarmup.warmup, x)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public func minDuration(x: Duration) {
         this.set(KeyMinDuration.minDuration, x)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public func explicitGC(x: ExplicitGcType) {
         this.set(KeyExplicitGC.explicitGC, x)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public func minBatches(x: Int64) {
         this.set(KeyMinBatches.minBatches, x)
     }

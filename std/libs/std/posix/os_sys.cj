@@ -37,6 +37,10 @@ public const F_OK: Int32 = 0x0
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os == "Linux" || os == "Windows" || os == "macOS"]
 @Deprecated
 public func access(path: String, mode: Int32): Int32 {
@@ -60,6 +64,10 @@ public func access(path: String, mode: Int32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
 public func faccessat(fd: Int32, path: String, mode: Int32, flag: Int32): Int32 {
@@ -95,6 +103,10 @@ public func umask(cmask: UInt32): UInt32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
 public func chown(path: String, owner: UInt32, group: UInt32): Int32 {
@@ -134,6 +146,10 @@ public func fchown(fd: Int32, owner: UInt32, group: UInt32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
 public func lchown(path: String, owner: UInt32, group: UInt32): Int32 {
@@ -158,6 +174,10 @@ public func lchown(path: String, owner: UInt32, group: UInt32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
 public func fchownat(fd: Int32, path: String, owner: UInt32, group: UInt32, flag: Int32): Int32 {
@@ -179,6 +199,10 @@ public func fchownat(fd: Int32, path: String, owner: UInt32, group: UInt32, flag
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os == "Linux" || os == "Windows" || os == "macOS"]
 @Deprecated
 public func chmod(path: String, mode: UInt32): Int32 {
@@ -216,6 +240,10 @@ public func fchmod(fd: Int32, mode: UInt32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os == "Linux" || os == "macOS"]
 @Deprecated
 public func fchmodat(fd: Int32, path: String, mode: UInt32, flag: Int32): Int32 {

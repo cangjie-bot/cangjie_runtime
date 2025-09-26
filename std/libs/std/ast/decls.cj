@@ -42,6 +42,17 @@ public open class Decl <: Node {
         this.constraintCommas_ = decl.constraintCommas_
         this.isGenericDecl_ = decl.isGenericDecl
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ASTException
+     * @throws ParseASTException
+     */
     init(input: Tokens) {
         try {
             var decl = parseDecl(input)
@@ -107,6 +118,9 @@ public open class Decl <: Node {
             modifiers_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop genericParam: GenericParam {
         get() {
             match (genericParam_) {
@@ -126,6 +140,9 @@ public open class Decl <: Node {
             constraint_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop constraintCommas: Tokens {
         get() {
             constraintCommas_
@@ -136,6 +153,9 @@ public open class Decl <: Node {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func hasAttr(attr: String): Bool {
         for (i in 0..annotations_.size) {
             for (attribute in annotations_[i].attributes) {
@@ -147,6 +167,10 @@ public open class Decl <: Node {
         return false
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func getAttrs(): Tokens {
         var ret = Tokens()
         for (i in 0..annotations_.size) {
@@ -166,6 +190,12 @@ public open class Decl <: Node {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func toTokens(): Tokens {
         var ret = Tokens()
         for (i in 0..annotations_.size) {
@@ -204,6 +234,11 @@ public open class Decl <: Node {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected open func dump(indent: UInt16): String {
         var ret: String = ""
         for (i in 0..annotations_.size) {
@@ -233,6 +268,17 @@ public open class Decl <: Node {
 }
 
 public class ClassDecl <: Decl {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as ClassDecl) {
@@ -257,6 +303,9 @@ public class ClassDecl <: Decl {
     private var superTypes_: ArrayList<TypeNode> = ArrayList<TypeNode>()
     private var superTypeBitAnds_: Tokens = Tokens()
     private var classbody_: Body = Body()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop upperBound: Token {
         get() {
             upBound_
@@ -274,6 +323,9 @@ public class ClassDecl <: Decl {
             superTypes_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop superTypeBitAnds: Tokens {
         get() {
             superTypeBitAnds_
@@ -291,6 +343,12 @@ public class ClassDecl <: Decl {
             classbody_ = v
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
         return ret
@@ -314,6 +372,11 @@ public class ClassDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ClassDecl {\n"
         currentIndent = indent
@@ -335,6 +398,17 @@ public class StructDecl <: Decl {
         this.superTypes_ = superTypes
         this.superTypeBitAnds_ = superTypeBitAnds
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as StructDecl) {
@@ -352,6 +426,9 @@ public class StructDecl <: Decl {
     private var superTypes_: ArrayList<TypeNode> = ArrayList<TypeNode>()
     private var superTypeBitAnds_: Tokens = Tokens()
     private var structbody_: Body = Body()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop upperBound: Token {
         get() {
             upBound_
@@ -369,6 +446,9 @@ public class StructDecl <: Decl {
             superTypes_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop superTypeBitAnds: Tokens {
         get() {
             superTypeBitAnds_
@@ -386,6 +466,12 @@ public class StructDecl <: Decl {
             structbody_ = v
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
         return ret
@@ -409,6 +495,11 @@ public class StructDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "StructDecl {\n"
         currentIndent = indent
@@ -430,6 +521,17 @@ public class InterfaceDecl <: Decl {
         this.superTypes_ = superTypes
         this.superTypeBitAnds_ = superTypeBitAnds
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as InterfaceDecl) {
@@ -447,6 +549,9 @@ public class InterfaceDecl <: Decl {
     private var superTypes_: ArrayList<TypeNode> = ArrayList<TypeNode>()
     private var superTypeBitAnds_: Tokens = Tokens()
     private var interfacetbody_: Body = Body()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop upperBound: Token {
         get() {
             upBound_
@@ -464,6 +569,9 @@ public class InterfaceDecl <: Decl {
             superTypes_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop superTypeBitAnds: Tokens {
         get() {
             superTypeBitAnds_
@@ -482,6 +590,12 @@ public class InterfaceDecl <: Decl {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
         return ret
@@ -505,6 +619,11 @@ public class InterfaceDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "InterfaceDecl {\n"
         currentIndent = indent
@@ -532,6 +651,17 @@ public class EnumDecl <: Decl {
         rBrace_ = rBrace
         ellipsis_ = ellipsis
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as EnumDecl) {
@@ -560,6 +690,9 @@ public class EnumDecl <: Decl {
     private var rBrace_: Token = Token(TokenKind.RCURL)
     private var ellipsis_: Token = Token()
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop upperBound: Token {
         get() {
             upBound_
@@ -577,6 +710,9 @@ public class EnumDecl <: Decl {
             superTypes_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop superTypeBitAnds: Tokens {
         get() {
             superTypeBitAnds_
@@ -586,6 +722,9 @@ public class EnumDecl <: Decl {
             superTypeBitAnds_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lBrace: Token {
         get() {
             lBrace_
@@ -611,6 +750,9 @@ public class EnumDecl <: Decl {
             decls_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rBrace: Token {
         get() {
             rBrace_
@@ -620,6 +762,9 @@ public class EnumDecl <: Decl {
             rBrace_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop ellipsis: Token {
         get() {
             ellipsis_
@@ -629,6 +774,12 @@ public class EnumDecl <: Decl {
             ellipsis_ = v
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
         if (!superTypes_.isEmpty()) {
@@ -697,6 +848,11 @@ public class EnumDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "EnumDecl {\n"
         currentIndent = indent
@@ -736,6 +892,17 @@ public class ExtendDecl <: Decl {
         this.superTypeBitAnds_ = superTypeBitAnds
         this.body_ = body
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as ExtendDecl) {
@@ -755,6 +922,9 @@ public class ExtendDecl <: Decl {
     private var superTypes_: ArrayList<TypeNode> = ArrayList<TypeNode>()
     private var superTypeBitAnds_: Tokens = Tokens()
     private var body_ = Body()
+    /**
+     * @throws [get|set] ASTException
+     */
     public mut override prop identifier: Token {
         get() {
             throw ASTException("Current ExtendDecl don't have identifier")
@@ -771,6 +941,9 @@ public class ExtendDecl <: Decl {
             extendType_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop upperBound: Token {
         get() {
             upBound_
@@ -788,6 +961,9 @@ public class ExtendDecl <: Decl {
             superTypes_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop superTypeBitAnds: Tokens {
         get() {
             superTypeBitAnds_
@@ -805,6 +981,12 @@ public class ExtendDecl <: Decl {
             body_ = v
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens().append(extendType_)
         return ret
@@ -829,6 +1011,11 @@ public class ExtendDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ExtendDecl {\n"
         currentIndent = indent
@@ -845,6 +1032,17 @@ public class ExtendDecl <: Decl {
 }
 
 public class FuncDecl <: Decl {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as FuncDecl) {
@@ -888,6 +1086,9 @@ public class FuncDecl <: Decl {
             overloadedOperators_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -905,6 +1106,9 @@ public class FuncDecl <: Decl {
             params_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -914,6 +1118,9 @@ public class FuncDecl <: Decl {
             rParen_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -923,6 +1130,9 @@ public class FuncDecl <: Decl {
             colon_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop declType: TypeNode {
         get() {
             match (retTy_) {
@@ -951,6 +1161,12 @@ public class FuncDecl <: Decl {
         }
         return false
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         for (i in 0..annotations.size) {
@@ -1019,6 +1235,11 @@ public class FuncDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "FuncDecl {\n"
         currentIndent = indent
@@ -1067,6 +1288,17 @@ public class MainDecl <: Decl {
         this.retTy_ = ty
         this.block_ = block
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as MainDecl) {
@@ -1090,6 +1322,9 @@ public class MainDecl <: Decl {
     private var retTy_: Option<TypeNode> = None<TypeNode>
     private var block_: Block = Block()
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -1107,6 +1342,9 @@ public class MainDecl <: Decl {
             params_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -1116,6 +1354,9 @@ public class MainDecl <: Decl {
             rParen_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -1125,6 +1366,9 @@ public class MainDecl <: Decl {
             colon_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop declType: TypeNode {
         get() {
             match (retTy_) {
@@ -1145,6 +1389,12 @@ public class MainDecl <: Decl {
         }
     }
 
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens().append(super.toTokens())
         ret.append(lParen_)
@@ -1175,6 +1425,11 @@ public class MainDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "MainDecl {\n"
         currentIndent = indent
@@ -1210,6 +1465,17 @@ public class MacroDecl <: Decl {
         this.retTy_ = ty
         this.block_ = block
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as MacroDecl) {
@@ -1233,6 +1499,9 @@ public class MacroDecl <: Decl {
     private var retTy_: Option<TypeNode> = None<TypeNode>
     private var block_: Block = Block()
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -1250,6 +1519,9 @@ public class MacroDecl <: Decl {
             params_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -1259,6 +1531,9 @@ public class MacroDecl <: Decl {
             rParen_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -1268,6 +1543,9 @@ public class MacroDecl <: Decl {
             colon_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop declType: TypeNode {
         get() {
             match (retTy_) {
@@ -1288,6 +1566,12 @@ public class MacroDecl <: Decl {
         }
     }
 
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens().append(super.toTokens())
         ret.append(lParen_)
@@ -1303,6 +1587,9 @@ public class MacroDecl <: Decl {
         return ret.append(block.toTokens())
     }
 
+    /**
+     * @throws ASTException
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -1320,6 +1607,11 @@ public class MacroDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "MacroDecl {\n"
         currentIndent = indent
@@ -1354,6 +1646,17 @@ public class PrimaryCtorDecl <: Decl {
         this.rParen_ = rParen
         this.block_ = block
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseDecl(inputs, astKind: "PrimaryCtorDecl") as PrimaryCtorDecl) {
@@ -1385,6 +1688,9 @@ public class PrimaryCtorDecl <: Decl {
     private var params_: ArrayList<FuncParam> = ArrayList<FuncParam>()
     private var block_: Block = Block()
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -1402,6 +1708,9 @@ public class PrimaryCtorDecl <: Decl {
             params_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -1429,6 +1738,12 @@ public class PrimaryCtorDecl <: Decl {
         return false
     }
 
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens().append(super.toTokens()).append(lParen_)
         ret.append(funcParams.toTokens())
@@ -1452,6 +1767,11 @@ public class PrimaryCtorDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "PrimaryCtorDecl {\n"
         currentIndent = indent
@@ -1473,6 +1793,10 @@ public class PrimaryCtorDecl <: Decl {
 public class VarDecl <: Decl {
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     init(decl: Decl, colon: Token, declType: Option<TypeNode>, assign: Token, expr: Option<Expr>) {
         super(decl)
         this.declType_ = declType
@@ -1483,6 +1807,10 @@ public class VarDecl <: Decl {
             modifiers.removeIf {mod => mod.keyword.kind == TokenKind.CONST}
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     init(decl: Decl, pattern: Option<Pattern>, colon: Token, declType: Option<TypeNode>, assign: Token,
         expr: Option<Expr>) {
         super(decl)
@@ -1495,6 +1823,17 @@ public class VarDecl <: Decl {
             modifiers.removeIf {mod => mod.keyword.kind == TokenKind.CONST}
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as VarDecl) {
@@ -1520,6 +1859,9 @@ public class VarDecl <: Decl {
     private var expr_: Option<Expr> = None<Expr>
     var isEnumConstruct: Bool = false
 
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop pattern: Pattern {
         get() {
             match (pattern_) {
@@ -1531,6 +1873,9 @@ public class VarDecl <: Decl {
             pattern_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -1540,6 +1885,9 @@ public class VarDecl <: Decl {
             colon_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop declType: TypeNode {
         get() {
             match (declType_) {
@@ -1551,6 +1899,9 @@ public class VarDecl <: Decl {
             declType_ = Some(v)
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop assign: Token {
         get() {
             assign_
@@ -1560,6 +1911,9 @@ public class VarDecl <: Decl {
             assign_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop expr: Expr {
         get() {
             match (expr_) {
@@ -1578,6 +1932,12 @@ public class VarDecl <: Decl {
         }
         return false
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
         var endPos = Position(identifier.pos.fileID, identifier.pos.line,
@@ -1622,6 +1982,11 @@ public class VarDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "VarDecl {\n"
         currentIndent = indent
@@ -1665,6 +2030,17 @@ public open class FuncParam <: Decl {
         comma_ = comma
         isMemberParam_ = isMemberParam
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super()
         var params = ArrayList<FuncParam>()
@@ -1708,6 +2084,9 @@ public open class FuncParam <: Decl {
     private var expr_: Option<Expr> = None<Expr>
     private var comma_ = Token()
     private var isMemberParam_ = false
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop not: Token {
         get() {
             not_
@@ -1717,6 +2096,9 @@ public open class FuncParam <: Decl {
             not_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -1734,6 +2116,9 @@ public open class FuncParam <: Decl {
             paramType_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop assign: Token {
         get() {
             assign_
@@ -1743,6 +2128,9 @@ public open class FuncParam <: Decl {
             assign_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop expr: Expr {
         get() {
             match (expr_) {
@@ -1757,6 +2145,12 @@ public open class FuncParam <: Decl {
     public func isMemberParam(): Bool {
         return isMemberParam_
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func toTokens(): Tokens {
         var ret = super.toTokens()
         if (isValidToken(not_)) {
@@ -1794,6 +2188,11 @@ public open class FuncParam <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected open func dump(indent: UInt16): String {
         var ret: String = "FuncParam {\n"
         currentIndent = indent
@@ -1834,6 +2233,17 @@ public class PropDecl <: Decl {
         this.setter_ = setter
         this.rCurl_ = rCurl
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as PropDecl) {
@@ -1856,6 +2266,9 @@ public class PropDecl <: Decl {
     private var getter_: Option<FuncDecl> = None<FuncDecl>
     private var setter_: Option<FuncDecl> = None<FuncDecl>
     private var rCurl_ = Token(TokenKind.RCURL)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -1873,6 +2286,9 @@ public class PropDecl <: Decl {
             declType_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lBrace: Token {
         get() {
             lCurl_
@@ -1882,6 +2298,9 @@ public class PropDecl <: Decl {
             lCurl_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop getter: FuncDecl {
         get() {
             match (getter_) {
@@ -1893,6 +2312,9 @@ public class PropDecl <: Decl {
             getter_ = Some(v)
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop setter: FuncDecl {
         get() {
             match (setter_) {
@@ -1904,6 +2326,9 @@ public class PropDecl <: Decl {
             setter_ = Some(v)
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rBrace: Token {
         get() {
             rCurl_
@@ -1913,6 +2338,12 @@ public class PropDecl <: Decl {
             rCurl_ = v
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
         ret.append(colon_).append(declType_.toTokens())
@@ -1950,6 +2381,11 @@ public class PropDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "PropDecl {\n"
         currentIndent = indent
@@ -1982,6 +2418,17 @@ public class TypeAliasDecl <: Decl {
         assign_ = assign
         aliasType_ = aliasType
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         super(inputs)
         match (super.node as TypeAliasDecl) {
@@ -1996,6 +2443,9 @@ public class TypeAliasDecl <: Decl {
     }
     private var assign_: Token = Token()
     private var aliasType_: TypeNode = TypeNode()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop assign: Token {
         get() {
             assign_
@@ -2014,6 +2464,12 @@ public class TypeAliasDecl <: Decl {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
         ret.append(assign).append(aliasType_.toTokens()).append(Token(NL))
@@ -2029,6 +2485,11 @@ public class TypeAliasDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "TypeAliasDecl {\n"
         currentIndent = indent
@@ -2060,6 +2521,17 @@ public class MacroExpandDecl <: Decl {
         hasParenthesis_ = hasParenthesis
         isCompileTimeVisible_ = isCompileTimeVisible
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseDecl(inputs) as MacroExpandDecl) {
@@ -2109,6 +2581,9 @@ public class MacroExpandDecl <: Decl {
         }
     }
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lSquare: Token {
         get() {
             lSquare_
@@ -2126,6 +2601,9 @@ public class MacroExpandDecl <: Decl {
             macroAttrs_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rSquare: Token {
         get() {
             rSquare_
@@ -2135,6 +2613,9 @@ public class MacroExpandDecl <: Decl {
             rSquare_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -2144,6 +2625,17 @@ public class MacroExpandDecl <: Decl {
             lParen_ = v
         }
     }
+    /**
+     * @throws [set] ParseASTException
+     * @throws [set] ASTException
+     * @throws [set] Exception
+     * @throws [set] NoneValueException
+     * @throws [set] IllegalMemoryException
+     * @throws [set] Error
+     * @throws [set] IndexOutOfBoundsException
+     * @throws [set] IllegalArgumentException
+     * @throws [set] ConcurrentModificationException
+     */
     public mut prop macroInputs: Tokens {
         get() {
             macroInputs_
@@ -2157,6 +2649,9 @@ public class MacroExpandDecl <: Decl {
             }
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -2166,6 +2661,12 @@ public class MacroExpandDecl <: Decl {
             rParen_ = v
         }
     }
+    /**
+     * @throws [set] IndexOutOfBoundsException
+     * @throws [set] IllegalArgumentException
+     * @throws [set] NoneValueException
+     * @throws [get|set] ASTException
+     */
     public mut prop macroInputDecl: Decl {
         get() {
             match (macroInputDecl_) {
@@ -2178,6 +2679,13 @@ public class MacroExpandDecl <: Decl {
             macroInputs_ = v.toTokens()
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         for (i in 0..annotations.size) {
@@ -2227,6 +2735,11 @@ public class MacroExpandDecl <: Decl {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "MacroExpandDecl {\n"
         currentIndent = indent
@@ -2293,6 +2806,9 @@ public class MacroExpandParam <: FuncParam {
         }
     }
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lSquare: Token {
         get() {
             lSquare_
@@ -2310,6 +2826,9 @@ public class MacroExpandParam <: FuncParam {
             macroAttrs_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rSquare: Token {
         get() {
             rSquare_
@@ -2319,6 +2838,9 @@ public class MacroExpandParam <: FuncParam {
             rSquare_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -2328,6 +2850,17 @@ public class MacroExpandParam <: FuncParam {
             lParen_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     * @throws [set] ParseASTException
+     * @throws [set] IndexOutOfBoundsException
+     * @throws [set] IllegalArgumentException
+     * @throws [set] Exception
+     * @throws [set] NoneValueException
+     * @throws [set] IllegalMemoryException
+     * @throws [set] Error
+     * @throws [set] ConcurrentModificationException
+     */
     public mut prop macroInputs: Tokens {
         get() {
             macroInputs_
@@ -2341,6 +2874,9 @@ public class MacroExpandParam <: FuncParam {
             }
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -2350,6 +2886,12 @@ public class MacroExpandParam <: FuncParam {
             rParen_ = v
         }
     }
+    /**
+     * @throws [set] IndexOutOfBoundsException
+     * @throws [set] IllegalArgumentException
+     * @throws [set] NoneValueException
+     * @throws [get|set] ASTException
+     */
     public mut prop macroInputDecl: Decl {
         get() {
             match (macroInputDecl_) {
@@ -2362,6 +2904,13 @@ public class MacroExpandParam <: FuncParam {
             macroInputs_ = v.toTokens()
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         for (i in 0..annotations.size) {
@@ -2411,6 +2960,11 @@ public class MacroExpandParam <: FuncParam {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "MacroExpandParam {\n"
         currentIndent = indent

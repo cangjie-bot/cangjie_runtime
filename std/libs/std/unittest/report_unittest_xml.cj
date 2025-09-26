@@ -63,11 +63,21 @@ open class XmlElementBuilder <: ToString {
         this
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func attribute(key: ToString, value: ToString): This {
         attributes.add((key, value.toString().toXmlEscapedString()))
         this
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func optionalAttribute(key: ToString, value: ?String): This {
         if (let Some(value) <- value) {
             attribute(key, value)
@@ -80,6 +90,10 @@ open class XmlElementBuilder <: ToString {
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func element(name: ToString, childBuilder: (XmlElementBuilder) -> Unit): This {
         let child = XmlElementBuilder(level: level + 1)
         name |> child.name
@@ -88,12 +102,21 @@ open class XmlElementBuilder <: ToString {
         this
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func buildAttributes(sb: StringBuilder) {
         for ((k, v) in attributes) {
             sb.append(" ${k}=\"${v}\"")
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func buildContent(sb: StringBuilder) {
         let charsData = content.toString().toXmlEscapedString()
         match {
@@ -109,10 +132,18 @@ open class XmlElementBuilder <: ToString {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     private func indent() {
         "\t" * Int64(level)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func build(sb: StringBuilder): Unit {
         let contentSb = StringBuilder()
         buildContent(contentSb)
@@ -130,6 +161,11 @@ open class XmlElementBuilder <: ToString {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public open func toString(): String {
         let sb = StringBuilder()
         build(sb)
@@ -138,6 +174,11 @@ open class XmlElementBuilder <: ToString {
 }
 
 extend String {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     func toXmlEscapedString() {
         this.replace("&", "&amp;")
         .replace("<", "&lt;")
@@ -146,6 +187,11 @@ extend String {
         .replace("\"", "&quot;")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     func toSafeFileName() {
         this.replace("<", ".")
             .replace(",", ".")
@@ -156,12 +202,40 @@ extend String {
 }
 
 interface ReportFormat {
+        /**
+         * @throws IllegalMemoryException
+         * @throws Exception
+         * @throws UnittestCliOptionsFormatException
+         * @throws getOrThrow
+         * @throws JsonException
+         * @throws OutOfMemoryError
+         * @throws IllegalArgumentException
+         * @throws ArithmeticException
+         * @throws ProcessException
+         * @throws RegexException
+         * @throws UnittestOptionValidationException
+         * @throws IndexOutOfBoundsException
+         */
     static prop isBench: Bool {
         get() { defaultConfiguration().bench }
     }
 
 
 
+    /**
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     */
     static func fromString(format: String, path: Path): ReportFormat {
         match (isBench) {
             case true => BenchReportFormat.fromString(format, path)
@@ -169,6 +243,20 @@ interface ReportFormat {
         }
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     static func default(path: Path): ReportFormat {
         match (isBench) {
             case true => BenchReportFormat.default(path)
@@ -176,6 +264,20 @@ interface ReportFormat {
         }
     }
 
+    /**
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     */
     static func fromDefaultConfiguration(): ?ReportFormat {
         let reportDir = getReportDirectory(KeyReportPath.reportPath)
         if (let Some(explicitFormat) <- defaultConfiguration().get(KeyReportFormat.reportFormat)) {
@@ -200,6 +302,9 @@ enum UTestReportFormat <: ReportFormat {
         get() { false }
     }
 
+    /**
+     * @throws UnittestCliOptionsFormatException
+     */
     public static redef func fromString(format: String, path: Path): ReportFormat {
         match (format.toAsciiUpper()) {
             case "XML" => XML(path)
@@ -207,6 +312,18 @@ enum UTestReportFormat <: ReportFormat {
         }
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws FSException
+     */
     public func report(result: TestGroupResult): Unit {
         match (this) {
             case XML(path) => result.reportXml(path.join("tests"))
@@ -216,6 +333,20 @@ enum UTestReportFormat <: ReportFormat {
 
 
 
+/**
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws RegexException
+ * @throws UnittestOptionValidationException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws UnittestCliOptionsFormatException
+ * @throws IllegalMemoryException
+ */
 func getReportDirectory<Key>(key: Key): ?Path where Key <: KeyFor<String> {
     let pathStr = defaultConfiguration().get<String>(key) ?? return None
     if (pathStr.isAsciiBlank()) {
@@ -225,6 +356,9 @@ func getReportDirectory<Key>(key: Key): ?Path where Key <: KeyFor<String> {
     Path(pathStr)
 }
 
+/**
+ * @throws ArithmeticException
+ */
 private func timeFormat(time: Duration): Float64 { Float64(time.toNanoseconds()) / 1_000_000_000.0 }
 
 extend TestSuiteId {
@@ -241,6 +375,16 @@ private class XmlReport {
         currentCaseId = fakeId
     }
 
+    /**
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     */
     func buildTestSuite(): ToString {
         let builder = XmlBuilder().encoding("UTF-8")
 
@@ -272,6 +416,13 @@ private class XmlReport {
         }
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func buildTestEntry(
         result: RunStepResult, caseId: TestCaseId,
         caseInfo: TestCaseReportInfo, elementBuilder: XmlElementBuilder
@@ -316,6 +467,11 @@ private class XmlReport {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func tagsProperty(propertiesXml: XmlElementBuilder, tags: Array<String>) {
         propertiesXml.element("property") { propertyXml =>
             let tagsValue = String.join(tags, delimiter: ",")
@@ -333,6 +489,11 @@ private class XmlReport {
         total
     }
 
+    /**
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func checkResultsAsString(crs: Array<CheckResult>): String {
         let text = PrettyText()
         for (cr in crs) {
@@ -343,6 +504,18 @@ private class XmlReport {
 }
 
 extend TestGroupResult {
+    /**
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws FSException
+     */
     func reportXml(dir: Path): Unit {
         Directory.ensureExists(dir)
         this.visitAll<TestSuiteResult> { suiteResult =>
@@ -357,6 +530,11 @@ extend TestGroupResult {
 }
 
 extend TestSuiteId {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     func reportFileName(isBench!: Bool, extension!: String): String {
         let prefix = if (isBench) { "bench" } else { "test" }
         "${prefix}-${this.groupName.toSafeFileName()}.${suiteName.toSafeFileName()}.${extension}"

@@ -8,6 +8,9 @@
 package std.unittest.mock
 
 class Cardinality {
+    /**
+     * @throws IllegalArgumentException
+     */
     Cardinality(
         let min!: Int64,
         let max!: ?Int64 = None
@@ -31,11 +34,29 @@ class Cardinality {
         return CardinalityCheck.Ok
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func once() { Cardinality(min: 1, max: 1) }
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func atLeastTimes(minTimes: Int64) { Cardinality(min: minTimes) }
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func atLeastOnce() { atLeastTimes(1) }
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func times(min!: Int64, max!: Int64) { Cardinality(min: min, max: max) }
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func times(timesExactly: Int64) { times(min: timesExactly, max: timesExactly) }
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func never() { times(min: 0, max: 0) }
 }
 
@@ -43,6 +64,9 @@ enum CardinalityCheck {
     Less | Ok | More
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 func require(condition: Bool, message: () -> String) {
     if (!condition) {
         throw IllegalArgumentException(message())

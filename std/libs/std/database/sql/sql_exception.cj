@@ -36,6 +36,9 @@ public open class SqlException <: Exception {
         }
     }
 
+        /**
+         * @throws IllegalArgumentException
+         */
     public override prop message: String {
         get() {
             var msg = super.message

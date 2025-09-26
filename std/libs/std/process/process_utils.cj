@@ -73,6 +73,12 @@ func getNameFromCommand(cmd: ?String): Option<String> {
 @When[os != "Windows"]
 const INVALID_HANDLE: IntNative = -1
 
+/**
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws FSException
+ * @throws IllegalArgumentException
+ */
 @When[os != "Windows"]
 func getNulFileHandle(): Option<IntNative> {
     var nullFileHandle: Option<IntNative>
@@ -103,6 +109,11 @@ func getStdErrHandle(): IntNative {
     return STDERR_FD
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ */
 @When[os != "Windows"]
 func getNameFromCommand(cmd: ?String): Option<String> {
     let name: ?String = match (cmd) {
@@ -130,6 +141,10 @@ func cStringToOption(cstring: CString): ?String {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func cpointerToArray(cpointer: CPointer<CString>): ?Array<String> {
     if (cpointer.isNull()) {
         return None
@@ -150,6 +165,10 @@ func cpointerToArray(cpointer: CPointer<CString>): ?Array<String> {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func getEnvirments(envCpointer: CPointer<CString>): ?Map<String, String> {
     if (envCpointer.isNull()) {
         return None
@@ -173,6 +192,11 @@ func getEnvirments(envCpointer: CPointer<CString>): ?Map<String, String> {
     return envsMap
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ */
 func readToByteBuffer(inputStream: InputStream): ByteBuffer {
     let tempSize: Int64 = 4096
     var buffer: ByteBuffer = ByteBuffer(tempSize)
@@ -191,6 +215,10 @@ func readToByteBuffer(inputStream: InputStream): ByteBuffer {
     return buffer
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func collectCStringArray(it: Iterable<CString>): Array<CString> {
     let collector: ArrayList<CString> = ArrayList<CString>()
     try {

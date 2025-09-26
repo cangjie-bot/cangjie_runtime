@@ -25,11 +25,20 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
+        /**
+         * @throws UnsupportedException
+         */
     public prop hostName: ?String {
         get() {
             throw UnsupportedException("Current not supported.")
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     * @throws IllegalFormatException
+     */
     public static func parse(s: String): IPAddress {
         for (b in s) {
             match (b) {
@@ -42,6 +51,11 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         throw IllegalFormatException("Unable to parse IP: '${s}'.")
     }
 
+    /**
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func tryParse(s: String): ?IPAddress {
         for (b in s) {
             match (b) {
@@ -59,6 +73,14 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
         return None
     }
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws IllegalFormatException
+     */
     public static func resolve(family: AddressFamily, domain: String): Array<IPAddress> {
         match (IPAddress.tryParse(domain)) {
             case Some(ip) => return [ip]
@@ -70,9 +92,21 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws IllegalFormatException
+     */
     public static func resolve(domain: String): Array<IPAddress> {
         return IPAddress.resolve(AddressFamily.UNSPEC, domain)
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func getAddressBytes(): Array<Byte> {
         match (this) {
             case v4: IPv4Address =>
@@ -86,6 +120,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => return Array<Byte>()
         }
     }
+    /**
+     * @throws Exception
+     */
     public func isIPv4(): Bool {
         match (this) {
             case v4: IPv4Address => true
@@ -93,6 +130,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => throw Exception()
         }
     }
+    /**
+     * @throws Exception
+     */
     public func isIPv6(): Bool {
         match (this) {
             case v4: IPv4Address => false
@@ -100,6 +140,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => throw Exception()
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public open func isUnspecified(): Bool {
         match (this) {
             case v4: IPv4Address => v4.isUnspecified()
@@ -107,6 +150,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => false
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public open func isLoopback(): Bool {
         match (this) {
             case v4: IPv4Address => v4.isLoopback()
@@ -118,6 +164,11 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
     public open func isPrivate(): Bool
     public open func isLinkLocal(): Bool
     public open func isGlobalUnicast(): Bool
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalFormatException
+     * @throws Exception
+     */
     public open func getPrefix(prefixLen: UInt8): IPPrefix {
         match (this) {
             case v4: IPv4Address => v4.getPrefix(prefixLen)
@@ -126,6 +177,11 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     public open func writeBigEndian(buffer: Array<Byte>): Int64 {
         match (this) {
             case v4: IPv4Address => v4.writeBigEndian(buffer)
@@ -134,6 +190,10 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func readBigEndian(buffer: Array<Byte>): IPAddress {
         if (buffer.size == 4) {
             return IPv4Address(buffer[0], buffer[1], buffer[2], buffer[3])
@@ -144,6 +204,9 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
         throw IllegalArgumentException("The buffer size must be 4 or 16")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public operator func ==(rhs: IPAddress): Bool {
         match ((this, rhs)) {
             case (lv4: IPv4Address, rv4: IPv4Address) => lv4 == rv4
@@ -151,10 +214,17 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
             case _ => false
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public operator func !=(rhs: IPAddress): Bool {
         return !(this == rhs)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     public func hashCode(): Int64 {
         var df = DefaultHasher()
         match (this) {
@@ -171,6 +241,10 @@ sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & 
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func parseIPv4(address: String, origin: String): Result<IPv4Address> {
     if (address.size < 7) {
         return Err(IllegalFormatException("Parse (${origin}): IPv4 address too short."))
@@ -214,6 +288,9 @@ func parseIPv4(address: String, origin: String): Result<IPv4Address> {
 
     return Ok(IPv4Address(ip[0], ip[1], ip[2], ip[3]))
 }
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func parseNumber(part: String, radix: UInt32, minDigits: UInt8, maxDigits: UInt8, allowZeroPrefix: Bool, origin: String): Result<(UInt32, 
     Int64)> {
     if (part.size == 0) {
@@ -245,6 +322,11 @@ func parseNumber(part: String, radix: UInt32, minDigits: UInt8, maxDigits: UInt8
     }
 }
 
+/**
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 func parseIPv6(src: String, origin: String): Result<IPv6Address> {
     if (src.size < 2) {
@@ -300,6 +382,10 @@ func parseIPv6(src: String, origin: String): Result<IPv6Address> {
     return Ok(IPv6Address(ip, scopeId: scopeId))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 func innerParseIPv6(src: String, origin: String, e: ?Int64): Result<(Bool, Int64, Int64, ?Int64, Array<UInt8>)> {
     var ip = Array<UInt8>(IPV6_ADDRESS_LEN, repeat: 0)

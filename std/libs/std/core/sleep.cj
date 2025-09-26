@@ -20,6 +20,9 @@ func intrinsicSleep(ns: Int64): Unit
 
 
 
+/**
+ * @throws ArithmeticException
+ */
 public func sleep(dur: Duration): Unit {
     let nanos = if (dur > MAX_TIMEOUT_DURATION) {
         MAX_TIMEOUT_NS

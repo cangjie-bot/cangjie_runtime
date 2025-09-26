@@ -11,6 +11,20 @@ import std.deriving.api.*
 import std.ast.*
 import std.collection.*
 
+/**
+ * @throws OutOfMemoryError
+ * @throws ConcurrentModificationException
+ * @throws MacroContextException
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalStateException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func deriveImpl(
     rawOptions: Tokens,
     input: Tokens,
@@ -59,6 +73,11 @@ public func deriveImpl(
         )
 }
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func runDerivings(
     input: Tokens,
     derivings: Array<(Deriving, Array<QualifiedName>)>,
@@ -76,6 +95,11 @@ private func runDerivings(
     }
 }
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func reportError(
     cause: Exception,
     interfaces: Array<QualifiedName>,
@@ -90,6 +114,10 @@ private func reportError(
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func collectInterfaceNames(inputNames: Array<QualifiedName>): Array<QualifiedName> {
     let foundNames = HashSet<QualifiedName>(inputNames)
     let nextStage = HashSet<QualifiedName>(inputNames)

@@ -80,6 +80,9 @@ public func cbrt(x: Float16): Float16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func logBase(x: Float32, base: Float32): Float32 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -105,6 +108,9 @@ public func logBase(x: Float32, base: Float32): Float32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func logBase(x: Float64, base: Float64): Float64 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -130,6 +136,9 @@ public func logBase(x: Float64, base: Float64): Float64 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func logBase(x: Float16, base: Float16): Float16 {
     if (x <= 0.0 || base <= 0.0 || isEqual(base, 1.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -238,6 +247,9 @@ public func tan(x: Float16): Float16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func asin(x: Float64): Float64 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -253,6 +265,9 @@ public func asin(x: Float64): Float64 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func asin(x: Float32): Float32 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -268,6 +283,9 @@ public func asin(x: Float32): Float32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func asin(x: Float16): Float16 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -283,6 +301,9 @@ public func asin(x: Float16): Float16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func acos(x: Float64): Float64 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -298,6 +319,9 @@ public func acos(x: Float64): Float64 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func acos(x: Float32): Float32 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -313,6 +337,9 @@ public func acos(x: Float32): Float32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func acos(x: Float16): Float16 {
     if (x > 1.0 || x < -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -478,6 +505,9 @@ public func asinh(x: Float16): Float16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func acosh(x: Float64): Float64 {
     if (x < 1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -493,6 +523,9 @@ public func acosh(x: Float64): Float64 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func acosh(x: Float32): Float32 {
     if (x < 1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -508,6 +541,9 @@ public func acosh(x: Float32): Float32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func acosh(x: Float16): Float16 {
     if (x < 1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -523,6 +559,9 @@ public func acosh(x: Float16): Float16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func atanh(x: Float64): Float64 {
     if (x >= 1.0 || x <= -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -538,6 +577,9 @@ public func atanh(x: Float64): Float64 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func atanh(x: Float32): Float32 {
     if (x >= 1.0 || x <= -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -553,6 +595,9 @@ public func atanh(x: Float32): Float32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func atanh(x: Float16): Float16 {
     if (x >= 1.0 || x <= -1.0) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -615,6 +660,9 @@ var revtab: Array<UInt8> = [0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0, 0x10
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func leadingZeros(x: UInt64): Int64 {
     var n: Int64 = 0
     var xx = x
@@ -639,6 +687,9 @@ public func leadingZeros(x: UInt64): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func leadingZeros(x: UInt32): Int64 {
     var n: Int64 = 0
     var xx = x
@@ -659,6 +710,9 @@ public func leadingZeros(x: UInt32): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func leadingZeros(x: UInt16): Int64 {
     var n: Int64 = 0
     var xx = x
@@ -675,6 +729,9 @@ public func leadingZeros(x: UInt16): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func leadingZeros(x: UInt8): Int64 {
     return 8 - uint8len[Int64(x)]
 }
@@ -685,6 +742,9 @@ public func leadingZeros(x: UInt8): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 public func leadingZeros(x: Int8): Int64 {
     return if (x >= 0) {
@@ -702,6 +762,9 @@ public func leadingZeros(x: Int8): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 public func leadingZeros(x: Int16): Int64 {
     return if (x >= 0) {
@@ -719,6 +782,9 @@ public func leadingZeros(x: Int16): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 public func leadingZeros(x: Int32): Int64 {
     return if (x >= 0) {
@@ -736,6 +802,9 @@ public func leadingZeros(x: Int32): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 public func leadingZeros(x: Int64): Int64 {
     return if (x >= 0) {
@@ -884,6 +953,9 @@ public func trailingZeros(x: Int64): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func countOnes(x: UInt64): Int64 {
     return countOnes(UInt32(x >> 32)) + countOnes(UInt32(x & 0xFFFFFFFF))
 }
@@ -894,6 +966,9 @@ public func countOnes(x: UInt64): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func countOnes(x: UInt32): Int64 {
     return countOnes(UInt16(x >> 16)) + countOnes(UInt16(x & 0xFFFF))
 }
@@ -904,6 +979,9 @@ public func countOnes(x: UInt32): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func countOnes(x: UInt16): Int64 {
     return poptab[Int64(x >> 8)] + poptab[Int64(x & 0xFF)]
 }
@@ -914,6 +992,9 @@ public func countOnes(x: UInt16): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func countOnes(x: UInt8): Int64 {
     return poptab[Int64(x)]
 }
@@ -924,6 +1005,9 @@ public func countOnes(x: UInt8): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 public func countOnes(x: Int8): Int64 {
     return if (x >= 0) {
@@ -941,6 +1025,9 @@ public func countOnes(x: Int8): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 public func countOnes(x: Int16): Int64 {
     return if (x >= 0) {
@@ -958,6 +1045,9 @@ public func countOnes(x: Int16): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 public func countOnes(x: Int32): Int64 {
     return if (x >= 0) {
@@ -975,6 +1065,9 @@ public func countOnes(x: Int32): Int64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 public func countOnes(x: Int64): Int64 {
     return if (x >= 0) {
@@ -986,41 +1079,65 @@ public func countOnes(x: Int64): Int64 {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global funtion `public func countOnes(x: Int8): Int64` instead."]
 public func countOne(x: Int8): Int8 {
     Int8(countOnes(x))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global funtion `public func countOnes(x: Int16): Int64` instead."]
 public func countOne(x: Int16): Int8 {
     Int8(countOnes(x))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global funtion `public func countOnes(x: Int32): Int64` instead."]
 public func countOne(x: Int32): Int8 {
     Int8(countOnes(x))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global funtion `public func countOnes(x: Int64): Int64` instead."]
 public func countOne(x: Int64): Int8 {
     Int8(countOnes(x))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global funtion `public func countOnes(x: UInt8): Int64` instead."]
 public func countOne(x: UInt8): Int8 {
     Int8(countOnes(x))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global funtion `public func countOnes(x: UInt16): Int64` instead."]
 public func countOne(x: UInt16): Int8 {
     Int8(countOnes(x))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global funtion `public func countOnes(x: UInt32): Int64` instead."]
 public func countOne(x: UInt32): Int8 {
     Int8(countOnes(x))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global funtion `public func countOnes(x: UInt64): Int64` instead."]
 public func countOne(x: UInt64): Int8 {
     Int8(countOnes(x))
@@ -1032,6 +1149,9 @@ public func countOne(x: UInt64): Int8 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func reverse(x: UInt64): UInt64 {
     return UInt64(reverse(UInt32(x & 0xFFFFFFFF))) << UInt64(32) | UInt64(reverse(UInt32(x >> UInt64(32))))
 }
@@ -1042,6 +1162,9 @@ public func reverse(x: UInt64): UInt64 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func reverse(x: UInt32): UInt32 {
     return UInt32(reverse(UInt16(x & 0xFFFF))) << UInt32(16) | UInt32(reverse(UInt16(x >> UInt32(16))))
 }
@@ -1052,6 +1175,9 @@ public func reverse(x: UInt32): UInt32 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func reverse(x: UInt16): UInt16 {
     return (UInt16(revtab[Int64(x & 0xFF)]) << UInt16(8)) | UInt16(revtab[Int64(x >> UInt16(8))])
 }
@@ -1062,6 +1188,9 @@ public func reverse(x: UInt16): UInt16 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func reverse(x: UInt8): UInt8 {
     return revtab[Int64(x)]
 }
@@ -1074,6 +1203,9 @@ public func reverse(x: UInt8): UInt8 {
 
 
 
+/**
+ * @throws OverflowException
+ */
 public func checkedAbs(x: Int8): Option<Int8> {
     return if (x == Int8.Min) {
         None
@@ -1090,6 +1222,9 @@ public func checkedAbs(x: Int8): Option<Int8> {
 
 
 
+/**
+ * @throws OverflowException
+ */
 public func checkedAbs(x: Int16): Option<Int16> {
     return if (x == Int16.Min) {
         None
@@ -1106,6 +1241,9 @@ public func checkedAbs(x: Int16): Option<Int16> {
 
 
 
+/**
+ * @throws OverflowException
+ */
 public func checkedAbs(x: Int32): Option<Int32> {
     return if (x == Int32.Min) {
         None
@@ -1122,6 +1260,9 @@ public func checkedAbs(x: Int32): Option<Int32> {
 
 
 
+/**
+ * @throws OverflowException
+ */
 public func checkedAbs(x: Int64): Option<Int64> {
     return if (x == Int64.Min) {
         None
@@ -1319,6 +1460,10 @@ public func rotate(num: Int64, d: Int8): Int64 {
 
 
 
+/**
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 public func gcd(x: Int8, y: Int8): Int8 {
     return match {
@@ -1357,6 +1502,10 @@ public func gcd(x: Int8, y: Int8): Int8 {
 
 
 
+/**
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 public func gcd(x: Int16, y: Int16): Int16 {
     return match {
@@ -1395,6 +1544,10 @@ public func gcd(x: Int16, y: Int16): Int16 {
 
 
 
+/**
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 public func gcd(x: Int32, y: Int32): Int32 {
     return match {
@@ -1433,6 +1586,10 @@ public func gcd(x: Int32, y: Int32): Int32 {
 
 
 
+/**
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 public func gcd(x: Int64, y: Int64): Int64 {
     return match {
@@ -1653,6 +1810,10 @@ public func gcd(x: UInt64, y: UInt64): UInt64 {
 
 
 
+/**
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 public func lcm(x: Int8, y: Int8): Int8 {
     if (x == 0 || y == 0) {
         return 0
@@ -1683,6 +1844,10 @@ public func lcm(x: Int8, y: Int8): Int8 {
 
 
 
+/**
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 public func lcm(x: Int16, y: Int16): Int16 {
     if (x == 0 || y == 0) {
         return 0
@@ -1713,6 +1878,10 @@ public func lcm(x: Int16, y: Int16): Int16 {
 
 
 
+/**
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 public func lcm(x: Int32, y: Int32): Int32 {
     if (x == 0 || y == 0) {
         return 0
@@ -1743,6 +1912,10 @@ public func lcm(x: Int32, y: Int32): Int32 {
 
 
 
+/**
+ * @throws OverflowException
+ * @throws IllegalArgumentException
+ */
 public func lcm(x: Int64, y: Int64): Int64 {
     if (x == 0 || y == 0) {
         return 0
@@ -1771,6 +1944,9 @@ public func lcm(x: Int64, y: Int64): Int64 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func lcm(x: UInt8, y: UInt8): UInt8 {
     if (x == 0 || y == 0) {
         return 0
@@ -1794,6 +1970,9 @@ public func lcm(x: UInt8, y: UInt8): UInt8 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func lcm(x: UInt16, y: UInt16): UInt16 {
     if (x == 0 || y == 0) {
         return 0
@@ -1817,6 +1996,9 @@ public func lcm(x: UInt16, y: UInt16): UInt16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func lcm(x: UInt32, y: UInt32): UInt32 {
     if (x == 0 || y == 0) {
         return 0
@@ -1840,6 +2022,9 @@ public func lcm(x: UInt32, y: UInt32): UInt32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func lcm(x: UInt64, y: UInt64): UInt64 {
     if (x == 0 || y == 0) {
         return 0
@@ -1869,6 +2054,9 @@ public func lcm(x: UInt64, y: UInt64): UInt64 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func clamp(v: Float16, min: Float16, max: Float16): Float16 {
     match {
         case !isEqual(min, min) || !isEqual(max, max) || min > max => throw IllegalArgumentException(
@@ -1894,6 +2082,9 @@ public func clamp(v: Float16, min: Float16, max: Float16): Float16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func clamp(v: Float32, min: Float32, max: Float32): Float32 {
     match {
         case !isEqual(min, min) || !isEqual(max, max) || min > max => throw IllegalArgumentException(
@@ -1918,6 +2109,9 @@ public func clamp(v: Float32, min: Float32, max: Float32): Float32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func clamp(v: Float64, min: Float64, max: Float64): Float64 {
     match {
         case !isEqual(min, min) || !isEqual(max, max) || min > max => throw IllegalArgumentException(
@@ -2052,6 +2246,9 @@ public func atan2(y: Float16, x: Float16): Float16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func fmod(x: Float64, y: Float64): Float64 {
     if (isEqual(x, Float64.Inf) || isEqual(y, 0.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -2063,6 +2260,9 @@ public func fmod(x: Float64, y: Float64): Float64 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func fmod(x: Float32, y: Float32): Float32 {
     if (isEqual(x, Float32.Inf) || isEqual(y, 0.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")
@@ -2074,6 +2274,9 @@ public func fmod(x: Float32, y: Float32): Float32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func fmod(x: Float16, y: Float16): Float16 {
     if (isEqual(x, Float16.Inf) || isEqual(y, 0.0)) {
         throw IllegalArgumentException("The input parameter is invalid. Please enter a correct parameter.")

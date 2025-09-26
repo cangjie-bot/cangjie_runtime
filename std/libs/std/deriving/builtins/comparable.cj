@@ -30,6 +30,9 @@ class ComparableDeriving <: Deriving {
         get() { [COMPARABLE_NAME]}
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public override func queryInterfaceInfo(
         interfaceName: QualifiedName
     ): DerivingInterfaceInfo {
@@ -41,6 +44,17 @@ class ComparableDeriving <: Deriving {
 
     private static let enumCaseShared = Token(TokenKind.CASE, "case")
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws ParseASTException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func derive(
         _: Tokens,
         target: DerivingTarget,
@@ -91,6 +105,17 @@ class ComparableDeriving <: Deriving {
         return ext.toTokens()
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws ASTException
+     * @throws ParseASTException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func compareFuncBody(target: DerivingTarget): FuncDecl {
         let namedComparing = target.namedFields |>
             map { field: TargetNamedAttribute =>
@@ -143,6 +168,12 @@ class ComparableDeriving <: Deriving {
         return (parseDecl(compareFuncBody) as FuncDecl).getOrThrow()
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func enumCaseCompare(enumCase: TargetEnumCase): Tokens {
         let destructuringLeft = enumDestructuring(enumCase, "left")
         let destructuringRight = enumDestructuring(enumCase, "right")
@@ -167,6 +198,12 @@ class ComparableDeriving <: Deriving {
         )
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func orderingFunc(cases: DerivingTarget): Tokens {
         let branches = cases.enumCases |>
             enumerate |>
@@ -194,6 +231,10 @@ class ComparableDeriving <: Deriving {
         )
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func enumFieldName(
         field: TargetEnumField,
         prefix: String
@@ -201,6 +242,12 @@ class ComparableDeriving <: Deriving {
         Token(TokenKind.IDENTIFIER, "${prefix}${field.position}")
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func enumDestructuring(
         enumCase: TargetEnumCase,
         prefix: String

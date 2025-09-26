@@ -39,6 +39,11 @@ protected func CJ_CORE_AddAtexitCallback(callback: () -> Unit): Unit {
     atexitCallbackHead = Option<AtexitCallbackNode>.Some(newNode)
     unsafe { CJ_CORE_AtExitCallbackListUnlook() }
 }
+/**
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 protected func CJ_CORE_ExecAtexitCallbacks(): Unit {
     if (callbacksRunningFlag) {
         return

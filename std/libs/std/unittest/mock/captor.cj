@@ -29,6 +29,10 @@ public interface ValueListener<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func onEach(callback: (T) -> Unit): ValueListener<T> {
         return ValueListenerImpl<T>(callback)
     }
@@ -44,6 +48,10 @@ class ValueListenerImpl<T> <: ValueListener<T> & ListenerInternal {
 
     ValueListenerImpl() {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     init(callBack: (T) -> Unit) {
         addCallback(callBack)
     }
@@ -52,14 +60,26 @@ class ValueListenerImpl<T> <: ValueListener<T> & ListenerInternal {
         return values.get(values.size - 1)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func allValues(): Array<T> {
         return values.toArray()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func addCallback(callBack: (T) -> Unit) {
         callBacks.add(callBack)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func supplyValue(value: Any) {
         if (let Some(valueAsT) <- unwrapValue<T>(value)) {
             for (callback in callBacks) {

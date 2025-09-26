@@ -71,6 +71,9 @@ public func abs(x: Float16): Float16 {
 
 
 
+/**
+ * @throws OverflowException
+ */
 @Frozen
 public func abs(x: Int64): Int64 {
     if (x == Int64.Min) {
@@ -91,6 +94,9 @@ public func abs(x: Int64): Int64 {
 
 
 
+/**
+ * @throws OverflowException
+ */
 @Frozen
 public func abs(x: Int32): Int32 {
     if (x == Int32.Min) {
@@ -111,6 +117,9 @@ public func abs(x: Int32): Int32 {
 
 
 
+/**
+ * @throws OverflowException
+ */
 @Frozen
 public func abs(x: Int16): Int16 {
     if (x == Int16.Min) {
@@ -131,6 +140,9 @@ public func abs(x: Int16): Int16 {
 
 
 
+/**
+ * @throws OverflowException
+ */
 @Frozen
 public func abs(x: Int8): Int8 {
     if (x == Int8.Min) {
@@ -153,6 +165,9 @@ public func abs(x: Int8): Int8 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 @Frozen
 public func sqrt(x: Float16): Float16 {
     if (x < 0.0) {
@@ -176,6 +191,9 @@ public func sqrt(x: Float16): Float16 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 @Frozen
 public func sqrt(x: Float32): Float32 {
     if (x < 0.0) {
@@ -199,6 +217,9 @@ public func sqrt(x: Float32): Float32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 @Frozen
 public func sqrt(x: Float64): Float64 {
     if (x < 0.0) {

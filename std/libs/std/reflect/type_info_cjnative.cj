@@ -20,6 +20,10 @@ class TypeTemplate {
         _info = info
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     */
     static func get(typeinfoName: String): TypeTemplate {
         let name = if (typeinfoName.contains(".")) {
             unsafe { LibC.mallocCString(typeinfoName) }
@@ -42,6 +46,16 @@ class TypeTemplateParser {
     var templates = ArrayList<String>()
     var data = ArrayList<ArrayList<String>>()
     var map = HashMap<String, CPointer<Unit>>()
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     */
     func parse(string: String): TypeInfo {
         let name = unsafe { string.rawData() }
         parseGenericString(name, 0, name.size)
@@ -75,6 +89,10 @@ class TypeTemplateParser {
         throw InfoNotFoundException("Cannot find ${name.toString()}.")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func parseGenericString(name: Array<Byte>, begin: Int64, end: Int64): Int64 {
         if (begin >= end) {
             return end
@@ -125,16 +143,43 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     public static func of<T>(): TypeInfo {
         getOrCreate(getTypeByMangledName<T>())
     }
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     public static func of(a: Any): TypeInfo {
         getOrCreate(getTypeForAny(a))
     }
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     @Deprecated[message: "Use 'ClassTypeInfo.of(Object)' instead."]
     public static func of(a: Object): ClassTypeInfo {
         (getOrCreate(getObjClass(a)) as ClassTypeInfo) ?? throw InfoNotFoundException("TypeInfo not found!")
@@ -142,6 +187,16 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
 
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws InfoNotFoundException
+     * @throws IllegalSynchronizationStateException
+     */
     public static func get(qualifiedName: String): TypeInfo {
         synchronized(TYPE_INFO_CREATE_LOCK) {
             if (let Some(ti) <- CACHE.get(qualifiedName)) {
@@ -163,6 +218,11 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func normalize(qualifiedName: String): String {
         let (isPrimitive, _, _) = checkPrimitive(qualifiedName)
         let hasPrefix = qualifiedName.contains(".")
@@ -176,6 +236,13 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InfoNotFoundException
+     */
     private static func getInfoPointerByQualifiedName(qualifiedName: String): (String, CPointer<Unit>) {
         unsafe {
             let cstring = LibC.mallocCString(qualifiedName)
@@ -187,6 +254,10 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             (qualifiedName, typeInfoPointer)
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func parseGeneric(qualifiedName: String): String {
         var dotNum = 0
         var lastParseIdx = 0
@@ -231,6 +302,15 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         sb.toString()
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     static func getOrCreate(typeInfoPointer: CPointer<Unit>): TypeInfo {
         if (typeInfoPointer.isNull()) {
             throw InfoNotFoundException("TypeInfo not found!")
@@ -253,6 +333,11 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     */
     static func createGenericTypeInfo(typeInfoPointer: CPointer<Unit>, qualifiedName: String): TypeInfo {
         if (qualifiedName.isEmpty()) {
             throw ReflectException("Unexpected empty qualifiedName.")
@@ -262,6 +347,15 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         typeInfo
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     */
     static func createConcreteTypeInfo(typeInfoPointer: CPointer<Unit>, qualifiedName: String, uuid!: ?String = None): TypeInfo {
         if (qualifiedName.isEmpty()) {
             throw ReflectException("Unexpected empty qualifiedName.")
@@ -288,6 +382,12 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws ReflectException
+         * @throws OutOfMemoryError
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop name: String {
         get() {
             match (_name) {
@@ -301,6 +401,12 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws ReflectException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws OutOfMemoryError
+         */
     public prop qualifiedName: String {
         get() {
             match (_qualifiedName) {
@@ -312,6 +418,12 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             }
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws ReflectException
+     */
     private static func getQualifiedName(pointer: CPointer<Unit>): String {
         let namePointer = getTypeName(pointer)
         return if (let qualifiedName <- CString(namePointer).toString()) {
@@ -333,6 +445,13 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws NoneValueException
+         */
     public prop instanceFunctions: Collection<InstanceFunctionInfo> {
         get() {
             if (_instanceFunctions.isNone()) {
@@ -343,6 +462,13 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws NoneValueException
+         */
     public prop staticFunctions: Collection<StaticFunctionInfo> {
         get() {
             if (_staticFunctions.isNone()) {
@@ -353,6 +479,13 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws NoneValueException
+         */
     public prop instanceProperties: Collection<InstancePropertyInfo> {
         get() {
             if (_instanceProperties.isNone()) {
@@ -363,6 +496,13 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws NoneValueException
+         */
     public prop staticProperties: Collection<StaticPropertyInfo> {
         get() {
             if (_staticProperties.isNone()) {
@@ -373,6 +513,15 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws OutOfMemoryError
+         * @throws NoneValueException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws ReflectException
+         * @throws IllegalSynchronizationStateException
+         * @throws InfoNotFoundException
+         */
     public prop annotations: Collection<Annotation> {
         get() {
             match (_annotations) {
@@ -389,6 +538,16 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws NoneValueException
+         * @throws IllegalSynchronizationStateException
+         * @throws InfoNotFoundException
+         * @throws ReflectException
+         * @throws OutOfMemoryError
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws MisMatchException
+         */
     public prop superInterfaces: Collection<InterfaceTypeInfo> {
         get() {
             match (_superInterfaces) {
@@ -423,6 +582,10 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop modifiers: Collection<ModifierInfo> {
         get() {
             match (_modifiers) {
@@ -436,6 +599,12 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+    /**
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public func isSubtypeOf(supertype: TypeInfo): Bool {
         if (supertype.qualifiedName == "Any") {
             return true
@@ -444,12 +613,28 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InfoNotFoundException
+     */
     public func getInstanceFunction(name: String, parameterTypes: Array<TypeInfo>): InstanceFunctionInfo {
         getByNameAndParamTypes(instanceFunctions, name, parameterTypes, "Instance func '${name}' not found.") {
             instanceFunction => (instanceFunction.name, instanceFunction.parameters)
         }
     }
 
+    /**
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func getInstanceFunctions(name: String): Array<InstanceFunctionInfo> {
         var fns: ArrayList<InstanceFunctionInfo> = ArrayList<InstanceFunctionInfo>()
         for (fn in instanceFunctions where fn.name == name) {
@@ -459,12 +644,28 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InfoNotFoundException
+     */
     public func getStaticFunction(name: String, parameterTypes: Array<TypeInfo>): StaticFunctionInfo {
         getByNameAndParamTypes(staticFunctions, name, parameterTypes, "Static func '${name}' not found.") {
             staticFunction => (staticFunction.name, staticFunction.parameters)
         }
     }
 
+    /**
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func getStaticFunctions(name: String): Array<StaticFunctionInfo> {
         var fns: ArrayList<StaticFunctionInfo> = ArrayList<StaticFunctionInfo>()
         for (fn in staticFunctions where fn.name == name) {
@@ -474,6 +675,13 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     */
     public func getInstanceProperty(name: String): InstancePropertyInfo {
         getByName(instanceProperties, name, "Instance property '${name}' not found.") {
             instanceProperty => instanceProperty.name
@@ -481,6 +689,13 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws NoneValueException
+     * @throws InfoNotFoundException
+     */
     public func getStaticProperty(name: String): StaticPropertyInfo {
         getByName(staticProperties, name, "Static property '${name}' not found.") {
             staticProperty => staticProperty.name
@@ -488,22 +703,61 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     }
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
    }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     public func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
+    /**
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public operator func ==(that: TypeInfo): Bool {
         this.qualifiedName == that.qualifiedName
     }
 
+    /**
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public operator func !=(that: TypeInfo): Bool {
         this.qualifiedName != that.qualifiedName
     }
@@ -512,10 +766,23 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         this._info.toUIntNative().hashCode()
     }
 
+    /**
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public func toString(): String {
         this.qualifiedName
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     func getInstanceFunctions() {
         let num = getNumOfInstanceMethodInfos(_info)
         let constructors = ArrayList<ConstructorInfo>()
@@ -563,6 +830,13 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     */
     func getStaticFunctions() {
         let num = getNumOfStaticMethodInfos(_info)
         let staticFuncs = ArrayList<StaticFunctionInfo>()

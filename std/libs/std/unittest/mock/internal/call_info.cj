@@ -11,6 +11,9 @@ public struct Call {
     public let typeArgs: Array<String>
     public let receiver: Option<(Object, Array<String>)>
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public Call(
         _receiver: Option<Object>,
         _typeArgs: Array<ToString>,

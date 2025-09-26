@@ -14,6 +14,13 @@ public class ConfigureMock {
 
     private ConfigureMock() {}
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws MockFrameworkException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func stubFunction<TRet>(
         stubCall: () -> TRet,
         matchers: Array<ArgumentMatcher>,
@@ -27,6 +34,13 @@ public class ConfigureMock {
         )
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws MockFrameworkException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func stubGetter<TRet>(
         stubCall: () -> TRet,
         prefixRefName: Option<String>,
@@ -39,6 +53,13 @@ public class ConfigureMock {
         )
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws MockFrameworkException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func stubSetter<TArg>(
         stubCall: () -> Unit,
         _: () -> TArg,
@@ -53,6 +74,13 @@ public class ConfigureMock {
         )
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws MockFrameworkException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func createScenario<TRet>(
         stubCall: () -> TRet,
         matchers: Array<ArgumentMatcher>,
@@ -93,6 +121,11 @@ public class ConfigureMock {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MockFrameworkException
+ */
 func requireObject(ref: Any, name: String): Object {
     (ref as Object) ?? illegalInput("${name} must be an Object")
 }

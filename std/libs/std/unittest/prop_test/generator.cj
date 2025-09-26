@@ -35,6 +35,10 @@ class FunctionGenerator<T> <: Generator<T> {
 class ArrayGenerator<T> <: Generator<T> {
     ArrayGenerator(let random: RandomSource, let array: Array<T>) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func next(): T {
         array[random.nextInt64(array.size)]
     }
@@ -51,6 +55,9 @@ class SelectionGenerator<T> <: Generator<T> {
         this.total = total
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public override func next(): T {
         var pick = random.nextUInt64(total)
         for ((n, g) in variants) {
@@ -107,6 +114,9 @@ public class Generators {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public static func pick<T>(random: RandomSource, variants: Array<Generator<T>>): Generator<T> {
         SelectionGenerator<T>(random, Array(variants.size) {i: Int64 => (UInt64(1), variants[i])})
     }

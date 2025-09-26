@@ -47,11 +47,20 @@ let TMP_DIR = "/tmpDirXXXXXX\0".toArray()
 let TMP_FILE = "/tmpFileXXXXXX\0".toArray()
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @When[os != "Windows"]
 func isAbsolutePath(path: String): Bool {
     return isSlash(path[0])
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws FSException
+ * @throws IllegalArgumentException
+ */
 @When[os != "Windows"]
 func toAbsolutePath(path: Path): Path {
     path.checkPath()
@@ -82,6 +91,9 @@ func isHandleValid(fileHandle: FileHandle): Bool {
     return fileHandle > 0
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @When[os != "Windows"]
 func skipEndSlash(path: String): Int64 {
     var lastLetterIdx = path.size - 1
@@ -91,6 +103,9 @@ func skipEndSlash(path: String): Int64 {
     return lastLetterIdx
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 @When[os != "Windows"]
 func processPathHeader(_: String, canonicalPath: Array<Byte>): String {
     return String.fromUtf8(canonicalPath)
@@ -169,6 +184,10 @@ func lastIndexOfSlash(path: String): Option<Int64> {
     return tempPath.lastIndexOf(SLASH_CHAR)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getParent(path: String): Path {
     let rootLen = getRootLen(path)
     var end = path.size - 1
@@ -193,6 +212,10 @@ func getParent(path: String): Path {
     return Path(path[..end + 1])
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getFileName(path: String): String {
     let rootLen = getRootLen(path)
     var end = path.size - 1
@@ -212,6 +235,9 @@ func getFileName(path: String): String {
     return path[rootLen..end + 1]
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @When[os != "Windows"]
 func getRootLen(path: String): Int64 {
     if (path.size > 0 && isSlash(path[0])) {
@@ -336,6 +362,11 @@ func fixLongPath(path: String): String {
     return path
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 func callNativeFunc(path: String, nativeFunc: CFunc<(CString) -> CPointer<FsError>>, errMsgPrefix: String): Unit {
     unsafe {
         let cPath = LibC.mallocCString(path)
@@ -358,6 +389,11 @@ func callNativeFunc(path: String, nativeFunc: CFunc<(CString) -> CPointer<FsErro
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 func callNativeFunc(
     path1: String,
     path2: String,
@@ -375,6 +411,9 @@ func callNativeFunc(
 }
 
 extend Array<Byte> {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func equalsIgnoreCaseAndSlash(that: String): Bool {
         var (b1, b2): (Byte, Byte)
         for (i in 0..this.size) {

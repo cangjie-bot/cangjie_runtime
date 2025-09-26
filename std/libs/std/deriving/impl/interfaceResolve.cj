@@ -12,6 +12,9 @@ import std.ast.Token
 
 private let Core = QualifiedName("std.core")
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func resolveInterface(name: Identifier): QualifiedName {
 
     let results = interfacesBySimpleName(name.value)
@@ -24,6 +27,9 @@ func resolveInterface(name: Identifier): QualifiedName {
 }
 
 extend QualifiedName {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func replaceSimpleName(name: Token) {
         let components = tokens.clone()
         let lastIndex = components.size - 1

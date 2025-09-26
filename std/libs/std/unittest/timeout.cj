@@ -16,12 +16,18 @@ let TIMEOUT_EACH_KEY = kebabCaseToCamelCase(OP_TIMEOUT_EACH_NAME)
 let VALUE_TIMEOUT_PATTERN: Regex = Regex("(\\d+(\\.\\d+)?)(millis|s|m|h)")
 
 extend Configuration {
+        /**
+         * @throws IndexOutOfBoundsException
+         */
     prop timeout: ?Duration {
         get() {
             get(KeyTimeout.timeout)
         }
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         */
     prop timeoutHandler: (TestCaseInfo) -> Unit {
         get() {
             get(KeyTimeoutHandler.timeoutHandler) ?? { _: TestCaseInfo => () }
@@ -29,12 +35,27 @@ extend Configuration {
     }
 }
 
+/**
+ * @throws Error
+ * @throws UnittestTimeoutException
+ */
 func cancellationPoint() {
     if (Thread.currentThread.hasPendingCancellation) {
         throw UnittestTimeoutException()
     }
 }
 
+/**
+ * @throws UnittestOptionValidationException
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws ArithmeticException
+ * @throws getOrThrow
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws UnittestCliOptionsFormatException
+ */
 func fillTimeoutKey(configuration: Configuration): Unit {
     if (let Some(timeout) <- configuration.get(KeyTimeoutEach.timeoutEach)) {
         if (let Some(parsed) <- parseTimeout(timeout)) {
@@ -49,6 +70,15 @@ func fillTimeoutKey(configuration: Configuration): Unit {
     }
 }
 
+/**
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws ArithmeticException
+ * @throws getOrThrow
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ */
 private func parseTimeout(raw: String): ?Duration {
     if (let Some(data) <- VALUE_TIMEOUT_PATTERN.matcher(raw).fullMatch()) {
         let value = Float64.parse(data.matchString(1))

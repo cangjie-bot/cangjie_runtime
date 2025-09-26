@@ -94,6 +94,9 @@ public func concat<T>(other: Iterable<T>): (Iterable<T>) -> Iterator<T> {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func skip<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().skip(count)}
 }
@@ -103,6 +106,9 @@ public func skip<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func take<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().take(count)}
 }
@@ -112,6 +118,9 @@ public func take<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func step<T>(count: Int64): (Iterable<T>) -> Iterator<T> {
     return {it: Iterable<T> => it.iterator().step(count)}
 }

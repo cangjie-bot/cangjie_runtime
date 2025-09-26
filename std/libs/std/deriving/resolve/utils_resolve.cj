@@ -22,6 +22,17 @@ func unopt<T>(opt: Option<Option<T>>): Option<T> {
     opt ?? None
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ */
 func myParseType(tokens: Tokens): TypeNode {
     let v = match (parseDecl(quote(let x: $tokens))) {
         case v: VarDecl => v

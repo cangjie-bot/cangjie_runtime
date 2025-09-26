@@ -20,6 +20,11 @@ class MacroStorage {
     private static let testGeneratedPrefix = quote(@Attribute[TEST_GENERATED])
     private static let attrPrefix = quote(@Attribute[)
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func store(key: MacroKey, args: Tokens): String {
         let index = globalCounter.fetchAdd(1)
         let uniqueId = "${key.attrPrefix}${index}"
@@ -27,6 +32,13 @@ class MacroStorage {
         return uniqueId
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func saveAsAttribute(key: MacroKey, declTokens: Tokens, args: Tokens): Tokens {
         let uniqueId = Token(IDENTIFIER, store(key, args))
         let tb = TokensBuilder()
@@ -44,6 +56,10 @@ class MacroStorage {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func loadAttrsByKey(key: MacroKey, decl: Decl): ArrayList<Tokens> {
         let result = ArrayList<Tokens>()
         for (anno in decl.annotations) {
@@ -57,6 +73,10 @@ class MacroStorage {
         return result
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func loadAllAttrs(decl: Decl): MacroAttrs {
         let result = MacroAttrs()
         for (key in SUPPORTED_MACROS) {
@@ -68,10 +88,19 @@ class MacroStorage {
         result
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func markTestGenerated(tb: TokensBuilder) {
         tb.append(testGeneratedPrefix)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MacroException
+     */
     static func verifyNotYetGenerated(generating: MacroKey, originalTokens: Tokens): Unit {
         if (let Some(alreadyGenerated) <- findAlreadyGenerated(originalTokens)) {
             if (alreadyGenerated == generating) {
@@ -82,6 +111,9 @@ class MacroStorage {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     static func findAlreadyGenerated(tokens: Tokens): ?MacroKey {
         if (tokens.startsWith(testGeneratedPrefix)) {
             return TEST_MACRO
@@ -96,14 +128,26 @@ class MacroStorage {
 }
 
 extend Decl {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func loadSingle(key: MacroKey): ?Tokens {
         MacroStorage.loadAttrsByKey(key, this).get(0)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func loadRepeatable(key: MacroKey): ArrayList<Tokens> {
         MacroStorage.loadAttrsByKey(key, this)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func has(key: MacroKey): Bool {
         loadSingle(key).isSome()
     }

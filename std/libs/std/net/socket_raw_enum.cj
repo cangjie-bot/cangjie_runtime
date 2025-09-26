@@ -223,6 +223,10 @@ public struct RawAddress {
     }
 }
 
+/**
+ * @throws ArithmeticException
+ * @throws IllegalArgumentException
+ */
 func getTimeout(timeout: Option<Duration>): Int64 {
     match (timeout) {
         case Some(v) =>

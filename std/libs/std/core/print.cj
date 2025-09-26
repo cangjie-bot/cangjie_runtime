@@ -8,6 +8,9 @@
 
 package std.core
 
+/**
+ * @throws OutOfMemoryError
+ */
 @Frozen
 public func print(str: String, flush!: Bool = false): Unit {
     unsafe {
@@ -27,6 +30,9 @@ public func println(): Unit {
     }
 }
 
+/**
+ * @throws OutOfMemoryError
+ */
 @Frozen
 public func println(str: String): Unit {
     unsafe {
@@ -39,6 +45,9 @@ public func println(str: String): Unit {
     }
 }
 
+/**
+ * @throws OutOfMemoryError
+ */
 @Frozen
 public func eprint(str: String, flush!: Bool = true): Unit {
     unsafe {
@@ -51,6 +60,9 @@ public func eprint(str: String, flush!: Bool = true): Unit {
     }
 }
 
+/**
+ * @throws OutOfMemoryError
+ */
 @Frozen
 public func eprintln(str: String): Unit {
     unsafe {
@@ -63,26 +75,42 @@ public func eprintln(str: String): Unit {
     }
 }
 
+/**
+ * @throws OutOfMemoryError
+ */
 @Frozen
 public func eprint<T>(arg: T, flush!: Bool = false): Unit where T <: ToString {
     eprint(arg.toString(), flush: flush)
 }
 
+/**
+ * @throws OutOfMemoryError
+ */
 @Frozen
 public func eprintln<T>(arg: T): Unit where T <: ToString {
     eprintln(arg.toString())
 }
 
+/**
+ * @throws OutOfMemoryError
+ */
 @Frozen
 public func print<T>(arg: T, flush!: Bool = false): Unit where T <: ToString {
     print(arg.toString(), flush: flush)
 }
 
+/**
+ * @throws OutOfMemoryError
+ */
 @Frozen
 public func println<T>(arg: T): Unit where T <: ToString {
     println(arg.toString())
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func readln(): String {
     let ln = readFromConsole()
     if (ln.endsWith("\r\n")) {
@@ -93,6 +121,10 @@ public func readln(): String {
     return ln
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func readFromConsole(): String {
     let build: StringBuilder = StringBuilder()
     let line: CPointer<StructureString> = unsafe { CJ_CONSOLE_Readline() }

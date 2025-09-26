@@ -37,6 +37,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public operator func +(r: Duration): MonoTime {
         if (r > Duration.Max - d || r < Duration.Zero - d) {
             throw ArithmeticException("The result exceeds the range of 'MonoTime'.")
@@ -48,6 +51,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public operator func -(r: Duration): MonoTime {
         if (d - Duration.Max > r || d < r) {
             throw ArithmeticException("The result exceeds the range of 'MonoTime'.")
@@ -59,6 +65,9 @@ public struct MonoTime <: Hashable & Comparable<MonoTime> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public operator func -(r: MonoTime): Duration {
         return this.d - r.d
     }

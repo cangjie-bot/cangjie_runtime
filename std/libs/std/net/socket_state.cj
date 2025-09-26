@@ -38,6 +38,9 @@ struct SocketState {
         this(0)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     static init() {
         var s = SocketState()
         s.nativeState = SocketDisposed
@@ -51,6 +54,9 @@ struct SocketState {
     }
 
 
+    /**
+     * @throws [set] OverflowException
+     */
     mut prop useCounter: UInt32 {
         get() {
             value & COUNTER_MASK
@@ -63,6 +69,9 @@ struct SocketState {
         }
     }
 
+    /**
+     * @throws OverflowException
+     */
     private static func incrementFailed(): Nothing {
         throw OverflowException("Socket usage couter overflow")
     }
@@ -83,6 +92,9 @@ struct SocketState {
         }
     }
 
+    /**
+     * @throws [set] IllegalArgumentException
+     */
     mut prop nativeState: HolderState {
         get() {
             let nativeStateNum = nativeStateNum
@@ -152,36 +164,54 @@ struct SocketState {
         }
     }
 
+    /**
+     * @throws SocketException
+     */
     func ensureNotClosed(): Unit {
         if (disposedOrShuttingDown) {
             SocketException.throwClosedException()
         }
     }
 
+    /**
+     * @throws SocketException
+     */
     func ensureConnected(): Unit {
         if (!connected) {
             SocketException.notYetConnected()
         }
     }
 
+    /**
+     * @throws SocketException
+     */
     func ensureNotConnected() {
         if (connected) {
             SocketException.alreadyConnected()
         }
     }
 
+    /**
+     * @throws SocketException
+     */
     func ensureBound(): Unit {
         if (!bound) {
             SocketException.notYetBound()
         }
     }
 
+    /**
+     * @throws SocketException
+     */
     func ensureBindInvoked(): Unit {
         if (!bound) {
             SocketException.notYetBoundNeedBind()
         }
     }
 
+    /**
+     * @throws SocketException
+     */
     func ensureNotBound(): Unit {
         if (bound) {
             SocketException.alreadyBound()

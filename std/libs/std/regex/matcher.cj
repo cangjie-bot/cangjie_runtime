@@ -24,6 +24,11 @@ public class Matcher {
     private var replaceIteraorOption: Option<FindIterator> = None
     private var replaceOffsetOption: Option<Int64> = None
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     public init(regex: Regex, input: String) {
         this.regex = regex
         this.input = input
@@ -33,6 +38,12 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws RegexException
+     */
     public func fullMatch(): Option<MatchData> {
         let inputCString = unsafe { LibC.mallocCString(input) }
         if (inputCString.isNull()) {
@@ -60,6 +71,12 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws RegexException
+     */
     public func matchStart(): Option<MatchData> {
         let inputCString = unsafe { LibC.mallocCString(input) }
         if (inputCString.isNull()) {
@@ -85,6 +102,9 @@ public class Matcher {
         return None
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func checkBounds(mdOption: Option<MatchData>): Bool {
         if (let Some(md) <- mdOption) {
             let position = md.matchPosition()
@@ -105,6 +125,11 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func find(): Option<MatchData> {
         let mdOption = iterator.next()
         if (checkBounds(mdOption)) {
@@ -119,6 +144,11 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func find(index: Int64): Option<MatchData> {
         if (index < 0 || index >= input.size) {
             throw IndexOutOfBoundsException("Invalid index: ${index} against size: ${input.size}.")
@@ -128,6 +158,12 @@ public class Matcher {
     }
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws RegexException
+     */
     public func findAll(): Option<Array<MatchData>> {
         let list = regex.findAll(input, group: true)
         return if (list.isEmpty()) {
@@ -139,6 +175,11 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     public func allCount(): Int64 {
         return regex.allCount(input, this.begin, this.end)
     }
@@ -151,6 +192,12 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func replace(replacement: String): String {
         var replaced = this.replacedOption ?? input
         let replaceRegex = this.replaceRegexOption ?? Regex(regex.string(), regex.flags)
@@ -194,6 +241,12 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func replace(replacement: String, index: Int64): String {
         if (index < 0 || index >= input.size) {
             throw IndexOutOfBoundsException("Invalid index: ${index} against size: ${input.size}.")
@@ -203,6 +256,12 @@ public class Matcher {
     }
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func replaceAll(replacement: String): String {
         return replaceAll(replacement, -1)
     }
@@ -213,6 +272,12 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func replaceAll(replacement: String, limit: Int64): String {
         return regex.replaceAll(input, replacement, limit)
     }
@@ -221,6 +286,12 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func split(): Array<String> {
         return regex.split(input)
     }
@@ -234,6 +305,12 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     */
     public func split(limit: Int64): Array<String> {
         return regex.split(input, limit)
     }
@@ -246,6 +323,9 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func setRegion(beginIndex: Int64, endIndex: Int64): Matcher {
         if (beginIndex < 0 || beginIndex > input.size) {
             throw IndexOutOfBoundsException("Begin ${beginIndex}.")
@@ -291,6 +371,11 @@ public class Matcher {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     */
     public func resetString(input: String): Matcher {
         this.input = input
         this.iterator = FindIterator(regex, input, group: true)

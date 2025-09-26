@@ -13,16 +13,28 @@ class TokensBuilder  {
     TokensBuilder(let data: ArrayList<Tokens>) {}
     init() { data = ArrayList() }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func append(tokens: TokensBuilder): TokensBuilder {
         data.add(all: tokens.data)
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(kind: TokenKind): TokensBuilder {
         data.add(Tokens(Token(kind)))
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append<TT>(tokens: TT): TokensBuilder where TT <: ToTokens {
         match (tokens) {
             case tb: TokensBuilder => return append(tb)
@@ -34,18 +46,32 @@ class TokensBuilder  {
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func curlyBraces(body: (TokensBuilder) -> Unit): TokensBuilder {
         append(LCURL).append(NL)
         body(this)
         append(RCURL).append(NL)
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func scope(body: (TokensBuilder) -> Unit) {
         append(NL).append(quote({ => ))
         body(this)
         append(NL).append(quote(}())).append(NL)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let bigList = ArrayList<Token>()
         for (tt in data) {
@@ -58,6 +84,9 @@ class TokensBuilder  {
 }
 
 extend Tokens {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func startsWith(prefix: Tokens): Bool {
         let thisIt = this.iterator()
         let thatIt = prefix.iterator()
@@ -75,6 +104,12 @@ extend Tokens {
 }
 
 extend<T> Option<T> where T <: ToTokens {
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func toTokens(): Tokens {
         match (this) {
             case None => quote(None)
@@ -83,6 +118,10 @@ extend<T> Option<T> where T <: ToTokens {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func nestedTuple<T>(things: Array<T>): Tokens where T <: ToTokens {
     if (things.size == 0) {
         return Tokens()
@@ -112,6 +151,10 @@ func nestedTuple<T>(things: Array<T>): Tokens where T <: ToTokens {
     return tb.toTokens()
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func commaSeparated<T>(things: Iterable<T>): Tokens where T <: ToTokens {
     let tb = TokensBuilder()
     let it = things.iterator()
@@ -126,19 +169,45 @@ func commaSeparated<T>(things: Iterable<T>): Tokens where T <: ToTokens {
     return tb.toTokens()
 }
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func arrayLiteral<T>(array: Iterable<T>): Tokens where T <: ToTokens {
     return quote([$(commaSeparated(array))])
 }
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func tupleLiteral<T>(array: Iterable<T>): Tokens where T <: ToTokens {
     return quote(($(commaSeparated(array))))
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parseCommaSeparatedExpressions(input: Tokens): Array<Expr> {
     let parsedFakeCall = (parseExpr(quote(dummy($input))) as CallExpr).getOrThrow()
     return parsedFakeCall.arguments |> map { arg: Argument => arg.expr } |> collectArray
 }
 
+/**
+ * @throws ASTException
+ */
 func getGenericParams(decl: Decl): Tokens {
     return try {
         decl.genericParam.parameters
@@ -147,6 +216,17 @@ func getGenericParams(decl: Decl): Tokens {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ */
 func parseTypes(tokens: Tokens): ArrayList<TypeNode> {
     let types = ArrayList<TypeNode>()
 

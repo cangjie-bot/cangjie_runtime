@@ -29,14 +29,26 @@ class FieldStorage {
     private let explicitFields = HashMap<UInt64, Box<Any>>()
     private let autoFields = HashMap<AutoFieldId, Box<Any>>()
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func getExplicitFieldValue(fieldDescription: SyntheticFieldDescription): Any {
         getOrCreateExplicitFieldBox(fieldDescription).value
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func setExplicitFieldValue(fieldDescription: SyntheticFieldDescription, value: Any): Unit {
         getOrCreateExplicitFieldBox(fieldDescription).value = value
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func getOrCreateExplicitFieldBox(fieldDescription: SyntheticFieldDescription): Box<Any> {
         match (explicitFields.get(fieldDescription.id)) {
             case Some(existingStorage) => existingStorage
@@ -47,10 +59,17 @@ class FieldStorage {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func getAutoFieldValue(id: AutoFieldId): ?Any {
         autoFields.get(id)?.value
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func setAutoFieldValue(id: AutoFieldId, value: Any): Unit {
         match (autoFields.get(id)) {
             case Some(existingStorage) =>
@@ -87,6 +106,11 @@ struct AutoFieldId <: Hashable & Equatable<AutoFieldId> {
 }
 
 class FieldsErrorReport <: FailureReport {
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func errorReadingField(invocation: Invocation) {
         let funcInfo = invocation.call.funcInfo
         if (!funcInfo.isGetter) {
@@ -99,6 +123,10 @@ class FieldsErrorReport <: FailureReport {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func valueNotSet(invocation: Invocation): PrettyException {
         let text = build {
             errorHeader("Unhandled invocation")
@@ -114,6 +142,10 @@ class FieldsErrorReport <: FailureReport {
         return UnhandledCallException(text)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func mustUseStubs(invocation: Invocation): PrettyException {
         let text = build {
             errorHeader("Unhandled invocation")

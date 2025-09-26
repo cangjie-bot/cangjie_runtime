@@ -12,6 +12,18 @@ import std.deriving.resolve.*
 import std.ast.*
 import std.collection.*
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws MacroContextException
+ * @throws Error
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func diagnose(
     inputOptions: InputOptions,
     target: DerivingTarget,
@@ -71,6 +83,17 @@ private func findSealedKeyword(decl: Decl): Token {
     }.first()?.keyword ?? decl.keyword
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func diagnoseInterface(
     deriving: Deriving,
     interfaceName: QualifiedName,
@@ -107,6 +130,12 @@ private func diagnoseInterface(
     }
 }
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func diagnoseEnumCaseTypes(
     target: DerivingTarget,
     interfaceName: QualifiedName,
@@ -136,6 +165,11 @@ private func diagnoseEnumCaseTypes(
     }
 }
 
+/**
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func diagnoseConstraints(
     inputOptions: InputOptions,
     logger: Logger
@@ -150,6 +184,18 @@ private func diagnoseConstraints(
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws MacroContextException
+ */
 private func diagnoseOrdering(
     target: DerivingTarget,
     inputOptions: InputOptions,
@@ -216,6 +262,17 @@ private func describeUnknown(decl: Decl): String {
     return decl.astKind
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func appendErrors(body: Body, errors: Collection<Tokens>) {
     if (!errors.isEmpty()) {
         let errorsBody = errors |> joinTokens(delimiter: Token(TokenKind.NL, "\n"))
@@ -239,6 +296,10 @@ private func appendErrors(body: Body, errors: Collection<Tokens>) {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func findDuplicates(names: Iterable<Identifier>): Array<Identifier> {
     let visited = HashSet<Identifier>()
     let duplicates = ArrayList<Identifier>()

@@ -48,10 +48,18 @@ public let optionsInfo: HashMap<String, OptionInfo> = HashMap()
 let MUTEX = ReentrantMutex()
 let VALIDATOR_NAME = "UnittestOption"
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws UnittestOptionValidationException
+ */
 func checkOptionValueAndGetConfigurationKey<T>(key: KeyFor<T>, value: T): ConfigurationKey {
     return checkOptionValueByNameAndGetConfigurationKey(key.name, value)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws UnittestOptionValidationException
+ */
 func checkOptionValueByNameAndGetConfigurationKey<T>(name: String, value: T): ConfigurationKey {
     let valueStr = match (value) {
         case tos: ToString => " (${name}.toString='${tos}')"
@@ -75,6 +83,13 @@ func checkOptionValueByNameAndGetConfigurationKey<T>(name: String, value: T): Co
     throw UnittestOptionValidationException("Option '${name}' has no validators. Use @${VALIDATOR_NAME} macro.")
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws NoneValueException
+ * @throws IllegalSynchronizationStateException
+ * @throws IndexOutOfBoundsException
+ * @throws UnittestOptionValidationException
+ */
 public func registerOptionValidator(name: String, validator: Validator): Unit {
     if (unittestOptionsRegistryClosed) {
         throw UnittestOptionValidationException("Validator registry closed. Move your validator on top level.")
@@ -89,6 +104,11 @@ public func registerOptionValidator(name: String, validator: Validator): Unit {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalSynchronizationStateException
+ */
 public func setOptionInfo(
     name: String,
     types: Array<String>,
@@ -103,6 +123,12 @@ public func setOptionInfo(
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws NoneValueException
+ * @throws IllegalSynchronizationStateException
+ */
 public func setOrUpdateOptionInfo(
     name: String,
     description: ?String,

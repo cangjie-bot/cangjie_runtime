@@ -10,6 +10,17 @@ package std.ast
 
 import std.collection.ArrayList
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parseType(input: Tokens): TypeNode {
     
     let node = unsafe {
@@ -29,6 +40,17 @@ public func parseType(input: Tokens): TypeNode {
     return astNode
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parseTypeFragment(input: Tokens, startFrom!: Int64 = 0): (TypeNode, Int64) {
     let (node, count) = unsafe {
         try {
@@ -51,6 +73,16 @@ public func parseTypeFragment(input: Tokens, startFrom!: Int64 = 0): (TypeNode, 
     return (astNode, count)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateTypeAST(tyNode: Option<NodeFormat_Type>): TypeNode {
     var ty = match (tyNode) {
         case Some(v) => v
@@ -85,6 +117,11 @@ func generateTypeAST(tyNode: Option<NodeFormat_Type>): TypeNode {
     return astNode
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createPrimitiveType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): TypeNode {
     var primitiveType = match (tyNode.GetTypeAsPrimitiveType()) {
         case Some(v) => v
@@ -103,6 +140,16 @@ func createPrimitiveType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase)
     return PrimitiveType(typeName, colon, kind)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createRefType(tyNode: Option<NodeFormat_RefType>, nodeBase: NodeFormat_NodeBase): TypeNode {
     var refType = match (tyNode) {
         case Some(v) => v
@@ -140,6 +187,16 @@ func createRefType(tyNode: Option<NodeFormat_RefType>, nodeBase: NodeFormat_Node
     return RefType(typeName, colon, identifier, lAngle, types, commas, rAngle)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createQualifiedType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): TypeNode {
     var qualifiedType = match (tyNode.GetTypeAsQualifiedType()) {
         case Some(v) => v
@@ -175,6 +232,16 @@ func createQualifiedType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase)
     return QualifiedType(typeName, colon, baseTy, dot, identifier, lAngle, types, commas, rAngle)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createParenType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): TypeNode {
     var parenType = match (tyNode.GetTypeAsParenType()) {
         case Some(v) => v
@@ -194,6 +261,16 @@ func createParenType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): Ty
     return ParenType(typeName, colon, lParen, ty, rParen)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createTupleType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): TypeNode {
     var tupleType = match (tyNode.GetTypeAsTupleType()) {
         case Some(v) => v
@@ -221,6 +298,11 @@ func createTupleType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): Ty
     return TupleType(typeName, colon, lParen, types, commas, rParen)
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createThisType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): TypeNode {
     var thisType = match (tyNode.GetTypeAsThisType()) {
         case Some(v) => v
@@ -238,6 +320,16 @@ func createThisType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): Typ
     return ThisType(typeName, colon, keyword)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createFuncType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): TypeNode {
     var funcType = match (tyNode.GetTypeAsFuncType()) {
         case Some(v) => v
@@ -269,6 +361,16 @@ func createFuncType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): Typ
     return FuncType(typeName, colon, token, lParen, types, commas, rParen, arrow, retTy)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createVArrayType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): TypeNode {
     var vArrayType = match (tyNode.GetTypeAsVArrayType()) {
         case Some(v) => v
@@ -299,6 +401,16 @@ func createVArrayType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): T
     return VArrayType(typeName, colon, keyword, lAngle, ty, dollar, size, rAngle)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createPrefixType(tyNode: NodeFormat_Type, nodeBase: NodeFormat_NodeBase): TypeNode {
     var prefixType = match (tyNode.GetTypeAsOptionType()) {
         case Some(v) => v

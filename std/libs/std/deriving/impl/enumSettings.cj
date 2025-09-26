@@ -11,6 +11,12 @@ import std.deriving.api.*
 import std.ast.*
 import std.collection.*
 
+/**
+ * @throws ASTException
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func settingsForEnum(
     inputOptions: InputOptions,
     enumDecl: EnumDecl,

@@ -30,6 +30,9 @@ interface AssertPrintableCollection<C> <: AssertPrintable<C> where C <: AssertPr
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func pprintForAssertion(
         pp: PrettyPrinter, right: C, leftPrefix: String, rightPrefix: String, level: Int64
     ): PrettyPrinter {
@@ -59,6 +62,11 @@ interface AssertPrintableOrderedCollection<C, E> <: AssertPrintableCollection<C>
         }
         return furtherDifferentElements
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     func pprint(right: C, pp: PrettyPrinter, leftPrefix: String, rightPrefix: String, level: Int64): PrettyPrinter {
         let leftIt = this.iterator()
         let rightIt = right.iterator()
@@ -102,6 +110,10 @@ extend<T> ArrayList<T> <: AssertPrintableOrderedCollection<ArrayList<T>, T> wher
 extend<T> LinkedList<T> <: AssertPrintableOrderedCollection<LinkedList<T>, T> where T <: Equatable<T> {}
 
 extend<T> HashSet<T> <: AssertPrintableCollection<HashSet<T>> where T <: Equatable<T> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func pprint(right: HashSet<T>, pp: PrettyPrinter, leftPrefix: String, rightPrefix: String, _: Int64): PrettyPrinter {
         let lefties = ArrayList<T>()
         let righties = ArrayList<T>()
@@ -131,6 +143,11 @@ extend<T> HashSet<T> <: AssertPrintableCollection<HashSet<T>> where T <: Equatab
 }
 
 interface AssertPrintableMap<C, K, V> where C <: Map<K, V>, K <: Equatable<K> & Hashable, V <: Equatable<V> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     */
     static func prepareKey(k: K) {
         runIfToStringOrPlaceholder(k) { kStr =>
             let kStrTrimmed = if (kStr.size > 21 || kStr.contains("\n")) {
@@ -143,6 +160,11 @@ interface AssertPrintableMap<C, K, V> where C <: Map<K, V>, K <: Equatable<K> & 
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func pprint(left: C, right: C, pp: PrettyPrinter, leftPrefix: String, rightPrefix: String, level: Int64): PrettyPrinter {
         let lefties = ArrayList<K>()
         let righties = ArrayList<K>()
@@ -196,6 +218,11 @@ interface AssertPrintableMap<C, K, V> where C <: Map<K, V>, K <: Equatable<K> & 
 
 extend<K, V> HashMap<K, V> <: AssertPrintableCollection<HashMap<K, V>> where K <: Equatable<K> & Hashable,
     V <: Equatable<V> {
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func pprint(right: HashMap<K, V>, pp: PrettyPrinter, leftPrefix: String, rightPrefix: String, level: Int64): PrettyPrinter {
         AssertPrintableMap<HashMap<K, V>, K, V>.pprint(this, right, pp, leftPrefix, rightPrefix, level)
     }
@@ -203,12 +230,20 @@ extend<K, V> HashMap<K, V> <: AssertPrintableCollection<HashMap<K, V>> where K <
 
 extend<K, V> TreeMap<K, V> <: AssertPrintableCollection<TreeMap<K, V>> where K <: Equatable<K> & Hashable,
     V <: Equatable<V> {
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func pprint(right: TreeMap<K, V>, pp: PrettyPrinter, leftPrefix: String, rightPrefix: String, level: Int64): PrettyPrinter {
         AssertPrintableMap<TreeMap<K, V>, K, V>.pprint(this, right, pp, leftPrefix, rightPrefix, level)
     }
 }
 
 extend PrettyPrinter {
+    /**
+     * @throws IllegalArgumentException
+     */
     func pprintKey(key: String) {
         if (key.contains("\n")) {
             appendLine("[")
@@ -221,6 +256,10 @@ extend PrettyPrinter {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func pprintTrimmedValue(value: String): PrettyPrinter {
         if (value.size > 21) {
             colored(YELLOW, value[0..20]).append("...")
@@ -229,6 +268,10 @@ extend PrettyPrinter {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func pprintElementDiff<T>(leftValue: T, rightValue: T, leftPrefix: String, rightPrefix: String, index: String,
         level: Int64): PrettyPrinter where T <: Equatable<T> {
         let leftStr = toStringOrPlaceholder(leftValue)
@@ -258,6 +301,10 @@ extend PrettyPrinter {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func pprintKeysDiff<T>(
         keyKind: String, collectionWithMissedKeys: String,
         keys: ArrayList<T>, maxSize: Int64, maxOneLineSize: Int64

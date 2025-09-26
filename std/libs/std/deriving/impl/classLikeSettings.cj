@@ -11,6 +11,11 @@ import std.deriving.api.*
 import std.ast.*
 import std.collection.*
 
+/**
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func settingsForClassLike(
     inputOptions: InputOptions,
     clazz: ClassLikeDecl,
@@ -58,6 +63,10 @@ func settingsForClassLike(
     return SettingsOutput(settings, target)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func applyFieldsOrder(
     allFieldsMap: HashMap<Identifier, TargetNamedAttribute>,
     userDefinedOrder: Array<Identifier>,
@@ -79,6 +88,9 @@ func applyFieldsOrder(
     return ordered.toArray()
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func filterFields(
     includedSet: HashSet<Identifier>,
     excludedSet: HashSet<Identifier>

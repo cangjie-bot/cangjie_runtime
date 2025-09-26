@@ -21,6 +21,10 @@ struct SampledAssertValue {
         this.beginningOmittedCharsAmount = beginningOmittedCharsAmount
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func addPrefixAndSuffix(out: ArrayList<Rune>): (Int64, Int64) {
         var prefixLen = 0
         var suffixLen = 0
@@ -64,6 +68,9 @@ extend PrettyPrinter {
         if (needToQuote) { append("\"").colored(YELLOW, right).append("\"") } else { colored(YELLOW, right) }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func pprintLeftRight(left: Any, right: Any, leftPrefix: String, rightPrefix: String) {
         pprintNotEqual(leftPrefix, rightPrefix).newLine()
         indent {
@@ -72,6 +79,9 @@ extend PrettyPrinter {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func pprintForAssertionOrSimple<T>(left: T, right: T, leftPrefix: String, rightPrefix: String, level: Int64) {
         match (left) {
             case l: AssertPrintable<T> =>

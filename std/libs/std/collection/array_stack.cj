@@ -20,6 +20,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         if (capacity < 0) {
             throw IllegalArgumentException("The capacity must be greater than or equal to 0: ${capacity}.")
@@ -40,6 +43,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func peek(): ?T {
         if (_size > 0) {
             return _data[_size - 1]
@@ -50,6 +56,9 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func remove(): ?T {
         if (_size > 0) {
             let result = _data[_size - 1]
@@ -64,6 +73,10 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(element: T): Unit {
         if (_size == _data.size) {
             grow(_size + 1)
@@ -101,6 +114,10 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func reserve(additional: Int64): Unit {
         if (_data.size - _size >= additional) {
             return
@@ -121,6 +138,10 @@ public class ArrayStack<T> <: Stack<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toArray(): Array<T> {
         let arr = _data[0..size].clone()
         arr.reverse()
@@ -135,6 +156,10 @@ public class ArrayStack<T> <: Stack<T> {
         return ArrayStackIterator<T>(this)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func grow(minCapacity: Int64, startIndex!: Int64 = 0): Unit {
         let oldCapacity: Int64 = _data.size
         var newCapacity: Int64 = oldCapacity + (oldCapacity >> 1)
@@ -168,6 +193,10 @@ class ArrayStackIterator<T> <: Iterator<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     @OverflowWrapping
     public func next(): Option<T> {
@@ -184,6 +213,10 @@ class ArrayStackIterator<T> <: Iterator<T> {
 }
 
 extend<T> ArrayStack<T> <: ToString where T <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         if (size == 0) {
             return "[]"

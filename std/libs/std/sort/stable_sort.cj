@@ -15,6 +15,10 @@ import std.math.*
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` instead."]
 public func stableSort<T>(data: Array<T>): Unit where T <: Comparable<T> {
     if (data.size < 2) {
@@ -29,6 +33,10 @@ public func stableSort<T>(data: Array<T>): Unit where T <: Comparable<T> {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` instead."]
 public func stableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     if (data.size < 2) {
@@ -38,6 +46,10 @@ public func stableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit 
 }
 
 extend<T> Array<T> where T <: Comparable<T> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func shortSort(begin: Int64, end: Int64): Unit {
         let len = this.size
@@ -65,6 +77,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func maybeMerge(
         startArr: Array<Int64>,
@@ -112,6 +128,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         return index
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeAll(
         startArr: Array<Int64>,
@@ -146,6 +166,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func merge(
         start1: Int64,
@@ -184,6 +208,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeFromLeft(
         start1: Int64,
@@ -315,6 +343,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeFromRight(
         start1: Int64,
@@ -449,6 +481,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func timSort(): Unit {
         if (this.size <= 64) {
@@ -489,6 +525,10 @@ extend<T> Array<T> where T <: Comparable<T> {
 }
 
 extend<T> Array<T> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func shortSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         let len = this.size
@@ -512,6 +552,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func maybeMerge(
         startArr: Array<Int64>,
@@ -560,6 +604,10 @@ extend<T> Array<T> {
         return index
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeAll(
         startArr: Array<Int64>,
@@ -595,6 +643,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func merge(
         start1: Int64,
@@ -634,6 +686,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeFromLeft(
         start1: Int64,
@@ -769,6 +825,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeFromRight(
         start1: Int64,
@@ -905,6 +965,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func timSort(comparator: (T, T) -> Ordering): Unit {
         if (this.size <= 64) {

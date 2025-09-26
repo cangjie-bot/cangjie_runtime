@@ -15,12 +15,20 @@ struct TestSuiteId <: Serializable<TestSuiteId> & Hashable & Equatable<TestSuite
         let suiteName: String
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct()
             .add(field<String>("groupName", groupName))
             .add(field<String>("suiteName", suiteName))
     }
 
+    /**
+     * @throws Exception
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): TestSuiteId {
         let dms = dm.asStruct()
 
@@ -68,6 +76,10 @@ struct TestCaseId <: Serializable<TestCaseId> & Hashable & Equatable<TestCaseId>
         let isBench!: Bool
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct()
             .add(field<TestSuiteId>("suiteId", suiteId))
@@ -75,6 +87,10 @@ struct TestCaseId <: Serializable<TestCaseId> & Hashable & Equatable<TestCaseId>
             .add(field<Bool>("isBench", isBench))
     }
 
+    /**
+     * @throws Exception
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): TestCaseId {
         let dms = dm.asStruct()
         TestCaseId(
@@ -100,6 +116,11 @@ struct TestCaseId <: Serializable<TestCaseId> & Hashable & Equatable<TestCaseId>
         hasher.finish()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public func fqName(): String {
         "${suiteId.groupName.toSafeFileName()}.${suiteId.suiteName.toSafeFileName()}.${caseName.toSafeFileName()}"
     }

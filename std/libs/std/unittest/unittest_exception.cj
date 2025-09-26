@@ -22,10 +22,18 @@ public open class UnittestException <: Exception {
 }
 
 class ErrorWrapperException <: Exception {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     init(error: Error) {
         super(error.getStackTraceMessage())
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     init(message: String, error: Error) {
         super("${message}:\n${error.getStackTraceMessage()}")
     }
@@ -53,6 +61,9 @@ public class UnittestTimeoutException <: Exception {
 }
 
 public class UnittestCliOptionsFormatException <: UnittestException {
+    /**
+     * @throws IllegalArgumentException
+     */
     init(optionName: String, actual!: String, expected!: String) {
         super(
             "Wrong ${optionName} option argument format. " +

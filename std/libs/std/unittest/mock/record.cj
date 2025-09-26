@@ -16,6 +16,12 @@ class RecordingHandler {
 
     private var data: ?RecordedCall = None
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func record(call: Call, object: Option<MockObject>) {
         let isStatic = match (call.funcInfo.kind) {
             case DeclKind.TopLevelFunction(_) => true
@@ -36,6 +42,12 @@ class RecordingHandler {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func getRecorded(): RecordedCall {
         return data ?? RecordingFailureReport().fail(info, NotAMock, UnmockableCallable)
     }
@@ -67,6 +79,12 @@ enum RecordingFailureReason {
 }
 
 class RecordingFailureReport <: FailureReport {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func fail(info: RecordingInfo, possibleReasons: Array<RecordingFailureReason>): Nothing {
         let message = build {
             match (info.target) {

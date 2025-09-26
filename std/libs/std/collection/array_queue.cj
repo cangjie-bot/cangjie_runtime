@@ -17,6 +17,9 @@ public class ArrayQueue<T> <: Queue<T> {
         _data = ArrayDeque<T>()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init(capacity: Int64) {
         _data = ArrayDeque<T>(capacity)
     }
@@ -25,6 +28,10 @@ public class ArrayQueue<T> <: Queue<T> {
         _data.first
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func add(element: T): Unit {
         _data.addLast(element)
     }
@@ -58,16 +65,29 @@ public class ArrayQueue<T> <: Queue<T> {
         _data.iterator()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toArray(): Array<T> {
         _data.toArray()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func reserve(additional: Int64): Unit {
         _data.reserve(additional)
     }
 }
 
 extend<T> ArrayQueue<T> <: ToString where T <: ToString {
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         this._data.toString()
     }

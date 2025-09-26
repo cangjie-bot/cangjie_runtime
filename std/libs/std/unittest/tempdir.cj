@@ -24,6 +24,13 @@ class TempDirectory {
     private var currentOffset = buffer.size
     private var tempDir: ?Path = None
 
+        /**
+         * @throws NoneValueException
+         * @throws IllegalMemoryException
+         * @throws IllegalArgumentException
+         * @throws OutOfMemoryError
+         * @throws IllegalSynchronizationStateException
+         */
     prop path: Path {
         get() {
             synchronized(lock) {
@@ -38,6 +45,13 @@ class TempDirectory {
         }
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     private static func getDir(): Path {
         try {
             let dir = getTempDirectory()
@@ -51,6 +65,11 @@ class TempDirectory {
         return Path(".")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     private func nextId(): Array<Rune> {
         func fillBuffer() {
             for (index in 0..buffer.size) {
@@ -70,6 +89,11 @@ class TempDirectory {
         }
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func nextId(prefix: String, suffix: String): String {
         let sb = StringBuilder()
         sb.append(prefix)
@@ -78,6 +102,16 @@ class TempDirectory {
         return sb.toString()
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     */
     func createTempFile(dir!: Path = path, prefix!: String = "tempFile", suffix!: String = ".tmp"): File {
         for (_ in 0..MAX_ATTEMPTS) {
             let path = createTempPath(dir: dir, prefix: prefix, suffix: suffix)
@@ -89,6 +123,16 @@ class TempDirectory {
         throw Exception("Too many attempts to create a temporary file")
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     */
     func createTempPath(dir!: Path = path, prefix!: String = "tempFile", suffix!: String = ".tmp"): Path {
         for (_ in 0..MAX_ATTEMPTS) {
             let path = dir.join(nextId(prefix, suffix))

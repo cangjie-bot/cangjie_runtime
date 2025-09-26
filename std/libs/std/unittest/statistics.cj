@@ -18,6 +18,11 @@ import std.unittest.diff.AssertPrintable
 import std.unittest.prop_test.ShrinkHelpers
 
 class Sample {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     Sample(let data: ArrayList<Float64>) {
         this.data.removeIf { x => x.isNaN() }
         this.data.sort()
@@ -32,6 +37,10 @@ class Sample {
         sum / Float64(data.size)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func percentile(ratio: Float64): Float64 {
         if (this.data.size == 0) {
             return Float64.NaN
@@ -40,9 +49,18 @@ class Sample {
         (this.data[Int64(ceil(x))] + this.data[Int64(floor(x))]) / 2.0
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func create(data: ArrayList<Float64>): Sample {
         Sample(data)
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func kde(kdeThroughput: Float64): ArrayList<(Float64, Float64)> {
         let result = ArrayList<(Float64, Float64)>()
 
@@ -102,6 +120,11 @@ class Measurements {
     var intercept: Float64 = 0.0
     var errorEst: Float64 = 0.0
     var r2: Float64 = 0.0
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func calculateMedian(): This {
         this.calcSlopes()
 
@@ -125,6 +148,11 @@ class Measurements {
         this
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func calcSlopes() {
         let slopes = ArrayList<Float64>()
 

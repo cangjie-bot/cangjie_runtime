@@ -35,6 +35,9 @@ func stringEscapeCharNumGet(input: String): Int64 {
     return i
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 func replaceEscapeChar(input: String, output: Array<Byte>, from!: Int64 = 0): Int64 {
     var i = from
@@ -97,6 +100,10 @@ func replaceEscapeChar(input: String, output: Array<Byte>, from!: Int64 = 0): In
     return i - from
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 func writeBufferAppendInt(buffer: Array<Byte>, int: Int64) {
     if (int == Int64.Min) {
@@ -111,6 +118,9 @@ func writeBufferAppendInt(buffer: Array<Byte>, int: Int64) {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 func writeBufferAppendInt(buffer: Array<Byte>, int: UInt64) {
     var digits = 0
@@ -212,6 +222,9 @@ class JsonParser {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func skipWhiteSpace(parser: JsonParser): Unit {
     var tmp = parser.data[parser.offset]
     while (tmp == b' ' || tmp == b'\t' || tmp == b'\n' || tmp == b'\r') {
@@ -223,6 +236,11 @@ func skipWhiteSpace(parser: JsonParser): Unit {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseString(str: String): JsonValue {
     if (str.size == 0) {
         throw JsonException("Json String is empty!")
@@ -242,6 +260,11 @@ func parseString(str: String): JsonValue {
     return res
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseJson(parser: JsonParser): JsonValue {
     try {
         skipWhiteSpace(parser)
@@ -272,6 +295,11 @@ func parseJson(parser: JsonParser): JsonValue {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseJsonObject(parser: JsonParser): JsonObject {
     parser.offset++
     skipWhiteSpace(parser)
@@ -310,6 +338,11 @@ func parseJsonObject(parser: JsonParser): JsonObject {
     return JsonObject(map)
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseJsonArray(parser: JsonParser): JsonArray {
     parser.offset++
     skipWhiteSpace(parser)
@@ -339,6 +372,10 @@ func parseJsonArray(parser: JsonParser): JsonArray {
     return JsonArray(arr)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseJsonNull(parser: JsonParser): JsonNull {
     if (parser.data[parser.offset] != b'n') {
         throw JsonException()
@@ -359,6 +396,10 @@ func parseJsonNull(parser: JsonParser): JsonNull {
     return JsonNull()
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseJsonTrue(parser: JsonParser): JsonBool {
     if (parser.data[parser.offset] != b't') {
         throw JsonException()
@@ -379,6 +420,10 @@ func parseJsonTrue(parser: JsonParser): JsonBool {
     return JsonBool(true)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseJsonFalse(parser: JsonParser): JsonBool {
     if (parser.data[parser.offset] != b'f') {
         throw JsonException()
@@ -403,6 +448,11 @@ func parseJsonFalse(parser: JsonParser): JsonBool {
     return JsonBool(false)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ * @throws IllegalArgumentException
+ */
 func parseJsonNumber(parser: JsonParser): JsonValue {
     var isFloat = false
     let leftIndex = parser.offset
@@ -425,12 +475,18 @@ func parseJsonNumber(parser: JsonParser): JsonValue {
     return JsonInt(Int64.parse(numStr))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func parseSign(parser: JsonParser): Unit {
     if (parser.data[parser.offset] == b'-') {
         parser.offset++
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func parseNumberSystem(parser: JsonParser): NumberSystem {
     if (parser.data[parser.offset] == b'0') {
         parser.offset++
@@ -466,6 +522,10 @@ func checkNumberSystem(numSystem: NumberSystem): (Byte) -> Bool {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseInteger(parser: JsonParser, isNumber: (Byte) -> Bool): Unit {
     var nextByte = parser.data[parser.offset]
     var hasNumber = false
@@ -486,6 +546,10 @@ func parseInteger(parser: JsonParser, isNumber: (Byte) -> Bool): Unit {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseDecimal(parser: JsonParser, numSystem: NumberSystem): Bool {
     if (parser.offset >= parser.size) {
         return false
@@ -501,6 +565,10 @@ func parseDecimal(parser: JsonParser, numSystem: NumberSystem): Bool {
     return parseDigit(parser)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseExponent(parser: JsonParser, numSystem: NumberSystem): Bool {
     if (parser.offset >= parser.size) {
         return false
@@ -521,6 +589,10 @@ func parseExponent(parser: JsonParser, numSystem: NumberSystem): Bool {
     return parseDigit(parser)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseDigit(parser: JsonParser): Bool {
     var nextByte = parser.data[parser.offset]
     var hasNumber = false
@@ -545,6 +617,11 @@ func isHexNum(char: UInt8): Bool {
     return true
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func parseJsonString(parser: JsonParser): JsonString {
     if (parser.data[parser.offset] != b'\"') {
         throw JsonException("Fail to parseJsonString")
@@ -578,6 +655,10 @@ func parseJsonString(parser: JsonParser): JsonString {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws JsonException
+ */
 func getNextHexNum(parser: JsonParser): Byte {
     parser.offset++
     let byte = parser.data[parser.offset]
@@ -587,6 +668,11 @@ func getNextHexNum(parser: JsonParser): Byte {
     return byte
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws JsonException
+ */
 func handleEscape(parser: JsonParser): Unit {
     match (parser.data[parser.offset]) {
         case '\"' => parser.strCache.add(b'\"')

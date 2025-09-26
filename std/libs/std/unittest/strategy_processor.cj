@@ -38,6 +38,9 @@ public class FlatMapProcessor<T, R> <: DataStrategyProcessor<R> {
         orig.lastItemInfo().concat([provider.info])
     }
 
+    /**
+     * @throws NoneValueException
+     */
     protected func lastItem(_: Configuration): R {
         provider.current.getOrThrow()
     }
@@ -61,6 +64,9 @@ public class FlatMapStrategyProcessor<T, R> <: DataStrategyProcessor<R> {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     */
     protected func shrinkLastItem(configuration: Configuration, engine: LazyCyclicNode): Iterable<R> {
         let shrinkIter = strategy.shrinker(configuration).shrink(provider.current.getOrThrow()).iterator()
         let it = RememberingLazyIterable(shrinkIter, provider)
@@ -72,6 +78,9 @@ public class FlatMapStrategyProcessor<T, R> <: DataStrategyProcessor<R> {
         [provider.info]
     }
 
+    /**
+     * @throws NoneValueException
+     */
     protected func lastItem(_: Configuration): R { provider.current.getOrThrow() }
 }
 
@@ -188,6 +197,9 @@ public class SimpleProcessor<T> <: DataStrategyProcessor<T> {
         return dp.provide().iterator()
     }
 
+    /**
+     * @throws NoneValueException
+     */
     protected func shrinkLastItem(configuration: Configuration, engine: LazyCyclicNode): Iterable<T> {
         let shrinkIter = strategy.shrinker(configuration).shrink(lastItem(configuration)).iterator()
         let it = RememberingLazyIterable(shrinkIter, dataProvider)
@@ -199,6 +211,9 @@ public class SimpleProcessor<T> <: DataStrategyProcessor<T> {
         [dataProvider.info]
     }
 
+    /**
+     * @throws NoneValueException
+     */
     protected func lastItem(_: Configuration): T {
         dataProvider.current.getOrThrow()
     }
@@ -245,6 +260,9 @@ class RememberingLazyIterable<T> <: LazyCyclicNode & Iterable<T> {
     var currentItem: ?T = None
     var origLastItem: T
 
+    /**
+     * @throws NoneValueException
+     */
     RememberingLazyIterable(let delegate: Iterator<T>, let storage: RememberingDataProvider<T>) {
         this.origLastItem = storage.current.getOrThrow()
         this.initialize()
@@ -372,6 +390,9 @@ sealed abstract class DataStrategyProcessor<T> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func shrink(
         configuration: Configuration,
         runSingle: (T, Array<InputParameter>) -> RunStepResult
@@ -385,6 +406,9 @@ sealed abstract class DataStrategyProcessor<T> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func doShrinkWith(
         configuration: Configuration,
         runSingle: (T, Array<InputParameter>) -> RunStepResult
@@ -447,6 +471,11 @@ sealed abstract class DataStrategyProcessor<T> {
     public static func start(s: DataStrategy<T>, name: String): SimpleProcessor<T> {
         SimpleProcessor<T>({ => s }, name)
     }
+    /**
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func start<U>(f: () -> DataStrategy<U>, name: String): DataStrategyProcessor<U>
         where U <: BenchInputProvider<T>
     {

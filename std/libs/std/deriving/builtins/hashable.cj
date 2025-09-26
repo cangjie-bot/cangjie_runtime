@@ -29,6 +29,9 @@ class HashableDeriving <: Deriving {
         get() { [HASHABLE_NAME] }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public override func queryInterfaceInfo(interfaceName: QualifiedName): DerivingInterfaceInfo {
         if (interfaceName != HASHABLE_NAME) {
             throw IllegalArgumentException("Interface ${interfaceName} is not supported")
@@ -36,6 +39,17 @@ class HashableDeriving <: Deriving {
         return HASHABLE_INFO
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func derive(
         _: Tokens,
         target: DerivingTarget,
@@ -86,6 +100,12 @@ class HashableDeriving <: Deriving {
         return e.toTokens()
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func casesMatch(target: DerivingTarget): Tokens {
         target.enumCases |> enumerate |>
             map { pair: (Int64, TargetEnumCase) =>
@@ -108,6 +128,12 @@ class HashableDeriving <: Deriving {
             )
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func enumCaseHash(enumCase: TargetEnumCase): Iterable<Tokens> {
         if (enumCase.totalArgumentsCount == 0) {
             return []

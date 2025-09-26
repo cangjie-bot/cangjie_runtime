@@ -20,6 +20,11 @@ class StubMisconfiguration <: FailureReport {
         super()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func fail(stub: StubChain, reason: StubMisconfigurationReason): Nothing {
         throw MockFrameworkException(
             build {
@@ -61,6 +66,10 @@ class StubMisconfiguration <: FailureReport {
         )
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func stubConfigurationHint(reason: StubMisconfigurationReason) {
         match (reason) {
             case OnlySpyCanCallOriginal(_) => return
@@ -80,6 +89,11 @@ class StubModeViolation <: FailureReport {
         super()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     */
     func stubForbidden(stubDescription: StubDescription, sessionName: String): Nothing {
         throw MockFrameworkException(
             build {
@@ -96,6 +110,11 @@ class StubModeViolation <: FailureReport {
         )
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     */
     func statefulStubAction(actionName: String, stubChain: StubChain): Nothing {
         throw MockFrameworkException(
             build {
@@ -123,6 +142,11 @@ class StubModeViolation <: FailureReport {
         )
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     */
     func cardinalitySpecifierNotAllowed(stubChain: StubChain): Nothing {
         throw MockFrameworkException(
             build {
@@ -149,6 +173,11 @@ enum VerifyMisconfigurationReason {
 }
 
 class VerifyMisconfiguration <: FailureReport {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func fail(reason: VerifyMisconfigurationReason): Nothing {
         let message = build {
             render(reason)
@@ -156,6 +185,10 @@ class VerifyMisconfiguration <: FailureReport {
         throw MockFrameworkException(message)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func render(reason: VerifyMisconfigurationReason) {
         errorHeader("Misconfiguration failure")
         match (reason) {

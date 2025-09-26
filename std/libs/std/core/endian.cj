@@ -15,6 +15,9 @@ public enum Endian {
 
 
 
+        /**
+         * @throws Exception
+         */
     public static prop Platform: Endian {
         get() {
             let code = unsafe {

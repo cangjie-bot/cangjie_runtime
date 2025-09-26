@@ -256,6 +256,9 @@ foreign {
     func CJ_RawAddressDestroy(addrPtr: CPointer<SockAddr>): Unit
 }
 
+/**
+ * @throws SocketException
+ */
 func getAddrPointer(addr: Array<Byte>): (CPointerHandle<Byte>, CPointer<SockAddr>) {
     unsafe {
         let handle = acquireArrayRawData(addr)

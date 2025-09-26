@@ -55,6 +55,10 @@ public class RegexOption <: ToString {
         return this
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         if (option == REGEX_NORMAL) {
             return "NORMAL"
@@ -72,6 +76,10 @@ public class RegexOption <: ToString {
         return String.join(options.toArray(), delimiter: ",")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toFlags(): Array<RegexFlag> {
         var flags = ArrayList<RegexFlag>()
         if ((option & REGEX_IGNORECASE) == REGEX_IGNORECASE) {

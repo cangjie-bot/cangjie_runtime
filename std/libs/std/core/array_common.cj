@@ -72,6 +72,10 @@ extend<T> Array<T> <: Collection<T> {
 }
 
 extend<T> Array<T> <: ToString where T <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func toString(): String {
         if (size == 0) {
@@ -91,6 +95,9 @@ extend<T> Array<T> <: ToString where T <: ToString {
 
 @ConstSafe
 extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator const func ==(that: Array<T>): Bool {
         if (this.size != that.size) {
@@ -105,11 +112,17 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
         return true
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator const func !=(that: Array<T>): Bool {
         return !(this == that)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func contains(element: T): Bool {
         if (this.size == 0) {
@@ -130,6 +143,9 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func indexOf(element: T): Option<Int64> {
         if (size == 0) {
@@ -150,6 +166,9 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func indexOf(element: T, fromIndex: Int64): Option<Int64> {
         if (size == 0 || fromIndex >= size) {
@@ -174,6 +193,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func indexOf(elements: Array<T>): Option<Int64> {
         if (this.size < elements.size) {
@@ -193,6 +216,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func indexOf(elements: Array<T>, fromIndex: Int64): Option<Int64> {
         if (this.size < elements.size || fromIndex >= this.size) {
@@ -211,6 +238,9 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
         return None
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func lastIndexOf(element: T): Option<Int64> {
         if (size == 0) {
@@ -224,6 +254,9 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
         return None
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func lastIndexOf(element: T, fromIndex: Int64): Option<Int64> {
         if (size == 0 || fromIndex >= size) {
@@ -242,6 +275,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
         return None
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func lastIndexOf(elements: Array<T>): Option<Int64> {
         if (this.size < elements.size) {
@@ -255,6 +292,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
         return None
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func lastIndexOf(elements: Array<T>, fromIndex: Int64): Option<Int64> {
         if (this.size < elements.size || fromIndex >= this.size) {
@@ -278,6 +319,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     @OverflowWrapping
     public func trimStart(set: Array<T>): Array<T> {
@@ -303,6 +348,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func trimEnd(set: Array<T>): Array<T> {
         var trim = false
@@ -327,6 +376,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func trimStart(predicate: (T) -> Bool): Array<T> {
         for (i in 0..this.len) {
@@ -342,6 +395,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func trimEnd(predicate: (T) -> Bool): Array<T> {
         for (i in (this.len - 1)..-1 : -1) {
@@ -352,6 +409,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
         return Array<T>()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func removePrefix(prefix: Array<T>): Array<T> {
         if (this.size < prefix.size || prefix.size == 0) {
@@ -363,6 +424,10 @@ extend<T> Array<T> <: Equatable<Array<T>> where T <: Equatable<T> {
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func removeSuffix(suffix: Array<T>): Array<T> {
         if (this.size < suffix.size || suffix.size == 0) {
@@ -389,6 +454,9 @@ public class ArrayIterator<T> <: Iterator<T> {
     }
 
     
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     public func next(): Option<T> {

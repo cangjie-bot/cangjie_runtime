@@ -10,6 +10,11 @@ package std.unittest.mock
 import std.unittest.mock.internal.FuncInfo
 
 extend FuncInfo {
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws MockFrameworkInternalError
+         */
     prop hasSetter: Bool {
         get() {
             match (kind) {

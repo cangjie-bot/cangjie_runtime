@@ -10,6 +10,10 @@ package std.net
 
 import std.binary.*
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func findLastNoneZeroIdx(path: Array<Byte>): Int64 {
     let len = path.size
     if (len > 108) {
@@ -29,9 +33,17 @@ public class UnixSocketAddress <: SocketAddress & Equatable<UnixSocketAddress> {
     let _path: String
     let _len: Int64
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(path: Array<Byte>) {
         this(unsafe { String.fromUtf8Unchecked(path[..findLastNoneZeroIdx(path)]) })
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(path: String) {
         _len = path.size
         if (_len > 108) {
@@ -64,18 +76,33 @@ public class UnixSocketAddress <: SocketAddress & Equatable<UnixSocketAddress> {
             AddressFamily.UNIX
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func ==(rhs: UnixSocketAddress): Bool {
         return _path[0.._len] == rhs._path[0..rhs._len]
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func !=(rhs: UnixSocketAddress): Bool {
         return !(this == rhs)
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func getAddressBytes(): Array<Byte> {
         let buf = Array<Byte>(this.size, repeat: 0)
         this.family.value.writeLittleEndian(buf)
         buf[2..] = _path[.._len].toArray()
         return buf
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func hashCode(): Int64 {
         var df = DefaultHasher()
         for (i in 0.._len) {
@@ -83,6 +110,10 @@ public class UnixSocketAddress <: SocketAddress & Equatable<UnixSocketAddress> {
         }
         df.finish()
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         _path[0.._len]
     }

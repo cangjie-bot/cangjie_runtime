@@ -91,6 +91,10 @@ extend Rune {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func utf8Size(arr: Array<UInt8>, index: Int64): Int64 {
         if (index >= arr.size) {
             throw IllegalArgumentException("Invalid utf8 byte sequence.")
@@ -134,6 +138,9 @@ extend Rune {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func fromUtf8(arr: Array<UInt8>, index: Int64): (Rune, Int64) {
         if (index >= arr.size) {
@@ -142,6 +149,9 @@ extend Rune {
         return fromUtf8(arr.rawptr, arr.start + index, arr.start + arr.len)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     static func fromUtf8(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64): (Rune, Int64) {
         let byte0: UInt8 = arrayGetUnchecked(arr, startIndex)
         return match {
@@ -156,6 +166,10 @@ extend Rune {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func getPreviousFromUtf8(arr: Array<UInt8>, index: Int64): (Rune, Int64) {
         var i: Int64 = index - 1
@@ -178,6 +192,10 @@ extend Rune {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func intoUtf8Array(c: Rune, arr: Array<UInt8>, index: Int64): Int64 {
         var ch = UInt32(c)
@@ -219,6 +237,9 @@ extend Rune {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     private static func checkIndexValid(c: Rune, arr: Array<UInt8>, index: Int64): Unit {
         if (index < 0) {
             throw IllegalArgumentException("The index cannot be less than 0.")

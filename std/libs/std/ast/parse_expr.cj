@@ -10,6 +10,17 @@ package std.ast
 
 import std.collection.ArrayList
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parseExpr(input: Tokens): Expr {
     
     let node = unsafe {
@@ -29,6 +40,17 @@ public func parseExpr(input: Tokens): Expr {
     return astNode
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parseExprFragment(input: Tokens, startFrom!: Int64 = 0): (Expr, Int64) {
     let (node, count) = unsafe {
         try {
@@ -51,6 +73,16 @@ public func parseExprFragment(input: Tokens, startFrom!: Int64 = 0): (Expr, Int6
     return (astNode, count)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateExprAST(exprNode: Option<NodeFormat_Expr>): Expr {
     var expr = match (exprNode) {
         case Some(v) => v
@@ -109,10 +141,30 @@ func generateExprAST(exprNode: Option<NodeFormat_Expr>): Expr {
     return astNode
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createBlock(expr: NodeFormat_Expr): Expr {
     return generateBlock(expr.GetExprAsBlock())
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateBlock(blockOption: Option<NodeFormat_Block>): Block {
     var block = match (blockOption) {
         case Some(v) => v
@@ -139,6 +191,16 @@ func generateBlock(blockOption: Option<NodeFormat_Block>): Block {
     return Block(lCurl, nodes, rCurl, unSafe)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createBinaryExpr(expr: NodeFormat_Expr): Expr {
     var biExpr = match (expr.GetExprAsBinaryExpr()) {
         case Some(v) => v
@@ -150,6 +212,16 @@ func createBinaryExpr(expr: NodeFormat_Expr): Expr {
     return BinaryExpr(lexpr, op, rexpr)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createUnaryExpr(expr: NodeFormat_Expr): Expr {
     var unExpr = match (expr.GetExprAsUnaryExpr()) {
         case Some(v) => v
@@ -160,6 +232,16 @@ func createUnaryExpr(expr: NodeFormat_Expr): Expr {
     return UnaryExpr(op, childExpr)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createIsExpr(expr: NodeFormat_Expr): Expr {
     var isExpr = match (expr.GetExprAsIsExpr()) {
         case Some(v) => v
@@ -171,6 +253,16 @@ func createIsExpr(expr: NodeFormat_Expr): Expr {
     return IsExpr(exprNode, op, ty)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createAsExpr(expr: NodeFormat_Expr): Expr {
     var asExpr = match (expr.GetExprAsAsExpr()) {
         case Some(v) => v
@@ -182,6 +274,16 @@ func createAsExpr(expr: NodeFormat_Expr): Expr {
     return AsExpr(exprNode, op, ty)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createParenExpr(expr: NodeFormat_Expr): Expr {
     var parenExpr = match (expr.GetExprAsParenExpr()) {
         case Some(v) => v
@@ -193,6 +295,11 @@ func createParenExpr(expr: NodeFormat_Expr): Expr {
     return ParenExpr(lParen, childExpr, rParen)
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createLitConstExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr {
     var litExpr = match (expr.GetExprAsLitConstExpr()) {
         case Some(v) => v
@@ -214,6 +321,16 @@ func createLitConstExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): E
     return LitConstExpr(literal)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createCallExpr(expr: NodeFormat_Expr): Expr {
     var callExpr = match (expr.GetExprAsCallExpr()) {
         case Some(v) => v
@@ -229,10 +346,30 @@ func createCallExpr(expr: NodeFormat_Expr): Expr {
     return CallExpr(childExpr, lParen, args, rParen)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createRefExpr(expr: NodeFormat_Expr): Expr {
     return generateRefExpr(expr.GetExprAsRefExpr())
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateRefExpr(ref: Option<NodeFormat_RefExpr>) {
     var refExpr = match (ref) {
         case Some(v) => v
@@ -268,6 +405,16 @@ func generateRefExpr(ref: Option<NodeFormat_RefExpr>) {
     return RefExpr(identifier, lAngle, typeArgs, commas, rAngle)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createReturnExpr(expr: NodeFormat_Expr): Expr {
     var retExpr = match (expr.GetExprAsReturnExpr()) {
         case Some(v) => v
@@ -282,6 +429,16 @@ func createReturnExpr(expr: NodeFormat_Expr): Expr {
     return ReturnExpr(keyWord, exprNode)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createThrowExpr(expr: NodeFormat_Expr): Expr {
     var throwExpr = match (expr.GetExprAsThrowExpr()) {
         case Some(v) => v
@@ -292,6 +449,16 @@ func createThrowExpr(expr: NodeFormat_Expr): Expr {
     return ThrowExpr(keyWord, exprNode)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createPerformExpr(expr: NodeFormat_Expr): Expr {
     var performExpr = match (expr.GetExprAsPerformExpr()) {
         case Some(v) => v
@@ -302,6 +469,16 @@ func createPerformExpr(expr: NodeFormat_Expr): Expr {
     return PerformExpr(keyWord, exprNode)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createResumeExpr(expr: NodeFormat_Expr): Expr {
     var resumeExpr = match(expr.GetExprAsResumeExpr()) {
         case Some(v) => v
@@ -327,6 +504,16 @@ func createResumeExpr(expr: NodeFormat_Expr): Expr {
     return ResumeExpr(resume_, with_, withExpr_, throwing_, throwingExpr_)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createAssignExpr(expr: NodeFormat_Expr): Expr {
     var assignExpr = match (expr.GetExprAsAssignExpr()) {
         case Some(v) => v
@@ -338,6 +525,16 @@ func createAssignExpr(expr: NodeFormat_Expr): Expr {
     return AssignExpr(lexpr, op, rexpr)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createMemberAccess(expr: NodeFormat_Expr): Expr {
     var ma = match (expr.GetExprAsMemberAccess()) {
         case Some(v) => v
@@ -362,6 +559,16 @@ func createMemberAccess(expr: NodeFormat_Expr): Expr {
     return MemberAccess(postfixExpr, dot, ident, lAngle, typeArgs, commas, rAngle)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createOptionalExpr(expr: NodeFormat_Expr): Expr {
     var oe = match (expr.GetExprAsOptionalExpr()) {
         case Some(v) => v
@@ -372,6 +579,16 @@ func createOptionalExpr(expr: NodeFormat_Expr): Expr {
     return OptionalExpr(baseExpr, quest)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createOptionalChainExpr(expr: NodeFormat_Expr): Expr {
     var oce = match (expr.GetExprAsOptionalChainExpr()) {
         case Some(v) => v
@@ -380,6 +597,16 @@ func createOptionalChainExpr(expr: NodeFormat_Expr): Expr {
     return generateExprAST(oce.GetExpr())
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createIfExpr(expr: NodeFormat_Expr): Expr {
     var ie = match (expr.GetExprAsIfExpr()) {
         case Some(v) => v
@@ -402,6 +629,16 @@ func createIfExpr(expr: NodeFormat_Expr): Expr {
     return IfExpr(ifTk, lParen, cond, rParen, ifBlock, elseTk, elseExpr)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func createLetPatternExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase) {
     var letTk = Token(TokenKind.LET).addPosition(exprBase.GetBegin())
     var letPattern = expr.GetExprAsLetPatternDestructor().getOrThrow()
@@ -412,6 +649,16 @@ func createLetPatternExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase) 
     return LetPatternExpr(letTk, pattern, backArrow, exprNode)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateMatchCase(mc: Option<NodeFormat_MatchCase>) {
     var matchCase = match (mc) {
         case Some(v) => v
@@ -443,6 +690,16 @@ func generateMatchCase(mc: Option<NodeFormat_MatchCase>) {
     return MatchCase(keyWord, patterns, bitOrs, whereTk, patternGuard, arrow, block)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateMatchCaseOther(mco: Option<NodeFormat_MatchCaseOther>) {
     var matchCaseOther = match (mco) {
         case Some(v) => v
@@ -463,6 +720,16 @@ func generateMatchCaseOther(mco: Option<NodeFormat_MatchCaseOther>) {
     return MatchCase(keyWord, expr, arrow, block)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createMatchExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr {
     var me = match (expr.GetExprAsMatchExpr()) {
         case Some(v) => v
@@ -493,6 +760,16 @@ func createMatchExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr
     return MatchExpr(keyWord, lParen, selector, rParen, lCurl, matchcases, rCurl)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createWhileExpr(expr: NodeFormat_Expr): Expr {
     var whileExpr = match (expr.GetExprAsWhileExpr()) {
         case Some(v) => v
@@ -506,6 +783,16 @@ func createWhileExpr(expr: NodeFormat_Expr): Expr {
     return WhileExpr(keyWord, lParen, cond, rParen, block)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createDoWhileExpr(expr: NodeFormat_Expr): Expr {
     var doWhileExpr = match (expr.GetExprAsDoWhileExpr()) {
         case Some(v) => v
@@ -520,6 +807,16 @@ func createDoWhileExpr(expr: NodeFormat_Expr): Expr {
     return DoWhileExpr(doTK, block, whileTK, lParen, cond, rParen)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createLambdaExpr(lambdaExpr: NodeFormat_LambdaExpr): LambdaExpr {
     var funcBody = match (lambdaExpr.GetBody()) {
         case Some(v) => v
@@ -548,6 +845,16 @@ func createLambdaExpr(lambdaExpr: NodeFormat_LambdaExpr): LambdaExpr {
     return LambdaExpr(lCurl, funcParams, doubleArrow, nodes, rCurl, lambdaExpr.GetMockSupported())
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createLambdaExpr(expr: NodeFormat_Expr): Expr {
     var lambdaExpr = match (expr.GetExprAsLambdaExpr()) {
         case Some(v) => v
@@ -556,6 +863,16 @@ func createLambdaExpr(expr: NodeFormat_Expr): Expr {
     return createLambdaExpr(lambdaExpr)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createSpawnExpr(expr: NodeFormat_Expr): Expr {
     var spawnExpr = match (expr.GetExprAsSpawnExpr()) {
         case Some(v) => v
@@ -581,6 +898,16 @@ func createSpawnExpr(expr: NodeFormat_Expr): Expr {
     return SpawnExpr(keyWord, lParen, context, rParen, task)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createSynchronizedExpr(expr: NodeFormat_Expr): Expr {
     var syncExpr = match (expr.GetExprAsSynchronizedExpr()) {
         case Some(v) => v
@@ -594,6 +921,16 @@ func createSynchronizedExpr(expr: NodeFormat_Expr): Expr {
     return SynchronizedExpr(keyWord, lParen, mutex, rParen, block)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createTrailingClosureExpr(expr: NodeFormat_Expr): Expr {
     var trailExpr = match (expr.GetExprAsTrailingClosureExpr()) {
         case Some(v) => v
@@ -604,6 +941,16 @@ func createTrailingClosureExpr(expr: NodeFormat_Expr): Expr {
     return TrailingClosureExpr(exprNode, lambdaExpr)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createTypeConvExpr(expr: NodeFormat_Expr): Expr {
     var typeConvExpr = match (expr.GetExprAsTypeConvExpr()) {
         case Some(v) => v
@@ -617,6 +964,16 @@ func createTypeConvExpr(expr: NodeFormat_Expr): Expr {
     return TypeConvExpr(ty, lParen, exprNode, rParen)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createForInExpr(expr: NodeFormat_Expr): Expr {
     var forInExpr = match (expr.GetExprAsForInExpr()) {
         case Some(v) => v
@@ -640,6 +997,11 @@ func createForInExpr(expr: NodeFormat_Expr): Expr {
     return ForInExpr(forTk, lParen, pattern, inTk, inExpr, whereTk, patternGuard, rParen, block)
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ParseASTException
+ */
 func createPrimitiveTypeExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr {
     var primitiveTypeExpr = match (expr.GetExprAsPrimitiveTypeExpr()) {
         case Some(v) => v
@@ -651,6 +1013,16 @@ func createPrimitiveTypeExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBas
     return PrimitiveTypeExpr(kind)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createArrayLiteral(expr: NodeFormat_Expr): Expr {
     var arrayLiteral = match (expr.GetExprAsArrayLit()) {
         case Some(v) => v
@@ -670,6 +1042,16 @@ func createArrayLiteral(expr: NodeFormat_Expr): Expr {
     return ArrayLiteral(lSquare, elements, commas, rSquare)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createTupleLiteral(expr: NodeFormat_Expr): Expr {
     var tupleLiteral = match (expr.GetExprAsTupleLit()) {
         case Some(v) => v
@@ -689,6 +1071,16 @@ func createTupleLiteral(expr: NodeFormat_Expr): Expr {
     return TupleLiteral(lParen, elements, commas, rParen)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createRangeExpr(expr: NodeFormat_Expr): Expr {
     var rangeExpr = match (expr.GetExprAsRangeExpr()) {
         case Some(v) => v
@@ -720,6 +1112,16 @@ func createRangeExpr(expr: NodeFormat_Expr): Expr {
     return RangeExpr(start, rangeOp, stop, colon, step)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createSubscriptExpr(expr: NodeFormat_Expr): Expr {
     var subscriptExpr = match (expr.GetExprAsSubscriptExpr()) {
         case Some(v) => v
@@ -736,6 +1138,12 @@ func createSubscriptExpr(expr: NodeFormat_Expr): Expr {
     return SubscriptExpr(postfixExpr, lSquare, elements, rSquare)
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createJumpExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr {
     var jumpExpr = match (expr.GetExprAsJumpExpr()) {
         case Some(v) => v
@@ -749,6 +1157,16 @@ func createJumpExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr 
     return JumpExpr(kind)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createIncOrDecExpr(expr: NodeFormat_Expr): Expr {
     var incOrDecExpr = match (expr.GetExprAsIncOrDecExpr()) {
         case Some(v) => v
@@ -759,6 +1177,16 @@ func createIncOrDecExpr(expr: NodeFormat_Expr): Expr {
     return IncOrDecExpr(kind, exprNode)
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createTryExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr {
     var tryExpr = match (expr.GetExprAsTryExpr()) {
         case Some(v) => v
@@ -828,6 +1256,16 @@ func createTryExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr {
         catchLParens, catchRParens, catchPatterns, cbs, finTk, finallyBlock, handlers)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createQuoteExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr {
     var quoteExpr = match (expr.GetExprAsQuoteExpr()) {
         case Some(v) => v
@@ -844,6 +1282,11 @@ func createQuoteExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr
     return QuoteExpr(keyword, lParen, elements, rParen)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ParseASTException
+ */
 func createQuoteToken(expr: NodeFormat_Expr): Expr {
     var tkp = match (expr.GetExprAsTokenPart()) {
         case Some(v) => v
@@ -859,11 +1302,26 @@ func createQuoteToken(expr: NodeFormat_Expr): Expr {
     return QuoteToken(tks)
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ */
 func createWildcardExpr(exprBase: NodeFormat_NodeBase): Expr {
     var keyword: Tokens = Tokens().append(Token(TokenKind.WILDCARD).addPosition(exprBase.GetBegin()))
     return WildcardExpr(keyword)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createArrayExpr(expr: NodeFormat_Expr): Expr {
     var arrayExpr = match (expr.GetExprAsArrayExpr()) {
         case Some(v) => v
@@ -882,6 +1340,16 @@ func createArrayExpr(expr: NodeFormat_Expr): Expr {
     return VArrayExpr(ty, lParen, args, rParen)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createMacroExpandExpr(expr: NodeFormat_Expr) {
     var me = match (expr.GetExprAsMacroExpandExpr()) {
         case Some(v) => v

@@ -95,6 +95,9 @@ class StepIterator<T> <: Iterator<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     init(it: Iterator<T>, count: Int64) {
         if (count <= 0) {
             throw IllegalArgumentException("Step count must be greater than 0!")
@@ -130,6 +133,9 @@ class SkipIterator<T> <: Iterator<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     init(it: Iterator<T>, count: Int64) {
         if (count < 0) {
             throw IllegalArgumentException("Skip count cannot less than 0!")
@@ -168,6 +174,9 @@ class TakeIterator<T> <: Iterator<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     init(it: Iterator<T>, count: Int64) {
         if (count < 0) {
             throw IllegalArgumentException("Take count cannot less than 0!")
@@ -450,16 +459,25 @@ extend<T> Iterator<T> {
         return MapIterator<T, R>(this, transform)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func step(count: Int64): Iterator<T> {
         return StepIterator<T>(this, count)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func skip(count: Int64): Iterator<T> {
         return SkipIterator<T>(this, count)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func take(count: Int64): Iterator<T> {
         return TakeIterator<T>(this, count)

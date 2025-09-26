@@ -21,6 +21,9 @@ public class LinkedListNode<T> {
         _list = belongs
     }
 
+    /**
+     * @throws [get|set] IllegalStateException
+     */
     @Frozen
     public mut prop value: T {
         get() {
@@ -33,6 +36,9 @@ public class LinkedListNode<T> {
         }
     }
 
+        /**
+         * @throws IllegalStateException
+         */
     @Frozen
     public prop next: Option<LinkedListNode<T>> {
         get() {
@@ -41,6 +47,9 @@ public class LinkedListNode<T> {
         }
     }
 
+        /**
+         * @throws IllegalStateException
+         */
     @Frozen
     public prop prev: Option<LinkedListNode<T>> {
         get() {
@@ -49,6 +58,9 @@ public class LinkedListNode<T> {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     */
     @Frozen
     func insertBefore(element: T): LinkedListNode<T> {
         var node = LinkedListNode<T>(element, _prev, this, _list)
@@ -61,6 +73,9 @@ public class LinkedListNode<T> {
         return node
     }
 
+    /**
+     * @throws NoneValueException
+     */
     @Frozen
     func insertAfter(element: T): LinkedListNode<T> {
         var node = LinkedListNode<T>(element, this, _next, _list)
@@ -73,6 +88,9 @@ public class LinkedListNode<T> {
         return node
     }
 
+    /**
+     * @throws NoneValueException
+     */
     @Frozen
     func remove(): T {
         match ((_prev, _next)) {
@@ -100,6 +118,9 @@ public class LinkedListNode<T> {
         _next = tmp
     }
 
+    /**
+     * @throws IllegalStateException
+     */
     private func checkNodeState() {
         if (let None <- _list) {
             throw IllegalStateException()
@@ -115,18 +136,28 @@ public class LinkedList<T> <: Collection<T> {
 
     public init() {}
 
+    /**
+     * @throws NoneValueException
+     */
     public init(elements: Collection<T>) {
         for (value in elements) {
             addLast(value)
         }
     }
 
+    /**
+     * @throws NoneValueException
+     */
     public init(elements: Array<T>) {
         for (element in elements) {
             addLast(element)
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     */
     public init(size: Int64, initElement: (Int64) -> T) {
         if (size < 0) {
             throw IllegalArgumentException("Invalid size of LinkedList: ${size}.")
@@ -142,6 +173,9 @@ public class LinkedList<T> <: Collection<T> {
         }
     }
 
+        /**
+         * @throws IllegalStateException
+         */
     public prop first: ?T {
         get() {
             match (_head) {
@@ -151,6 +185,9 @@ public class LinkedList<T> <: Collection<T> {
         }
     }
 
+        /**
+         * @throws IllegalStateException
+         */
     public prop last: ?T {
         get() {
             match (_tail) {
@@ -178,6 +215,9 @@ public class LinkedList<T> <: Collection<T> {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     */
     @Frozen
     public func addFirst(element: T): LinkedListNode<T> {
         if (let Some(node) <- _head) {
@@ -191,6 +231,9 @@ public class LinkedList<T> <: Collection<T> {
         return _head.getOrThrow()
     }
 
+    /**
+     * @throws NoneValueException
+     */
     @Frozen
     public func addLast(element: T): LinkedListNode<T> {
         if (let Some(node) <- _tail) {
@@ -204,6 +247,11 @@ public class LinkedList<T> <: Collection<T> {
         return _tail.getOrThrow()
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func toArray(): Array<T> {
         if (size == 0) {
             return Array<T>()
@@ -220,6 +268,10 @@ public class LinkedList<T> <: Collection<T> {
         return arr
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     */
     public func addBefore(node: LinkedListNode<T>, element: T): LinkedListNode<T> {
         checkNode(node)
         _size++
@@ -227,6 +279,10 @@ public class LinkedList<T> <: Collection<T> {
         return node.insertBefore(element)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     */
     public func addAfter(node: LinkedListNode<T>, element: T): LinkedListNode<T> {
         checkNode(node)
         _size++
@@ -234,6 +290,10 @@ public class LinkedList<T> <: Collection<T> {
         return node.insertAfter(element)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     */
     @Frozen
     public func remove(node: LinkedListNode<T>): T {
         checkNode(node)
@@ -242,6 +302,11 @@ public class LinkedList<T> <: Collection<T> {
         return node.remove()
     }
 
+    /**
+     * @throws IllegalStateException
+     * @throws NoneValueException
+     * @throws ConcurrentModificationException
+     */
     public func removeIf(predicate: (T) -> Bool): Unit {
         var node = _head
         while (let Some(n) <- node) {
@@ -266,6 +331,9 @@ public class LinkedList<T> <: Collection<T> {
         _version++
     }
 
+    /**
+     * @throws IllegalStateException
+     */
     public func reverse(): Unit {
         _version++
         var node = _head
@@ -287,6 +355,9 @@ public class LinkedList<T> <: Collection<T> {
         return LinkedListIterator<T>(this, _head, false)
     }
 
+    /**
+     * @throws NoneValueException
+     */
     public func removeFirst(): ?T {
         if (let Some(v) <- _head) {
             _version++
@@ -297,6 +368,9 @@ public class LinkedList<T> <: Collection<T> {
         return None
     }
 
+    /**
+     * @throws NoneValueException
+     */
     public func removeLast(): ?T {
         if (let Some(v) <- _tail) {
             _version++
@@ -307,6 +381,10 @@ public class LinkedList<T> <: Collection<T> {
         return None
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalStateException
+     */
     public func nodeAt(index: Int64): Option<LinkedListNode<T>> {
         if (index < 0 || index >= _size) {
             return None
@@ -331,6 +409,10 @@ public class LinkedList<T> <: Collection<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
     public func splitOff(node: LinkedListNode<T>): LinkedList<T> {
         checkNode(node)
         _version++
@@ -359,6 +441,9 @@ public class LinkedList<T> <: Collection<T> {
         return subList
     }
 
+    /**
+     * @throws IllegalStateException
+     */
     public func forward(mark: LinkedListNode<T>): Iterator<T> {
         if (let Some(_) <- mark._list) {
             return LinkedListIterator<T>(this, mark, false)
@@ -367,6 +452,9 @@ public class LinkedList<T> <: Collection<T> {
         }
     }
 
+    /**
+     * @throws IllegalStateException
+     */
     public func backward(mark: LinkedListNode<T>): Iterator<T> {
         if (let Some(_) <- mark._list) {
             return LinkedListIterator<T>(this, mark, true)
@@ -375,6 +463,9 @@ public class LinkedList<T> <: Collection<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     private func checkNode(node: LinkedListNode<T>) {
         if (let Some(v) <- node._list) {
             if (refEq(this, v)) {
@@ -386,6 +477,11 @@ public class LinkedList<T> <: Collection<T> {
 }
 
 extend<T> LinkedList<T> <: ToString where T <: ToString {
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return collectionToString<LinkedList<T>, T>(this)
     }
@@ -393,6 +489,9 @@ extend<T> LinkedList<T> <: ToString where T <: ToString {
 
 extend<T> LinkedList<T> <: Equatable<LinkedList<T>> where T <: Equatable<T> {
     
+    /**
+     * @throws IllegalStateException
+     */
     public operator func ==(right: LinkedList<T>): Bool {
         if (refEq(this, right)) {
             return true
@@ -419,6 +518,9 @@ extend<T> LinkedList<T> <: Equatable<LinkedList<T>> where T <: Equatable<T> {
     }
 
     
+    /**
+     * @throws IllegalStateException
+     */
     public operator func !=(right: LinkedList<T>): Bool {
         return !(this == right)
     }
@@ -437,6 +539,10 @@ class LinkedListIterator<T> <: Iterator<T> {
         _backward = backward
     }
 
+    /**
+     * @throws IllegalStateException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     public func next(): Option<T> {
         if (_lockVersion != _data.version) {

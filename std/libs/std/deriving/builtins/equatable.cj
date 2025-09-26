@@ -29,6 +29,9 @@ class EquatableDeriving <: Deriving {
         get() { [EQUATABLE_NAME]}
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public override func queryInterfaceInfo(interfaceName: QualifiedName): DerivingInterfaceInfo {
         if (interfaceName != EQUATABLE_NAME) {
             throw IllegalArgumentException("Interface ${interfaceName} is not supported")
@@ -36,6 +39,17 @@ class EquatableDeriving <: Deriving {
         return EQUATABLE_INFO
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws ParseASTException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func derive(
         _: Tokens,
         target: DerivingTarget,
@@ -98,6 +112,12 @@ class EquatableDeriving <: Deriving {
         return e.toTokens()
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func enumCasesCompare(enumCase: TargetEnumCase): Iterable<Tokens> {
         if (enumCase.totalArgumentsCount == 0) {
             return []

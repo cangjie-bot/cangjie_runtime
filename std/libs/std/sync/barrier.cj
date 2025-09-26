@@ -13,6 +13,9 @@ public class Barrier {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init(count: Int64) {
         syncCounter = SyncCounter(count)
     }
@@ -24,6 +27,11 @@ public class Barrier {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     public func wait(timeout!: Duration = Duration.Max): Unit {
         syncCounter.dec()
         syncCounter.waitUntilZero(timeout: timeout)

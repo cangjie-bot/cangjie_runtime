@@ -105,6 +105,10 @@ public class Future<T> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws TimeoutException
+     */
     public func get(timeout: Duration): T {
         if (timeout <= Duration.Zero) {
             return get()
@@ -138,6 +142,12 @@ public class Future<T> {
 
 
 
+    /**
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     func execute(): Unit {
         this._thread.waitForCJThreadHandle()
         setThreadObject(this._thread)
@@ -158,6 +168,12 @@ public class Future<T> {
         this._thread.clearRuntimeCJThreadHandle()
         return
     }
+    /**
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     static func executeClosure(fn: () -> T): Unit {
         try {
             fn()

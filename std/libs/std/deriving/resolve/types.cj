@@ -27,6 +27,11 @@ public struct Types {
     public static let ByteArrayType: TypeNode = myParseType(quote(Array<UInt8>))
     public static let CharType: TypeNode = PrimitiveType(quote(Rune))
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public static func isSame(a: TypeNode, b: TypeNode): Bool {
         if (refEq(a, b)) {
             return true
@@ -44,6 +49,11 @@ public struct Types {
         a.keyword.kind == b.keyword.kind
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     private static func isSame(a: RefType, b: RefType): Bool {
         a.identifier.value == b.identifier.value &&
             (a.typeArguments |> zip(b.typeArguments) |> all<(TypeNode, TypeNode)> { tt =>
@@ -52,6 +62,11 @@ public struct Types {
             } )
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     private static func isSame(a: TupleType, b: TupleType): Bool {
         if (a.types.size != b.types.size) {
             return false
@@ -75,6 +90,9 @@ public struct Types {
 
         return false
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public static func isArray(node: TypeNode): ?TypeNode {
         match (node) {
             case par: ParenType => isArray(par.parenthesizedType)
@@ -131,6 +149,11 @@ public struct Types {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func unionApprox(a: TypeNode, b: TypeNode): TypeNode {
     if (refEq(a, b)) {
         return a
@@ -150,6 +173,11 @@ public func unionApprox(a: TypeNode, b: TypeNode): TypeNode {
     return Types.AnyType
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 public func unionApprox(a: ?TypeNode, b: ?TypeNode): ?TypeNode {
     match ((a, b)) {
         case (Some(a), Some(b)) => unionApprox(a, b)
@@ -157,6 +185,9 @@ public func unionApprox(a: ?TypeNode, b: ?TypeNode): ?TypeNode {
     }
 }
 
+/**
+ * @throws ASTException
+ */
 func typeByKeyword(keyword: Token): TypeNode {
     let t = PrimitiveType()
     t.keyword = keyword

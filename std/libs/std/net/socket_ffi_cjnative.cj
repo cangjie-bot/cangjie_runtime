@@ -56,6 +56,10 @@ func peerAddrGet(handle: Int64, addr: CPointer<SockAddr>): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws SocketException
+ */
 func getAddress(handle: Int64, getAddressFunc: (Int64, CPointer<SockAddr>) -> Int32, msg: String): SockAddr {
     var addr = SockAddr()
     let res: Int32 = getAddressFunc(handle, inout addr)
@@ -67,6 +71,11 @@ func getAddress(handle: Int64, getAddressFunc: (Int64, CPointer<SockAddr>) -> In
     return addr
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws SocketException
+ */
 func getLocalAddress(handle: Int64): SocketAddress {
     let addr = getAddress(handle, localAddrGet, "local")
     let local = unsafe { addr.toSocketAddress() }
@@ -74,6 +83,11 @@ func getLocalAddress(handle: Int64): SocketAddress {
     return local
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws SocketException
+ */
 func getRemoteAddress(handle: Int64): SocketAddress {
     let addr = getAddress(handle, peerAddrGet, "remote")
     let local = unsafe { addr.toSocketAddress() }
@@ -156,6 +170,10 @@ func getSocketError(): Int32 {
     unsafe { CJ_SockErrnoGet() }
 }
 
+/**
+ * @throws SocketException
+ * @throws SocketTimeoutException
+ */
 func socketProcessErrno(label: ErrnoLabel): Nothing {
     let errno = getSocketError()
     if (errno == ERRNO_SOCK_TIMEOUT) {

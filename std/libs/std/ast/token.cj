@@ -22,6 +22,9 @@ public struct Token <: ToBytes {
         value = ""
         pos = Position()
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public init(kind: TokenKind) {
         this.kind = kind
         value = getTokenLiteral(kind)
@@ -30,6 +33,10 @@ public struct Token <: ToBytes {
             this.isSingleQuote = true
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public init(kind: TokenKind, value: String) {
         if (!checkKindValue(kind, value)) {
             throw IllegalArgumentException(
@@ -65,14 +72,26 @@ public struct Token <: ToBytes {
     public operator func !=(r: Token): Bool {
         return !(this == r)
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func +(r: Tokens): Tokens {
         var l: Tokens = Tokens(Array<Token>(1, repeat: this))
         return l + r
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func +(r: Token): Tokens {
         var l: Tokens = Tokens(Array<Token>(1, repeat: this))
         return l + r
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws OutOfMemoryError
+     */
     public func dump(): Unit {
         let kv: String = getTokenKindValue(kind)
         let id: UInt16 = getTokenID(kind)
@@ -85,6 +104,10 @@ public struct Token <: ToBytes {
         pos.dump()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toBytes(): Array<UInt8> {
         var kindId: UInt16 = getTokenID(this.kind)
         var b1: Array<UInt8> = castUInt16ToBytes(kindId)
@@ -106,6 +129,9 @@ public struct Token <: ToBytes {
         return concatBytes(b23, b4)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func toBytes(arr: Array<UInt8>, start1: Int64) {
         var start = start1
         let kindId: UInt16 = getTokenID(this.kind)
@@ -124,6 +150,9 @@ public struct Token <: ToBytes {
         return start
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func getSize() {
         let kindId: UInt16 = getTokenID(this.kind)
         let size_kind = 2
@@ -141,6 +170,12 @@ public struct Token <: ToBytes {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ */
 func refreshPos(token: Token, f: UInt32, l: Int32, c: Int32): Token {
     var tk: Token
     if (let Some(macroObjPtr) <- MACRO_OBJECT.get()) {

@@ -13,6 +13,10 @@ package std.sort
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` instead."]
 public func unstableSort<T>(data: Array<T>): Unit where T <: Comparable<T> {
     if (data.size < 2) {
@@ -27,6 +31,10 @@ public func unstableSort<T>(data: Array<T>): Unit where T <: Comparable<T> {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 @Deprecated[message: "Use global function `public func sort<T>(data: Array<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` instead."]
 public func unstableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     if (data.size < 2) {
@@ -36,6 +44,10 @@ public func unstableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Uni
 }
 
 extend<T> Array<T> where T <: Comparable<T> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     func introSort(begin: Int64, end: Int64, depth: Int64): Unit {
         var b: Int64 = begin
@@ -76,6 +88,10 @@ extend<T> Array<T> where T <: Comparable<T> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     private func getPartition(begin: Int64, end: Int64): (Int64, Int64) {
         let len: Int64 = end - begin + 1
@@ -212,6 +228,10 @@ extend<T> Array<T> where T <: Comparable<T> {
 }
 
 extend<T> Array<T> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     private func getPartition(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): (Int64, Int64) {
         let len: Int64 = end - begin + 1
@@ -342,6 +362,10 @@ extend<T> Array<T> {
             return (b, hi + 1)
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     func introSort(begin: Int64, end: Int64, depth: Int64, comparator: (T, T) -> Ordering): Unit {
         var b: Int64 = begin

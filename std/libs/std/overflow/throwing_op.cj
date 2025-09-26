@@ -114,6 +114,9 @@ extend Int8 <: ThrowingOp<Int8> {
         throwingNeg<Int8>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): Int8 {
         if (y >= 8) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -121,6 +124,9 @@ extend Int8 <: ThrowingOp<Int8> {
         this << y
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): Int8 {
         if (y >= 8) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -171,6 +177,9 @@ extend Int16 <: ThrowingOp<Int16> {
         throwingNeg<Int16>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): Int16 {
         if (y >= 16) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -179,6 +188,9 @@ extend Int16 <: ThrowingOp<Int16> {
         }
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): Int16 {
         if (y >= 16) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -230,6 +242,9 @@ extend Int32 <: ThrowingOp<Int32> {
         throwingNeg<Int32>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): Int32 {
         if (y >= 32) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -238,6 +253,9 @@ extend Int32 <: ThrowingOp<Int32> {
         }
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): Int32 {
         if (y >= 32) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -294,6 +312,9 @@ extend Int64 <: ThrowingOp<Int64> & ThrowingPow {
         throwingNeg<Int64>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): Int64 {
         if (y >= 64) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -301,6 +322,9 @@ extend Int64 <: ThrowingOp<Int64> & ThrowingPow {
         this << y
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): Int64 {
         if (y >= 64) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -351,6 +375,9 @@ extend UInt8 <: ThrowingOp<UInt8> {
         throwingNeg<UInt8>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): UInt8 {
         if (y >= 8) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -358,6 +385,9 @@ extend UInt8 <: ThrowingOp<UInt8> {
         this << y
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): UInt8 {
         if (y >= 8) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -408,6 +438,9 @@ extend UInt16 <: ThrowingOp<UInt16> {
         throwingNeg<UInt16>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): UInt16 {
         if (y >= 16) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -415,6 +448,9 @@ extend UInt16 <: ThrowingOp<UInt16> {
         this << y
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): UInt16 {
         if (y >= 16) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -465,6 +501,9 @@ extend UInt32 <: ThrowingOp<UInt32> {
         throwingNeg<UInt32>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): UInt32 {
         if (y >= 32) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -472,6 +511,9 @@ extend UInt32 <: ThrowingOp<UInt32> {
         this << y
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): UInt32 {
         if (y >= 32) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -522,6 +564,9 @@ extend UInt64 <: ThrowingOp<UInt64> {
         throwingNeg<UInt64>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): UInt64 {
         if (y >= 64) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -529,6 +574,9 @@ extend UInt64 <: ThrowingOp<UInt64> {
         this << y
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): UInt64 {
         if (y >= 64) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -579,6 +627,9 @@ extend IntNative <: ThrowingOp<IntNative> {
         throwingNeg<IntNative>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): IntNative {
         if ((isNative64 && y >= 64) || (!isNative64 && y >= 32)) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -586,6 +637,9 @@ extend IntNative <: ThrowingOp<IntNative> {
         this << y
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): IntNative {
         if ((isNative64 && y >= 64) || (!isNative64 && y >= 32)) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -636,6 +690,9 @@ extend UIntNative <: ThrowingOp<UIntNative> {
         throwingNeg<UIntNative>(this)
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShl(y: UInt64): UIntNative {
         if ((isNative64 && y >= 64) || (!isNative64 && y >= 32)) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")
@@ -643,6 +700,9 @@ extend UIntNative <: ThrowingOp<UIntNative> {
         this << y
     }
 
+    /**
+     * @throws OvershiftException
+     */
     public func throwingShr(y: UInt64): UIntNative {
         if ((isNative64 && y >= 64) || (!isNative64 && y >= 32)) {
             throw OvershiftException("The right operand must be less than the number of bits in the left operand.")

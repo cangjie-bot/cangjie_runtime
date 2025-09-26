@@ -22,6 +22,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init(input: T) {
         this(input, DEFAULT_BUFFER_CAPACITY)
     }
@@ -32,6 +35,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init(input: T, capacity: Int64) {
         if (capacity <= 0) {
             throw IllegalArgumentException("Invalid capacity size: capacity = ${capacity}.")
@@ -40,6 +46,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
         inBuf = Array<Byte>(capacity, repeat: 0)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init(input: T, buffer: Array<Byte>) {
         if (buffer.size == 0) {
             throw IllegalArgumentException("The buffer cannot be empty.")
@@ -54,6 +63,10 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func read(buffer: Array<Byte>): Int64 {
         if (availLen == -1) {
             return 0
@@ -89,6 +102,9 @@ public class BufferedInputStream<T> <: InputStream where T <: InputStream {
         count
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func readByte(): ?Byte {
         if (availLen == -1) {
             return None

@@ -10,6 +10,11 @@ package std.unittest.mock
 import std.collection.*
 
 class VerifyIterator {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     VerifyIterator(
         let statements: Iterable<VerifyStatement>,
         let invocations: Array<Invocation>
@@ -31,6 +36,10 @@ class VerifyIterator {
     var currentStatementMatch: Bool
     var nextStatementMatch: Bool
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func goToNextStatement(): Bool {
         match (nextStatement) {
             case None => return false
@@ -51,6 +60,10 @@ class VerifyIterator {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func goToNextInvocation(): Bool {
         logIndex++
         if (let Some(nextInv) <- invocations.get(logIndex)) {
@@ -63,11 +76,21 @@ class VerifyIterator {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func check(count: Int64): CardinalityCheck {
         return currentStatement.cardinality.check(count)
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ */
 func verifyExhaustiveOrderedIteration(iterator: VerifyIterator): ?VerificationResult {
     var count = 0
     while (true) {
@@ -124,6 +147,12 @@ func verifyExhaustiveOrderedIteration(iterator: VerifyIterator): ?VerificationRe
     return None
 }
 
+/**
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws MockFrameworkInternalError
+ * @throws IllegalArgumentException
+ */
 func verifyExhaustiveOrdered(statements: Array<VerifyStatement>, log: LogSnapshot): VerificationResult {
     let invocations = log.invocations()
     if (invocations.isEmpty()) {
@@ -143,14 +172,29 @@ func verifyExhaustiveOrdered(statements: Array<VerifyStatement>, log: LogSnapsho
 }
 
 extend VerifyIterator {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func tooFewInvocations(count: Int64): VerificationResult {
         Failure(TooFewInvocations(currentStatement, currentStatement.cardinality, count))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func tooManyInvocations(count: Int64): VerificationResult {
         Failure(TooManyInvocations(currentStatement, currentStatement.cardinality, count))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     */
     func nonDisjointStatements(): VerificationResult {
         match (nextStatement) {
             case None => internalError("Missing next statement")
@@ -158,10 +202,17 @@ extend VerifyIterator {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func unmatchedStatements(): VerificationResult {
         Failure(UnmatchedStatements(leftoverStatements()))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func unmatchedInvocations(): VerificationResult {
         let leftoverInvocations = invocations.slice(logIndex, invocations.size - logIndex).toArray()
         return Failure(UnmatchedInvocations(leftoverInvocations))
@@ -171,6 +222,10 @@ extend VerifyIterator {
         return Failure(UnexpectedInvocation(currentStatement, invocation))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func leftoverStatements(): Array<VerifyStatement> {
         let result = ArrayList<VerifyStatement>()
         match (nextStatement) {

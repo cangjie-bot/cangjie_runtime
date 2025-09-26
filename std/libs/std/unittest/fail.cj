@@ -8,6 +8,13 @@
 package std.unittest
 
 
+/**
+ * @throws Error
+ * @throws UnittestTimeoutException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func failExpect(message: String): Unit {
     cancellationPoint()
     let checkResult = FailCheckResult(Expect, message)
@@ -15,6 +22,14 @@ public func failExpect(message: String): Unit {
 }
 
 
+/**
+ * @throws Error
+ * @throws UnittestTimeoutException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws AssertException
+ */
 public func fail(message: String): Nothing {
     cancellationPoint()
     let checkResult = FailCheckResult(Assert, message)
@@ -23,6 +38,12 @@ public func fail(message: String): Nothing {
 }
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalSynchronizationStateException
+ * @throws AssertException
+ */
 public func assertCaughtUnexpectedE(
     message: String,
     expectedExceptions: String,
@@ -39,6 +60,11 @@ public func assertCaughtUnexpectedE(
 }
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalSynchronizationStateException
+ */
 public func expectCaughtUnexpectedE(
     message: String,
     expectedExceptions: String,

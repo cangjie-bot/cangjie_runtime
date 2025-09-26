@@ -26,6 +26,12 @@ class Details {
         isAccountedStep = false
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     */
     func add(other: Details) {
         this.testcode = testcode.mostSevereWith(other.testcode)
         if (other.isAccountedStep) {

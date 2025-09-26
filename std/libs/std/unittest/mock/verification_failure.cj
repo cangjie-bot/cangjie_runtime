@@ -27,10 +27,23 @@ class VerificationFailureReport <: FailureReport {
         super(logSnapshot, nameRegistry)
     }
 
+    /**
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws VerificationFailedException
+     */
     func fail(reason: VerificationFailedReason): Nothing {
         throw VerificationFailedException(renderVerificationFailure(reason))
     }
 
+    /**
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     private func renderVerificationFailure(reason: VerificationFailedReason): PrettyText {
         build {
             errorHeader("Verification failed")
@@ -40,6 +53,11 @@ class VerificationFailureReport <: FailureReport {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     private func renderTooManyInvocations(
         statement: VerifyStatement,
         requiredCardinality: Cardinality,
@@ -57,6 +75,11 @@ class VerificationFailureReport <: FailureReport {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     private func renderTooFewInvocations(
         statement: VerifyStatement,
         requiredCardinality: Cardinality,
@@ -74,6 +97,11 @@ class VerificationFailureReport <: FailureReport {
         }
     }
 
+    /**
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func renderUnexpectedInvocation(statement: VerifyStatement, invocation: Invocation) {
         line("Unexpected invocation.")
         line {
@@ -106,6 +134,10 @@ class VerificationFailureReport <: FailureReport {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func renderUnmatchedInvocations(invocations: Array<Invocation>) {
         line("The following invocations were not matched by any statement:")
         indent {
@@ -115,6 +147,10 @@ class VerificationFailureReport <: FailureReport {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func renderUnmatchedStatements(statements: Array<VerifyStatement>) {
         line("The following statements were not matched by any invocations:")
         indent {
@@ -124,6 +160,10 @@ class VerificationFailureReport <: FailureReport {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func renderNonDisjointStatements(
         statement1: VerifyStatement,
         statement2: VerifyStatement,
@@ -141,6 +181,10 @@ class VerificationFailureReport <: FailureReport {
         line("Provide disjoint statements to avoid ambiguous verification results.")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func renderUnwantedInteractions(invocations: Array<Invocation>) {
         line("Unwanted interactions:")
         indent {
@@ -150,6 +194,12 @@ class VerificationFailureReport <: FailureReport {
         }
     }
 
+    /**
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     private func renderReason(reason: VerificationFailedReason): Unit {
         match (reason) {
             case TooManyInvocations(statement, requiredCardinality, actualInvocations) =>

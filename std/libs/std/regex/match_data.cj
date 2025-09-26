@@ -22,6 +22,9 @@ public struct Position {
 }
 
 public struct MatchData {
+    /**
+     * @throws IllegalArgumentException
+     */
     MatchData(
         let input: String,
         let positions: Array<Position>,
@@ -32,6 +35,10 @@ public struct MatchData {
     ) {}
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func matchString(): String {
         let position = positions[0]
         return input[position.start..position.end]
@@ -40,6 +47,10 @@ public struct MatchData {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func matchString(group: Int64): String {
         if (positions.size == 1 && rc > 1 && group > 0) {
             throw IllegalArgumentException("Capture group not enabled.")
@@ -57,6 +68,10 @@ public struct MatchData {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func matchString(group: String): String {
         if (positions.size == 1 && rc > 1) {
             throw IllegalArgumentException("Capture group not enabled.")
@@ -72,6 +87,9 @@ public struct MatchData {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func matchPosition(): Position {
         return positions[0]
     }
@@ -79,6 +97,10 @@ public struct MatchData {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func matchPosition(group: Int64): Position {
         if (positions.size == 1 && rc > 1 && group > 0) {
             throw IllegalArgumentException("Capture group not enabled.")
@@ -92,6 +114,10 @@ public struct MatchData {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func matchPosition(group: String): Position {
         if (positions.size == 1 && rc > 1) {
             throw IllegalArgumentException("Capture group not enabled.")

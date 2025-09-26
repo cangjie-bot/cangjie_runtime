@@ -44,6 +44,12 @@ private class BenchTableProperties {
 }
 
 interface BenchTable {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func build(suiteResult: TestSuiteResult, baselineReport: HashMap<String, Float64>): ?BenchTable {
         BenchTableImpl.build(suiteResult, baselineReport)
     }
@@ -56,6 +62,10 @@ interface BenchTable {
 private open class BenchTableImpl <: BenchTable {
     protected let subgroups: ArrayList<BenchTableImpl> = ArrayList()
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected BenchTableImpl(
         protected let props!: BenchTableProperties = BenchTableProperties(),
         protected let table!: PrettyTable = PrettyTable()
@@ -65,14 +75,27 @@ private open class BenchTableImpl <: BenchTable {
         get() { props.hasRatioColumn && !props.hasCasesBaseline }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func putResultToBaselineReport(key: String, value: Float64) {
         props.baselineReport[key] = value
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public open func getResultFromBaselineReport(key: String): Option<Float64> {
         props.baselineReport.get(key)
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func build(suiteResult: TestSuiteResult, baselineReport: HashMap<String, Float64>): ?BenchTable {
         let table = BenchTableImpl(props: BenchTableProperties(baselineReport: baselineReport))
         BenchMeasurementGroup.fill(table, suiteResult)
@@ -87,6 +110,10 @@ private open class BenchTableImpl <: BenchTable {
         subgroups.isEmpty() || (subgroups |> all { group: BenchTableImpl => group.isEmpty() })
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func initTableStructure(): Unit {
         table.addColumn("Case")
         table.alignColumnLeft(0)
@@ -103,6 +130,10 @@ private open class BenchTableImpl <: BenchTable {
         table.addColumns(["Median", "Err", "Err%", "Mean", "Ratio"])
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func doBuild(): PrettyTable {
         initTableStructure()
         doTableBuild()
@@ -113,6 +144,10 @@ private open class BenchTableImpl <: BenchTable {
         table
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected open func doTableBuild(): Unit {
         var first = true
         for (sg in subgroups) {
@@ -129,26 +164,47 @@ private open class BenchTableImpl <: BenchTable {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func addSubgroup(subgroup: BenchTableImpl) {
         this.subgroups.add(subgroup)
     }
 }
 
 private abstract class BenchTableGroup <: BenchTableImpl {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     BenchTableGroup(let parent: BenchTableImpl) {
         super(table: parent.table, props: parent.props)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func putResultToBaselineReport(key: String, value: Float64) {
         parent.putResultToBaselineReport(key, value)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public open func getResultFromBaselineReport(key: String): Option<Float64> {
         parent.getResultFromBaselineReport(key)
     }
 }
 
 private class BenchMeasurementGroup <: BenchTableGroup {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     BenchMeasurementGroup(
         parent: BenchTableImpl,
         let conversionTable: MeasurementUnitTable,
@@ -159,6 +215,10 @@ private class BenchMeasurementGroup <: BenchTableGroup {
         BenchBaselineGroup.fill(this, results)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func doTableBuild() {
         props.shouldPrintMeasurement = true
         props.conversionTable = conversionTable
@@ -166,6 +226,12 @@ private class BenchMeasurementGroup <: BenchTableGroup {
         super.doTableBuild()
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func fill(parent: BenchTableImpl, suiteResult: TestSuiteResult) {
         let measurementToCases = HashMap<String, ArrayList<TestCaseResult>>()
         let measurementToConversionTable = HashMap<String, MeasurementUnitTable>()
@@ -199,6 +265,10 @@ private class BenchMeasurementGroup <: BenchTableGroup {
 }
 
 private class BenchBaselineGroup <: BenchTableGroup {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     BenchBaselineGroup(parent: BenchTableImpl, results: Iterable<(TestCaseId, ArrayList<BenchStepEntry>)>,
         let baseline!: Baseline) {
         super(parent)
@@ -214,17 +284,28 @@ private class BenchBaselineGroup <: BenchTableGroup {
 
     private let baselineReportIndices = HashMap<String, Int64>()
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func putResultToBaselineReport(key: String, value: Float64) {
         let idx = baselineReportIndices.get(key) ?? 0
         props.baselineReport["${key}[${idx}]"] = value
         baselineReportIndices[key] = idx + 1
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public override func getResultFromBaselineReport(key: String): Option<Float64> {
         let idx = baselineReportIndices.get(key) ?? 0
         props.baselineReport.get("${key}[${idx}]")
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func doTableBuild() {
         props.baseline = baseline
         for (sg in subgroups) {
@@ -232,6 +313,12 @@ private class BenchBaselineGroup <: BenchTableGroup {
         }
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func fill(parent: BenchTableImpl, results: Iterable<TestCaseResult>) {
         let baselineToCases = HashMap<TestCaseId, ArrayList<TestCaseResult>>()
         let caseToBaseline = HashMap<TestCaseId, TestCaseId>()
@@ -283,6 +370,12 @@ private class BenchBaselineGroup <: BenchTableGroup {
         parent.addSubgroup(BenchBaselineGroup(parent, standaloneBenches |> zipCase, baseline: PreviousReport))
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     private static func groupCases(
         measurementsByCase: HashMap<TestCaseId, ArrayList<BenchStepEntry>>,
         getBaseline: (TestCaseId) -> ?TestCaseId,
@@ -324,6 +417,10 @@ private class BenchBaselineGroup <: BenchTableGroup {
 }
 
 private open class BenchCaseRow <: BenchTableGroup {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     BenchCaseRow(
         parent: BenchTableImpl,
         let caseId: TestCaseId,
@@ -337,6 +434,10 @@ private open class BenchCaseRow <: BenchTableGroup {
     ) {
         super(parent)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     init(parent: BenchTableImpl, caseId: TestCaseId, argText: String, isBaseline: Bool) {
         this(
             parent, caseId, argText,
@@ -355,6 +456,10 @@ private open class BenchCaseRow <: BenchTableGroup {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func doTableBuild(): Unit {
         table.nextRow()
         table.addCell(caseId.caseName, color: benchColor)
@@ -397,6 +502,10 @@ private open class BenchCaseRow <: BenchTableGroup {
         putResultToBaselineReport(key, mean)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func build(parent: BenchTableImpl, caseId: TestCaseId, measurements: Iterable<BenchStepEntry>,
         firstIsBaseline: Bool) {
         var isFirst = true
@@ -427,6 +536,10 @@ private open class BenchCaseRow <: BenchTableGroup {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func addCompareCell(result: Float64, baseline: Float64) {
         props.hasRatioColumn = true
         let ratio = if (isEmptyResult) { 0.0 } else { (result / baseline - 1.0) * 100.0 }

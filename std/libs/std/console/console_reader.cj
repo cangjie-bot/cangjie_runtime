@@ -45,6 +45,12 @@ public class ConsoleReader <: InputStream {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     */
     @OverflowWrapping
     public func read(): ?Rune {
         synchronized(mutex) {
@@ -60,6 +66,12 @@ public class ConsoleReader <: InputStream {
     }
 
     
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func readln(): ?String {
         if (let Some(ln) <- readUntil({c => c == r'\n'})) {
             if (ln.endsWith("\r\n")) {
@@ -73,18 +85,36 @@ public class ConsoleReader <: InputStream {
     }
 
     
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func readToEnd(): ?String {
         return readUntil({_ => return false})
     }
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func readUntil(ch: Rune): ?String {
         return readUntil({it => it == ch})
     }
 
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func readUntil(predicate: (Rune) -> Bool): ?String {
         let result: StringBuilder = StringBuilder()
         synchronized(mutex) {
@@ -112,6 +142,12 @@ public class ConsoleReader <: InputStream {
     }
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     */
     public func read(arr: Array<Byte>): Int64 {
         let arraySize = arr.size
         synchronized(mutex) {
@@ -130,6 +166,11 @@ public class ConsoleReader <: InputStream {
         return arraySize
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     */
     private func readFromConsole(): Bool {
         let line: CPointer<StructureString> = unsafe { CJ_CONSOLE_Readline() }
         if (line.isNull()) {
@@ -163,6 +204,11 @@ public class ConsoleReader <: InputStream {
         return -1
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     */
     @OverflowWrapping
     unsafe func append(str: StructureString): Unit {
         var itemLen = Int64(str.length)
@@ -186,6 +232,10 @@ public class ConsoleReader <: InputStream {
         this.endIndex += itemLen
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowThrowing
     private func reserve(additional: Int64): Unit {
         if (this.buffer.size - this.endIndex >= additional) {
@@ -199,6 +249,10 @@ public class ConsoleReader <: InputStream {
         this.grow(this.buffer.size + additional)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     private func grow(minCapacity: Int64): Unit {
         let oldCapacity = this.buffer.size

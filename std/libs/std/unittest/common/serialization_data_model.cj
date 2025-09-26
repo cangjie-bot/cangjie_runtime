@@ -165,6 +165,10 @@ protected class DataModelSeq <: DataModel {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(dm: DataModel) {
         items.add(dm)
     }
@@ -209,6 +213,10 @@ protected class DataModelStruct <: DataModel {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(fie: Field): DataModelStruct {
         let key = fie.getName()
         for (field in fields) {
@@ -283,6 +291,10 @@ protected class Field {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func createDataModelSeq<T>(list: Collection<T>): DataModelSeq where T <: Serializable<T> {
     let dms: ArrayList<DataModel> = ArrayList<DataModel>(list.size)
     for (i in list) {

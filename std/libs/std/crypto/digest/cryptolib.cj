@@ -44,6 +44,10 @@ public func digest<T>(algorithm: T, data: String): Array<Byte> where T <: Digest
     digest(algorithm, data.toArray())
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func digest<T>(algorithm: T, input: InputStream): Array<Byte> where T <: Digest {
     var buffer = Array<Byte>(algorithm.blockSize, repeat: 0)
     while (true) {

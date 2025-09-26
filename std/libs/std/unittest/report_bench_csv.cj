@@ -23,6 +23,9 @@ enum BenchReportFormat <: ReportFormat {
         CSV(path)
     }
 
+    /**
+     * @throws UnittestCliOptionsFormatException
+     */
     public static redef func fromString(format: String, path: Path): ReportFormat {
         match (format.toAsciiUpper()) {
             case "CSV" => CSV(path)
@@ -32,6 +35,23 @@ enum BenchReportFormat <: ReportFormat {
         }
     }
 
+    /**
+     * @throws OverflowException
+     * @throws FSException
+     * @throws ProcessException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws TimeoutException
+     * @throws InvalidDataException
+     * @throws IllegalSynchronizationStateException
+     */
     public func report(result: TestGroupResult): Unit {
         let (dir, isRaw) = match (this) {
             case CSV_RAW(path) => (path.join("benchmarks"), true)
@@ -43,6 +63,15 @@ enum BenchReportFormat <: ReportFormat {
 }
 
 extend TestGroupResult {
+    /**
+     * @throws OutOfMemoryError
+     * @throws ConcurrentModificationException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     func reportCsv(dir: Path, raw!: Bool): Unit {
         Directory.ensureExists(dir)
         this.visitAll<TestSuiteResult>{ suiteResult => 
@@ -59,6 +88,12 @@ extend TestGroupResult {
 }
 
 extend TestSuiteResult {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     */
     func reportBenchCsv(raw!: Bool): ToString {
         let header = match (raw) {
             case true => "Case,Args,BatchSize,Duration,Unit,Measurement\n"
@@ -101,6 +136,10 @@ extend TestSuiteResult {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func appendStatistics(
     sb: StringBuilder,
     benchStats: BenchmarkResult,
@@ -135,6 +174,10 @@ private func appendStatistics(
 }
 
 extend StringBuilder {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func appendCsvCell<T>(cellData: ?T, last!: Bool = false) where T <: ToString {
         let cell = if (let Some(data) <- cellData) {
             "\"${data}\""

@@ -23,6 +23,17 @@ class BenchExecutor<T> <: Executor {
     ) {
     }
 
+    /**
+     * @throws getOrThrow
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     */
     public func execute(suiteInfo: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
         let progress = ProgressOutput(configuration)
         let benchRunner = BenchRunner(configuration, progress)
@@ -47,6 +58,17 @@ class BenchExecutor<T> <: Executor {
         }
     }
 
+    /**
+     * @throws getOrThrow
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func runSingle(
         value: T, inputs: Array<InputParameter>, suiteInfo: TestSuiteReportInfo, caseId: TestCaseId, caseInfo: TestCaseReportInfo,
         benchRunner: BenchRunner, progress: ProgressOutput, configuration: Configuration, step: Int64
@@ -71,6 +93,10 @@ class BenchExecutor<T> <: Executor {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func formatArgs(inputs: Array<InputParameter>): ?PrettyText {
         if (inputs.isNoArg()) {
             return None
@@ -101,14 +127,28 @@ struct StatisticsSample {
     let _kde: ArrayList<(Float64, Float64)> = ArrayList<(Float64, Float64)>()
     StatisticsSample(let sample: Sample) {}
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     init() {
         this(Sample(ArrayList()))
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(data: Float64) {
         sample.data.add(data)
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func finish() {
         sample.data.removeIf { x => x.isNaN() }
         sample.data.sort()
@@ -118,32 +158,62 @@ struct StatisticsSample {
         sample.mean()
     }}
 
+                           /**
+                            * @throws IllegalArgumentException
+                            * @throws IndexOutOfBoundsException
+                            */
     prop median: Float64 { get() {
         sample.percentile(0.5)
     }}
 
+                               /**
+                                * @throws IllegalArgumentException
+                                * @throws IndexOutOfBoundsException
+                                */
     prop lowerBound: Float64 { get() {
         sample.percentile(0.01)
     }}
 
+                               /**
+                                * @throws IllegalArgumentException
+                                * @throws IndexOutOfBoundsException
+                                */
     prop upperBound: Float64 { get() {
         sample.percentile(0.99)
     }}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func update() {
         if (_kde.isEmpty()) {
             _kde.add(all: sample.kde(0.4))
         }
     }
 
+                                              /**
+                                               * @throws IndexOutOfBoundsException
+                                               * @throws IllegalArgumentException
+                                               */
     prop kde: ArrayList<(Float64, Float64)> { get() {
         update()
         _kde
     }}
 
+                         /**
+                          * @throws IndexOutOfBoundsException
+                          * @throws IllegalArgumentException
+                          * @throws NoneValueException
+                          */
     prop mode: Float64 { get () {
         kde.iterator().maxBy{ a => a[1] }[0]
     }}
+    /**
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     */
     func mode2(): Float64 {
         let (modeIdx, (mode, modeDensity)) = kde.iterator().enumerate().maxBy{ a => a[1][1] }
 
@@ -181,12 +251,24 @@ class BenchmarkResult {
 
     var bootstrapped: BootstrapResult = BootstrapResult()
 
+                           /**
+                            * @throws IllegalArgumentException
+                            * @throws IndexOutOfBoundsException
+                            */
     prop median: Float64 { get() {
         bootstrapped.medianStats.sample.percentile(0.5)
     }}
+                               /**
+                                * @throws IllegalArgumentException
+                                * @throws IndexOutOfBoundsException
+                                */
     prop medianCI99: Float64 { get() {
         (bootstrapped.medianStats.sample.percentile(0.99) - bootstrapped.medianStats.sample.percentile(0.01)) / 2.0
     }}
+                                   /**
+                                    * @throws IllegalArgumentException
+                                    * @throws IndexOutOfBoundsException
+                                    */
     prop medianOverhead: Float64 { get() {
         bootstrapped.medianOverheadStats.sample.percentile(0.5)
     }}
@@ -194,26 +276,55 @@ class BenchmarkResult {
     prop mean: Float64 { get() {
         bootstrapped.meanStats.sample.mean()
     }}
+                             /**
+                              * @throws IllegalArgumentException
+                              * @throws IndexOutOfBoundsException
+                              */
     prop meanCI99: Float64 { get() {
         (bootstrapped.meanStats.sample.percentile(0.99) - bootstrapped.meanStats.sample.percentile(0.01)) / 2.0
     }}
+                              /**
+                               * @throws IllegalArgumentException
+                               * @throws IndexOutOfBoundsException
+                               */
     prop meanLower: Float64 { get() { mean-meanCI99 } }
+                              /**
+                               * @throws IllegalArgumentException
+                               * @throws IndexOutOfBoundsException
+                               */
     prop meanUpper: Float64 { get() { mean+meanCI99 } }
+                                 /**
+                                  * @throws IllegalArgumentException
+                                  * @throws IndexOutOfBoundsException
+                                  */
     prop meanOverhead: Float64 { get() {
         bootstrapped.meanOverheadStats.sample.percentile(0.5)
     }}
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         */
     prop mainResult: Float64 {
         get() {
             if (median < 0.001) { 0.0 } else { median }
         }
     }
+                             /**
+                              * @throws IllegalArgumentException
+                              * @throws IndexOutOfBoundsException
+                              */
     prop errorEst: Float64 { get () {
         if (meanCI99 < 0.001) { 0.0 } else { meanCI99 }
     }}
 
     BenchmarkResult(var data: ArrayList<BenchRawMeasurement>) {}
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func calculate() {
         if (finished) { return }
 
@@ -222,6 +333,11 @@ class BenchmarkResult {
         finished = true
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func bootstrap() {
         let workers = min(ProcessorInfo.processorCount, 8)
         bootstrapped = (0..workers) |>
@@ -242,6 +358,11 @@ class BenchmarkResult {
 
         bootstrapped.finish()
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func valuesSample(): StatisticsSample {
         let bootstrapped = ArrayList<Float64>()
         let medianOverhead = this.bootstrapped.medianOverheadStats.sample.data
@@ -263,6 +384,9 @@ class BenchmarkResult {
 }
 
 extend<T> Iterator<T> {
+    /**
+     * @throws NoneValueException
+     */
     func minBy<K>(f: (T) -> K): T where K <: Comparable<K> {
         var current = this.next().getOrThrow()
         var key = f(current)
@@ -277,6 +401,9 @@ extend<T> Iterator<T> {
         current
     }
 
+    /**
+     * @throws NoneValueException
+     */
     func maxBy<K>(f: (T) -> K): T where K <: Comparable<K> {
         var current = this.next().getOrThrow()
         var key = f(current)
@@ -300,6 +427,10 @@ struct BootstrapResult {
     let r2Stats = StatisticsSample()
     let buffer = ArrayList<Float64>()
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func join(other: BootstrapResult): BootstrapResult {
         meanStats.sample.data.add(all: other.meanStats.sample.data)
         meanOverheadStats.sample.data.add(all: other.meanOverheadStats.sample.data)
@@ -309,6 +440,11 @@ struct BootstrapResult {
         this
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func finish() {
         meanStats.finish()
         meanOverheadStats.finish()
@@ -317,6 +453,11 @@ struct BootstrapResult {
         r2Stats.finish()
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func appendStatisticsFromSample(subsample: ArrayList<BenchRawMeasurement>) {
         let (median, overheadMedian) = medianRegression(subsample)
         if (!median.isNaN()) {
@@ -332,11 +473,20 @@ struct BootstrapResult {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func olsRegression(subsample: ArrayList<BenchRawMeasurement>): (Float64, Float64, Float64) {
         let result = Measurements(subsample.toArray()).calculateMean()
         (result.mainSlope, result.intercept, result.r2)
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func medianRegression(subsample: ArrayList<BenchRawMeasurement>): (Float64, Float64) {
         let slopes = buffer
         slopes.clear()

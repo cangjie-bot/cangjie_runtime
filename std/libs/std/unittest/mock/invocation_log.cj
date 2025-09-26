@@ -15,6 +15,10 @@ class LogSnapshot {
         let entries: Array<LogEntry>
     ) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func invocations(): Array<Invocation> {
         entries |> map { entry: LogEntry => entry.invocation } |> collectArray
     }
@@ -46,6 +50,10 @@ class MutableLog {
     private let entries = ArrayList<LogEntry>()
     private var lastClearIndex: Int64 = 0
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func newEntry(entry: LogEntry): Unit {
         entries.add(entry)
     }
@@ -54,6 +62,11 @@ class MutableLog {
         lastClearIndex = entries.size
     }
 
+    /**
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func snapshotSinceLastClear(scope: Set<UInt64>): LogSnapshot {
         validateLog()
         let snapshotEntries = ArrayList<LogEntry>()
@@ -70,11 +83,21 @@ class MutableLog {
         )
     }
 
+    /**
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func fullLog(): LogSnapshot {
         validateLog()
         return LogSnapshot(entries.toArray())
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func validateLog() {
         for (entry in entries) {
             match (entry.origin) {
@@ -87,6 +110,11 @@ class MutableLog {
 }
 
 class LogCorruptedReport <: FailureReport {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func fail(originalMessage: PrettyPrintable): Nothing {
         let message = build {
             errorHeader("Invocation log contains errors")

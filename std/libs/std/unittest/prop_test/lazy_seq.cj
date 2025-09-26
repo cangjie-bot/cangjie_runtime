@@ -171,6 +171,9 @@ public class LazySeq<T> <: Iterable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public static func of(array: Array<T>) {
         var self = LazySeq<T>()
         var index = array.size - 1

@@ -17,6 +17,10 @@ public interface ToString {
 }
 
 extend Int64 <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func toString(): String {
         let (numLen, unum, buffer) = if (this < 0) {
@@ -35,6 +39,10 @@ extend Int64 <: ToString {
 }
 
 extend IntNative <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func toString(): String {
         return Int64(this).toString()
@@ -42,24 +50,40 @@ extend IntNative <: ToString {
 }
 
 extend Int32 <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return Int64(this).toString()
     }
 }
 
 extend Int16 <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return Int64(this).toString()
     }
 }
 
 extend Int8 <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return Int64(this).toString()
     }
 }
 
 extend UInt64 <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let numLen = calcNumLen(this)
         let buffer = Array<Byte>(numLen, repeat: 0)
@@ -69,6 +93,10 @@ extend UInt64 <: ToString {
 }
 
 extend UIntNative <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func toString(): String {
         return UInt64(this).toString()
@@ -76,24 +104,39 @@ extend UIntNative <: ToString {
 }
 
 extend UInt32 <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return UInt64(this).toString()
     }
 }
 
 extend UInt16 <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return UInt64(this).toString()
     }
 }
 
 extend UInt8 <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return UInt64(this).toString()
     }
 }
 
 extend Float64 <: ToString {
+    /**
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let p: CPointer<UInt8> = unsafe { CJ_CORE_Float64ToCPointer(this) }
         if (p.isNull()) {
@@ -106,12 +149,18 @@ extend Float64 <: ToString {
 }
 
 extend Float32 <: ToString {
+    /**
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return Float64(this).toString()
     }
 }
 
 extend Float16 <: ToString {
+    /**
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return Float64(this).toString()
     }
@@ -128,6 +177,10 @@ extend Bool <: ToString {
 }
 
 extend Rune <: ToString {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return String([this])
     }

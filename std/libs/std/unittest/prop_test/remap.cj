@@ -132,6 +132,9 @@ func remap(l: UIntNative, r: UIntNative, x: UIntNative): UIntNative {
     return l + (x - l) % (r - l + 1)
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 func remap(l: Float64, r: Float64, x: Float64): Float64 {
     if (r < l) {
@@ -151,6 +154,9 @@ func remap(l: Float64, r: Float64, x: Float64): Float64 {
     return toFloat(remap(left, right, toInt(x)))
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 func remap(l: Float32, r: Float32, x: Float32): Float32 {
     if (r < l) {
@@ -170,6 +176,9 @@ func remap(l: Float32, r: Float32, x: Float32): Float32 {
     return toFloat(remap(left, right, toInt(x)))
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 func remap(l: Float16, r: Float16, x: Float16): Float16 {
     if (r < l) {

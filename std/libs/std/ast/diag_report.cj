@@ -22,6 +22,14 @@ public enum DiagReportLevel {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws ASTException
+ */
 public func diagReport(level: DiagReportLevel, tokens: Tokens, message: String, hint: String): Unit {
     let macroObjPtr = match (MACRO_OBJECT.get()) {
         case Some(v) => v

@@ -29,6 +29,13 @@ public struct SettingsOutput {
     ) {}
 }
 
+/**
+ * @throws ASTException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func settingsFor(
     inputOptions: InputOptions,
     logger: Logger

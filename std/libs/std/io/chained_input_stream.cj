@@ -20,6 +20,9 @@ public class ChainedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init(input: Array<T>) {
         if (input.isEmpty()) {
             throw IllegalArgumentException("The array of input streams cannot be empty!")
@@ -33,6 +36,11 @@ public class ChainedInputStream<T> <: InputStream where T <: InputStream {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IOException
+     * @throws IllegalArgumentException
+     */
     public func read(buffer: Array<Byte>): Int64 {
         let inputArrSize = inputArr.size
         if (curIndex >= inputArrSize) {

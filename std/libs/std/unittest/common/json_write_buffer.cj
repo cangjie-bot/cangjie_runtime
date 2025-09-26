@@ -53,6 +53,10 @@ class WriteBuffer {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func checkAndExpend(addition: Int64): Unit {
         let minCapacity = _size + addition
         let oldCapacity: Int64 = _buffer.size
@@ -69,6 +73,10 @@ class WriteBuffer {
         _buffer = newArr
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(arr: Array<Byte>): WriteBuffer {
         checkAndExpend(arr.size)
 
@@ -84,11 +92,19 @@ class WriteBuffer {
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(str: String): WriteBuffer {
         append(unsafe { str.rawData() })
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(byte: Byte): WriteBuffer {
         checkAndExpend(1)
         _buffer[_size] = byte
@@ -96,6 +112,10 @@ class WriteBuffer {
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(n: Int64): WriteBuffer {
         let str = n.toString()
         checkAndExpend(str.size)
@@ -103,6 +123,10 @@ class WriteBuffer {
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(fl: Float64): WriteBuffer {
         unsafe {
             let p: CPointer<UInt8> = CJ_CORE_Float64ToCPointer(fl)
@@ -126,6 +150,10 @@ class WriteBuffer {
         return this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func append(b: Bool): WriteBuffer {
         if (b) {
             append(BOOL_TRUE_STRING)
@@ -134,6 +162,10 @@ class WriteBuffer {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func appendBlank(n: Int64): WriteBuffer {
         checkAndExpend(n)
         _size += n
@@ -147,6 +179,10 @@ class WriteBuffer {
         return this
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func appendEscape(str: String) {
         let escapenum = stringEscapeCharNumGet(str)
         if (escapenum == str.size) {
@@ -161,6 +197,10 @@ class WriteBuffer {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func getAndClear(): Array<Byte> {
         let ret = _buffer[0.._size]
         _buffer = Array<Byte>(0, repeat: BLANK)
@@ -169,6 +209,11 @@ class WriteBuffer {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalStateException
+ */
 func jsonWriteWithoutFormat(json: JsonValue, buff: WriteBuffer): Unit {
     match (json) {
         case jo: JsonObject =>
@@ -210,6 +255,11 @@ func jsonWriteWithoutFormat(json: JsonValue, buff: WriteBuffer): Unit {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalStateException
+ */
 func jsonWriteObject(json: JsonObject, buff: WriteBuffer, depth: Int64, bracketInNewLine: Bool, indent: String): Unit {
     if (bracketInNewLine) {
         for (_ in 0..depth) {
@@ -245,6 +295,11 @@ func jsonWriteObject(json: JsonObject, buff: WriteBuffer, depth: Int64, bracketI
     buff.append(b'}')
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalStateException
+ */
 func jsonWriteArray(json: JsonArray, buff: WriteBuffer, depth: Int64, bracketInNewLine: Bool, indent: String): Unit {
     if (bracketInNewLine) {
         for (_ in 0..depth) {
@@ -279,6 +334,9 @@ func jsonWriteArray(json: JsonArray, buff: WriteBuffer, depth: Int64, bracketInN
     buff.append(b']')
 }
 
+/**
+ * @throws IllegalStateException
+ */
 func asumecapacity(json: JsonValue): Int64 {
     match (json) {
         case jo: JsonObject =>

@@ -38,6 +38,9 @@ struct SockAddr {
     private static const socket_address_un_len: UInt32 = 110
     private static const socket_address_all_len: Int64 = 120
 
+    /**
+     * @throws SocketException
+     */
     init(buffer: CPointer<Unit>, length: Int64) {
         ptr = buffer
         len = UInt32(length)
@@ -46,6 +49,10 @@ struct SockAddr {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     init() {
         let buffer = CPointer<Unit>(LibC.malloc<UInt8>(count: socket_address_all_len))
         if (buffer.isNull()) {
@@ -59,6 +66,11 @@ struct SockAddr {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws SocketException
+     */
     @When[backend == "cjnative"]
     init(sa: SocketAddress) {
         unsafe {
@@ -102,6 +114,9 @@ struct SockAddr {
         CPointer<UInt8>(ptr).write(3, UInt8(port))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @When[backend == "cjnative"]
     private unsafe func setIpv4(addr: Array<UInt8>, port: UInt16) {
         setFamily(ptr, AF_INET)
@@ -112,6 +127,9 @@ struct SockAddr {
         CPointer<UInt64>(ptr).write(1, UInt64(0))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @When[backend == "cjnative"]
     private unsafe func setIpv6(addr: Array<UInt8>, port: UInt16) {
         setFamily(ptr, AF_INET6)
@@ -124,6 +142,9 @@ struct SockAddr {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @When[backend == "cjnative"]
     private unsafe func setUnix(addr: Array<UInt8>) {
         setFamily(ptr, AF_UNIX)
@@ -168,6 +189,11 @@ struct SockAddr {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     @When[backend == "cjnative"]
     unsafe func toSocketAddress(): SocketAddress {
         match {

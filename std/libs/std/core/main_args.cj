@@ -20,6 +20,10 @@ func getCommandLineArgsFromRuntime(): CPointer<CPointer<UInt8>> {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getCommandLineArgs(): Array<String> {
     let argv = getCommandLineArgsFromRuntime()
     if (argv.isNull()) {

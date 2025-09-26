@@ -10,6 +10,9 @@ protected package std.deriving.resolve
 import std.deriving.api.Identifier
 import std.ast.*
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func patternExpr(p: Pattern, t: TypeNode, scope: Scope): Unit {
     func patternIter(patterns: Iterable<Pattern>, types: Iterable<TypeNode>, scope: Scope): Unit {
         let p = patterns.iterator()
@@ -67,6 +70,9 @@ func patternExpr(p: Pattern, t: TypeNode, scope: Scope): Unit {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func optionType(t: TypeNode): TypeNode {
     match (t) {
         case ref: RefType where ref.identifier.value == "Option" => ref.typeArguments[0]

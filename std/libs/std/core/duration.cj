@@ -42,6 +42,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         this.ns = ns
     }
 
+    /**
+     * @throws ArithmeticException
+     */
     static func of(sec: Int64, ns: Int64): Duration {
         if (ns < 0) {
             if (sec == Int64.Min) {
@@ -92,6 +95,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public func toNanoseconds(): Int64 {
         if (let Some(result) <- getResult(NS_PER_SEC)) {
             return result
@@ -104,6 +110,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public func toMicroseconds(): Int64 {
         if (let Some(result) <- getResult(US_PER_SEC)) {
             return result
@@ -116,6 +125,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public func toMilliseconds(): Int64 {
         if (let Some(result) <- getResult(MS_PER_SEC)) {
             return result
@@ -165,6 +177,10 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         return match {
             case this == Zero => "0s"
@@ -206,6 +222,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public func abs(): Duration {
         let (second, nanosecond) = toSameSign()
         if (second == Int64.Min) {
@@ -225,6 +244,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public operator func +(r: Duration): Duration {
         if ((r.sec | Int64(r.ns)) == 0) {
             return this
@@ -243,6 +265,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public operator func -(r: Duration): Duration {
         if ((r.sec | Int64(r.ns)) == 0) {
             return this
@@ -261,6 +286,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public operator func *(r: Int64): Duration {
         if (this == Zero || r == 0) {
             return Zero
@@ -288,6 +316,11 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws getOrThrow
+     * @throws IllegalArgumentException
+     */
     public operator func *(r: Float64): Duration {
         if (this == Zero || r == FLOAT64_0) {
             return Zero
@@ -306,6 +339,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
         return Float64(sec) * Float64(NS_PER_SEC) + Float64(ns)
     }
 
+    /**
+     * @throws ArithmeticException
+     */
     private func getDurationByFloat64(ns_f64: Float64): Option<Duration> {
         return if (ns_f64 < MAX_NS_FLOAT64 && ns_f64 > MIN_NS_FLOAT64) {
             let second = Int64(ns_f64 / Float64(NS_PER_SEC))
@@ -327,6 +363,10 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public operator func /(r: Int64): Duration {
         if (r == 0) {
             throw IllegalArgumentException("The value of right operand cannot be 0!")
@@ -362,6 +402,11 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws getOrThrow
+     * @throws IllegalArgumentException
+     */
     public operator func /(r: Float64): Duration {
         if (this == Zero) {
             return Zero
@@ -384,6 +429,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public operator func /(r: Duration): Float64 {
         if (r == Zero) {
             throw IllegalArgumentException("The value of right operand cannot be Duration.Zero!")
@@ -512,6 +560,9 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
     }
 }
 
+/**
+ * @throws ArithmeticException
+ */
 func durMul(secs: UInt64, nanos: UInt32, multiplier: UInt64, sign: Bool): ?Duration {
     let (count, nanoseconds) = u32MulU64(nanos, multiplier)
     var seconds: UInt64
@@ -703,6 +754,9 @@ extend Int64 {
 
 
 
+    /**
+     * @throws ArithmeticException
+     */
     public operator func *(r: Duration): Duration {
         return r * this
     }
@@ -742,12 +796,21 @@ extend Float64 {
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws getOrThrow
+     * @throws IllegalArgumentException
+     */
     public operator func *(r: Duration): Duration {
         return r * this
     }
 }
 
 extend StringBuilder {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func append(num: Int64, unit: String): StringBuilder {
         if (num != 0) {
             this.append(num)

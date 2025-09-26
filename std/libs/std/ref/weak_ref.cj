@@ -66,6 +66,9 @@ public class WeakRef<T> <: WeakRefBase where T <: Object {
 
 
 
+        /**
+         * @throws NoneValueException
+         */
     public prop value: Option<T> {
         get() {
             match (_value) {

@@ -11,6 +11,12 @@ import std.deriving.api.*
 import std.ast.*
 import std.collection.*
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func destructEnumCase(enumCase: TargetEnumCase, prefix: String): Tokens {
     let constructorId = enumCase.constructor.identifier
     let presentPositions = enumCase.fields |> map<TargetEnumField, Int64> { f => f.position } |> collectHashSet
@@ -27,6 +33,12 @@ func destructEnumCase(enumCase: TargetEnumCase, prefix: String): Tokens {
     } |> joinTokens(prefix: quote($constructorId\(), delimiter: quote(,), postfix: quote(\)))
 }
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func enumFallback(target: DerivingTarget): Tokens {
     match (isEnumHasEllipsis(target)) {
         case true => quote(

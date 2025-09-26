@@ -25,6 +25,10 @@ public struct SocketKeepAliveConfig <: ToString & Equatable<SocketKeepAliveConfi
 
 
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public init(
         idle!: Duration = Duration.second * 45,
         interval!: Duration = Duration.second * 5,

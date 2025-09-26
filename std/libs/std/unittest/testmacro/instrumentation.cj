@@ -21,6 +21,18 @@ extend Tokens {
 }
 
 class InstrumentedBench <: InstrumentedFunction {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws ASTException
+     * @throws ParseASTException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     init(
         original: FuncDecl
     ) {
@@ -37,10 +49,22 @@ class InstrumentedBench <: InstrumentedFunction {
         configuration.add((measurementInfo, quote(m___.info) |> parseExpr))
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func caseInitializerName(strategyVar: Tokens): Tokens {
         quote($strategyVar.intoBenchmark )
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func invocationLambda(funIdent: Tokens, argNames: Array<String>, argTypes: Array<Tokens>): Tokens {
         let namesTokens = argNames |> map{ x => Token(IDENTIFIER, x) } |> collectArray<Token>
         let reset = TokensBuilder()
@@ -79,6 +103,14 @@ class InstrumentedBench <: InstrumentedFunction {
             })
     }
 
+    /**
+     * @throws ASTException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws MacroException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func initCaseCode(tb!: TokensBuilder): TokensBuilder {
         tb.append(quote(for (m___ in m__))).curlyBraces { tb =>
             super.initCaseCode(tb: tb)
@@ -93,6 +125,18 @@ open class InstrumentedFunction {
     let types: Array<(String, Array<Tokens>)>
     let configuration: ArrayList<(Token, Expr)> = ArrayList()
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws ASTException
+     * @throws ParseASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws MacroException
+     */
     InstrumentedFunction(
         original: FuncDecl,
         let prefix!: String = ""
@@ -111,6 +155,11 @@ open class InstrumentedFunction {
         return this.original.isGenericDecl
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func substitute(mapping: HashMap<String, Tokens>, code: Tokens): Tokens {
         let result = TokensBuilder()
         for (token in code) {
@@ -123,10 +172,22 @@ open class InstrumentedFunction {
         return result.toTokens()
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func caseInitializerName(strategyVar: Tokens): Tokens {
         quote( $strategyVar.intoUnitTestCase )
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public open func invocationLambda(funIdent: Tokens, argNames: Array<String>, argTypes: Array<Tokens>): Tokens {
         let namesTokens = argNames |> map{ x => Token(IDENTIFIER, x) } |> collectArray<Token>
         let argType = nestedTuple(argTypes).ifEmpty(quote(Unit))
@@ -137,6 +198,13 @@ open class InstrumentedFunction {
             })
     }
 
+    /**
+     * @throws MacroException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func writeCaseTokens(
         funIdent: Tokens, funIdentName: String, caseName: String, argNames: Array<String>,
         argTypes: Array<Tokens>, tb!: TokensBuilder
@@ -154,6 +222,13 @@ open class InstrumentedFunction {
         tb
     }
 
+    /**
+     * @throws MacroException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func paramCase(
         funIdent: Tokens, funIdentName: String, caseName: String, configurationVariableName: Token,
         argNames: Array<String>, argTypes: Array<Tokens>, tb: TokensBuilder
@@ -177,6 +252,12 @@ open class InstrumentedFunction {
         ))
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func simpleTestCase(
         funIdent: Tokens, funIdentName: String, caseName: String, configurationVariableName: Token, tb: TokensBuilder
     ) {
@@ -198,6 +279,14 @@ open class InstrumentedFunction {
 
 
 
+    /**
+     * @throws MacroException
+     * @throws ASTException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func initSingleCaseCode(
         funIdent: Tokens, funIdentName: String, caseName: String,
         typeArgs!: Collection<Tokens> = [], tb!: TokensBuilder = TokensBuilder()
@@ -221,6 +310,14 @@ open class InstrumentedFunction {
         return tb
     }
 
+    /**
+     * @throws ASTException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     public open func initCaseCode(tb!: TokensBuilder): TokensBuilder {
         let funIdent: Token = original.identifier
         let funIdentName: String = funIdent.value
@@ -242,6 +339,12 @@ open class InstrumentedFunction {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens() {
         original.toTokens()
     }
@@ -253,6 +356,12 @@ struct ClassDescriptor {
         let inject!: Array<Tokens>, let superTypes!: Array<Tokens>
     ) {}
 
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     init(decl: ClassDecl) {
         className = decl.identifier
         modifiers = filterModifiers(decl.modifiers.toTokens())
@@ -269,6 +378,10 @@ struct ClassDescriptor {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func filterModifiers(modifiers: Tokens): Tokens {
         let result = ArrayList<Token>()
         for (modifier in modifiers) {
@@ -292,6 +405,18 @@ class InstrumentedClass {
         let measurements: Array<Expr>
     ) {}
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     init(original: ClassDecl) {
         this.original = ClassDescriptor(original)
         this.configuration = loadClassConfiguration(original)
@@ -307,6 +432,18 @@ class InstrumentedClass {
         this.instrumentClassItems(original.body.decls)
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws ASTException
+     * @throws ParseASTException
+     * @throws IllegalMemoryException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     init(original: FuncDecl, dslTokens: Tokens, originalTokens!: Tokens) {
         let className = Token(IDENTIFIER, "TestCase_" + original.identifier.value)
         let fakeClass = ClassDescriptor(className: className, modifiers: Tokens(), members: ArrayList<Decl>(), inject: [originalTokens], superTypes: [])
@@ -337,6 +474,18 @@ class InstrumentedClass {
         }
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws ASTException
+     * @throws ParseASTException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     private func instrumentClassItems(items: Iterable<Decl>) {
         for (decl in items) {
             let funcDecl = decl as FuncDecl ?? continue
@@ -353,6 +502,18 @@ class InstrumentedClass {
         }
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws ASTException
+     * @throws ParseASTException
+     * @throws IllegalMemoryException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     static func fromDecl(macroKey: MacroKey, decl: Decl, originalTokens: Tokens): InstrumentedClass {
         let dslTokensList = decl.loadRepeatable(macroKey)
         let dslTokens: Tokens = match (dslTokensList.size) {
@@ -372,6 +533,12 @@ class InstrumentedClass {
         }
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func buildConfigurationFunc(tb: TokensBuilder): TokensBuilder {
         tb.append(quote(private func classConfiguration(): Configuration)).curlyBraces { tb =>
             let varName = Token(IDENTIFIER, "configuration")
@@ -380,6 +547,13 @@ class InstrumentedClass {
         }
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws MacroException
+     */
     private func buildRegistrationFunction(tb: TokensBuilder, classId: Token): TokensBuilder {
         let className = classId.value
         let registerFuncId = Token(IDENTIFIER, "register" + className)
@@ -425,6 +599,10 @@ class InstrumentedClass {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func buildConstructor<Id, ParamList>(
         tb: TokensBuilder,
         id: Id,
@@ -438,6 +616,12 @@ class InstrumentedClass {
         }
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func buildCheckInheritingTemplate(superTypes: Array<Tokens>, tb: TokensBuilder): TokensBuilder {
         tb.append(quote(private func inheritedFromClassAnnotatedByTestTemplate<T>(): TestSuite where T <: TestClass)).curlyBraces { tb =>
             if (!superTypes.isEmpty()) {
@@ -448,6 +632,16 @@ class InstrumentedClass {
         }
     }
 
+    /**
+     * @throws ASTException
+     * @throws MacroException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws Exception
+     */
     private func buildAsTestSuiteFunction(bodyDecls: ArrayList<Decl>, tb: TokensBuilder): TokensBuilder {
         let openness = if (original.isTestTemplate) { quote(open) } else { quote() }
         tb.append(quote(public $openness override func asTestSuite(): TestSuite)).curlyBraces { tb =>
@@ -480,6 +674,13 @@ class InstrumentedClass {
         }
     }
 
+    /**
+     * @throws ASTException
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func transformBodyDecl(
         tb: TokensBuilder,
         bodyDecl: Decl,
@@ -524,6 +725,16 @@ class InstrumentedClass {
         return tb
     }
 
+    /**
+     * @throws ASTException
+     * @throws OutOfMemoryError
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws MacroException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let tb = TokensBuilder()
         var ident: Token = original.className
@@ -578,6 +789,11 @@ class InstrumentedClass {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func loadTypesDSL(original: ClassDecl, typeParameters: Tokens): Array<(String, Array<Tokens>)> {
     match (original.loadSingle(TYPES_MACRO)) {
         case None where typeParameters.size != 0 =>
@@ -589,6 +805,11 @@ func loadTypesDSL(original: ClassDecl, typeParameters: Tokens): Array<(String, A
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 func loadTypesDSL(original: FuncDecl): Array<(String, Array<Tokens>)> {
     match (original.loadSingle(TYPES_MACRO)) {
         case None where original.isGenericDecl =>
@@ -600,6 +821,18 @@ func loadTypesDSL(original: FuncDecl): Array<(String, Array<Tokens>)> {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws MacroException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func loadConfiguration(original: Decl, configs: ArrayList<(Token, Expr)>): Unit {
     for (configEntry in original.loadRepeatable(CONFIGURE_MACRO)) {
         configs.add(all: parseConfigurationMacro(configEntry))
@@ -622,12 +855,36 @@ private func loadConfiguration(original: Decl, configs: ArrayList<(Token, Expr)>
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws MacroException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func loadClassConfiguration(original: Decl): Array<(Token, Expr)> {
     let configs = ArrayList<(Token, Expr)>()
     loadConfiguration(original, configs)
     configs.toArray()
 }
 
+/**
+ * @throws MacroException
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func loadFuncConfiguration(original: FuncDecl) {
     let configs = ArrayList<(Token, Expr)>()
     loadConfiguration(original, configs)
@@ -638,6 +895,11 @@ func loadFuncConfiguration(original: FuncDecl) {
     configs.toArray()
 }
 
+/**
+ * @throws MacroException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func concatTagsMacro(original: Decl): ?Tokens {
     let result = original.loadRepeatable(TAG_MACRO) |>
         flatMap { tokens: Tokens =>
@@ -652,6 +914,18 @@ private func concatTagsMacro(original: Decl): ?Tokens {
     return None
 }
 
+/**
+ * @throws MacroException
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 private func loadMeasurements(original: Decl): Array<Expr> {
     if (original.has(MEASURE_MACRO)) {
         parseMeasurements(original.loadRepeatable(MEASURE_MACRO))

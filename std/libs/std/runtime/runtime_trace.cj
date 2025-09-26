@@ -47,6 +47,10 @@ struct Trace {
     private init() {}
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public unsafe static func dump(out: OutputStream): Unit {
         let lenPtr = LibC.malloc<Int32>(count: 1)
         if (lenPtr.isNull()) {
@@ -68,6 +72,11 @@ struct Trace {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     */
     public static func start(traceOpenType: TraceType, out: OutputStream): Bool {
         synchronized(traceLock) {
             let result = unsafe { CJ_ScheduleStartTrace(traceOpenType.data) }
@@ -82,6 +91,9 @@ struct Trace {
     }
 
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public static func stop(): Bool {
         synchronized(traceLock) {
             unsafe { return CJ_ScheduleStopTrace() }
@@ -89,6 +101,13 @@ struct Trace {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws FSException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws IllegalSynchronizationStateException
+ */
 @When[backend == "cjnative" && (os == "Windows" || os == "Linux")]
 func traceStartByConfig(): Bool {
     let cjTracePath = if (let Some(env) <- getVariable("cjTracePath")) {
@@ -108,6 +127,9 @@ func traceStartByConfig(): Bool {
 @When[backend == "cjnative" && (os == "Windows" || os == "Linux")]
 var g_traceStartByConfigFlag: Bool = traceStartByConfig()
 
+/**
+ * @throws IllegalSynchronizationStateException
+ */
 @When[backend == "cjnative" && (os == "Windows" || os == "Linux")]
 func traceStopByConfig(): Unit {
     if (g_traceStartByConfigFlag) {

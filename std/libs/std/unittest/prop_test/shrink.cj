@@ -41,6 +41,10 @@ extend Bool <: Shrink<Bool> {
 
 
 extend Int8 <: Shrink<Int8> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<Int8> {
         let res = HashSet<Int8>()
         if (this == 0) {
@@ -61,6 +65,10 @@ extend Int8 <: Shrink<Int8> {
 
 
 extend Int16 <: Shrink<Int16> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<Int16> {
         let res = HashSet<Int16>()
         if (this == 0) {
@@ -81,6 +89,10 @@ extend Int16 <: Shrink<Int16> {
 
 
 extend Int32 <: Shrink<Int32> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<Int32> {
         let res = HashSet<Int32>()
         if (this == 0) { return [] }
@@ -97,6 +109,10 @@ extend Int32 <: Shrink<Int32> {
 
 
 extend Int64 <: Shrink<Int64> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<Int64> {
         let res = HashSet<Int64>()
         if (this == 0) { return [] }
@@ -113,6 +129,10 @@ extend Int64 <: Shrink<Int64> {
 
 
 extend IntNative <: Shrink<IntNative> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<IntNative> {
         let res = HashSet<IntNative>()
         if (this == 0) { return [] }
@@ -141,6 +161,10 @@ extend IntNative <: Shrink<IntNative> {
 
 
 extend UInt8 <: Shrink<UInt8> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<UInt8> {
         let res = HashSet<UInt8>()
         if (this == 0) { return [] }
@@ -154,6 +178,10 @@ extend UInt8 <: Shrink<UInt8> {
 
 
 extend UInt16 <: Shrink<UInt16> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<UInt16> {
         let res = HashSet<UInt16>()
         if (this == 0) { return [] }
@@ -167,6 +195,10 @@ extend UInt16 <: Shrink<UInt16> {
 
 
 extend UInt32 <: Shrink<UInt32> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<UInt32> {
         let res = HashSet<UInt32>()
         if (this == 0) { return [] }
@@ -180,6 +212,10 @@ extend UInt32 <: Shrink<UInt32> {
 
 
 extend UInt64 <: Shrink<UInt64> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<UInt64> {
         let res = HashSet<UInt64>()
         if (this == 0) { return [] }
@@ -193,6 +229,10 @@ extend UInt64 <: Shrink<UInt64> {
 
 
 extend UIntNative <: Shrink<UIntNative> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<UIntNative> {
         let res = HashSet<UIntNative>()
         if (this == 0) { return [] }
@@ -205,9 +245,17 @@ extend UIntNative <: Shrink<UIntNative> {
 }
 
 extend Float16 <: Shrink<Float16> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func appendShrinked(item: Float16, result: HashSet<Float16>) {
         if (!item.isNaN() && !item.isInf()) { result.add(item) }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func shrinkTo(result: HashSet<Float16>) {
         if (this < 0.0) {
             appendShrinked(-this, result)
@@ -220,6 +268,10 @@ extend Float16 <: Shrink<Float16> {
             appendShrinked(this * 2.0f16, result)
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<Float16> {
         match (this) {
             case 0.0 => return []
@@ -235,9 +287,17 @@ extend Float16 <: Shrink<Float16> {
 }
 
 extend Float32 <: Shrink<Float32> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func appendShrinked(item: Float32, result: HashSet<Float32>) {
         if (!item.isNaN() && !item.isInf()) { result.add(item) }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func shrinkFracDigits(result: HashSet<Float32>, multiplier: Float32) {
         for (precision in [1e6f32, 1e5f32, 1e4f32, 1e3f32, 1e2f32, 10.0f32, 1.0f32]) {
             let m = Int64(round(this * precision))
@@ -252,6 +312,10 @@ extend Float32 <: Shrink<Float32> {
             }
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func shrinkTo(result: HashSet<Float32>) {
         if (this < 0.0) {
             appendShrinked(-this, result)
@@ -265,6 +329,10 @@ extend Float32 <: Shrink<Float32> {
 
         smallestValue.shrinkFracDigits(result, powerMultiplier)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<Float32> {
         match (this) {
             case 0.0 => return []
@@ -280,9 +348,17 @@ extend Float32 <: Shrink<Float32> {
 }
 
 extend Float64 <: Shrink<Float64> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func appendShrinked(item: Float64, result: HashSet<Float64>) {
         if (!item.isNaN() && !item.isInf()) { result.add(item) }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func shrinkFracDigits(result: HashSet<Float64>, multiplier: Float64) {
         for (precision in [1e6, 1e5, 1e4, 1e3, 1e2, 10.0, 1.0]) {
             let m = Int64(round(this * precision))
@@ -297,6 +373,10 @@ extend Float64 <: Shrink<Float64> {
             }
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func shrinkTo(result: HashSet<Float64>) {
         if (this < 0.0) {
             appendShrinked(-this, result)
@@ -310,6 +390,10 @@ extend Float64 <: Shrink<Float64> {
 
         smallestValue.shrinkFracDigits(result, powerMultiplier)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<Float64> {
         match (this) {
             case 0.0 => return []
@@ -326,6 +410,9 @@ extend Float64 <: Shrink<Float64> {
 
 
 extend Rune <: Shrink<Rune> {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<Rune> {
         let alnum = shrinkToAlnum(this)
         let ascii = shrinkToAscii(this)
@@ -337,6 +424,9 @@ extend Rune <: Shrink<Rune> {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func arrayReplace<T>(array: Array<T>, index: Int64, element: T) {
     Array<T>(array.size) { ix => if (ix == index) { element } else { array[ix] } }
 }
@@ -352,6 +442,10 @@ private interface CanShrinkElements<T> {
 }
 
 extend<T> Array<T> <: CanShrinkElements<Array<T>> where T <: Shrink<T> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrinkUsingElements(): LazySeq<Array<T>> {
         let iterators = Array<Iterator<Array<T>>>(this.size) { index: Int64 =>
             this[index].shrink().iterator().map<Array<T>> { shrunk =>
@@ -365,6 +459,10 @@ extend<T> Array<T> <: CanShrinkElements<Array<T>> where T <: Shrink<T> {
 }
 
 extend<T> Array<T> <: Shrink<Array<T>> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func shrink(): Iterable<Array<T>> {
         if (this.size == 0) {
             return LazySeq<Array<T>>()
@@ -388,6 +486,10 @@ extend<T> Array<T> <: Shrink<Array<T>> {
 }
 
 extend<T> ArrayList<T> <: CanShrinkElements<ArrayList<T>> where T <: Shrink<T> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrinkUsingElements(): LazySeq<ArrayList<T>> {
         let iterators = Array<Iterator<ArrayList<T>>>(this.size) { index: Int64 =>
             this[index].shrink().iterator().map<ArrayList<T>> { shrunk =>
@@ -401,6 +503,10 @@ extend<T> ArrayList<T> <: CanShrinkElements<ArrayList<T>> where T <: Shrink<T> {
 }
 
 extend<T> ArrayList<T> <: Shrink<ArrayList<T>> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func shrink(): Iterable<ArrayList<T>> {
         if (this.size == 0) {
             return LazySeq<ArrayList<T>>()
@@ -424,6 +530,10 @@ extend<T> ArrayList<T> <: Shrink<ArrayList<T>> {
 }
 
 extend<T> HashSet<T> <: CanShrinkElements<HashSet<T>> where T <: Shrink<T> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrinkUsingElements(): LazySeq<HashSet<T>> {
         let iterators = this.iterator().map<Iterator<HashSet<T>>> { elem: T =>
             elem.shrink().iterator().map<HashSet<T>> { shrunk =>
@@ -438,6 +548,10 @@ extend<T> HashSet<T> <: CanShrinkElements<HashSet<T>> where T <: Shrink<T> {
 }
 
 extend<T> HashSet<T> <: Shrink<HashSet<T>> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<HashSet<T>> {
         if (this.size == 0) {
             return LazySeq<HashSet<T>>()
@@ -480,6 +594,10 @@ private struct ShrinkKeyWrapper<K, V> where K <: Equatable<K> & Hashable {
 
 
 extend<K, V> ShrinkKeyWrapper<K, V> <: CanShrinkElements<HashMap<K, V>> where K <: Shrink<K> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrinkUsingElements(): LazySeq<HashMap<K, V>> {
         let iterators = this.data |> map { kv: (K, V) =>
             let (k, v) = kv
@@ -497,6 +615,10 @@ extend<K, V> ShrinkKeyWrapper<K, V> <: CanShrinkElements<HashMap<K, V>> where K 
 
 
 extend<K, V> HashMap<K, V> <: CanShrinkElements<HashMap<K, V>> where V <: Shrink<V> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrinkUsingElements(): LazySeq<HashMap<K, V>> {
         let iterators = this |> map { kv: (K, V) =>
             let (k, v) = kv
@@ -511,6 +633,10 @@ extend<K, V> HashMap<K, V> <: CanShrinkElements<HashMap<K, V>> where V <: Shrink
 }
 
 extend<K, V> HashMap<K, V> <: Shrink<HashMap<K, V>> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<HashMap<K, V>> {
         if (this.size == 0) {
             return LazySeq<HashMap<K, V>>()
@@ -561,6 +687,10 @@ let COMMON_WORDS_BY_SIZE = [
 ]
 
 extend String <: Shrink<String> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func shrinkUsingRunes(runeArr: Array<Rune>): LazySeq<String> {
         let iterators = Array<Iterator<String>>(runeArr.size) { index: Int64 =>
             runeArr[index].shrink().iterator().map<String> { shrunk =>
@@ -571,6 +701,10 @@ extend String <: Shrink<String> {
         }
         return LazySeq.of(MixingIterator<String>(iterators))
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func shrink(): Iterable<String> {
         if (this.size == 0) { return emptyIterable<String>() }
         let charArr = this.toRuneArray()
@@ -741,6 +875,10 @@ public class ShrinkHelpers {
         LazySeq.mix(s0, s1, s2, s3, s4)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func mix<T>(iterables: Array<Iterable<T>>): Iterable<T> {
         let iterators = Array<Iterator<T>>(iterables.size) { i =>
             iterables[i].iterator()
@@ -755,6 +893,10 @@ private class MixingIterator<T> <: Iterator<T> {
 
     private let pool = ArrayList<Iterator<T>>()
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     MixingIterator(of: Array<Iterator<T>>) {
         for (it in of) {
             match (it) {
@@ -764,6 +906,9 @@ private class MixingIterator<T> <: Iterator<T> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func next(): Option<T> {
         var nxt = None<T>
 
@@ -781,6 +926,10 @@ private class MixingIterator<T> <: Iterator<T> {
         return nxt
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func move(to: MixingIterator<T>) {
         to.pool.add(all: pool)
         this.pool.clear()

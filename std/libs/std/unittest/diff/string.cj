@@ -13,6 +13,13 @@ extend String <: AssertPrintable<String> {
     public prop hasNestedDiff: Bool {
         get() { false }
     }
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func pprintForAssertion(pp: PrettyPrinter, right: String, leftPrefix: String, rightPrefix: String,
         level: Int64): PrettyPrinter {
         return pp.pprintStringDiff(this, right, leftPrefix, rightPrefix, level)
@@ -20,6 +27,13 @@ extend String <: AssertPrintable<String> {
 }
 
 extend PrettyPrinter {
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func pprintStringDiff(left: String, right: String, leftPrefix: String, rightPrefix: String, level: Int64) {
         if (left.contains("\n") || right.contains("\n")) {
             if (level == 1) {

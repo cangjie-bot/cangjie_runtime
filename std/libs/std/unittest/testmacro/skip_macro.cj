@@ -17,6 +17,20 @@ import std.ast.*
 
 
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws OutOfMemoryError
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalSynchronizationStateException
+ * @throws MacroException
+ */
 public macro Skip(input: Tokens): Tokens {
     return topLevelMacroDriver(SKIP_MACRO, input, Tokens(), { it => insideParentContext(it.macroIdentifier) })
 }
@@ -30,6 +44,20 @@ public macro Skip(input: Tokens): Tokens {
 
 
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws OutOfMemoryError
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalSynchronizationStateException
+ * @throws MacroException
+ */
 public macro Skip(attr: Tokens, input: Tokens): Tokens {
     let tokens = match {
         case compareTokens(attr, true.toTokens()) => ()

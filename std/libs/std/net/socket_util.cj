@@ -55,6 +55,9 @@ func unwrapOption<T>(opt: ??T): ?T {
     return opt ?? None
 }
 
+/**
+ * @throws getOrFail
+ */
 func getOrFail<T>(e: () -> Exception): (?T) -> T {
     return {it: ?T => it ?? throw e()}
 }
@@ -74,6 +77,10 @@ func formatError(errnum: Int32): String {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws SocketException
+ */
 func throwIfIPv4ZeroOnWindows(socketAddress: SocketAddress): Unit {
     if (OS == OS_WINDOWS) {
         let ipsa = (socketAddress as IPSocketAddress) ?? return;
@@ -89,6 +96,15 @@ func zeroMemory(buffer: CPointer<UInt8>, size: Int64) {
     }
 }
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IllegalFormatException
+ * @throws IndexOutOfBoundsException
+ * @throws SocketException
+ */
 func resolveHelper(address: String): IPAddress {
     let ips = IPAddress.resolve(address)
     if (ips.size > 0) {

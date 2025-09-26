@@ -1536,6 +1536,9 @@ func getTokenID(tk: TokenKind): UInt16 {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 public func getTokenKind(no: UInt16): TokenKind {
     let maxSize = PATTERNS.size
     let index = Int64(no)
@@ -1556,6 +1559,9 @@ func getNewlineValue(): String {
     "\n"
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func getTokenKindValue(tk: TokenKind): String {
     if (tk == SINGLE_QUOTED_STRING_LITERAL) {
         return "single_quoted_string_literal"
@@ -1564,6 +1570,9 @@ func getTokenKindValue(tk: TokenKind): String {
     return PATTERNS[no][1]
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func getTokenLiteral(tk: TokenKind): String {
     if (tk == TokenKind.NL) {
         return getNewlineValue()
@@ -1621,6 +1630,9 @@ class TokenKindHelper {
         TokenKind.BOOLEAN
     ]
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     static func getPrimitiveTypeTokenKind(i: UInt16): TokenKind {
         let sz = PRIMITIVE_TYPE_KIND_TO_TOKEN_KIND.size
         return if (Int64(i) < sz) {
@@ -1630,6 +1642,9 @@ class TokenKindHelper {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     static func getLiteralConstKind(i: UInt16): TokenKind {
         let sz = LIT_CONST_KIND_TO_TOKEN_KIND.size
         return if (Int64(i) < sz) {
@@ -1639,6 +1654,9 @@ class TokenKindHelper {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     static func getStringKind(i: UInt16): TokenKind {
         let sz = STRING_KIND_TO_TOKEN_KIND.size
         return if (Int64(i) < sz) {

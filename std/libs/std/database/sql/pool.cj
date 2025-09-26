@@ -28,6 +28,12 @@ class Entry<T> {
     var poolResetCount: Int32 = 0
     var isValid: Bool = true
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws getOrThrow
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     */
     init(pool: Pool<T>, value: T) {
         this.pool = pool
         this.value_ = value
@@ -43,11 +49,21 @@ class Entry<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     func release() {
         this.lastAccessed = DateTime.now().toUnixTimeStamp()
         pool.release(this)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     */
     func idleDuration(): Duration {
         var now = DateTime.now().toUnixTimeStamp()
         return now - this.lastAccessed

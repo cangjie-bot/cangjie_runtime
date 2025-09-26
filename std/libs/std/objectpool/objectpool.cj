@@ -29,6 +29,9 @@ public class ObjectPool<T> where T <: Object {
         this.resetFunc = resetFunc
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func get(): T {
         if (let Some(object) <- pool[Int64(unsafe { CJ_Gettid() } % POOL_COUNT)].remove()) {
             if (let Some(resetFn) <- resetFunc) {
@@ -43,6 +46,9 @@ public class ObjectPool<T> where T <: Object {
         return newFunc()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func put(item: T): Unit {
         pool[Int64(unsafe { CJ_Gettid() } % POOL_COUNT)].add(item)
     }

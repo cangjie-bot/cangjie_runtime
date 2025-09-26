@@ -12,6 +12,9 @@ public interface ToBytes {
     func toBytes(): Array<UInt8>
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func castUInt32ToBytes(v: UInt32): Array<UInt8> {
     var b: Array<UInt8> = Array<UInt8>(4, repeat: 0)
     
@@ -23,15 +26,25 @@ func castUInt32ToBytes(v: UInt32): Array<UInt8> {
     return b
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func castInt32ToBytes(v: Int32): Array<UInt8> {
     return castUInt32ToBytes(UInt32(v))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func castUInt16ToBytes(v: UInt16): Array<UInt8> {
     var b: Array<UInt8> = castUInt32ToBytes(UInt32(v))
     return b[0..2]
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 func castUInt32ToBytes(arr: Array<UInt8>, start: Int64, v: UInt32) {
     
@@ -43,10 +56,16 @@ func castUInt32ToBytes(arr: Array<UInt8>, start: Int64, v: UInt32) {
     return start + 4
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func castInt32ToBytes(arr: Array<UInt8>, start: Int64, v: Int32) {
     return castUInt32ToBytes(arr, start, UInt32(v))
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 @OverflowWrapping
 func castUInt16ToBytes(arr: Array<UInt8>, start: Int64, v: UInt16) {
     
@@ -58,6 +77,9 @@ func castUInt16ToBytes(arr: Array<UInt8>, start: Int64, v: UInt16) {
     return start + 2
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func castStringToBytes(arr: Array<UInt8>, start1: Int64, s: String) {
     let len: Int64 = s.size
     var start = start1
@@ -71,6 +93,9 @@ func castStringToBytes(arr: Array<UInt8>, start1: Int64, s: String) {
     return start
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func concatBytes(l: Array<UInt8>, r: Array<UInt8>): Array<UInt8> {
     if (l.size == 0) {
         return r
@@ -91,6 +116,9 @@ func concatBytes(l: Array<UInt8>, r: Array<UInt8>): Array<UInt8> {
     return b
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ */
 func castStringToBytes(s: String): Array<UInt8> {
     let len: Int64 = s.size
     var b: Array<UInt8> = Array<UInt8>(len + 4, repeat: 0)

@@ -21,6 +21,20 @@ enum LaunchSource {
     | TestBinary
     | TestRunner
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws UnittestCliOptionsFormatException
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     static func fromDefaultConfiguration(): LaunchSource {
         if (defaultConfiguration().launchedWithTestRunner) {
             TestRunner
@@ -39,6 +53,26 @@ class Framework {
     private static let internalContext = FrameworkInternalsContext()
 
     private init() {}
+    /**
+     * @throws RegexException
+     * @throws JsonException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws ArithmeticException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws OutOfMemoryError
+     */
     static func launch<T>(api!: LaunchApi, hasWorkersInSetup!: Bool,
         progressQueue!: ?ConcurrentLinkedQueue<UTProgress> = None, body!: () -> T): T {
         instance.transport = if (hasWorkersInSetup) {
@@ -64,12 +98,19 @@ class Framework {
         !(instance.currentlyRunning is OutsideOfFrameworkContext)
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     private func enterContext(newContext: RunContext): Unit {
         synchronized(mtx) {
             currentlyRunning = newContext
         }
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws AssertException
+     */
     private func leaveContext(leavingContext: RunContext) {
         synchronized(mtx) {
             if (!refEq(currentlyRunning, leavingContext)) {
@@ -79,6 +120,14 @@ class Framework {
         }
     }
 
+    /**
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func runStepBody(stepKind: StepKind, info: StepInfo, body: () -> Unit): RunStepResult {
         let context = RunStepContext(stepKind, info)
         instance.enterContext(context)
@@ -95,6 +144,12 @@ class Framework {
         context.finishStep()
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func runCatching(f: () -> Unit) {
         try {
             f()
@@ -105,11 +160,21 @@ class Framework {
         }
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     static func withCurrentContext<T>(f: (RunContext) -> T): T {
         synchronized(instance.mtx) {
             f(instance.currentlyRunning)
         }
     }
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws AssertException
+     * @throws IllegalSynchronizationStateException
+     */
     static func abortCurrentStep(): ?RunStepResult {
         withCurrentContext { ctx =>
             let stepCtx = ctx as RunStepContext ?? return None
@@ -121,6 +186,11 @@ class Framework {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     static func collectUnattachedFailures(): ArrayList<CheckResult> {
         withCurrentContext { _ =>
             let buf = ArrayList<CheckResult>()
@@ -138,6 +208,25 @@ class Framework {
         }
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws OutOfMemoryError
+     * @throws InvalidDataException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws JsonException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws Exception
+     * @throws ProcessException
+     */
     static func onTestCasesRegistered(packageName: String, casesCount: UInt64): Unit {
         let workerId = match (TestProcessKind.fromDefaultConfiguration()) {
             case Worker(_, _, nCasesSkip, _) where nCasesSkip > 0 => return
@@ -162,18 +251,55 @@ class Framework {
         }
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     static func onLifecycleStart(suiteId: TestSuiteId, suiteInfo: TestSuiteReportInfo, step: LStep): Unit {
         let header = LifecycleExecutionResultHeader(suiteId, suiteInfo, step, DateTime.now())
         instance.progressQueue?.add(TestProgressData(header))
         instance.transport?.channel?.send(header)
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     static func onTestCaseStarted(caseId: TestCaseId, caseInfo: TestCaseReportInfo, suiteInfo: TestSuiteReportInfo): Unit {
         let header = TestCaseExecutionResultHeader(caseId, caseInfo, suiteInfo, DateTime.now())
         instance.progressQueue?.add(TestProgressData(header))
         instance.transport?.channel?.send(header)
     }
 
+    /**
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     */
     static func onFinished(result: TestCaseResult): Unit {
         let body = ExecutionResultBody(result)
         instance.progressQueue?.add(TestProgressData(body))
@@ -181,6 +307,21 @@ class Framework {
         instance.transport?.channel?.delimitOutput()
     }
 
+    /**
+     * @throws SocketException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     */
     static func initWorker(ctx: MainExecutionCtx, workerId!: Int64): WorkerProcess {
         let manager = instance.transport.getOrThrow().manager.getOrThrow()
         let port = manager.port
@@ -205,14 +346,27 @@ abstract class RunContext {
     private var suppressed = false
     var passedChecks: Int64 = 0
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected open func checkFailed(c: CheckResult): Unit {
         storeCheckResult(c)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected open func onException(e: Exception): Unit {
         storeCheckResult(e.asCheckResult() ?? return)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected open func storeCheckResult(check: CheckResult): Unit {
         if (suppressed) { return }
         checkResults.add(check)
@@ -241,6 +395,11 @@ class RunStepContext <: RunContext {
         var stepInfo: StepInfo
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws BenchmarkStoppedError
+     */
     protected func checkFailed(c: CheckResult) {
         storeCheckResult(c)
         if (let Bench(_) <- stepInfo) {
@@ -248,6 +407,11 @@ class RunStepContext <: RunContext {
         }
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func finishStep(): RunStepResult {
         let info = if (checkResults.isEmpty()) {
             stepInfo

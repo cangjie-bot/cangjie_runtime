@@ -15,6 +15,9 @@ class PushbackTokensIterator {
 
     private var index = 0
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func next(): ?Token {
         let index = index
         if (index < 0 || index >= tokens.size) {
@@ -24,6 +27,9 @@ class PushbackTokensIterator {
         return tokens[index]
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func peek(): ?Token {
         let index = index
         if (index < 0 || index >= tokens.size) {
@@ -32,6 +38,9 @@ class PushbackTokensIterator {
         return tokens[index]
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func seeing(kind: TokenKind): Bool {
         match (peek()) {
             case Some(t) where t.kind == kind => true
@@ -39,6 +48,9 @@ class PushbackTokensIterator {
         }
     }
 
+    /**
+     * @throws IllegalStateException
+     */
     func pushback(): Unit {
         if (index <= 0) {
             throw IllegalStateException("Iterator is already at the beginning")
@@ -46,6 +58,9 @@ class PushbackTokensIterator {
         index--
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func last(): ?Token {
         let lastIndex = tokens.size - 1
         if (lastIndex < 0) {
@@ -54,14 +69,23 @@ class PushbackTokensIterator {
         return tokens[lastIndex]
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func mark(): Mark {
         return Mark(index)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func rewindTo(mark: Mark) {
         unsafe { rewindTo(mark.markedAt) }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     unsafe func rewindTo(index: Int64) {
         if (index < 0 || index >= tokens.size) {
             throw IndexOutOfBoundsException()
@@ -69,12 +93,19 @@ class PushbackTokensIterator {
         this.index = index
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func slice(start: Mark, until: Mark): Tokens {
         tokens[start.markedAt..until.markedAt]
     }
 }
 
 struct Mark {
+    /**
+     * @throws IllegalArgumentException
+     */
     Mark(let markedAt: Int64) {
         if (markedAt < 0) {
             throw IllegalArgumentException("Mark position shouldn't be negative")

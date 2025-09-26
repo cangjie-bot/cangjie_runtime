@@ -30,6 +30,12 @@ enum CheckResultKind <: Serializable<CheckResultKind> {
 
 
 abstract class CheckResult <: Serializable<CheckResult> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func deserialize(dm: DataModel): CheckResult {
         let dms = dm.asStruct()
         UnattachedCheckResult.tryToDeserialize(dms) ?? PlainCompareCheckResult.tryToDeserialize(dms) ??
@@ -45,10 +51,20 @@ abstract class CheckResult <: Serializable<CheckResult> {
 
 class UnattachedCheckResult <: CheckResult {
     UnattachedCheckResult(let inner: CheckResult) {}
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(field<CheckResult>("unattached", inner))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws DataModelException
+     * @throws Exception
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?UnattachedCheckResult {
         UnattachedCheckResult(CheckResult.deserialize(dms.tryGet("unattached") ?? return None))
     }
@@ -71,6 +87,10 @@ class PlainCompareCheckResult <: AssertExpectCheckResult {
         super(kind)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct()
             .add(field<CheckResultKind>("kind", kind))
@@ -80,6 +100,9 @@ class PlainCompareCheckResult <: AssertExpectCheckResult {
             .add(field<String>("rightValue", rightValue))
     }
 
+    /**
+     * @throws DataModelException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?PlainCompareCheckResult {
         return PlainCompareCheckResult(
             CheckResultKind.deserialize(dms.tryGet("kind") ?? return None),
@@ -96,12 +119,19 @@ class PlainDeltaCompareCheckResult <: AssertExpectCheckResult {
         super(kind)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().
             add(field<CheckResultKind>("kind", kind)).
             add(field<String>("expr", expr))
     }
 
+    /**
+     * @throws DataModelException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?PlainDeltaCompareCheckResult {
         return PlainDeltaCompareCheckResult(
             CheckResultKind.deserialize(dms.tryGet("kind") ?? return None),
@@ -115,10 +145,17 @@ class FailCheckResult <: AssertExpectCheckResult {
         super(kind)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(field<String>("failMessage", failMessage)).add(field<CheckResultKind>("kind", kind))
     }
 
+    /**
+     * @throws DataModelException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?FailCheckResult {
         return FailCheckResult(
             CheckResultKind.deserialize(dms.tryGet("kind") ?? return None),
@@ -137,6 +174,10 @@ class AssertThrowsCheckResult <: AssertExpectCheckResult {
         super(kind)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct()
             .add(field<CheckResultKind>("kind", kind))
@@ -145,6 +186,9 @@ class AssertThrowsCheckResult <: AssertExpectCheckResult {
             .add(field<String>("caughtException", caughtException))
     }
 
+    /**
+     * @throws DataModelException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): Option<AssertThrowsCheckResult> {
         return AssertThrowsCheckResult(
             CheckResultKind.deserialize(dms.tryGet("kind") ?? return None),
@@ -163,10 +207,19 @@ class PowerAssertCheckResult <: AssertExpectCheckResult {
         super(Assert)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(field<String>("expr", expr)).add(field<PowerAssertDiagram>("diagram", diagram))
     }
 
+    /**
+     * @throws DataModelException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?PowerAssertCheckResult {
         return PowerAssertCheckResult(
             String.deserialize(dms.tryGet("expr") ?? return None),
@@ -184,6 +237,10 @@ class PowerAssertExceptionCheckResult <: AssertExpectCheckResult {
         super(Assert)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct()
             .add(field<String>("expression", expression))
@@ -191,6 +248,11 @@ class PowerAssertExceptionCheckResult <: AssertExpectCheckResult {
             .add(field<PowerAssertDiagram>("diagram", diagram))
     }
 
+    /**
+     * @throws DataModelException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?PowerAssertExceptionCheckResult {
         return PowerAssertExceptionCheckResult(
             String.deserialize(dms.tryGet("expression") ?? return None),
@@ -208,10 +270,19 @@ class DiffCheckResult <: AssertExpectCheckResult {
         super(kind)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(field<PrettyText>("diffMessage", diffMessage)).add(field<CheckResultKind>("kind", kind))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws DataModelException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?DiffCheckResult {
         DiffCheckResult(
             CheckResultKind.deserialize(dms.tryGet("kind") ?? return None),
@@ -228,10 +299,19 @@ class CustomCheckResult <: AssertExpectCheckResult {
         super(kind)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(field<PrettyText>("custom", custom)).add(field<CheckResultKind>("kind", kind))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws DataModelException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?DiffCheckResult {
         DiffCheckResult(
             CheckResultKind.deserialize(dms.tryGet("kind") ?? return None),
@@ -246,12 +326,21 @@ class ExceptionThrownCheckResult <: ErrorCheckResult {
         let stackTrace: PrettyText
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct()
             .add(field<PrettyText>("errorMessage", errorMessage))
             .add(field<PrettyText>("stackTrace", stackTrace))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws DataModelException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?ExceptionThrownCheckResult {
         ExceptionThrownCheckResult(
             PrettyText.deserialize(dms.tryGet("errorMessage") ?? return None),
@@ -265,10 +354,19 @@ class MockFrameworkCheckResult <: CheckResult {
         let mockFrameworkMessage: PrettyText
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(field<PrettyText>("mockFrameworkMessage", mockFrameworkMessage))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws DataModelException
+     */
     public static func tryToDeserialize(dms: DataModelStruct): ?MockFrameworkCheckResult {
         MockFrameworkCheckResult(
             PrettyText.deserialize(dms.tryGet("mockFrameworkMessage") ?? return None),
@@ -278,6 +376,10 @@ class MockFrameworkCheckResult <: CheckResult {
 
 class NoParametersProvidedResult <: CheckResult {
     NoParametersProvidedResult() {}
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(field<Int64>("noParameters", 0))
     }
@@ -293,6 +395,10 @@ class CrashedCheckResult <: CheckResult {
         let exitCode: Int64
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(
             field<Int64>("exitCode", exitCode)
@@ -309,10 +415,19 @@ class CrashedCheckResult <: CheckResult {
 class TimeoutCheckResult <: CheckResult {
     TimeoutCheckResult(let msg: PrettyText) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         DataModelStruct().add(field<PrettyText>("timeout", this.msg))
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws DataModelException
+     */
     static func tryToDeserialize(dms: DataModelStruct): ?TimeoutCheckResult {
         TimeoutCheckResult(PrettyText.deserialize(dms.tryGet("timeout") ?? return None))
     }

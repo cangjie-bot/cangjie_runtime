@@ -77,6 +77,15 @@ class TestProgressReporter <: UTProgressReporter {
         booker.start()
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws OutOfMemoryError
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func report(terminalHeight: ?UInt64, terminalWidth: ?UInt64): PrettyText {
         booker.flushChanges()
         let report = PrettyText()
@@ -93,6 +102,13 @@ class TestProgressReporter <: UTProgressReporter {
         report
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func buildPackagesReport(): PrettyText {
         let text = PrettyText()
         let packages = booker.currentPackages
@@ -123,6 +139,12 @@ class TestProgressReporter <: UTProgressReporter {
         return text
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func buildTestCasesReport(): PrettyText {
         let text = PrettyText()
         let cases = booker.currentTestCases
@@ -140,6 +162,11 @@ class TestProgressReporter <: UTProgressReporter {
         return text
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func buildFailedCaseReport(): PrettyText {
         let text = PrettyText()
         if (let Some(failedCase) <- booker.lastFailedStep) {
@@ -153,6 +180,11 @@ class TestProgressReporter <: UTProgressReporter {
         return text
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func buildSummaryReport(): PrettyText {
         let text = PrettyText()
         let summary = booker.summary
@@ -312,6 +344,11 @@ private class TestProgressCollector {
         }
     }
 
+        /**
+         * @throws NoneValueException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     prop currentPackages: Array<PackageProgressData> {
         get() {
             packagesOrder |> filterMap<String, PackageProgressData> { name: String =>
@@ -329,6 +366,11 @@ private class TestProgressCollector {
         }
     }
 
+        /**
+         * @throws NoneValueException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     prop currentTestCases: Array<TestCaseProgressData> {
         get() {
             casesOrder |> filterMap<?Int64, TestCaseProgressData> { id_: ?Int64 =>
@@ -356,6 +398,13 @@ private class TestProgressCollector {
         startTime = MonoTime.now()
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     * @throws NoneValueException
+     */
     func flushChanges() {
         clearFinishedPackages()
         while (true) {
@@ -379,6 +428,11 @@ private class TestProgressCollector {
         _crashedWorkers += 1
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func registerWorkerIfRequired(cases: UInt64, id!: Int64, pack!: String) {
         if (cases == 0) {
             totalPackageCasesCount.addIfAbsent(pack, 0u64)
@@ -399,6 +453,10 @@ private class TestProgressCollector {
         }
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     */
     private func clearFinishedPackages() {
         for (pack in finishedPackages) {
             packagesOrder.removeIf { p: String => p == pack }
@@ -409,6 +467,12 @@ private class TestProgressCollector {
         finishedPackages.clear()
     }
 
+    /**
+     * @throws Exception
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func updateBody(body: ExecutionResultBody, workerId: Int64) {
         executing.remove(workerId)
         match (casesOrder.indexOf(workerId)) {
@@ -452,6 +516,12 @@ private class TestProgressCollector {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     * @throws NoneValueException
+     */
     private func updateHeader(header: ExecutionResultHeader, workerId: Int64) {
         if (executing.add(workerId, TestCaseProgressData(header.toCaseName(), suiteId: header.suiteId, startTime: header.startTime)).isNone()) {
             match (casesOrder.indexOf(None)) {
@@ -512,12 +582,20 @@ private struct PackageProgressData {
         }
     }
 
+        /**
+         * @throws ArithmeticException
+         */
     prop duration: Duration {
         get() {
             DateTime.now() - startTime
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func trimmed(limit: Int64): String {
         trimPackage(name, limit: limit)
     }
@@ -538,16 +616,27 @@ private enum TestCaseName <: ToString {
 private struct TestCaseProgressData {
     TestCaseProgressData(let name: TestCaseName, let suiteId!: TestSuiteId, let startTime!: DateTime) {}
 
+        /**
+         * @throws ArithmeticException
+         */
     prop duration: Duration {
         get() {
             DateTime.now() - startTime
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func trimmed(limit: Int64): String {
         trim(suiteId, name, limit: limit)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func trim(suiteId: TestSuiteId, name: TestCaseName, limit!: Int64): String {
         let fullname = "${suiteId.suiteName}" + match (name) {
             case CaseName(_) => "."
@@ -560,6 +649,11 @@ private struct TestCaseProgressData {
 private struct FailedTestCaseProgressData {
     FailedTestCaseProgressData(let name: TestCaseName, let suiteId!: TestSuiteId, let check!: RunStepResult) {}
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func trimmed(limit: Int64): String {
         let caseTrimmed = TestCaseProgressData.trim(suiteId, name, limit: limit)
         trimPackage(suiteId.groupName, limit: limit - caseTrimmed.size) + "." + caseTrimmed
@@ -589,6 +683,9 @@ private struct SummaryProgressData {
         }
     }
 
+        /**
+         * @throws ArithmeticException
+         */
     prop duration: Duration {
         get() {
             MonoTime.now() - startTime
@@ -597,6 +694,10 @@ private struct SummaryProgressData {
 }
 
 extend ExecutionResultPart {
+    /**
+     * @throws NoneValueException
+     * @throws Exception
+     */
     func toCaseName(): TestCaseName {
         match (this) {
             case h: TestCaseExecutionResultHeader => CaseName(h.caseId)
@@ -630,6 +731,9 @@ extend ExecutionResultBody {
         }
     }
 
+        /**
+         * @throws Exception
+         */
     prop firstFailedStep: RunStepResult {
         get() {
             (stepResult.subResults |> filter { it: RunStepResult =>
@@ -682,6 +786,10 @@ extend TestSuiteId {
 }
 
 extend Duration {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func toStringFormatted(): String {
         let hh = toHours().toString().padStart(2, padding: "0")
         let mm = (toMinutes() % 60).toString().padStart(2, padding: "0")
@@ -690,6 +798,11 @@ extend Duration {
     }
 }
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func trimPackage(pack: String, limit!: Int64): String {
     if (pack.size <= limit) { return pack }
     let levels = pack.split(".")
@@ -709,6 +822,10 @@ private func trimPackage(pack: String, limit!: Int64): String {
 }
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func percentString(percent: UInt64, width!: Int64 = PERCENT_VALUE_WIDTH): String {
     percent.toString().padStart(width) + "%"
 }
@@ -736,6 +853,10 @@ private class Progress <: PrettyPrintable {
 
     private var prevPieceStatus = true
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     Progress(var totalPieces!: Int64) {
         pieces.reserve(totalPieces)
     }
@@ -744,6 +865,10 @@ private class Progress <: PrettyPrintable {
     private let NEGATIVE_COLOR = Color.RED
     private let GRAY_COLOR = Color.GRAY
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func update(positive!: Bool = true): Unit {
         if (pieces.size >= totalPieces) { return }
 
@@ -751,11 +876,19 @@ private class Progress <: PrettyPrintable {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func expand(extendBy: UInt64) {
         pieces.reserve(Int64(extendBy))
         totalPieces += Int64(extendBy)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func pprint(to: PrettyPrinter, crashedWorkers!: UInt64 = 0, width!: Int64, mainBar!: Bool = false): PrettyPrinter {
         if (prevWidth != width) {
             text = PrettyText()
@@ -794,6 +927,10 @@ private class Progress <: PrettyPrintable {
         return to
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func pprint(to: PrettyPrinter): PrettyPrinter {
         pprint(to, width: DEFAULT_PROGRESS_INDICATOR_WIDTH)
     }

@@ -41,6 +41,13 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
     init(cp: CPointer<Unit>) {
         _packageInfo = cp
     }
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws InfoNotFoundException
+     */
     public static func get(qualifiedName: String): PackageInfo {
         synchronized(mutex) {
             if (let Some(info) <- qualifiedNameMap.get(qualifiedName)) {
@@ -64,6 +71,14 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws IllegalArgumentException
+     */
     public static func load(path: String): PackageInfo {
         let realPath = try {
             canonicalize(if (!path.endsWith(MODULE_SUFFIX)) {
@@ -112,6 +127,10 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             }
         }
     }
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop name: String {
         get() {
             match (_name) {
@@ -133,6 +152,15 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             _noPublicInfoList
         }
     }
+        /**
+         * @throws OutOfMemoryError
+         * @throws NoneValueException
+         * @throws ReflectException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws InfoNotFoundException
+         */
     public prop typeInfos: Collection<TypeInfo> {
         get() {
             match (_typeInfos) {
@@ -160,6 +188,15 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+        /**
+         * @throws OutOfMemoryError
+         * @throws NoneValueException
+         * @throws ReflectException
+         * @throws InfoNotFoundException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalSynchronizationStateException
+         */
     public prop subPackages: Collection<PackageInfo> {
         get() {
             synchronized(mutex) {
@@ -168,6 +205,13 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+        /**
+         * @throws IllegalMemoryException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalSynchronizationStateException
+         * @throws InfoNotFoundException
+         */
     public prop parentPackage: PackageInfo {
         get() {
             match (this.qualifiedName.lastIndexOf(b'.')) {
@@ -177,6 +221,13 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+        /**
+         * @throws IllegalMemoryException
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalSynchronizationStateException
+         * @throws InfoNotFoundException
+         */
     public prop rootPackage: PackageInfo {
         get() {
             match (this.qualifiedName.indexOf(b'.')) {
@@ -186,11 +237,29 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws InfoNotFoundException
+     */
     public func getSubPackage(qualifiedName: String): PackageInfo {
         getSubPackagesMap().get(qualifiedName) ?? throw InfoNotFoundException(
             "Can not find subpackage: `${qualifiedName}`.")
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws InfoNotFoundException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private func getSubPackagesMap(): HashMap<String, PackageInfo> {
         synchronized(mutex) {
             let infos = match (getSubPackages(_packageInfo, TypeInfo.of<Array<CPointer<Unit>>>()._info)) {
@@ -207,6 +276,15 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws NoneValueException
+     * @throws ReflectException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws InfoNotFoundException
+     */
     func getTypeInfos(num: UInt32, subPackageInfo: CPointer<Unit>, infoList: ArrayList<TypeInfo>) {
         for (i in 0..num) {
             let pointer = getPackageTypeInfo(subPackageInfo, i)
@@ -226,6 +304,11 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             }
         }
     }
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws InfoNotFoundException
+         */
     public prop variables: Collection<GlobalVariableInfo> {
         get() {
             match (_variables) {
@@ -244,6 +327,11 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws InfoNotFoundException
+     */
     func getGlobalVariableInfos(num: UInt32, subPackageInfo: CPointer<Unit>, infoList: ArrayList<GlobalVariableInfo>) {
         for (i in 0..num) {
             let pointer = getPackageGlobalFieldInfo(subPackageInfo, i)
@@ -254,6 +342,11 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             infoList.add(varInfo)
         }
     }
+        /**
+         * @throws InfoNotFoundException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop functions: Collection<GlobalFunctionInfo> {
         get() {
             match (_functions) {
@@ -273,6 +366,11 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws InfoNotFoundException
+     */
     func getGlobalFunctionInfos(num: UInt32, subPackageInfo: CPointer<Unit>, infoList: ArrayList<GlobalFunctionInfo>) {
         for (i in 0..num) {
             let pointer = getPackageGlobalMethodInfo(subPackageInfo, i)
@@ -288,17 +386,41 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
             infoList.add(funcInfo)
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InfoNotFoundException
+     */
     public func getTypeInfo(qualifiedTypeName: String): TypeInfo {
         getByName(typeInfos, qualifiedTypeName,
             "type info `${qualifiedTypeName}` not found from package ${qualifiedName}") {
             typeInfo => typeInfo.qualifiedName
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws InfoNotFoundException
+     */
     public func getVariable(name: String): GlobalVariableInfo {
         getByName(variables, name, "variable info `${name}` not found from package `${qualifiedName}`") {
             variable => variable.name
         }
     }
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws ReflectException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws InfoNotFoundException
+     */
     public func getFunction(name: String, parameterTypes: Array<TypeInfo>): GlobalFunctionInfo {
         getByNameAndParamTypes(functions, name, parameterTypes,
             "func info `${name}` not found from package `${qualifiedName}`") {
@@ -306,6 +428,12 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
         }
     }
 
+    /**
+     * @throws InfoNotFoundException
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func getFunctions(name: String): Array<GlobalFunctionInfo> {
         var fns: ArrayList<GlobalFunctionInfo> = ArrayList<GlobalFunctionInfo>()
         for (fn in functions where fn.name == name) {

@@ -56,6 +56,9 @@ class Block<E> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func push(element: E): Bool {
         if (allocated.load() >= BUF_SIZE) {
             return false
@@ -81,6 +84,9 @@ class Block<E> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func pushAt(element: E, index: Int64): PushRes {
         if (index >= BUF_SIZE) {
             return BlockDone
@@ -101,6 +107,9 @@ class Block<E> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func pop(): ENTRY<E> {
         while (true) {
             let index = reserved.load()
@@ -133,6 +142,9 @@ class Block<E> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func front(): ENTRY<E> {
         while (true) {
             let index = reserved.load()
@@ -180,6 +192,9 @@ public class ConcurrentLinkedQueue<E> <: Collection<E> {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Deprecated[message: "Use the other version of `init` instead."]
     public init(elements: Collection<E>) {
         this()
@@ -213,11 +228,17 @@ public class ConcurrentLinkedQueue<E> <: Collection<E> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Deprecated[message: "Use member function `func addIfAbsent(key: K, value: V): ?V` instead."]
     public func enqueue(element: E): Bool {
         add(element)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func add(element: E): Bool {
         while (true) {
             let tailBlock = rear.load()
@@ -234,11 +255,17 @@ public class ConcurrentLinkedQueue<E> <: Collection<E> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Deprecated[message: "Use member function `public func remove(): Option<E>` instead."]
     public func dequeue(): Option<E> {
         remove()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func remove(): Option<E> {
         while (true) {
             let headBlock = front.load()
@@ -261,11 +288,17 @@ public class ConcurrentLinkedQueue<E> <: Collection<E> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Deprecated[message: "Use member function `public func peek(): Option<E>` instead."]
     public func head(): Option<E> {
         peek()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func peek(): Option<E> {
         while (true) {
             let headBlock = front.load()
@@ -281,10 +314,17 @@ public class ConcurrentLinkedQueue<E> <: Collection<E> {
         return None<E>
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func isEmpty(): Bool {
         peek().isNone()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toArray(): Array<E> {
         let arr = ArrayList<E>()
         for (e in this) {
@@ -341,6 +381,9 @@ class ConcurrentLinkedQueueIterator<E> <: Iterator<E> {
         this.curIndex = curBlock.reserved.load()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func next(): ?E {
         while (hasNext) {

@@ -14,6 +14,10 @@ enum PrettyTreeStruct <: PrettyPrintable {
     Leaf(AssertExpectCheckResult)
     | Node(String, ArrayList<PrettyTreeStruct>)
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func pprint(pp: PrettyPrinter): PrettyPrinter {
         let pt = PrettyTree()
         match (this) {
@@ -29,6 +33,10 @@ enum PrettyTreeStruct <: PrettyPrintable {
         return pp
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private func appendNode(pt: PrettyTree, s: String, ppbles: ArrayList<PrettyTreeStruct>) {
         pt.appendLine(s)
         pt.indentWithPrefix("│   ") {
@@ -55,6 +63,10 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
     private let indentaions: ArrayList<String> = ArrayList([""])
     private var depth = 0
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func put(s: String): Unit {
         if (needTreeIndent) {
             pt.put(treeIndent)
@@ -62,10 +74,18 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
         }
         pt.put(s)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func setColor(color: Color): Unit {
         pt.setColor(color)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected override func putNewLine(): Unit {
         if (needTreeIndent) {
             pt.put(treeIndent)
@@ -76,6 +96,10 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
     }
 
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     private prop prefix: String {
         get() {
             let sb = StringBuilder()
@@ -87,6 +111,10 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
     }
 
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     private prop prefixNoLast: String {
         get() {
             let sb = StringBuilder()
@@ -99,6 +127,10 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func indentWithPrefix(prefix: String, body: () -> Unit): PrettyTree {
         indentaions.add(prefix)
         treeIndent = this.prefix
@@ -114,6 +146,10 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func appendWithPrefix(prefix: String, text: String): PrettyTree {
         if (needTreeIndent) {
             needTreeIndent = false
@@ -125,6 +161,10 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func appendLastWithPrefix(prefix: String, text: String): PrettyTree {
         if (needTreeIndent) {
             needTreeIndent = false
@@ -137,6 +177,10 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func appendWithPrefix<PP>(prefix: String, value: PP): PrettyTree where PP <: PrettyPrintable {
         if (needTreeIndent) {
             needTreeIndent = false
@@ -148,6 +192,10 @@ private class PrettyTree <: PrettyPrinter & PrettyPrintable {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func appendLastWithPrefix<PP>(prefix: String, value: PP): PrettyPrinter where PP <: PrettyPrintable {
         if (needTreeIndent) {
             needTreeIndent = false
@@ -175,6 +223,10 @@ public class AssertionCtx {
     private var _argsMap: ?HashMap<String, String> = None
     let _errors: ArrayList<PrettyTreeStruct> = ArrayList()
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected AssertionCtx(
         private let _passedArgs!: Array<String> = [],
         private let _caller!: String = String.empty
@@ -198,6 +250,10 @@ public class AssertionCtx {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     public func arg(key: String): String { return _argsMap?[key] ?? "<${key} not found>" }
 
 
@@ -211,6 +267,10 @@ public class AssertionCtx {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func setArgsAliases(aliases: Array<String>) {
         _argsMap = aliases.iterator().zip(_passedArgs.iterator()) |> collectHashMap
     }
@@ -218,6 +278,11 @@ public class AssertionCtx {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws AssertException
+     */
     public func fail(message: String): Nothing {
         let checkResult = FailCheckResult(Assert, message)
         _errors.add(Leaf(checkResult))
@@ -227,18 +292,31 @@ public class AssertionCtx {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws AssertException
+     */
     public func fail<PP>(pt: PP): Nothing where PP <: PrettyPrintable {
         let checkResult = CustomCheckResult(Assert, PrettyText.of(pt))
         _errors.add(Leaf(checkResult))
         throw AssertException("", checkResult)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func failExpect(message: String): Unit {
         let checkResult = FailCheckResult(Expect, message)
         _errors.add(Leaf(checkResult))
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func failExpect<PP>(pt: PP): Unit where PP <: PrettyPrintable {
         let checkResult = CustomCheckResult(Expect, PrettyText.of(pt))
         _errors.add(Leaf(checkResult))
@@ -246,6 +324,9 @@ public class AssertionCtx {
 }
 
 
+/**
+ * @throws AssertException
+ */
 private func runAssert<T>(ctx: AssertionCtx, assert: (AssertionCtx) -> T): T {
     let result = assert(ctx)
     if (ctx.hasErrors) {
@@ -272,6 +353,14 @@ private func runExpect(ctx: AssertionCtx, expect: (AssertionCtx) -> Any): Unit {
 
 
 
+/**
+ * @throws Error
+ * @throws UnittestTimeoutException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws AssertException
+ */
 public func invokeCustomAssert<T>(
     passedArgs: Array<String>,
     caller: String,
@@ -317,6 +406,13 @@ public func invokeCustomAssert<T>(
 
 
 
+/**
+ * @throws Error
+ * @throws UnittestTimeoutException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 public func invokeCustomExpect(
     passedArgs: Array<String>,
     caller: String,

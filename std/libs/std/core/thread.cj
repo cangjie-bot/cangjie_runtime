@@ -77,6 +77,9 @@ public class Thread {
 
 
 
+    /**
+     * @throws Error
+     */
     private func acquireCJThreadHandle(): CPointer<Unit> {
         while (true) {
             let old = _rtCJThreadHandleRefCount.load()
@@ -95,6 +98,9 @@ public class Thread {
     private func releaseCJThreadHandle(): Unit {
         _rtCJThreadHandleRefCount.fetchAdd(-1)
     }
+        /**
+         * @throws Error
+         */
     public static prop currentThread: Thread {
         get() {
             if (isThreadObjectInited()) {
@@ -112,6 +118,9 @@ public class Thread {
         }
     }
 
+        /**
+         * @throws Error
+         */
     public prop id: Int64 {
         get() {
             var cjThreadId = _id.load()
@@ -122,6 +131,9 @@ public class Thread {
         }
     }
 
+    /**
+     * @throws [set] Error
+     */
     public mut prop name: String {
         get() {
             _name.load()

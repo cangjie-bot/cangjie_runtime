@@ -43,6 +43,10 @@ public class RandomDataProvider<T> <: DataProvider<T> where T <: Arbitrary<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public RandomDataProvider(private let configuration: Configuration) {
         this.random = configuration.get<RandomSource>(KeyRandom.random) ??
                 throw IllegalArgumentException("RandomDataProvider initialized without configured random generator instance")
@@ -80,6 +84,10 @@ public class RandomDataStrategy<T> <: DataStrategy<T> where T <: Arbitrary<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public override func provider(configuration: Configuration): RandomDataProvider<T> {
         RandomDataProvider<T>(configuration)
     }
@@ -105,6 +113,10 @@ public func random<T>(): RandomDataStrategy<T> where T <: Arbitrary<T> {
 }
 
 public class RandomDataProviderRange<T> <: DataProvider<T> where T <: ArbitraryRange<T> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public RandomDataProviderRange(private let configuration: Configuration, private let min: T, private let max: T) {
         this.random = configuration.get<RandomSource>(KeyRandom.random) ??
                 throw IllegalArgumentException("RandomDataProvider initialized without configured random generator instance")
@@ -131,6 +143,10 @@ public class RandomDataShrinkerRange<T> <: DataShrinker<T> where T <: Comparable
 public class RandomDataStrategyRange<T> <: DataStrategy<T> where T <: ArbitraryRange<T> {
     RandomDataStrategyRange(private let min: T, private let max: T) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public override func provider(configuration: Configuration): RandomDataProviderRange<T> {
         RandomDataProviderRange<T>(configuration, min, max)
     }
@@ -144,6 +160,9 @@ public class RandomDataStrategyRange<T> <: DataStrategy<T> where T <: ArbitraryR
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 public func randomInRange<T>(min!: Option<T> = None, max!: Option<T> = None): RandomDataStrategyRange<T> where T <: ArbitraryRange<T> {
     if ((min ?? T.min()) > (max ?? T.max())) {
         throw IllegalArgumentException("the interval you provided is empty")

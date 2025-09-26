@@ -38,6 +38,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public init(elements: Collection<T>) {
         this.map = HashMap<T, Unit>(elements.size)
@@ -51,6 +55,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public init(elements: Array<T>) {
         this.map = HashMap<T, Unit>(elements.size)
@@ -64,6 +72,9 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public init(capacity: Int64) {
         this.map = HashMap<T, Unit>(capacity)
@@ -75,6 +86,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public init(size: Int64, initElement: (Int64) -> T) {
         this.map = HashMap<T, Unit>(size, {i => (initElement(i), ())})
@@ -86,6 +101,9 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func contains(element: T): Bool {
         return map.contains(element)
@@ -113,6 +131,9 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func contains(all!: Collection<T>): Bool {
         return map.contains(all: all)
@@ -124,6 +145,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func add(element: T): Bool {
         return match (this.map.add(element, ())) {
@@ -137,6 +162,9 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func remove(element: T): Bool {
         return match (map.remove(element)) {
@@ -151,6 +179,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func add(all!: Collection<T>): Unit {
         for (i in all) {
@@ -163,6 +195,9 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func remove(all!: Collection<T>): Unit {
         map.remove(all: all)
@@ -173,6 +208,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     public func removeIf(predicate: (T) -> Bool): Unit {
         this.map.removeIf({k, _ => predicate(k)})
@@ -181,6 +220,9 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func clear(): Unit {
         this.map.clear()
@@ -195,6 +237,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     public func retain(all!: Set<T>): Unit {
         let it: HashMapIterator<T, Unit> = this.map.iterator()
@@ -208,6 +254,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func clone(): HashSet<T> {
         return HashSet<T>(this)
@@ -220,6 +270,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func reserve(additional: Int64): Unit {
         this.map.reserve(additional)
@@ -289,6 +343,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func &(other: ReadOnlySet<T>): HashSet<T> {
         let result = HashSet<T>()
@@ -310,6 +368,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func |(other: ReadOnlySet<T>): HashSet<T> {
         let result = this.clone()
@@ -329,6 +391,10 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func -(other: ReadOnlySet<T>): HashSet<T> {
         let result = HashSet<T>()
@@ -344,6 +410,9 @@ public class HashSet<T> <: Set<T> where T <: Hashable & Equatable<T> {
 
 extend<T> HashSet<T> <: Equatable<HashSet<T>> {
     
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func ==(that: HashSet<T>): Bool {
         if (this.size != that.size) {
@@ -356,6 +425,9 @@ extend<T> HashSet<T> <: Equatable<HashSet<T>> {
     }
 
     
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func !=(that: HashSet<T>): Bool {
         return !(this == that)
@@ -363,6 +435,11 @@ extend<T> HashSet<T> <: Equatable<HashSet<T>> {
 }
 
 extend<T> HashSet<T> <: ToString where T <: ToString {
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func toString(): String {
         return collectionToString<HashSet<T>, T>(this)

@@ -10,6 +10,17 @@ package std.ast
 
 import std.collection.ArrayList
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parseDecl(input: Tokens, astKind!: String = ""): Decl {
     
     var node = try {
@@ -49,6 +60,17 @@ public func parseDecl(input: Tokens, astKind!: String = ""): Decl {
     return astNode
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 public func parseDeclFragment(input: Tokens, startFrom!: Int64 = 0): (Decl, Int64) {
     let (node, count) = unsafe {
         try {
@@ -71,6 +93,16 @@ public func parseDeclFragment(input: Tokens, startFrom!: Int64 = 0): (Decl, Int6
     return (astNode, count)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateDeclAST(declNode: Option<NodeFormat_Decl>): Decl {
     var decl = match (declNode) {
         case Some(v) => v
@@ -107,6 +139,16 @@ func generateDeclAST(declNode: Option<NodeFormat_Decl>): Decl {
     return astNode
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func createDeclBase(keyWord: Token, declBase: NodeFormat_DeclBase): Decl {
     var annos: ArrayList<Annotation> = ArrayList<Annotation>()
     for (anno in declBase.GetAnnotations()) {
@@ -136,6 +178,16 @@ func createDeclBase(keyWord: Token, declBase: NodeFormat_DeclBase): Decl {
     return Decl(annos, mods, key, indentifier, genericParam, constraint, constraintCommas, isGeneric)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func generateGenericInfo(generic: Option<NodeFormat_Generic>) {
     var param: Option<GenericParam> = createGenericParam(generic)
     var constraint = ArrayList<GenericConstraint>()
@@ -159,6 +211,16 @@ func generateGenericInfo(generic: Option<NodeFormat_Generic>) {
     return (param, constraint, commas, isGeneric)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createClassDecl(decl: NodeFormat_Decl, declNode: Decl): ClassDecl {
     var classDecl = match (decl.GetDeclAsClassDecl()) {
         case Some(v) => v
@@ -191,6 +253,16 @@ func createClassDecl(decl: NodeFormat_Decl, declNode: Decl): ClassDecl {
     return ClassDecl(declNode, up, superTypes, bitands, Body(lcurl, declList, rcurl))
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createStrucDecl(decl: NodeFormat_Decl, declNode: Decl): StructDecl {
     var strucDecl = match (decl.GetDeclAsStructDecl()) {
         case Some(v) => v
@@ -223,6 +295,16 @@ func createStrucDecl(decl: NodeFormat_Decl, declNode: Decl): StructDecl {
     return StructDecl(declNode, up, superTypes, bitands, Body(lcurl, declList, rcurl))
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createInterfaceDecl(decl: NodeFormat_Decl, declNode: Decl): InterfaceDecl {
     var interfaceDecl = match (decl.GetDeclAsInterfaceDecl()) {
         case Some(v) => v
@@ -255,6 +337,16 @@ func createInterfaceDecl(decl: NodeFormat_Decl, declNode: Decl): InterfaceDecl {
     return InterfaceDecl(declNode, up, superTypes, bitands, Body(lcurl, declList, rcurl))
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createEnumDecl(decl: NodeFormat_Decl, declNode: Decl): EnumDecl {
     var em = match (decl.GetDeclAsEnumDecl()) {
         case Some(v) => v
@@ -295,6 +387,16 @@ func createEnumDecl(decl: NodeFormat_Decl, declNode: Decl): EnumDecl {
     return EnumDecl(declNode, up, superTypes, bitands, lcurl, bitors, constructors, members, rcurl, ellipsis)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createExtendDecl(decl: NodeFormat_Decl, declNode: Decl): ExtendDecl {
     var ed = match (decl.GetDeclAsExtendDecl()) {
         case Some(v) => v
@@ -327,6 +429,16 @@ func createExtendDecl(decl: NodeFormat_Decl, declNode: Decl): ExtendDecl {
     return ExtendDecl(declNode, extendTy, up, superTypes, bitands, Body(lcurl, members, rcurl))
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createFuncDecl(decl: NodeFormat_Decl, declBase: NodeFormat_DeclBase): Decl {
     var fd = match (decl.GetDeclAsFuncDecl()) {
         case Some(v) => v
@@ -343,10 +455,30 @@ func createFuncDecl(decl: NodeFormat_Decl, declBase: NodeFormat_DeclBase): Decl 
     return funcDecl
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createFuncParam(decl: NodeFormat_Decl): Decl {
     return createFuncParam(decl.GetDeclAsFuncParam(), 0, 1)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createFuncParam(param: Option<NodeFormat_FuncParam>, index: Int64, length: Int64): FuncParam {
     var pm = match (param) {
         case Some(v) => v
@@ -421,6 +553,16 @@ func createFuncParam(param: Option<NodeFormat_FuncParam>, index: Int64, length: 
     return FuncParam(declNode, not, colon, ty, assign_, expr, comma, isMemberParam)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateFuncParams(funcBody: NodeFormat_FuncBody): ArrayList<FuncParam> {
     var params = match (funcBody.GetParamList()) {
         case Some(v) => v.GetParams()
@@ -433,6 +575,16 @@ func generateFuncParams(funcBody: NodeFormat_FuncBody): ArrayList<FuncParam> {
     return funcParams
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func generateCommonFuncDecl(funcDecl: Option<NodeFormat_FuncDecl>, declNode: Decl) {
     var fd = match (funcDecl) {
         case Some(v) => v
@@ -456,6 +608,16 @@ func generateCommonFuncDecl(funcDecl: Option<NodeFormat_FuncDecl>, declNode: Dec
     return funcDeclNode
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws ASTException
+ * @throws ParseASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func createFuncBody(funcBody: Option<NodeFormat_FuncBody>) {
     var fb = match (funcBody) {
         case Some(v) => v
@@ -502,6 +664,16 @@ func createFuncBody(funcBody: Option<NodeFormat_FuncBody>) {
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createMainDecl(decl: NodeFormat_Decl, declNode: Decl): MainDecl {
     var md = match (decl.GetDeclAsMainDecl()) {
         case Some(v) => v
@@ -511,6 +683,16 @@ func createMainDecl(decl: NodeFormat_Decl, declNode: Decl): MainDecl {
     return MainDecl(declNode, lParen, funcParams, rParen, colon, ty, block)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createMacroDecl(decl: NodeFormat_Decl, declNode: Decl): MacroDecl {
     var mod = match (decl.GetDeclAsMacroDecl()) {
         case Some(v) => v
@@ -520,6 +702,16 @@ func createMacroDecl(decl: NodeFormat_Decl, declNode: Decl): MacroDecl {
     return MacroDecl(declNode, lParen, funcParams, rParen, colon, ty, block)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createPrimaryCtorDecl(decl: NodeFormat_Decl, declNode: Decl): PrimaryCtorDecl {
     var pcd = match (decl.GetDeclAsPrimaryCtorDecl()) {
         case Some(v) => v
@@ -529,6 +721,16 @@ func createPrimaryCtorDecl(decl: NodeFormat_Decl, declNode: Decl): PrimaryCtorDe
     return PrimaryCtorDecl(declNode, lParen, funcParams, rParen, block)
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createVarDeclNode(decl: Option<NodeFormat_VarDecl>): VarDecl {
     var varDecl = match (decl) {
         case Some(v) => v
@@ -569,10 +771,30 @@ func createVarDeclNode(decl: Option<NodeFormat_VarDecl>): VarDecl {
     return vd
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createVarDecl(decl: NodeFormat_Decl): Decl {
     return createVarDeclNode(decl.GetDeclAsVarDecl())
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ConcurrentModificationException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createVarWithPatternDecl(decl: NodeFormat_Decl): Decl {
     var varWithPattern = match (decl.GetDeclAsVarWithPatternDecl()) {
         case Some(v) => v
@@ -610,6 +832,16 @@ func createVarWithPatternDecl(decl: NodeFormat_Decl): Decl {
     return VarDecl(createDeclBase(keyWord, declBase), pattern, colon, ty, assign, expr)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createPropDecl(decl: NodeFormat_Decl) {
     var propDecl = match (decl.GetDeclAsPropDecl()) {
         case Some(v) => v
@@ -649,6 +881,16 @@ func createPropDecl(decl: NodeFormat_Decl) {
         lCurl, getter, setter, rCurl)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createTypeAliasDecl(decl: NodeFormat_Decl, declBase: NodeFormat_DeclBase) {
     var typeAliasDecl = match (decl.GetDeclAsTypeAliasDecl()) {
         case Some(v) => v
@@ -660,6 +902,16 @@ func createTypeAliasDecl(decl: NodeFormat_Decl, declBase: NodeFormat_DeclBase) {
     return TypeAliasDecl(createDeclBase(keyWord, declBase), assign, ty)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 func createMacroExpandDecl(decl: NodeFormat_Decl) {
     var annos: ArrayList<Annotation> = ArrayList<Annotation>()
  

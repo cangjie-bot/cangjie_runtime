@@ -34,6 +34,11 @@ public class ThreadLocal<T> {
     let key: ThreadLocalKey = ThreadLocalKey()
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws Error
+     * @throws NoneValueException
+     */
     public func get(): ?T {
         let map: ThreadLocalMap = getThreadLocalMap()
         return map.get(tlKey: key)
@@ -42,6 +47,10 @@ public class ThreadLocal<T> {
 
 
 
+    /**
+     * @throws Error
+     * @throws IndexOutOfBoundsException
+     */
     public func set(value: ?T): Unit {
         let map: ThreadLocalMap = getThreadLocalMap()
         match (value) {
@@ -51,6 +60,9 @@ public class ThreadLocal<T> {
     }
 }
 
+/**
+ * @throws Error
+ */
 func getThreadLocalMap(): ThreadLocalMap {
     return match (Thread.currentThread._threadLocalMap) {
         case Some(map) => map
@@ -88,6 +100,10 @@ class ThreadLocalMap {
         entries = Array<Entry>(DEFAULT_CAPACITY, repeat: EMPTY_ENTRY)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     */
     func get<T>(tlKey!: ThreadLocalKey): Option<T> {
         return match (findEntry(tlKey)) {
             case Some(index) => (entries[index].boxedValue as Box<T>).getOrThrow()
@@ -96,6 +112,9 @@ class ThreadLocalMap {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func set<T>(tlKey!: ThreadLocalKey, value!: T): Unit {
         let index = findIndexToInsert(tlKey, entries)
         if (entries[index].tlKey.equals(EMPTY_ENTRY.tlKey)) {
@@ -107,11 +126,17 @@ class ThreadLocalMap {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func remove(tlKey!: ThreadLocalKey): Unit {
         if (let Some(index) <- findEntry(tlKey)) {
             entries[index] = DELETED_ENTRY
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func findEntry(tlKey: ThreadLocalKey): Option<Int64> {
         var index = tlKey.hashCode() & (entries.size - 1)
         while (true) {
@@ -128,6 +153,9 @@ class ThreadLocalMap {
         return None
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func findIndexToInsert(tlKey: ThreadLocalKey, arr: Array<Entry>): Int64 {
         var index = tlKey.hashCode() & (arr.size - 1)
         while (true) {
@@ -151,6 +179,9 @@ class ThreadLocalMap {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private func resize(): Unit {
         let newCapacity = entries.size << 1
         let newEntries = Array<Entry>(newCapacity, repeat: EMPTY_ENTRY)

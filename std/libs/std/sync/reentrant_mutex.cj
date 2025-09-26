@@ -21,6 +21,9 @@ public open class ReentrantMutex <: Lock {
     private let mutex: Mutex
 
     
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public init() {
         this.mutex = Mutex()
     }
@@ -45,10 +48,16 @@ public open class ReentrantMutex <: Lock {
 
 
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     public open func unlock(): Unit {
         mutex.unlock()
     }
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     */
     func checkMutexStatus(): Unit {
         mutex.checkMutexStatus()
     }

@@ -20,6 +20,16 @@ public type Annotation = Object
 
 
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws ReflectException
+ * @throws InfoNotFoundException
+ * @throws IllegalSynchronizationStateException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 public func parseParameterTypes(parameters: String): Array<TypeInfo> {
     let parameterTypes = parameters.trimAscii()
     if (parameterTypes.isEmpty()) {
@@ -54,6 +64,15 @@ public func parseParameterTypes(parameters: String): Array<TypeInfo> {
     return arr.toArray()
 }
 
+/**
+ * @throws NoneValueException
+ * @throws IllegalSynchronizationStateException
+ * @throws ReflectException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ * @throws InfoNotFoundException
+ */
 func getByNameAndParamTypes<T>(source: Iterable<T>, name: String, parameterTypes: Array<TypeInfo>, message: String,
     nameAndParamsGetter: (T) -> (String, ReadOnlyList<ParameterInfo>)): T {
     for (item in source) {
@@ -80,6 +99,9 @@ func getByNameAndParamTypes<T>(source: Iterable<T>, name: String, parameterTypes
     throw InfoNotFoundException(message)
 }
 
+/**
+ * @throws InfoNotFoundException
+ */
 func getByName<T>(source: Iterable<T>, name: String, message: String, nameGetter: (T) -> String): T {
     for (item in source) {
         if (nameGetter(item) == name) {
@@ -89,6 +111,10 @@ func getByName<T>(source: Iterable<T>, name: String, message: String, nameGetter
     throw InfoNotFoundException(message)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getTypeNameByQualifiedName(qualifiedName: String): String {
     var str = qualifiedName
     if (let Some(bracketIndex) <- qualifiedName.indexOf("<")) {
@@ -98,6 +124,16 @@ func getTypeNameByQualifiedName(qualifiedName: String): String {
     return qualifiedName[pointIndex + 1..]
 }
 
+/**
+ * @throws NoneValueException
+ * @throws IllegalSynchronizationStateException
+ * @throws InfoNotFoundException
+ * @throws ReflectException
+ * @throws IndexOutOfBoundsException
+ * @throws OutOfMemoryError
+ * @throws IllegalTypeException
+ * @throws IllegalArgumentException
+ */
 func checkArgsSizeAndType(parameters: ReadOnlyList<ParameterInfo>, args: Array<Any>): Unit {
     if (parameters.size != args.size) {
         throw IllegalArgumentException("The input parameter item does not comply with the required quantity.")
@@ -111,6 +147,16 @@ func checkArgsSizeAndType(parameters: ReadOnlyList<ParameterInfo>, args: Array<A
 }
 
 
+/**
+ * @throws NoneValueException
+ * @throws IllegalSynchronizationStateException
+ * @throws InfoNotFoundException
+ * @throws ReflectException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws OutOfMemoryError
+ * @throws IllegalTypeException
+ */
 func checkValueType(newValue: Any, typeInfo: TypeInfo): Unit {
     let valueTypeInfo = TypeInfo.of(newValue)
     if (!valueTypeInfo.isSubtypeOf(typeInfo)) {
@@ -132,6 +178,11 @@ func findAnnotation<T>(annotations: Collection<Annotation>): Option<T> {
     ret
 }
 
+/**
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func findAllAnnotations<T>(annotations: Collection<Annotation>): Array<T> {
     let ret = ArrayList<T>()
     for (annotation in annotations where annotation is T) {

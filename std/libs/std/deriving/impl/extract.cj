@@ -12,6 +12,11 @@ import std.ast.*
 import std.collection.*
 
 extend Decl {
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func generics(): Array<GenericDecl> {
         if (!isGenericDecl) {
             return []
@@ -38,6 +43,11 @@ extend Decl {
 interface ClassLikeDecl {
     mut prop body: Body
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     func allFields(): Array<TargetNamedAttribute> {
         allNamedDeclsImpl().filter { member =>
             match (member) {
@@ -66,6 +76,10 @@ interface ClassLikeDecl {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func allProperties(): Array<PropDecl> {
         body.declsUnwrapped() |> filterIsInstance<Decl, PropDecl> |> collectArray
     }
@@ -85,28 +99,50 @@ private func hasIdentifier(decl: Decl): Bool {
 }
 
 extend ClassDecl <: ClassLikeDecl {
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func allGenerics(): Array<GenericDecl> {
         generics()
     }
 }
 
 extend StructDecl <: ClassLikeDecl {
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func allGenerics(): Array<GenericDecl> {
         generics()
     }
 }
 
 extend EnumDecl {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func allCases(): Array<TargetEnumCase> {
         constructors |> map { ctor: Constructor =>
             TargetEnumCase(ctor.identifier.value, ctor, argsToField(ctor.typeArguments))
         } |> collectArray
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func allProperties(): Array<PropDecl> {
         decls |> filterIsInstance<Decl, PropDecl> |> collectArray
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     private static func argsToField(args: Iterable<TypeNode>): Array<TargetEnumField> {
         args |> enumerate |> map<(Int64, TypeNode), TargetEnumField> { pair =>
             let (index, node) = pair
@@ -115,6 +151,10 @@ extend EnumDecl {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func mapInterfaceSettings(
     genericDecls: Array<GenericDecl>,
     options: Array<DeriveInterfaceOption>,

@@ -27,6 +27,16 @@ struct WrappedProcess {
 
     private let status = AtomicOptionReference<CapturedProcessResult>()
 
+    /**
+     * @throws TimeoutException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws FSException
+     */
     func wait(): Int64 {
         let exitCode = process.wait()
         if (status.load().isSome()) {
@@ -41,6 +51,11 @@ struct WrappedProcess {
         return exitCode
     }
 
+    /**
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     func terminate(): Unit {
         if (status.load().isSome()) {
             return
@@ -64,11 +79,33 @@ private class CapturedProcessResult {
         let stdErr: Array<Byte>
     ) {}
 }
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws OutOfMemoryError
+ * @throws IndexOutOfBoundsException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ * @throws ProcessException
+ * @throws FSException
+ */
 func processStart(ctx: MainExecutionCtx): WrappedProcess {
     Process.start(ctx)
 }
 
 extend Process {
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws ProcessException
+     * @throws FSException
+     */
     static func start(ctx: MainExecutionCtx): WrappedProcess {
         let stdout = captureFor(ctx)
         let stderr = captureFor(ctx)
@@ -87,6 +124,16 @@ extend Process {
 
         return WrappedProcess(process, stdout?.info.path, stderr?.info.path)
     }
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     */
     private static func captureFor(ctx: MainExecutionCtx): ?File {
         match (ctx.outputReporter.capture) {
             case true => TEMP_DIR.createTempFile(prefix: "test-worker-", suffix: ".stdout")
@@ -104,6 +151,11 @@ extend Process {
 
 extend SubProcess {
     
+    /**
+     * @throws ProcessException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     func terminateSilent(force!: Bool): Unit {
         if (isAlive()) {
             try {
@@ -115,6 +167,11 @@ extend SubProcess {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 private func removeFileSilent(path: Path): Unit {
     try {
         remove(path)
@@ -122,6 +179,13 @@ private func removeFileSilent(path: Path): Unit {
     }
 }
 
+/**
+ * @throws OverflowException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws FSException
+ */
 private func readCapturedFrom(path: ?Path): Array<Byte> {
     match (path) {
         case Some(path) where exists(path) =>

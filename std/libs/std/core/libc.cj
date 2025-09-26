@@ -35,6 +35,9 @@ private unsafe func freeWrapper(p: CPointer<Unit>): Unit {
 }
 
 public struct LibC {
+    /**
+     * @throws IllegalArgumentException
+     */
     public static func malloc<T>(count!: Int64 = 1): CPointer<T> where T <: CType {
         if (count < 0) {
             throw IllegalArgumentException("The value of count cannot be negative")
@@ -51,6 +54,10 @@ public struct LibC {
         freeWrapper(CPointer<Unit>(p))
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public unsafe static func mallocCString(str: String): CString {
         let arr: RawArray<UInt8> = str.myData
         var length: Int64 = str.size

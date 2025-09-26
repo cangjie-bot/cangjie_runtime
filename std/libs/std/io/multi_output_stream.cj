@@ -15,6 +15,9 @@ public class MultiOutputStream<T> <: OutputStream where T <: OutputStream {
     private var outputArr: Array<T>
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public init(output: Array<T>) {
         if (output.isEmpty()) {
             throw IllegalArgumentException("The array of output streams cannot be empty!")

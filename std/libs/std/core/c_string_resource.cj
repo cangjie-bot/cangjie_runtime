@@ -20,6 +20,9 @@ foreign func strcasecmp(source: CPointer<UInt8>, target: CPointer<UInt8>): Int32
 @Intrinsic
 func convertCStr2Ptr(cs: CString): CPointer<UInt8>
 
+/**
+ * @throws IllegalArgumentException
+ */
 @OverflowWrapping
 func createStrFromCPointer(cp: CPointer<UInt8>): String {
     if (cp.isNull()) {
@@ -111,6 +114,11 @@ extend CString <: ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     */
     public func subCString(beginIndex: UIntNative): CString {
         var len = UIntNative(size())
         if (beginIndex > len) {
@@ -122,6 +130,11 @@ extend CString <: ToString {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     */
     public func subCString(beginIndex: UIntNative, subLen: UIntNative): CString {
         var buffer = CPointer<UInt8>()
         var len = UIntNative(size())
@@ -151,6 +164,9 @@ extend CString <: ToString {
     }
 
 
+    /**
+     * @throws IllegalMemoryException
+     */
     public func compare(str: CString): Int32 {
         let chars = getChars()
         if (chars.isNull() || str.isNull()) {
@@ -166,6 +182,10 @@ extend CString <: ToString {
         return 0
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(): String {
         let chars = getChars()
         if (chars.isNull()) {

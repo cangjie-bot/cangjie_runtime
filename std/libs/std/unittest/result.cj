@@ -19,6 +19,12 @@ interface Result <: Serializable<Result> {
         visitChildren{ x => x.walk(visitor) }
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     */
     func serializeInternal(): DataModel {
         match (this) {
             case step: RunStepResult =>
@@ -33,6 +39,16 @@ interface Result <: Serializable<Result> {
         }
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws DataModelException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws NoneValueException
+     * @throws Exception
+     */
     static func deserialize(dm: DataModel): Result {
         let dms = dm.asStruct()
         let kind = String.deserialize(dms.get("kind"))
@@ -57,6 +73,11 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     public open func add(child: T) {
         if (!finished) {
             subResults.add(child)
@@ -74,6 +95,13 @@ abstract class ResultContainer<T> <: Result where T <: Result {
             finished
         }
     }
+        /**
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws ArithmeticException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalStateException
+         */
     public prop details: Details {
         get() {
             if (_detailsComputed) { return _details }
@@ -108,6 +136,9 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     */
     private func forAllStepsWithParent(visitor: (RunStepResult, TestCaseResult) -> Unit) {
         let currentCase: Box<?TestCaseResult> = Box(None)
         visitAll<Result> { r =>
@@ -126,6 +157,12 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws NoneValueException
+     */
     public func visitPassedBenches(visitor: (BenchStepEntry) -> Unit) {
         forAllStepsWithParent { r, c =>
             if (r.statusCode().isFailure()) { return }
@@ -138,6 +175,9 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     */
     public func visitFailedSteps(visitor: (RunStepResult, TestCaseResult) -> Unit) {
         forAllStepsWithParent { r, c =>
             if (!r.hasFailures()) { return }
@@ -145,6 +185,10 @@ abstract class ResultContainer<T> <: Result where T <: Result {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func serializeSubResults(): DataModelStruct{
         let serializablePieces = ArrayList<Result>()
         visitChildren{ s =>
@@ -156,6 +200,11 @@ abstract class ResultContainer<T> <: Result where T <: Result {
 }
 
 struct BenchStepEntry {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     BenchStepEntry(
         let result: BenchmarkResult,
         let arg: ArgumentDescription,
@@ -167,6 +216,9 @@ struct BenchStepEntry {
 }
 
 class RunStepResult <: Result {
+    /**
+     * @throws ArithmeticException
+     */
     RunStepResult(
         let checksPassed: Int64,
         let startTimestamp: DateTime,
@@ -193,6 +245,9 @@ class RunStepResult <: Result {
         }
     }
 
+    /**
+     * @throws ArithmeticException
+     */
     static func simpleError(step: StepKind, check: CheckResult): RunStepResult {
         RunStepResult(0, DateTime.now(), step, Failure([check]), duration: Duration.Zero)
     }
@@ -244,6 +299,11 @@ class TestCaseResult <: ResultContainer<RunStepResult> {
         let renderOptions: RenderOptions
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     static func fromSingleStep(id: TestCaseId, info: TestCaseReportInfo, step: RunStepResult) {
         let caseResult = TestCaseResult(id, info, RenderOptions(None, None))
         caseResult.add(step)
@@ -261,6 +321,11 @@ class TestCaseResult <: ResultContainer<RunStepResult> {
     public func addOutput(output: CapturedOutput): Unit {
         _output = output
     }
+    /**
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     public func addSuccessfullStep(next: RunStepResult) {
         let first = subResults[0]
         let steps = if (let Test(steps) <- first.info) {
@@ -307,6 +372,9 @@ struct CapturedOutput {
         this("", "")
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     init(stdout: Array<Byte>, stderr: Array<Byte>) {
         this(String.fromUtf8(stdout), String.fromUtf8(stderr))
     }
@@ -322,10 +390,19 @@ class TestSuiteResult <: ResultContainer<TestCaseResult> {
         let suiteInfo: TestSuiteReportInfo
     ) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func merge(other: TestSuiteResult) {
         this.subResults.add(all: other.subResults)
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func mergeAll(suiteResults: Iterable<TestSuiteResult>): Collection<TestSuiteResult> {
         let resultById = HashMap<TestSuiteId, TestSuiteResult>()
         for (suiteResult in suiteResults) {
@@ -368,6 +445,13 @@ enum GroupResultPart <: Result {
         }
     }
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws InvalidDataException
+         * @throws ArithmeticException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalStateException
+         */
     public prop details: Details {
         get() {
             match (this) {
@@ -383,6 +467,12 @@ enum GroupResultPart <: Result {
 class TestProcessError <: Result & Hashable {
     let _details = Details()
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     */
     TestProcessError(let code: Int64) {
         _details.add(Details(ERROR, true))
     }
@@ -406,6 +496,12 @@ class TestGroupResult <: ResultContainer<GroupResultPart> {
         let nonTestOutputs: Array<NonTestOutputs>
     ) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws Exception
+     */
     static func fromPackageSuites(packageName: String, suiteResults: Collection<TestSuiteResult>,
         processErrors: Array<TestProcessError>, nonTestOutputs: Array<NonTestOutputs>): TestGroupResult {
         let result = TestGroupResult(packageName, nonTestOutputs)
@@ -432,6 +528,12 @@ class TestGroupResult <: ResultContainer<GroupResultPart> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws Exception
+     */
     func add(testSuite: Result): Unit {
         match (testSuite) {
             case suiteResultPart: TestSuiteResult => 
@@ -494,6 +596,10 @@ struct ArgumentDescription {
         let randomSeed: ?Int64
     ) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func intoErrorMessage(): ?PrettyText {
         let argsText = this.textDescription ?? return None
         let messageBuilder = PrettyText("After ${this.stepIndex + 1} generation steps")
@@ -529,6 +635,9 @@ struct RenderOptions {
         let measurementInfo: ?MeasurementInfo
     ) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     static func fromConfiguration(configuration: Configuration) {
         RenderOptions(
             configuration.get(KeyBaseline.baseline),

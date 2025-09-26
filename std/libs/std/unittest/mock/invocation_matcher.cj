@@ -28,6 +28,12 @@ struct StubDescription {
 class InvocationMatcher {
     let positionalMatchers = ArrayList<ArgumentMatcher>()
 
+    /**
+     * @throws MockFrameworkException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     InvocationMatcher(
         argumentMatchers: Array<ArgumentMatcher>,
         let typeParameters: Array<String>,
@@ -69,6 +75,10 @@ class InvocationMatcher {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func tryMatch(invocation: Invocation): MatchStatus {
         if (invocation.stubId.funcInfo.id != stubId.funcInfo.id) {
             return MatchStatus.FuncMismatch
@@ -99,6 +109,10 @@ class InvocationMatcher {
         return MatchStatus.Ok
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func matches(invocation: Invocation): Bool {
         match (tryMatch(invocation)) {
             case Ok => true

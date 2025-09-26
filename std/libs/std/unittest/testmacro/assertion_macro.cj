@@ -19,6 +19,18 @@ let MACRO_CTX_VAR_NAME: Token = Token(IDENTIFIER, "__ctx_access_variable_name")
 
 
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws MacroException
+ */
 public macro Expect(input: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return assertionCallExpr(input, true, true)
@@ -26,12 +38,36 @@ public macro Expect(input: Tokens): Tokens {
     return assertionCallExpr(input, true, false)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws MacroException
+ */
 public macro Assert(input: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return assertionCallExpr(input, false, true)
     }
     return assertionCallExpr(input, false, false)
 }
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalMemoryException
+ * @throws MacroException
+ */
 private func assertionCallExpr(input: Tokens, isExpect: Bool, insideCustom: Bool): Tokens {
     let (macroName, name) = if (isExpect) { ("@Expect", "expectEqual") } else { ("@Assert", "assertEqual") }
     let optParentCtx = if (insideCustom) { quote(optParentCtx: $MACRO_CTX_VAR_NAME) } else { quote() }
@@ -69,6 +105,18 @@ private func assertionCallExpr(input: Tokens, isExpect: Bool, insideCustom: Bool
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro Expect(assertion: Tokens, body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return customAssertionCallExpr(assertion, body, true, true)
@@ -76,6 +124,18 @@ public macro Expect(assertion: Tokens, body: Tokens): Tokens {
     return customAssertionCallExpr(assertion, body, true, false)
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 public macro Assert(assertion: Tokens, body: Tokens): Tokens {
     if (insideParentContext("CustomAssertion")) {
         return customAssertionCallExpr(assertion, body, false, true)
@@ -86,10 +146,36 @@ public macro Assert(assertion: Tokens, body: Tokens): Tokens {
 
 
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws OutOfMemoryError
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalSynchronizationStateException
+ * @throws MacroException
+ */
 public macro CustomAssertion(body: Tokens) {
     return topLevelMacroDriver(ASSERTION_MACRO, body, Tokens(), { it => insideParentContext(it.macroIdentifier) })
 }
 
+/**
+ * @throws MacroException
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func emitCustomAssertionBuilder(decl: Decl): Tokens {
     let funcDecl = verifyCustomAssertionDecl(decl)
     let tb = TokensBuilder()
@@ -97,6 +183,18 @@ func emitCustomAssertionBuilder(decl: Decl): Tokens {
     return tb.toTokens()
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws MacroException
+ */
 private func customAssertionCallExpr(assertion: Tokens, body: Tokens, isExpect: Bool, insideCustom: Bool): Tokens {
     let optParentCtx = if (insideCustom) { quote(optParentCtx: $MACRO_CTX_VAR_NAME) } else { quote() }
     let (macroName, name) = if (isExpect) { ("@Expect", "invokeCustomExpect") } else { ("@Assert", "invokeCustomAssert") }
@@ -121,6 +219,11 @@ private func customAssertionCallExpr(assertion: Tokens, body: Tokens, isExpect: 
     )
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws MacroException
+ */
 private func verifyCustomAssertionDecl(decl: Decl): FuncDecl {
     let funcDecl = (decl as FuncDecl) ??
         throw MacroException("@CustomAssertion macro must be put onto the top-level functions")
@@ -137,6 +240,17 @@ private func verifyCustomAssertionDecl(decl: Decl): FuncDecl {
     return funcDecl
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws Exception
+ * @throws NoneValueException
+ * @throws ParseASTException
+ * @throws ASTException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func buildAssertionFunction(funcDecl: FuncDecl) {
     let ctx = funcDecl.funcParams[0]
     let varname = ctx.identifier

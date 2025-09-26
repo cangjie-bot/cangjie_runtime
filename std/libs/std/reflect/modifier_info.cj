@@ -20,6 +20,10 @@ public enum ModifierInfo <: Equatable<ModifierInfo> & Hashable & ToString {
     | Mut
     | Static
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     static func byMask(mask: UInt32): Collection<ModifierInfo> {
         let result = ArrayList<ModifierInfo>()
 
@@ -43,6 +47,10 @@ public enum ModifierInfo <: Equatable<ModifierInfo> & Hashable & ToString {
         ((mask & 0x1 << 3) != 0) || ((mask & 0x1 << 10) != 0)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func appendModifier(modifier: ModifierInfo, mask: UInt32, modifiers: ArrayList<ModifierInfo>) {
         if ((mask & getMask(modifier)) != 0) {
             modifiers.add(modifier)

@@ -15,15 +15,33 @@ import std.time.*
 public struct FileInfo <: Equatable<FileInfo> {
     var _path: Path
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public init(path: Path) {
         this(path, true)
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     public init(path: String) {
         this(Path(path), true)
     }
 
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws FSException
+     */
     init(path: Path, isCheckPath: Bool) {
         if (isCheckPath && !exists(path)) {
             throw FSException("The path `${path}` does not exist.")
@@ -31,12 +49,22 @@ public struct FileInfo <: Equatable<FileInfo> {
         _path = toAbsolutePath(path)
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop name: String {
         get() {
             _path.fileName
         }
     }
 
+        /**
+         * @throws IllegalMemoryException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws FSException
+         */
     public prop parentDirectory: Option<FileInfo> {
         get() {
             let parent = _path.parent
@@ -54,6 +82,12 @@ public struct FileInfo <: Equatable<FileInfo> {
     }
 
 
+        /**
+         * @throws IllegalMemoryException
+         * @throws FSException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         */
     public prop creationTime: DateTime {
         get() {
             let time = callNativeFunc(CJ_FS_GetCreationTime, "Failed to get creation time.")
@@ -62,6 +96,12 @@ public struct FileInfo <: Equatable<FileInfo> {
     }
 
 
+        /**
+         * @throws IllegalMemoryException
+         * @throws FSException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         */
     public prop lastAccessTime: DateTime {
         get() {
             let time = callNativeFunc(CJ_FS_GetLastAccessTime, "Failed to get last access time.")
@@ -70,6 +110,12 @@ public struct FileInfo <: Equatable<FileInfo> {
     }
 
 
+        /**
+         * @throws IllegalMemoryException
+         * @throws FSException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         */
     public prop lastModificationTime: DateTime {
         get() {
             let time = callNativeFunc(CJ_FS_GetLastModificationTime, "Failed to get last modification time.")
@@ -78,6 +124,11 @@ public struct FileInfo <: Equatable<FileInfo> {
     }
 
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IllegalMemoryException
+         * @throws FSException
+         */
     public prop size: Int64 {
         get() {
             return callNativeFunc(CJ_FS_PathSize, "Failed to get file size.")
@@ -85,25 +136,51 @@ public struct FileInfo <: Equatable<FileInfo> {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func isSymbolicLink(): Bool {
         return callNativeFunc(CJ_FS_IsLink)
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func isRegular(): Bool {
         return callNativeFunc(CJ_FS_IsFile)
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func isDirectory(): Bool {
         return callNativeFunc(CJ_FS_IsDir)
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func isReadOnly(): Bool {
         return callNativeFunc(CJ_FS_IsReadOnly)
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws FSException
+     */
     public func isHidden(): Bool {
         let fileName = canonicalize(_path).fileName
         if (fileName.isEmpty()) {
@@ -113,39 +190,74 @@ public struct FileInfo <: Equatable<FileInfo> {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func canExecute(): Bool {
         return callNativeFunc(CJ_FS_CanExecute, shouldFixLongPath: false)
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func canRead(): Bool {
         return callNativeFunc(CJ_FS_CanRead)
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func canWrite(): Bool {
         return callNativeFunc(CJ_FS_CanWrite)
     }
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func setExecutable(executable: Bool): Bool {
         return callNativeFunc(CJ_FS_SetExecutable, executable)
     }
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func setReadable(readable: Bool): Bool {
         return callNativeFunc(CJ_FS_SetReadable, readable)
     }
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     public func setWritable(writable: Bool): Bool {
         return callNativeFunc(CJ_FS_SetWritable, writable, shouldFixLongPath: false)
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     private func callNativeFunc(nativeFunction: CFunc<(CString) -> Int8>, shouldFixLongPath!: Bool = true): Bool {
         unsafe {
             let pathStr = if (shouldFixLongPath) {
@@ -165,6 +277,11 @@ public struct FileInfo <: Equatable<FileInfo> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     private func callNativeFunc(nativeFunction: CFunc<(CString, Bool) -> Int8>, flag: Bool,
         shouldFixLongPath!: Bool = true): Bool {
         unsafe {
@@ -186,6 +303,11 @@ public struct FileInfo <: Equatable<FileInfo> {
     }
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws FSException
+     */
     private func callNativeFunc(nativeFunction: CFunc<(CString) -> Int64>, msg: String, shouldFixLongPath!: Bool = true): Int64 {
         unsafe {
             let pathStr = if (shouldFixLongPath) {
@@ -203,6 +325,10 @@ public struct FileInfo <: Equatable<FileInfo> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public operator func ==(that: FileInfo): Bool {
         return _path == that.path
     }

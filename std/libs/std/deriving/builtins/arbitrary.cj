@@ -29,6 +29,9 @@ class ArbitraryDeriving <: Deriving {
         get() { [ARBITRARY_NAME] }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     public override func queryInterfaceInfo(interfaceName: QualifiedName): DerivingInterfaceInfo {
         if (interfaceName != ARBITRARY_NAME) {
             throw IllegalArgumentException("Interface ${interfaceName} is not supported")
@@ -36,6 +39,17 @@ class ArbitraryDeriving <: Deriving {
         return ARBITRARY_INFO
     }
 
+    /**
+     * @throws ConcurrentModificationException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws Error
+     * @throws NoneValueException
+     * @throws ParseASTException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func derive(
         _: Tokens,
         target: DerivingTarget,
@@ -99,6 +113,10 @@ class ArbitraryDeriving <: Deriving {
 }
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func commaSeparated<T>(things: Iterable<T>): Tokens where T <: ToTokens {
     let tokens = Tokens()
     let it = things.iterator()
@@ -137,6 +155,12 @@ extend TargetEnumCase {
         !hasField
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func createCall(ofType: TypeNode, argument: (TypeNode, Int64) -> ToTokens): ToTokens {
         let arguments = Array<ToTokens>(fields.size) { i =>
             argument(fields[i].fieldType, i)
@@ -150,6 +174,12 @@ extend TargetEnumCase {
 }
 
 extend PrimaryCtorDecl {
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func createCall(ofType: TypeNode, argument: (FuncParam, Int64) -> ToTokens): ToTokens {
         let funcParams = funcParamsUnwrapped() |> collectArray
         let arguments = Array<ToTokens>(funcParams.size) { i =>
@@ -166,11 +196,28 @@ extend PrimaryCtorDecl {
 }
 
 extend TypeNode {
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func generatorLookup() {
         quote(Generators.lookup<$(this)>(random))
     }
 }
 
+/**
+ * @throws ConcurrentModificationException
+ * @throws Error
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ * @throws Exception
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws ASTException
+ * @throws ParseASTException
+ */
 private func constructorGenerator(constructorCall: (argGenCall: (ToTokens) -> ToTokens) -> ToTokens): ToTokens {
     let block = Block()
     let argGenIdx = Box<Int64>(1)
@@ -186,6 +233,12 @@ private func constructorGenerator(constructorCall: (argGenCall: (ToTokens) -> To
     quote({ => $block }())
 }
 
+/**
+ * @throws Error
+ * @throws NoneValueException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 private func pickGenerator(generators: ArrayList<ToTokens>): ToTokens {
     match (generators.size) {
         case 1 => generators[0]

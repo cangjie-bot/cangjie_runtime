@@ -52,6 +52,9 @@ public struct MemoryInfo {
     }
 
 
+        /**
+         * @throws MemoryInfoException
+         */
     public static prop heapPhysicalMemory: Int64 {
         get() {
             getUsedHeapSize()
@@ -67,6 +70,9 @@ public func getAllocatedHeapSize(): Int64 {
     return getAllocatedCjHeapSize()
 }
 
+/**
+ * @throws MemoryInfoException
+ */
 public func getUsedHeapSize(): Int64 {
     var ret = getRealHeapSize()
     match {
@@ -77,6 +83,13 @@ public func getUsedHeapSize(): Int64 {
     }
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws FSException
+ * @throws MemoryInfoException
+ */
 @When[backend == "cjnative"]
 public func dumpHeapData(path: Path): Unit {
     try (file = File(path, ReadWrite)) {

@@ -29,6 +29,12 @@ public func getProcessId(): Int64 {
     return Int64(currentPid)
 }
 
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws EnvException
+ */
 public func getCommand(): String {
     match (getCurrentProcessInfo()[0]) {
         case Some(command) => command
@@ -36,6 +42,12 @@ public func getCommand(): String {
     }
 }
 
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws EnvException
+ */
 public func getCommandLine(): Array<String> {
     match (getCurrentProcessInfo()[2]) {
         case Some(commandLine) => commandLine
@@ -43,6 +55,12 @@ public func getCommandLine(): Array<String> {
     }
 }
 
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws EnvException
+ */
 public func getWorkingDirectory(): Path {
     match (getCurrentProcessInfo()[1]) {
         case Some(workDirPath) => workDirPath
@@ -54,10 +72,21 @@ public func getHomeDirectory(): Path {
     homeDirectory()
 }
 
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ */
 public func getTempDirectory(): Path {
     tempDirectory()
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ */
 public func getVariable(key: String): ?String {
     if (key.contains(NULL_BYTE)) {
         throw IllegalArgumentException("The path cannot contain null character!")
@@ -75,6 +104,12 @@ public func getVariable(key: String): ?String {
     }
 }
 
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws EnvException
+ */
 public func getVariables(): Array<(String, String)> {
     match (getCurrentProcessInfo()[3]) {
         case Some(environments) => environments
@@ -82,6 +117,11 @@ public func getVariables(): Array<(String, String)> {
     }
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ */
 public func setVariable(key: String, value: String): Unit {
     if (key.contains(NULL_BYTE) || value.contains(NULL_BYTE)) {
         throw IllegalArgumentException("The path cannot contain null character!")
@@ -96,6 +136,11 @@ public func setVariable(key: String, value: String): Unit {
     }
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ */
 public func removeVariable(key: String): Unit {
     if (key.contains(NULL_BYTE)) {
         throw IllegalArgumentException("The path cannot contain null character!")
@@ -126,6 +171,12 @@ public func atExit(callback: () -> Unit): Unit {
     CJ_CORE_AddAtexitCallback(callback)
 }
 
+/**
+ * @throws OutOfMemoryError
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws EnvException
+ */
 public func exit(code: Int64): Nothing {
     let c: Int64 = if (code < RTN_CODE_MIN_VAL) {
         RTN_CODE_MIN_VAL
@@ -139,6 +190,12 @@ public func exit(code: Int64): Nothing {
     processExit(Int32(c))
 }
 
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ * @throws EnvException
+ */
 func getCurrentProcessInfo(): (Option<String>, Option<Path>, Option<Array<String>>, Option<Array<(String, String)>>) {
     let currentPid: Int32 = unsafe { CJ_OS_GetCurrentPid() }
 
@@ -157,6 +214,10 @@ func getCurrentProcessInfo(): (Option<String>, Option<Path>, Option<Array<String
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getProcessInfo(processInfo: ProcessInfo): (Option<String>, Option<Path>, Option<Array<String>>, Option<Array<(String, 
     String)>>) {
     let command: ?String = cStringToOption(processInfo.command)
@@ -174,6 +235,10 @@ func cStringToOption(cstring: CString): ?String {
     return cstring.toString()
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func cpointerToArray(cpointer: CPointer<CString>): ?Array<String> {
     if (cpointer.isNull()) {
         return None
@@ -190,6 +255,10 @@ func cpointerToArray(cpointer: CPointer<CString>): ?Array<String> {
     return arrList.toArray()
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getEnvirments(env: CPointer<CString>): ?Array<(String, String)> {
     if (env.isNull()) {
         return None
@@ -219,6 +288,12 @@ func homeDirectory(): Path {
     Path(homeDir.toString())
 }
 
+/**
+ * @throws IllegalSynchronizationStateException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ * @throws NoneValueException
+ */
 func tempDirectory(): Path {
     let tmpDirs: Array<?String> = [getVariable("TMPDIR"), getVariable("TMP"), getVariable("TEMP"),
         getVariable("TEMPDIR")]
@@ -316,6 +391,9 @@ func getStdHandle(fd: IntNative): IntNative {
     unsafe { CJ_OS_GetStdHandle(fd) }
 }
 
+/**
+ * @throws EnvException
+ */
 @When[backend == "cjnative"]
 func processExit(exitCode: Int32): Nothing {
     unsafe {

@@ -41,10 +41,19 @@ public open class Error <: ToString {
         return "${className}: ${message}"
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     public open func printStackTrace(): Unit {
         eprintln("An exception has occurred: ${getStackTraceMessage()}")
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public open func getStackTraceMessage(): String {
         let message = StringBuilder()
         message.append(toString() + "\n")
@@ -59,6 +68,10 @@ public open class Error <: ToString {
         return message.toString()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func getStackTrace(): Array<StackTraceElement> {
         getStackTraceImpl(pcArray)
     }

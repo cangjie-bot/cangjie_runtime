@@ -33,6 +33,13 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
             _handle.store(v)
         }
     }
+    /**
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     public override func connect(
         localAddress: ?SocketAddress,
         address: SocketAddress,
@@ -71,6 +78,11 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
 
     protected func onHandleReplaced(newHandle: Int64): Unit
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws SocketException
+     */
     private unsafe func sockAddrOptional(addr: ?SocketAddress): CPointer<SockAddr> {
         match (addr) {
             case Some(addr) =>
@@ -84,6 +96,9 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
+    /**
+     * @throws SocketException
+     */
     public override func disconnect(): Unit {
         let rc = unsafe { CJ_MRT_SockDisconnect(handle, isIPv6) }
         if (rc != 0) {
@@ -91,6 +106,12 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     public override func bindListen(
         address: SocketAddress,
         backlogSize: ?Int32,
@@ -129,6 +150,12 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     protected func acceptImpl(timeout: ?Duration): (Int64, SocketNet) {
         var address = ensureAddress()
 
@@ -151,6 +178,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     private func ensureAddress(): SockAddr {
         match (this.address) {
             case Some(address) => address
@@ -158,6 +189,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     private func createAddress(): SockAddr {
         let new = SockAddr()
         this.address = new
@@ -168,10 +203,20 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         unsafe { CJ_MRT_SockShutdown(handle) }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public override func detectLocalAddress(): ?SocketAddress {
         getLocalAddress(handle)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public override func detectRemoteAddress(): ?SocketAddress {
         getRemoteAddress(handle)
     }
@@ -183,6 +228,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public override unsafe func getSocketOption(
         level: Int32,
         option: Int32,
@@ -213,6 +262,9 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
 
 
 
+    /**
+     * @throws SocketException
+     */
     public override unsafe func setSocketOption(
         level: Int32,
         option: Int32,
@@ -230,6 +282,9 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
 
 
 
+    /**
+     * @throws SocketException
+     */
     public override func getSocketOptionIntNative(
         level: Int32,
         option: Int32
@@ -248,6 +303,9 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
 
 
 
+    /**
+     * @throws SocketException
+     */
     public override func setSocketOptionIntNative(
         level: Int32,
         option: Int32,
@@ -262,6 +320,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     public override func setKeepAlive(config: ?SocketKeepAliveConfig): Bool {
         if (let Some(_) <- tryConfigureKeepAlive(config)) {
             return false
@@ -270,6 +332,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         return true
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     */
     private func tryConfigureKeepAlive(keepAliveConf: ?SocketKeepAliveConfig): ?Int32 {
         let cfg = match (keepAliveConf) {
             case Some(keepAliveConf) =>
@@ -296,6 +362,9 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
 
         return None
     }
+    /**
+     * @throws Exception
+     */
     public static redef func create(
         _: SocketNet,
         _: AddressFamily,
@@ -304,6 +373,13 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         throw Exception()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketTimeoutException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws SocketException
+     */
     protected static func createSocket(
         net: SocketNet,
         kind: AddressFamily,
@@ -337,6 +413,9 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         throw Exception("unreachable")
     }
 
+    /**
+     * @throws ArithmeticException
+     */
     static func toDopraTimeout(timeout: Duration): UInt64 {
         UInt64(timeout.toNanoseconds()).atLeast(1)
     }
@@ -347,6 +426,11 @@ class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
         super(_handle)
     }
 
+    /**
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     * @throws ArithmeticException
+     */
     public override func write(buffer: Array<Byte>, timeout: ?Duration): Unit {
         let written = match (writeImpl(buffer, 0)) {
             case BytesTransferred(count) => Int64(count)
@@ -360,6 +444,10 @@ class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
         writeSlowpath(buffer, timeout, written)
     }
 
+    /**
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     @OverflowWrapping
     private func writeImpl(buffer: Array<Byte>, offset: Int64): DopraAsyncResult {
         let bytesRemaining = buffer.size - offset
@@ -383,6 +471,11 @@ class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
         }
     }
 
+    /**
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     * @throws ArithmeticException
+     */
     private func writeSlowpath(buffer: Array<Byte>, timeout: ?Duration, writtenBefore: Int64): Unit {
         var bytesWritten = writtenBefore
         while (bytesWritten < buffer.size) {
@@ -409,6 +502,11 @@ class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
         }
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     public override func read(buffer: Array<UInt8>, timeout: ?Duration): ?Int64 {
         match (readImpl(buffer)) {
             case EOF => None
@@ -417,6 +515,10 @@ class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
         }
     }
 
+    /**
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     @OverflowWrapping
     private func readImpl(buffer: Array<UInt8>): DopraAsyncResult {
         unsafe {
@@ -440,6 +542,11 @@ class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
         }
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     private func readSlowpath(buffer: Array<UInt8>, timeout: ?Duration): ?Int64 {
         var readLen: UInt32 = 0
 
@@ -466,15 +573,27 @@ class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
         return Int64(readLen)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws SocketException
+     * @throws SocketTimeoutException
+     */
     public override func accept(timeout: ?Duration): ?DopraTcpSocketImpl {
         let (h, _) = acceptImpl(timeout)
         return DopraTcpSocketImpl(AtomicInt64(h))
     }
 
+    /**
+     * @throws UnsupportedException
+     */
     public override func send(_: Array<Byte>, _: ?Duration, _: SocketAddress): Int64 {
         throw UnsupportedException()
     }
 
+    /**
+     * @throws UnsupportedException
+     */
     public override func receiveFrom(_: Array<UInt8>, _: ?Duration): ?(SocketAddress, Int64) {
         throw UnsupportedException()
     }
@@ -487,6 +606,13 @@ class DopraTcpSocketImpl <: DopraSocketImpl<DopraTcpSocketImpl> {
 
     protected override func onHandleReplaced(_: Int64): Unit {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketTimeoutException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws SocketException
+     */
     public static redef func create(
         net: SocketNet,
         kind: AddressFamily,
@@ -507,6 +633,11 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         this.socketBufferPtr = socketBufferPtr
     }
 
+    /**
+     * @throws SocketTimeoutException
+     * @throws ArithmeticException
+     * @throws SocketException
+     */
     public override func write(buffer: Array<Byte>, timeout: ?Duration): Unit {
         let writeSize = buffer.size
         var writeToBufferSize: Int64 = 0
@@ -546,6 +677,11 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         }
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     public override func read(buffer: Array<UInt8>, timeout: ?Duration): ?Int64 {
         let timeoutNano = timeout?.toNanoseconds() ?? -1
         let readLen: Int32 = unsafe { CJ_SOCKET_BufferRead(socketBufferPtr, 0, Int32(buffer.size), timeoutNano, 0) }
@@ -570,6 +706,12 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     public override func accept(timeout: ?Duration): ?DopraOtherSocketImpl {
         let (h, net) = acceptImpl(timeout)
         let buffer = try {
@@ -581,6 +723,13 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         return DopraOtherSocketImpl(buffer, AtomicInt64(h))
     }
 
+    /**
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws SocketTimeoutException
+     * @throws SocketException
+     */
     public override func receiveFrom(buffer: Array<UInt8>, timeout: ?Duration): ?(SocketAddress, Int64) {
         if (buffer.size == 0) {
             throw SocketException("The buffer is empty.")
@@ -612,6 +761,13 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         return (address, Int64(readLen))
     }
 
+    /**
+     * @throws SocketTimeoutException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ArithmeticException
+     * @throws SocketException
+     */
     public override func send(buffer: Array<Byte>, timeout: ?Duration, destination: SocketAddress): Int64 {
         var copyLen: Int32 = 0
         unsafe {
@@ -651,6 +807,13 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         CJ_SOCKET_BufferClose(socketBufferPtr, handle)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws SocketTimeoutException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws SocketException
+     */
     public static redef func create(
         net: SocketNet,
         kind: AddressFamily,
@@ -667,6 +830,9 @@ class DopraOtherSocketImpl <: DopraSocketImpl<DopraOtherSocketImpl> {
         return DopraOtherSocketImpl(buffer, AtomicInt64(handle))
     }
 
+    /**
+     * @throws SocketException
+     */
     private static func createBuffer(handle: Int64, net: SocketNet): CPointer<SocketBuffer> {
         let readBufferSize = match (net) {
             case TCP => SOCK_READ_BUFFER_SIZE

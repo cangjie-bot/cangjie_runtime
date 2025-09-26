@@ -45,6 +45,10 @@ public interface RadixConvertible<T> {
     func toString(radix!: Int64): String
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func parseCompInt(rawData: Array<Byte>, formatBaseNum: UInt64, multmin: UInt64, maxAbsVal: UInt64, isMark!: Bool = true): UInt64 {
     var num: UInt64 = 0
     var lineLength = 0
@@ -74,6 +78,10 @@ func parseCompInt(rawData: Array<Byte>, formatBaseNum: UInt64, multmin: UInt64, 
     return num
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func tryParseCompInt(rawData: Array<Byte>, formatBaseNum: UInt64, multmin: UInt64, maxAbsVal: UInt64,
     isMark!: Bool = true): ConvertResult<UInt64> {
     var num: UInt64 = 0
@@ -119,6 +127,10 @@ extend Int8 <: Parsable<Int8> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(data: String): Int8 {
         let (rawData, isNegative) = getDataAndFlag(data, true, "Int8")
@@ -144,6 +156,10 @@ extend Int8 <: Parsable<Int8> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(data: String): Option<Int8> {
         let (rawData, isNegative) = getTryDataAndFlag(data, true, "Int8")
@@ -167,6 +183,10 @@ extend Int8 <: Parsable<Int8> {
 }
 
 extend Int8 <: RadixConvertible<Int8> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(value: String, radix!: Int64): Int8 {
         let (rawData, isNegative) = getDataAndFlagWithRadix(value, true, "Int8", radix)
@@ -179,6 +199,10 @@ extend Int8 <: RadixConvertible<Int8> {
         return Int8(num)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(value: String, radix!: Int64): Option<Int8> {
         let (rawData, isNegative) = getTryDataAndFlagWithRadix(value, true, "Int8", radix)
@@ -198,6 +222,10 @@ extend Int8 <: RadixConvertible<Int8> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(radix!: Int64): String {
         return Int64(this).toString(radix: radix)
     }
@@ -218,6 +246,10 @@ extend UInt8 <: Parsable<UInt8> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(data: String): UInt8 {
         let (rawData, isNegative) = getDataAndFlag(data, false, "UInt8")
@@ -236,6 +268,10 @@ extend UInt8 <: Parsable<UInt8> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(data: String): Option<UInt8> {
         let (rawData, isNegative) = getTryDataAndFlag(data, false, "UInt8")
@@ -254,6 +290,10 @@ extend UInt8 <: Parsable<UInt8> {
 }
 
 extend UInt8 <: RadixConvertible<UInt8> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(value: String, radix!: Int64): UInt8 {
         let (rawData, isNegative) = getDataAndFlagWithRadix(value, false, "UInt8", radix)
@@ -262,6 +302,10 @@ extend UInt8 <: RadixConvertible<UInt8> {
         return UInt8(parseCompInt(rawData, formatBaseNum, multmin, maxAbsVal, isMark: false))
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(value: String, radix!: Int64): Option<UInt8> {
         let (rawData, isNegative) = getTryDataAndFlagWithRadix(value, false, "UInt8", radix)
@@ -276,6 +320,10 @@ extend UInt8 <: RadixConvertible<UInt8> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(radix!: Int64): String {
         return UInt64(this).toString(radix: radix)
     }
@@ -296,6 +344,10 @@ extend Int16 <: Parsable<Int16> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(data: String): Int16 {
         let (rawData, isNegative) = getDataAndFlag(data, true, "Int16")
@@ -321,6 +373,10 @@ extend Int16 <: Parsable<Int16> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(data: String): Option<Int16> {
         let (rawData, isNegative) = getTryDataAndFlag(data, true, "Int16")
@@ -344,6 +400,10 @@ extend Int16 <: Parsable<Int16> {
 }
 
 extend Int16 <: RadixConvertible<Int16> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(value: String, radix!: Int64): Int16 {
         let (rawData, isNegative) = getDataAndFlagWithRadix(value, true, "Int16", radix)
@@ -356,6 +416,10 @@ extend Int16 <: RadixConvertible<Int16> {
         return Int16(num)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(value: String, radix!: Int64): Option<Int16> {
         let (rawData, isNegative) = getTryDataAndFlagWithRadix(value, true, "Int16", radix)
@@ -375,6 +439,10 @@ extend Int16 <: RadixConvertible<Int16> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(radix!: Int64): String {
         return Int64(this).toString(radix: radix)
     }
@@ -395,6 +463,10 @@ extend UInt16 <: Parsable<UInt16> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(data: String): UInt16 {
         let (rawData, isNegative) = getDataAndFlag(data, false, "UInt16")
@@ -413,6 +485,10 @@ extend UInt16 <: Parsable<UInt16> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(data: String): Option<UInt16> {
         let (rawData, isNegative) = getTryDataAndFlag(data, false, "UInt16")
@@ -431,6 +507,10 @@ extend UInt16 <: Parsable<UInt16> {
 }
 
 extend UInt16 <: RadixConvertible<UInt16> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(value: String, radix!: Int64): UInt16 {
         let (rawData, isNegative) = getDataAndFlagWithRadix(value, false, "UInt16", radix)
@@ -439,6 +519,10 @@ extend UInt16 <: RadixConvertible<UInt16> {
         return UInt16(parseCompInt(rawData, formatBaseNum, multmin, maxAbsVal, isMark: false))
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(value: String, radix!: Int64): Option<UInt16> {
         let (rawData, isNegative) = getTryDataAndFlagWithRadix(value, false, "UInt16", radix)
@@ -453,6 +537,10 @@ extend UInt16 <: RadixConvertible<UInt16> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(radix!: Int64): String {
         return UInt64(this).toString(radix: radix)
     }
@@ -473,6 +561,10 @@ extend Int32 <: Parsable<Int32> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(data: String): Int32 {
         let (rawData, isNegative) = getDataAndFlag(data, true, "Int32")
@@ -498,6 +590,10 @@ extend Int32 <: Parsable<Int32> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(data: String): Option<Int32> {
         let (rawData, isNegative) = getTryDataAndFlag(data, true, "Int32")
@@ -521,6 +617,10 @@ extend Int32 <: Parsable<Int32> {
 }
 
 extend Int32 <: RadixConvertible<Int32> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(value: String, radix!: Int64): Int32 {
         let (rawData, isNegative) = getDataAndFlagWithRadix(value, true, "Int32", radix)
@@ -533,6 +633,10 @@ extend Int32 <: RadixConvertible<Int32> {
         return Int32(num)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(value: String, radix!: Int64): Option<Int32> {
         let (rawData, isNegative) = getTryDataAndFlagWithRadix(value, true, "Int32", radix)
@@ -552,6 +656,10 @@ extend Int32 <: RadixConvertible<Int32> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(radix!: Int64): String {
         return Int64(this).toString(radix: radix)
     }
@@ -572,6 +680,10 @@ extend UInt32 <: Parsable<UInt32> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(data: String): UInt32 {
         let (rawData, isNegative) = getDataAndFlag(data, false, "UInt32")
@@ -590,6 +702,10 @@ extend UInt32 <: Parsable<UInt32> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(data: String): Option<UInt32> {
         let (rawData, isNegative) = getTryDataAndFlag(data, false, "UInt32")
@@ -608,6 +724,10 @@ extend UInt32 <: Parsable<UInt32> {
 }
 
 extend UInt32 <: RadixConvertible<UInt32> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(value: String, radix!: Int64): UInt32 {
         let (rawData, isNegative) = getDataAndFlagWithRadix(value, false, "UInt32", radix)
@@ -616,6 +736,10 @@ extend UInt32 <: RadixConvertible<UInt32> {
         return UInt32(parseCompInt(rawData, formatBaseNum, multmin, maxAbsVal, isMark: false))
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(value: String, radix!: Int64): Option<UInt32> {
         let (rawData, isNegative) = getTryDataAndFlagWithRadix(value, false, "UInt32", radix)
@@ -630,6 +754,10 @@ extend UInt32 <: RadixConvertible<UInt32> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(radix!: Int64): String {
         return UInt64(this).toString(radix: radix)
     }
@@ -650,6 +778,10 @@ extend Int64 <: Parsable<Int64> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(data: String): Int64 {
         let (rawData, isNegative) = getDataAndFlag(data, true, "Int64")
@@ -675,6 +807,10 @@ extend Int64 <: Parsable<Int64> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(data: String): Option<Int64> {
         let (rawData, isNegative) = getTryDataAndFlag(data, true, "Int64")
@@ -698,6 +834,10 @@ extend Int64 <: Parsable<Int64> {
 }
 
 extend Int64 <: RadixConvertible<Int64> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(value: String, radix!: Int64): Int64 {
         let (rawData, isNegative) = getDataAndFlagWithRadix(value, true, "Int64", radix)
@@ -710,6 +850,10 @@ extend Int64 <: RadixConvertible<Int64> {
         return Int64(num)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(value: String, radix!: Int64): Option<Int64> {
         let (rawData, isNegative) = getTryDataAndFlagWithRadix(value, true, "Int64", radix)
@@ -729,6 +873,10 @@ extend Int64 <: RadixConvertible<Int64> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public func toString(radix!: Int64): String {
         if (radix == 10) {
@@ -772,6 +920,10 @@ extend UInt64 <: Parsable<UInt64> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     public static func parse(data: String): UInt64 {
         let (rawData, isNegative) = getDataAndFlag(data, false, "UInt64")
@@ -790,6 +942,10 @@ extend UInt64 <: Parsable<UInt64> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public static func tryParse(data: String): Option<UInt64> {
         let (rawData, isNegative) = getTryDataAndFlag(data, false, "UInt64")
@@ -808,6 +964,10 @@ extend UInt64 <: Parsable<UInt64> {
 }
 
 extend UInt64 <: RadixConvertible<UInt64> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func parse(value: String, radix!: Int64): UInt64 {
         let (rawData, isNegative) = getDataAndFlagWithRadix(value, false, "UInt64", radix)
         var (formatBaseNum, multmin, maxAbsVal): (UInt64, UInt64, UInt64) = getBaseInfosWithRadix(TypeBase.UI64,
@@ -815,6 +975,10 @@ extend UInt64 <: RadixConvertible<UInt64> {
         return parseCompInt(rawData, formatBaseNum, multmin, maxAbsVal, isMark: false)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func tryParse(value: String, radix!: Int64): Option<UInt64> {
         let (rawData, isNegative) = getTryDataAndFlagWithRadix(value, false, "UInt64", radix)
         if (rawData.size == 0) {
@@ -828,6 +992,10 @@ extend UInt64 <: RadixConvertible<UInt64> {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toString(radix!: Int64): String {
         if (radix == 10) {
             return this.toString()
@@ -843,6 +1011,10 @@ extend UInt64 <: RadixConvertible<UInt64> {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getDataAndFlag(data: String, isSigned: Bool, typeName: String): (Array<Byte>, Int64) {
     if (data.isEmpty()) {
         throw IllegalArgumentException("The string is empty.")
@@ -863,6 +1035,10 @@ func getDataAndFlag(data: String, isSigned: Bool, typeName: String): (Array<Byte
     return (rawData, isNegative)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getTryDataAndFlag(data: String, isSigned: Bool, _: String): (Array<Byte>, Int64) {
     if (data.isEmpty()) {
         return ([], 1)
@@ -883,6 +1059,10 @@ func getTryDataAndFlag(data: String, isSigned: Bool, _: String): (Array<Byte>, I
     return (rawData, isNegative)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getDataAndFlagWithRadix(data: String, isSigned: Bool, typeName: String, radix: Int64): (Array<Byte>, Int64) {
     if (data.isEmpty()) {
         throw IllegalArgumentException("The string is empty.")
@@ -906,6 +1086,10 @@ func getDataAndFlagWithRadix(data: String, isSigned: Bool, typeName: String, rad
     return (rawData, isNegative)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func getTryDataAndFlagWithRadix(data: String, isSigned: Bool, _: String, radix: Int64): (Array<Byte>, Int64) {
     if (radix < 2 || radix > 36) {
         return ([], 1)
@@ -929,6 +1113,10 @@ func getTryDataAndFlagWithRadix(data: String, isSigned: Bool, _: String, radix: 
     return (rawData, isNegative)
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func toRadixString(u: UInt64, radix: Int64): String {
     var v: UInt64 = u
     var str = ""
@@ -947,6 +1135,10 @@ func toRadixString(u: UInt64, radix: Int64): String {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func toRadixStringCom(u: UInt64, radix: Int64): String {
     var v: UInt64 = u
     var r: UInt64 = UInt64(radix)
@@ -971,6 +1163,11 @@ interface FloatParsable<T> {
     static func fromFloat64(n: Float64): T
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalMemoryException
+ * @throws IllegalArgumentException
+ */
 func parseFloat<T>(data: String): T where T <: FloatParsable<T> {
     match (doParseFloat<T>(data)) {
         case Success(n) => n
@@ -978,6 +1175,11 @@ func parseFloat<T>(data: String): T where T <: FloatParsable<T> {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 func tryParseFloat<T>(data: String): Option<T> where T <: FloatParsable<T> {
     match (doParseFloat<T>(data)) {
         case Success(n) => Some(n)
@@ -985,6 +1187,11 @@ func tryParseFloat<T>(data: String): Option<T> where T <: FloatParsable<T> {
     }
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 func doParseFloat<T>(data: String): ConvertResult<T> where T <: FloatParsable<T> {
     if (data.isEmpty()) {
         return Failure("The string is empty.")
@@ -1036,6 +1243,10 @@ func doParseFloat<T>(data: String): ConvertResult<T> where T <: FloatParsable<T>
     return Success(T.fromFloat64(result))
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 func doParseFloatFromCffi<T>(data: String): ConvertResult<T> where T <: FloatParsable<T> {
     var result: Float64
     unsafe {
@@ -1094,6 +1305,11 @@ extend Float16 <: Parsable<Float16> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public static func parse(data: String): Float16 {
         parseFloat<Float16>(data)
@@ -1105,6 +1321,11 @@ extend Float16 <: Parsable<Float16> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public static func tryParse(data: String): Option<Float16> {
         tryParseFloat<Float16>(data)
     }
@@ -1123,6 +1344,11 @@ extend Float32 <: Parsable<Float32> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public static func parse(data: String): Float32 {
         parseFloat<Float32>(data)
@@ -1134,6 +1360,11 @@ extend Float32 <: Parsable<Float32> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public static func tryParse(data: String): Option<Float32> {
         tryParseFloat<Float32>(data)
     }
@@ -1152,6 +1383,11 @@ extend Float64 <: Parsable<Float64> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public static func parse(data: String): Float64 {
         parseFloat<Float64>(data)
@@ -1164,6 +1400,11 @@ extend Float64 <: Parsable<Float64> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     */
     public static func tryParse(data: String): Option<Float64> {
         tryParseFloat<Float64>(data)
     }
@@ -1183,6 +1424,10 @@ extend Rune <: Parsable<Rune> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func parse(data: String): Rune {
         if (data.isEmpty()) {
             throw IllegalArgumentException("The string is empty.")
@@ -1197,6 +1442,10 @@ extend Rune <: Parsable<Rune> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func tryParse(data: String): Option<Rune> {
         strToChar(data.toRuneArray())
     }
@@ -1215,6 +1464,10 @@ extend Bool <: Parsable<Bool> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func parse(data: String): Bool {
         match (tryParse(data)) {
             case Some(v) => return v
@@ -1228,6 +1481,9 @@ extend Bool <: Parsable<Bool> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public static func tryParse(data: String): Option<Bool> {
         var strData = unsafe { data.rawData() }
         if (strData.size == 4 && strData[3] == b'e' && strData[2] == b'u' && strData[1] == b'r' && strData[0] == b't') {

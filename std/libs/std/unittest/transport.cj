@@ -25,6 +25,16 @@ private const INT8_BYTES = 8
 private class ExecutionResultPartIterator <: Iterator<ExecutionResultPart> {
     ExecutionResultPartIterator(private let socket: TcpSocket, let limit!: ?UInt64 = None) {}
 
+    /**
+     * @throws SocketException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws Exception
+     */
     private func read(size: Int64): ?Array<UInt8> {
         if (size <= 0) {
             return []
@@ -45,6 +55,23 @@ private class ExecutionResultPartIterator <: Iterator<ExecutionResultPart> {
 
     private var receivedCount = 0u64
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws TimeParseException
+     * @throws DataModelException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws SocketException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws JsonException
+     */
     @OverflowSaturating
     public func next(): ?ExecutionResultPart {
         match (limit) {
@@ -74,11 +101,24 @@ private class ExecutionResultPartIterator <: Iterator<ExecutionResultPart> {
 }
 
 class TransportChannel <: Resource {
+    /**
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws SocketException
+     */
     TransportChannel(private let socket: TcpSocket, private let outputReporter: TestOutputReporter,
         private let isMain!: Bool = false) {
         socket.writeTimeout = Duration.second * WRITE_TIMEOUT_S
     }
 
+        /**
+         * @throws NoneValueException
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         */
     prop port: UInt16 {
         get() {
             let address = if (isMain) {
@@ -94,10 +134,27 @@ class TransportChannel <: Resource {
         socket.isClosed()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func close(): Unit {
         socket.close()
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws Exception
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     * @throws JsonException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     func send(part: ExecutionResultPart): Unit {
         let payload = part.serializeInternal().asStruct().toJsonBytes()
         let payloadSizeBytes = Array<UInt8>(INT8_BYTES, repeat: 0u8)
@@ -116,6 +173,9 @@ class TransportChannel <: Resource {
         return ExecutionResultPartIterator(socket, limit: limit)
     }
 
+    /**
+     * @throws OutOfMemoryError
+     */
     func delimitOutput(): Unit {
         if (outputReporter.capture) {
             print(OUTPUT_DELIMITER, flush: true)
@@ -128,6 +188,11 @@ enum Transport <: Resource {
     | TChannel(TransportChannel)
     | TMain(TransportMain)
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func close(): Unit {
         match (this) {
             case TChannel(t) => t.close()
@@ -160,6 +225,26 @@ enum Transport <: Resource {
         }
     }
 
+    /**
+     * @throws RegexException
+     * @throws JsonException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws ArithmeticException
+     * @throws OverflowException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalMemoryException
+     * @throws SocketException
+     * @throws IllegalArgumentException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws OutOfMemoryError
+     */
     static func fromDefaultConfiguration(): Transport {
         let outputReporter = TestOutputReporter.fromDefaultConfiguration()
 
@@ -179,6 +264,11 @@ enum Transport <: Resource {
 class TransportMain <: Resource {
     private TransportMain(private let socket: TcpServerSocket, private let outputReporter: TestOutputReporter) {}
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     */
     public func close(): Unit {
         socket.close()
     }
@@ -187,6 +277,14 @@ class TransportMain <: Resource {
         socket.isClosed()
     }
 
+        /**
+         * @throws IllegalStateException
+         * @throws ArithmeticException
+         * @throws IllegalArgumentException
+         * @throws IllegalSynchronizationStateException
+         * @throws SocketException
+         * @throws NoneValueException
+         */
     prop port: UInt16 {
         get() {
             (socket.localAddress as IPSocketAddress).getOrThrow().port
@@ -194,10 +292,36 @@ class TransportMain <: Resource {
     }
 
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws SocketException
+     */
     func accept(): TransportChannel {
         TransportChannel(socket.accept(timeout: Duration.second * CONNECTION_TIMEOUT_S), outputReporter, isMain: true)
     }
 
+    /**
+     * @throws IllegalStateException
+     * @throws OverflowException
+     * @throws IndexOutOfBoundsException
+     * @throws UnittestOptionValidationException
+     * @throws RegexException
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws JsonException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalSynchronizationStateException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws IllegalMemoryException
+     */
     static func fromDefaultConfiguration(): TransportMain {
         let socket = TcpServerSocket(bindAt: 0u16)
         socket.bind()
@@ -208,18 +332,31 @@ class TransportMain <: Resource {
 struct WorkerOutput {
     WorkerOutput(let stdout: Array<Byte>, let stderr: Array<Byte>) {}
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     prop stdouts: Array<String> {
         get() {
             stdout.split(OUTPUT_DELIMITER) |> map { it => String.fromUtf8(it) } |> collectArray
         }
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     prop stderrs: Array<String> {
         get() {
             stderr.split(OUTPUT_DELIMITER) |> map { it => String.fromUtf8(it) } |> collectArray
         }
     }
 
+        /**
+         * @throws IllegalArgumentException
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalStateException
+         */
     prop captured: Array<CapturedOutput> {
         get() {
             let outs = stdouts

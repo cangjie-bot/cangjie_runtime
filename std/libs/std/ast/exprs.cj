@@ -44,6 +44,9 @@ public class Block <: Expr {
     private var nodes_: ArrayList<Node> = ArrayList<Node>()
     private var rCurl_: Token = Token()
     private var unsafe_: Token = Token()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lBrace: Token {
         get() {
             lCurl_
@@ -61,6 +64,9 @@ public class Block <: Expr {
             nodes_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rBrace: Token {
         get() {
             rCurl_
@@ -70,6 +76,10 @@ public class Block <: Expr {
             rCurl_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         if (isValidToken(unsafe_)) {
@@ -106,6 +116,10 @@ public class Block <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "Block {\n"
         currentIndent = indent
@@ -122,6 +136,17 @@ public class Block <: Expr {
 }
 
 public class BinaryExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as BinaryExpr) {
@@ -182,6 +207,10 @@ public class BinaryExpr <: Expr {
         return op_.kind.opPrecedence()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         if (op_.kind == EXP || op_.kind == COALESCING || op_.kind.isNonAssociative()) {
@@ -210,6 +239,10 @@ public class BinaryExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "BinaryExpr {\n"
         currentIndent = indent
@@ -227,6 +260,17 @@ public class BinaryExpr <: Expr {
 }
 
 public class UnaryExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as UnaryExpr) {
@@ -275,6 +319,10 @@ public class UnaryExpr <: Expr {
         return NOT.opPrecedence()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         ret.append(op_)
@@ -291,6 +339,10 @@ public class UnaryExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "UnaryExpr {\n"
         currentIndent = indent
@@ -306,6 +358,17 @@ public class UnaryExpr <: Expr {
 }
 
 public class IsExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as IsExpr) {
@@ -345,6 +408,9 @@ public class IsExpr <: Expr {
             expr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             op_
@@ -366,6 +432,10 @@ public class IsExpr <: Expr {
         return op_.kind.opPrecedence()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         addParen(ret, expr_, this)
@@ -383,6 +453,10 @@ public class IsExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "IsExpr {\n"
         currentIndent = indent
@@ -400,6 +474,17 @@ public class IsExpr <: Expr {
 }
 
 public class AsExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as AsExpr) {
@@ -439,6 +524,9 @@ public class AsExpr <: Expr {
             expr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             op_
@@ -460,6 +548,10 @@ public class AsExpr <: Expr {
         return op_.kind.opPrecedence()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         addParen(ret, expr_, this)
@@ -476,6 +568,10 @@ public class AsExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "AsExpr {\n"
         currentIndent = indent
@@ -493,6 +589,17 @@ public class AsExpr <: Expr {
 }
 
 public class ParenExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as ParenExpr) {
@@ -524,6 +631,9 @@ public class ParenExpr <: Expr {
     private var lParen_: Token = Token(TokenKind.LPAREN)
     private var expr_: Expr = Expr()
     private var rParen_: Token = Token(TokenKind.RPAREN)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -541,6 +651,9 @@ public class ParenExpr <: Expr {
             expr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -551,6 +664,10 @@ public class ParenExpr <: Expr {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(lParen_).append(expr_).append(rParen_)
     }
@@ -564,6 +681,10 @@ public class ParenExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ParenExpr {\n"
         currentIndent = indent
@@ -578,6 +699,17 @@ public class ParenExpr <: Expr {
 }
 
 public class LitConstExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as LitConstExpr) {
@@ -611,6 +743,10 @@ public class LitConstExpr <: Expr {
             literal_ = v
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func toTokens(): Tokens {
         let pos = literal_.pos
         if (literal_.kind == TokenKind.UNIT_LITERAL) {
@@ -632,6 +768,10 @@ public class LitConstExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "LitConstExpr {\n"
         currentIndent = indent
@@ -652,6 +792,17 @@ public class RefExpr <: Expr {
         commas_ = commas
         rAngle_ = rAngle
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as RefExpr) {
@@ -689,6 +840,9 @@ public class RefExpr <: Expr {
             identifier_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lAngle: Token {
         get() {
             lAngle_
@@ -706,6 +860,9 @@ public class RefExpr <: Expr {
             typeArgs_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop commas: Tokens {
         get() {
             commas_
@@ -715,6 +872,9 @@ public class RefExpr <: Expr {
             commas_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rAngle: Token {
         get() {
             rAngle_
@@ -724,6 +884,10 @@ public class RefExpr <: Expr {
             rAngle_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(identifier_)
         if (!typeArgs_.isEmpty()) {
@@ -751,6 +915,10 @@ public class RefExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "RefExpr {\n"
         currentIndent = indent
@@ -772,6 +940,17 @@ public class ReturnExpr <: Expr {
         keyWord_ = keyWord
         expr_ = expr
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as ReturnExpr) {
@@ -795,6 +974,9 @@ public class ReturnExpr <: Expr {
     }
     private var keyWord_: Token = Token(TokenKind.RETURN)
     private var expr_: Option<Expr> = None<Expr>
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyWord_
@@ -804,6 +986,9 @@ public class ReturnExpr <: Expr {
             keyWord_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop expr: Expr {
         get() {
             match (expr_) {
@@ -815,6 +1000,10 @@ public class ReturnExpr <: Expr {
             expr_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(keyWord_)
         match (expr_) {
@@ -836,6 +1025,10 @@ public class ReturnExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ReturnExpr {\n"
         currentIndent = indent
@@ -859,6 +1052,17 @@ public class ThrowExpr <: Expr {
         keyWord_ = keyWord
         expr_ = expr
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as ThrowExpr) {
@@ -882,6 +1086,9 @@ public class ThrowExpr <: Expr {
     }
     private var keyWord_: Token = Token(TokenKind.THROW)
     private var expr_: Expr = Expr()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyWord_
@@ -899,6 +1106,10 @@ public class ThrowExpr <: Expr {
             expr_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(keyWord_).append(expr_.toTokens())
     }
@@ -912,6 +1123,10 @@ public class ThrowExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ThrowExpr {\n"
         currentIndent = indent
@@ -931,6 +1146,17 @@ public class PerformExpr <: Expr {
         keyWord_ = keyWord
         expr_ = expr
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as PerformExpr) {
@@ -952,6 +1178,9 @@ public class PerformExpr <: Expr {
     }
     private var keyWord_: Token = Token(TokenKind.PERFORM)
     private var expr_: Expr = Expr()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyWord_
@@ -969,6 +1198,10 @@ public class PerformExpr <: Expr {
             expr_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(keyWord_).append(expr_.toTokens())
     }
@@ -982,6 +1215,10 @@ public class PerformExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "PerformExpr {\n"
         currentIndent = indent
@@ -1004,6 +1241,17 @@ public class ResumeExpr <: Expr {
         this.throwing_ = throwing_
         this.throwingExpr_ = throwingExpr_
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as ResumeExpr) {
@@ -1031,6 +1279,9 @@ public class ResumeExpr <: Expr {
     private var withExpr_: Option<Expr> = None<Expr>
     private var throwing_: Option<Token> = None<Token>
     private var throwingExpr_: Option<Expr> = None<Expr>
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordR : Token {
         get() {
             resume_
@@ -1040,6 +1291,9 @@ public class ResumeExpr <: Expr {
             resume_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordW : Option<Token> {
         get() {
             with_
@@ -1060,6 +1314,9 @@ public class ResumeExpr <: Expr {
             withExpr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordT : Option<Token> {
         get() {
             throwing_
@@ -1080,6 +1337,10 @@ public class ResumeExpr <: Expr {
             throwingExpr_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var tokens = Tokens().append(resume_)
         match (with_) {
@@ -1117,6 +1378,10 @@ public class ResumeExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ResumeExpr {\n"
         currentIndent = indent
@@ -1155,6 +1420,17 @@ public class AssignExpr <: Expr {
         assign_ = assign
         rexpr_ = rexpr
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as AssignExpr) {
@@ -1180,6 +1456,9 @@ public class AssignExpr <: Expr {
     private var assign_: Token = Token(TokenKind.ASSIGN)
     private var lexpr_: Expr = Expr()
     private var rexpr_: Expr = Expr()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop assign: Token {
         get() {
             assign_
@@ -1210,6 +1489,10 @@ public class AssignExpr <: Expr {
         return assign_.kind.opPrecedence()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         addParen(ret, lexpr_, this)
@@ -1228,6 +1511,10 @@ public class AssignExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "AssignExpr {\n"
         currentIndent = indent
@@ -1252,6 +1539,17 @@ public class CallExpr <: Expr {
         this.args_ = args
         this.rParen_ = rParen
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as CallExpr) {
@@ -1287,6 +1585,9 @@ public class CallExpr <: Expr {
             postfixExpr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -1304,6 +1605,9 @@ public class CallExpr <: Expr {
             args_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -1317,6 +1621,12 @@ public class CallExpr <: Expr {
     protected func precedence(): Int64 {
         return rParen_.kind.opPrecedence()
     }
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         if (postfixExpr_ is OptionalExpr) {
@@ -1344,6 +1654,10 @@ public class CallExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "CallExpr {\n"
         currentIndent = indent
@@ -1362,6 +1676,17 @@ public class CallExpr <: Expr {
 }
 
 public class MemberAccess <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as MemberAccess) {
@@ -1414,6 +1739,9 @@ public class MemberAccess <: Expr {
             postfixExpr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop dot: Token {
         get() {
             dot_
@@ -1431,6 +1759,9 @@ public class MemberAccess <: Expr {
             ident_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lAngle: Token {
         get() {
             lAngle_
@@ -1448,6 +1779,9 @@ public class MemberAccess <: Expr {
             typeArgs_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop commas: Tokens {
         get() {
             commas_
@@ -1457,6 +1791,9 @@ public class MemberAccess <: Expr {
             commas_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rAngle: Token {
         get() {
             rAngle_
@@ -1470,6 +1807,10 @@ public class MemberAccess <: Expr {
     protected func precedence(): Int64 {
         return dot_.kind.opPrecedence()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         if (postfixExpr_ is OptionalExpr) {
@@ -1504,6 +1845,10 @@ public class MemberAccess <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "MemberAccess {\n"
         currentIndent = indent
@@ -1524,6 +1869,17 @@ public class MemberAccess <: Expr {
 }
 
 public class IfExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as IfExpr) {
@@ -1567,6 +1923,9 @@ public class IfExpr <: Expr {
     private var else_: Token = Token()
     private var ifBlock_: Block = Block()
     private var elseExpr_: Option<Expr> = None<Expr>
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordI: Token {
         get() {
             if_
@@ -1576,6 +1935,9 @@ public class IfExpr <: Expr {
             if_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -1593,6 +1955,9 @@ public class IfExpr <: Expr {
             cond_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -1610,6 +1975,9 @@ public class IfExpr <: Expr {
             ifBlock_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordE: Token {
         get() {
             else_
@@ -1619,6 +1987,9 @@ public class IfExpr <: Expr {
             else_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop elseExpr: Expr {
         get() {
             match (elseExpr_) {
@@ -1630,6 +2001,10 @@ public class IfExpr <: Expr {
             elseExpr_ = Some(v)
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
             .append(if_)
@@ -1658,6 +2033,10 @@ public class IfExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "IfExpr {\n"
         currentIndent = indent
@@ -1682,6 +2061,17 @@ public class IfExpr <: Expr {
 }
 
 public class LetPatternExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as LetPatternExpr) {
@@ -1715,6 +2105,9 @@ public class LetPatternExpr <: Expr {
     private var pattern_: Pattern = Pattern()
     private var backArrow_: Token = Token(TokenKind.BACKARROW)
     private var expr_: Expr = Expr()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             key_
@@ -1732,6 +2125,9 @@ public class LetPatternExpr <: Expr {
             pattern_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop backArrow: Token {
         get() {
             backArrow_
@@ -1749,6 +2145,10 @@ public class LetPatternExpr <: Expr {
             expr_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(key_).append(pattern_).append(backArrow_).append(expr_)
     }
@@ -1763,6 +2163,10 @@ public class LetPatternExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "LetPatternExpr {\n"
         currentIndent = indent
@@ -1781,6 +2185,17 @@ public class LetPatternExpr <: Expr {
 }
 
 public class MatchExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as MatchExpr) {
@@ -1824,6 +2239,9 @@ public class MatchExpr <: Expr {
     private var lCurl_: Token = Token(TokenKind.LCURL)
     private var matchCases_: ArrayList<MatchCase> = ArrayList<MatchCase>()
     private var rCurl_: Token = Token(TokenKind.RCURL)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyWord_
@@ -1833,6 +2251,9 @@ public class MatchExpr <: Expr {
             keyWord_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -1842,6 +2263,9 @@ public class MatchExpr <: Expr {
             lParen_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop selector: Expr {
         get() {
             match (selector_) {
@@ -1853,6 +2277,9 @@ public class MatchExpr <: Expr {
             selector_ = Some(v)
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -1862,6 +2289,9 @@ public class MatchExpr <: Expr {
             rParen_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lBrace: Token {
         get() {
             lCurl_
@@ -1879,6 +2309,9 @@ public class MatchExpr <: Expr {
             matchCases_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rBrace: Token {
         get() {
             rCurl_
@@ -1888,6 +2321,12 @@ public class MatchExpr <: Expr {
             rCurl_ = v
         }
     }
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(keyWord_)
         match (selector_) {
@@ -1915,6 +2354,10 @@ public class MatchExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "MatchExpr {\n"
         currentIndent = indent
@@ -1938,6 +2381,17 @@ public class MatchExpr <: Expr {
 }
 
 public class WhileExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as WhileExpr) {
@@ -1974,6 +2428,9 @@ public class WhileExpr <: Expr {
     private var cond_: Expr = Expr()
     private var rParen_: Token = Token(TokenKind.RPAREN)
     private var block_: Block = Block()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyWord_
@@ -1983,6 +2440,9 @@ public class WhileExpr <: Expr {
             keyWord_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -2000,6 +2460,9 @@ public class WhileExpr <: Expr {
             cond_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -2017,6 +2480,10 @@ public class WhileExpr <: Expr {
             block_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         ret.append(keyWord_).append(lParen_).append(cond_.toTokens()).append(rParen_).append(block_.toTokens())
@@ -2033,6 +2500,10 @@ public class WhileExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "WhileExpr {\n"
         currentIndent = indent
@@ -2050,6 +2521,17 @@ public class WhileExpr <: Expr {
 }
 
 public class DoWhileExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as DoWhileExpr) {
@@ -2089,6 +2571,9 @@ public class DoWhileExpr <: Expr {
     private var lParen_: Token = Token(TokenKind.LPAREN)
     private var cond_: Expr = Expr()
     private var rParen_: Token = Token(TokenKind.RPAREN)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordD: Token {
         get() {
             do_
@@ -2106,6 +2591,9 @@ public class DoWhileExpr <: Expr {
             block_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordW: Token {
         get() {
             while_
@@ -2115,6 +2603,9 @@ public class DoWhileExpr <: Expr {
             while_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -2132,6 +2623,9 @@ public class DoWhileExpr <: Expr {
             cond_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -2141,6 +2635,10 @@ public class DoWhileExpr <: Expr {
             rParen_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         ret.append(do_).append(block_).append(while_).append(lParen_).append(cond_).append(rParen_)
@@ -2156,6 +2654,10 @@ public class DoWhileExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "DoWhileExpr {\n"
         currentIndent = indent
@@ -2174,6 +2676,17 @@ public class DoWhileExpr <: Expr {
 }
 
 public class LambdaExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as LambdaExpr) {
@@ -2214,6 +2727,9 @@ public class LambdaExpr <: Expr {
     private var nodes_: ArrayList<Node> = ArrayList<Node>()
     private var rCurl_: Token = Token(TokenKind.RCURL)
     private var mockSupported_: Bool = false
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lBrace: Token {
         get() {
             lCurl_
@@ -2231,6 +2747,9 @@ public class LambdaExpr <: Expr {
             funcParams_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop doubleArrow: Token {
         get() {
             db_arrow_
@@ -2248,6 +2767,9 @@ public class LambdaExpr <: Expr {
             nodes_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rBrace: Token {
         get() {
             rCurl_
@@ -2257,6 +2779,12 @@ public class LambdaExpr <: Expr {
             rCurl_ = v
         }
     }
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret: Tokens = Tokens()
         if (mockSupported_) {
@@ -2291,6 +2819,11 @@ public class LambdaExpr <: Expr {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "LambdaExpr {\n"
         currentIndent = indent
@@ -2312,6 +2845,17 @@ public class LambdaExpr <: Expr {
 }
 
 public class SpawnExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as SpawnExpr) {
@@ -2348,6 +2892,9 @@ public class SpawnExpr <: Expr {
     private var context_: Option<Expr> = None<Expr>
     private var rParen_: Token = Token(TokenKind.RPAREN)
     private var task_: LambdaExpr = LambdaExpr()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyWord_
@@ -2357,6 +2904,9 @@ public class SpawnExpr <: Expr {
             keyWord_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -2366,6 +2916,9 @@ public class SpawnExpr <: Expr {
             lParen_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop threadContext: Expr {
         get() {
             match (context_) {
@@ -2377,6 +2930,9 @@ public class SpawnExpr <: Expr {
             context_ = Some(v)
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -2394,6 +2950,10 @@ public class SpawnExpr <: Expr {
             task_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(keyWord_)
         match (context_) {
@@ -2416,6 +2976,11 @@ public class SpawnExpr <: Expr {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "SpawnExpr {\n"
         currentIndent = indent
@@ -2437,6 +3002,17 @@ public class SpawnExpr <: Expr {
 }
 
 public class SynchronizedExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as SynchronizedExpr) {
@@ -2473,6 +3049,9 @@ public class SynchronizedExpr <: Expr {
     private var mutex_: Expr = Expr()
     private var rParen_: Token = Token(TokenKind.RPAREN)
     private var block_: Block = Block()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyWord_
@@ -2482,6 +3061,9 @@ public class SynchronizedExpr <: Expr {
             keyWord_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -2499,6 +3081,9 @@ public class SynchronizedExpr <: Expr {
             mutex_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -2516,6 +3101,10 @@ public class SynchronizedExpr <: Expr {
             block_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(keyWord_).append(lParen_).append(mutex_).append(rParen_).append(block_)
     }
@@ -2530,6 +3119,10 @@ public class SynchronizedExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "SynchronizedExpr {\n"
         currentIndent = indent
@@ -2546,6 +3139,17 @@ public class SynchronizedExpr <: Expr {
 }
 
 public class TrailingClosureExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as TrailingClosureExpr) {
@@ -2590,6 +3194,12 @@ public class TrailingClosureExpr <: Expr {
         }
     }
 
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         expr_.toTokens().append(lambda_.toTokens())
     }
@@ -2604,6 +3214,11 @@ public class TrailingClosureExpr <: Expr {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "TrailingClosureExpr {\n"
         currentIndent = indent
@@ -2620,6 +3235,17 @@ public class TrailingClosureExpr <: Expr {
 }
 
 public class TypeConvExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as TypeConvExpr) {
@@ -2661,6 +3287,9 @@ public class TypeConvExpr <: Expr {
             type_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -2678,6 +3307,9 @@ public class TypeConvExpr <: Expr {
             expr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -2687,6 +3319,10 @@ public class TypeConvExpr <: Expr {
             rParen_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(type_.toTokens()).append(lParen_).append(expr_.toTokens()).append(rParen_)
     }
@@ -2701,6 +3337,10 @@ public class TypeConvExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "TypeConvExpr {\n"
         currentIndent = indent
@@ -2717,6 +3357,17 @@ public class TypeConvExpr <: Expr {
 }
 
 public class ForInExpr <: Expr {
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as ForInExpr) {
@@ -2767,6 +3418,9 @@ public class ForInExpr <: Expr {
     private var patternGuard_: Option<Expr> = None<Expr>
     private var rParen_: Token = Token(TokenKind.RPAREN)
     private var block_: Block = Block()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordF: Token {
         get() {
             for_
@@ -2776,6 +3430,9 @@ public class ForInExpr <: Expr {
             for_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -2793,6 +3450,9 @@ public class ForInExpr <: Expr {
             pattern_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordI: Token {
         get() {
             in_
@@ -2818,6 +3478,9 @@ public class ForInExpr <: Expr {
             where_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop patternGuard: Expr {
         get() {
             match (patternGuard_) {
@@ -2829,6 +3492,9 @@ public class ForInExpr <: Expr {
             patternGuard_ = Some(v)
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -2846,6 +3512,10 @@ public class ForInExpr <: Expr {
             block_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(for_).append(lParen_).append(pattern_).append(in_).append(expr_)
         match (patternGuard_) {
@@ -2870,6 +3540,10 @@ public class ForInExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ForInExpr {\n"
         currentIndent = indent
@@ -2897,6 +3571,10 @@ public class ForInExpr <: Expr {
 }
 
 public class PrimitiveTypeExpr <: Expr {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     public init(kind: Tokens) {
         if (kind.size == 0) {
             throw ASTException("Cannot construct the 'PrimitiveTypeExpr' node. (Empty Input)")
@@ -2912,6 +3590,9 @@ public class PrimitiveTypeExpr <: Expr {
         keyword_ = kind
     }
     private var keyword_: Token = Token()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyword_
@@ -2921,6 +3602,10 @@ public class PrimitiveTypeExpr <: Expr {
             keyword_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(keyword_)
     }
@@ -2930,6 +3615,10 @@ public class PrimitiveTypeExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "PrimitiveTypeExpr {\n"
         currentIndent = indent
@@ -2949,6 +3638,17 @@ public class ArrayLiteral <: Expr {
         commas_ = commas
         rSquare_ = rSquare
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as ArrayLiteral) {
@@ -2976,6 +3676,9 @@ public class ArrayLiteral <: Expr {
     private var elements_: ArrayList<Expr> = ArrayList<Expr>()
     private var commas_: Tokens = Tokens()
     private var rSquare_: Token = Token(TokenKind.RSQUARE)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lSquare: Token {
         get() {
             lSquare_
@@ -2993,6 +3696,9 @@ public class ArrayLiteral <: Expr {
             elements_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rSquare: Token {
         get() {
             rSquare_
@@ -3002,6 +3708,10 @@ public class ArrayLiteral <: Expr {
             rSquare_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(lSquare_)
         if (elements_.isEmpty()) {
@@ -3028,6 +3738,10 @@ public class ArrayLiteral <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "ArrayLiteral {\n"
         currentIndent = indent
@@ -3050,6 +3764,17 @@ public class TupleLiteral <: Expr {
         rParen_ = rParen
         commas_ = commas
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as TupleLiteral) {
@@ -3077,6 +3802,9 @@ public class TupleLiteral <: Expr {
     private var elements_: ArrayList<Expr> = ArrayList<Expr>()
     private var commas_: Tokens = Tokens()
     private var rParen_: Token = Token(TokenKind.RPAREN)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -3094,6 +3822,9 @@ public class TupleLiteral <: Expr {
             elements_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -3103,6 +3834,10 @@ public class TupleLiteral <: Expr {
             rParen_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(lParen_)
         if (elements_.isEmpty()) {
@@ -3128,6 +3863,10 @@ public class TupleLiteral <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "TupleLiteral {\n"
         currentIndent = indent
@@ -3151,6 +3890,17 @@ public class RangeExpr <: Expr {
         colon_ = colon
         step_ = step
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as RangeExpr) {
@@ -3180,6 +3930,9 @@ public class RangeExpr <: Expr {
     private var endExpr_: Option<Expr> = Expr()
     private var colon_: Token = Token()
     private var step_: Option<Expr> = None<Expr>
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop start: Expr {
         get() {
             match (start_) {
@@ -3199,6 +3952,9 @@ public class RangeExpr <: Expr {
             rangeOp_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop end: Expr {
         get() {
             match (endExpr_) {
@@ -3210,6 +3966,9 @@ public class RangeExpr <: Expr {
             endExpr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop colon: Token {
         get() {
             colon_
@@ -3219,6 +3978,9 @@ public class RangeExpr <: Expr {
             colon_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop step: Expr {
         get() {
             match (step_) {
@@ -3234,6 +3996,10 @@ public class RangeExpr <: Expr {
     protected func precedence(): Int64 {
         return rangeOp_.kind.opPrecedence()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         match (start_) {
@@ -3274,6 +4040,10 @@ public class RangeExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "RangeExpr {\n"
         currentIndent = indent
@@ -3313,6 +4083,17 @@ public class SubscriptExpr <: Expr {
         index_ = index
         rSquare_ = rSquare
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as SubscriptExpr) {
@@ -3348,6 +4129,9 @@ public class SubscriptExpr <: Expr {
             postfixExpr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lSquare: Token {
         get() {
             lSquare_
@@ -3365,6 +4149,9 @@ public class SubscriptExpr <: Expr {
             index_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rSquare: Token {
         get() {
             rSquare_
@@ -3378,6 +4165,10 @@ public class SubscriptExpr <: Expr {
     protected func precedence(): Int64 {
         return lSquare_.kind.opPrecedence()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         if (postfixExpr_ is OptionalExpr) {
@@ -3410,6 +4201,10 @@ public class SubscriptExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "SubscriptExpr {\n"
         currentIndent = indent
@@ -3428,6 +4223,10 @@ public class SubscriptExpr <: Expr {
 }
 
 public class JumpExpr <: Expr {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     public init(kind: Tokens) {
         if (kind.size == 0) {
             throw ASTException("Cannot construct the 'JumpExpr' node. (Empty Input)")
@@ -3442,6 +4241,9 @@ public class JumpExpr <: Expr {
     public init() {
     }
     private var kind_: Token = Token()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             kind_
@@ -3453,6 +4255,10 @@ public class JumpExpr <: Expr {
             kind_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(kind_)
     }
@@ -3462,6 +4268,10 @@ public class JumpExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "JumpExpr {\n"
         currentIndent = indent
@@ -3479,6 +4289,17 @@ public class IncOrDecExpr <: Expr {
         op_ = kind
         expr_ = expr
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as IncOrDecExpr) {
@@ -3522,6 +4343,10 @@ public class IncOrDecExpr <: Expr {
         return op_.kind.opPrecedence()
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         addParen(ret, expr_, this)
@@ -3538,6 +4363,10 @@ public class IncOrDecExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "IncOrDecExpr {\n"
         currentIndent = indent
@@ -3583,6 +4412,17 @@ public class TryExpr <: Expr {
         this.finallyBlock_ = finallyBlock
         this.handlers_ = handlers
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as TryExpr) {
@@ -3630,6 +4470,9 @@ public class TryExpr <: Expr {
     private var finally_: Token = Token()
     private var finallyBlock_: Option<Block> = None<Block>
     private var handlers_: ArrayList<Handler> = ArrayList<Handler>()
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordT: Token {
         get() {
             try_
@@ -3655,6 +4498,9 @@ public class TryExpr <: Expr {
             tryBlock_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordsC: Tokens {
         get() {
             catches_
@@ -3688,6 +4534,9 @@ public class TryExpr <: Expr {
             handlers_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keywordF: Token {
         get() {
             finally_
@@ -3697,6 +4546,9 @@ public class TryExpr <: Expr {
             finally_ = v
         }
     }
+    /**
+     * @throws [get] ASTException
+     */
     public mut prop finallyBlock: Block {
         get() {
             match (finallyBlock_) {
@@ -3708,6 +4560,10 @@ public class TryExpr <: Expr {
             finallyBlock_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(try_)
         if (!resourceSpec_.isEmpty()) {
@@ -3739,6 +4595,9 @@ public class TryExpr <: Expr {
         ret
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     public func traverse(v: Visitor): Unit {
         v.visit(this)
         if (v.needBreakTraverse()) {
@@ -3763,6 +4622,11 @@ public class TryExpr <: Expr {
         return
     }
 
+    /**
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "TryExpr {\n"
         currentIndent = indent
@@ -3808,6 +4672,17 @@ public class OptionalExpr <: Expr {
     public init() {
         super()
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         let memberAccess: MemberAccess
         try {
@@ -3840,6 +4715,9 @@ public class OptionalExpr <: Expr {
             baseExpr_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop quest: Token {
         get() {
             quest_
@@ -3852,6 +4730,10 @@ public class OptionalExpr <: Expr {
     protected func precedence(): Int64 {
         return quest_.kind.opPrecedence()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens()
         addParen(ret, baseExpr_, this)
@@ -3867,6 +4749,10 @@ public class OptionalExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "OptionalExpr {\n"
         currentIndent = indent
@@ -3904,6 +4790,10 @@ public class QuoteToken <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "QuoteToken {\n"
         currentIndent = indent
@@ -3925,6 +4815,17 @@ public class QuoteExpr <: Expr {
         exprs_ = exprs
         rParen_ = rParen
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as QuoteExpr) {
@@ -3953,6 +4854,9 @@ public class QuoteExpr <: Expr {
     private var exprs_: ArrayList<Expr> = ArrayList<Expr>()
     private var rParen_: Token = Token(TokenKind.RPAREN)
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyword_
@@ -3962,6 +4866,9 @@ public class QuoteExpr <: Expr {
             keyword_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -3979,6 +4886,9 @@ public class QuoteExpr <: Expr {
             exprs_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -3988,6 +4898,10 @@ public class QuoteExpr <: Expr {
             rParen_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(keyword_).append(lParen_)
         for (expr in exprs_) {
@@ -4016,6 +4930,10 @@ public class QuoteExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "QuoteExpr {\n"
         currentIndent = indent
@@ -4033,6 +4951,10 @@ public class QuoteExpr <: Expr {
 }
 
 public class WildcardExpr <: Expr {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ASTException
+     */
     public init(keyword: Tokens) {
         if (keyword.size == 0) {
             throw ASTException("Cannot construct the 'WildcardExpr' node. (Empty Input)")
@@ -4046,6 +4968,9 @@ public class WildcardExpr <: Expr {
         super()
     }
     private var keyword_: Token = Token(TokenKind.WILDCARD)
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop keyword: Token {
         get() {
             keyword_
@@ -4055,6 +4980,10 @@ public class WildcardExpr <: Expr {
             keyword_ = v
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         Tokens().append(keyword_)
     }
@@ -4063,6 +4992,10 @@ public class WildcardExpr <: Expr {
         v.visit(this)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "WildcardExpr {\n"
         currentIndent = indent
@@ -4082,6 +5015,17 @@ public class VArrayExpr <: Expr {
         args_ = args
         rParen_ = rParen
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as VArrayExpr) {
@@ -4117,6 +5061,9 @@ public class VArrayExpr <: Expr {
             ty_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -4134,6 +5081,9 @@ public class VArrayExpr <: Expr {
             args_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -4143,6 +5093,12 @@ public class VArrayExpr <: Expr {
             rParen_ = v
         }
     }
+    /**
+     * @throws ASTException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(ty_)
         if (isValidPosition(lParen_)) {
@@ -4167,6 +5123,10 @@ public class VArrayExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "VArrayExpr {\n"
         currentIndent = indent
@@ -4199,6 +5159,17 @@ public class MacroExpandExpr <: Expr {
         macroInputDecl_ = macroInputDecl
         hasParenthesis_ = hasParenthesis
     }
+    /**
+     * @throws ConcurrentModificationException
+     * @throws Error
+     * @throws IllegalMemoryException
+     * @throws NoneValueException
+     * @throws Exception
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ParseASTException
+     * @throws ASTException
+     */
     public init(inputs: Tokens) {
         try {
             match (parseExpr(inputs) as MacroExpandExpr) {
@@ -4239,6 +5210,9 @@ public class MacroExpandExpr <: Expr {
     private var macroInputDecl_: Option<Decl> = None<Decl>
     private var hasParenthesis_: Bool = false
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop at: Token {
         get() {
             at_
@@ -4257,6 +5231,9 @@ public class MacroExpandExpr <: Expr {
         }
     }
 
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lSquare: Token {
         get() {
             lSquare_
@@ -4274,6 +5251,9 @@ public class MacroExpandExpr <: Expr {
             macroAttrs_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rSquare: Token {
         get() {
             rSquare_
@@ -4283,6 +5263,9 @@ public class MacroExpandExpr <: Expr {
             rSquare_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop lParen: Token {
         get() {
             lParen_
@@ -4300,6 +5283,9 @@ public class MacroExpandExpr <: Expr {
             macroInputs_ = v
         }
     }
+    /**
+     * @throws [set] ASTException
+     */
     public mut prop rParen: Token {
         get() {
             rParen_
@@ -4309,6 +5295,11 @@ public class MacroExpandExpr <: Expr {
             rParen_ = v
         }
     }
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func toTokens(): Tokens {
         var ret = Tokens().append(at)
         let identArray = pkgIdentifier_.value.split(".")
@@ -4345,6 +5336,10 @@ public class MacroExpandExpr <: Expr {
         return
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     protected func dump(indent: UInt16): String {
         var ret: String = "MacroExpandExpr {\n"
         currentIndent = indent
@@ -4365,6 +5360,10 @@ public class MacroExpandExpr <: Expr {
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func addParen(ret: Tokens, innerExpr: Expr, thisExpr: Expr, addOnEqualPred!: Bool = true) {
     let ifAddParen: Bool
     if (addOnEqualPred) {

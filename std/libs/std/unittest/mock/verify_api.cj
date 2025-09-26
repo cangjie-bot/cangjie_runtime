@@ -19,6 +19,15 @@ public class Verify {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws VerificationFailedException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     public static func that(statement: VerifyStatement): Unit {
         unordered(Partial, [statement])
     }
@@ -36,6 +45,15 @@ public class Verify {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws VerificationFailedException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     public static func unordered(
         exhaustive: Exhaustiveness,
         collectStatements: (UnorderedVerifier) -> Unit
@@ -49,6 +67,15 @@ public class Verify {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws VerificationFailedException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     public static func unordered(collectStatements: (UnorderedVerifier) -> Unit): Unit {
         unordered(Exhaustive, collectStatements)
     }
@@ -58,6 +85,15 @@ public class Verify {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws VerificationFailedException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     public static func unordered(statements: Array<VerifyStatement>): Unit {
         unordered(Exhaustive, statements)
     }
@@ -66,6 +102,15 @@ public class Verify {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws VerificationFailedException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     public static func unordered(
         exhaustive: Exhaustiveness,
         statements: Array<VerifyStatement>
@@ -82,6 +127,15 @@ public class Verify {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws VerificationFailedException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     public static func ordered(collectStatements: (OrderedVerifier) -> Unit): Unit {
         let verifier = OrderedVerifier()
         collectStatements(verifier)
@@ -92,12 +146,27 @@ public class Verify {
 
 
 
+    /**
+     * @throws NoneValueException
+     * @throws IllegalSynchronizationStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws VerificationFailedException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     */
     public static func ordered(statements: Array<VerifyStatement>): Unit {
         performVerification(statements, Ordered, Exhaustive)
     }
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalSynchronizationStateException
+     */
     public static func clearInvocationLog(): Unit {
         MockFramework.session {
             session: MockSession => session.invocationLog.clear()
@@ -112,6 +181,14 @@ public class Verify {
 
 
 
+    /**
+     * @throws IllegalSynchronizationStateException
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalArgumentException
+     * @throws VerificationFailedException
+     */
     public static func noInteractions(mockObjects: Array<Object>): Unit {
         verifyNoInteractions(mockObjects)
     }
@@ -126,6 +203,10 @@ public class UnorderedVerifier {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func checkThat(statement: VerifyStatement): UnorderedVerifier {
         statements.add(statement)
         return this
@@ -141,6 +222,10 @@ public class OrderedVerifier {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func checkThat(statement: VerifyStatement): OrderedVerifier {
         statements.add(statement)
         return this
@@ -157,6 +242,11 @@ public class VerifyStatement {
     private var _cardinality = Option<Cardinality>.None
     var isUsed = false
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws MockFrameworkInternalError
+         */
     prop cardinality: Cardinality {
         get() {
             _cardinality ?? internalError(InconsistentState("Cardinality not set before using verify statement"))
@@ -170,6 +260,13 @@ public class VerifyStatement {
 
 
 
+    /**
+     * @throws MockFrameworkException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkInternalError
+     * @throws IllegalSynchronizationStateException
+     */
     public static func fromStub<R>(
         stubCall: () -> R,
         matchers: Array<ArgumentMatcher>,
@@ -198,6 +295,11 @@ public class VerifyStatement {
         statement
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws IllegalArgumentException
+     */
     func prepareForVerification(orderedness: Orderedness) {
         match (isUsed) {
             case true => VerifyMisconfiguration().fail(StatementUsedTwice(this))
@@ -210,6 +312,11 @@ public class VerifyStatement {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     func setCardinality(newCardinality: Cardinality): VerifyStatement {
         match (_cardinality) {
             case None => _cardinality = Some(newCardinality)
@@ -222,12 +329,22 @@ public class VerifyStatement {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func once(): VerifyStatement { setCardinality(Cardinality.once()) }
 
 
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func atLeastOnce(): VerifyStatement { setCardinality(Cardinality.atLeastOnce()) }
 
 
@@ -235,6 +352,11 @@ public class VerifyStatement {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func times(expectedTimes: Int64): VerifyStatement { setCardinality(Cardinality.times(expectedTimes)) }
 
 
@@ -243,6 +365,11 @@ public class VerifyStatement {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func times(min!: Int64, max!: Int64): VerifyStatement {
         setCardinality(Cardinality.times(min: min, max: max))
     }
@@ -252,6 +379,11 @@ public class VerifyStatement {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func atLeastTimes(minTimesExpected: Int64): VerifyStatement {
         setCardinality(Cardinality.atLeastTimes(minTimesExpected))
     }
@@ -260,5 +392,10 @@ public class VerifyStatement {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws MockFrameworkException
+     */
     public func never(): VerifyStatement { setCardinality(Cardinality.never()) }
 }

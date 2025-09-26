@@ -24,6 +24,10 @@ extend Color <: Serializable<Color> {
         return DataModelInt(code)
     }
 
+    /**
+     * @throws Exception
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Color {
         let code = match (dm) {
             case dmi: DataModelInt => dmi.getValue()
@@ -44,6 +48,10 @@ extend Color <: Serializable<Color> {
 }
 
 extend PrettyPrintableTextChunk <: Serializable<PrettyPrintableTextChunk> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         match (this) {
             case PPTextPiece(text) =>
@@ -60,6 +68,10 @@ extend PrettyPrintableTextChunk <: Serializable<PrettyPrintableTextChunk> {
         }
     }
 
+    /**
+     * @throws Exception
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): PrettyPrintableTextChunk {
         let dms = match (dm) {
             case dms: DataModelStruct => dms
@@ -75,10 +87,19 @@ extend PrettyPrintableTextChunk <: Serializable<PrettyPrintableTextChunk> {
 }
 
 extend PrettyText <: Serializable<PrettyText> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         this.data.serializeInternal()
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): PrettyText {
         match (dm) {
             case dms: DataModelSeq =>

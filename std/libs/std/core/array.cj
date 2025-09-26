@@ -59,6 +59,9 @@ public struct Array<T> {
         this.len = len
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         */
     @Frozen
     public prop first: Option<T> {
         get() {
@@ -69,6 +72,9 @@ public struct Array<T> {
         }
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         */
     @Frozen
     public prop last: Option<T> {
         get() {
@@ -82,6 +88,9 @@ public struct Array<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func slice(start: Int64, len: Int64): Array<T> {
         if (start < 0 || len < 0 || (start + len) > this.len) {
@@ -101,6 +110,9 @@ public struct Array<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     public operator func [](index: Int64): T {
@@ -112,6 +124,9 @@ public struct Array<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     public operator func [](index: Int64, value!: T): Unit {
@@ -123,6 +138,10 @@ public struct Array<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public operator func [](range: Range<Int64>): Array<T> {
         return rangeSlice(range, this.len)
@@ -138,6 +157,10 @@ public struct Array<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public operator func [](range: Range<Int64>, value!: Array<T>): Unit {
         if (range.step != 1) {
@@ -190,6 +213,10 @@ public struct Array<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     private func rangeSlice(range: Range<Int64>, _: Int64): Array<T> {
         if (range.step != 1) {
@@ -260,6 +287,9 @@ public struct Array<T> {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     public func clone(range: Range<Int64>): Array<T> {
@@ -289,6 +319,10 @@ public struct Array<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func copyTo(dst: Array<T>, srcStart: Int64, dstStart: Int64, copyLen: Int64): Unit {
         if (copyLen == 0) {
@@ -312,6 +346,9 @@ public struct Array<T> {
         intrinsicBuiltInCopyTo<T>(this.rawptr, dst.rawptr, this.start + srcStart, dst.start + dstStart, copyLen)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func copyTo(dst: Array<T>): Unit {
         if (this.len == 0) {
@@ -356,6 +393,9 @@ public struct Array<T> {
         return arraySetUnchecked(this.rawptr, start + index, element)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func swap(index1: Int64, index2: Int64): Unit {
         if (index1 < 0 || len <= index1) {
@@ -372,6 +412,9 @@ public struct Array<T> {
         arraySetUnchecked(this.rawptr, start + index2, tmp)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func splitAt(mid: Int64): (Array<T>, Array<T>) {
         if (mid < 0 || this.len < mid) {
@@ -385,6 +428,9 @@ public struct Array<T> {
         return (left, right)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func repeat(n: Int64): Array<T> {
         if (n <= 0) {
@@ -401,6 +447,9 @@ public struct Array<T> {
         return Array<T>(newRawPtr, 0, newLen)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func map<R>(transform: (T) -> R): Array<R> {
         return Array<R>(this.len, {idx => transform(this[idx])})
@@ -408,6 +457,9 @@ public struct Array<T> {
 }
 
 extend<T> Array<Array<T>> {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func flatten(): Array<T> {
         var newLen = 0

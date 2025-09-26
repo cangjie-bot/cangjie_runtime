@@ -18,6 +18,10 @@ private func isNonPrintable(char: Rune): Bool {
     return false
 }
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 private func asCodePointEscape(char: Rune): String {
     let resultBuilder = StringBuilder("\\u{")
     let cp = UInt32(char)
@@ -36,6 +40,10 @@ private func asCodePointEscape(char: Rune): String {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 protected func shieldEscapeSeq(
     s: String,
     shieldSingleQuote!: Bool = true,

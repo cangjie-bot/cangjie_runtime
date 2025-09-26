@@ -32,6 +32,9 @@ public interface RandomSource {
         Int64(nextUInt64())
     }
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func nextInt8(max: Int8): Int8 {
         if (max < 0) {
             throw IllegalArgumentException("max must be positive")
@@ -43,6 +46,9 @@ public interface RandomSource {
             case _ => i % max
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     */
     func nextInt16(max: Int16): Int16 {
         if (max < 0) {
             throw IllegalArgumentException("max must be positive")
@@ -54,6 +60,9 @@ public interface RandomSource {
             case _ => i % max
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     */
     func nextInt32(max: Int32): Int32 {
         if (max < 0) {
             throw IllegalArgumentException("max must be positive")
@@ -65,6 +74,9 @@ public interface RandomSource {
             case _ => i % max
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     */
     func nextInt64(max: Int64): Int64 {
         if (max < 0) {
             throw IllegalArgumentException("max must be positive")
@@ -129,6 +141,10 @@ public interface RandomSource {
     func suggestFloat64(): Float64
     func suggestBool(): Bool { suggestUInt8() == 0 }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func suggestRune(): Rune { randomSuggestedRune(this) }
 
     func suggestInt64(l: Int64, r: Int64): Int64 { remap(l, r, suggestInt64()) }
@@ -141,7 +157,16 @@ public interface RandomSource {
     func suggestUInt8(l: UInt8, r: UInt8): UInt8 { remap(l, r, suggestUInt8()) }
     func suggestIntNative(l: IntNative, r: IntNative): IntNative { remap(l, r, suggestIntNative()) }
     func suggestUIntNative(l: UIntNative, r: UIntNative): UIntNative { remap(l, r, suggestUIntNative()) }
+    /**
+     * @throws IllegalArgumentException
+     */
     func suggestFloat64(l: Float64, r: Float64): Float64 { remap(l, r, suggestFloat64()) }
+    /**
+     * @throws IllegalArgumentException
+     */
     func suggestFloat32(l: Float32, r: Float32): Float32 { remap(l, r, suggestFloat32()) }
+    /**
+     * @throws IllegalArgumentException
+     */
     func suggestFloat16(l: Float16, r: Float16): Float16 { remap(l, r, suggestFloat16()) }
 }

@@ -51,6 +51,9 @@ extend Int64 <: Serializable<Int64> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Int64 {
         return match (dm) {
             case dmi: DataModelInt => dmi.getValue()
@@ -79,6 +82,9 @@ extend Int32 <: Serializable<Int32> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Int32 {
         return match (dm) {
             case dmi: DataModelInt => Int32(dmi.getValue())
@@ -107,6 +113,9 @@ extend Int16 <: Serializable<Int16> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Int16 {
         return match (dm) {
             case dmi: DataModelInt => Int16(dmi.getValue())
@@ -135,6 +144,9 @@ extend Int8 <: Serializable<Int8> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Int8 {
         return match (dm) {
             case dmi: DataModelInt => Int8(dmi.getValue())
@@ -163,6 +175,9 @@ extend UInt64 <: Serializable<UInt64> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): UInt64 {
         return match (dm) {
             case dmi: DataModelInt => UInt64(dmi.getValue())
@@ -191,6 +206,9 @@ extend UInt32 <: Serializable<UInt32> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): UInt32 {
         return match (dm) {
             case dmi: DataModelInt => UInt32(dmi.getValue())
@@ -219,6 +237,9 @@ extend UInt16 <: Serializable<UInt16> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): UInt16 {
         return match (dm) {
             case dmi: DataModelInt => UInt16(dmi.getValue())
@@ -247,6 +268,9 @@ extend UInt8 <: Serializable<UInt8> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): UInt8 {
         return match (dm) {
             case dmi: DataModelInt => UInt8(dmi.getValue())
@@ -275,6 +299,9 @@ extend Float64 <: Serializable<Float64> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Float64 {
         return match (dm) {
             case dmf: DataModelFloat => dmf.getValue()
@@ -304,6 +331,9 @@ extend Float32 <: Serializable<Float32> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Float32 {
         return match (dm) {
             case dmf: DataModelFloat => Float32(dmf.getValue())
@@ -332,6 +362,9 @@ extend Float16 <: Serializable<Float16> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Float16 {
         return match (dm) {
             case dmf: DataModelFloat => Float16(dmf.getValue())
@@ -360,6 +393,9 @@ extend Bool <: Serializable<Bool> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Bool {
         return match (dm) {
             case dmb: DataModelBool => dmb.getValue()
@@ -388,6 +424,9 @@ extend String <: Serializable<String> {
 
 
 
+    /**
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): String {
         return match (dm) {
             case dms: DataModelString => dms.getValue()
@@ -417,6 +456,12 @@ extend Rune <: Serializable<Rune> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws Exception
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Rune {
         let charStr: String = match (dm) {
             case dms: DataModelString => dms.getValue()
@@ -466,6 +511,10 @@ extend<T> Array<T> <: Serializable<Array<T>> where T <: Serializable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         return createDataModelSeq<T>(this)
     }
@@ -478,6 +527,10 @@ extend<T> Array<T> <: Serializable<Array<T>> where T <: Serializable<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): Array<T> {
         var data: ArrayList<DataModel> = match (dm) {
             case dms: DataModelSeq => dms.getItems()
@@ -503,6 +556,10 @@ extend<T> ArrayList<T> <: Serializable<ArrayList<T>> where T <: Serializable<T> 
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         return createDataModelSeq<T>(this)
     }
@@ -515,6 +572,11 @@ extend<T> ArrayList<T> <: Serializable<ArrayList<T>> where T <: Serializable<T> 
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): ArrayList<T> {
         var data: ArrayList<DataModel> = match (dm) {
             case dms: DataModelSeq => dms.getItems()
@@ -536,6 +598,10 @@ extend<T> HashSet<T> <: Serializable<HashSet<T>> where T <: Serializable<T> & Ha
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func serializeInternal(): DataModel {
         return createDataModelSeq<T>(this)
     }
@@ -548,6 +614,11 @@ extend<T> HashSet<T> <: Serializable<HashSet<T>> where T <: Serializable<T> & Ha
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): HashSet<T> {
         var data: DataModelSeq = match (dm) {
             case dms: DataModelSeq => dms
@@ -572,6 +643,11 @@ extend<K, V> HashMap<K, V> <: Serializable<HashMap<K, V>>
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     */
     public func serializeInternal(): DataModel {
         var dms: DataModelStruct = DataModelStruct()
         for ((k, v) in this) {
@@ -591,6 +667,11 @@ extend<K, V> HashMap<K, V> <: Serializable<HashMap<K, V>>
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws DataModelException
+     */
     public static func deserialize(dm: DataModel): HashMap<K, V> {
         var data: DataModelStruct = match (dm) {
             case dms: DataModelStruct => dms

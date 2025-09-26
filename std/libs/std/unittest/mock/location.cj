@@ -45,6 +45,10 @@ class LocationImpl <: Location {
 
 let MOCKED_CLASS_NAME_FRAGMENT = "$Mocked"
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func locationFromTrace(): Location {
     let stackTrace = Exception().getStackTrace()
     for ((index, element) in stackTrace |> enumerate) {
@@ -66,6 +70,10 @@ extend Location {
         return SimpleLocation(filePath, lineNum)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func fileNameAndLine(): String {
         let firstEntry = getEntries().get(0) ?? return UNKNOWN_LOCATION_STRING
         let fileName = try {

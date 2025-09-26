@@ -33,6 +33,11 @@ public class StackOverflowError <: Error {
         return "StackOverflowError"
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func printStackTrace(): Unit {
         eprintln("An exception has occurred:")
         eprintln(toString())

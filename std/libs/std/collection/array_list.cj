@@ -39,6 +39,9 @@ class ArrayListIterator<T> <: Iterator<T> {
 
 
 
+    /**
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     @OverflowWrapping
     public func next(): Option<T> {
@@ -96,6 +99,9 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public init(capacity: Int64) {
         mySize = 0
@@ -115,6 +121,9 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public init(size: Int64, initElement: (Int64) -> T) {
         if (size < 0) {
@@ -165,6 +174,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func toArray(): Array<T> {
         if (mySize == 0) {
@@ -208,6 +221,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func add(element: T): Unit {
         if (mySize == myData.size) {
@@ -222,6 +239,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func add(all!: Collection<T>): Unit {
         let cSize: Int64 = all.size
@@ -250,6 +271,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @OverflowWrapping
     public func add(element: T, at!: Int64): Unit {
@@ -275,6 +300,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     @OverflowWrapping
     public func add(all!: Collection<T>, at!: Int64): Unit {
@@ -310,6 +339,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func remove(at!: Int64): T {
         checkRange(at)
@@ -330,6 +363,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func remove(range: Range<Int64>): Unit {
         if (range.isEmpty()) {
@@ -371,6 +408,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws ConcurrentModificationException
+     */
     @Frozen
     public func removeIf(predicate: (T) -> Bool): Unit {
         var i: Int64 = 0
@@ -403,6 +444,9 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func clear(): Unit {
         if (mySize > 0) {
@@ -421,6 +465,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func reserve(additional: Int64): Unit {
         if (myData.size - mySize >= additional) {
@@ -437,6 +485,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` in std.sort instead."]
     public func sortBy(stable!: Bool, comparator!: (T, T) -> Ordering): Unit {
@@ -453,6 +505,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, by!: (T, T) -> Ordering, stable!: Bool = false, descending!: Bool = false): Unit` in std.sort instead."]
     public func sortBy(comparator!: (T, T) -> Ordering): Unit {
@@ -464,6 +520,9 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public func reverse(): Unit {
         var i: Int64 = 0
@@ -486,6 +545,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public operator func [](range: Range<Int64>): ArrayList<T> {
         return this.slice(range)
@@ -498,6 +561,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func slice(range: Range<Int64>): ArrayList<T> {
         return ArrayList<T>(rangeSlice(this.myData, range, this.size))
@@ -505,6 +572,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     private func rangeSlice(arr: Array<T>, range: Range<Int64>, size: Int64): Array<T> {
         if (range.step != 1) {
@@ -567,6 +638,9 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func [](index: Int64): T {
         checkRange(index)
@@ -580,6 +654,9 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     public operator func [](index: Int64, value!: T): Unit {
         if (index >= mySize || index < 0) {
@@ -628,6 +705,9 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     private func checkRange(index: Int64): Unit {
         if (index >= mySize || index < 0) {
@@ -642,6 +722,9 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     private func checkRangeInsert(index: Int64): Unit {
         if (index > mySize || index < 0) {
@@ -654,6 +737,10 @@ public class ArrayList<T> <: List<T> {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     private func grow(minCapacity: Int64, startIndex!: Int64 = 0): Unit {
         let oldCapacity: Int64 = myData.size
@@ -719,12 +806,20 @@ extend<T> ArrayList<T> where T <: Comparable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` in std.sort instead."]
     public func sort(stable!: Bool): Unit {
         this.sortBy(stable: stable) {lhs: T, rhs: T => lhs.compare(rhs)}
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` in std.sort instead."]
     public func sort(): Unit {
@@ -736,12 +831,20 @@ extend<T> ArrayList<T> where T <: Comparable<T> {
 
 
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` in std.sort instead."]
     public func sortDescending(stable!: Bool): Unit {
         this.sortBy(stable: stable) {lhs: T, rhs: T => rhs.compare(lhs)}
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     @Deprecated[message: "Use global function `public func sort<T>(data: ArrayList<T>, stable!: Bool = false, descending!: Bool = false): Unit where T <: Comparable<T>` in std.sort instead."]
     public func sortDescending(): Unit {
@@ -750,12 +853,22 @@ extend<T> ArrayList<T> where T <: Comparable<T> {
 }
 
 extend<T> ArrayList<T> <: ToString where T <: ToString {
+    /**
+     * @throws NoneValueException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public func toString(): String {
         return collectionToString<ArrayList<T>, T>(this)
     }
 }
 
+/**
+ * @throws NoneValueException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 @Frozen
 func collectionToString<C, T>(col: C): String where C <: Collection<T>, T <: ToString {
     if (col.size == 0) {
@@ -783,6 +896,10 @@ func max(a: Int64, b: Int64): Int64 {
         b
     }
 }
+/**
+ * @throws IllegalArgumentException
+ * @throws IndexOutOfBoundsException
+ */
 func stableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     if (data.size < 2) {
         return
@@ -790,6 +907,10 @@ func stableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     data.timSort(comparator)
 }
 extend<T> Array<T> {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func shortSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         let len = this.size
@@ -813,6 +934,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func maybeMerge(
         startArr: Array<Int64>,
@@ -862,6 +987,10 @@ extend<T> Array<T> {
         return index
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeAll(
         startArr: Array<Int64>,
@@ -898,6 +1027,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func merge(
         start1: Int64,
@@ -939,6 +1072,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeFromLeft(
         start1: Int64,
@@ -1074,6 +1211,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     private func mergeFromRight(
         start1: Int64,
@@ -1210,6 +1351,10 @@ extend<T> Array<T> {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func timSort(comparator: (T, T) -> Ordering): Unit {
         if (this.size <= 64) {
@@ -1275,6 +1420,10 @@ class TempArray<T> {
         return this.data
     }
 }
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ */
 func unstableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     if (data.size < 2) {
         return
@@ -1282,6 +1431,10 @@ func unstableSort<T>(data: Array<T>, comparator: (T, T) -> Ordering): Unit {
     data.introSort(0, data.size - 1, data.depth(), comparator)
 }
 extend<T> Array<T> {
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     private func getPartition(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): (Int64, Int64) {
         let len: Int64 = end - begin + 1
@@ -1412,6 +1565,10 @@ extend<T> Array<T> {
             return (b, hi + 1)
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     func introSort(begin: Int64, end: Int64, depth: Int64, comparator: (T, T) -> Ordering): Unit {
         var b: Int64 = begin
@@ -1448,6 +1605,9 @@ extend<T> Array<T> {
     }
 }
 extend<T> Array<T> {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func compareSwap2(i1: Int64, i2: Int64, comparator: (T, T) -> Ordering) {
         let a: T = this[i1]
         let b: T = this[i2]
@@ -1458,6 +1618,9 @@ extend<T> Array<T> {
             case _ => ()
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func compareSwap3(i1: Int64, i2: Int64, i3: Int64, comparator: (T, T) -> Ordering) {
         var a: T = this[i1]
         var b: T = this[i2]
@@ -1510,6 +1673,9 @@ extend<T> Array<T> {
         }
         return res * 2
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func insertionSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         var i: Int64 = begin + 1
@@ -1528,6 +1694,10 @@ extend<T> Array<T> {
             i++
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     func getSequenceLength(begin: Int64, end: Int64, temp: TempArray<T>, comparator: (T, T) -> Ordering): Int64 {
         var b: Int64 = begin
@@ -1650,6 +1820,10 @@ extend<T> Array<T> {
             return equalNum + n
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func binaryInsertionSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering, n: Int64) {
         var i = begin + n
@@ -1672,6 +1846,9 @@ extend<T> Array<T> {
             i++
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func heapify(begin: Int64, end: Int64, root: Int64, comparator: (T, T) -> Ordering): Unit {
         var fi: Int64 = root
@@ -1700,6 +1877,10 @@ extend<T> Array<T> {
             si = (fi << 1) + 1
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     @OverflowWrapping
     func heapSort(begin: Int64, end: Int64, comparator: (T, T) -> Ordering): Unit {
         let len = end - begin + 1
@@ -1715,6 +1896,9 @@ extend<T> Array<T> {
             i--
         }
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func binaryQueryGT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering): Int64 {
         var l = start
@@ -1728,6 +1912,9 @@ extend<T> Array<T> {
         }
         return l
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func binaryQueryLT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering): Int64 {
         var l = start
@@ -1741,6 +1928,10 @@ extend<T> Array<T> {
         }
         return l
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func queryGT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering, r: Bool) {
         var gallopMax = len
@@ -1793,6 +1984,10 @@ extend<T> Array<T> {
             return this.binaryQueryGT(point, start + lastOfs, ofs - lastOfs, comparator)
         }
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func queryLT(point: T, start: Int64, len: Int64, comparator: (T, T) -> Ordering, r: Bool) {
         var gallopMax = len

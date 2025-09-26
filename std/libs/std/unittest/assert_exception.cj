@@ -49,6 +49,10 @@ public class AssertIntermediateException <: Exception {
         this.diagram = diagram
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func getOriginalStackTrace(): String {
         let traceElementArray = originalException.getStackTrace()
         var result = "Thrown exception while computing assert expression:\n" + originalException.toString() + "\n"

@@ -45,6 +45,9 @@ public func getProcessorCount(): Int64 {
     return unsafe { CJ_OS_ProcessorCount() }
 }
 
+/**
+ * @throws ProfilingInfoException
+ */
 @When[backend == "cjnative"]
 public func startCPUProfiling(): Unit {
     let success = startCjCPUProfiling()
@@ -54,6 +57,13 @@ public func startCPUProfiling(): Unit {
     return
 }
 
+/**
+ * @throws IllegalMemoryException
+ * @throws IndexOutOfBoundsException
+ * @throws FSException
+ * @throws IllegalArgumentException
+ * @throws ProfilingInfoException
+ */
 @When[backend == "cjnative"]
 public func stopCPUProfiling(path: Path): Unit {
     try (file = File(path, ReadWrite)) {

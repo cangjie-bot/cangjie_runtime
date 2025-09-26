@@ -28,6 +28,12 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     */
     public init(datasource: Datasource) {
         this.datasource = datasource
         func newConn(): Option<Connection> {
@@ -115,6 +121,9 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /**
+     * @throws [set] ArithmeticException
+     */
     public mut prop connectionTimeout: Duration {
         get() {
             _connTimeout
@@ -137,6 +146,15 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /**
+     * @throws getOrThrow
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     * @throws ArithmeticException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     * @throws SqlException
+     */
     public func connect(): Connection {
         var item = pool.acquire(_connTimeout)
         match (item) {
@@ -157,6 +175,12 @@ public class PooledDatasource <: Datasource {
 
 
 
+    /**
+     * @throws SqlException
+     * @throws OutOfMemoryError
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalSynchronizationStateException
+     */
     public func close(): Unit {
         if (isclosed.load()) {
             return

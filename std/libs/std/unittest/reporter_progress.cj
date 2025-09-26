@@ -19,6 +19,20 @@ private const ADJUST_TERMINAL_SIZE_FREQ_REDRAWS = 5
 
 class ProgressReporter {
     private let reporter: UTProgressReporter
+    /**
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws UnittestOptionValidationException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws UnittestCliOptionsFormatException
+     * @throws Exception
+     */
     private ProgressReporter() {
         this.reporter = match (getDefaultUTProgressReporter()) {
             case Some(r) => r
@@ -43,6 +57,14 @@ class ProgressReporter {
     }
 
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     * @throws Error
+     * @throws ArithmeticException
+     * @throws IllegalSynchronizationStateException
+     */
     func startReporting() {
         if (!isActive.compareAndSwap(false, true)) {
             return
@@ -89,6 +111,10 @@ class ProgressReporter {
         }
     }
 
+    /**
+     * @throws Error
+     * @throws ArithmeticException
+     */
     private func reportLoop(render: () -> Unit) {
         var tact = 0
         while (!Thread.currentThread.hasPendingCancellation) {
@@ -109,6 +135,10 @@ class ProgressReporter {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalSynchronizationStateException
+     */
     func stopAndClear() {
         if (!isActive.compareAndSwap(true, false)) { return }
         if (let Some(job) <- reporterJob) {
@@ -125,6 +155,9 @@ class ProgressReporter {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     */
     private func clearDynamicArea() {
         printer.clearAhead()
         printer.saveCursorPos()
@@ -132,6 +165,20 @@ class ProgressReporter {
         printer.restoreCursorPos()
     }
 
+    /**
+     * @throws getOrThrow
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws UnittestOptionValidationException
+     * @throws RegexException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws IllegalMemoryException
+     * @throws UnittestCliOptionsFormatException
+     * @throws Exception
+     */
     static func fromDefaultConfiguration(): ?ProgressReporter {
         let config = defaultConfiguration()
         if (!config.isDynamicProgressEnabled || TestProcessKind.fromDefaultConfiguration().isWorker) {
@@ -142,18 +189,29 @@ class ProgressReporter {
 }
 
 extend Configuration {
+        /**
+         * @throws IndexOutOfBoundsException
+         */
     prop isDynamicProgressEnabled: Bool {
         get() {
             !(get(KeyNoProgress.noProgress) ?? false) && !bench && !noRun
         }
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         */
     prop isDynamicProgressBrief: Bool {
         get() {
             get(KeyProgressBrief.progressBrief) ?? false
         }
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         * @throws UnittestCliOptionsFormatException
+         */
     prop dynamicProgressEntriesLimit: ?UInt64 {
         get() {
             match (get(KeyProgressEntriesLimit.progressEntriesLimit)) {
@@ -182,6 +240,20 @@ interface UTProgressReporter {
 
 interface UTProgress {}
 
+/**
+ * @throws getOrThrow
+ * @throws JsonException
+ * @throws OutOfMemoryError
+ * @throws ArithmeticException
+ * @throws ProcessException
+ * @throws UnittestOptionValidationException
+ * @throws RegexException
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws Exception
+ * @throws IllegalMemoryException
+ * @throws UnittestCliOptionsFormatException
+ */
 private func getDefaultUTProgressReporter(): ?UTProgressReporter {
     let defaultConfig = defaultConfiguration()
     match {

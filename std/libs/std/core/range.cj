@@ -18,6 +18,9 @@ public struct Range<T> <: Iterable<T> where T <: Countable<T> & Comparable<T> & 
     public let isClosed: Bool
 
 
+    /**
+     * @throws IllegalArgumentException
+     */
     @Frozen
     public const init(start: T, end: T, step: Int64, hasStart: Bool, hasEnd: Bool, isClosed: Bool) {
         if (step == 0) {

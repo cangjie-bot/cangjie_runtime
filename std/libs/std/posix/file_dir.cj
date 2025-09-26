@@ -212,6 +212,10 @@ public const SEEK_END: Int32 = 0x2
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func `open`(path: String, oflag: Int32, flag: UInt32): Int32 {
     checkPath(path)
@@ -231,6 +235,10 @@ public func `open`(path: String, oflag: Int32, flag: UInt32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func `open`(path: String, oflag: Int32): Int32 {
     checkPath(path)
@@ -252,6 +260,10 @@ public func `open`(path: String, oflag: Int32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows" && os != "macOS"]
 @Deprecated
 public func open64(path: String, oflag: Int32, flag: UInt32): Int32 {
@@ -272,6 +284,10 @@ public func open64(path: String, oflag: Int32, flag: UInt32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows" && os != "macOS"]
 @Deprecated
 public func open64(path: String, oflag: Int32): Int32 {
@@ -294,6 +310,10 @@ public func open64(path: String, oflag: Int32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func openat(fd: Int32, path: String, oflag: Int32, flag: UInt32): Int32 {
@@ -315,6 +335,10 @@ public func openat(fd: Int32, path: String, oflag: Int32, flag: UInt32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func openat(fd: Int32, path: String, oflag: Int32): Int32 {
@@ -337,6 +361,10 @@ public func openat(fd: Int32, path: String, oflag: Int32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows" && os != "macOS"]
 @Deprecated
 public func openat64(fd: Int32, path: String, oflag: Int32, flag: UInt32): Int32 {
@@ -358,6 +386,10 @@ public func openat64(fd: Int32, path: String, oflag: Int32, flag: UInt32): Int32
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows" && os != "macOS"]
 @Deprecated
 public func openat64(fd: Int32, path: String, oflag: Int32): Int32 {
@@ -377,6 +409,10 @@ public func openat64(fd: Int32, path: String, oflag: Int32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func creat(path: String, flag: UInt32): Int32 {
     checkPath(path)
@@ -560,6 +596,10 @@ public const S_IFSOCK: UInt32 = 0xC000
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func isType(path: String, mode: UInt32): Bool {
@@ -587,6 +627,10 @@ const SOCK: Int32 = 7
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func isReg(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
@@ -605,6 +649,10 @@ public func isReg(path: String): Bool {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func isDir(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
@@ -623,6 +671,10 @@ public func isDir(path: String): Bool {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func isChr(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
@@ -641,6 +693,10 @@ public func isChr(path: String): Bool {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func isBlk(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
@@ -659,6 +715,10 @@ public func isBlk(path: String): Bool {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func isFIFO(path: String): Bool {
     if (path.contains(NULL_BYTE)) {
@@ -677,6 +737,10 @@ public func isFIFO(path: String): Bool {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func isSock(path: String): Bool {
@@ -696,6 +760,10 @@ public func isSock(path: String): Bool {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func isLnk(path: String): Bool {
@@ -716,6 +784,10 @@ public func isLnk(path: String): Bool {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func chdir(path: String): Int32 {
     checkPath(path)
@@ -785,6 +857,11 @@ public func getos(): String {
 
 
 
+/**
+ * @throws IndexOutOfBoundsException
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func gethostname(): String {
@@ -811,6 +888,10 @@ public func gethostname(): String {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func sethostname(buf: String): Int32 {
@@ -845,6 +926,10 @@ public func getlogin(): String {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func link(path: String, newpath: String): Int32 {
@@ -873,6 +958,10 @@ public func link(path: String, newpath: String): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func unlink(path: String): Int32 {
@@ -922,6 +1011,10 @@ public const AT_FDCWD: Int32 = -2
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func linkat(fd: Int32, path: String, nfd: Int32, newPath: String, lflag: Int32): Int32 {
@@ -955,6 +1048,10 @@ public const AT_REMOVEDIR: Int32 = 0x200
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func unlinkat(fd: Int32, path: String, ulflag: Int32): Int32 {
@@ -980,6 +1077,10 @@ public func unlinkat(fd: Int32, path: String, ulflag: Int32): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func symlink(path: String, symPath: String): Int32 {
@@ -1007,6 +1108,10 @@ public func symlink(path: String, symPath: String): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func symlinkat(path: String, fd: Int32, symPath: String): Int32 {
@@ -1030,6 +1135,10 @@ public func symlinkat(path: String, fd: Int32, symPath: String): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func remove(path: String): Int32 {
     checkPath(path)
@@ -1056,6 +1165,10 @@ public func remove(path: String): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @Deprecated
 public func rename(oldName: String, newName: String): Int32 {
     checkPath(oldName)
@@ -1084,6 +1197,10 @@ public func rename(oldName: String, newName: String): Int32 {
 
 
 
+/**
+ * @throws IllegalArgumentException
+ * @throws IllegalMemoryException
+ */
 @When[os != "Windows"]
 @Deprecated
 public func renameat(oldfd: Int32, oldName: String, newfd: Int32, newName: String): Int32 {
@@ -1098,6 +1215,9 @@ public func renameat(oldfd: Int32, oldName: String, newfd: Int32, newName: Strin
     }
 }
 
+/**
+ * @throws IllegalArgumentException
+ */
 func checkPath(path: String): Unit {
     if (path.contains(NULL_BYTE)) {
         throw IllegalArgumentException("The path cannot contain null character!")

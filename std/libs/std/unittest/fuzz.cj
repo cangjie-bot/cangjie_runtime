@@ -86,6 +86,9 @@ foreign func CJ_MICROFUZZ_GLOBAL_EDGE_COVERAGE_EST(): Float64
 
 foreign func CJ_MICROFUZZ_SET_DBG_CALLBACK(callback: CFunc<(CString, CString, UInt64, UInt64) -> Unit>): Unit
 
+/**
+ * @throws OutOfMemoryError
+ */
 @C
 func printMessage(mes: CString, t: CString, v1: UInt64, v2: UInt64): Unit {
     print(mes)
@@ -123,9 +126,17 @@ extend UInt8 <: Torcable<UInt8> {
         if (cEntry.right == value) { return cEntry.left }
         return None
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func nextFrom(random: Random): UInt8 {
         random.nextUInt8()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func suggestedFrom(random: Random): UInt8 {
         random.suggestUInt8()
     }
@@ -150,9 +161,17 @@ extend UInt16 <: Torcable<UInt16> {
         if (cEntry.right == value) { return cEntry.left }
         return None
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func nextFrom(random: Random): UInt16 {
         random.nextUInt16()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func suggestedFrom(random: Random): UInt16 {
         random.suggestUInt16()
     }
@@ -183,9 +202,17 @@ extend UInt32 <: Torcable<UInt32> {
         if (cEntry.right == value) { return cEntry.left }
         return None
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func nextFrom(random: Random): UInt32 {
         random.nextUInt32()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func suggestedFrom(random: Random): UInt32 {
         random.suggestUInt32()
     }
@@ -214,7 +241,15 @@ extend UInt64 <: Torcable<UInt64> {
         if (cEntry.right == value) { return cEntry.left }
         return None
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func nextFrom(random: Random): UInt64 { random.nextUInt64() }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func suggestedFrom(random: Random): UInt64 {
         random.suggestUInt64()
     }
@@ -244,9 +279,17 @@ extend Float32 <: Torcable<Float32> {
         if (cEntry.right == value) { return cEntry.left }
         return None
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func nextFrom(random: Random): Float32 {
         random.nextFloat32()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func suggestedFrom(random: Random): Float32 {
         random.suggestFloat32()
     }
@@ -276,9 +319,17 @@ extend Float64 <: Torcable<Float64> {
         if (cEntry.right == value) { return cEntry.left }
         return None
     }
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func nextFrom(random: Random): Float64 {
         random.nextFloat64()
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public static func suggestedFrom(random: Random): Float64 {
         random.suggestFloat64()
     }
@@ -302,6 +353,10 @@ enum Mutation<T> where T <: Torcable<T> {
     | Add(UInt8)
     | Sub(UInt8)
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     func apply(at: Int64, values: ArrayList<T>): Unit {
         match (this) {
@@ -320,8 +375,15 @@ enum Mutation<T> where T <: Torcable<T> {
 }
 
 class Mutator {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     Mutator(let random!: Random = Random()) {}
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func randomRecentValue<T>(): ?T where T <: Torcable<T> & ToString {
         let entry = T.randomRecentEntry() ?? return None
         if (random.nextBool()) {
@@ -331,6 +393,10 @@ class Mutator {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func randomRecentCmp<T>(value: T): ?T where T <: Torcable<T> & ToString {
         match (T.randomRecentValueComparedTo(value)) {
             case Some(operand) => return operand
@@ -338,6 +404,11 @@ class Mutator {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     private func pickRandomMutation<T>(value: T): Mutation<T> where T <: Torcable<T> & ToString {
         match (random.nextUInt8(12)) {
             case 0 | 1 | 2 | 3 =>
@@ -359,6 +430,11 @@ class Mutator {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws Exception
+     */
     func randomMutation<T>(temperature: UInt8, value: T): ?Mutation<T> where T <: Torcable<T> & ToString {
         if (random.nextUInt8() >= temperature) { return None }
         return pickRandomMutation<T>(value)
@@ -369,6 +445,10 @@ private class MutatingRandomValueStream<T> where T <: Torcable<T> & ToString & H
     MutatingRandomValueStream(let values!: ArrayList<T> = ArrayList()) {}
     var currentIndex = 0
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func nextUniform(random: Random): T {
         let index = currentIndex
         currentIndex++
@@ -378,6 +458,11 @@ private class MutatingRandomValueStream<T> where T <: Torcable<T> & ToString & H
         return values[index]
     }
 
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func next(random: Random, temperature: UInt8, mutator: Mutator): T {
         let index = currentIndex
         currentIndex++
@@ -403,6 +488,9 @@ private class MutatingRandomValueStream<T> where T <: Torcable<T> & ToString & H
 class CovRandomSource <: RandomSource {
     private let inner: Random
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     private CovRandomSource(
         let seed!: UInt64,
         let temperature!: UInt8,
@@ -417,6 +505,9 @@ class CovRandomSource <: RandomSource {
         this.inner = Random(seed)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     init(seed!: UInt64, temperature!: UInt8 = 0, mutator!: Mutator = Mutator(random: Random(seed))) {
         this(
             seed: seed, temperature: temperature,
@@ -430,6 +521,9 @@ class CovRandomSource <: RandomSource {
         )
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func copy(seed!: UInt64 = this.seed, temperature!: UInt8 = this.temperature): CovRandomSource {
         CovRandomSource(
             seed: seed, temperature: temperature,
@@ -440,6 +534,9 @@ class CovRandomSource <: RandomSource {
         )
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func freeze(): CovRandomSource {
         CovRandomSource(
             seed: seed, temperature: 0,
@@ -454,62 +551,132 @@ class CovRandomSource <: RandomSource {
         return nextBool()
     }
 
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func suggestUInt8(): UInt8 {
         let result = valuesInt8.next(inner, temperature, mutator)
         return result
     }
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func suggestUInt16(): UInt16 {
         return valuesInt16.next(inner, temperature, mutator)
     }
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func suggestUInt32(): UInt32 {
         return valuesInt32.next(inner, temperature, mutator)
     }
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func suggestUInt64(): UInt64 {
         return valuesInt64.next(inner, temperature, mutator)
     }
 
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public override func suggestInt8(): Int8 {
         Int8(suggestUInt8())
     }
 
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public override func suggestInt16(): Int16 {
         Int16(suggestUInt16())
     }
 
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public override func suggestInt32(): Int32 {
         Int32(suggestUInt32())
     }
 
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public override func suggestInt64(): Int64 {
         Int64(suggestUInt64())
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func nextFloat16(): Float16 {
         return Float16(valuesFloat32.nextUniform(inner))
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func nextFloat32(): Float32 {
         return valuesFloat32.nextUniform(inner)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func nextFloat64(): Float64 {
         return valuesFloat64.nextUniform(inner)
     }
 
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     @OverflowWrapping
     public override func suggestFloat16(): Float16 {
         return Float16(suggestFloat32())
     }
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func suggestFloat32(): Float32 {
         return valuesFloat32.next(inner, temperature, mutator)
     }
+    /**
+     * @throws Exception
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func suggestFloat64(): Float64 {
         return valuesFloat64.next(inner, temperature, mutator)
     }
 
     private var gaussian = GaussianGenerator(0.0, 1.0)
+    /**
+     * @throws IllegalArgumentException
+     */
     public override func nextGaussianFloat64(mean!: Float64 = 0.0, sigma!: Float64 = 1.0): Float64 {
         if (gaussian.mean != mean || gaussian.sigma != sigma) {
             this.gaussian = GaussianGenerator(mean, sigma)
@@ -517,15 +684,31 @@ class CovRandomSource <: RandomSource {
         return gaussian.next(this)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func nextUInt8(): UInt8 {
         valuesInt8.nextUniform(inner)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func nextUInt16(): UInt16 {
         valuesInt16.nextUniform(inner)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func nextUInt32(): UInt32 {
         valuesInt32.nextUniform(inner)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public override func nextUInt64(): UInt64 {
         valuesInt64.nextUniform(inner)
     }
@@ -535,6 +718,9 @@ class GaussianGenerator {
     var cached: ?Float64 = Option.None
     GaussianGenerator(let mean: Float64, let sigma: Float64) {}
 
+    /**
+     * @throws IllegalArgumentException
+     */
     func next(random: RandomSource): Float64 {
         if (let Some(cached) <- this.cached) {
             this.cached = None

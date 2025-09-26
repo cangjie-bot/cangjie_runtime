@@ -49,6 +49,10 @@ let _ = { =>
 }()
 
 class LifecycleStages {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func lifecycleVerifier(ls: LifecycleStage): Verifier {
         { _: MacroAttrs, decl: Decl, errors: MacroErrors =>
             if (let Some(funcDecl) <- (decl as FuncDecl)) {
@@ -57,6 +61,13 @@ class LifecycleStages {
         }
     }
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func registerLifecycleStages(bodyDecls: ArrayList<Decl>, tb: TokensBuilder): Unit {
         let funcsByStage = HashMap<LifecycleStage, ArrayList<FuncDecl>>()
         for (ls in LIFECYCLE_STAGES) {
@@ -82,6 +93,12 @@ class LifecycleStages {
         }
     }
 
+    /**
+     * @throws Error
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func registerLifecycleStage(ls: LifecycleStage, annotatedFuncs: ArrayList<FuncDecl>,
         tb: TokensBuilder) {
         let buildFunctionName = Token(IDENTIFIER, ls.stageName)
@@ -111,6 +128,10 @@ class LifecycleStages {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     private static func verifyLifecycleFunction(funcDecl: FuncDecl, ls: LifecycleStage, errors: MacroErrors) {
         if (funcDecl.isGenericDecl) {
             errors.add("${ls.macroKey} function cannot be generic.")
@@ -132,6 +153,12 @@ class LifecycleStages {
         }
     }
 
+    /**
+     * @throws NoneValueException
+     * @throws ASTException
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     static func transformFunction(funcDecl: FuncDecl, tb: TokensBuilder): Unit {
         if (funcDecl.getDeprecatedLifecycleStage().isNone()) {
             tb.append(funcDecl).append(NL)
@@ -145,6 +172,10 @@ class LifecycleStages {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws OutOfMemoryError
+     */
     private static func reportDeprecation(ls: LifecycleStage) {
         let message = "Warning: overriding func '${ls.deprecatedFuncName}' is deprecated and will be disallowed in a subsequent release. " +
             "Use ${ls.macroKey} macro instead."
@@ -153,6 +184,10 @@ class LifecycleStages {
 }
 
 extend FuncDecl {
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     func getDeprecatedLifecycleStage(): ?LifecycleStage {
         if (!funcParams.isEmpty()) {
             return None

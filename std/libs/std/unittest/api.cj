@@ -26,26 +26,180 @@ public class TestSuite {
         get() { _name }
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func runTests(): TestReport {
         run(Configuration(), OnlyTests).asTestReport(Configuration())
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func runTests(configuration: Configuration): TestReport {
         run(configuration, OnlyTests).asTestReport(configuration)
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func runBenchmarks(): BenchReport {
         run(Configuration(), OnlyBenchmarks).asBenchReport(Configuration())
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func runBenchmarks(configuration: Configuration): BenchReport {
         run(configuration, OnlyBenchmarks).asBenchReport(configuration)
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws OverflowException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws ArithmeticException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws OutOfMemoryError
+     */
     func run(configuration: Configuration, mode: ExecutionMode): TestGroupResult {
         fakeGroup(this).run(configuration, mode)
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws RegexException
+     * @throws UnittestOptionValidationException
+     * @throws InvalidDataException
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws MockFrameworkInternalError
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws MockFrameworkException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws JsonException
+     * @throws OutOfMemoryError
+     * @throws ArithmeticException
+     * @throws ProcessException
+     * @throws Exception
+     */
     func execute(groupName: String, runConfiguration: Configuration, filterService: FilterService): TestSuiteResult {
         let id = TestSuiteId.fromTestSuite(groupName, this)
         TestSuiteExecutor(runConfiguration, id, this, filterService).execute()
@@ -55,6 +209,10 @@ public class TestSuite {
         TestSuiteBuilder(name)
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public static func builder(suite: TestSuite): TestSuiteBuilder {
         let builder = TestSuiteBuilder(suite.name)
         builder.beforeAlls.add(all: suite.beforeAlls)
@@ -81,22 +239,152 @@ public class TestGroup {
         }
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func runTests(): TestReport {
         run(Configuration(), OnlyTests).asTestReport(Configuration())
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func runTests(configuration: Configuration): TestReport {
         run(configuration, OnlyTests).asTestReport(configuration)
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func runBenchmarks(): BenchReport {
         run(Configuration(), OnlyBenchmarks).asBenchReport(Configuration())
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func runBenchmarks(configuration: Configuration): BenchReport {
         run(configuration, OnlyBenchmarks).asBenchReport(configuration)
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws OverflowException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws ArithmeticException
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     * @throws OutOfMemoryError
+     */
     func run(configuration: Configuration, mode: ExecutionMode): TestGroupResult {
         let groupId = this.name
         let runConfiguration = Configuration.merge(configuration, groupConfiguration)
@@ -133,26 +421,46 @@ public class TestGroupBuilder {
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func configure(configuration: Configuration): TestGroupBuilder {
         this.configuration = Configuration.merge(this.configuration, configuration)
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(test: UnitTestCase): TestGroupBuilder {
         suites.add(fakeSuite(Case(test)))
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(benchmark: Benchmark): TestGroupBuilder {
         suites.add(fakeSuite(Bench(benchmark)))
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(suite: TestSuite): TestGroupBuilder {
         suites.add(suite)
         this
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func build(): TestGroup {
         TestGroup(name, suites.toArray(), configuration)
     }
@@ -178,46 +486,82 @@ public class TestSuiteBuilder {
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func configure(configuration: Configuration): TestSuiteBuilder {
         this.configuration = Configuration.merge(this.configuration, configuration)
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func beforeEach(body: (String) -> Unit): TestSuiteBuilder {
         beforeEachs.add(body)
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func afterEach(body: (String) -> Unit): TestSuiteBuilder {
         afterEachs.add(body)
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func beforeEach(body: () -> Unit): TestSuiteBuilder {
         beforeEachs.add({ _ => body() })
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func afterEach(body: () -> Unit): TestSuiteBuilder {
         afterEachs.add({ _ => body() })
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func beforeAll(body: () -> Unit): TestSuiteBuilder {
         beforeAlls.add(body)
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func afterAll(body: () -> Unit): TestSuiteBuilder {
         afterAlls.add(body)
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(test: UnitTestCase): TestSuiteBuilder {
         tests.add(Case(test))
         this
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func add(benchmark: Benchmark): TestSuiteBuilder {
         tests.add(Bench(benchmark))
         this
@@ -228,6 +572,10 @@ public class TestSuiteBuilder {
         this
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     public func build(): TestSuite {
         TestSuite(
             name,
@@ -255,6 +603,32 @@ public class UnitTestCase {
         }
     }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func run(): TestReport {
         fakeGroup(fakeSuite(Case(this))).run(Configuration(), OnlyTests).asTestReport(caseConfiguration)
     }
@@ -285,6 +659,32 @@ public class Benchmark {
 
     public prop name: String { get() { _name } }
 
+    /**
+     * @throws MockFrameworkInternalError
+     * @throws EnvException
+     * @throws ExpectationFailedException
+     * @throws RegexException
+     * @throws JsonException
+     * @throws AssertException
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws OverflowException
+     * @throws ArithmeticException
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws MockFrameworkException
+     * @throws getOrThrow
+     * @throws UnittestCliOptionsFormatException
+     * @throws IllegalSynchronizationStateException
+     * @throws UnittestOptionValidationException
+     * @throws getOrFail
+     * @throws IllegalMemoryException
+     * @throws IllegalArgumentException
+     * @throws SocketException
+     * @throws IllegalFormatException
+     * @throws ProcessException
+     * @throws Exception
+     */
     public func run(): BenchReport {
         fakeGroup(fakeSuite(Bench(this))).run(Configuration(), OnlyBenchmarks).asBenchReport(benchmarkConfiguration)
     }
@@ -297,6 +697,11 @@ public class Benchmark {
     ): Benchmark {
         Benchmark(name, configuration, BenchExecutor<T>(strategy, optLambda))
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public static func createParameterized<T>(
         name: String,
         strategy: DataStrategy<T>,
@@ -307,6 +712,11 @@ public class Benchmark {
         createParameterized(name, DataStrategyProcessor.start(strategy, "args"), configuration: configuration,
             measurement: measurement, body: body)
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public static func createParameterized<T>(
         name: String,
         strategy: DataStrategyProcessor<T>,
@@ -317,6 +727,11 @@ public class Benchmark {
         configuration.set(KeyMeasurementInfo.measurementInfo, measurement.info)
         createWithExplicitLoop<T>(name, strategy, configuration, createBenchmarkLoop<T>(measurement, body))
     }
+    /**
+     * @throws IllegalArgumentException
+     * @throws UnittestOptionValidationException
+     * @throws IndexOutOfBoundsException
+     */
     public static func create(
         name: String,
         configuration!: Configuration = Configuration(),
@@ -353,6 +768,13 @@ public struct TestCaseInfo {
 sealed abstract class Report {
     private let details: Details
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     Report(
         let groupResult: TestGroupResult,
         let runConfiguration: Configuration
@@ -368,14 +790,45 @@ sealed abstract class Report {
 }
 
 public class TestReport <: Report {
+    /**
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     TestReport(groupResult: TestGroupResult, runConfiguration: Configuration) {
         super(groupResult, runConfiguration)
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     * @throws NoneValueException
+     */
     public func reportTo<T>(reporter: Reporter<TestReport, T>): T {
         (doReport(reporter) as T).getOrThrow()
     }
 
+    /**
+     * @throws InvalidDataException
+     * @throws OutOfMemoryError
+     * @throws IllegalStateException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     * @throws ArithmeticException
+     * @throws FSException
+     * @throws NoneValueException
+     * @throws IllegalMemoryException
+     * @throws Exception
+     */
     private func doReport<T>(reporter: Reporter<TestReport, T>): Any {
         match (reporter) {
             case printer: TextReporterBase<T> => return printer.printReport(this)
@@ -386,14 +839,57 @@ public class TestReport <: Report {
 }
 
 public class BenchReport <: Report {
+    /**
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     BenchReport(groupResult: TestGroupResult, runConfiguration: Configuration) {
         super(groupResult, runConfiguration)
     }
 
+    /**
+     * @throws OverflowException
+     * @throws InvalidDataException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws JsonException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws TimeoutException
+     * @throws IllegalSynchronizationStateException
+     */
     public func reportTo<T>(reporter: Reporter<BenchReport, T>): T {
         (doReport(reporter) as T).getOrThrow()
     }
 
+    /**
+     * @throws OverflowException
+     * @throws InvalidDataException
+     * @throws IllegalMemoryException
+     * @throws IndexOutOfBoundsException
+     * @throws NoneValueException
+     * @throws IllegalArgumentException
+     * @throws RegexException
+     * @throws ConcurrentModificationException
+     * @throws JsonException
+     * @throws FSException
+     * @throws Exception
+     * @throws ProcessException
+     * @throws ArithmeticException
+     * @throws OutOfMemoryError
+     * @throws TimeoutException
+     * @throws IllegalSynchronizationStateException
+     */
     private func doReport<T>(reporter: Reporter<BenchReport, T>): Any {
         match (reporter) {
             case printer: TextReporterBase<T> => printer.printReport(this)
@@ -417,18 +913,34 @@ public class TestPackage {
         this.builder = TestGroupBuilder(name)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func registerCase(testCase: () -> UnitTestCase): Unit {
         builder.add(testCase())
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func registerSuite(suite: () -> TestSuite): Unit {
         builder.add(suite())
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     */
     public func registerBench(bench: () -> Benchmark): Unit {
         builder.add(bench())
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func build(): TestGroup {
         builder.build()
     }
@@ -500,10 +1012,24 @@ private func fakeGroup(testSuite: TestSuite): TestGroup {
 }
 
 extend TestGroupResult {
+    /**
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     func asBenchReport(runConfiguration: Configuration) {
         BenchReport(this, runConfiguration)
     }
 
+    /**
+     * @throws IllegalArgumentException
+     * @throws InvalidDataException
+     * @throws ArithmeticException
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalStateException
+     */
     func asTestReport(runConfiguration: Configuration) {
         TestReport(this, runConfiguration)
     }
@@ -516,6 +1042,9 @@ private func noArgsProcessor(): DataStrategyProcessor<Unit> {
 }
 
 extend Array<InputParameter> {
+    /**
+     * @throws IndexOutOfBoundsException
+     */
     func isNoArg() {
         size == 1 && this[0].name == NO_ARGS_NAME
     }

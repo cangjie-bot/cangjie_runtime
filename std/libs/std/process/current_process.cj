@@ -68,6 +68,10 @@ public class CurrentProcess <: Process {
         }
     }
 
+        /**
+         * @throws IndexOutOfBoundsException
+         * @throws IllegalArgumentException
+         */
     public prop arguments: Array<String> {
         get() {
             this.getArgs()
@@ -82,6 +86,11 @@ public class CurrentProcess <: Process {
         }
     }
 
+        /**
+         * @throws IllegalMemoryException
+         * @throws IllegalSynchronizationStateException
+         * @throws IllegalArgumentException
+         */
     public prop tempDirectory: Path {
         get() {
             var e: Option<String> = getTempDir(this.getEnv("TMPDIR"), this.getEnv("TMP"), this.getEnv("TEMP"),
@@ -101,6 +110,11 @@ public class CurrentProcess <: Process {
         transOp(transOp(transOp(opt1, opt2), opt3), opt4)
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func getEnv(key: String): Option<String> {
         if (key.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")
@@ -118,6 +132,11 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func setEnv(k: String, v: String): Unit {
         if (k.contains(NULL_BYTE) || v.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")
@@ -132,6 +151,11 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /**
+     * @throws IllegalMemoryException
+     * @throws IllegalSynchronizationStateException
+     * @throws IllegalArgumentException
+     */
     public func removeEnv(k: String): Unit {
         if (k.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path cannot contain null character!")
@@ -146,6 +170,10 @@ public class CurrentProcess <: Process {
         }
     }
 
+    /**
+     * @throws IndexOutOfBoundsException
+     * @throws IllegalArgumentException
+     */
     func getArgs(): Array<String> {
         let argv = getCommandLineArgsFromRuntime()
         if (argv.isNull()) {
@@ -191,6 +219,12 @@ public class CurrentProcess <: Process {
 
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     */
     public func exit(code: Int64): Nothing {
         var c: Int64 = code
         if (c < RTN_CODE_MIN_VAL) {
@@ -211,6 +245,12 @@ public class CurrentProcess <: Process {
 
 
 
+    /**
+     * @throws OutOfMemoryError
+     * @throws IllegalArgumentException
+     * @throws IndexOutOfBoundsException
+     * @throws ProcessException
+     */
     protected func terminateAliveProcess(pid: Int32, force: Bool): Unit {
         let status: Int8 = unsafe { CJ_OS_GetProcessAliveStatus(Int32(pid), this._startTime) }
         if (status == PROCESS_STATUS_ALIVE) {
@@ -227,6 +267,9 @@ public class CurrentProcess <: Process {
     }
 }
 
+/**
+ * @throws ProcessException
+ */
 @When[backend == "cjnative"]
 func processExit(exitCode: Int32): Nothing {
     unsafe {
