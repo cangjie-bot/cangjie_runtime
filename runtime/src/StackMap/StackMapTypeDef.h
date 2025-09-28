@@ -16,7 +16,7 @@
 #ifdef __aarch64__
 #include "Common/RegisterAarch64.h"
 #elif defined(__arm__)
-#include "Common/RegisterAarch32.h"
+#include "Common/RegisterArm.h"
 #else
 #include "Common/RegisterX86-64.h"
 #endif

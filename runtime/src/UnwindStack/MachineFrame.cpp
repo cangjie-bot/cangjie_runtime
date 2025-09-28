@@ -20,9 +20,7 @@ extern uintptr_t unwindPCForN2CStub;
 extern uintptr_t unwindPCForC2NStub;
 extern uintptr_t unwindPCForC2RStubStart;
 extern uintptr_t unwindPCForC2RStubEnd;
-#ifndef __arm__
 extern uintptr_t unwindPCForStackGrowStub;
-#endif
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
 extern uintptr_t unwindPCForRuntimeStubStart;
 extern uintptr_t unwindPCForRuntimeStubEnd;

@@ -5,8 +5,8 @@
 // See https://cangjie-lang.cn/pages/LICENSE for license information.
 
 
-#ifndef MRT_STACKMAP_AARCH32_H
-#define MRT_STACKMAP_AARCH32_H
+#ifndef MRT_STACKMAP_ARM_H
+#define MRT_STACKMAP_ARM_H
 #include <stdint.h>
 #include <unordered_map>
 
@@ -88,4 +88,4 @@ private:
     RegBits regBits{ 0 };
 };
 } // namespace MapleRuntime
-#endif // MRT_STACKMAP_AARCH64_H
+#endif // MRT_STACKMAP_ARM_H

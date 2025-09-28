@@ -12,7 +12,7 @@
 #ifdef __aarch64__
 #include "StackMap/StackMapAarch64.h"
 #elif defined (__arm__)
-#include "StackMap/StackMapAarch32.h"
+#include "StackMap/StackMapArm.h"
 #else
 #include "StackMap/StackMapX86.h"
 #endif

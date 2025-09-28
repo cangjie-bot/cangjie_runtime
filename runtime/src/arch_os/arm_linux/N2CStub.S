@@ -97,7 +97,7 @@
     .type CJ_MCC_N2CStub, %function
 CJ_MCC_N2CStub:
     .cfi_startproc
-    add  lr, lr, #2 // todo? why?
+    add  lr, lr, #2  // todo
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
     // unsupport
 #endif
