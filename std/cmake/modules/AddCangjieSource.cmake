@@ -218,9 +218,15 @@ function(add_cangjie_library target_name)
     set(MKDIR_TEMP_FILES_CMD COMMAND ${CMAKE_COMMAND} -E make_directory ${temp_files_dir})
 
     if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
-        list(APPEND COMPILE_CMD "$<IF:$<CONFIG:MinSizeRel>,-Os,-O0>")
-        # .bc files is for LTO mode and LTO mode does not support -Os and -Oz.
-        list(APPEND COMPILE_BC_CMD "-O0")
+        if(TRIPLE STREQUAL "arm-linux-ohos")
+            list(APPEND COMPILE_CMD "$<IF:$<CONFIG:MinSizeRel>,-Os,-O0>")
+            # .bc files is for LTO mode and LTO mode does not support -Os and -Oz.
+            list(APPEND COMPILE_BC_CMD "-O0")
+        else()
+            list(APPEND COMPILE_CMD "$<IF:$<CONFIG:MinSizeRel>,-Os,-O2>")
+            # .bc files is for LTO mode and LTO mode does not support -Os and -Oz.
+            list(APPEND COMPILE_BC_CMD "-O2")
+        endif()
     endif()
 
     set(ENV{LD_LIBRARY_PATH} $ENV{LD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/lib)
