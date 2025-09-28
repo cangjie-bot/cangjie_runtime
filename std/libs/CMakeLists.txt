@@ -24,7 +24,7 @@ if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
     include(AddCJNATIVELibrary)
 endif()
 
-if(CANGJIE_CODEGEN_CJNATIVE_BACKEND AND FALSE)
+if(CANGJIE_CODEGEN_CJNATIVE_BACKEND AND NOT TRIPLE STREQUAL "arm-linux-ohos")
     set(CJNATIVE_BACKEND "cjnative")
     set(libname stdFFI)
     add_library(${libname} SHARED ${CANGJIE_CORE_FFI_SRC})
