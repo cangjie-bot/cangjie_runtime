@@ -176,8 +176,6 @@ private:
 #endif
 };
 
-#ifndef __arm__
 static_assert(sizeof(StateWord) == sizeof(uint64_t), "illegal size of StateBits");
-#endif
 } // namespace MapleRuntime
 #endif // MRT_STATE_WORD_H
