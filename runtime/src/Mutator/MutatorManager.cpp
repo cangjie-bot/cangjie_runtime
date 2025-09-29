@@ -53,8 +53,7 @@ extern "C" void HandleSafepoint(ThreadLocalData* tlData)
 #if defined (__arm__)
 extern "C" void HandleSafepointForArm(ThreadLocalData* tlData)
 {
-    uint64_t safepointState = tlData->safepointState;
-    if (safepointState <= 8) {
+    if (tlData->safepointState == 0) {
         return;
     }
     Mutator* mutator = tlData->mutator;
