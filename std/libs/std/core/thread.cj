@@ -91,7 +91,7 @@ struct ThreadSnapshotInfo {
  * Class representing a snapshot of a thread's state at a point in time.
  * Provides functionality for retrieving and printing thread information.
  */
-public class ThreadSnapshot {
+public class ThreadSnapshot <: ToString {
     public let id: Int64
     public let name: String
     public let state: ThreadState
@@ -112,20 +112,23 @@ public class ThreadSnapshot {
     }
 
     /**
-     * Prints the stack trace in a human-readable format.
-     * @param stackTrace Array of StackTraceElement to print
+     * Converts the thread snapshot information to a string representation
+     * 
+     * @return Returns a formatted string containing thread ID, name, state and stack trace information
      */
-    public static func printStackTrace(stackTrace: Array<StackTraceElement>): Unit {
-        println("Stack trace:")
+    public func toString(): String {
+        var stringBuffer = "ThreadSnapshot(id=${id}, name=${name}, state=${state})\n"
+        stringBuffer = stringBuffer + "stack trace:\n"
         for (element in stackTrace) {
             if (element.declaringClass.isEmpty() && element.methodName.isEmpty()) { // simple stack trace format
-                println("\t at ${element.fileName}:${element.lineNumber}")
+                stringBuffer = stringBuffer + "\t at ${element.fileName}:${element.lineNumber}\n"
             } else {
                 let packageDelimiter: String = if (element.declaringClass.isEmpty()) { "" } else { "." }
-                println(
-                    "\t at ${element.declaringClass}${packageDelimiter}${element.methodName}(${element.fileName}:${element.lineNumber})")
+                stringBuffer = stringBuffer +
+                    "\t at ${element.declaringClass}${packageDelimiter}${element.methodName}(${element.fileName}:${element.lineNumber})\n"
             }
         }
+        return stringBuffer
     }
     
     /**
