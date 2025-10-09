@@ -34,6 +34,7 @@ public:
     void Init()
     {
         uncaughtExceptionHandler.hapPath = nullptr;
+        uncaughtExceptionHandler.uncaughtTask = nullptr;
     };
     void Fini() const {};
 
