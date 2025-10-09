@@ -94,7 +94,7 @@ void ExceptionManager::RegisterUncaughtExceptionHandler(const CJUncaughtExceptio
 #endif
 
 #ifdef __APPLE__
-static void DefaultUncaughtTask(const char* sunmary, const CJErrorObject errorObj)
+void ExceptionManager::DefaultUncaughtTask(const char* sunmary, const CJErrorObject errorObj)
 {
     PRINT_INFO("%s\n", sunmary);
     PRINT_INFO("%s\n%s\n%s\n", errorObj.name, errorObj.message, errorObj.stack);
