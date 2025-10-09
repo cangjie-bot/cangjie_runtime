@@ -428,6 +428,30 @@ class IntersperseIterator<T> <: Iterator<T> {
     }
 }
 
+class PeekIterator<T> <: Iterator<T> {
+    private var peeked = None<T>
+
+    PeekIterator(private let it: Iterator<T>) {}
+
+    /** Get next value without advancing the iterator. */
+    func peek(): Option<T> {
+        if (this.peeked.isNone()) {
+            this.peeked = this.it.next()
+        }
+
+        this.peeked
+    }
+
+    public func next(): Option<T> {
+        match (peeked) {
+            case Some(t) =>
+                this.peeked = this.it.next()
+                t
+            case None => this.it.next()
+        }
+    }
+}
+
 extend<T> Iterator<T> where T <: Equatable<T> {
     @Frozen
     public func contains(element: T): Bool {
@@ -631,5 +655,9 @@ extend<T> Iterator<T> {
             result = operation(result, item)
         }
         return result
+    }
+
+    public func peekable(): PeekIterator<T> {
+        return PeekIterator<T>(this)
     }
 }
