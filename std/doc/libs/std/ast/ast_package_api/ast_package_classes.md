@@ -4452,7 +4452,7 @@ public mut prop fullIdentifier: Token
 public override mut prop identifier: Token
 ```
 
-功能：该属性继承自 [Decl](#class-decl) 节点，表示宏调用节点的标识符，如 `@pkg.m class a{}` 中的 `m`。
+功能：该属性继承自 [Decl](ast_package_classes.md#class-decl) 节点，表示宏调用节点的标识符，如 `@pkg.m class a{}` 中的 `m`。
 
 类型：[Token](ast_package_structs.md#struct-token)
 
@@ -4781,7 +4781,7 @@ public class MacroExpandParam <: FuncParam {
 public mut prop fullIdentifier: Token
 ```
 
-功能：获取或设置宏调用节点的完整标识符，如 `@pkg.m class a{}` 中的 `pkg.m`。
+功能：获取或设置宏调用节点的完整标识符，如 `func bar (@pkg.m a: Int64)` 中的 `pkg.m`。
 
 类型：[Token](ast_package_structs.md#struct-token)
 
@@ -4791,7 +4791,7 @@ public mut prop fullIdentifier: Token
 public override mut prop identifier: Token
 ```
 
-功能：该属性继承自 [Decl](#class-decl) 节点，表示宏调用节点的标识符，如 `@pkg.m class a{}` 中的 `m`。
+功能：该属性继承自 [Decl](ast_package_classes.md#class-decl) 节点，表示宏调用节点的标识符，如 `func bar (@pkg.m a: Int64)` 中的 `m`。
 
 类型：[Token](ast_package_structs.md#struct-token)
 
@@ -8682,7 +8682,7 @@ public open func append(tokens: Tokens): Tokens
 public func concat(tokens: Tokens): Tokens
 ```
 
-功能：将当前的 [Tokens](ast_package_classes.md#class-tokens) 与传入的 [Tokens](ast_package_classes.md#class-tokens) 进行拼接。
+功能：将当前的 [Tokens](ast_package_classes.md#class-tokens) 与传入的 [Tokens](ast_package_classes.md#class-tokens) 进行拼接，返回新的 [Tokens](ast_package_classes.md#class-tokens) 实例。
 
 参数：
 
@@ -8778,7 +8778,7 @@ public func toString(): String
 public operator func +(r: Token): Tokens
 ```
 
-功能：使用当前 [Tokens](ast_package_classes.md#class-tokens) 与另一个 [Token](ast_package_structs.md#struct-token) 相加以获取新的 [Tokens](ast_package_classes.md#class-tokens)。
+功能：使用当前 [Tokens](ast_package_classes.md#class-tokens) 与另一个 [Token](ast_package_structs.md#struct-token) 相加以获取新的 [Tokens](ast_package_classes.md#class-tokens) 实例。
 
 参数：
 
@@ -8794,7 +8794,7 @@ public operator func +(r: Token): Tokens
 public operator func +(r: Tokens): Tokens
 ```
 
-功能：使用当前 [Tokens](ast_package_classes.md#class-tokens) 与 [Tokens](ast_package_classes.md#class-tokens) 相加以获取新的 [Tokens](ast_package_classes.md#class-tokens) 类型。
+功能：使用当前 [Tokens](ast_package_classes.md#class-tokens) 与 [Tokens](ast_package_classes.md#class-tokens) 相加以获取新的 [Tokens](ast_package_classes.md#class-tokens) 实例。
 
 参数：
 
