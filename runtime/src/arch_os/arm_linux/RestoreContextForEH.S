@@ -78,10 +78,6 @@ RestoreContextForEH:
     mov  sp, r1
 
     // jump to landingpad.
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
-
     bx  r0
     .cfi_endproc
     .size RestoreContextForEH, .-RestoreContextForEH

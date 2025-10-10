@@ -42,9 +42,7 @@ CalleeSavedStubFrameSize:
     .type \funcNameStub, %function
 \funcNameStub:
     .cfi_startproc
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
+
     sub  sp, sp, #StubFrameContextSize
     str  r11, [sp]
     str  lr, [sp, #4]
@@ -96,9 +94,7 @@ CalleeSavedStubFrameSize:
     cfi_adjust_cfa_offset (-StubFrameContextSize)
     cfi_restore(r11)
     cfi_restore(lr)
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
+
     bx lr
     .cfi_endproc
     .size \funcNameStub, .-\funcNameStub

@@ -9,9 +9,7 @@
     .type   __CJ_Init_Start,%function
 __CJ_Init_Start:                        // @__CJ_Init_Start
     .cfi_startproc
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // paciasp  // unsupport for arm32
-#endif
+
 // %bb.0:
     push    {r4, lr}
     .cfi_def_cfa_offset 8
@@ -25,9 +23,6 @@ __CJ_Init_Start:                        // @__CJ_Init_Start
     bl      MRT_LibraryOnLoad
 
     pop     {r4, lr}
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // autiasp
-#endif
     bx      lr
 
 .LCJMetadataStart_0:
@@ -46,9 +41,6 @@ __CJ_Init_Start:                        // @__CJ_Init_Start
 __CJ_Fini_End:                        // @__CJ_Fini_End
     .cfi_startproc
 // %bb.0:
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // paciasp
-#endif
     push {r4, lr}
     .cfi_def_cfa_offset 8
     .cfi_offset lr, -4
@@ -59,9 +51,6 @@ __CJ_Fini_End:                        // @__CJ_Fini_End
     ldr     r0, [pc, r0]
     bl      MRT_LibraryUnLoad
     pop     {r4, lr}
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // autiasp
-#endif
     bx      lr
 
 .LCJMetadataStart_1:

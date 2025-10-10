@@ -35,9 +35,7 @@
    .type CJ_MCC_HandleSafepoint, %function
 CJ_MCC_HandleSafepoint:
    .cfi_startproc
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-   // unsupport
-#endif
+
     sub  sp, sp, #StubFrameContextSize
     str  r11, [sp]
     str  lr, [sp, #4]
@@ -101,9 +99,7 @@ unwindPCForSafepointHandlerStub:
     cfi_adjust_cfa_offset (-StubFrameContextSize)
     cfi_restore(r11)
     cfi_restore(lr)
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
+
     bx   lr
 
    .global unwindPCForSafepointStubEnd

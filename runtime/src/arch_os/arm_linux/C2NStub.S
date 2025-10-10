@@ -94,9 +94,8 @@ C2NStubFrameSize:
     .type CJ_MCC_C2NStub, %function
 CJ_MCC_C2NStub:
     .cfi_startproc
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
+    // actual stack size is StubFrameContextSize + 8
+    // 8 means the size has been pre allocated: calleeAddr and cpStackSize
     sub  sp, sp, #StubFrameContextSize
 
     // save calleeAddr and cpStackSize
@@ -129,9 +128,6 @@ CJ_MCC_C2NStub:
     cfi_rel_offset (r8, StubCalleeSaveAreaSize+16)
     cfi_rel_offset (r9, StubCalleeSaveAreaSize+20)
     cfi_rel_offset (r10, StubCalleeSaveAreaSize+24)
-#if defined(ENABLE_FORWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
 
     // save double arg registers
     vstr  d0, [sp, #StubCalleeSaveAreaSize+32]
@@ -168,6 +164,7 @@ CJ_MCC_C2NStub:
 
     // r10 <- previous sp
     add  r10, sp, #StubFrameContextSize
+    add  r10, r10, #8  // cpStakSize slot + calleeAddr slot
 
     // r4 <- previous sp + cpStackSize
     add  r4, r10, r4
@@ -205,6 +202,7 @@ unwindPCForC2NStub:
     cfi_restore (d6)
     cfi_restore (d7)
 
+    mov  r12, sp
     // copy arg8, arg9, arg10, ... (if existed)
 .L_copy:
     cmp  r4, r10
@@ -224,7 +222,7 @@ unwindPCForC2NStub:
     mov  r1, r6
     mov  r2, r7
     mov  r3, r8
-    ldr  r9, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
+    ldr  r9, [r12, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
     blx  r9
 
     // keep potential return value
@@ -292,9 +290,7 @@ unwindPCForC2NStubExceptionReturn:
     cfi_adjust_cfa_offset (-StubFrameContextSize)
     cfi_restore (r11)
     cfi_restore (lr)
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
+
     bx lr
 
 .L_stack_check_fail:
