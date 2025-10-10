@@ -32,9 +32,7 @@ extern "C" uintptr_t MRT_RestoreContext(CalleeSavedRegisterContext& context)
         context.x28 = tls;
     }
 #elif defined(__arm__)
-    if (context.r10 != tls) {
-        context.r10 = tls;
-    }
+    (void)tls;
 #endif
     return eWrapper.GetLandingPad();
 }
