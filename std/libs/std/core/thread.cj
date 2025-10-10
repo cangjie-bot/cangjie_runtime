@@ -357,7 +357,7 @@ public class Thread {
      */
     public prop state: ThreadState {
         get() {
-            let handle = acquireCJThreadHandle()
+            let handle = _rtCJThreadHandle
             if (handle.isNull()) {
                 return ThreadState.Terminated
             }
