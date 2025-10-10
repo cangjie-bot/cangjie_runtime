@@ -97,10 +97,9 @@
     .type CJ_MCC_N2CStub, %function
 CJ_MCC_N2CStub:
     .cfi_startproc
-    add  lr, lr, #2  // todo
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
+    add  lr, lr, #2
+    // actual stack size is StubFrameContextSize + 8
+    // 8 means the size has been pre allocated: calleeAddr and cpStackSize
     sub  sp, sp, #StubFrameContextSize
 
     // save calleeAddr and cpStackSize
@@ -130,9 +129,6 @@ CJ_MCC_N2CStub:
     cfi_rel_offset (r8, StubCalleeSaveAreaSize+16)
     cfi_rel_offset (r9, StubCalleeSaveAreaSize+20)
     cfi_rel_offset (r10, StubCalleeSaveAreaSize+24)
-#if defined(ENABLE_FORWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
 
     // save double arg registers
     vstr  d0, [sp, #StubCalleeSaveAreaSize+32]
@@ -160,6 +156,7 @@ CJ_MCC_N2CStub:
 
     // r10 <- previous sp
     add  r10, sp, #StubFrameContextSize
+    add  r10, r10, #8  // cpStackSize slot + calleeAddr slot
 
     // r4 <- previous sp + cpStackSize
     add  r4, r10, r4
@@ -187,9 +184,6 @@ CJ_MCC_N2CStub:
     str  r0, [sp, #ThreadLocalDataOffset]
 
     ldr  r12, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
-#if defined(ENABLE_FORWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
 
     vldr  d0, [sp, #StubCalleeSaveAreaSize+32]
     vldr  d1, [sp, #StubCalleeSaveAreaSize+40]
@@ -208,6 +202,7 @@ CJ_MCC_N2CStub:
     cfi_restore (d6)
     cfi_restore (d7)
 
+    mov  r12, sp
     // copy arg8, arg9, arg10, ... (if existed)
 .L_copy:
     cmp  r4, r10
@@ -221,14 +216,13 @@ CJ_MCC_N2CStub:
     str  r2, [sp, #4]
     b .L_copy
 .L_copy_end:
-    // mov  r10, r0
 
     // prepare arguments for invoking target method
     mov  r0, r5
     mov  r1, r6
     mov  r2, r7
     mov  r3, r8
-    ldr  r9, [sp, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
+    ldr  r9, [r12, #FuncAddrAndCpStacksizeOffset]  // calleeAddr
     blx  r9
     .global unwindPCForN2CStub
 unwindPCForN2CStub:
@@ -302,9 +296,6 @@ unwindPCForN2CStub:
     // restore for calleeAddr and cpStackSize slot in stack
     add  sp, sp, #8
     cfi_adjust_cfa_offset (-8)
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
     sub  lr, lr, #2
     bx  lr
     .cfi_endproc
@@ -317,9 +308,6 @@ unwindPCForN2CStub:
 .type    ExecuteCangjieStub, %function
 ExecuteCangjieStub:
     .cfi_startproc
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
     sub  sp, sp, #8
     str  r11, [sp]
     str  lr, [sp, #4]
@@ -333,9 +321,7 @@ ExecuteCangjieStub:
     cfi_adjust_cfa_offset (-8)
     cfi_restore (r11)
     cfi_restore (lr)
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
+
     bx  lr
     .cfi_endproc
     .size ExecuteCangjieStub, .-ExecuteCangjieStub
@@ -423,9 +409,6 @@ ApplyCangjieMethodStub:
 ApplyCangjieMethodStubFloat32:
 ApplyCangjieMethodStubFloat64:
     .cfi_startproc
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
     sub  sp, sp, #StubFrameContextSize
     str  r11, [sp]
     str  lr, [sp, #4]
@@ -563,9 +546,7 @@ ApplyCangjieMethodStubFloat64:
     cfi_adjust_cfa_offset (-StubFrameContextSize)
     cfi_restore (r11)
     cfi_restore (lr)
-#if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    // unsupport
-#endif
+
     bx  lr
     .cfi_endproc
     .size ApplyCangjieMethodStub, .-ApplyCangjieMethodStub
