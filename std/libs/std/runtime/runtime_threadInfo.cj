@@ -26,40 +26,40 @@ public struct ThreadInfo {
     /**
      * Get current number of threads.
      */
-    public static prop threadCount: UIntNative {
+    public static prop threadCount: Int64 {
         get() {
-            getThreadCount()
+            Int64(getThreadCount())
         }
     }
     /**
      * Get the number of blocked threads.
      */
-    public static prop blockingThreadCount: UIntNative {
+    public static prop blockingThreadCount: Int64 {
         get() {
-            getBlockingThreadCount()
+            Int64(getBlockingThreadCount())
         }
     }
     /**
      * Get the actual number of physical threads.
      */
-    public static prop nativeThreadCount: UIntNative {
+    public static prop nativeThreadCount: Int64 {
         get() {
-            getNativeThreadCount()
+            Int64(getNativeThreadCount())
         }
     }
 }
 
 @When[backend == "cjnative"]
-public func getThreadCount(): UIntNative {
-    return getThreadNumber()
+public func getThreadCount(): Int64 {
+    return Int64(getThreadNumber())
 }
 
 @When[backend == "cjnative"]
-public func getBlockingThreadCount(): UIntNative {
-    return getBlockingThreadNumber()
+public func getBlockingThreadCount(): Int64 {
+    return Int64(getBlockingThreadNumber())
 }
 
 @When[backend == "cjnative"]
-public func getNativeThreadCount(): UIntNative {
-    return getNativeThreadNumber()
+public func getNativeThreadCount(): Int64 {
+    return Int64(getNativeThreadNumber())
 }

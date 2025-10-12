@@ -39,18 +39,18 @@ public struct MemoryInfo {
     /**
      * Get the maximum heap size that can be used.
      */
-    public static prop maxHeapSize: UIntNative {
+    public static prop maxHeapSize: Int64 {
         get() {
-            getMaxHeapSize()
+            Int64(getMaxHeapSize())
         }
     }
 
     /**
      * Get the heap size that is allocated.
      */
-    public static prop allocatedHeapSize: UIntNative {
+    public static prop allocatedHeapSize: Int64 {
         get() {
-            getAllocatedHeapSize()
+            Int64(getAllocatedHeapSize())
         }
     }
 
@@ -64,12 +64,12 @@ public struct MemoryInfo {
     }
 }
 
-public func getMaxHeapSize(): UIntNative {
-    return getMaxCjHeapSize()
+public func getMaxHeapSize(): Int64 {
+    return Int64(getMaxCjHeapSize())
 }
 
-public func getAllocatedHeapSize(): UIntNative {
-    return getAllocatedCjHeapSize()
+public func getAllocatedHeapSize(): Int64 {
+    return Int64(getAllocatedCjHeapSize())
 }
 
 public func getUsedHeapSize(): Int64 {

@@ -51,8 +51,8 @@ public func setGCThreshold(value: UInt64): Unit {
 }
 
 @When[backend == "cjnative"]
-public func getGCCount(): UIntNative {
-    return getCjGCCount()
+public func getGCCount(): Int64 {
+    return Int64(getCjGCCount())
 }
 
 @When[backend == "cjnative"]
@@ -61,6 +61,6 @@ public func getGCTime(): Int64 {
 }
 
 @When[backend == "cjnative"]
-public func getGCFreedSize(): UIntNative {
-    return getCjGCFreedSize()
+public func getGCFreedSize(): Int64 {
+    return Int64(getCjGCFreedSize())
 }
