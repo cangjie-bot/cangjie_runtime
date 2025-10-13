@@ -206,7 +206,7 @@ CJ_MCC_N2CStub:
     // copy arg8, arg9, arg10, ... (if existed)
 .L_copy:
     cmp  r4, r10
-    ble  .L_copy_end
+    bls  .L_copy_end
     sub  r4, r4, #8
     ldr  r1, [r4]
     ldr  r2, [r4, #4]
@@ -472,7 +472,7 @@ ApplyCangjieMethodStubFloat64:
 
 .L_copy_args:
     cmp  r1, r0
-    ble .L_copy_args_end
+    bls .L_copy_args_end
     sub  r1, r1, #8
     ldr  r2, [r1]
     ldr  r3, [r1, #4]

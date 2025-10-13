@@ -157,7 +157,7 @@ CJ_MCC_C2NStub:
     add  r0, r4, r0
     mov  r1, sp
     cmp  r1, r0
-    ble  .L_stack_check_fail
+    bls  .L_stack_check_fail
 
     bl   MRT_GetThreadLocalData
     mov  r2, r0
@@ -206,7 +206,7 @@ unwindPCForC2NStub:
     // copy arg8, arg9, arg10, ... (if existed)
 .L_copy:
     cmp  r4, r10
-    ble  .L_copy_end
+    bls  .L_copy_end
     sub  r4, r4, #8
     ldr  r1, [r4]
     ldr  r2, [r4, #4]

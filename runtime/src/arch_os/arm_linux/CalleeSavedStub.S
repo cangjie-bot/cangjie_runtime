@@ -163,7 +163,7 @@ CalleeSavedStubFrameSize:
     mov  r9, #0
 .L_copy:
     cmp  r4, r10
-    ble  .L_copy_end
+    bls  .L_copy_end
     cmp  r9, #4
     bge  .L_copy_end
     ldr  r5, [r10]
