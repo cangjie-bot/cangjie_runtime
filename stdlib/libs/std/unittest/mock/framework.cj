@@ -28,6 +28,11 @@ public class MockFramework {
     protected static const initSessionPrefix = "initializer of class "
     protected static const beforeEachSession = "func beforeEach"
 
+    protected static const testCaseSessionPrefix = "test case "
+    protected static const benchSessionPrefix = "benchmark batch of "
+    protected static const initSessionPrefix = "initializer of class "
+    protected static const beforeEachSession = "func beforeEach"
+
     init() {
         CallHandler.recordStatic(CallHandlerImpl(objCounter.fetchAdd(1), GLOBAL_SESSION_NAME))
     }
