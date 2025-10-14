@@ -259,6 +259,218 @@ public class LinkedList<T> <: Collection<T> {
         }
     }
 
+    public func step(count: Int64):LinkedList<T>{
+        if (count <= 0) {
+            throw IllegalArgumentException("Step count must be greater than 0!")
+        }
+        var result: LinkedList<T> = LinkedList<T>()
+        if(size == 0){
+            return result
+        }
+        var node = _head
+        var position = 0
+        while(let Some(n) <- node){
+            if(position % count == 0){
+                result.addLast(n.value)
+            }
+            position++
+            node = n.next
+        }
+        return result
+    }
+
+    public func take(count: Int64):LinkedList<T>{
+        if (count == 0) {
+            return LinkedList<T>()
+        }
+
+        if (count < 0) {
+            throw IllegalArgumentException("take count must be greater than 0!")
+        }
+        var result: LinkedList<T> = LinkedList<T>()
+        var newSize = min(count, _size)
+        var node = _head
+        for(i in 0..newSize){
+            result.addLast(node.getOrThrow().value)
+            node = node.getOrThrow().next
+        }
+        return result
+    }
+
+    public func skip(count: Int64): LinkedList<T> {
+        if (count < 0) {
+            throw IllegalArgumentException("skip count must be greater than 0!")
+        }
+        if (size - count <= 0) {
+            return LinkedList<T>()
+        }
+        var result: LinkedList<T> = LinkedList<T>()
+        var node = _head
+        for(i in 0..count){
+            node = node.getOrThrow().next
+        }
+        for(i in count..size){
+            result.addLast(node.getOrThrow().value)
+            node = node.getOrThrow().next
+        }
+        return result
+    }
+
+    public func filter(predicate: (T) -> Bool): LinkedList<T> {
+        if (size == 0) {
+            return LinkedList<T>()
+        }
+        var result: LinkedList<T> = LinkedList<T>()
+        var node = _head
+        while(let Some(n) <- node){
+            var v = n.value
+            if(predicate(v)){
+                result.addLast(v)
+            }
+            node = n.next
+        }
+        return result
+    }
+
+    public func map<R>(transform: (T) -> R): LinkedList<R> {
+        if (size == 0) {
+            return LinkedList<R>()
+        }
+        var result: LinkedList<R> = LinkedList<R>()
+        var node = _head
+        while(let Some(n) <- node){
+            result.addLast(transform(n.value))
+            node = n.next
+        }
+        return result
+    }
+
+    public func flatMap<R>(transform: (T) -> LinkedList<R>): LinkedList<R> {
+        var result = LinkedList<R>()
+
+        var node = _head
+        while(let Some(n) <- node){
+            var newList = transform(n.value)
+            var newNode = newList._head
+            while(let Some(t) <- newNode){
+                result.addLast(t.value)
+                newNode = t.next
+            }
+            node = n.next
+        }
+        return result
+    }
+
+    public func filterMap<R>(transform: (T) -> ?R): LinkedList<R> {
+        if (size == 0) {
+            return LinkedList<R>()
+        }
+        var result: LinkedList<R> = LinkedList<R>()
+        var node = _head
+        while(let Some(n) <- node){
+            match (transform(n.value)) {
+                case Some(v) =>
+                    result.addLast(v)
+                case None => continue
+            }
+            node = n.next
+        }
+        return result
+    }
+
+    public func intersperse(separator: T): LinkedList<T> {
+        if(size == 0){
+            return LinkedList<T>()
+        }
+        var result = LinkedList<T>()
+        var node = _head
+        while(true){
+            if(let Some(n) <- node){
+                result.addLast(n.value)
+                if(let Some(t) <- n.next){
+                    result.addLast(separator)
+                    result.addLast(t.value)
+                    node = t.next
+                }else{
+                    break
+                }
+            }
+        }
+        return result
+    }
+
+    public func forEach(action: (T) -> Unit): Unit {
+        var node = _head
+        while(let Some(n) <- node){
+            action(n.value)
+            node = n.next
+        }
+    }
+
+    public func all(predicate: (T) -> Bool): Bool {
+        var node = _head
+        while (let Some(n) <- node) {
+            if (predicate(n.value)) {
+                node = n.next
+                continue
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+
+    public func any(predicate: (T) -> Bool): Bool {
+        var node = _head
+        while (let Some(n) <- node) {
+            if (predicate(n.value)) {
+                return true
+            } else {
+                node = n.next
+                continue
+            }
+        }
+        return false
+    }
+
+    public func none(predicate: (T) -> Bool): Bool {
+        var node = _head
+        while (let Some(n) <- node) {
+            if (predicate(n.value)) {
+                return false
+            } else {
+                node = n.next
+                continue
+            }
+        }
+        return true
+    }
+
+    public func fold<R>(initial: R, operation: (R, T) -> R): R {
+        var result: R = initial
+        var node = _head
+        while(let Some(n) <- node){
+            result = operation(result, n.value)
+            node = n.next
+        }
+        return result
+    }
+
+    public func reduce(operation: (T, T) -> T): Option<T> {
+        if (size == 0) {
+            return None<T>
+        }
+        var node = _head
+        var result: T = node.getOrThrow().value
+        node = node.getOrThrow().next
+        while(let Some(n) <- node){
+            result = operation(result, n.value)
+            node = n.next
+        }
+        return result
+    }
+
+
     public func clear(): Unit {
         _size = 0
         _head = None
@@ -382,6 +594,34 @@ public class LinkedList<T> <: Collection<T> {
             }
         }
         throw IllegalArgumentException("The node is not a member of this LinkedList.")
+    }
+}
+
+extend<T> LinkedList<T> {
+    public func zip<R>(other: LinkedList<R>): LinkedList<(T, R)> {
+        var result = LinkedList<(T, R)>()
+
+        var node1 = _head
+        var node2 = other._head
+        
+        while(let Some(n) <- node1 && let Some(t) <- node2){
+            result.addLast((n.value,t.value))
+            node1 = n.next
+            node2 = t.next
+        }
+        return result
+    }
+
+    public func enumerate(): LinkedList<(Int64, T)> {
+        var result = LinkedList<(Int64,T)>()
+        var node = _head
+        var i = 0
+        while(let Some(n) <- node){
+            result.addLast((i,n.value))
+            node = n.next
+            i++
+        }
+        return result
     }
 }
 

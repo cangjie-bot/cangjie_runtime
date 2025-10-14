@@ -160,14 +160,12 @@ public struct Array<T> {
 
         let (start_, end_): (Int64, Int64) = normalize(range)
         if (!isLegal(start_, end_)) {
-            throw IndexOutOfBoundsException(
-                "The length of the array is ${this.len}, and the range is out of bounds.")
+            throw IndexOutOfBoundsException("The length of the array is ${this.len}, and the range is out of bounds.")
         }
         let rangeSize = end_ - start_
         if (rangeSize != value.size) {
             throw IllegalArgumentException(
-                "The length of the value array is ${value.size}, which does not match the range length of ${rangeSize}."
-            )
+                "The length of the value array is ${value.size}, which does not match the range length of ${rangeSize}.")
         }
 
         intrinsicBuiltInCopyTo<T>(value.rawptr, this.rawptr, value.start, this.start + start_, rangeSize)
@@ -214,8 +212,7 @@ public struct Array<T> {
 
         let (start_, end_): (Int64, Int64) = normalize(range)
         if (!isLegal(start_, end_)) {
-            throw IndexOutOfBoundsException(
-                "The length of the array is ${this.len}, and the range is out of bounds.")
+            throw IndexOutOfBoundsException("The length of the array is ${this.len}, and the range is out of bounds.")
         }
         return Array<T>(this.rawptr, this.start + start_, end_ - start_)
     }
@@ -290,8 +287,7 @@ public struct Array<T> {
         let (start_, end_): (Int64, Int64) = normalize(range)
         let step = range.step
         if ((step > 0 && !isLegal(start_, end_)) || (step < 0 && !isLegal(end_ + 1, start_ + 1))) {
-            throw IndexOutOfBoundsException(
-                "The length of the array is ${this.len}, and the range is out of bounds.")
+            throw IndexOutOfBoundsException("The length of the array is ${this.len}, and the range is out of bounds.")
         }
 
         let arr: Array<T> = this
@@ -432,6 +428,187 @@ public struct Array<T> {
     @Frozen
     public func map<R>(transform: (T) -> R): Array<R> {
         return Array<R>(this.len, {idx => transform(this[idx])})
+    }
+
+    public func take(count: Int64): Array<T> {
+        if (count == 0) {
+            return Array<T>()
+        }
+        if (count < 0) {
+            throw IllegalArgumentException("take count must be greater than 0!")
+        }
+        var newLen = min(count, this.len)
+        let newRawPtr = RawArray<T>(newLen, repeat: unsafe { zeroValue<T>() })
+        intrinsicBuiltInCopyTo<T>(this.rawptr, newRawPtr, this.start, 0, newLen)
+        return Array<T>(newRawPtr, 0, newLen)
+    }
+
+    public func skip(count: Int64): Array<T> {
+        if (count < 0) {
+            throw IllegalArgumentException("skip count must be greater than 0!")
+        }
+        if (count == 0) {
+            return Array(this.toRawArray(), this.start, this.len)
+        }
+        var newLen = this.len - count
+        if (newLen <= 0) {
+            return Array<T>()
+        }
+
+        let newRawPtr = RawArray<T>(newLen, repeat: unsafe { zeroValue<T>() })
+        intrinsicBuiltInCopyTo<T>(this.rawptr, newRawPtr, this.start + count, 0, newLen)
+        return Array<T>(newRawPtr, 0, newLen)
+    }
+
+    public func filter(predicate: (T) -> Bool): Array<T> {
+        if (this.len == 0) {
+            return Array<T>()
+        }
+        var newRawPtr = RawArray<T>(this.len, repeat: unsafe { zeroValue<T>() })
+        var t = 0
+        for (i in 0..this.len) {
+            var value = unsafe { getUnchecked(i) }
+            if (predicate(value)) {
+                arraySet(newRawPtr, t, value)
+                t++
+            }
+        }
+        return Array<T>(newRawPtr, 0, t)
+    }
+
+    public func flatMap<R>(transform: (T) -> Array<R>): Array<R> {
+        var tempArray: Array<Array<R>> = Array<Array<R>>()
+        var newLen = 0
+        for (i in 0..this.len) {
+            tempArray[i] = transform(unsafe { getUnchecked(i) })
+            newLen += tempArray[i].size
+        }
+
+        let newRawPtr = RawArray<R>(newLen, repeat: unsafe { zeroValue<R>() })
+
+        var newIdx = 0
+        for (i in 0..tempArray.size) {
+            intrinsicBuiltInCopyTo<R>(tempArray[i].rawptr, newRawPtr, tempArray[i].start, newIdx, tempArray[i].size)
+            newIdx += tempArray[i].len
+        }
+        return Array<R>(newRawPtr, 0, newLen)
+    }
+
+    public func filterMap<R>(transform: (T) -> ?R): Array<R> {
+        if (this.len == 0) {
+            return Array<R>()
+        }
+
+        let newRawPtr = RawArray<R>(this.len, repeat: unsafe { zeroValue<R>() })
+        var j = 0
+        for (i in 0..this.len) {
+            var value = unsafe { getUnchecked(i) }
+            match (transform(value)) {
+                case Some(v) =>
+                    arraySet(newRawPtr, j, v)
+                    j++
+                case None => continue
+            }
+        }
+        return Array<R>(newRawPtr, 0, j)
+    }
+
+    public func intersperse(separator: T): Array<T> {
+        if (this.len < 2) {
+            return this.clone()
+        }
+        var newSize: Int64 = 2 * this.len - 1
+        let newRawPtr = RawArray<T>(newSize, repeat: unsafe { zeroValue<T>() })
+
+        for (i in 0..this.len - 1) {
+            arraySet(newRawPtr, 2*i, unsafe { getUnchecked(i) })
+            arraySet(newRawPtr, 2*i + 1, separator)
+        }
+        arraySet(newRawPtr, newSize - 1, unsafe { getUnchecked(this.len - 1) })
+        return Array<T>(newRawPtr,0,newSize)
+    }
+
+    public func forEach(action: (T) -> Unit): Unit {
+        for (i in 0..this.len) {
+            action(unsafe{ getUnchecked(i) })
+        }
+    }
+
+    public func all(predicate: (T) -> Bool): Bool {
+        for (i in 0..this.len) {
+            if (predicate(unsafe{getUnchecked(i)})) {
+                continue
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+
+    public func any(predicate: (T) -> Bool): Bool {
+        for (i in 0..this.len) {
+            if (predicate(unsafe{getUnchecked(i)})) {
+                return true
+            } else {
+                continue
+            }
+        }
+        return false
+    }
+
+    public func none(predicate: (T) -> Bool): Bool {
+        for (i in 0..this.len) {
+            if (predicate(unsafe{getUnchecked(i)})) {
+                return false
+            } else {
+                continue
+            }
+        }
+        return true
+    }
+
+    public func fold<R>(initial: R, operation: (R, T) -> R): R {
+        var result: R = initial
+        for (i in 0..this.len) {
+            result = operation(result, unsafe{getUnchecked(i)})
+        }
+        return result
+    }
+
+    public func reduce(operation: (T, T) -> T): Option<T> {
+        if (this.len == 0) {
+            return None<T>
+        }
+        var result: T = unsafe{getUnchecked(0)}
+        for (i in 1..this.len) {
+            result = operation(result, unsafe{getUnchecked(i)})
+        }
+        return result
+    }
+}
+
+extend<T> Array<T> {
+    public func zip<R>(other: Array<R>): Array<(T, R)> {
+        var newSize: Int64 = min(this.len, other.size)
+        if (newSize == 0) {
+            return Array<(T, R)>()
+        }
+        let newRawPtr = RawArray<(T,R)>(newSize, repeat: unsafe { zeroValue<(T,R)>() })
+        for (i in newSize - 1..=0 : -1) {
+            arraySet(newRawPtr,i,unsafe{(getUnchecked(i),other.getUnchecked(i))})
+        }
+        return Array<(T,R)>(newRawPtr,0,newSize)
+    }
+
+    public func enumerate(): Array<(Int64, T)> {
+        if (this.len == 0) {
+            return Array<(Int64, T)>()
+        }
+        let newRawPtr = RawArray<(Int64,T)>(this.len, repeat: unsafe { zeroValue<(Int64,T)>() })
+        for (i in this.len - 1..=0 : -1) {
+            arraySet(newRawPtr,i,(i,unsafe{getUnchecked(i)}))
+        }
+        return Array<(Int64,T)>(newRawPtr,0,this.len)
     }
 }
 

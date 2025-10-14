@@ -142,8 +142,12 @@ public class ArrayList<T> <: List<T> {
     }
 
     @Frozen
-    private init(elements: Array<T>) {
-        myData = elements.clone()
+    private init(elements: Array<T>,flag!:Bool = false) {
+        if(flag){
+            myData = elements
+        }else{
+            myData = elements.clone()
+        }
         mySize = elements.size
     }
 
@@ -489,7 +493,7 @@ public class ArrayList<T> <: List<T> {
         if (count < 0) {
             throw IllegalArgumentException("take count must be greater than 0!")
         }
-        var newSize = min(count,mySize)
+        var newSize = min(count, mySize)
 
         var newData: Array<T> = Array<T>(newSize, repeat: unsafe { zeroValue<T>() })
         myData.copyTo(newData, 0, 0, newSize)
@@ -537,6 +541,15 @@ public class ArrayList<T> <: List<T> {
             newData[i] = transform(myData[i])
         }
         return ArrayList<R>(newData)
+    }
+
+    public func flatMap<R>(transform: (T) -> ArrayList<R>): ArrayList<R> {
+        var newList :ArrayList<R> = ArrayList<R>()
+        for(i in 0..mySize){
+            var tempData = transform(myData[i])
+            newList.add(all: tempData)
+        }
+        return newList
     }
 
     public func filterMap<R>(transform: (T) -> ?R): ArrayList<R> {
@@ -610,23 +623,23 @@ public class ArrayList<T> <: List<T> {
         return true
     }
 
-    public func fold<R>(initial: R, operation: (R, T) -> R): R{
-        var result:R = initial
-        for (i in 0 .. mySize){
-            result = operation(result,myData[i])
+    public func fold<R>(initial: R, operation: (R, T) -> R): R {
+        var result: R = initial
+        for (i in 0..mySize) {
+            result = operation(result, myData[i])
         }
         return result
     }
 
-    public func reduce(operation: (T, T) -> T):?T{
-        if(mySize == 0){
-            return None
+    public func reduce(operation: (T, T) -> T): Option<T> {
+        if (mySize == 0) {
+            return None<T>
         }
-        var result:T = myData[0]
-        for (i in 0 .. mySize){
-            result = operation(result,myData[i]) // todo
+        var result: T = myData[0]
+        for (i in 1..mySize) {
+            result = operation(result, myData[i])
         }
-        return Some(result)
+        return result
     }
 
     /**
