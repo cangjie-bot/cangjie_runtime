@@ -122,6 +122,12 @@ if(DARWIN)
     set(CMAKE_OSX_DEPLOYMENT_TARGET 12.0.0)
 endif()
 
+if(CANGJIE_INCLUDE)
+    foreach(include_path ${CANGJIE_INCLUDE})
+        include_directories(${include_path})
+    endforeach()
+endif()
+
 if(NOT (CMAKE_BUILD_TYPE MATCHES Debug))
     add_definitions(-DNDEBUG)
 endif()
