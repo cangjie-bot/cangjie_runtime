@@ -247,6 +247,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
      * @param systemNanos nanoseconds since programme start up.
      * @param timeZone time zone.
      */
+    @Frozen
     init(secs: Int64, nanos: UInt32, tz: TimeZone) {
         this.d = Duration(secs, nanos)
         this.tz = tz
@@ -525,6 +526,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
      *
      * @throws ArithmeticException if the timestamp is out of range for 'Duration'.
      */
+    @Frozen
     public func toUnixTimeStamp(): Duration {
         return this - UnixEpoch
     }
