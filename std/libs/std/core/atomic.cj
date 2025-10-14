@@ -104,6 +104,7 @@ class AtomicReference<T> where T <: Object {
 class AtomicBox<T> {
     private let boxRef: AtomicReference<Box<T>>
 
+    @Frozen
     init(val: T) {
         boxRef = AtomicReference((Box(val)))
     }

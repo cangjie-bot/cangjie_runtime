@@ -49,6 +49,7 @@ void CopyCollector::RunGarbageCollection(uint64_t gcIndex, GCReason reason)
     GCStats& gcStats = GetGCStats();
     gcStats.collectedBytes = 0;
     gcStats.gcStartTime = TimeUtil::NanoSeconds();
+    gcStats.liveBytesBeforeGC = Heap::GetHeap().GetAllocator().AllocatedBytes();
 
     DoGarbageCollection();
 
@@ -65,7 +66,8 @@ void CopyCollector::RunGarbageCollection(uint64_t gcIndex, GCReason reason)
     VLOG(REPORT, "total gc time: %s us, collection rate %.3lf MB/s\n", Pretty(gcTimeNs / NS_PER_US).Str(), rate);
     g_gcCount++;
     g_gcTotalTimeUs += (gcTimeNs / NS_PER_US);
-    g_gcCollectedTotalBytes += gcStats.collectedBytes;
+    gcStats.liveBytesAfterGC = Heap::GetHeap().GetAllocator().AllocatedBytes();
+    g_gcCollectedTotalBytes += gcStats.liveBytesBeforeGC-gcStats.liveBytesAfterGC;
     gcStats.collectionRate = rate;
 }
 
