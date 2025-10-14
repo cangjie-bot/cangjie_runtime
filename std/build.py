@@ -123,13 +123,10 @@ def build(args):
         args.target = None
     elif args.target == "ohos-aarch64":
         args.target = "aarch64-linux-ohos"
-<<<<<<< HEAD
-    elif args.target == "ohos-aarch32":
-        args.target = "aarch32-linux-ohos"
-=======
     elif args.target == "ohos-arm":
         args.target = "arm-linux-ohos"
->>>>>>> e232b21 (feat: std arm32 build)
+    elif args.target == "ohos-arm":
+        args.target = "arm-linux-ohos"
     elif args.target == "ohos-x86_64":
         args.target = "x86_64-linux-ohos"
     elif args.target == "windows-x86_64":
@@ -148,11 +145,7 @@ def build(args):
     """build cangjie compiler"""
     LOG.info("begin build...")
 
-<<<<<<< HEAD
-    if args.target == "aarch64-linux-ohos" or args.target == "x86_64-linux-ohos" or args.target == "aarch32-linux-ohos":
-=======
     if args.target == "aarch64-linux-ohos" or args.target == "x86_64-linux-ohos" or args.target == "arm-linux-ohos":
->>>>>>> e232b21 (feat: std arm32 build)
         # Frontend supports cross compilation in a general way by asking path to required tools
         # and libraries. However, Runtime supports cross compilation in a speific way, which asks
         # for the root path of OHOS toolchain. Since we asked for a path to tools, the root path of
@@ -368,11 +361,7 @@ class BuildType(Enum):
 SupportedTarget = [
     "native",
     "ohos-aarch64",
-<<<<<<< HEAD
-    "ohos-aarch32",
-=======
     "ohos-arm",
->>>>>>> e232b21 (feat: std arm32 build)
     "ohos-x86_64",
     "windows-x86_64",
     "ios-simulator-aarch64",
