@@ -22,7 +22,7 @@ func fillAbsentValues(config: Configuration) {
     config.setIfAbsent(KeyBatchSize.batchSize, 1..MAX_BATCH_SIZE)
     config.setIfAbsent(KeyMinDuration.minDuration, Duration.second * 5)
     config.setIfAbsent(KeyMinBatches.minBatches, 10)
-    config.setIfAbsent(KeyExplicitGC.explicitGC, ExplicitGcType.Light)
+    config.setIfAbsent(KeyExplicitGC.explicitGC, ExplicitGcType.Auto)
     config.setIfAbsent(KeyMeasurementInfo.measurementInfo, TimeNow().info)
 }
 
@@ -315,4 +315,8 @@ let _ = { =>
     registerUnittestOption<Int64>(KeyProgressEntriesLimit.progressEntriesLimit,
         typeDescription: ("Int64", "Limit value. Value 0 means no limit. Default: 0"),
         description: "Limit the entries amount displayed in the progress report. Has lower precedence than `--progress-brief`")
+    registerUnittestOption<Bool>(KeyOptimizeMocksForBench.optimizeMocksForBench,
+        typeDescription: ("Bool", "Optimize mocks when using benchmarks"))
+    registerUnittestOption<Bool>(KeyRandomizeHeapLayout.randomizeHeapLayout,
+        typeDescription: ("Bool", "Attempts to randomize alignment and layout of objects in heap"))
 }()

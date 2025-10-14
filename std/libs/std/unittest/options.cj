@@ -402,6 +402,20 @@ public struct KeyMeasurement <: KeyFor<Measurement> {
     }
 }
 
+public struct KeyRandomizeHeapLayout <: KeyFor<Bool> {
+    public static prop randomizeHeapLayout: KeyRandomizeHeapLayout {
+        get() {
+            KeyRandomizeHeapLayout()
+        }
+    }
+
+    public prop name: String {
+        get() {
+            "randomizeHeapLayout"
+        }
+    }
+}
+
 public struct KeyMeasurementInfo <: KeyFor<MeasurementInfo> {
     public static prop measurementInfo: KeyMeasurementInfo {
         get() {
@@ -677,6 +691,20 @@ struct KeyProgressEntriesLimit <: KeyFor<Int64> {
     public prop name: String {
         get() {
             "progressEntriesLimit"
+        }
+    }
+}
+
+public struct KeyOptimizeMocksForBench <: KeyFor<Bool> {
+    public static prop optimizeMocksForBench: KeyOptimizeMocksForBench {
+        get() {
+            KeyOptimizeMocksForBench()
+        }
+    }
+
+    public prop name: String {
+        get() {
+            "optimizeMocksForBench"
         }
     }
 }
