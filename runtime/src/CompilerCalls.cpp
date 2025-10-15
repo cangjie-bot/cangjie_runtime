@@ -166,6 +166,7 @@ extern "C" void MCC_WriteStructField(ObjectPtr obj, MAddress dst, size_t dstLen,
     }
 #ifdef __arm__
     CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dst), dstLen, reinterpret_cast<void*>(src), srcLen) == EOK, "memcpy_s failed on arm32");
+    printf("MCC_WriteStructField dst %p, dstLen %zu, src %p, srcLen %zu\n", reinterpret_cast<void*>(dst), dstLen, reinterpret_cast<void*>(src), srcLen);
 #else
     Heap::GetBarrier().WriteStruct(obj, dst, dstLen, src, srcLen);
 #endif
@@ -181,6 +182,7 @@ extern "C" void MCC_WriteStaticStruct(MAddress dst, size_t dstLen, MAddress src,
     CHECK_DETAIL((dst != 0u && src != 0u), "MCC_WriteStaticStruct wrong parameter, dst: %p src: %p", dst, src);
 #ifdef __arm__
     CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dst), dstLen, reinterpret_cast<void*>(src), srcLen) == EOK, "memcpy_s failed on arm32");
+    printf("MCC_WriteStaticStruct dst %p, dstLen %zu, src %p, srcLen %zu\n", reinterpret_cast<void*>(dst), dstLen, reinterpret_cast<void*>(src), srcLen);
 #else
     Heap::GetBarrier().WriteStaticStruct(dst, dstLen, src, srcLen, gcTib);
 #endif
@@ -940,6 +942,7 @@ extern "C" void CJ_MCC_ReadStructField(MAddress dstPtr, ObjectPtr obj, MAddress 
 #ifdef __arm__
     (void)obj;
     CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dstPtr), size, reinterpret_cast<void*>(srcField), size) == EOK, "memcpy_s failed on arm32");
+    printf("CJ_MCC_ReadStructField dst %p, dstLen %zu, src %p, srcLen %zu\n", reinterpret_cast<void*>(dstPtr), size, reinterpret_cast<void*>(srcField), size);
 #else
     Heap::GetHeap().GetBarrier().ReadStruct(dstPtr, obj, srcField, size);
 #endif
@@ -952,6 +955,7 @@ extern "C" void CJ_MCC_ReadStaticStruct(MAddress dstPtr, size_t dstSize, MAddres
 {
 #ifdef __arm__
     CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dstPtr), dstSize, reinterpret_cast<void*>(srcPtr), srcSize) == EOK, "memcpy_s failed on arm32");
+    printf("CJ_MCC_ReadStaticStruct dst %p, dstLen %zu, src %p, srcLen %zu\n", reinterpret_cast<void*>(dstPtr), dstSize, reinterpret_cast<void*>(srcPtr), srcSize);
 #else
     Heap::GetHeap().GetBarrier().ReadStaticStruct(dstPtr, srcPtr, dstSize, gctib);
 #endif
@@ -1046,6 +1050,7 @@ extern "C" void CJ_MCC_AssignGeneric(ObjectPtr dst, ObjectPtr src, TypeInfo* typ
     if (instanceSize == 0) {
         return;
     }
+    printf("CJ_MCC_AssignGeneric dst %p stc %p\n", dst, src);
     if (!typeInfo->HasRefField()) {
         CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(dst) + TYPEINFO_PTR_SIZE),
                               instanceSize,
@@ -1064,6 +1069,7 @@ extern "C" void CJ_MCC_WriteGenericPayload(ObjectPtr dst, MAddress srcField, siz
     if (srcSize == 0) {
         return;
     }
+    printf("CJ_MCC_WriteGenericPayload dst %p srcField %p\n", dst, srcField);
     if (!typeInfo->HasRefField()) {
         CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(dst) + TYPEINFO_PTR_SIZE),
                               GENERIC_PAYLOAD_SIZE,
@@ -1081,6 +1087,7 @@ extern "C" void CJ_MCC_ReadGeneric(const ObjectPtr dstPtr, ObjectPtr obj, void* 
     if (size == 0) {
         return;
     }
+    printf("CJ_MCC_ReadGeneric dst %p objptr %p fieldptr %p\n", dstPtr, obj, fieldPtr);
     Heap::GetBarrier().ReadGeneric(dstPtr, obj, fieldPtr, size);
 }
 
