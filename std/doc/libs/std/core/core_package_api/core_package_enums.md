@@ -144,6 +144,7 @@ public static prop Platform: Endian
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     let e = Endian.Platform
@@ -242,6 +243,7 @@ public func getOrDefault(other: () -> T): T
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     var value1: Option<Int64> = Some(2)
@@ -570,3 +572,67 @@ public func toString(): String
 返回值：
 
 - [String](core_package_structs.md#struct-string) - 转化后的字符串。
+
+## enum ThreadState
+
+```cangjie
+public enum ThreadState <: ToString {
+    | Ready
+    | Running
+    | Pending
+    | Terminated 
+    | ...
+```
+
+功能：表示线程的状态。
+
+### Ready
+
+```cangjie
+Ready
+```
+
+功能：表示线程刚创建或结束挂起，正在等待被调度执行。
+
+### Running
+
+```cangjie
+Running
+```
+
+功能：表示线程正在执行。
+
+### Pending
+
+```cangjie
+Pending
+```
+
+功能：表示线程正被挂起。
+
+### Terminated
+
+```cangjie
+Terminated
+```
+
+功能：表示线程已结束执行。
+
+### func toString()
+
+```cangjie
+public func toString(): String
+```
+
+功能：将 [ThreadState](core_package_enums.md#enum-threadState) 转换为可输出的字符串。
+
+转换结果如下：
+
+- Ready: "Ready"。
+- Running: "Running"。
+- Pending: "Pending"。
+- Terminated: "Terminated"。
+
+返回值：
+
+- 转化后的字符串。
