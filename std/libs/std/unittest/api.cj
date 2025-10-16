@@ -361,6 +361,14 @@ public class Benchmark {
     }
 }
 
+public struct TestCaseInfo {
+    TestCaseInfo(
+        public let groupName: String,
+        public let suiteName: String,
+        public let caseName: String        
+    ) {}
+}
+
 sealed abstract class Report {
     private let details: Details
 
@@ -391,6 +399,8 @@ public class TestReport <: Report {
         match (reporter) {
             case printer: TextReporterBase<T> => return printer.printReport(this)
             case xmlReporter: XmlReporter => UTestReportFormat.XML(xmlReporter.directory).report(groupResult)
+            case xmlPerPackageReporter: XmlPerPackageReporter => 
+                UTestReportFormat.XMLPerPackage(xmlPerPackageReporter.directory).report(groupResult)
             case _ => throw Exception("Unkown reporter")
         }
     }

@@ -294,8 +294,9 @@ public class ClassDecl <: Decl {
     }
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
-        return ret.append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint,
-            constraintCommas)).append(classbody_.toTokens())
+        return ret
+            .append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint, constraintCommas))
+            .append(classbody_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -388,8 +389,9 @@ public class StructDecl <: Decl {
     }
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
-        return ret.append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint,
-            constraintCommas)).append(structbody_.toTokens())
+        return ret
+            .append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint, constraintCommas))
+            .append(structbody_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -483,8 +485,9 @@ public class InterfaceDecl <: Decl {
 
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
-        return ret.append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint,
-            constraintCommas)).append(interfacetbody_.toTokens())
+        return ret
+            .append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint, constraintCommas))
+            .append(interfacetbody_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -805,8 +808,9 @@ public class ExtendDecl <: Decl {
     }
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens().append(extendType_)
-        return ret.append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint,
-            constraintCommas)).append(body_.toTokens())
+        return ret
+            .append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint, constraintCommas))
+            .append(body_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -1010,9 +1014,7 @@ public class FuncDecl <: Decl {
         for (constraint in genericConstraint) {
             constraint.traverse(v)
         }
-        for (node in block.nodes) {
-            node.traverse(v)
-        }
+        block_.traverse(v)
         return
     }
 
@@ -1168,9 +1170,6 @@ public class MainDecl <: Decl {
             case Some(node) => node.traverse(v)
             case None => ()
         }
-        for (constraint in genericConstraint) {
-            constraint.traverse(v)
-        }
         block_.traverse(v)
         return
     }
@@ -1191,10 +1190,6 @@ public class MainDecl <: Decl {
                 ret += getIndent(currentIndent) + "-declType: "
                 ret += v.dump(currentIndent)
             case None => ()
-        }
-        for (i in 0..genericConstraint.size) {
-            ret += getIndent(currentIndent) + "-genericConstraint: ${i}, "
-            ret += genericConstraint[i].dump(currentIndent)
         }
         ret += getIndent(currentIndent) + "-block: "
         ret += block_.dump(currentIndent)
@@ -2085,6 +2080,7 @@ public class MacroExpandDecl <: Decl {
                     this.macroInputDecl_ = v.macroInputDecl_
                     this.hasParenthesis_ = v.hasParenthesis_
                     this.isCompileTimeVisible_ = v.isCompileTimeVisible_
+                    this.annotations = v.annotations
                 case None => throw ASTException("Cannot construct the 'MacroExpandDecl' node.")
             }
         } catch (e: ParseASTException) {
@@ -2112,9 +2108,25 @@ public class MacroExpandDecl <: Decl {
         }
         set(v) {
             pkgIdentifier_ = v
+            if (let Some(index) <- v.value.lastIndexOf(".")) {
+                identifier_ = Token(TokenKind.IDENTIFIER, v.value.split(".", removeEmpty: true).last.getOrThrow())
+                .addPosition(v.pos.fileID, v.pos.line, v.pos.column + Int32(index) + 1)
+            } else {
+                identifier_ = v
+            }
         }
     }
-
+    public override mut prop identifier: Token {
+        get() {
+            identifier_
+        }
+        set(v) {
+            let prefix = pkgIdentifier_.value.removeSuffix(identifier_.value)
+            identifier_ = v
+            let pos = pkgIdentifier_.pos
+            pkgIdentifier_ = Token(TokenKind.IDENTIFIER, prefix + v.value).addPosition(pos)
+        }
+    }
     public mut prop lSquare: Token {
         get() {
             lSquare_
@@ -2156,6 +2168,11 @@ public class MacroExpandDecl <: Decl {
         }
         set(v) {
             macroInputs_ = v
+            macroInputDecl_ = try {
+                Some(parseDecl(v))
+            } catch (e: ParseASTException | ASTException) {
+                None
+            }
         }
     }
     public mut prop rParen: Token {
@@ -2176,10 +2193,15 @@ public class MacroExpandDecl <: Decl {
         }
         set(v) {
             macroInputDecl_ = Some(v)
+            macroInputs_ = v.toTokens()
         }
     }
     public func toTokens(): Tokens {
-        var ret = Tokens().append(keyword)
+        var ret = Tokens()
+        for (i in 0..annotations.size) {
+            ret.append(annotations[i].toTokens())
+        }
+        ret.append(keyword)
         let identArray = pkgIdentifier_.value.split(".")
         let identPos = pkgIdentifier_.pos
         var identColumn = identPos.column
@@ -2197,7 +2219,7 @@ public class MacroExpandDecl <: Decl {
         if (isValidToken(lSquare_)) {
             ret.append(lSquare_).append(macroAttrs_).append(rSquare_)
         }
-        if (hasParenthesis_) {
+        if (isValidToken(lParen_)) {
             ret.append(lParen_).append(macroInputs_).append(rParen_).append(Token(NL))
         } else {
             match (macroInputDecl_) {
@@ -2212,6 +2234,9 @@ public class MacroExpandDecl <: Decl {
         v.visit(this)
         if (v.needBreakTraverse()) {
             return
+        }
+        for (anno in annotations) {
+            anno.traverse(v)
         }
         match (macroInputDecl_) {
             case Some(node) => node.traverse(v)
@@ -2228,6 +2253,10 @@ public class MacroExpandDecl <: Decl {
         }
         ret += getTokenIndent("-identifier", identifier, currentIndent)
 
+        for (i in 0..annotations.size) {
+            ret += getIndent(currentIndent) + "-annotations: ${i}, "
+            ret += annotations[i].dump(currentIndent)
+        }
         for (i in 0..macroAttrs_.size) {
             ret += getTokenIndent("-macroAttrs ${i}", macroAttrs[i], currentIndent)
         }
@@ -2279,9 +2308,25 @@ public class MacroExpandParam <: FuncParam {
         }
         set(v) {
             pkgIdentifier_ = v
+            if (let Some(index) <- v.value.lastIndexOf(".")) {
+                identifier_ = Token(TokenKind.IDENTIFIER, v.value.split(".", removeEmpty: true).last.getOrThrow())
+                .addPosition(v.pos.fileID, v.pos.line, v.pos.column + Int32(index) + 1)
+            } else {
+                identifier_ = v
+            }
         }
     }
-
+    public override mut prop identifier: Token {
+        get() {
+            identifier_
+        }
+        set(v) {
+            let prefix = pkgIdentifier_.value.removeSuffix(identifier_.value)
+            identifier_ = v
+            let pos = pkgIdentifier_.pos
+            pkgIdentifier_ = Token(TokenKind.IDENTIFIER, prefix + v.value).addPosition(pos)
+        }
+    }
     public mut prop lSquare: Token {
         get() {
             lSquare_
@@ -2323,6 +2368,11 @@ public class MacroExpandParam <: FuncParam {
         }
         set(v) {
             macroInputs_ = v
+            macroInputDecl_ = try {
+                Some(FuncParam(v))
+            } catch (e: ParseASTException | ASTException) {
+                None
+            }
         }
     }
     public mut prop rParen: Token {
@@ -2343,10 +2393,15 @@ public class MacroExpandParam <: FuncParam {
         }
         set(v) {
             macroInputDecl_ = Some(v)
+            macroInputs_ = v.toTokens()
         }
     }
     public func toTokens(): Tokens {
-        var ret = Tokens().append(keyword)
+        var ret = Tokens()
+        for (i in 0..annotations.size) {
+            ret.append(annotations[i].toTokens())
+        }
+        ret.append(keyword)
         let identArray = pkgIdentifier_.value.split(".")
         let identPos = pkgIdentifier_.pos
         var identColumn = identPos.column
@@ -2364,7 +2419,7 @@ public class MacroExpandParam <: FuncParam {
         if (isValidToken(lSquare_)) {
             ret.append(lSquare_).append(macroAttrs_).append(rSquare_)
         }
-        if (hasParenthesis_) {
+        if (isValidToken(lParen_)) {
             ret.append(lParen_).append(macroInputs_).append(rParen_).append(Token(NL))
         } else {
             match (macroInputDecl_) {
@@ -2379,6 +2434,9 @@ public class MacroExpandParam <: FuncParam {
         v.visit(this)
         if (v.needBreakTraverse()) {
             return
+        }
+        for (anno in annotations) {
+            anno.traverse(v)
         }
         match (macroInputDecl_) {
             case Some(node) => node.traverse(v)
@@ -2395,6 +2453,10 @@ public class MacroExpandParam <: FuncParam {
         }
         ret += getTokenIndent("-identifier", identifier, currentIndent)
 
+        for (i in 0..annotations.size) {
+            ret += getIndent(currentIndent) + "-annotations: ${i}, "
+            ret += annotations[i].dump(currentIndent)
+        }
         for (i in 0..macroAttrs_.size) {
             ret += getTokenIndent("-macroAttrs ${i}", macroAttrs[i], currentIndent)
         }

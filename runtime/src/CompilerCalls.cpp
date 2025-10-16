@@ -50,6 +50,7 @@ namespace MapleRuntime {
 
 extern "C" ObjRef MCC_NewObject(const TypeInfo* klass, MSize size)
 {
+    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + sizeof(TypeInfo*))); // 8-byte alignment
     ObjRef obj = ObjectManager::NewObject(klass, size);
     if (obj == nullptr) {
         ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewObject return nullptr");
@@ -59,6 +60,7 @@ extern "C" ObjRef MCC_NewObject(const TypeInfo* klass, MSize size)
 
 extern "C" ObjRef MCC_NewWeakRefObject(const TypeInfo* klass, MSize size)
 {
+    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + sizeof(TypeInfo*))); // 8-byte alignment
     ObjRef obj = ObjectManager::NewWeakRefObject(klass, size);
     if (obj == nullptr) {
         ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewWeakRefObject return nullptr");
@@ -68,6 +70,7 @@ extern "C" ObjRef MCC_NewWeakRefObject(const TypeInfo* klass, MSize size)
 
 extern "C" ObjRef MCC_NewPinnedObject(const TypeInfo* klass, MSize size, bool isFinalizer)
 {
+    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + sizeof(TypeInfo*))); // 8-byte alignment
     ObjRef obj = ObjectManager::NewPinnedObject(klass, size, isFinalizer);
     if (obj == nullptr) {
         ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewPinnedObject return nullptr");
@@ -77,6 +80,7 @@ extern "C" ObjRef MCC_NewPinnedObject(const TypeInfo* klass, MSize size, bool is
 
 extern "C" ObjRef MCC_NewFinalizer(const TypeInfo* klass, MSize size)
 {
+    DCHECK(size == (AlignUp<size_t>(klass->GetInstanceSize(), 8) + sizeof(TypeInfo*))); // 8-byte alignment
     ObjRef obj = ObjectManager::NewFinalizer(klass, size);
     if (obj == nullptr) {
         ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewFinalizer return nullptr");
@@ -1123,7 +1127,9 @@ extern "C" bool CJ_MCC_IsSubType(TypeInfo* typeInfo, TypeInfo* superTypeInfo)
     if (typeInfo == superTypeInfo) {
         return true;
     }
-    return typeInfo->IsSubType(superTypeInfo);
+    
+    bool isSub = typeInfo->IsSubType(superTypeInfo);
+    return isSub;
 }
 
 static bool IsTupleTypeOf(ObjectPtr obj, TypeInfo* typeInfo, TypeInfo* targetTypeInfo)
@@ -1259,6 +1265,8 @@ extern "C" ArrayRef MCC_NewArrayGeneric(const TypeInfo* arrayInfo, MIndex nElems
     I8 type = componentTypeInfo->GetType();
     switch (type) {
         case TypeKind::TYPE_KIND_CLASS:
+        case TypeKind::TYPE_KIND_EXPORTED_REF:
+        case TypeKind::TYPE_KIND_FOREIGN_PROXY:
         case TypeKind::TYPE_KIND_WEAKREF_CLASS:
         case TypeKind::TYPE_KIND_INTERFACE:
         case TypeKind::TYPE_KIND_TEMP_ENUM:
@@ -1334,6 +1342,8 @@ extern "C" void CJ_MCC_ArrayCopyGeneric(const ObjectPtr dstObj, MAddress dstFiel
     }
     switch (type) {
         case TypeKind::TYPE_KIND_CLASS:
+        case TypeKind::TYPE_KIND_EXPORTED_REF:
+        case TypeKind::TYPE_KIND_FOREIGN_PROXY:
         case TypeKind::TYPE_KIND_WEAKREF_CLASS:
         case TypeKind::TYPE_KIND_INTERFACE:
         case TypeKind::TYPE_KIND_TEMP_ENUM:
@@ -1385,6 +1395,27 @@ extern "C" void CJ_MCC_CopyStructField(BaseObject* dstBase, void* dstField, size
 extern "C" int32_t __ccc_personality_v0() { return 0; }
 // @deprecated
 extern "C" void CJ_MCC_IVCallInstrumentation(TypeInfo* cls, const char* callBaseKey) {}
+
+void CJ_MCC_CrossAccessBarrier(U64 cjExport)
+{
+    Heap::GetHeap().CrossAccessBarrier(cjExport);
+}
+
+U64 CJ_MCC_CreateExportHandle(BaseObject *obj)
+{
+    U64 id = Heap::GetHeap().RegisterExportRoot(obj);
+    return id;
+}
+
+BaseObject* CJ_MCC_GetExportedRef(U64 id)
+{
+    return Heap::GetHeap().GetExportObject(id);
+}
+void CJ_MCC_RemoveExportedRef(U64 id)
+{
+    Heap::GetHeap().RemoveExportObject(id);
+}
+
 
 #if defined(__OHOS__)
 void* ARKTS_CreateEngine = nullptr;

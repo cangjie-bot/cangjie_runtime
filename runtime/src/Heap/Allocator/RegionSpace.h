@@ -89,8 +89,6 @@ public:
 
     size_t PinnedSpaceSize() const { return regionManager.GetPinnedSpaceSize(); }
 
-    inline size_t ToSpaceSize() const { return regionManager.GetToSpaceSize(); }
-
 #if defined(MRT_DEBUG) && (MRT_DEBUG == 1)
     bool IsHeapObject(MAddress addr) const override;
 #endif
@@ -116,7 +114,24 @@ public:
             return regionManager.ReleaseGarbageRegions(targetCachedSize);
         }
     }
-
+#if defined(__EULER__)
+    void TryReclaimGarbageMemory() override
+    {
+        double cachedRatio = regionManager.GetCacheRatio();
+        if (cachedRatio == 1.0) { // 1.0 is the default value
+            return;
+        }
+        {
+            MRT_PHASE_TIMER("TryReclaimGarbageRegions");
+            regionManager.ReclaimGarbageRegions();
+        }
+        MRT_PHASE_TIMER("TryReleaseGarbageMemory");
+        size_t size = regionManager.GetAllocatedSize();
+        size_t targetCachedSize = static_cast<size_t>(size * cachedRatio);
+        regionManager.ReleaseGarbageRegions(targetCachedSize);
+        return;
+    }
+#endif
     bool ForEachObj(const std::function<void(BaseObject*)>& visitor, bool safe) const override
     {
         if (UNLIKELY(safe)) {
@@ -127,10 +142,11 @@ public:
         return true;
     }
 
-    void RefineFromSpace()
+    // Return the garbage size of from space.
+    size_t RefineFromSpace()
     {
         MRT_PHASE_TIMER("ExemptFromRegions");
-        regionManager.ExemptFromRegions();
+        return regionManager.ExemptFromRegions();
     }
 
     BaseObject* RouteObject(BaseObject* fromObj) { return regionManager.RouteObject(fromObj); }
@@ -174,17 +190,6 @@ public:
         RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
         return regionInfo->MarkObject(obj);
     }
-    static bool ResurrentObject(const BaseObject* obj)
-    {
-        RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
-        return regionInfo->ResurrentObject(obj);
-    }
-
-    static bool EnqueueObject(const BaseObject* obj)
-    {
-        RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
-        return regionInfo->EnqueueObject(obj);
-    }
 
     static bool IsMarkedObject(const BaseObject* obj)
     {
@@ -192,16 +197,23 @@ public:
         return regionInfo->IsMarkedObject(obj);
     }
 
+    static bool ShouldEnqueue(const BaseObject* obj)
+    {
+        RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
+        if (regionInfo->IsTraceRegion()) {
+            return false;
+        }
+        size_t offset = regionInfo->GetAddressOffset(reinterpret_cast<MAddress>(obj));
+        if (regionInfo->IsMarkedObject(offset)) {
+            return false;
+        }
+        return !regionInfo->EnqueueObject(obj, offset);
+    }
+
     static bool IsResurrectedObject(const BaseObject* obj)
     {
         RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
         return regionInfo->IsResurrectedObject(obj);
-    }
-
-    static bool IsEnqueuedObject(const BaseObject* obj)
-    {
-        RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
-        return regionInfo->IsEnqueuedObject(obj);
     }
 
     void AddRawPointerObject(BaseObject* obj) { regionManager.AddRawPointerObject(obj); }
@@ -216,7 +228,7 @@ private:
         TRIGGER_OOM = 5,
     };
     MAddress TryAllocateOnce(size_t allocSize, AllocType allocType);
-    bool ShouldRetryAllocation(size_t& tryTimes) const;
+    bool ShouldRetryAllocation(size_t& tryTimes, size_t size) const;
     MAddress reservedStart = 0;
     MAddress reservedEnd = 0;
     RegionManager regionManager;
