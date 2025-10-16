@@ -481,7 +481,9 @@ class Foo {
 
 该选项用于指定测试执行后生成的报告的格式。
 
-目前，单元测试仅支持默认的 xml 格式。
+Unittests support:
+- `xml`: xml format with files corresponding to test suites, it is the default format. 
+- `xml-per-package`: xml format with files corresponding to test packages.
 
 基准测试支持：
 
