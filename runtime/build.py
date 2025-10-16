@@ -266,6 +266,7 @@ def do_build(args):
             "-DDUMPADDRESS_FLAG=0",
             "-DCJ_SDK_VERSION={}".format(version),
             "-DDISABLE_VERSION_CHECK=1",
+            "-D__ENVIRONMENT_OS_VERSION_MIN_REQUIRED__=110000",
             "-S", ".", "-B", "CMakebuild"
         ]
         build_target(cmake_command)
