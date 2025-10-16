@@ -586,6 +586,10 @@ public enum ThreadState <: ToString {
 
 功能：表示线程的状态。
 
+父类型：
+
+- [ToString](core_package_interfaces.md#interface-tostring)
+
 ### Ready
 
 ```cangjie
@@ -624,7 +628,7 @@ Terminated
 public func toString(): String
 ```
 
-功能：将 [ThreadState](core_package_enums.md#enum-threadState) 转换为可输出的字符串。
+功能：将 [ThreadState](core_package_enums.md#enum-threadstate) 转换为可输出的字符串。
 
 转换结果如下：
 

@@ -2338,7 +2338,7 @@ public prop state: ThreadState
 
 功能：获取线程的状态。
 
-类型：[ThreadState](core_package_enums#enum-threadState)
+类型：[ThreadState](core_package_enums.md#enum-threadState)
 
 ### static func handleUncaughtExceptionBy((Thread, Exception) -> Unit)
 
@@ -2410,7 +2410,7 @@ public class ThreadSnapshot <: ToString {
 
 功能：获取当前线程或者所有线程的信息，包含名称、id、状态、调用栈。
 
-该类型实例无法通过构造得到，仅能通过 [class ThreadSnapshot ](core_package_classes.md#class-threadSnapshot) 类的 `dumpCurrentThread` 和`dumpAllThreads`  静态函数获取。
+该类型实例无法通过构造得到，仅能通过 [class ThreadSnapshot ](core_package_classes.md#class-threadsnapshot)类的 [dumpCurrentThread](core_package_classes.md#func-dumpcurrentthread)和[dumpAllThreads](core_package_classes.md#func-dumpallthreads) 静态函数获取。
 
 父类型：
 
@@ -2454,7 +2454,7 @@ public let state: ThreadState
 
 功能：获取线程的状态。
 
-类型：[ThreadState](core_package_enums#enum-threadState)
+类型：[ThreadState](core_package_enums.md#enum-threadstate)
 
 ### func  dumpAllThreads()
 
@@ -2466,7 +2466,7 @@ public static func dumpAllThreads(): Array<ThreadSnapshot>
 
 返回值：
 
-[Array](core_package_structs.md#struct-arrayt)\<[ThreadSnapshot](core_package_classes.md#class-threadSnapshot)> - 返回一个包含当前进程所有线程信息的[ThreadSnapshot](core_package_classes.md#class-threadSnapshot)数组。
+[Array](core_package_structs.md#struct-arrayt)\<[ThreadSnapshot](core_package_classes.md#class-threadsnapshot)> - 返回一个包含当前进程所有线程信息的[ThreadSnapshot](core_package_classes.md#class-threadsnapshot)数组。
 
 示例：
 
@@ -2474,6 +2474,7 @@ public static func dumpAllThreads(): Array<ThreadSnapshot>
 
 ```cangjie
 main(): Unit {
+    /* 创建一个线程 */
     let future =spawn {
         while(true) {
             sleep(1 * Duration.second)
@@ -2482,7 +2483,9 @@ main(): Unit {
             }
         }
     }
+    /* 获取所有线程的信息 */
     let threadInfoArray: Array<ThreadSnapshot> = ThreadSnapshot.dumpAllThreads()
+    /* 循环打印线程信息 */
     let size = threadInfoArray.size
     for (i in 0..size) {
         let threadInfoData = threadInfoArray[i]
@@ -2516,7 +2519,7 @@ public static func dumpCurrentThread(): ThreadSnapshot
 
 返回值：
 
-[ThreadSnapshot](core_package_classes.md#class-threadSnapshot) - 返回一个包含当前线程信息的[ThreadSnapshot](core_package_classes.md#class-threadSnapshot)对象。
+[ThreadSnapshot](core_package_classes.md#class-threadsnapshot) - 返回一个包含当前线程信息的[ThreadSnapshot](core_package_classes.md#class-threadsnapshot)对象。
 
 示例：
 
@@ -2524,12 +2527,10 @@ public static func dumpCurrentThread(): ThreadSnapshot
 
 ```cangjie
 main(): Unit {
-    let threadInfoArray: Array<ThreadSnapshot> = ThreadSnapshot.dumpAllThreads()
-    let size = threadInfoArray.size
-    for (i in 0..size) {
-        let threadInfoData = threadInfoArray[i]
-        println(threadInfoData)
-    }
+    /* 获取当前线程信息 */
+    let threadInfo: ThreadSnapshot = ThreadSnapshot.dumpCurrentThread()
+    /* 打印信息 */
+    println(threadInfo)
 }
 ```
 
@@ -2549,8 +2550,10 @@ stack trace:
 public func toString(): String
 ```
 
-功能：获取 [ThreadSnapshot](core_package_classes.md#class-threadSnapshot) 对象的字符串表示。
+功能：获取 [ThreadSnapshot](core_package_classes.md#class-threadsnapshot) 对象的字符串表示。
 
 返回值：
 
 String - 转换后的字符串。
+
+
