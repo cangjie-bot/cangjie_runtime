@@ -536,6 +536,19 @@ set_target_properties(cangjie-std-ast PROPERTIES LINKER_LANGUAGE C)
 install(TARGETS cangjie-std-ast DESTINATION lib/${output_triple_name}_${CJNATIVE_BACKEND}${SANITIZER_SUBPATH})
 
 make_cangjie_lib(
+    std-chir IS_SHARED ${STD_CHIIR_ALLOW_UNDEFINED}
+    DEPENDS FLATC_OUTPUTS_STD_CHIR cangjie${BACKEND_TYPE}Chir
+    CANGJIE_STD_LIB_DEPENDS
+        std-core
+        std-collection
+    OBJECTS ${output_cj_object_dir}/std/chir.o
+    FLAGS
+        $<$<NOT:$<BOOL:${WIN32}>>:-ldl>)
+add_library(cangjie-std-chir STATIC ${output_cj_object_dir}/std/chir.o)
+set_target_properties(cangjie-std-chir PROPERTIES LINKER_LANGUAGE C)
+install(TARGETS cangjie-std-chir DESTINATION lib/${output_triple_name}_${CJNATIVE_BACKEND}${SANITIZER_SUBPATH})
+
+make_cangjie_lib(
     std-unittest IS_SHARED
     DEPENDS cangjie${BACKEND_TYPE}Unittest cangjie-std-unittestFFI
     CANGJIE_STD_LIB_DEPENDS
@@ -1295,3 +1308,14 @@ add_cangjie_library(
     MODULE_NAME "std"
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/std/deriving
     DEPENDS ${STD_DERIVING_DEPENDENCIES})
+
+add_cangjie_library(
+    cangjie${BACKEND_TYPE}Chir
+    NO_SUB_PKG
+    IS_STDLIB
+    IS_PACKAGE
+    IS_CJNATIVE_BACKEND
+    PACKAGE_NAME "chir"
+    MODULE_NAME "std"
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/std/chir
+    DEPENDS ${STD_CHIR_DEPENDENCIES})

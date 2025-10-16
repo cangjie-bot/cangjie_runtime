@@ -43,6 +43,7 @@ add_subdirectory(unittest/mock)
 add_subdirectory(console)
 add_subdirectory(crypto)
 add_subdirectory(ast)
+add_subdirectory(chir)
 # No need to cross-compile ast and testmacro because they are always used on host platforms.
 if(NOT CMAKE_CROSSCOMPILING)
     add_subdirectory(unittest/testmacro)

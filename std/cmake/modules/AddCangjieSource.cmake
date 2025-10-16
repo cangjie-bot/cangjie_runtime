@@ -204,6 +204,9 @@ function(add_cangjie_library target_name)
         ${output_argument}
         ${output_lto_bc_full_name})
     set(COMPILE_CMD ${COMPILE_CMD} ${output_argument} ${output_full_name})
+    if(${target_name} STREQUAL std-chir)
+        list(APPEND COMPILE_CMD -Woff=all)
+    endif()
     if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
         list(APPEND COMPILE_CMD "$<IF:$<CONFIG:MinSizeRel>,-Os,-O2>")
         # .bc files is for LTO mode and LTO mode does not support -Os and -Oz.

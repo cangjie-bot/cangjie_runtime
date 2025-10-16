@@ -487,3 +487,8 @@ set(STD_FFIJAVA_DEPENDENCIES
     ${STD_CORE_DEPENDENCIES}
     cangjie${BACKEND_TYPE}Core
     cangjie${BACKEND_TYPE}Java8_java.lang)
+
+set(STD_CHIR_DEPENDENCIES
+    cangjie${BACKEND_TYPE}Core
+    cangjie${BACKEND_TYPE}Collection
+    FLATC_OUTPUTS_STD_CHIR)
