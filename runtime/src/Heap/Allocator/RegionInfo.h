@@ -573,7 +573,12 @@ public:
 
 #elif defined(__APPLE__)
         MemorySet(reinterpret_cast<uintptr_t>(unitAddress), size, 0, size);
-        (void)madvise(unitAddress, size, MADV_DONTNEED);
+        (void)madvise(unitAddress, size, PROT_WRITE, MAP_PRIVATE | MAP_ANOYMOUS | MAP_FIXED, -1 ,0);
+        if (ret == MAP_FAILED) {
+            LOG(RTLOG_ERROR, "region mmmap fixed failed");
+        } else if (ret != reinterpret_cast<void*>(unitAddress)) {
+            LOG(RTLOG_ERROR, "mmap fixed at wrong addr %p->%p", unitAddress, ret);
+        }
 #else
         (void)madvise(unitAddress, size, MADV_DONTNEED);
 #endif
