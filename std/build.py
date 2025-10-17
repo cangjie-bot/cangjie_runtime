@@ -125,8 +125,6 @@ def build(args):
         args.target = "aarch64-linux-ohos"
     elif args.target == "ohos-arm":
         args.target = "arm-linux-ohos"
-    elif args.target == "ohos-arm":
-        args.target = "arm-linux-ohos"
     elif args.target == "ohos-x86_64":
         args.target = "x86_64-linux-ohos"
     elif args.target == "windows-x86_64":
