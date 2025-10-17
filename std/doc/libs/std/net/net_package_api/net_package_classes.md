@@ -1318,7 +1318,7 @@ public func toIPv6Compatible(): IPv6Address
 
 返回值：
 
-- [IPv6Address](net_package_classes.md#class-ipv4address) - [IPv6Address](net_package_classes.md#class-ipv4address) 对象。
+- [IPv6Address](net_package_classes.md#class-ipv6address) - [IPv6Address](net_package_classes.md#class-ipv6address) 对象。
 
 ### func toIPv6Mapped()
 
@@ -1330,7 +1330,7 @@ public func toIPv6Mapped(): IPv6Address
 
 返回值：
 
-- [IPv6Address](net_package_classes.md#class-ipv4address) - [IPv6Address](net_package_classes.md#class-ipv4address) 对象。
+- [IPv6Address](net_package_classes.md#class-ipv6address) - [IPv6Address](net_package_classes.md#class-ipv6address) 对象。
 
 ### func writeBigEndian(Array\<Byte>)
 
