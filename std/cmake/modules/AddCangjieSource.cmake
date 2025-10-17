@@ -144,8 +144,9 @@ function(add_cangjie_library target_name)
     if(CANGJIE_CODEGEN_CJNATIVE_BACKEND)
         list(APPEND cangjie_compile_flags "--output-type=staticlib")
     endif()
-
-    list(APPEND cangjie_compile_flags "--disable-reflection")
+    if(TRIPLE STREQUAL "arm-linux-ohos")
+        list(APPEND cangjie_compile_flags "--disable-reflection")
+    endif()
 
     # set compiler path
     if(CMAKE_CROSSCOMPILING)
