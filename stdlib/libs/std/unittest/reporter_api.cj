@@ -26,10 +26,6 @@ public class XmlReporter <: Reporter<TestReport, Unit> {
     public XmlReporter(let directory: Path) {}
 }
 
-public class XmlPerPackageReporter <: Reporter<TestReport, Unit> {
-    public XmlPerPackageReporter(let directory: Path) {}
-}
-
 public class ConsoleReporter <: Reporter<TestReport, Unit> & Reporter<BenchReport, Unit> {
     public ConsoleReporter(let colored!: Bool = true) {}
 }
