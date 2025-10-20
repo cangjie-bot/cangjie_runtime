@@ -186,6 +186,7 @@ class TestSuiteExecutor {
         return { testCaseResult =>
             let finishedBeforeTimeoutSignalQueue = LinkedBlockingQueue<Unit>(1)
             let testingThread = spawn {
+                Thread.currentThread.name = UNITTEST_THREAD_NAME
                 testBody(testCaseResult)
             }
             let killerThread = spawn {

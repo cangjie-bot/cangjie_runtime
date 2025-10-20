@@ -14,6 +14,7 @@ let OP_TIMEOUT_EACH_NAME = camelCaseToKebabCase(KeyTimeoutEach().name)
 let OP_TIMEOUT_EACH = "--${OP_TIMEOUT_EACH_NAME}"
 let TIMEOUT_EACH_KEY = kebabCaseToCamelCase(OP_TIMEOUT_EACH_NAME)
 let VALUE_TIMEOUT_PATTERN: Regex = Regex("(\\d+(\\.\\d+)?)(millis|s|m|h)")
+let UNITTEST_THREAD_NAME = "UNITTEST_THREAD"
 
 extend Configuration {
     prop timeout: ?Duration {
@@ -30,7 +31,7 @@ extend Configuration {
 }
 
 func cancellationPoint() {
-    if (Thread.currentThread.hasPendingCancellation) {
+    if (Thread.currentThread.name == UNITTEST_THREAD_NAME && Thread.currentThread.hasPendingCancellation) {
         throw UnittestTimeoutException()
     }
 }
