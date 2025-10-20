@@ -766,7 +766,7 @@ public init()
 
 功能：构造一个默认的 [Body](ast_package_classes.md#class-body) 对象。
 
-### init(ArrayList\<Decl>)
+### init([ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<Decl>)
 
 ```cangjie
 public init(decls: ArrayList<Decl>)
@@ -1078,7 +1078,7 @@ public mut prop types: ArrayList<TypeNode>
 
 功能：获取或设置冒号后面的类型节点列表，例如：`String | Int | Float`。
 
-类型：[ArrayList\<TypeNode>](ast_package_classes.md#class-typenode)
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
 ### init()
 
@@ -1098,7 +1098,7 @@ public init(inputs: Tokens)
 
 参数：
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 `CommandTypePattern` 节点的标记集合。
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 `CommandTypePattern` 节点的标记集合。
 
 异常：
 
@@ -3340,7 +3340,7 @@ public mut prop items: ArrayList<ImportContent>
 
 功能：获取或设置 [ImportContent](ast_package_classes.md#class-importcontent) 节点中被导入的所有项，只有 `importKind` 为 `ImportKind.Multi` 时非空。
 
-类型：ArrayList\<[ImportContent](ast_package_classes.md#class-importcontent)>
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[ImportContent](ast_package_classes.md#class-importcontent)>
 
 ### prop lBrace
 
@@ -4432,7 +4432,17 @@ public class MacroExpandDecl <: Decl {
 public mut prop fullIdentifier: Token
 ```
 
-功能：获取或设置宏调用节点的完整标识符。
+功能：获取或设置宏调用节点的完整标识符，如 `@pkg.m class a{}` 中的 `pkg.m`。
+
+类型：[Token](ast_package_structs.md#struct-token)
+
+### prop identifier
+
+```cangjie
+public override mut prop identifier: Token
+```
+
+功能：该属性继承自 [Decl](ast_package_classes.md#class-decl) 节点，表示宏调用节点的标识符，如 `@pkg.m class a{}` 中的 `m`。
 
 类型：[Token](ast_package_structs.md#struct-token)
 
@@ -4749,7 +4759,7 @@ public class MacroExpandParam <: FuncParam {
 
 功能：表示宏调用节点。
 
-一个 [MacroExpandDecl](ast_package_classes.md#class-macroexpanddecl) 节点： `func foo (@M a: Int64)` 中的 `@M a: Int64`。
+一个 [MacroExpandParam](ast_package_classes.md#class-macroexpandparam) 节点： `func foo (@M a: Int64)` 中的 `@M a: Int64`。
 
 父类型：
 
@@ -4761,7 +4771,17 @@ public class MacroExpandParam <: FuncParam {
 public mut prop fullIdentifier: Token
 ```
 
-功能：获取或设置宏调用节点的完整标识符。
+功能：获取或设置宏调用节点的完整标识符，如 `func bar (@pkg.m a: Int64)` 中的 `pkg.m`。
+
+类型：[Token](ast_package_structs.md#struct-token)
+
+### prop identifier
+
+```cangjie
+public override mut prop identifier: Token
+```
+
+功能：该属性继承自 [Decl](ast_package_classes.md#class-decl) 节点，表示宏调用节点的标识符，如 `func bar (@pkg.m a: Int64)` 中的 `m`。
 
 类型：[Token](ast_package_structs.md#struct-token)
 
@@ -5616,7 +5636,7 @@ public class Modifier <: Node {
 
 - [Node](#class-node)
 
-### prop keyword(Token)
+### prop keyword
 
 ```cangjie
 public mut prop keyword: Token
@@ -6291,7 +6311,7 @@ public init(inputs: Tokens)
 
 参数：
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 [PerformExpr](ast_package_classes.md#class-performexpr) 节点的词法单元集合。
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 [PerformExpr](ast_package_classes.md#class-performexpr) 节点的词法单元集合。
 
 异常：
 
@@ -7626,7 +7646,7 @@ public mut prop expr: Option<Expr>
 
 功能：获取或设置 `resume` 关键字之后的表达式。
 
-类型：[Option\<Expr>](ast_package_classes.md#class-expr)
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### prop keywordR
 
@@ -7650,7 +7670,7 @@ public mut prop keywordW: Option<Token>
 
 功能：获取或设置 `with` 关键字的词法单元（如果存在）。
 
-类型：[Option\<Token>](ast_package_structs.md#struct-token)
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)>
 
 异常：
 
@@ -7664,7 +7684,7 @@ public mut prop withExpr: Option<Expr>
 
 功能：获取或设置 `with` 关键字之后的表达式。
 
-类型：[Option\<Expr>](ast_package_classes.md#class-expr)
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### prop keywordT
 
@@ -7674,7 +7694,7 @@ public mut prop keywordT: Option<Token>
 
 功能：获取或设置 `throwing` 关键字的词法单元（如果存在）。
 
-类型：[Option\<Token>](ast_package_structs.md#struct-token)
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)>
 
 异常：
 
@@ -7688,7 +7708,7 @@ public mut prop throwingExpr: Option<Expr>
 
 功能：获取或设置 `throwing` 关键字之后的表达式。
 
-类型：Option\<[Expr](ast_package_classes.md#class-expr)>
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### init()
 
@@ -7708,7 +7728,7 @@ public init(inputs: Tokens)
 
 参数：
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 [ResumeExpr](ast_package_classes.md#class-resumeexpr) 节点的词法单元集合。
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 [ResumeExpr](ast_package_classes.md#class-resumeexpr) 节点的词法单元集合。
 
 异常：
 
@@ -7763,7 +7783,7 @@ public mut prop types: ArrayList<TypeNode>
 
 功能：获取或设置紧跟在冒号后的类型节点列表，例如 `EffectA | EffectB`。
 
-类型： [ArrayList\<TypeNode>](ast_package_classes.md#class-typenode)
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
 ### init()
 
@@ -7783,7 +7803,7 @@ public init(inputs: Tokens)
 
 参数：
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — 表示一个恢复类型模式的 token 集合。
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — 表示一个恢复类型模式的 token 集合。
 
 异常：
 
@@ -8586,7 +8606,7 @@ public init(tokArray: Array<Token>)
 
 - tokArray: [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Token](ast_package_structs.md#struct-token)> - 一组包含 [Token](ast_package_structs.md#struct-token) 的 [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt) 类型。
 
-### init(ArrayList\<Token>)
+### init([ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<Token>)
 
 ```cangjie
 public init(tokArrayList: ArrayList<Token>)
@@ -8652,7 +8672,7 @@ public open func append(tokens: Tokens): Tokens
 public func concat(tokens: Tokens): Tokens
 ```
 
-功能：将当前的 [Tokens](ast_package_classes.md#class-tokens) 与传入的 [Tokens](ast_package_classes.md#class-tokens) 进行拼接。
+功能：将当前的 [Tokens](ast_package_classes.md#class-tokens) 与传入的 [Tokens](ast_package_classes.md#class-tokens) 进行拼接，返回新的 [Tokens](ast_package_classes.md#class-tokens) 实例。
 
 参数：
 
@@ -8748,7 +8768,7 @@ public func toString(): String
 public operator func +(r: Token): Tokens
 ```
 
-功能：使用当前 [Tokens](ast_package_classes.md#class-tokens) 与另一个 [Token](ast_package_structs.md#struct-token) 相加以获取新的 [Tokens](ast_package_classes.md#class-tokens)。
+功能：使用当前 [Tokens](ast_package_classes.md#class-tokens) 与另一个 [Token](ast_package_structs.md#struct-token) 相加以获取新的 [Tokens](ast_package_classes.md#class-tokens) 实例。
 
 参数：
 
@@ -8764,7 +8784,7 @@ public operator func +(r: Token): Tokens
 public operator func +(r: Tokens): Tokens
 ```
 
-功能：使用当前 [Tokens](ast_package_classes.md#class-tokens) 与 [Tokens](ast_package_classes.md#class-tokens) 相加以获取新的 [Tokens](ast_package_classes.md#class-tokens) 类型。
+功能：使用当前 [Tokens](ast_package_classes.md#class-tokens) 与 [Tokens](ast_package_classes.md#class-tokens) 相加以获取新的 [Tokens](ast_package_classes.md#class-tokens) 实例。
 
 参数：
 
@@ -9025,7 +9045,7 @@ public mut prop handlers: ArrayList<Handler>
 
 功能：获取或设置 `Handler` 节点列表。
 
-类型： [ArrayList\<Handler>](ast_package_classes.md#class-handler)
+类型： [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Handler](ast_package_classes.md#class-handler)>
 
 ### prop keywordF
 
