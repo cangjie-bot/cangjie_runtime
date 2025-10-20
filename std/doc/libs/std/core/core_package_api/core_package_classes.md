@@ -1796,7 +1796,7 @@ public func next(): Option<T>
 ## class StackTraceElement
 
 ```cangjie
-public open class StackTraceElement {
+public open class StackTraceElement <: ToString {
     public let declaringClass: String
     public let methodName: String
     public let fileName: String
@@ -1806,6 +1806,10 @@ public open class StackTraceElement {
 ```
 
 功能：表示一个异常堆栈的具体信息，包括异常发生的类名、函数名、文件名、行号。
+
+父类型：
+
+* [ToString](core_package_interfaces.md#interface-tostring)
 
 ### let declaringClass
 
@@ -1861,6 +1865,18 @@ public init(declaringClass: String, methodName: String, fileName: String, lineNu
 - methodName: [String](core_package_structs.md#struct-string) - 函数名。
 - fileName: [String](core_package_structs.md#struct-string) - 文件名。
 - lineNumber: [Int64](core_package_intrinsics.md#int64) - 行号。
+
+### func  toString()
+
+```cangjie
+public func toString(): String
+```
+
+功能：获取 [StackTraceElement](core_package_classes.md#class-stacktraceelement) 对象的字符串表示。
+
+返回值：
+
+String - 转换后的字符串。
 
 ## class StringBuilder
 
