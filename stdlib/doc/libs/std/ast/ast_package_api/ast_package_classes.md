@@ -3356,6 +3356,30 @@ public mut prop lBrace: Token
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 不是 `{` 操作符时，抛出异常。
 
+### prop orgName
+
+```cangjie
+public mut prop orgName: Token
+```
+
+功能：获取或设置 [ImportContent](ast_package_classes.md#class-importcontent) 节点中代表组织名的词法单元。
+
+类型：[Tokens](ast_package_classes.md#class-tokens)
+
+### prop orgSeparator
+
+```cangjie
+public mut prop orgSeparator: Token
+```
+
+功能：获取或设置 [ImportContent](ast_package_classes.md#class-importcontent) 节点中的 `::` 关键字的词法单元。
+
+类型：[Tokens](ast_package_classes.md#class-tokens)
+
+异常：
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 不是 `::` 关键字时，抛出异常。
+
 ### prop prefixPaths
 
 ```cangjie
@@ -5911,6 +5935,30 @@ public mut prop keywordP: Token
 异常：
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 不是 `package` 关键字时，抛出异常。
+
+### prop orgName
+
+```cangjie
+public mut prop orgName: Token
+```
+
+功能：获取或设置 [PackageHeader](ast_package_classes.md#class-packageheader) 节点中代表组织名的词法单元。
+
+类型：[Tokens](ast_package_classes.md#class-tokens)
+
+### prop orgSeparator
+
+```cangjie
+public mut prop orgSeparator: Token
+```
+
+功能：获取或设置 [PackageHeader](ast_package_classes.md#class-packageheader) 节点中的 `::` 关键字的词法单元。
+
+类型：[Tokens](ast_package_classes.md#class-tokens)
+
+异常：
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 不是 `::` 关键字时，抛出异常。
 
 ### prop prefixPaths
 
