@@ -363,4 +363,44 @@ const char* TraceInfoFormat(const char* name, unsigned long long id, unsigned in
     return nameStr.Str();
 }
 #endif
+
+#if defined(__IOS__)
+SignpostWrapper::SignpostWrapper() {
+    void* handle = dlopen("/usr/lib/libSystem.dylib", RTLD_LAZY);
+    if (handle) {
+        beginFunc = reinterpret_cast<OsSignpostBeginFunc>(dlsym(handle, "os_signpost_interval_begin"));
+        endFunc = reinterpret_cast<OsSignpostEndFunc>(dlsym(handle, "os_signpost_interval_end"));
+        dlclose(handle);
+
+        initialized = true;
+    }
+}
+
+SignpostWrapper& SignpostWrapper::GetInstance() {
+    static SignpostWrapper instance;
+    return instance;
+}
+
+void SignpostWrapper::IntervalBegin(const char* name) {
+    if (!isAvailable()) {
+        LOG(RTLOG_WARNING, "there is no support for IntervalBegin \n");
+        return;
+    }
+
+    os_log_t log = os_log_create("com.cangjie.trace", "ios-tracing");
+    os_signpost_id_t spid = os_signpost_id_generate(log);
+    beginFunc(log, spid, "Operation", "name:%{public}s", name);
+}
+
+void SignpostWrapper::IntervalEnd() {
+    if (!isAvailable()) {
+        LOG(RTLOG_WARNING, "there is no support for IntervalEnd \n");
+        return;
+    }
+
+    os_log_t log = os_log_create("com.cangjie.trace", "ios-tracing");
+    os_signpost_id_t spid = os_signpost_id_generate(log);
+    endFunc(log, spid, "Operation", "name:%{public}s");
+}
+#endif
 } // namespace MapleRuntime

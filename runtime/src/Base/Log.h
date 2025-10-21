@@ -22,11 +22,42 @@
 #include "hitrace/trace.h"
 #elif defined(__ANDROID__)
 #include "android/trace.h"
+#elif defined(__IOS__)
+#include <dlfcn.h>
+#include <string>
+#include <os/signpost.h>
 #endif
 
 namespace MapleRuntime {
 #define LOG(level, format...) ::MapleRuntime::Logger::GetLogger().FormatLog(level, true, format)
 #define FLOG(level, format...) ::MapleRuntime::Logger::GetLogger().FormatLog(level, false, format)
+
+
+#if defined(__IOS__)
+class SignpostWrapper {
+public:
+    static SignpostWrapper& GetInstance();
+
+    bool IsAvailable() const { return initialized && beginFunc && endFunc; }
+
+    void IntervalBegin(const char* name);
+    void IntervalEnd();
+
+private:
+    SignpostWrapper();
+    ~SignpostWrapper() = default;
+
+    SignpostWrapper(const SignpostWrapper&) = delete;
+    SignpostWrapper& operator=(const SignpostWrapper&) = delete;
+
+    using OsSignpostBeginFunc = void(*)(os_log_t, os_signpost_id_t, const char*, const char*, const char*);
+    using OsSignpostEndFunc = void(*)(os_log_t, os_signpost_id_t, const char*, const char*);
+
+    OsSignpostBeginFunc beginFunc = nullptr;
+    OsSignpostEndFunc endFunc = nullptr;
+    bool initialized = false;
+};
+#endif
 
 #if defined(__OHOS__) && (__OHOS__ == 1)
     /**
@@ -59,6 +90,12 @@ namespace MapleRuntime {
     #define TRACE_START_ASYNC(name, taskId)      ATrace_beginAsyncSection(name, static_cast<int32_t>(taskId))
     #define TRACE_FINISH_ASYNC(name, taskId)     ATrace_endAsyncSection(name, static_cast<int32_t>(taskId))
     #define TRACE_COUNT(name, count)             ATrace_setCounter(name, static_cast<int64_t>(count))
+#elif defined(__IOS__)
+    #define TRACE_START(name)                    SignpostWrapper::getInstance().IntervalBegin(name)
+    #define TRACE_FINISH()                       SignpostWrapper::getInstance().IntervalEnd()
+    #define TRACE_START_ASYNC(name, taskId)
+    #define TRACE_FINISH_ASYNC(name, taskId)
+    #define TRACE_COUNT(name, count)
 #else
     #define TRACE_START(name)
     #define TRACE_FINISH()
