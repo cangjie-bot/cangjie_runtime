@@ -1305,6 +1305,16 @@ public open class Decl <: Node
 
 - [Node](#class-node)
 
+### var annotations_
+
+```cangjie
+protected var annotations_: ArrayList<Annotation>
+```
+
+功能：获取或设置作用于 [Decl](ast_package_classes.md#class-decl) 节点的注解列表。
+
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Annotation](ast_package_classes.md#class-annotation)>
+
 ### var identifier_
 
 ```cangjie
@@ -4442,7 +4452,7 @@ public mut prop fullIdentifier: Token
 public override mut prop identifier: Token
 ```
 
-功能：该属性继承自 [Decl](ast_package_classes.md#class-decl) 节点，表示宏调用节点的标识符，如 `@pkg.m class a{}` 中的 `m`。
+功能：该属性继承自 [Decl](#class-decl) 节点，表示宏调用节点的标识符，如 `@pkg.m class a{}` 中的 `m`。
 
 类型：[Token](ast_package_structs.md#struct-token)
 
@@ -4771,7 +4781,7 @@ public class MacroExpandParam <: FuncParam {
 public mut prop fullIdentifier: Token
 ```
 
-功能：获取或设置宏调用节点的完整标识符，如 `func bar (@pkg.m a: Int64)` 中的 `pkg.m`。
+功能：获取或设置宏调用节点的完整标识符，如 `@pkg.m class a{}` 中的 `pkg.m`。
 
 类型：[Token](ast_package_structs.md#struct-token)
 
@@ -4781,7 +4791,7 @@ public mut prop fullIdentifier: Token
 public override mut prop identifier: Token
 ```
 
-功能：该属性继承自 [Decl](ast_package_classes.md#class-decl) 节点，表示宏调用节点的标识符，如 `func bar (@pkg.m a: Int64)` 中的 `m`。
+功能：该属性继承自 [Decl](#class-decl) 节点，表示宏调用节点的标识符，如 `@pkg.m class a{}` 中的 `m`。
 
 类型：[Token](ast_package_structs.md#struct-token)
 
