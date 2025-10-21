@@ -1116,12 +1116,14 @@ public class FeaturesDirective <: Node {
  * The PackageHeader starts with the keyword package, followed by the package name.
  */
 public class PackageHeader <: Node {
-    init(accessibleToken: Token, macroToken: Token, keyword: Token, prefixPaths: Tokens, prefixDots: Tokens,
+    init(accessibleToken: Token, macroToken: Token, keyword: Token, orgName: Token, orgToken: Token, prefixPaths: Tokens, prefixDots: Tokens,
         pkgIdentifier: Token) {
         super()
         accessibleToken_ = accessibleToken
         macroToken_ = macroToken
         keyword_ = keyword
+        orgName_ = orgName
+        orgToken_ = orgToken
         prefixPaths_ = prefixPaths
         prefixDots_ = prefixDots
         pkgIdentifier_ = pkgIdentifier
@@ -1134,6 +1136,8 @@ public class PackageHeader <: Node {
             this.accessibleToken_ = pkg.accessibleToken_
             this.macroToken_ = checkValid(pkg.macroToken_)
             this.keyword_ = pkg.keyword_
+            this.orgName_ = checkValid(pkg.orgName_)
+            this.orgToken_ = checkValid(pkg.orgToken_)
             this.prefixPaths_ = pkg.prefixPaths_
             this.prefixDots_ = pkg.prefixDots_
             this.pkgIdentifier_ = pkg.pkgIdentifier_
@@ -1151,6 +1155,8 @@ public class PackageHeader <: Node {
     private var accessibleToken_: Token = Token(TokenKind.PUBLIC)
     private var macroToken_: Token = Token()
     private var keyword_: Token = Token(TokenKind.PACKAGE)
+    private var orgName_: Token = Token()
+    private var orgToken_: Token = Token()
     private var prefixPaths_: Tokens = Tokens()
     private var prefixDots_: Tokens = Tokens()
     private var pkgIdentifier_: Token = Token(TokenKind.IDENTIFIER, "")
@@ -1179,6 +1185,23 @@ public class PackageHeader <: Node {
         set(v) {
             checkTokenType(v, PACKAGE)
             keyword_ = v
+        }
+    }
+    public mut prop orgName: Token {
+        get() {
+            orgName_
+        }
+        set(v) {
+            orgName_ = v
+        }
+    }
+    public mut prop orgSeparator: Token {
+        get() {
+            orgToken_
+        }
+        set(v) {
+            checkTokenType(v, DOUBLE_COLON)
+            orgToken_ = v
         }
     }
     public mut prop prefixPaths: Tokens {
@@ -1213,6 +1236,10 @@ public class PackageHeader <: Node {
                 ret.append(macroToken_)
             }
             ret.append(keyword_)
+            if (isValidPosition(orgName_)) {
+                ret.append(orgName_)
+                ret.append(orgToken_)
+            }
             ret = addPackageTokens(ret)
             let identPos = pkgIdentifier_.pos
             let identColumn = identPos.column + Int32(pkgIdentifier_.value.size)
@@ -1238,7 +1265,19 @@ public class PackageHeader <: Node {
             ret += getTokenIndent("-keywordM", macroToken_, currentIndent)
         }
         ret += getTokenIndent("-keywordP", keyword_, currentIndent)
-        for (i in 0..prefixPaths_.size) {
+        if (isValidPosition(orgName_)) {
+            ret += getTokenIndent("-orgName", orgName_, currentIndent)
+        }
+        if (isValidPosition(orgToken_)) {
+            ret += getTokenIndent("-orgSepartaor", orgToken_, currentIndent)
+        }
+        // prefixPaths[0] and prefixDots[0] would be orgnization name and position of double colon if double colon exists
+        let pathBeginPos = if (isValidPosition(orgToken_)) {
+            1
+        } else {
+            0
+        }
+        for (i in pathBeginPos..prefixPaths_.size) {
             ret += getTokenIndent("prefixPath: ${i}", prefixPaths_[i], currentIndent)
             if (i < prefixDots_.size) {
                 ret += getTokenIndent("dot: ${i}", prefixDots_[i], currentIndent)
@@ -1252,7 +1291,13 @@ public class PackageHeader <: Node {
     }
 
     func addPackageTokens(input: Tokens): Tokens {
-        for (i in 0..prefixPaths_.size) {
+        // prefixPaths[0] and prefixDots[0] would be orgnization name and position of double colon if double colon exists
+        let pathBeginPos = if (isValidPosition(orgToken_)) {
+            1
+        } else {
+            0
+        }
+        for (i in pathBeginPos..prefixPaths_.size) {
             input.append(prefixPaths_[i])
             if (i < prefixDots_.size) {
                 input.append(prefixDots_[i])
@@ -1278,10 +1323,12 @@ public enum ImportKind <: ToString {
 }
 
 public class ImportContent <: Node {
-    init(importKind: ImportKind, prefixPaths: Tokens, prefixDots: Tokens, identifier: Token, importAlias: Tokens,
+    init(importKind: ImportKind, orgName: Token, orgToken: Token, prefixPaths: Tokens, prefixDots: Tokens, identifier: Token, importAlias: Tokens,
         leftCurl: Token, items: ArrayList<ImportContent>, commas: Tokens, rightCurl: Token) {
         super()
         importKind_ = importKind
+        orgName_ = orgName
+        orgToken_ = orgToken
         prefixPaths_ = prefixPaths
         prefixDots_ = prefixDots
         identifier_ = identifier
@@ -1293,6 +1340,8 @@ public class ImportContent <: Node {
     }
     public init() {}
     private var importKind_: ImportKind = ImportKind.Single
+    private var orgName_: Token = Token()
+    private var orgToken_: Token = Token()
     private var prefixPaths_: Tokens = Tokens()
     private var prefixDots_: Tokens = Tokens()
     private var identifier_: Token = Token()
@@ -1309,6 +1358,23 @@ public class ImportContent <: Node {
         }
         set(v) {
             importKind_ = v
+        }
+    }
+    public mut prop orgName: Token {
+        get() {
+            orgName_
+        }
+        set(v) {
+            orgName_ = v
+        }
+    }
+    public mut prop orgSeparator: Token {
+        get() {
+            orgToken_
+        }
+        set(v) {
+            checkTokenType(v, DOUBLE_COLON)
+            orgToken_ = v
         }
     }
     public mut prop prefixPaths: Tokens {
@@ -1409,7 +1475,17 @@ public class ImportContent <: Node {
     }
     public func toTokens(): Tokens {
         var ret = Tokens()
-        for (i in 0..prefixPaths_.size) {
+        if (isValidPosition(orgName_)) {
+            ret.append(orgName_)
+            ret.append(orgToken_)
+        }
+        // prefixPaths[0] and prefixDots[0] would be orgnization name and position of double colon if double colon exists
+        let pathBeginPos = if (isValidPosition(orgToken_)) {
+            1
+        } else {
+            0
+        }
+        for (i in pathBeginPos..prefixPaths_.size) {
             let dot = if (i >= prefixDots_.size) {
                 Token(TokenKind.DOT)
             } else {
@@ -1446,7 +1522,19 @@ public class ImportContent <: Node {
         currentIndent = indent
         var ret: String = ""
         ret += getIndent(currentIndent) + "-importKind: ${importKind_}\n"
-        for (i in 0..prefixPaths_.size) {
+        if (isValidPosition(orgName_)) {
+            ret += getTokenIndent("-orgName", orgName_, currentIndent)
+        }
+        if (isValidPosition(orgToken_)) {
+            ret += getTokenIndent("-orgSepartaor", orgToken_, currentIndent)
+        }
+        // prefixPaths[0] and prefixDots[0] would be orgnization name and position of double colon if double colon exists
+        let pathBeginPos = if (isValidPosition(orgToken_)) {
+            1
+        } else {
+            0
+        }
+        for (i in pathBeginPos..prefixPaths_.size) {
             ret += getTokenIndent("prefixPath: ${i}", prefixPaths_[i], currentIndent)
         }
         ret += getTokenIndent("-identifier", identifier_, currentIndent)
