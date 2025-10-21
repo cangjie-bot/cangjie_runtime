@@ -18,6 +18,9 @@
 #include "os/Path.h"
 #include "securec.h"
 #include "Base/LogFile.h"
+#if defined(__ANDROID__) || defined(__IOS__)
+#include "Base/Print.h"
+#endif
 namespace MapleRuntime {
 static ImmortalWrapper<Logger> g_loggerInstance;
 
@@ -416,6 +419,61 @@ const char* TraceInfoFormat(const char* name, unsigned long long id, unsigned in
 }
 #endif
 
+#if defined(__ANDROID__)
+ATraceWrapper::ATraceWrapper() {
+    libHandle = dlopen("libandroid.so", RTLD_LAZY);
+    if (!libHandle) {
+        PRINT_ERROR("Failed to dlopen libandroid.so: %s\n", dlerror());
+        return;
+    }
+
+    beginAsyncFunc = reinterpret_cast<ATraceBeginAsyncSectionFunc>(dlsym(libHandle, "ATrace_beginAsyncSection"));
+    endAsyncFunc = reinterpret_cast<ATraceEndAsyncSectionFunc>(dlsym(libHandle, "ATrace_endAsyncSection"));
+    setCounterFunc = reinterpret_cast<ATraceSetCounterFunc>(dlsym(libHandle, "ATrace_setCounter"));
+
+    if (beginAsyncFunc && endAsyncFunc && setCounterFunc) {
+        PRINT_ERROR("ATrace functions all loaded successfully \n");
+    } else {
+        PRINT_ERROR("Failed to load some ATrace functions: begin=%p, end=%p, counter=%p \n",
+                    beginAsyncFunc, endAsyncFunc, setCounterFunc);
+    }
+}
+
+ATraceWrapper::~ATraceWrapper() {
+    if (libHandle) {
+        dlclose(libHandle);
+        libHandle = nullptr;
+    }
+
+    beginAsyncFunc = nullptr;
+    endAsyncFunc = nullptr;
+    setCounterFunc = nullptr;
+}
+
+ATraceWrapper& ATraceWrapper::GetInstance() {
+    static ATraceWrapper instance;
+    return instance;
+}
+
+void ATraceWrapper::BeginAsyncSection(const char* name, int32_t taskId) {
+    if (beginAsyncFunc) {
+        beginAsyncFunc(name, taskId);
+    }
+}
+
+void ATraceWrapper::EndAsyncSection(const char* name, int32_t taskId) {
+    if (endAsyncFunc) {
+        endAsyncFunc(name, taskId);
+    }
+}
+
+void ATraceWrapper::SetCounter(const char* name, int64_t count) {
+    if (setCounterFunc) {
+        setCounterFunc(name, count);
+    }
+}
+#endif
+
 #if defined(__IOS__)
 SignpostWrapper::SignpostWrapper() {
     libHandle = dlopen("libSystem.dylib", RTLD_LAZY);
@@ -440,10 +498,7 @@ SignpostWrapper::SignpostWrapper() {
 }
 
 SignpostWrapper::~SignpostWrapper() {
-    if (libHandle) {
-        dlclose(libHandle);
-        libHandle = nullptr;
-    }
+
 
     emitWithNameImplFunc = nullptr;
     idGenerateFunc = nullptr;
@@ -633,6 +688,9 @@ void SignpostWrapper::EventEmit(const char* name, int64_t count) {
     emitWithNameImplFunc(&__dso_handle, osLog, OS_SIGNPOST_EVENT, spId, "OperationEmit",
         "name:%{public}s, count: %lld", static_cast<uint8_t*>(buffer), static_cast<uint32_t>(bufferSize));
     std::free(buffer);
+    beginAsyncFunc = nullptr;
+    endAsyncFunc = nullptr;
+    setCounterFunc = nullptr;
 }
 #endif
 } // namespace MapleRuntime
