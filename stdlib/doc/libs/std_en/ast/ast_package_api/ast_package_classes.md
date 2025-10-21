@@ -3356,6 +3356,30 @@ Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "{" operator.
 
+### prop orgName
+
+```cangjie
+public mut prop orgName: Token
+```
+
+Function: Gets or sets the lexical unit representing organization name in the [ImportContent](ast_package_classes.md#class-importcontent) node.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+### prop orgSeparator
+
+```cangjie
+public mut prop orgSeparator: Token
+```
+
+Function: Gets or sets the "::" operator lexeme in the [ImportContent](ast_package_classes.md#class-importcontent) node.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "::" operator.
+
 ### prop prefixPaths
 
 ```cangjie
@@ -5891,6 +5915,30 @@ Type: [Token](ast_package_structs.md#struct-token)
 Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `package` keyword.
+
+### prop orgName
+
+```cangjie
+public mut prop orgName: Token
+```
+
+Function: Gets or sets the lexical unit representing organization name in the [PackageHeader](ast_package_classes.md#class-packageheader) node.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+### prop orgSeparator
+
+```cangjie
+public mut prop orgSeparator: Token
+```
+
+Function: Gets or sets the "::" operator lexeme in the [PackageHeader](ast_package_classes.md#class-packageheader) node.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "::" operator.
 
 ### prop prefixPaths
 
