@@ -12,28 +12,28 @@ This package offers a generic SQL/CLI interface that works in conjunction with d
 
 The following table shows the correspondence between SQL data types and Cangjie data types:
 
-| SQL         | CDBC/Cangjie     | SqlDataType    | Description                                              |
-| ----------- | ---------------- | -------------- | ------------------------------------------------------- |
-| `RUNE`      | `String`         | `SqlChar`      | -                                                       |
-| `VARCHAR`   | `String`         | `SqlVarchar`   | -                                                       |
-| `CLOB`      | `io.InputStream` | `SqlClob`      | -                                                       |
-| `BINARY`    | `Array<Byte>`    | `SqlBinary`    | -                                                       |
-| `VARBINARY` | `Array<Byte>`    | `SqlVarBinary` | -                                                       |
-| `BLOB`      | `io.InputStream` | `SqlBlob`      | -                                                       |
-| `NUMERIC`   | `Decimal`        | `SqlDecimal`   | -                                                       |
-| `DECIMAL`   | `Decimal`        | `SqlDecimal`   | -                                                       |
-| `BOOLEAN`   | `Bool`           | `SqlBool`      | -                                                       |
-| `TINYINT`   | `Int8`           | `SqlByte`      | -                                                       |
-| `SMALLINT`  | `Int16`          | `SqlSmallInt`  | -                                                       |
-| `INTEGER`   | `Int32`          | `SqlInteger`   | -                                                       |
-| `BIGINT`    | `Int64`          | `SqlBigInt`    | -                                                       |
-| `REAL`      | `Float32`        | `SqlReal`      | -                                                       |
-| `DOUBLE`    | `Float64`        | `SqlDouble`    | -                                                       |
-| `DATE`      | `time.DateTime`  | `SqlDate`      | Values support `YEAR`, `MONTH`, `DAY`.                  |
-| `TIME`      | `time.DateTime`  | `SqlTime`      | Values support `HOUR`, `MINUTE`, `SECOND` (excluding `TIME ZONE`). |
-| `TIMETZ`    | `time.DateTime`  | `SqlTimeTz`    | Values support `HOUR`, `MINUTE`, `SECOND` (including `TIME ZONE`). |
-| `TIMESTAMP` | `time.DateTime`  | `SqlTimestamp` | Values support `YEAR`, `MONTH`, `DAY`, `HOUR`, `MINUTE`, `SECOND`, `TIME ZONE`. |
-| `INTERVAL`  | `time.Duration`  | `SqlInterval`  | Year-month or day-time intervals.                       |
+| SQL         | CDBC/Cangjie     | Description                                              |
+| ----------- | ---------------- | ------------------------------------------------------- |
+| `RUNE`      | `String`         | -                                                       |
+| `VARCHAR`   | `String`         | -                                                       |
+| `CLOB`      | `io.InputStream` | -                                                       |
+| `BINARY`    | `Array<Byte>`    | -                                                       |
+| `VARBINARY` | `Array<Byte>`    | -                                                       |
+| `BLOB`      | `io.InputStream` | -                                                       |
+| `NUMERIC`   | `Decimal`        | -                                                       |
+| `DECIMAL`   | `Decimal`        | -                                                       |
+| `BOOLEAN`   | `Bool`           | -                                                       |
+| `TINYINT`   | `Int8`           | -                                                       |
+| `SMALLINT`  | `Int16`          | -                                                       |
+| `INTEGER`   | `Int32`          | -                                                       |
+| `BIGINT`    | `Int64`          | -                                                       |
+| `REAL`      | `Float32`        | -                                                       |
+| `DOUBLE`    | `Float64`        | -                                                       |
+| `DATE`      | `time.DateTime`  | Values support `YEAR`, `MONTH`, `DAY`.                  |
+| `TIME`      | `time.DateTime`  | Values support `HOUR`, `MINUTE`, `SECOND` (excluding `TIME ZONE`). |
+| `TIMETZ`    | `time.DateTime`  | Values support `HOUR`, `MINUTE`, `SECOND` (including `TIME ZONE`). |
+| `TIMESTAMP` | `time.DateTime`  | Values support `YEAR`, `MONTH`, `DAY`, `HOUR`, `MINUTE`, `SECOND`, `TIME ZONE`. |
+| `INTERVAL`  | `time.Duration`  | Year-month or day-time intervals.                       |
 
 ## API List
 
