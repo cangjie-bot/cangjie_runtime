@@ -1805,6 +1805,16 @@ Function: Gets or sets the thread's name. Both operations are atomic.
 
 Type: [String](core_package_structs.md#struct-string)
 
+### prop state
+
+```cangjie
+public prop state: ThreadState
+```
+
+Function: Get the state of the thread.
+
+Type: [ThreadState](core_package_enums.md#enum-threadState)
+
 ### static func handleUncaughtExceptionBy((Thread, Exception) -> Unit)
 
 ```cangjie
@@ -1857,3 +1867,165 @@ Function: Sets the value of the Cangjie thread-local variable. If `None` is pass
 
 Parameters:
 - value: ?T - The value to set for the thread-local variable.
+
+## class ThreadSnapshot
+
+```cangjie
+public class ThreadSnapshot <: ToString {
+    public let id: Int64
+    public let name: String
+    public let stackTrace: Array<StackTraceElement>
+    public let state: ThreadState
+    public static func dumpAllThreads(): Array<ThreadSnapshot>
+    public static func dumpCurrentThread(): ThreadSnapshot
+    public func toString(): String
+}
+```
+
+Function: Get information of the current thread or all threads, including name, id, state, and call stack.
+
+Instances of this type cannot be obtained through construction, but only through the [dumpCurrentThread](core_package_classes.md#func-dumpcurrentthread) and [dumpAllThreads](core_package_classes.md#func-dumpallthreads) static functions of the [class ThreadSnapshot ](core_package_classes.md#class-threadsnapshot) class.
+
+Parent type:
+
+* [ToString](core_package_interfaces.md#interface-tostring)
+
+### let id
+
+```cangjie
+public let id: Int64
+```
+
+Function: Get the id of the thread.
+
+Type: [Int64](core_package_intrinsics.md#int64)
+
+### let name
+
+```cangjie
+public let name: String
+```
+
+Function: Get the name of the thread.
+
+Type: [String](core_package_structs.md#struct-string)
+
+### let stackTrace
+
+```cangjie
+public let stackTrace: Array<StackTraceElement>
+```
+
+Function: Get the call stack information of the thread.
+
+Type: [Array](core_package_structs.md#struct-arrayt)\<[StackTraceElement](core_package_classes.md#class-stacktraceelement)>
+
+### let state
+
+```cangjie
+public let state: ThreadState
+```
+
+Function: Get the state of the thread.
+
+Type: [ThreadState](core_package_enums.md#enum-threadstate)
+
+### func dumpAllThreads()
+
+```cangjie
+public static func dumpAllThreads(): Array<ThreadSnapshot>
+```
+
+Function: Get information of all threads in the current process.
+
+Return value:
+
+[Array](core_package_structs.md#struct-arrayt)\<[ThreadSnapshot](core_package_classes.md#class-threadsnapshot)> - Return an array of [ThreadSnapshot](core_package_classes.md#class-threadsnapshot) containing information of all threads in the current process.
+
+Example:
+
+<!-- verify -->
+
+```cangjie
+main(): Unit {
+    /* Create a thread */
+    let future =spawn {
+        while(true) {
+            sleep(1 * Duration.second)
+            if (Thread.currentThread.hasPendingCancellation){
+                return
+            }
+        }
+    }
+    /* Get information of all threads */
+    let threadInfoArray: Array<ThreadSnapshot> = ThreadSnapshot.dumpAllThreads()
+    /* Loop print thread information */
+    let size = threadInfoArray.size
+    for (i in 0..size) {
+        let threadInfoData = threadInfoArray[i]
+        println(threadInfoData)
+    }
+}
+```
+
+Running result:
+
+```text
+ThreadSnapshot(id=1, name=, state=Running)
+stack trace:
+         at std.core.ThreadSnapshot::dumpCurrentThread()(thread.cj:176)
+         at default.test4()(hello.cj:46)
+         at default.main()(hello.cj:146)
+ThreadSnapshot(id=2, name=, state=Pending)
+stack trace:
+         at std.core.sleep(std.core::Duration)(sleep.cj:36)
+         at default.test6::lambda.0()(hello.cj:66)
+         at std.core.Future<...>::execute()(future.cj:161)
+```
+
+### func dumpCurrentThread()
+
+```cangjie
+public static func dumpCurrentThread(): ThreadSnapshot
+```
+
+Function: Get information of the current thread.
+
+Return value:
+
+[ThreadSnapshot](core_package_classes.md#class-threadsnapshot) - Return a [ThreadSnapshot](core_package_classes.md#class-threadsnapshot) object containing information of the current thread.
+
+Example:
+
+<!-- verify -->
+
+```cangjie
+main(): Unit {
+    /* Get current thread information */
+    let threadInfo: ThreadSnapshot = ThreadSnapshot.dumpCurrentThread()
+    /* Print information */
+    println(threadInfo)
+}
+```
+
+Running result:
+
+```text
+ThreadSnapshot(id=1, name=, state=Running)
+stack trace:
+         at std.core.ThreadSnapshot::dumpAllThreads()(thread.cj:161)
+         at default.test6()(hello.cj:74)
+         at default.main()(hello.cj:148)
+```
+
+### func toString()
+
+```cangjie
+public func toString(): String
+```
+
+Function: Get the string representation of the [ThreadSnapshot](core_package_classes.md#class-threadsnapshot) object.
+
+Return value:
+
+String - The converted string.
