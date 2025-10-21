@@ -18,6 +18,9 @@
 #include "os/Path.h"
 #include "securec.h"
 #include "Base/LogFile.h"
+#if defined(__ANDROID__) || defined(__IOS__)
+#include "Base/Print.h"
+#endif
 namespace MapleRuntime {
 static ImmortalWrapper<Logger> g_loggerInstance;
 
@@ -413,6 +416,244 @@ const char* TraceInfoFormat(const char* name, unsigned long long id, unsigned in
     nameStr = nameStr.Append(" ");
     nameStr = nameStr.Append(idStr);
     return nameStr.Str();
+}
+#endif
+
+#if defined(__IOS__)
+SignpostWrapper::SignpostWrapper() {
+    dlerror(); // clear any existing error state
+
+    libHandle = dlopen("libSystem.dylib", RTLD_LAZY);
+    if (!libHandle) {
+        PRINT_ERROR("Failed to dlopen libSystem.dylib: %{public}s \n", dlerror());
+        return;
+    }
+
+    emitWithNameImplFunc = reinterpret_cast<EmitWithNameImplFunc>(dlsym(libHandle, "_os_signpost_emit_with_name_impl"));
+    idGenerateFunc = reinterpret_cast<IdGenerateFunc>(dlsym(libHandle, "os_signpost_id_generate"));
+    idMakeWithPointerFunc = reinterpret_cast<IdMakeWithPointerFunc>(dlsym(libHandle,
+                                                                    "os_signpost_id_make_with_pointer"));
+    osSignpostEnabledFunc = reinterpret_cast<OsSignpostEnabledFunc>(dlsym(libHandle, "os_signpost_enabled"));
+
+     if (emitWithNameImplFunc && idGenerateFunc && idMakeWithPointerFunc && osSignpostEnabledFunc) {
+        PRINT_ERROR("signpost functions all loaded successfully \n");
+    } else {
+        PRINT_ERROR("Failed to load some signpost functions: impl=%p, idGen=%p, idPointer=%p, enabled=%p \n",
+                    emitWithNameImplFunc, idGenerateFunc, idMakeWithPointerFunc, osSignpostEnabledFunc);
+    }
+}
+
+SignpostWrapper::~SignpostWrapper() {
+    if (libHandle) {
+        dlclose(libHandle);
+        libHandle = nullptr;
+    }
+
+    emitWithNameImplFunc = nullptr;
+    idGenerateFunc = nullptr;
+    idMakeWithPointerFunc = nullptr;
+    osSignpostEnabledFunc = nullptr;
+}
+
+SignpostWrapper& SignpostWrapper::GetInstance() {
+    static SignpostWrapper instance;
+    return instance;
+}
+
+bool SignpostWrapper::IsFuncAvailable(SignpostType type) {
+    if (!emitWithNameImplFunc) {
+        PRINT_WARN("there is no support for _os_signpost_emit_with_name_impl \n");
+        return false;
+    }
+    switch (type) {
+        case SignpostType::SIGNPOST_TYPE_EVENT:
+        case SignpostType::SIGNPOST_TYPE_INTERVAL_BEGIN:
+        case SignpostType::SIGNPOST_TYPE_INTERVAL_END: {
+            if (!idGenerateFunc) {
+                PRINT_WARN("there is no support for os_signpost_id_generate \n");
+                return false;
+            }
+            return true;
+        }
+        case SignpostType::SIGNPOST_TYPE_INTERVAL_BEGIN_ASYNC:
+        case SignpostType::SIGNPOST_TYPE_INTERVAL_END_ASYNC: {
+            if (!idMakeWithPointerFunc) {
+                PRINT_WARN("there is no support for os_signpost_id_make_with_pointer \n");
+                return false;
+            }
+            return true;
+        }
+        default:
+            break;
+    }
+    return false;
+}
+
+bool SignpostWrapper::IsIdValid(os_signpost_id_t spId) {
+    if (spId == OS_SIGNPOST_ID_NULL || spId == OS_SIGNPOST_ID_INVALID) {
+        PRINT_WARN("id is null or invalid \n");
+        return false;
+    }
+    return true;
+}
+
+bool SignpostWrapper::IsLogValid(os_log_t osLog) {
+    if (!osSignpostEnabledFunc) {
+        PRINT_WARN("there is no support for os_signpost_enabled \n");
+        return false;
+    }
+    if (osSignpostEnabledFunc(osLog)) {
+        return true;
+    }
+    return false;
+}
+
+std::pair<unsigned long, void *> SignpostWrapper::FormatArgs(SignpostType type, const char* name, int64_t value) {
+    size_t alignment = 16;
+    unsigned long bufferSize = 0;
+    void *buffer = nullptr;
+    switch (type) {
+        case SignpostType::SIGNPOST_TYPE_EVENT: {
+            bufferSize = __builtin_os_log_format_buffer_size(EVENT_FORMAT_STR, name, value);
+        }
+        case SignpostType::SIGNPOST_TYPE_INTERVAL_BEGIN:
+        case SignpostType::SIGNPOST_TYPE_INTERVAL_END: {
+            bufferSize = __builtin_os_log_format_buffer_size(INTERVAL_FORMAT_STR, name);
+            break;
+        }
+        case SignpostType::SIGNPOST_TYPE_INTERVAL_BEGIN_ASYNC:
+        case SignpostType::SIGNPOST_TYPE_INTERVAL_END_ASYNC: {
+            bufferSize = __builtin_os_log_format_buffer_size(INTERVAL_ASYNC_FORMAT_STR, name,
+                                                             static_cast<int32_t>(value));
+            break;
+        }
+        default:
+            break;
+    }
+    if (bufferSize == 0) {
+        PRINT_ERROR("Error: buffer size calculation failed \n");
+    }
+#if __cplusplus >= 201703L
+    buffer = std::aligned_alloc(alignment, bufferSize);
+#else
+    posix_memalign(&buffer, alignment, bufferSize);
+#endif
+    if (!buffer) {
+        PRINT_ERROR("Error: buffer malloc failed \n");
+    }
+    return {bufferSize, buffer};
+}
+
+void SignpostWrapper::IntervalBegin(const char* name) {
+    if (!IsFuncAvailable(SignpostType::SIGNPOST_TYPE_INTERVAL_BEGIN)) {
+        PRINT_WARN("there is no support for IntervalBegin \n");
+        return;
+    }
+
+    os_log_t osLog = GetLog();
+    os_signpost_id_t spId = idGenerateFunc(osLog);
+    GetId() = spId;
+    GetName() = name;
+    if (!IsIdValid(spId) || !IsLogValid(osLog)) {
+        return;
+    }
+
+    std::pair<unsigned long, void *> bufferPair = FormatArgs(SignpostType::SIGNPOST_TYPE_INTERVAL_BEGIN, name);
+    unsigned long bufferSize = bufferPair.first;
+    void *buffer = bufferPair.second;
+    __builtin_os_log_format(buffer, INTERVAL_FORMAT_STR, name);
+    emitWithNameImplFunc(&__dso_handle, osLog, OS_SIGNPOST_INTERVAL_BEGIN, spId, "Operation",
+                         INTERVAL_FORMAT_STR, static_cast<uint8_t*>(buffer), bufferSize);
+    std::free(buffer);
+}
+
+void SignpostWrapper::IntervalEnd() {
+    if (!IsFuncAvailable(SignpostType::SIGNPOST_TYPE_INTERVAL_END)) {
+        PRINT_WARN("there is no support for IntervalEnd \n");
+        return;
+    }
+
+    os_log_t osLog = GetLog();
+    os_signpost_id_t spId = GetId();
+    if (!IsIdValid(spId) || !IsLogValid(osLog)) {
+        return;
+    }
+
+    const char* name = GetName();
+    std::pair<unsigned long, void *> bufferPair = FormatArgs(SignpostType::SIGNPOST_TYPE_INTERVAL_END, name);
+    unsigned long bufferSize = bufferPair.first;
+    void *buffer = bufferPair.second;
+    __builtin_os_log_format(buffer, INTERVAL_FORMAT_STR, name);
+    emitWithNameImplFunc(&__dso_handle, osLog, OS_SIGNPOST_INTERVAL_END, spId, "Operation",
+                         INTERVAL_FORMAT_STR, static_cast<uint8_t*>(buffer), bufferSize);
+    std::free(buffer);
+}
+
+void SignpostWrapper::IntervalBeginAsync(const char* name, int32_t taskId) {
+    if (!IsFuncAvailable(SignpostType::SIGNPOST_TYPE_INTERVAL_BEGIN_ASYNC)) {
+        PRINT_WARN("there is no support for IntervalBeginAsync \n");
+        return;
+    }
+
+    os_log_t osLog = GetLog();
+    uintptr_t ptrVal = static_cast<uintptr_t>(taskId);
+    os_signpost_id_t spId = idMakeWithPointerFunc(osLog, reinterpret_cast<void*>(ptrVal));
+    if (!IsIdValid(spId) || !IsLogValid(osLog)) {
+        return;
+    }
+
+    std::pair<unsigned long, void *> bufferPair = FormatArgs(SignpostType::SIGNPOST_TYPE_INTERVAL_BEGIN_ASYNC,
+                                                             name, taskId);
+    unsigned long bufferSize = bufferPair.first;
+    void *buffer = bufferPair.second;
+    __builtin_os_log_format(buffer, INTERVAL_ASYNC_FORMAT_STR, name, taskId);
+    emitWithNameImplFunc(&__dso_handle, osLog, OS_SIGNPOST_INTERVAL_BEGIN, spId, "AsyncOperation",
+                         INTERVAL_ASYNC_FORMAT_STR, static_cast<uint8_t*>(buffer), bufferSize);
+    std::free(buffer);
+}
+
+void SignpostWrapper::IntervalEndAsync(const char* name, int32_t taskId) {
+    if (!IsFuncAvailable(SignpostType::SIGNPOST_TYPE_INTERVAL_END_ASYNC)) {
+        PRINT_WARN("there is no support for IntervalEndAsync \n");
+        return;
+    }
+
+    os_log_t osLog = GetLog();
+    intptr_t ptrVal = static_cast<uintptr_t>(taskId);
+    os_signpost_id_t spId = idMakeWithPointerFunc(osLog, reinterpret_cast<void*>(ptrVal));
+    if (!IsIdValid(spId) || !IsLogValid(osLog)) {
+        return;
+    }
+
+    std::pair<unsigned long, void *> bufferPair = FormatArgs(SignpostType::SIGNPOST_TYPE_INTERVAL_END_ASYNC,
+                                                             name, taskId);
+    unsigned long bufferSize = bufferPair.first;
+    void *buffer = bufferPair.second;
+    __builtin_os_log_format(buffer, INTERVAL_ASYNC_FORMAT_STR, name, taskId);
+    emitWithNameImplFunc(&__dso_handle, osLog, OS_SIGNPOST_INTERVAL_END, spId, "AsyncOperation",
+                         INTERVAL_ASYNC_FORMAT_STR, static_cast<uint8_t*>(buffer), bufferSize);
+    std::free(buffer);
+}
+
+void SignpostWrapper::EventEmit(const char* name, int64_t count) {
+    if (!IsFuncAvailable(SignpostType::SIGNPOST_TYPE_EVENT)) {
+        PRINT_WARN("there is no support for EventEmit \n");
+        return;
+    }
+
+    os_log_t osLog = GetLog();
+    os_signpost_id_t spId = idGenerateFunc(osLog);
+    if (!IsIdValid(spId) || !IsLogValid(osLog)) {
+        return;
+    }
+
+    std::pair<unsigned long, void *> bufferPair = FormatArgs(SignpostType::SIGNPOST_TYPE_EVENT, name, count);
+    unsigned long bufferSize = bufferPair.first;
+    void *buffer = bufferPair.second;
+    __builtin_os_log_format(buffer, EVENT_FORMAT_STR, name, count);
+    emitWithNameImplFunc(&__dso_handle, osLog, OS_SIGNPOST_EVENT, spId, "OperationEmit",
+                         EVENT_FORMAT_STR, static_cast<uint8_t*>(buffer), bufferSize);
+    std::free(buffer);
 }
 #endif
 } // namespace MapleRuntime
