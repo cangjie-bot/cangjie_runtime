@@ -25,29 +25,56 @@ type FileHandle = IntNative
 @When[os != "Windows"]
 let InvalidHandle: FileHandle = -1
 
+@When[os == "Windows"]
+let InvalidHandle: FileHandle = 0
+
 @When[os != "Windows"]
 const SLASH_CHAR = "/"
+
+@When[os == "Windows"]
+const SLASH_CHAR = "\\"
 
 @When[os != "Windows"]
 const SLASH_STRING = "/"
 
+@When[os == "Windows"]
+const SLASH_STRING = "\\"
+
 @When[os != "Windows"]
 const CURRENT_DIRECTORY_STRING = "./"
+
+@When[os == "Windows"]
+const CURRENT_DIRECTORY_STRING = ".\\"
 
 @When[os != "Windows"]
 const ROOT_DIRECTORY_STRING = "/"
 
+@When[os == "Windows"]
+const ROOT_DIRECTORY_STRING = "\\"
+
 @When[os != "Windows"]
 const DOS_PATH_SLASH_LOCATION = 0
+
+@When[os == "Windows"]
+const DOS_PATH_PREFIX = "\\\\?\\"
 
 @When[os != "Windows"]
 const UNC_PATH_SLASH_LOCATION = 0
 
+@When[os == "Windows"]
+const UNC_PACH_PREFIX = "\\\\.\\"
+
 @When[os != "Windows"]
 let TMP_DIR = "/tmpDirXXXXXX\0".toArray()
 
+@When[os == "Windows"]
+let TMP_DIR = "\\tmpDirXXXXXX\0".toArray()
+
 @When[os != "Windows"]
 let TMP_FILE = "/tmpFileXXXXXX\0".toArray()
+
+@When[os == "Windows"]
+let TMP_FILE = "\\tmpFileXXXXXX\0".toArray()
 
 /**
  * Before calling this function, call func checkPath to verify @param path.
@@ -55,6 +82,14 @@ let TMP_FILE = "/tmpFileXXXXXX\0".toArray()
 @When[os != "Windows"]
 func isAbsolutePath(path: String): Bool {
     return isSlash(path[0])
+}
+
+@When[os == "Windows"]
+func isAbsolutePath(path: String): Bool {
+    // The size of path is 3 when path == "[a-z | A-Z]:\\xxxx"
+    // "/xxx" or "\\xxx" is absolute path
+    return ((path.size >= 3) && path[0].isAsciiLetter() && (path[1] == b':') && isSlash(path[2])) ||
+        (path.size >= 1 && isSlash(path[0]))
 }
 
 @When[os != "Windows"]
@@ -65,75 +100,6 @@ func toAbsolutePath(path: Path): Path {
         return path
     }
     return canonicalize(Path(CURRENT_PATH_STRING)).join(raw)
-}
-
-@When[os != "Windows"]
-func isSlash(byte: Byte) {
-    return byte == b'/'
-}
-
-@When[os != "Windows"]
-func isRootPath(path: String) {
-    return path == "/"
-}
-
-@When[os != "Windows"]
-func containsSlash(path: String): Bool {
-    return path.contains(SLASH_CHAR)
-}
-
-@When[os != "Windows"]
-func isHandleValid(fileHandle: FileHandle): Bool {
-    return fileHandle > 0
-}
-
-@When[os != "Windows"]
-func skipEndSlash(path: String): Int64 {
-    var lastLetterIdx = path.size - 1
-    while (lastLetterIdx >= 0 && isSlash(path[lastLetterIdx])) {
-        lastLetterIdx--
-    }
-    return lastLetterIdx
-}
-
-@When[os != "Windows"]
-func processPathHeader(_: String, canonicalPath: Array<Byte>): String {
-    return String.fromUtf8(canonicalPath)
-}
-
-@When[os == "Windows"]
-let InvalidHandle: FileHandle = 0
-
-@When[os == "Windows"]
-const SLASH_CHAR = "\\"
-
-@When[os == "Windows"]
-const SLASH_STRING = "\\"
-
-@When[os == "Windows"]
-const CURRENT_DIRECTORY_STRING = ".\\"
-
-@When[os == "Windows"]
-const ROOT_DIRECTORY_STRING = "\\"
-
-@When[os == "Windows"]
-let TMP_DIR = "\\tmpDirXXXXXX\0".toArray()
-
-@When[os == "Windows"]
-let TMP_FILE = "\\tmpFileXXXXXX\0".toArray()
-
-@When[os == "Windows"]
-const DOS_PATH_PREFIX = "\\\\?\\"
-
-@When[os == "Windows"]
-const UNC_PACH_PREFIX = "\\\\.\\"
-
-@When[os == "Windows"]
-func isAbsolutePath(path: String): Bool {
-    // The size of path is 3 when path == "[a-z | A-Z]:\\xxxx"
-    // "/xxx" or "\\xxx" is absolute path
-    return ((path.size >= 3) && path[0].isAsciiLetter() && (path[1] == b':') && isSlash(path[2])) ||
-        (path.size >= 1 && isSlash(path[0]))
 }
 
 @When[os == "Windows"]
@@ -149,6 +115,11 @@ func toAbsolutePath(path: Path): Path {
     return canonicalize(Path(CURRENT_PATH_STRING)).join(raw)
 }
 
+@When[os != "Windows"]
+func isSlash(byte: Byte) {
+    return byte == b'/'
+}
+
 @When[os == "Windows"]
 func isSlash(c: Rune) {
     return c == r'/' || c == r'\\'
@@ -159,9 +130,11 @@ func isSlash(b: Byte) {
     return b == b'/' || b == b'\\'
 }
 
-@When[os == "Windows"]
-func isRootPath(path: String) {
-    getRootLen(path) == path.size
+
+
+@When[os != "Windows"]
+func containsSlash(path: String): Bool {
+    return path.contains(SLASH_CHAR)
 }
 
 @When[os == "Windows"]
@@ -169,6 +142,67 @@ func containsSlash(path: String): Bool {
     // windows can use r'/' or r'\\', so use r'\\' to convert.
     var tempPath = path.replace("/", SLASH_CHAR)
     return tempPath.contains(SLASH_CHAR)
+}
+
+@When[os != "Windows"]
+func isHandleValid(fileHandle: FileHandle): Bool {
+    return fileHandle > 0
+}
+
+@When[os == "Windows"]
+func isHandleValid(fileHandle: FileHandle): Bool {
+    return fileHandle != InvalidHandle
+}
+
+@When[os != "Windows"]
+func skipEndSlash(path: String): Int64 {
+    var lastLetterIdx = path.size - 1
+    while (lastLetterIdx >= 0 && isSlash(path[lastLetterIdx])) {
+        lastLetterIdx--
+    }
+    return lastLetterIdx
+}
+
+@When[os == "Windows"]
+func skipEndSlash(path: String): Int64 {
+    var lastLetterIdx = path.size - 1
+    while (lastLetterIdx >= 0 && isSlash(path[lastLetterIdx])) {
+        if (lastLetterIdx - 1 >= 0 && path[lastLetterIdx - 1] == b':') {
+            break
+        }
+        lastLetterIdx--
+    }
+    return lastLetterIdx
+}
+
+@When[os != "Windows"]
+func processPathHeader(_: String, canonicalPath: Array<Byte>): String {
+    return String.fromUtf8(canonicalPath)
+}
+
+// DOS device paths : Incoming DOS device paths normalize return DOS device paths
+// UNC paths : Incoming UNC paths normalize return UNC paths
+// not DOS device paths, not UNC paths
+@When[os == "Windows"]
+func processPathHeader(rawPath: String, canonicalPath: Array<Byte>): String {
+    if (rawPath.startsWith(DOS_PATH_PREFIX)) {
+        return String.fromUtf8(canonicalPath)
+    } else if (rawPath.startsWith(UNC_PACH_PREFIX)) {
+        canonicalPath[2] = b'.'
+        return String.fromUtf8(canonicalPath)
+    } else {
+        return String.fromUtf8(canonicalPath[4..])
+    }
+}
+
+@When[os == "Windows"]
+func isRootPath(path: String) {
+    getRootLen(path) == path.size
+}
+
+@When[os != "Windows"]
+func isRootPath(path: String) {
+    return path == "/"
 }
 
 @When[os == "Windows"]
@@ -278,36 +312,9 @@ func countSeparator(path: Array<Byte>, idx!: Int64, cnt!: Int64): Int64 {
     return path.size
 }
 
-@When[os == "Windows"]
-func isHandleValid(fileHandle: FileHandle): Bool {
-    return fileHandle != InvalidHandle
-}
-
-@When[os == "Windows"]
-func skipEndSlash(path: String): Int64 {
-    var lastLetterIdx = path.size - 1
-    while (lastLetterIdx >= 0 && isSlash(path[lastLetterIdx])) {
-        if (lastLetterIdx - 1 >= 0 && path[lastLetterIdx - 1] == b':') {
-            break
-        }
-        lastLetterIdx--
-    }
-    return lastLetterIdx
-}
-
-// DOS device paths : Incoming DOS device paths normalize return DOS device paths
-// UNC paths : Incoming UNC paths normalize return UNC paths
-// not DOS device paths, not UNC paths
-@When[os == "Windows"]
-func processPathHeader(rawPath: String, canonicalPath: Array<Byte>): String {
-    if (rawPath.startsWith(DOS_PATH_PREFIX)) {
-        return String.fromUtf8(canonicalPath)
-    } else if (rawPath.startsWith(UNC_PACH_PREFIX)) {
-        canonicalPath[2] = b'.'
-        return String.fromUtf8(canonicalPath)
-    } else {
-        return String.fromUtf8(canonicalPath[4..])
-    }
+@When[os != "Windows"]
+func fixLongPath(path: String): String {
+    return path
 }
 
 // Some WIN API do not accept normal path longer than 260 bytes (including the ending '\0').
@@ -358,11 +365,6 @@ func concatPath(prefix: String, old: String): String {
         newIdx++
     }
     return unsafe { String.fromUtf8Unchecked(new) }
-}
-
-@When[os != "Windows"]
-func fixLongPath(path: String): String {
-    return path
 }
 
 func callNativeFunc(path: String, nativeFunc: CFunc<(CString) -> CPointer<FsError>>, errMsgPrefix: String): Unit {
