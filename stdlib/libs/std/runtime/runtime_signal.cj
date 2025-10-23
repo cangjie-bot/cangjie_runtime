@@ -49,7 +49,7 @@ class SignalManager {
  */
 @When[os != "Windows"]
 public func registerSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
-    if (sig.value <= 0 || sig.value >= MAX_SIG_NUM) {
+    if (sig.value <= 0 || sig.value >= SignalManager.MAX_SIG_NUM) {
         throw IllegalArgumentException("Signal value must > 0 and < ${SignalManager.MAX_SIG_NUM}")
     }
     let slot = SignalManager.sigSlot[Int64(sig.value)]
@@ -72,7 +72,7 @@ public func registerSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
  */
 @When[os != "Windows"]
 public func unregisterSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
-    if (sig.value <= 0 || sig.value >= MAX_SIG_NUM) {
+    if (sig.value <= 0 || sig.value >= SignalManager.MAX_SIG_NUM) {
         throw IllegalArgumentException("Signal value must > 0 and < ${SignalManager.MAX_SIG_NUM}")
     }
     let slot = SignalManager.sigSlot[Int64(sig.value)]
