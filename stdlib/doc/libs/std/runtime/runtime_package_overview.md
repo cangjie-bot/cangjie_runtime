@@ -8,6 +8,12 @@ Cangjie 语言使用自动垃圾回收机制来管理内存，runtime 包提供�
 
 ## API 列表
 
+### 类型别名
+
+| 类型别名                                                                                                 | 功能                 |
+| -------------------------------------------------------------------------------------------------------- | -------------------- |
+| [SignalHandlerFunc](./runtime_package_api/runtime_package_types.md#type-signalhandlerfunc--int32---bool) | 信号处理函数的别名。 |
+
 ### 函数
 
 |              函数名          |           功能           |
@@ -26,10 +32,13 @@ Cangjie 语言使用自动垃圾回收机制来管理内存，runtime 包提供�
 | [getProcessorCount](./runtime_package_api/runtime_package_funcs.md#func-getprocessorcount) | 获取处理器数量。 |
 | [getThreadCount](./runtime_package_api/runtime_package_funcs.md#func-getthreadcount) | 获取仓颉当前的线程数量。 |
 | [getUsedHeapSize](./runtime_package_api/runtime_package_funcs.md#func-getusedheapsize) | 在 Linux 平台下获取仓颉堆实际占用的物理内存大小, 单位为 byte。在 Windows 及 macOs 平台下获取仓颉进程实际占用的物理内存大小, 单位为 byte。 |
+| [registerSignalHandler(Signal, SignalHandlerFunc)](./runtime_package_api/runtime_package_funcs.md#func-registersignalhandlersignal-signalhandlerfunc) | 注册信号的处理函数。 |
+| [resetSignalHandler(Array<Signal>)](./runtime_package_api/runtime_package_funcs.md#func-resetsignalhandlerarray) | 清空注册的信号处理函数。 |
 | [SetGCThreshold(UInt64) <sup>(deprecated)</sup>](./runtime_package_api/runtime_package_funcs.md#func-setgcthresholduint64-deprecated) | 修改用户期望触发 GC 的内存阈值，当仓颉堆大小超过该值时，触发 GC，单位为 KB。 |
 | [setGCThreshold(UInt64)](./runtime_package_api/runtime_package_funcs.md#func-setgcthresholduint64) | 修改用户期望触发 GC 的内存阈值，当仓颉堆大小超过该值时，触发 GC，单位为 KB。 |
 | [startCPUProfiling](./runtime_package_api/runtime_package_funcs.md#func-startcpuprofiling) | 启动 CPU profiler 跟踪。 |
 | [stopCPUProfiling(Path)](./runtime_package_api/runtime_package_funcs.md#func-stopcpuprofilingpath) | 停止CPU profiler 跟踪，并将记录写入指定路径的文件。 |
+| [unregisterSignalHandler(Signal, SignalHandlerFunc)](./runtime_package_api/runtime_package_funcs.md#func-unregistersignalhandlersignal-signalhandlerfunc) | 取消注册信号的处理函数。 |
 
 ### 结构体
 

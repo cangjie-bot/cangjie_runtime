@@ -50,7 +50,7 @@ class SignalManager {
 @When[os != "Windows"]
 public func registerSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
     if (sig.value <= 0 || sig.value >= SignalManager.MAX_SIG_NUM) {
-        throw IllegalArgumentException("Signal value must > 0 and < ${SignalManager.MAX_SIG_NUM}")
+        throw IllegalArgumentException("Signal value must > 0 and < ${SignalManager.MAX_SIG_NUM}.")
     }
     let slot = SignalManager.sigSlot[Int64(sig.value)]
     synchronized(mtx) {
@@ -73,7 +73,7 @@ public func registerSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
 @When[os != "Windows"]
 public func unregisterSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
     if (sig.value <= 0 || sig.value >= SignalManager.MAX_SIG_NUM) {
-        throw IllegalArgumentException("Signal value must > 0 and < ${SignalManager.MAX_SIG_NUM}")
+        throw IllegalArgumentException("Signal value must > 0 and < ${SignalManager.MAX_SIG_NUM}.")
     }
     let slot = SignalManager.sigSlot[Int64(sig.value)]
     synchronized(mtx) {
@@ -92,7 +92,7 @@ public func unregisterSignalHandler(sig: Signal, handler: SignalHandlerFunc) {
 public func resetSignalHandler(sigs: Array<Signal>): Unit {
     synchronized(mtx) {
         if (sigs.size == 0) {
-            for (i in 0..<SignalManager.sigSlot.size) {
+            for (i in 0..SignalManager.sigSlot.size) {
                 if (!SignalManager.sigSlot[i].isEmpty()) {
                     SignalManager.sigSlot[i].clear()
                     unregSigChain(Signal(Int32(i), ""))
@@ -101,7 +101,7 @@ public func resetSignalHandler(sigs: Array<Signal>): Unit {
         } else {
             for (sig in sigs) {
                 if (sig.value <= 0 || sig.value >= SignalManager.MAX_SIG_NUM) {
-                    throw IllegalArgumentException("Signal value must > 0 and < ${SignalManager.MAX_SIG_NUM}")
+                    throw IllegalArgumentException("Signal value must > 0 and < ${SignalManager.MAX_SIG_NUM}.")
                 }
                 SignalManager.sigSlot[Int64(sig.value)].clear()
                 unregSigChain(sig)
