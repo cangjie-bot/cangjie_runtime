@@ -585,9 +585,7 @@ static ArrayRef GetAllThreadSnapshot(const TypeInfo* arraySnapshot, const TypeIn
         state = state == 4 ? 2 : state;
         uint32_t threadId = static_cast<uint32_t>(mutator.GetCJThreadId());
         CString threadName;
-        if (mutator.GetCJThreadName() == nullptr) {
-            threadName = CString("defaultName") + CString(threadId);
-        } else {
+        if (mutator.GetCJThreadName() != nullptr) {
             threadName = CString(mutator.GetCJThreadName());
         }
 
@@ -649,9 +647,7 @@ extern "C" ThreadSnapshot MCC_GetCurrentThreadSnapshotImpl(const TypeInfo* array
 
     uint32_t threadId = static_cast<uint32_t>(mutator->GetCJThreadId());
     CString threadName;
-    if (mutator->GetCJThreadName() == nullptr) {
-        threadName = CString("defaultName") + CString(threadId);
-    } else {
+    if (mutator->GetCJThreadName() != nullptr) {
         threadName = CString(mutator->GetCJThreadName());
     }
     int state = mutator->GetCJThreadState();
