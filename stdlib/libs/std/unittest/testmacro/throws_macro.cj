@@ -187,7 +187,6 @@ private func expandAssertThrowsMacro(
     let expectedExceptions = catchPatterns[0]
     let etp = (expectedExceptions as ExceptTypePattern).getOrThrow()
 
-    // TODO: when type inference will be able to infer smallest common supertype
     // of `try { None } catch (e: A | B) { e }` to `Option<C>` where A < C and B < C
     // return type of 'try' block should be updated to `None`
     var returnTypeTokens = if (etp.types.size == 1) {

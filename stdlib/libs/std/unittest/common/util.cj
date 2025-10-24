@@ -21,7 +21,6 @@ private func isNonPrintable(char: Rune): Bool {
         return true
     }
 
-    // TODO: also escape other characters from category r'C' when/if we have API for that
     // currently, regex /\p{C}/ doesn't work properly
     return false
 }
