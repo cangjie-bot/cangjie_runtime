@@ -53,8 +53,7 @@ public:
             __ATOMIC_RELEASE);
     }
 
-    // "bit-0 is 1" means codegen has computed the outer ti.
-    bool HasOuterTiFastPath() const { return (flag & 0b1) != 0; }
+    bool HasOuterTiFastPath() const { return (flag & 0b1) != 0; } // "bit-0 is 1" means codegen has computed the outer ti.
     TypeInfo* GetOuterTi(TypeInfo* childTi, U64 index) const
     {
         CHECK(index < funcTableSize);

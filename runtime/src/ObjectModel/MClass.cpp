@@ -80,13 +80,10 @@ void* TypeTemplate::ExecuteGenericFunc(void* genericFunc, U32 argSize, TypeInfo*
 
 ReflectInfo* TypeInfo::GetReflectInfo()
 {
-    if (reflectInfo != nullptr) {
-        return reflectInfo;
-    }
     return reflectInfo;
 }
 
-TypeInfo* TypeTemplate::GetFieldTypeInfo(U16 fieldIdx, U32 argSize, TypeInfo* args[])
+TypeInfo* TypeTemplate::GetFieldType(U16 fieldIdx, U32 argSize, TypeInfo* args[])
 {
     GenericFunc genericFunc = GetFieldGenericFunc(fieldIdx);
     void* ret = ExecuteGenericFunc(reinterpret_cast<void*>(genericFunc), argSize, args);
@@ -164,7 +161,7 @@ inline bool IsSameRootPackage(TypeInfo* itf1, TypeInfo* itf2)
     U32 pos = 0U;
     char ch = name1[pos];
     while (ch == name2[pos]) {
-        if (ch == '.' || ch == ':') {
+        if (ch == '.' | ch == ':') {
             return true;
         }
         ++pos;
@@ -247,34 +244,34 @@ void TypeInfo::TryUpdateExtensionData(TypeInfo* itf, ExtensionData* extensionDat
                 }
                 bool hasOuterTiFast = extensionData->HasOuterTiFastPath();
                 size_t newFtSize = hasOuterTiFast ? itfFtSize * sizeof(FuncPtr) + itfFtSize * sizeof(OuterTiUnion)
-                                                  : itfFtSize * sizeof(FuncPtr);
-                FuncPtr* newFt = reinterpret_cast<FuncPtr*>(TypeInfoManager::GetTypeInfoManager().Allocate(newFtSize));
+                                     : itfFtSize * sizeof(FuncPtr);
+                FuncPtr* newFt = reinterpret_cast<FuncPtr*>(
+                    TypeInfoManager::GetTypeInfoManager().Allocate(newFtSize));
                 if (ftSize > 0) {
                     CHECK(memcpy_s(reinterpret_cast<void*>(newFt),
-                                   sizeof(FuncPtr) * ftSize,
-                                   reinterpret_cast<void*>(extensionData->GetFuncTable()),
-                                   sizeof(FuncPtr) * ftSize) == EOK);
+                                        sizeof(FuncPtr) * ftSize,
+                                        reinterpret_cast<void*>(extensionData->GetFuncTable()),
+                                        sizeof(FuncPtr) * ftSize) == EOK);
                 }
                 CHECK(memcpy_s(reinterpret_cast<void*>(newFt + ftSize),
-                               sizeof(FuncPtr) * incrementalSize,
-                               reinterpret_cast<void*>(edOfSuper->GetFuncTable() + ftSize),
-                               sizeof(FuncPtr) * incrementalSize) == EOK);
+                                sizeof(FuncPtr) * incrementalSize,
+                                reinterpret_cast<void*>(edOfSuper->GetFuncTable() + ftSize),
+                                sizeof(FuncPtr) * incrementalSize) == EOK);
                 if (!hasOuterTiFast) {
                     break;
                 }
                 if (ftSize > 0) {
-                    CHECK(memcpy_s(reinterpret_cast<void*>(newFt + itfFtSize),
-                                   sizeof(OuterTiUnion) * ftSize,
-                                   reinterpret_cast<void*>(extensionData->GetFuncTable() + ftSize),
-                                   sizeof(OuterTiUnion) * ftSize) == EOK);
+                        CHECK(memcpy_s(reinterpret_cast<void*>(newFt + itfFtSize),
+                                       sizeof(OuterTiUnion) * ftSize,
+                                       reinterpret_cast<void*>(extensionData->GetFuncTable() + ftSize),
+                                       sizeof(OuterTiUnion) * ftSize) == EOK);
                 }
                 CHECK(memset_s(reinterpret_cast<void*>(newFt + itfFtSize + ftSize),
-                               sizeof(OuterTiUnion) * incrementalSize,
-                               0, sizeof(OuterTiUnion) * incrementalSize) == EOK);
+                                sizeof(OuterTiUnion) * incrementalSize,
+                                0, sizeof(OuterTiUnion) * incrementalSize) == EOK);
                 extensionData->UpdateFuncTable(itfFtSize, newFt);
                 break;
             }
-            mTable.find(itfUUID)->second.ResetAtomicInfoArray(itfFtSize);
         }
         mTable.find(itfUUID)->second.ResetAtomicInfoArray(itfFtSize);
         extensionData->SetFuncTableUpdated();
@@ -815,6 +812,14 @@ bool TypeInfo::ReflectIsEnable() const { return static_cast<bool>(flag & FLAG_RE
 
 bool TypeTemplate::ReflectIsEnable() const { return static_cast<bool>(flag & FLAG_REFLECTION); }
 
+bool TypeTemplate::IsEnumCtor() const
+{
+    if (!IsEnum() && !IsTempEnum()) {
+        return false;
+    }
+    return enumInfo->GetModifier() & MODIFIER_ENUM_CTOR;
+}
+
 void* ReflectInfo::GetAnnotations(TypeInfo* arrayTi)
 {
     return MapleRuntime::GetAnnotations(annotationMethod, arrayTi);
@@ -825,7 +830,80 @@ U32 TypeInfo::GetModifier()
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
         return MODIFIER_INVALID;
     }
-    return GetReflectInfo()->GetModifier();
+    if (IsEnum()) {
+        return enumInfo->GetModifier();
+    } else {
+        return GetReflectInfo()->GetModifier();
+    }
+}
+bool TypeInfo::IsEnumCtor() const
+{
+    if (!IsEnum() && !IsTempEnum()) {
+        return false;
+    }
+    return enumInfo->GetModifier() & MODIFIER_ENUM_CTOR;
+}
+
+bool TypeInfo::IsOptionLikeRefEnum()
+{
+    if (!IsEnum() && !IsTempEnum()) {
+        return false;
+    }
+    EnumInfo* enumInfo = GetEnumInfo();
+    if (IsEnumCtor()) {
+        enumInfo = GetSuperTypeInfo()->GetEnumInfo();
+    }
+    if (!enumInfo->IsEnumKind2()) {
+        return false;
+    }
+    TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(0);
+    if (ctorTypeInfo->GetFieldNum() == 1) {
+        return true;
+    }
+    return false;
+}
+
+bool TypeInfo::IsZeroSizedEnum()
+{
+    if (!IsEnum() && !IsTempEnum()) {
+        return false;
+    }
+    if (IsEnumCtor()) {
+        return GetInstanceSize() == 0;
+    }
+    EnumInfo* enumInfo = GetEnumInfo();
+    if (!enumInfo->IsEnumKind0()) {
+        return false;
+    }
+    U32 ctorNum = enumInfo->GetNumOfEnumCtor();
+    if (ctorNum != 1) {
+        return false;
+    }
+    TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(0);
+    if (ctorTypeInfo->GetInstanceSize() == 0) {
+        return true;
+    }
+    return false;
+}
+
+bool TypeInfo::IsOptionLikeUnassociatedCtor()
+{
+    if (!IsEnumCtor()) {
+        return false;
+    }
+    EnumInfo* enumInfo = GetSuperTypeInfo()->GetEnumInfo();
+    if (!enumInfo->IsEnumKind2()) {
+        return false;
+    }
+    U32 num = enumInfo->GetNumOfEnumCtor();
+    for (U32 idx = 0; idx < num; idx++) {
+        TypeInfo* ctorTi = enumInfo->GetCtorTypeInfo(idx);
+        if (ctorTi->GetUUID() == GetUUID()) {
+            CString ctorName = CString(enumInfo->GetEnumCtor(idx)->GetName());
+            return ctorName.StartWith("N$_");
+        }
+    }
+    return false;
 }
 
 U32 TypeInfo::GetNumOfInstanceFieldInfos()
@@ -863,6 +941,9 @@ U32 TypeInfo::GetNumOfInstanceMethodInfos()
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
         return 0;
     }
+    if (IsEnum()) {
+        return GetEnumInfo()->GetNumOfInstanceMethodInfos();
+    }
     return GetReflectInfo()->GetNumOfInstanceMethodInfos();
 }
 
@@ -870,6 +951,9 @@ U32 TypeInfo::GetNumOfStaticMethodInfos()
 {
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
         return 0;
+    }
+    if (IsEnum()) {
+        return GetEnumInfo()->GetNumOfStaticMethodInfos();
     }
     return GetReflectInfo()->GetNumOfStaticMethodInfos();
 }
@@ -891,15 +975,48 @@ StaticFieldInfo* TypeInfo::GetStaticFieldInfo(U32 index)
 
 MethodInfo* TypeInfo::GetInstanceMethodInfo(U32 index)
 {
+    if (IsEnum()) {
+        return GetEnumInfo()->GetInstanceMethodInfo(index);
+    }
     return GetReflectInfo()->GetInstanceMethodInfo(index);
 }
 
 MethodInfo* TypeInfo::GetStaticMethodInfo(U32 index)
 {
+    if (IsEnum()) {
+        return GetEnumInfo()->GetStaticMethodInfo(index);
+    }
     return GetReflectInfo()->GetStaticMethodInfo(index);
 }
 
-void* TypeInfo::GetAnnotations(TypeInfo* arrayTi) { return GetReflectInfo()->GetAnnotations(arrayTi); }
+U32 TypeInfo::GetNumOfEnumCtor()
+{
+    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get the number of constructors, but the type is not Enum.");
+    if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
+        return 0;
+    }
+    return GetEnumInfo()->GetNumOfEnumCtor();
+}
+
+EnumCtorInfo* TypeInfo::GetEnumCtor(U32 idx)
+{
+    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get the Enum's constructor, but the type is not Enum.");
+    return GetEnumInfo()->GetEnumCtor(idx);
+}
+
+void* TypeInfo::GetAnnotations(TypeInfo* arrayTi)
+{
+    if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
+        return nullptr;
+    }
+    if (IsEnum() || IsTempEnum()) {
+        if (IsEnumCtor()) {
+            return GetEnumCtorReflectInfo()->GetAnnotations(arrayTi);
+        }
+        return GetEnumInfo()->GetAnnotations(arrayTi);
+    }
+    return GetReflectInfo()->GetAnnotations(arrayTi);
+}
 
 FuncRef TypeInfo::GetFinalizeMethod() const
 {
@@ -941,6 +1058,20 @@ bool TypeInfo::NeedRefresh()
 	return false;
 }
 
+EnumCtorInfo* EnumInfo::GetEnumCtor(U32 idx) const
+{
+    CHECK(idx < GetNumOfEnumCtor());
+    EnumCtorInfo* enumCtorInfo = enumCtorInfos.GetDataRef();
+    return enumCtorInfo + idx;
+}
+
+TypeInfo* EnumInfo::GetCtorTypeInfo(U32 idx) const
+{
+    CHECK(idx < GetNumOfEnumCtor());
+    EnumCtorInfo* enumCtorInfo = GetEnumCtor(idx);
+    return enumCtorInfo->GetTypeInfo();
+}
+
 void EnumInfo::SetEnumCtors(void* ctors)
 {
     enumCtorInfos.refOffset = reinterpret_cast<Uptr>(ctors) - reinterpret_cast<Uptr>(this);
@@ -969,5 +1100,10 @@ MethodInfo* EnumInfo::GetStaticMethodInfo(U32 index)
 void EnumCtorInfo::SetName(const char* pName)
 {
     name.refOffset = reinterpret_cast<Uptr>(pName) - reinterpret_cast<Uptr>(this);
+}
+
+void* EnumCtorReflectInfo::GetAnnotations(TypeInfo* arrayTi)
+{
+    return MapleRuntime::GetAnnotations(annotationMethod, arrayTi);
 }
 } // namespace MapleRuntime
