@@ -24,6 +24,7 @@
 #endif
 #endif
 
+
 /* C++ needs to know that types and declarations are C, not C++. */
 #ifdef __cplusplus
 #define CANGJIE_RT_API_DECLS_BEGIN extern "C" {
