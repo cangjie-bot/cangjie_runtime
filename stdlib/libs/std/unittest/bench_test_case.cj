@@ -179,6 +179,11 @@ class BenchRunner {
             }
         }
 
+        progress.println {
+            let realExecTime = DateTime.now() - start
+            "Finished in ${printDuration(realExecTime)}. Analysing results:"
+        }
+
         // add some measurements with zero executions to better account for measurement overhead
         runMultipleAndMeasure(0, batchSize.end)
 

@@ -48,6 +48,21 @@ class Sample {
         Sample(data)
     }
 
+    func std(): Float64 {
+        let m = this.mean()
+        let n = this.data.size
+        if (n <= 1) {
+            return 0.0
+        }
+
+        var sumSq: Float64 = 0.0
+        for (x in this.data) {
+            sumSq += pow(x - m, 2.0)
+        }
+
+        let variance = sumSq / Float64(n - 1)
+        return sqrt(variance)
+    }
 
     // kernel density estimation
     func kde(kdeThroughput: Float64): ArrayList<(Float64, Float64)> {

@@ -9,9 +9,10 @@ package std.unittest
 
 import std.unittest.common.PrettyText
 import std.collection.*
-import std.math.abs
 import std.runtime.ProcessorInfo
 import std.random.Random
+import std.convert.Formattable
+import std.math.abs
 
 type BenchRawMeasurement = (Float64, Float64)
 
@@ -28,15 +29,20 @@ class BenchExecutor<T> <: Executor {
         let benchRunner = BenchRunner(configuration, progress)
         strategy.nextIteration(configuration)
 
+        let converter = configuration.get(KeyMeasurementInfo.measurementInfo).getOrThrow().conversionTable
         while (true) {
-            let result = strategy.processNextWith(configuration) { v, inputs =>
-                runSingle(v, inputs, suiteInfo, tcase.caseId, tcase.caseInfo, benchRunner, progress, configuration, step)
+            let result = strategy.processNextWith(configuration) {
+                v, inputs => runSingle(v, inputs, suiteInfo, tcase.caseId, tcase.caseInfo, benchRunner, progress,
+                    configuration, step)
             }
 
             match (result) {
                 case Success(result) =>
                     step += 1
                     tcase.add(result)
+                    if (let Bench(benchmarkResult) <- result.info) {
+                        benchmarkResult.printSummary(progress, converter)
+                    }
                 case Failure(input, failure) =>
                     tcase.add(failure)
                     break
@@ -67,7 +73,6 @@ class BenchExecutor<T> <: Executor {
         let stepKind = CaseStep(ArgumentDescription(args, step, 0, None))
         Framework.runStepBody(stepKind, StepInfo.Bench(BenchmarkResult(benchRunner.measurements))) {
             benchRunner.runBench()
-            progress.println {""}
         }
     }
 
@@ -223,6 +228,16 @@ class BenchmarkResult {
         if (meanCI99 < 0.001) { 0.0 } else { meanCI99 }
     }}
 
+    prop errorEstPercent: Float64 { get() {
+        let result = this.median
+        let error = this.errorEst
+        if (error == 0.0 && result == 0.0) {
+            0.0
+        } else {
+            error / result * 100.0
+        }
+    }}
+
     BenchmarkResult(var data: ArrayList<BenchRawMeasurement>) {}
 
     func calculate() {
@@ -272,6 +287,54 @@ class BenchmarkResult {
         }
 
         StatisticsSample(Sample(bootstrapped))
+    }
+
+    func printSummary(progress: ProgressOutput, converter: MeasurementUnitTable) {
+        this.calculate()
+
+        let plusMinus = if (isConsoleUtf8) { "±" } else { "+/-" }
+
+        let table: PrettyTable = PrettyTable(sep: " ", separateColumnsNames: false, leftAligneAll: true, minColumnWidth: 1)
+        table.addColumns(["percentiles: ", "[", "10%", "50%", "90%", "95%", "99%", "]"])
+        table.nextRow()
+        table.addCell("time:        ")
+        table.addCell("[")
+        table.addCell(converter.toString(bootstrapped.medianStats.sample.percentile(0.10)))
+        table.addCell(converter.toString(median))
+        table.addCell(converter.toString(bootstrapped.medianStats.sample.percentile(0.90)))
+        table.addCell(converter.toString(bootstrapped.medianStats.sample.percentile(0.95)))
+        table.addCell(converter.toString(bootstrapped.medianStats.sample.percentile(0.99)))
+        table.addCell("]")
+
+        let pp = TerminalPrettyPrinter.fromDefaultConfiguration()
+        pp.append(table)
+
+        progress.println{
+            "  mean:           " +
+            converter.toString(mean - meanCI99) + " .. " +
+            converter.toString(mean + meanCI99) + "  " +
+            "Err " + plusMinus + (errorEstPercent).format(".1") + "%"
+        }
+
+        progress.println{
+            "  median:         " +
+            converter.toString(median - medianCI99) + " .. " +
+            converter.toString(median + medianCI99)
+        }
+
+        let r2Low = bootstrapped.r2Stats.sample.percentile(0.01)
+        let r2High = bootstrapped.r2Stats.sample.percentile(0.99)
+        progress.println{
+            "  R²:             " +
+            r2Low.format(".3").toString() + " .. " + r2High.format(".3").toString()
+        }
+
+        progress.println{
+            "  stddev:         " +
+            converter.toString(bootstrapped.meanStats.sample.std())
+        }
+
+        progress.println{""}
     }
 }
 
