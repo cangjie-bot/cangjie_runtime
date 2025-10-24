@@ -1869,7 +1869,7 @@ Parameters:
 
 - exHandler: ([Thread](core_package_classes.md#class-thread), [Exception](core_package_exceptions.md#class-exception)) -> [Unit](core_package_intrinsics.md#unit) - The handler function to register.
 
-# class Thread
+## class Thread
 
 ```cangjie
 public class Thread
@@ -1879,7 +1879,7 @@ Function: Get thread ID and name, check if there is a cancellation request for t
 
 Instances of this type cannot be obtained through construction, but can only be obtained through the `thread` property of [Future](core_package_classes.md#class-futuret) objects or the `currentThread` static property of the [Thread](core_package_classes.md#class-thread) class.
 
-## static prop currentThread
+### static prop currentThread
 
 ```cangjie
 public static prop currentThread: Thread
@@ -1889,7 +1889,7 @@ Function: Get the [Thread](core_package_classes.md#class-thread) object of the c
 
 Type: [Thread](core_package_classes.md#class-thread)
 
-## prop hasPendingCancellation
+### prop hasPendingCancellation
 
 ```cangjie
 public prop hasPendingCancellation: Bool
@@ -1899,7 +1899,7 @@ Function: Whether the thread has a cancellation request, that is, whether a canc
 
 Type: [Bool](core_package_intrinsics.md#bool)
 
-## prop id
+### prop id
 
 ```cangjie
 public prop id: Int64
@@ -1909,7 +1909,7 @@ Function: Get the identifier of the currently executing thread, represented by [
 
 Type: [Int64](core_package_intrinsics.md#int64)
 
-## prop name
+### prop name
 
 ```cangjie
 public mut prop name: String
@@ -1919,7 +1919,7 @@ Function: Get or set the name of the thread. Both getting and setting are atomic
 
 Type: [String](core_package_structs.md#struct-string)
 
-## prop state
+### prop state
 
 ```cangjie
 public prop state: ThreadState
@@ -1929,7 +1929,7 @@ Function: Get the state of the thread.
 
 Type: [ThreadState](core_package_enums.md#enum-threadState)
 
-## static func handleUncaughtExceptionBy((Thread, Exception) -> Unit)
+### static func handleUncaughtExceptionBy((Thread, Exception) -> Unit)
 
 ```cangjie
 public static func handleUncaughtExceptionBy(exHandler: (Thread, Exception) -> Unit): Unit
@@ -2144,5 +2144,3 @@ Function: Get the string representation of the [ThreadSnapshot](core_package_cla
 Return value:
 
 [String](core_package_structs.md#struct-string) - The converted string.
-
-
