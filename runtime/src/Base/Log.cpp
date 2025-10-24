@@ -308,7 +308,7 @@ static inline void WriteLogOnAndroid(RTLogLevel level, const char* buf)
 #endif
 
 #if defined(__IOS__)
-static inline void WriteLogOnIOS(RTLogLevel level, const char* buf)
+static inline void WriteLogOnIos(RTLogLevel level, const char* buf)
 {
     switch (level) {
         case RTLOG_DEBUG:
@@ -357,7 +357,11 @@ void Logger::FormatLog(RTLogLevel level, bool notInSigHandler, const char* forma
     int ret = vsprintf_s(buf + index, sizeof(buf) - index, format, args);
     if (ret == -1) {
         char errMsg[ERROR_MSG_SIZE];
-        (void)sprintf_s(errMsg, ERROR_MSG_SIZE, "FormatLog vsprintf_s failed. msg: %s\n", strerror(errno));
+        int errMsgRet = sprintf_s(errMsg, ERROR_MSG_SIZE, "FormatLog vsprintf_s failed. msg: %s\n", strerror(errno));
+        if (errMsgRet == -1) {
+            PRINT_ERROR("FormatLog sprintf_s failed\n");
+            return;
+        }
         WriteStr(STDOUT_FILENO, errMsg, notInSigHandler);
         return;
     }
@@ -368,7 +372,7 @@ void Logger::FormatLog(RTLogLevel level, bool notInSigHandler, const char* forma
 #elif defined(__ANDROID__)
     WriteLogOnAndroid(level, buf);
 #elif defined (__IOS__)
-    WriteLogOnIOS(level, buf);
+    WriteLogOnIos(level, buf);
 #else
     if (filePath.IsEmpty()) {
         std::lock_guard<std::recursive_mutex> lock(logMutex);
@@ -420,7 +424,11 @@ void HiLogForCJThread(RTLogLevel level, const char* format, va_list args)
     int ret = vsprintf_s(buf, sizeof(buf), format, args);
     if (ret == -1) {
         char errMsg[ERROR_MSG_SIZE];
-        (void)sprintf_s(errMsg, ERROR_MSG_SIZE, "FormatLog vsprintf_s failed. msg: %s\n", strerror(errno));
+        int errMsgRet = sprintf_s(errMsg, ERROR_MSG_SIZE, "FormatLog vsprintf_s failed. msg: %s\n", strerror(errno));
+        if (errMsgRet == -1) {
+            PRINT_ERROR("FormatLog sprintf_s failed\n");
+            return;
+        }
         WriteStr(STDOUT_FILENO, errMsg, true);
         return;
     }
@@ -428,6 +436,8 @@ void HiLogForCJThread(RTLogLevel level, const char* format, va_list args)
     WriteLogOnOhos(level, buf, false);
 #elif defined(__ANDROID__)
     WriteLogOnAndroid(level, buf);
+#elif defined (__IOS__)
+    WriteLogOnIos(level, buf);
 #endif
     if (level == RTLOG_FATAL) {
         std::abort();
@@ -516,7 +526,7 @@ void ATraceWrapper::SetCounter(const char* name, int64_t count) {
     }
 }
 #endif
-    
+
 #if defined(__IOS__)
 SignpostWrapper::SignpostWrapper() {
     libHandle = dlopen("libSystem.dylib", RTLD_LAZY);
