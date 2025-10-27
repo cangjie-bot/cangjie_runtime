@@ -2472,7 +2472,7 @@ public let state: ThreadState
 
 类型：[ThreadState](core_package_enums.md#enum-threadstate)
 
-### func  dumpAllThreads()
+### func dumpAllThreads()
 
 ```cangjie
 public static func dumpAllThreads(): Array<ThreadSnapshot>
@@ -2525,7 +2525,7 @@ stack trace:
          at std.core.Future<...>::execute()(future.cj:161)
 ```
 
-### func  dumpCurrentThread()
+### func dumpCurrentThread()
 
 ```cangjie
 public static func dumpCurrentThread(): ThreadSnapshot
