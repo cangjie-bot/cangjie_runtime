@@ -635,7 +635,13 @@ MethodInfo* TypeInfo::GetStaticMethodInfo(U32 index)
     return GetReflectInfo()->GetStaticMethodInfo(index);
 }
 
-void* TypeInfo::GetAnnotations(TypeInfo* arrayTi) { return GetReflectInfo()->GetAnnotations(arrayTi); }
+void* TypeInfo::GetAnnotations(TypeInfo* arrayTi)
+{
+    if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
+        return nullptr;
+    }
+    return GetReflectInfo()->GetAnnotations(arrayTi);
+}
 
 FuncRef TypeInfo::GetFinalizeMethod() const
 {
