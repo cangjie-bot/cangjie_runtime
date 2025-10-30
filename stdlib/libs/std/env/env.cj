@@ -39,6 +39,7 @@ public func getCommand(): String {
 public func getCommandLine(): Array<String> {
     match (getCurrentProcessInfo()[2]) {
         case Some(commandLine) => commandLine
+        
         case _ => throw EnvException("Can not get process commandLine.")
     }
 }
