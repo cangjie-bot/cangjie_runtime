@@ -132,7 +132,7 @@ It provides built-in types (signed integers, unsigned integers, floating-point t
 | [StringBuilder](./core_package_api/core_package_classes.md#class-stringbuilder) | This class is mainly used for string construction. |
 | [Thread](./core_package_api/core_package_classes.md#class-thread) | The `Thread` class represents a Cangjie class, which can be used to obtain the thread ID and name, query whether the thread has a cancellation request, register a handler function for unhandled exceptions of the thread, etc. |
 | [ThreadLocal\<T>](./core_package_api/core_package_classes.md#class-threadlocalt) | This class represents Cangjie thread-local variables. |
-| [ThreadSnapshot](./core_package_api/core_package_classes.) | This class is used to obtain information about the current thread or all threads, including name, id, state, and call stack. |
+| [ThreadSnapshot](./core_package_api/core_package_classes.md#class-threadsnapshot) | This class is used to obtain information about the current thread or all threads, including name, id, state, and call stack. |
 
 ### Enums
 
