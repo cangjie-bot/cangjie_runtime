@@ -132,7 +132,7 @@ core 包是标准库的核心包，提供了适用仓颉语言编程最基本的
 | [StringBuilder](./core_package_api/core_package_classes.md#class-stringbuilder) | 该类主要用于字符串的构建。 |
 | [Thread](./core_package_api/core_package_classes.md#class-thread) | `Thread` 类代表一个仓颉类，可用于获取线程 ID 及名字、查询线程是否存在取消请求、注册线程未处理异常的处理函数等。 |
 | [ThreadLocal\<T>](./core_package_api/core_package_classes.md#class-threadlocalt) | 该类表示仓颉线程局部变量。 |
-| [ThreadSnapshot](./core_package_api/core_package_classes.) | 该类用于获取当前线程或者所有线程的信息，包含名称、id、状态、调用栈。 |
+| [ThreadSnapshot](./core_package_api/core_package_classes.md#class-threadsnapshot) | 该类用于获取当前线程或者所有线程的信息，包含名称、id、状态、调用栈。 |
 
 ### 枚举
 
