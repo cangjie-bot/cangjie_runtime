@@ -115,3 +115,9 @@ class PrettyTable <: PrettyPrintable {
         }
     }
 }
+
+extend<T> Range<T> where T <: Comparable<T> {
+    func contains(v: T): Bool {
+        v >= this.start && v <= this.end
+    }
+}

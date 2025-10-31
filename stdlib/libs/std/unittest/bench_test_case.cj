@@ -403,13 +403,7 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
             let realExecTime = DateTime.now() - start
             "Finished in ${printDuration(realExecTime)}. Analysing results:"
         }
-
-        // add some measurements with zero executions to better account for measurement overhead
-        runMultipleAndMeasure(0, batchSize.end)
-
-        // invoke here so that we have cleaned heap before next run
-        // otherwise GC can be triggered on next bench warmup polluting the results
-        ExplicitGcType.Heavy.invoke()
+        
     }
 
     func calcBatchSize(): (Range<Int64>, Int64) {
