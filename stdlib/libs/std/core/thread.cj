@@ -391,3 +391,54 @@ public class Thread {
         }
     }
 }
+
+public class ExclusiveScopeException <: Exception {
+    public init() {
+        super()
+    }
+
+    public init(message: String) {
+        super(message)
+    }
+
+    protected override func getClassName(): String {
+        return "ExclusiveScopeException"
+    }
+}
+
+enum Result<T> {
+    Val(T) | Except(Exception) | Err(Error)
+}
+
+class ExclusiveScope<T> {
+    var result: Result<T> = unsafe { zeroValue<Result<T>>() }
+
+    func inOsThread(fn: () -> Unit): Unit {
+        fn()
+    }
+
+    func run(fn: () -> T): Unit {
+        unsafe{
+            inOsThread {
+                try {
+                    this.result = Val(fn())
+                } catch (ex: Exception) {
+                    this.result = Except(ex)
+                } catch (err: Error) {
+                    this.result = Err(err)
+                }
+            }
+        }
+        
+    }
+}
+
+public func exclusiveScope<T>(fn: () -> T): T {
+    var scope = ExclusiveScope<T>()
+    scope.run(fn)
+    match (scope.result) {
+        case Val(val) => return val
+        case Except(ex) => throw ExclusiveScopeException("exclusiveScope run get exception info: ${ex.message}.")
+        case Err(err) => throw ExclusiveScopeException("exclusiveScope run get error info: ${err.message}.")
+    }
+}
