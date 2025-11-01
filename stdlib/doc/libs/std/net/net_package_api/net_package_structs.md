@@ -25,7 +25,7 @@ public struct AddressFamily <: ToString & Equatable<AddressFamily> {
 ### static const INET
 
 ```cangjie
-public static const INET = AddressFamily("INET", 2)
+public static const INET: AddressFamily = AddressFamily("INET", 2)
 ```
 
 功能：IPv4 地址族。
@@ -52,16 +52,20 @@ public static const INET6: AddressFamily
 public static const NETLINK: AddressFamily
 ```
 
-功能：NetLink 地址族，仅 Linux 下支持，其值为：
+功能：NetLink 地址族，其值为：
 
 - Linux: AddressFamily("NETLINK", 16)
+
+> **注意：**
+>
+> 不支持平台：Windows、macOS、iOS。
 
 类型：[AddressFamily](net_package_structs.md#struct-addressfamily)
 
 ### static const UNIX
 
 ```cangjie
-public static const UNIX = AddressFamily("UNIX", 1)
+public static const UNIX: AddressFamily = AddressFamily("UNIX", 1)
 ```
 
 功能：unix domain socket 地址族。
@@ -71,7 +75,7 @@ public static const UNIX = AddressFamily("UNIX", 1)
 ### static const UNSPEC
 
 ```cangjie
-public static const UNSPEC = AddressFamily("UNSPEC", 0)
+public static const UNSPEC: AddressFamily = AddressFamily("UNSPEC", 0)
 ```
 
 功能：未指定的地址族。
@@ -783,7 +787,7 @@ public static let NETLINK: SocketDomain = SocketDomain(16)
 
 > **注意：**
 >
-> 该常量在 Windows 和 macOS 平台不提供。
+> 不支持平台：Windows、macOS、iOS。
 
 类型：[SocketDomain](net_package_structs.md#struct-socketdomain)
 
@@ -797,7 +801,7 @@ public static let PACKET: SocketDomain = SocketDomain(17)
 
 > **注意：**
 >
-> 该常量在 Windows 和 macOS 平台不提供。
+> 不支持平台：Windows、macOS、iOS。
 
 类型：[SocketDomain](net_package_structs.md#struct-socketdomain)
 

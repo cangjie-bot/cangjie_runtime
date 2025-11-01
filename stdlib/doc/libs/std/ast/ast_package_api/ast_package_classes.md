@@ -1078,7 +1078,7 @@ public mut prop types: ArrayList<TypeNode>
 
 功能：获取或设置冒号后面的类型节点列表，例如：`String | Int | Float`。
 
-类型：[ArrayList\<TypeNode>](ast_package_classes.md#class-typenode)
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
 ### init()
 
@@ -1098,7 +1098,7 @@ public init(inputs: Tokens)
 
 参数：
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 `CommandTypePattern` 节点的标记集合。
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 `CommandTypePattern` 节点的标记集合。
 
 异常：
 
@@ -2077,7 +2077,7 @@ protected open func precedence(): Int64
 
 返回值：
 
-- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
+- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 当前表达式节点的优先级。
 
 ### func toTokens()
 
@@ -3340,7 +3340,7 @@ public mut prop items: ArrayList<ImportContent>
 
 功能：获取或设置 [ImportContent](ast_package_classes.md#class-importcontent) 节点中被导入的所有项，只有 `importKind` 为 `ImportKind.Multi` 时非空。
 
-类型：ArrayList\<[ImportContent](ast_package_classes.md#class-importcontent)>
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[ImportContent](ast_package_classes.md#class-importcontent)>
 
 ### prop lBrace
 
@@ -3355,6 +3355,34 @@ public mut prop lBrace: Token
 异常：
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 不是 `{` 操作符时，抛出异常。
+
+### prop orgName
+
+```cangjie
+public mut prop orgName: Token
+```
+
+功能：获取或设置 [ImportContent](ast_package_classes.md#class-importcontent) 节点中代表组织名的词法单元，setter会检查orgSeparator是否为 "::" 词法单元，若为空则同时设置其为 "::" 词法单元。
+
+类型：[Token](ast_package_structs.md#struct-token)
+
+异常：
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 内容为空字符串时抛出异常。
+
+### prop orgSeparator
+
+```cangjie
+public mut prop orgSeparator: Token
+```
+
+功能：获取或设置 [ImportContent](ast_package_classes.md#class-importcontent) 节点中的 "::" 词法单元，setter会检查orgName内容是否为空字符串，若有则抛异常。
+
+类型：[Token](ast_package_structs.md#struct-token)
+
+异常：
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 不是 "::" 时，或orgName内容为空字符串时抛出异常。
 
 ### prop prefixPaths
 
@@ -5912,6 +5940,34 @@ public mut prop keywordP: Token
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 不是 `package` 关键字时，抛出异常。
 
+### prop orgName
+
+```cangjie
+public mut prop orgName: Token
+```
+
+功能：获取或设置 [PackageHeader](ast_package_classes.md#class-packageheader) 节点中代表组织名的词法单元，setter会检查orgSeparator是否为 "::" 词法单元，若为空则同时设置其为 "::" 词法单元。
+
+类型：[Token](ast_package_structs.md#struct-token)
+
+异常：
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 内容为空字符串时抛出异常。
+
+### prop orgSeparator
+
+```cangjie
+public mut prop orgSeparator: Token
+```
+
+功能：获取或设置 [PackageHeader](ast_package_classes.md#class-packageheader) 节点中的 "::" 词法单元，setter会检查orgName内容是否为空字符串，若有则抛异常。
+
+类型：[Token](ast_package_structs.md#struct-token)
+
+异常：
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - 当设置的 [Token](ast_package_structs.md#struct-token) 不是 "::" 时，或orgName内容为空字符串时抛出异常。
+
 ### prop prefixPaths
 
 ```cangjie
@@ -6311,7 +6367,7 @@ public init(inputs: Tokens)
 
 参数：
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 [PerformExpr](ast_package_classes.md#class-performexpr) 节点的词法单元集合。
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 [PerformExpr](ast_package_classes.md#class-performexpr) 节点的词法单元集合。
 
 异常：
 
@@ -7646,7 +7702,7 @@ public mut prop expr: Option<Expr>
 
 功能：获取或设置 `resume` 关键字之后的表达式。
 
-类型：[Option\<Expr>](ast_package_classes.md#class-expr)
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### prop keywordR
 
@@ -7670,7 +7726,7 @@ public mut prop keywordW: Option<Token>
 
 功能：获取或设置 `with` 关键字的词法单元（如果存在）。
 
-类型：[Option\<Token>](ast_package_structs.md#struct-token)
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)>
 
 异常：
 
@@ -7684,7 +7740,7 @@ public mut prop withExpr: Option<Expr>
 
 功能：获取或设置 `with` 关键字之后的表达式。
 
-类型：[Option\<Expr>](ast_package_classes.md#class-expr)
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### prop keywordT
 
@@ -7694,7 +7750,7 @@ public mut prop keywordT: Option<Token>
 
 功能：获取或设置 `throwing` 关键字的词法单元（如果存在）。
 
-类型：[Option\<Token>](ast_package_structs.md#struct-token)
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)>
 
 异常：
 
@@ -7708,7 +7764,7 @@ public mut prop throwingExpr: Option<Expr>
 
 功能：获取或设置 `throwing` 关键字之后的表达式。
 
-类型：Option\<[Expr](ast_package_classes.md#class-expr)>
+类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### init()
 
@@ -7728,7 +7784,7 @@ public init(inputs: Tokens)
 
 参数：
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 [ResumeExpr](ast_package_classes.md#class-resumeexpr) 节点的词法单元集合。
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — 要解析为 [ResumeExpr](ast_package_classes.md#class-resumeexpr) 节点的词法单元集合。
 
 异常：
 
@@ -7783,7 +7839,7 @@ public mut prop types: ArrayList<TypeNode>
 
 功能：获取或设置紧跟在冒号后的类型节点列表，例如 `EffectA | EffectB`。
 
-类型： [ArrayList\<TypeNode>](ast_package_classes.md#class-typenode)
+类型：[ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
 ### init()
 
@@ -7803,7 +7859,7 @@ public init(inputs: Tokens)
 
 参数：
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — 表示一个恢复类型模式的 token 集合。
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — 表示一个恢复类型模式的 token 集合。
 
 异常：
 
@@ -9045,7 +9101,7 @@ public mut prop handlers: ArrayList<Handler>
 
 功能：获取或设置 `Handler` 节点列表。
 
-类型： [ArrayList\<Handler>](ast_package_classes.md#class-handler)
+类型： [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Handler](ast_package_classes.md#class-handler)>
 
 ### prop keywordF
 
@@ -10526,7 +10582,7 @@ protected func needBreakTraverse(): Bool
 
 返回值：
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool)
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - true 表示需要停止遍历，反之表示不需要停止。
 
 ### func visit(Annotation)
 
@@ -10623,6 +10679,7 @@ protected open func visit(_: Body): Unit
 参数：
 
 - _: [Body](ast_package_classes.md#class-body) - [Body](ast_package_classes.md#class-body) 类型的被遍历节点。
+
 ### func visit(CallExpr)
 
 ```cangjie
@@ -11476,8 +11533,8 @@ protected open func visit(_: VArrayType): Unit
 - _: [VArrayType](ast_package_classes.md#class-varraytype) - [VArrayType](ast_package_classes.md#class-varraytype) 类型的被遍历节点。
 
 ### func visit(VarDecl)
-cangjie
-```
+
+```cangjie
 protected open func visit(_: VarDecl): Unit
 ```
 

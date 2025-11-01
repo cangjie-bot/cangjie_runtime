@@ -3992,7 +3992,7 @@ public init(count: Int64)
 
 参数：
 
-- [count](../../collection/collection_package_api/collection_package_function.md#func-counttiterablet): [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 计数器初始值, 取值范围 [0, [Int64](../../core/core_package_api/core_package_intrinsics.md#int64).Max]。
+- count: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 计数器初始值, 取值范围 [0, [Int64](../../core/core_package_api/core_package_intrinsics.md#int64).Max]。
 
 异常：
 
@@ -4088,7 +4088,7 @@ public init(count: Int64)
 
 参数：
 
-- [count](../../collection/collection_package_api/collection_package_function.md#func-counttiterablet): [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 倒数计数器的初始值。
+- count: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 倒数计数器的初始值。
 
 异常：
 
@@ -4222,7 +4222,7 @@ public static func repeat(delay: Duration, interval: Duration, task: ()->Unit, s
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 `interval` 小于等于 [Duration.Zero](../../core/core_package_api/core_package_structs.md#static-const-zero) 时，抛出异常。
 
-示例:
+示例：
 
 <!-- run -->
 

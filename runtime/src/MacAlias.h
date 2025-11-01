@@ -60,6 +60,8 @@ extern "C" MRT_EXPORT size_t CJ_MCC_GetGCCount();
 __asm__(".global _CJ_MCC_GetGCCount\n\t.set _CJ_MCC_GetGCCount, _MCC_GetGCCount");
 extern "C" MRT_EXPORT uint64_t CJ_MCC_GetGCTimeUs();
 __asm__(".global _CJ_MCC_GetGCTimeUs\n\t.set _CJ_MCC_GetGCTimeUs, _MCC_GetGCTimeUs");
+extern "C" MRT_EXPORT bool CJ_MCC_IsGCRunning();
+__asm__(".global _CJ_MCC_IsGCRunning\n\t.set _CJ_MCC_IsGCRunning, _MCC_IsGCRunning");
 extern "C" MRT_EXPORT size_t CJ_MCC_GetGCFreedSize();
 __asm__(".global _CJ_MCC_GetGCFreedSize\n\t.set _CJ_MCC_GetGCFreedSize, _MCC_GetGCFreedSize");
 extern "C" MRT_EXPORT size_t CJ_MCC_StartCpuProfiling();
@@ -98,6 +100,9 @@ __asm__(".global _CJ_MCC_GetOrCreateTypeInfoForReflect\n\t.set _CJ_MCC_GetOrCrea
 
 extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetTypeForAny(const ObjectPtr obj);
 __asm__(".global _CJ_MCC_GetTypeForAny\n\t.set _CJ_MCC_GetTypeForAny, _MCC_GetTypeForAny");
+
+extern "C" MRT_EXPORT bool MCC_IsWrapperClassForAutoEnv(const TypeInfo* ti);
+__asm__(".global _CJ_MCC_IsWrapperClassForAutoEnv\n\t.set _CJ_MCC_IsWrapperClassForAutoEnv, _MCC_IsWrapperClassForAutoEnv");
 
 extern "C" MRT_EXPORT void* CJ_MCC_LoadPackage(const char* path);
 __asm__(".global _CJ_MCC_LoadPackage\n\t.set _CJ_MCC_LoadPackage, _MCC_LoadPackage");

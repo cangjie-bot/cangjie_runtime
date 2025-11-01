@@ -28,7 +28,7 @@ public static prop allocatedHeapSize: Int64
 public static prop heapPhysicalMemory: Int64
 ```
 
-功能：在 Linux 平台下获取仓颉堆实际占用的物理内存大小, 单位为 byte。在 Windows 及 macOs 平台下获取仓颉进程实际占用的物理内存大小, 单位为 byte。
+功能：在 Linux、OpenHarmony、HarmonyOS、Android 平台下获取仓颉堆实际占用的物理内存大小, 单位为 byte。在 Windows、macOS、iOS 平台下获取仓颉进程实际占用的物理内存大小, 单位为 byte。
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
@@ -40,8 +40,11 @@ public static prop maxHeapSize: Int64
 
 功能：获取仓颉堆可以使用的最大值，单位为 byte。
 
-实例：
+类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
+示例：
+
+<!-- run -->
 ```cangjie
 import std.runtime.*
 main() {
@@ -49,7 +52,7 @@ main() {
 }
 ```
 
-运行结果（以实际环境为准）：
+可能的运行结果（以实际环境为准）：
 
 ```text
 268435456

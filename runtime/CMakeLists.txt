@@ -5,7 +5,7 @@
 # See https://cangjie-lang.cn/pages/LICENSE for license information.
 
 cmake_minimum_required(VERSION 3.16.3)
-if (OHOS_FLAG IN_LIST OHOS_FLAG_LIST)
+if (OHOS_FLAG MATCHES 1 OR OHOS_FLAG MATCHES 2 OR OHOS_FLAG MATCHES 3)
     # Target OHOS is Linux-like system.
     set(CMAKE_SYSTEM_NAME Linux)
     set(CMAKE_C_COMPILER_WORKS 1)
@@ -13,6 +13,7 @@ if (OHOS_FLAG IN_LIST OHOS_FLAG_LIST)
 endif()
 
 if (ANDROID_FLAG MATCHES 1 OR ANDROID_FLAG MATCHES 2)
+    set(ANDROID_OS "linux")
     if (CMAKE_ANDROID_API MATCHES 26)
         set(ANDROID_TARGET_API "android26")
     elseif (CMAKE_ANDROID_API MATCHES 31)
@@ -20,8 +21,6 @@ if (ANDROID_FLAG MATCHES 1 OR ANDROID_FLAG MATCHES 2)
     else ()
         message(FATAL_ERROR "ANDROID_TARGET_API is not set, please check the target option.")
     endif()
-    set(ANDROID_OS "linux")
-    set(ANDROID_TARGET_API "android31")
     set(CMAKE_SYSTEM_NAME Linux)
     set(CMAKE_C_COMPILER_WORKS 1)
     set(CMAKE_CXX_COMPILER_WORKS 1)

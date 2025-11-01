@@ -1078,7 +1078,7 @@ public mut prop types: ArrayList<TypeNode>
 
 Function: Gets or sets the list of type nodes after the colon, e.g.: `String | Int | Float`.
 
-Type: [ArrayList\<TypeNode>](ast_package_classes.md#class-typenode)
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
 ### init()
 
@@ -1098,7 +1098,7 @@ Function: Constructs a [CommandTypePattern](ast_package_classes.md#class-command
 
 Parameters:
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — The collection of tokens to be parsed into a `CommandTypePattern` node.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — The collection of tokens to be parsed into a `CommandTypePattern` node.
 
 Exceptions:
 
@@ -3340,7 +3340,7 @@ public mut prop items: ArrayList<ImportContent>
 
 Function: Gets or sets all imported items in the [ImportContent](ast_package_classes.md#class-importcontent) node, which is non-empty only when `importKind` is `ImportKind.Multi`.
 
-Type: ArrayList\<[ImportContent](ast_package_classes.md#class-importcontent)>
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[ImportContent](ast_package_classes.md#class-importcontent)>
 
 ### prop lBrace
 
@@ -3355,6 +3355,34 @@ Type: [Token](ast_package_structs.md#struct-token)
 Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "{" operator.
+
+### prop orgName
+
+```cangjie
+public mut prop orgName: Token
+```
+
+Function: Gets or sets the lexical unit representing organization name in the [ImportContent](ast_package_classes.md#class-importcontent) node, setter would check if orgSeparator is "::" operator lexeme, set it to "::" if not.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) has a value of empty string.
+
+### prop orgSeparator
+
+```cangjie
+public mut prop orgSeparator: Token
+```
+
+Function: Gets or sets the "::" operator lexeme in the [ImportContent](ast_package_classes.md#class-importcontent) node, setter would check if orgName has a value of empty string, throw exception if it does.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "::" operator or orgName has a value of empty string.
 
 ### prop prefixPaths
 
@@ -5892,6 +5920,34 @@ Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `package` keyword.
 
+### prop orgName
+
+```cangjie
+public mut prop orgName: Token
+```
+
+Function: Gets or sets the lexical unit representing organization name in the [PackageHeader](ast_package_classes.md#class-packageheader) node, setter would check if orgSeparator is "::" operator lexeme, set it to "::" if not.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) has a value of empty string.
+
+### prop orgSeparator
+
+```cangjie
+public mut prop orgSeparator: Token
+```
+
+Function: Gets or sets the "::" operator lexeme in the [PackageHeader](ast_package_classes.md#class-packageheader) node, setter would check if orgName has a value of empty string, throw exception if it does.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the "::" operator or orgName has a value of empty string.
+
 ### prop prefixPaths
 
 ```cangjie
@@ -6291,7 +6347,7 @@ Function: Constructs a [PerformExpr](ast_package_classes.md#class-performexpr) o
 
 Parameters:
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — The collection of lexical tokens to be parsed into a [PerformExpr](ast_package_classes.md#class-performexpr) node.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — The collection of lexical tokens to be parsed into a [PerformExpr](ast_package_classes.md#class-performexpr) node.
 
 Exceptions:
 
@@ -7626,7 +7682,7 @@ public mut prop expr: Option<Expr>
 
 Function: Gets or sets the expression following the `resume` keyword.
 
-Type: [Option\<Expr>](ast_package_classes.md#class-expr)
+Type: [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### prop keywordR
 
@@ -7650,7 +7706,7 @@ public mut prop keywordW: Option<Token>
 
 Function: Gets or sets the lexical token for the `with` keyword (if present).
 
-Type: [Option\<Token>](ast_package_structs.md#struct-token)
+Type: [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)>
 
 Exceptions:
 
@@ -7664,7 +7720,7 @@ public mut prop withExpr: Option<Expr>
 
 Function: Gets or sets the expression following the `with` keyword.
 
-Type: [Option\<Expr>](ast_package_classes.md#class-expr)
+Type: [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### prop keywordT
 
@@ -7674,7 +7730,7 @@ public mut prop keywordT: Option<Token>
 
 Function: Gets or sets the lexical token for the `throwing` keyword (if present).
 
-Type: [Option\<Token>](ast_package_structs.md#struct-token)
+Type: [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Token](ast_package_structs.md#struct-token)>
 
 Exceptions:
 
@@ -7688,7 +7744,7 @@ public mut prop throwingExpr: Option<Expr>
 
 Function: Gets or sets the expression following the `throwing` keyword.
 
-Type: Option\<[Expr](ast_package_classes.md#class-expr)>
+Type: [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[Expr](ast_package_classes.md#class-expr)>
 
 ### init()
 
@@ -7708,7 +7764,7 @@ Function: Constructs a [ResumeExpr](ast_package_classes.md#class-resumeexpr) obj
 
 Parameters:
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — A collection of tokens to be parsed as a [ResumeExpr](ast_package_classes.md#class-resumeexpr) node.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — A collection of tokens to be parsed as a [ResumeExpr](ast_package_classes.md#class-resumeexpr) node.
 
 Exceptions:
 
@@ -7763,7 +7819,7 @@ public mut prop types: ArrayList<TypeNode>
 
 Function: Gets or sets the list of type nodes following the colon, e.g. `EffectA | EffectB`.
 
-Type: [ArrayList\<TypeNode>](ast_package_classes.md#class-typenode)
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[TypeNode](ast_package_classes.md#class-typenode)>
 
 ### init()
 
@@ -7783,7 +7839,7 @@ Function: Constructs a `ResumptionTypePattern` object from a set of tokens.
 
 Parameters:
 
-* `inputs`: [Tokens](ast_package_classes.md#class-tokens) — A collection of tokens representing a resumption type pattern.
+- inputs: [Tokens](ast_package_classes.md#class-tokens) — A collection of tokens representing a resumption type pattern.
 
 Exceptions:
 
@@ -9025,7 +9081,7 @@ public mut prop handlers: ArrayList<Handler>
 
 Function: Gets or sets the list of `Handler` nodes.
 
-Type: [ArrayList\<Handler>](ast_package_classes.md#class-handler)
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Handler](ast_package_classes.md#class-handler)>
 
 ### prop keywordF
 

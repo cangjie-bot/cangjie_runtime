@@ -43,6 +43,7 @@ extern "C" MRT_EXPORT size_t CJ_MCC_GetCJThreadNumber() __attribute__((alias("MC
 extern "C" MRT_EXPORT size_t CJ_MCC_GetBlockingCJThreadNumber() __attribute__((alias("MCC_GetBlockingCJThreadNumber")));
 extern "C" MRT_EXPORT size_t CJ_MCC_GetNativeThreadNumber() __attribute__((alias("MCC_GetNativeThreadNumber")));
 extern "C" MRT_EXPORT size_t CJ_MCC_GetGCCount() __attribute__((alias("MCC_GetGCCount")));
+extern "C" MRT_EXPORT bool CJ_MCC_IsGCRunning() __attribute__((alias("MCC_IsGCRunning")));
 extern "C" MRT_EXPORT uint64_t CJ_MCC_GetGCTimeUs() __attribute__((alias("MCC_GetGCTimeUs")));
 extern "C" MRT_EXPORT size_t CJ_MCC_GetGCFreedSize() __attribute__((alias("MCC_GetGCFreedSize")));
 extern "C" MRT_EXPORT size_t CJ_MCC_StartCpuProfiling() __attribute__((alias("MCC_StartCpuProfiling")));
@@ -73,6 +74,8 @@ extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetOrCreateTypeInfoForReflect(TypeTemplat
 extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetObjClass(const ObjectPtr obj) __attribute__((alias("MCC_GetObjClass")));
 
 extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetTypeForAny(const ObjectPtr obj) __attribute__((alias("MCC_GetTypeForAny")));
+
+extern "C" MRT_EXPORT bool CJ_MCC_IsWrapperClassForAutoEnv(TypeInfo* ti) __attribute__((alias("MCC_IsWrapperClassForAutoEnv")));
 
 // for dynamic loader
 extern "C" MRT_EXPORT void* CJ_MCC_LoadPackage(const char* path) __attribute__((alias("MCC_LoadPackage")));
