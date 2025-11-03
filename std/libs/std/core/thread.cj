@@ -103,7 +103,7 @@ public class Thread {
     private func acquireCJThreadHandle(): CPointer<Unit> {
         while (true) {
             let old = _rtCJThreadHandleRefCount.load()
-            if (old == -1) { // `-1` means the thread has been terminated
+            if (old == 0) { // `-1` means the thread has been terminated
                 return CPointer<Unit>()
             } else if (_rtCJThreadHandleRefCount.compareAndSwap(old, old + 1)) {
                 // `_rtCJThreadHandle` is always not null
