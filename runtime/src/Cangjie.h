@@ -657,7 +657,7 @@ MRT_EXPORT int LoadCJLibrary(const char* libName);
  * @param  libName  [IN]  name of Cangjie dynamic shared library.
  * @retval Return 0 if OK. Otherwise, return an error code.
  */
-MRT_EXPORT int InitCJLibrary(const char* libName);
+MRT_EXPORT int InitCJLibrary(const char* libName = nullptr);
 
 /*
  * @brief Load and initialize Cangjie dynamic shared library.

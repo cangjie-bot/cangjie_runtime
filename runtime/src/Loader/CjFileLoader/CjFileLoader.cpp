@@ -370,6 +370,11 @@ void CJFileLoader::ClearLoadedFiles()
 
 bool CJFileLoader::LibInit(const char* libName)
 {
+    if (libName == nullptr) {
+        if (loadedFiles.size() == 1)
+            return DoInitImage(loadedFiles.front());
+        return false;
+    }
     BaseFile* baseFile = GetBaseFile(libName);
     if (baseFile == nullptr) {
         return false;
