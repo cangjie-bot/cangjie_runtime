@@ -27,7 +27,7 @@ const SEPARATOR = ":"
 @When[os != "Windows"]
 const SLASH_CHAR = "/"
 
-let TZIF_SOURCE: Array<String> = ["/usr/share/zoneinfo", "/system/etc/zoneinfo"]
+let TZIF_SOURCE: Array<String> = ["/usr/share/zoneinfo", "/system/etc/zoneinfo","/system/usr/share/zoneinfo"]
 
 const TZIF_SOUTCE_LINUX = "/usr/share/zoneinfo/"
 
