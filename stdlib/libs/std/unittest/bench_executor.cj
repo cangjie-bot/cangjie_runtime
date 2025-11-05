@@ -249,9 +249,15 @@ class BenchmarkResult {
     prop median: Float64 { get() {
         bootstrapped.resultSample.sample.percentile(0.5)
     }}
+    prop medianCI99: Float64 { get() {
+        (bootstrapped.resultSample.sample.percentile(0.99) - bootstrapped.resultSample.sample.percentile(0.01)) / 2.0
+    }}
 
     prop mean: Float64 { get() {
         bootstrapped.resultSample.sample.mean()
+    }}
+    prop meanCI99: Float64 { get() {
+        (bootstrapped.meanStats.sample.percentile(0.99) - bootstrapped.meanStats.sample.percentile(0.01)) / 2.0
     }}
 
     prop overhead: Float64 { get() {
