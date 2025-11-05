@@ -71,6 +71,7 @@ func loadTZifData(path: String): Array<UInt8> {
 }
 
 func loadTimeZoneFromTzData(name: String, source: String): TimeZone {
+    println("-----ee-------")
     return TimeZone.loadFromTZData(name, loadTZData(name, source))
 }
 
@@ -92,6 +93,7 @@ func loadTZData(name: String, path: String): Array<UInt8> {
         releaseArrayRawData(arrPtr)
         releaseArrayRawData(cPath2)
         if (readNum != fileSize) {
+            println("-----ff-------")
             throw InvalidDataException("An error occurred when reading data from file `${path}`!")
         }
         var buffer = ByteBuffer(arr)
@@ -108,6 +110,7 @@ func loadTZData(name: String, path: String): Array<UInt8> {
             var tempArr = Array<Byte>(40,repeat:0)
             buffer.read(tempArr)
             var currentId = String.fromUtf8(tempArr).trimEnd([r"\u{0000}"])
+            println("++++"+currentId)
             var zoneDataOffsetArr = Array<Byte>(4,repeat:0)
             var zoneDataLengthArr = Array<Byte>(4,repeat:0)
             buffer.read(zoneDataOffsetArr)

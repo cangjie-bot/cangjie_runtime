@@ -1157,7 +1157,9 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
                 second: second, nanosecond: nanosecond)
         } else {
             try {
+                println("------------++++++")
                 var timeZone = TimeZone.load(zoneId) // throw InvalidDataException if not found
+                println("----a------")
                 let dateTime = DateTime.of(year: year, month: month, dayOfMonth: dayOfMonth, hour: hour, minute: minute,
                     second: second, nanosecond: nanosecond, timeZone: timeZone)
                 var offset = dateTime.zoneOffset.toSeconds()

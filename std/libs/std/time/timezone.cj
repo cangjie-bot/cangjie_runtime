@@ -238,6 +238,7 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
      * @since 0.19.3
      */
     public static func load(id: String): TimeZone {
+        println("--------lll----")
         if (id.size == 0 || id.size > MAXPATHLEN) {
             throw IllegalArgumentException("Invalid timezone id.")
         }
@@ -255,6 +256,7 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
         unsafe { LibC.free(env) }
         var envPathArray = envPath.toString().split(SEPARATOR, removeEmpty: true)
         if (envPathArray.size == 0) {
+            println("-----b-------")
             return loadFromPaths(id, TZIF_SOURCE)
         }
         if (envPathArray.size == 0) {
@@ -303,12 +305,14 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
                 return loadTimeZone(id, tzpath)
             }
         }
+        println("-----c-------")
         unsafe {
             let cPath: CPointerHandle<UInt8> = acquireArrayRawData(ANDROID_TZDATA.rawData())
             let pathLen: Int64 = ANDROID_TZDATA.size
             let fileSize = CJ_TIME_GetFileSize(cPath.pointer, pathLen)
             releaseArrayRawData(cPath)
             if (fileSize > 0) {
+                println("-----d-------")
                 return loadTimeZoneFromTzData(id,ANDROID_TZDATA)
             }
         }
