@@ -104,10 +104,14 @@ void SignalStack::Handler(int signal, siginfo_t* siginfo, void* ucontextRaw)
         case SIGSEGV:
         case SIGBUS:
         case SIGFPE:
-        case SIGABRT:
-        case SIGILL:
             HandlerImpl(args);
             break;
+        case SIGABRT:
+        case SIGILL:
+            if (!SignalStack::stacks[signal].IsUserAddSigHandler()) {
+                HandlerImpl(args);
+                break;
+            }
         default:
             if (RunCJTaskSignal(reinterpret_cast<CJTaskFunc>(MapleRuntime::SignalStack::HandlerImpl), args) == NULL) {
                 LOG(RTLOG_ERROR, "Signal Handler fail. as RunCJTask return null\n");
