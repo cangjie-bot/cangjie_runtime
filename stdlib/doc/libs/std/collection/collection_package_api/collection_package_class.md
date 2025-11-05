@@ -4021,7 +4021,7 @@ public init(map: HashMap<K, V>)
 
 示例：
 
-<!-- verify -->
+<!-- run -->
 ```cangjie
 import std.collection.*
 
@@ -4034,16 +4034,8 @@ main() {
     
     // 使用HashMap创建HashMapIterator
     let iterator = HashMapIterator<String, Int64>(map)
-    
-    println("HashMapIterator创建成功")
     return 0
 }
-```
-
-运行结果：
-
-```text
-HashMapIterator创建成功
 ```
 
 ### func next()
