@@ -29,6 +29,28 @@ public prop hostName: ?String
 
 类型：?[String](../../../std/core/core_package_api/core_package_structs.md#struct-string)
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let v4: IPAddress = IPAddress.parse("192.168.1.2")
+    try {
+        println("IPv4地址主机名: ${v4.hostName}")
+    } catch (e: Exception) {
+        println("Error: ${e.message}")
+    }
+}
+```
+
+运行结果：
+
+```text
+Error: Current not supported.
+```
+
 ### prop size
 
 ```cangjie
@@ -38,6 +60,27 @@ public prop size: Int64
 功能：获取 IP 地址对象字节长度。
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let v4: IPAddress = IPAddress.parse("192.168.1.2")
+    let v6: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
+    println("IPv4地址大小: ${v4.size}")
+    println("IPv6地址大小: ${v6.size}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址大小: 4
+IPv6地址大小: 16
+```
 
 ### static func parse(String)
 
@@ -60,19 +103,24 @@ public static func parse(s: String): IPAddress
 - [IllegalFormatException](../../core/core_package_api/core_package_exceptions.md#class-illegalformatexception) - 如果不是合法字符串，抛出异常。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let v4: IPAddress = IPAddress.parse("192.168.1.2")
     let v6: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
-    @Assert(v4.toString(), "192.168.1.2")
-    @Assert(v6.toString(), "2001:250:1006:dff0:4913:2aa5:8075:7c10")
+    println(v4)
+    println(v6)
 }
+```
+
+运行结果：
+
+```text
+192.168.1.2
+2001:250:1006:dff0:4913:2aa5:8075:7c10
 ```
 
 ### static func readBigEndian(Array\<Byte>)
@@ -96,12 +144,10 @@ public static func readBigEndian(buffer: Array<Byte>): IPAddress
 - [IPAddress](net_package_classes.md#class-ipaddress) - [IPAddress](net_package_classes.md#class-ipaddress) 对象。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let bufferV4: Array<Byte> = [0xC0, 0xA8, 0x1, 0x2]
@@ -109,9 +155,16 @@ main() {
         0x7c, 0x10]
     let v4: IPAddress = IPAddress.readBigEndian(bufferV4)
     let v6: IPAddress = IPAddress.readBigEndian(bufferV6)
-    @Assert(v4.toString(), "192.168.1.2")
-    @Assert(v6.toString(), "2001:250:1006:dff0:4913:2aa5:8075:7c10")
+    println(v4)
+    println(v6)
 }
+```
+
+运行结果：
+
+```text
+192.168.1.2
+2001:250:1006:dff0:4913:2aa5:8075:7c10
 ```
 
 ### static func resolve(AddressFamily, String)
@@ -190,19 +243,24 @@ public static func tryParse(s: String): ?IPAddress
 - ?[IPAddress](net_package_classes.md#class-ipaddress) - ?[IPAddress](net_package_classes.md#class-ipaddress) 对象。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let v4: ?IPAddress = IPAddress.tryParse("192.168.1.2")
     let v6: ?IPAddress = IPAddress.tryParse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
-    @Assert(v4.toString(), "Some(192.168.1.2)")
-    @Assert(v6.toString(), "Some(2001:250:1006:dff0:4913:2aa5:8075:7c10)")
+    println(v4)
+    println(v6)
 }
+```
+
+运行结果：
+
+```text
+Some(192.168.1.2)
+Some(2001:250:1006:dff0:4913:2aa5:8075:7c10)
 ```
 
 ### func getAddressBytes()
@@ -218,12 +276,10 @@ public func getAddressBytes(): Array<Byte>
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Byte](../../../std/core/core_package_api/core_package_types.md#type-byte)> - 原始 IP 地址的 [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Byte](../../../std/core/core_package_api/core_package_types.md#type-byte)> 表示。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let expectV4: Array<Byte> = [0xC0, 0xA8, 0x1, 0x2]
@@ -231,9 +287,18 @@ main() {
         0x7c, 0x10]
     let v4: IPAddress = IPAddress.parse("192.168.1.2")
     let v6: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
-    @Assert(v4.getAddressBytes(), expectV4)
-    @Assert(v6.getAddressBytes(), expectV6)
+    let v4Bytes = v4.getAddressBytes()
+    let v6Bytes = v6.getAddressBytes()
+    println(v4Bytes == expectV4)
+    println(v6Bytes == expectV6)
 }
+```
+
+运行结果：
+
+```text
+true
+true
 ```
 
 ### func getPrefix(UInt8)
@@ -257,17 +322,21 @@ public open func getPrefix(prefixLen: UInt8): IPPrefix
 - [IPPrefix](net_package_classes.md#class-ipprefix) - 网络前缀对象。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let prefix: IPPrefix = IPAddress.parse("192.168.1.2").getPrefix(24)
-    @Assert(prefix.toString(), "192.168.1.2/24")
+    println(prefix)
 }
+```
+
+运行结果：
+
+```text
+192.168.1.2/24
 ```
 
 ### func hashCode()
@@ -282,6 +351,27 @@ public func hashCode(): Int64
 
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - `hashcode` 值。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let v4: IPAddress = IPAddress.parse("192.168.1.2")
+    let v6: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
+    println("IPv4地址的hashCode: ${v4.hashCode()}")
+    println("IPv6地址的hashCode: ${v6.hashCode()}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址的hashCode: -7046029251154117353
+IPv6地址的hashCode: 2009812126445433271
+```
+
 ### func isGlobalUnicast()
 
 ```cangjie
@@ -295,17 +385,22 @@ public open func isGlobalUnicast(): Bool
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是全局单播地址，否则返回 false。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     // 2000::/3
-    @Assert(IPAddress.parse("2001:250:1006:dff0:4913:2aa5:8075:7c10").isGlobalUnicast(), true)
+    let result = IPAddress.parse("2001:250:1006:dff0:4913:2aa5:8075:7c10").isGlobalUnicast()
+    println(result)
 }
+```
+
+运行结果：
+
+```text
+true
 ```
 
 ### func isIPv4()
@@ -321,16 +416,21 @@ public func isIPv4(): Bool
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是 IPv4 地址，否则返回 false。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
-    @Assert(IPAddress.parse("192.168.1.2").isIPv4(), true)
+    let result = IPAddress.parse("192.168.1.2").isIPv4()
+    println(result)
 }
+```
+
+运行结果：
+
+```text
+true
 ```
 
 ### func isIPv6()
@@ -346,16 +446,21 @@ public func isIPv6(): Bool
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是 IPv6 地址，否则返回 false。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
-    @Assert(IPAddress.parse("2001:250:1006:dff0:4913:2aa5:8075:7c10").isIPv6(), true)
+    let result = IPAddress.parse("2001:250:1006:dff0:4913:2aa5:8075:7c10").isIPv6()
+    println(result)
 }
+```
+
+运行结果：
+
+```text
+true
 ```
 
 ### func isLinkLocal()
@@ -371,19 +476,26 @@ public open func isLinkLocal(): Bool
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是链路本地地址，否则返回 false。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     // 169.254.0.0 ~ 169.254.255.255
-    @Assert(IPAddress.parse("169.254.0.1").isLinkLocal(), true)
+    let result1 = IPAddress.parse("169.254.0.1").isLinkLocal()
     // fe80::/10
-    @Assert(IPAddress.parse("fe80::1").isLinkLocal(), true)
+    let result2 = IPAddress.parse("fe80::1").isLinkLocal()
+    println(result1)
+    println(result2)
 }
+```
+
+运行结果：
+
+```text
+true
+true
 ```
 
 ### func isLoopback()
@@ -399,17 +511,24 @@ public open func isLoopback(): Bool
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是环回地址，否则返回 false。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
-    @Assert(IPAddress.parse("127.0.0.1").isLoopback(), true)
-    @Assert(IPAddress.parse("::1").isLoopback(), true)
+    let result1 = IPAddress.parse("127.0.0.1").isLoopback()
+    let result2 = IPAddress.parse("::1").isLoopback()
+    println(result1)
+    println(result2)
 }
+```
+
+运行结果：
+
+```text
+true
+true
 ```
 
 ### func isMulticast()
@@ -424,6 +543,37 @@ public open func isMulticast(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是多播地址，否则返回 false。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // IPv4多播地址示例
+    let multicastV4: IPAddress = IPAddress.parse("224.0.0.1")
+    let normalV4: IPAddress = IPAddress.parse("192.168.1.2")
+    
+    // IPv6多播地址示例
+    let multicastV6: IPAddress = IPAddress.parse("ff02::1")
+    let normalV6: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
+    
+    println("224.0.0.1是多播地址: ${multicastV4.isMulticast()}")
+    println("192.168.1.2是多播地址: ${normalV4.isMulticast()}")
+    println("ff02::1是多播地址: ${multicastV6.isMulticast()}")
+    println("2001:0250:1006:dff0:4913:2aa5:8075:7c10是多播地址: ${normalV6.isMulticast()}")
+}
+```
+
+运行结果：
+
+```text
+224.0.0.1是多播地址: true
+192.168.1.2是多播地址: false
+ff02::1是多播地址: true
+2001:0250:1006:dff0:4913:2aa5:8075:7c10是多播地址: false
+```
+
 ### func isPrivate()
 
 ```cangjie
@@ -435,6 +585,43 @@ public open func isPrivate(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是私有地址，否则返回 false。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // IPv4私有地址示例
+    let privateV4_1: IPAddress = IPAddress.parse("192.168.1.2")
+    let privateV4_2: IPAddress = IPAddress.parse("10.0.0.1")
+    let privateV4_3: IPAddress = IPAddress.parse("172.16.0.1")
+    let publicV4: IPAddress = IPAddress.parse("8.8.8.8")
+    
+    // IPv6私有地址示例 (ULA - Unique Local Address)
+    let privateV6: IPAddress = IPAddress.parse("fd00::1")
+    let publicV6: IPAddress = IPAddress.parse("2001:4860:4860::8888")
+    
+    println("192.168.1.2是私有地址: ${privateV4_1.isPrivate()}")
+    println("10.0.0.1是私有地址: ${privateV4_2.isPrivate()}")
+    println("172.16.0.1是私有地址: ${privateV4_3.isPrivate()}")
+    println("8.8.8.8是私有地址: ${publicV4.isPrivate()}")
+    println("fd00::1是私有地址: ${privateV6.isPrivate()}")
+    println("2001:4860:4860::8888是私有地址: ${publicV6.isPrivate()}")
+}
+```
+
+运行结果：
+
+```text
+192.168.1.2是私有地址: true
+10.0.0.1是私有地址: true
+172.16.0.1是私有地址: true
+8.8.8.8是私有地址: false
+fd00::1是私有地址: true
+2001:4860:4860::8888是私有地址: false
+```
 
 ### func isUnspecified()
 
@@ -449,17 +636,24 @@ public open func isUnspecified(): Bool
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是“未指定” IP 地址，否则返回 false。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
-    @Assert(IPAddress.parse("0.0.0.0").isUnspecified(), true)
-    @Assert(IPAddress.parse("::").isUnspecified(), true)
+    let result1 = IPAddress.parse("0.0.0.0").isUnspecified()
+    let result2 = IPAddress.parse("::").isUnspecified()
+    println(result1)
+    println(result2)
 }
+```
+
+运行结果：
+
+```text
+true
+true
 ```
 
 ### func writeBigEndian(Array\<Byte>)
@@ -483,12 +677,10 @@ public open func writeBigEndian(buffer: Array<Byte>): Int64
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 写入的数据的字节数。
 
 示例：
-<!-- run -->
+<!-- verify -->
 
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let buffer = Array<Byte>(128, repeat: 0)
@@ -498,10 +690,17 @@ main() {
     let v4: IPAddress = IPAddress.parse("192.168.1.2")
     let v6: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
     var len = v4.writeBigEndian(buffer)
-    @Assert(buffer[..len], expectV4)
+    println(buffer[..len] == expectV4)
     len = v6.writeBigEndian(buffer)
-    @Assert(buffer[..len], expectV6)
+    println(buffer[..len] == expectV6)
 }
+```
+
+运行结果：
+
+```text
+true
+true
 ```
 
 ### operator func ==(IPAddress)
@@ -520,6 +719,38 @@ public operator func ==(rhs: IPAddress): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPAddress](net_package_classes.md#class-ipaddress) 对象相等，则返回 `true`；否则，返回 `false`。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let ip1: IPAddress = IPAddress.parse("192.168.1.2")
+    let ip2: IPAddress = IPAddress.parse("192.168.1.2")
+    let ip3: IPAddress = IPAddress.parse("192.168.1.3")
+    
+    println("ip1 == ip2: ${ip1 == ip2}")
+    println("ip1 == ip3: ${ip1 == ip3}")
+    
+    let ipv6_1: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
+    let ipv6_2: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
+    let ipv6_3: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c11")
+    
+    println("ipv6_1 == ipv6_2: ${ipv6_1 == ipv6_2}")
+    println("ipv6_1 == ipv6_3: ${ipv6_1 == ipv6_3}")
+}
+```
+
+运行结果：
+
+```text
+ip1 == ip2: true
+ip1 == ip3: false
+ipv6_1 == ipv6_2: true
+ipv6_1 == ipv6_3: false
+```
+
 ### operator func !=(IPAddress)
 
 ```cangjie
@@ -535,6 +766,38 @@ public operator func !=(rhs: IPAddress): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPAddress](net_package_classes.md#class-ipaddress) 对象不等，则返回 `true`；否则，返回 `false`。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let ip1: IPAddress = IPAddress.parse("192.168.1.2")
+    let ip2: IPAddress = IPAddress.parse("192.168.1.2")
+    let ip3: IPAddress = IPAddress.parse("192.168.1.3")
+    
+    println("ip1 != ip2: ${ip1 != ip2}")
+    println("ip1 != ip3: ${ip1 != ip3}")
+    
+    let ipv6_1: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
+    let ipv6_2: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
+    let ipv6_3: IPAddress = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c11")
+    
+    println("ipv6_1 != ipv6_2: ${ipv6_1 != ipv6_2}")
+    println("ipv6_1 != ipv6_3: ${ipv6_1 != ipv6_3}")
+}
+```
+
+运行结果：
+
+```text
+ip1 != ip2: false
+ip1 != ip3: true
+ipv6_1 != ipv6_2: false
+ipv6_1 != ipv6_3: true
+```
 
 ## class IPPrefix
 
@@ -565,6 +828,24 @@ public prop address: IPAddress
 
 类型：[IPAddress](net_package_classes.md#class-ipaddress)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let v4: IPPrefix = IPPrefix.parse("192.168.1.2/24")
+    println("v4 address: ${v4.address}")
+}
+```
+
+运行结果：
+
+```text
+v4 address: 192.168.1.2
+```
+
 ### prop prefixLength
 
 ```cangjie
@@ -574,6 +855,24 @@ public prop prefixLength: UInt8
 功能：获取前缀长度。
 
 类型：[UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8)
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let v4: IPPrefix = IPPrefix.parse("192.168.1.2/24")
+    println("v4 prefixLength: ${v4.prefixLength}")
+}
+```
+
+运行结果：
+
+```text
+v4 prefixLength: 24
+```
 
 ### static func parse(String)
 
@@ -596,19 +895,24 @@ public static func parse(s: String): IPPrefix
 - [IPPrefix](net_package_classes.md#class-ipprefix) - [IPPrefix](net_package_classes.md#class-ipprefix) 对象。
 
 示例：
-<!-- run -->
 
+<!-- verify -->
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let v4: IPPrefix = IPPrefix.parse("192.168.1.2/24")
     let v6: IPPrefix = IPPrefix.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10/32")
-    @Assert(v4.toString(), "192.168.1.2/24")
-    @Assert(v6.toString(), "2001:250:1006:dff0:4913:2aa5:8075:7c10/32")
+    println("IPv4前缀: ${v4}")
+    println("IPv6前缀: ${v6}")
 }
+```
+
+运行结果：
+
+```text
+IPv4前缀: 192.168.1.2/24
+IPv6前缀: 2001:250:1006:dff0:4913:2aa5:8075:7c10/32
 ```
 
 ### static func tryParse(String)
@@ -628,18 +932,24 @@ public static func tryParse(s: String): ?IPPrefix
 - ?[IPPrefix](net_package_classes.md#class-ipprefix) - ?[IPPrefix](net_package_classes.md#class-ipprefix) 对象。
 
 示例：
-<!-- run -->
+
+<!-- verify -->
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let v4: ?IPPrefix = IPPrefix.tryParse("192.168.1.2/24")
     let v6: ?IPPrefix = IPPrefix.tryParse("2001:0250:1006:dff0:4913:2aa5:8075:7c10/32")
-    @Assert(v4.toString(), "Some(192.168.1.2/24)")
-    @Assert(v6.toString(), "Some(2001:250:1006:dff0:4913:2aa5:8075:7c10/32)")
+    println("IPv4前缀: ${v4}")
+    println("IPv6前缀: ${v6}")
 }
+```
+
+运行结果：
+
+```text
+IPv4前缀: Some(192.168.1.2/24)
+IPv6前缀: Some(2001:250:1006:dff0:4913:2aa5:8075:7c10/32)
 ```
 
 ### func broadcast()
@@ -653,6 +963,25 @@ public open func broadcast(): IPAddress
 返回值：
 
 - [IPAddress](net_package_classes.md#class-ipaddress) - 此 [IPPrefix](net_package_classes.md#class-ipprefix) 地址的广播地址。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix: IPPrefix = IPPrefix.parse("192.168.1.2/24")
+    let broadcast: IPAddress = prefix.broadcast()
+    println("广播地址: ${broadcast}")
+}
+```
+
+运行结果：
+
+```text
+广播地址: 192.168.1.255
+```
 
 ### func contains(IPAddress)
 
@@ -670,6 +999,29 @@ public func contains(rhs: IPAddress): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示包含指定的 [IPAddress](net_package_classes.md#class-ipaddress) 地址，false 表示不包含。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix: IPPrefix = IPPrefix.parse("192.168.1.0/24")
+    let ip1: IPAddress = IPAddress.parse("192.168.1.100")
+    let ip2: IPAddress = IPAddress.parse("192.168.2.100")
+    
+    println("前缀 ${prefix} 包含IP ${ip1}: ${prefix.contains(ip1)}")
+    println("前缀 ${prefix} 包含IP ${ip2}: ${prefix.contains(ip2)}")
+}
+```
+
+运行结果：
+
+```text
+前缀 192.168.1.0/24 包含IP 192.168.1.100: true
+前缀 192.168.1.0/24 包含IP 192.168.2.100: false
+```
+
 ### func contains(IPPrefix)
 
 ```cangjie
@@ -686,6 +1038,29 @@ public func contains(rhs: IPPrefix): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示包含指定的 [IPPrefix](net_package_classes.md#class-ipprefix) 地址，false 表示不包含。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix1: IPPrefix = IPPrefix.parse("192.168.0.0/16")
+    let prefix2: IPPrefix = IPPrefix.parse("192.168.1.0/24")
+    let prefix3: IPPrefix = IPPrefix.parse("10.0.0.0/8")
+    
+    println("前缀 ${prefix1} 包含前缀 ${prefix2}: ${prefix1.contains(prefix2)}")
+    println("前缀 ${prefix1} 包含前缀 ${prefix3}: ${prefix1.contains(prefix3)}")
+}
+```
+
+运行结果：
+
+```text
+前缀 192.168.0.0/16 包含前缀 192.168.1.0/24: true
+前缀 192.168.0.0/16 包含前缀 10.0.0.0/8: false
+```
+
 ### func hostmask()
 
 ```cangjie
@@ -697,6 +1072,25 @@ public open func hostmask(): IPAddress
 返回值：
 
 - [IPAddress](net_package_classes.md#class-ipaddress) - 此 [IPPrefix](net_package_classes.md#class-ipprefix) 地址的主机网络掩码地址。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix: IPPrefix = IPPrefix.parse("192.168.1.2/24")
+    let hostmask: IPAddress = prefix.hostmask()
+    println("主机掩码: ${hostmask}")
+}
+```
+
+运行结果：
+
+```text
+主机掩码: 0.0.0.255
+```
 
 ### func masked()
 
@@ -710,6 +1104,30 @@ public open func masked(): IPPrefix
 
 - [IPPrefix](net_package_classes.md#class-ipprefix) - 此 [IPPrefix](net_package_classes.md#class-ipprefix) 地址根据前缀长度进行掩码后的 [IPPrefix](net_package_classes.md#class-ipprefix) 地址。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix: IPPrefix = IPPrefix.parse("192.168.1.100/24")
+    let masked: IPPrefix = prefix.masked()
+    println("掩码后的前缀: ${masked}")
+    
+    let prefixV6: IPPrefix = IPPrefix.parse("fc00::1:2:3:4/16")
+    let maskedV6: IPPrefix = prefixV6.masked()
+    println("掩码后的IPv6前缀: ${maskedV6}")
+}
+```
+
+运行结果：
+
+```text
+掩码后的前缀: 192.168.1.0/24
+掩码后的IPv6前缀: fc00::/16
+```
+
 ### func netmask()
 
 ```cangjie
@@ -722,6 +1140,25 @@ public open func netmask(): IPAddress
 
 - [IPAddress](net_package_classes.md#class-ipaddress) - 此 [IPPrefix](net_package_classes.md#class-ipprefix) 地址的网络掩码地址。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix: IPPrefix = IPPrefix.parse("192.168.1.2/24")
+    let netmask: IPAddress = prefix.netmask()
+    println("网络掩码: ${netmask}")
+}
+```
+
+运行结果：
+
+```text
+网络掩码: 255.255.255.0
+```
+
 ### func network()
 
 ```cangjie
@@ -733,6 +1170,25 @@ public open func network(): IPAddress
 返回值：
 
 - [IPAddress](net_package_classes.md#class-ipaddress) - 此 [IPPrefix](net_package_classes.md#class-ipprefix) 地址的网络地址。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix: IPPrefix = IPPrefix.parse("192.168.1.100/24")
+    let network: IPAddress = prefix.network()
+    println("网络地址: ${network}")
+}
+```
+
+运行结果：
+
+```text
+网络地址: 192.168.1.0
+```
 
 ### func overlaps(IPPrefix)
 
@@ -750,6 +1206,29 @@ public func overlaps(rhs: IPPrefix): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示和指定的 [IPPrefix](net_package_classes.md#class-ipprefix) 地址有重叠，false 表示没有重叠。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix1: IPPrefix = IPPrefix.parse("192.168.1.0/24")
+    let prefix2: IPPrefix = IPPrefix.parse("192.168.1.128/25")
+    let prefix3: IPPrefix = IPPrefix.parse("10.0.0.0/8")
+    
+    println("前缀 ${prefix1} 与前缀 ${prefix2} 重叠: ${prefix1.overlaps(prefix2)}")
+    println("前缀 ${prefix1} 与前缀 ${prefix3} 重叠: ${prefix1.overlaps(prefix3)}")
+}
+```
+
+运行结果：
+
+```text
+前缀 192.168.1.0/24 与前缀 192.168.1.128/25 重叠: true
+前缀 192.168.1.0/24 与前缀 10.0.0.0/8 重叠: false
+```
+
 ### func toString()
 
 ```cangjie
@@ -763,19 +1242,24 @@ public func toString(): String
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 当前 [IPPrefix](net_package_classes.md#class-ipprefix) 的文本表示字符串，比如 `192.168.0.0/16` 或 `fc00::/16`。
 
 示例：
-<!-- run -->
 
+<!-- verify -->
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let v4: IPPrefix = IPAddress.parse("192.168.1.2").getPrefix(24)
     let v6: IPPrefix = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10").getPrefix(32)
-    @Assert(v4.toString(), "192.168.1.2/24")
-    @Assert(v6.toString(), "2001:250:1006:dff0:4913:2aa5:8075:7c10/32")
+    println("IPv4前缀: ${v4}")
+    println("IPv6前缀: ${v6}")
 }
+```
+
+运行结果：
+
+```text
+IPv4前缀: 192.168.1.2/24
+IPv6前缀: 2001:250:1006:dff0:4913:2aa5:8075:7c10/32
 ```
 
 ### operator func ==(IPPrefix)
@@ -794,6 +1278,29 @@ public operator func ==(rhs: IPPrefix): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPPrefix](net_package_classes.md#class-ipprefix) 对象相等，则返回 `true`；否则，返回 `false`。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix1: IPPrefix = IPPrefix.parse("192.168.1.0/24")
+    let prefix2: IPPrefix = IPPrefix.parse("192.168.1.0/24")
+    let prefix3: IPPrefix = IPPrefix.parse("192.168.2.0/24")
+    
+    println("prefix1 == prefix2: ${prefix1 == prefix2}")
+    println("prefix1 == prefix3: ${prefix1 == prefix3}")
+}
+```
+
+运行结果：
+
+```text
+prefix1 == prefix2: true
+prefix1 == prefix3: false
+```
+
 ### operator func !=(IPPrefix)
 
 ```cangjie
@@ -809,6 +1316,29 @@ public operator func !=(rhs: IPPrefix): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPPrefix](net_package_classes.md#class-ipprefix) 对象不等，则返回 `true`；否则，返回 `false`。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let prefix1: IPPrefix = IPPrefix.parse("192.168.1.0/24")
+    let prefix2: IPPrefix = IPPrefix.parse("192.168.1.0/24")
+    let prefix3: IPPrefix = IPPrefix.parse("192.168.2.0/24")
+    
+    println("prefix1 != prefix2: ${prefix1 != prefix2}")
+    println("prefix1 != prefix3: ${prefix1 != prefix3}")
+}
+```
+
+运行结果：
+
+```text
+prefix1 != prefix2: false
+prefix1 != prefix3: true
+```
 
 ## class IPSocketAddress
 
@@ -837,6 +1367,28 @@ public prop address: IPAddress
 
 类型：[IPAddress](net_package_classes.md#class-ipaddress)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let socketAddrV4 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddrV6 = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    
+    println("IPv4地址: ${socketAddrV4.address}")
+    println("IPv6地址: ${socketAddrV6.address}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址: 192.168.1.2
+IPv6地址: 2001:250:1006:dff0:4913:2aa5:8075:7c10
+```
+
 ### prop family
 
 ```cangjie
@@ -846,6 +1398,28 @@ public prop family: AddressFamily
 功能：获取当前 [IPSocketAddress](net_package_classes.md#class-ipsocketaddress) 对象的地址族。
 
 类型：[AddressFamily](net_package_structs.md#struct-addressfamily)
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let socketAddrV4 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddrV6 = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    
+    println("IPv4地址族: ${socketAddrV4.family}")
+    println("IPv6地址族: ${socketAddrV6.family}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址族: INET
+IPv6地址族: INET6
+```
 
 ### prop port
 
@@ -857,6 +1431,28 @@ public prop port: UInt16
 
 类型：[UInt16](../../../std/core/core_package_api/core_package_intrinsics.md#uint16)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let socketAddrV4 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddrV6 = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    
+    println("IPv4端口: ${socketAddrV4.port}")
+    println("IPv6端口: ${socketAddrV6.port}")
+}
+```
+
+运行结果：
+
+```text
+IPv4端口: 8080
+IPv6端口: 8080
+```
+
 ### prop size
 
 ```cangjie
@@ -866,6 +1462,28 @@ public prop size: Int64
 功能：获取当前 [IPSocketAddress](net_package_classes.md#class-ipsocketaddress) 对象的原始字节长度。
 
 类型：[Int64](../../../std/core/core_package_api/core_package_intrinsics.md#int64)
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let socketAddrV4 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddrV6 = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    
+    println("IPv4 Socket地址大小: ${socketAddrV4.size}")
+    println("IPv6 Socket地址大小: ${socketAddrV6.size}")
+}
+```
+
+运行结果：
+
+```text
+IPv4 Socket地址大小: 16
+IPv6 Socket地址大小: 28
+```
 
 ### init(Array\<Byte>, UInt16)
 
@@ -884,6 +1502,34 @@ public init(address: Array<Byte>, port: UInt16)
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果 address 不合法，抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // IPv4地址: 192.168.1.2 对应的大端序字节数组
+    let ipv4Bytes = [192u8, 168u8, 1u8, 2u8]
+    let port = 8080u16
+    
+    // 使用字节数组和端口创建IPSocketAddress
+    let socketAddr = IPSocketAddress(ipv4Bytes, port)
+    
+    println("IPv4 Socket地址: ${socketAddr}")
+    println("IP地址: ${socketAddr.address}")
+    println("端口: ${socketAddr.port}")
+}
+```
+
+运行结果：
+
+```text
+IPv4 Socket地址: 192.168.1.2:8080
+IP地址: 192.168.1.2
+端口: 8080
+```
+
 ### init(String, UInt16)
 
 ```cangjie
@@ -901,6 +1547,38 @@ public init(address: String, port: UInt16)
 
 - [IllegalFormatException](../../core/core_package_api/core_package_exceptions.md#class-illegalformatexception) - 如果传入的 IP 地址不合法，抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 使用字符串IP地址和端口创建IPSocketAddress
+    let socketAddrV4 = IPSocketAddress("192.168.1.2", 8080u16)
+    let socketAddrV6 = IPSocketAddress("2001:0250:1006:dff0:4913:2aa5:8075:7c10", 8080u16)
+    
+    println("IPv4 Socket地址: ${socketAddrV4}")
+    println("IPv4地址: ${socketAddrV4.address}")
+    println("IPv4端口: ${socketAddrV4.port}")
+    
+    println("IPv6 Socket地址: ${socketAddrV6}")
+    println("IPv6地址: ${socketAddrV6.address}")
+    println("IPv6端口: ${socketAddrV6.port}")
+}
+```
+
+运行结果：
+
+```text
+IPv4 Socket地址: 192.168.1.2:8080
+IPv4地址: 192.168.1.2
+IPv4端口: 8080
+IPv6 Socket地址: [2001:250:1006:dff0:4913:2aa5:8075:7c10]:8080
+IPv6地址: 2001:250:1006:dff0:4913:2aa5:8075:7c10
+IPv6端口: 8080
+```
+
 ### init(IPAddress, UInt16)
 
 ```cangjie
@@ -913,6 +1591,42 @@ public init(address: IPAddress, port: UInt16)
 
 - address: [IPAddress](net_package_classes.md#class-ipaddress) - [IPAddress](net_package_classes.md#class-ipaddress) 对象。
 - port: [UInt16](../../../std/core/core_package_api/core_package_intrinsics.md#uint16) - 本机序端口。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建IPAddress对象
+    let ipv4Address = IPAddress.parse("192.168.1.2")
+    let ipv6Address = IPAddress.parse("2001:0250:1006:dff0:4913:2aa5:8075:7c10")
+    
+    // 使用IPAddress对象和端口创建IPSocketAddress
+    let socketAddrV4 = IPSocketAddress(ipv4Address, 8080u16)
+    let socketAddrV6 = IPSocketAddress(ipv6Address, 8080u16)
+    
+    println("IPv4 Socket地址: ${socketAddrV4}")
+    println("IPv4地址: ${socketAddrV4.address}")
+    println("IPv4端口: ${socketAddrV4.port}")
+    
+    println("IPv6 Socket地址: ${socketAddrV6}")
+    println("IPv6地址: ${socketAddrV6.address}")
+    println("IPv6端口: ${socketAddrV6.port}")
+}
+```
+
+运行结果：
+
+```text
+IPv4 Socket地址: 192.168.1.2:8080
+IPv4地址: 192.168.1.2
+IPv4端口: 8080
+IPv6 Socket地址: [2001:250:1006:dff0:4913:2aa5:8075:7c10]:8080
+IPv6地址: 2001:250:1006:dff0:4913:2aa5:8075:7c10
+IPv6端口: 8080
+```
 
 ### static func parse(String)
 
@@ -935,23 +1649,32 @@ public static func parse(s: String): IPSocketAddress
 - [IllegalFormatException](../../core/core_package_api/core_package_exceptions.md#class-illegalformatexception) - 入参需要是合法的socket地址，比如 192.168.0.0:80 或 [fc00::1]:8080，否则抛出异常。
 
 示例：
-<!-- run -->
 
+<!-- verify -->
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let v4: IPSocketAddress = IPSocketAddress.parse("192.168.1.2:8080")
     let v6: IPSocketAddress = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
-    @Assert(v4.address.toString(), "192.168.1.2")
-    @Assert(v4.port, 8080u16)
-    @Assert(v6.address.toString(), "2001:250:1006:dff0:4913:2aa5:8075:7c10")
-    @Assert(v6.port, 8080u16)
-    @Assert(v4.toString(), "192.168.1.2:8080")
-    @Assert(v6.toString(), "[2001:250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    println("v4.address: ${v4.address}")
+    println("v4.port: ${v4.port}")
+    println("v6.address: ${v6.address}")
+    println("v6.port: ${v6.port}")
+    println("v4: ${v4}")
+    println("v6: ${v6}")
 }
+```
+
+运行结果：
+
+```text
+v4.address: 192.168.1.2
+v4.port: 8080
+v6.address: 2001:250:1006:dff0:4913:2aa5:8075:7c10
+v6.port: 8080
+v4: 192.168.1.2:8080
+v6: [2001:250:1006:dff0:4913:2aa5:8075:7c10]:8080
 ```
 
 ### static func tryParse(String)
@@ -971,19 +1694,24 @@ public static func tryParse(s: String): ?IPSocketAddress
 - ?[IPSocketAddress](net_package_classes.md#class-ipsocketaddress) - ?[IPSocketAddress](net_package_classes.md#class-ipsocketaddress) 对象。
 
 示例：
-<!-- run -->
 
+<!-- verify -->
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let v4: ?IPSocketAddress = IPSocketAddress.tryParse("192.168.1.2:8080")
     let v6: ?IPSocketAddress = IPSocketAddress.tryParse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
-    @Assert(v4.toString(), "Some(192.168.1.2:8080)")
-    @Assert(v6.toString(), "Some([2001:250:1006:dff0:4913:2aa5:8075:7c10]:8080)")
+    println("v4: ${v4}")
+    println("v6: ${v6}")
 }
+```
+
+运行结果：
+
+```text
+v4: Some(192.168.1.2:8080)
+v6: Some([2001:250:1006:dff0:4913:2aa5:8075:7c10]:8080)
 ```
 
 ### func getAddressBytes()
@@ -998,6 +1726,33 @@ public func getAddressBytes(): Array<Byte>
 
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Byte](../../../std/core/core_package_api/core_package_types.md#type-byte)> - [IPSocketAddress](net_package_classes.md#class-ipsocketaddress) 对象的原始地址的 [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Byte](../../../std/core/core_package_api/core_package_types.md#type-byte)> 表示。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建IPSocketAddress对象
+    let socketAddrV4 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddrV6 = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    
+    // 获取地址字节
+    let v4Bytes = socketAddrV4.getAddressBytes()
+    let v6Bytes = socketAddrV6.getAddressBytes()
+    
+    println("IPv4地址字节: ${v4Bytes}")
+    println("IPv6地址字节: ${v6Bytes}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址字节: [2, 0, 31, 144, 192, 168, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
+IPv6地址字节: [10, 0, 31, 144, 0, 0, 0, 0, 32, 1, 2, 80, 16, 6, 223, 240, 73, 19, 42, 165, 128, 117, 124, 16, 0, 0, 0, 0]
+```
+
 ### func hashCode()
 
 ```cangjie
@@ -1009,6 +1764,33 @@ public func hashCode(): Int64
 返回值：
 
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - `hashcode` 值。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建IPSocketAddress对象
+    let socketAddrV4 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddrV6 = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    
+    // 获取hashCode
+    let v4HashCode = socketAddrV4.hashCode()
+    let v6HashCode = socketAddrV6.hashCode()
+    
+    println("IPv4 Socket地址hashCode: ${v4HashCode}")
+    println("IPv6 Socket地址hashCode: ${v6HashCode}")
+}
+```
+
+运行结果：
+
+```text
+IPv4 Socket地址hashCode: -756920342309184036
+IPv6 Socket地址hashCode: -6218076271351699500
+```
 
 ### func isIPv4()
 
@@ -1022,6 +1804,33 @@ public func isIPv4(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是 IPv4 地址，否则返回 false。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建IPSocketAddress对象
+    let socketAddrV4 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddrV6 = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    
+    // 检查是否为IPv4地址
+    let isV4 = socketAddrV4.isIPv4()
+    let isV6 = socketAddrV6.isIPv4()
+    
+    println("192.168.1.2:8080 是IPv4地址: ${isV4}")
+    println("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080 是IPv4地址: ${isV6}")
+}
+```
+
+运行结果：
+
+```text
+192.168.1.2:8080 是IPv4地址: true
+[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080 是IPv4地址: false
+```
+
 ### func isIPv6()
 
 ```cangjie
@@ -1033,6 +1842,33 @@ public func isIPv6(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是 IPv6 地址，否则返回 false。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建IPSocketAddress对象
+    let socketAddrV4 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddrV6 = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    
+    // 检查是否为IPv6地址
+    let isV4 = socketAddrV4.isIPv6()
+    let isV6 = socketAddrV6.isIPv6()
+    
+    println("192.168.1.2:8080 是IPv6地址: ${isV4}")
+    println("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080 是IPv6地址: ${isV6}")
+}
+```
+
+运行结果：
+
+```text
+192.168.1.2:8080 是IPv6地址: false
+[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080 是IPv6地址: true
+```
 
 ### func toString()
 
@@ -1047,19 +1883,24 @@ public func toString(): String
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 当前 [IPSocketAddress](net_package_classes.md#class-ipsocketaddress) 的文本表示字符串，比如 `192.168.1.2:8080` 或 `[fc00::/16]:8080` 。
 
 示例：
-<!-- run -->
 
+<!-- verify -->
 ```cangjie
 import std.net.*
-import std.unittest.*
-import std.unittest.testmacro.*
 
 main() {
     let v4: IPSocketAddress = IPSocketAddress.parse("192.168.1.2:8080")
     let v6: IPSocketAddress = IPSocketAddress.parse("[2001:0250:1006:dff0:4913:2aa5:8075:7c10]:8080")
-    @Assert(v4.toString(), "192.168.1.2:8080")
-    @Assert(v6.toString(), "[2001:250:1006:dff0:4913:2aa5:8075:7c10]:8080")
+    println("v4: ${v4}")
+    println("v6: ${v6}")
 }
+```
+
+运行结果：
+
+```text
+v4: 192.168.1.2:8080
+v6: [2001:250:1006:dff0:4913:2aa5:8075:7c10]:8080
 ```
 
 ### operator func ==(IPSocketAddress)
@@ -1078,6 +1919,34 @@ public operator func ==(rhs: IPSocketAddress): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPSocketAddress](net_package_classes.md#class-ipsocketaddress) 对象相等，则返回 `true`；否则，返回 `false`。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建IPSocketAddress对象
+    let socketAddr1 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddr2 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddr3 = IPSocketAddress.parse("192.168.1.3:8080")
+    
+    // 比较IPSocketAddress对象是否相等
+    let isEqual1 = socketAddr1 == socketAddr2
+    let isEqual2 = socketAddr1 == socketAddr3
+    
+    println("socketAddr1 == socketAddr2: ${isEqual1}")
+    println("socketAddr1 == socketAddr3: ${isEqual2}")
+}
+```
+
+运行结果：
+
+```text
+socketAddr1 == socketAddr2: true
+socketAddr1 == socketAddr3: false
+```
+
 ### operator func !=(IPSocketAddress)
 
 ```cangjie
@@ -1093,6 +1962,34 @@ public operator func !=(rhs: IPSocketAddress): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPSocketAddress](net_package_classes.md#class-ipsocketaddress) 对象不等，则返回 `true`；否则，返回 `false`。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建IPSocketAddress对象
+    let socketAddr1 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddr2 = IPSocketAddress.parse("192.168.1.2:8080")
+    let socketAddr3 = IPSocketAddress.parse("192.168.1.3:8080")
+    
+    // 比较IPSocketAddress对象是否不等
+    let isNotEqual1 = socketAddr1 != socketAddr2
+    let isNotEqual2 = socketAddr1 != socketAddr3
+    
+    println("socketAddr1 != socketAddr2: ${isNotEqual1}")
+    println("socketAddr1 != socketAddr3: ${isNotEqual2}")
+}
+```
+
+运行结果：
+
+```text
+socketAddr1 != socketAddr2: false
+socketAddr1 != socketAddr3: true
+```
 
 ## class IPv4Address
 
@@ -1125,6 +2022,24 @@ public static let broadcast: IPv4Address = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
 
 类型：[IPv4Address](net_package_classes.md#class-ipv4address)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let broadcast = IPv4Address.broadcast   
+    println("broadcast: ${broadcast}")
+}
+```
+
+运行结果：
+
+```text
+broadcast: 255.255.255.255
+```
+
 ### static let localhost
 
 ```cangjie
@@ -1135,6 +2050,24 @@ public static let localhost: IPv4Address = IPv4Address(0x7F, 0, 0, 0x01)
 
 类型：[IPv4Address](net_package_classes.md#class-ipv4address)
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let localhost = IPv4Address.localhost   
+    println("localhost: ${localhost}")
+}
+```
+
+运行结果：
+
+```text
+localhost: 127.0.0.1
+```
+
 ### static let unspecified
 
 ```cangjie
@@ -1144,6 +2077,24 @@ public static let unspecified: IPv4Address = IPv4Address(0, 0, 0, 0)
 功能：返回表示未指定的 [IPv4Address](net_package_classes.md#class-ipv4address) 地址：`0.0.0.0`，这对应于其他语言中的常量 `INADDR_ANY`。
 
 类型：[IPv4Address](net_package_classes.md#class-ipv4address)
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    let unspecified = IPv4Address.unspecified   
+    println("unspecified: ${unspecified}")
+}
+```
+
+运行结果：
+
+```text
+unspecified: 0.0.0.0
+```
 
 ### init(UInt32)
 
@@ -1156,6 +2107,26 @@ public init(bits: UInt32)
 参数：
 
 - bits: [UInt32](../../../std/core/core_package_api/core_package_intrinsics.md#uint32) - 本机字节序 [UInt32](../../../std/core/core_package_api/core_package_intrinsics.md#uint32) 值。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 使用UInt32值创建IPv4Address对象
+    let ipv4Addr = IPv4Address(0xC0A80102u32)  // 192.168.1.2
+    
+    println("IPv4地址: ${ipv4Addr}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址: 192.168.1.2
+```
 
 ### init(Byte, Byte, Byte, Byte)
 
@@ -1171,6 +2142,26 @@ public init(a: Byte, b: Byte, c: Byte, d: Byte)
 - b: [Byte](../../../std/core/core_package_api/core_package_types.md#type-byte) - 8-bit 字节。
 - c: [Byte](../../../std/core/core_package_api/core_package_types.md#type-byte) - 8-bit 字节。
 - d: [Byte](../../../std/core/core_package_api/core_package_types.md#type-byte) - 8-bit 字节。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 使用4个字节创建IPv4Address对象
+    let ipv4Addr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    println("IPv4地址: ${ipv4Addr}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址: 192.168.1.2
+```
 
 ### static func readBigEndian(Array\<Byte>)
 
@@ -1192,6 +2183,29 @@ public static func readBigEndian(buffer: Array<Byte>): IPv4Address
 
 - [IPv4Address](net_package_classes.md#class-ipv4address) - [IPv4Address](net_package_classes.md#class-ipv4address) 对象。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个包含IPv4地址的大端序字节数组
+    let buffer = [192u8, 168u8, 1u8, 2u8]
+    
+    // 从字节数组中读取IPv4Address对象
+    let ipv4Addr = IPv4Address.readBigEndian(buffer)
+    
+    println("从字节数组读取的IPv4地址: ${ipv4Addr}")
+}
+```
+
+运行结果：
+
+```text
+从字节数组读取的IPv4地址: 192.168.1.2
+```
+
 ### func getPrefix(UInt8)
 
 ```cangjie
@@ -1212,6 +2226,31 @@ public func getPrefix(prefixLen: UInt8): IPPrefix
 
 - [IPPrefix](net_package_classes.md#class-ipprefix) - 网络前缀对象。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4Address对象
+    let ipv4Addr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 根据指定的网络前缀长度创建网络前缀对象
+    let prefix = ipv4Addr.getPrefix(24u8)
+    
+    println("IPv4地址: ${ipv4Addr}")
+    println("网络前缀: ${prefix}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址: 192.168.1.2
+网络前缀: 192.168.1.2/24
+```
+
 ### func isBroadcast()
 
 ```cangjie
@@ -1223,6 +2262,35 @@ public func isBroadcast(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是广播地址，否则返回 false。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个广播地址
+    let broadcastAddr = IPv4Address.broadcast
+    
+    // 创建一个普通地址
+    let normalAddr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 检查是否为广播地址
+    let isBroadcast1 = broadcastAddr.isBroadcast()
+    let isBroadcast2 = normalAddr.isBroadcast()
+    
+    println("255.255.255.255是广播地址: ${isBroadcast1}")
+    println("192.168.1.2是广播地址: ${isBroadcast2}")
+}
+```
+
+运行结果：
+
+```text
+255.255.255.255是广播地址: true
+192.168.1.2是广播地址: false
+```
 
 ### func isGlobalUnicast()
 
@@ -1236,6 +2304,35 @@ public func isGlobalUnicast(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是全局单播地址，否则返回 false。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个全局单播地址
+    let globalAddr = IPv4Address(8u8, 8u8, 8u8, 8u8)  // 8.8.8.8 (Google DNS)
+    
+    // 创建一个私有地址
+    let privateAddr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 检查是否为全局单播地址
+    let isGlobal1 = globalAddr.isGlobalUnicast()
+    let isGlobal2 = privateAddr.isGlobalUnicast()
+    
+    println("8.8.8.8是全局单播地址: ${isGlobal1}")
+    println("192.168.1.2是全局单播地址: ${isGlobal2}")
+}
+```
+
+运行结果：
+
+```text
+8.8.8.8是全局单播地址: true
+192.168.1.2是全局单播地址: false
+```
+
 ### func isLinkLocal()
 
 ```cangjie
@@ -1247,6 +2344,35 @@ public func isLinkLocal(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是链路本地地址，否则返回 false。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个链路本地地址 (169.254.x.x)
+    let linkLocalAddr = IPv4Address(169u8, 254u8, 1u8, 2u8)
+    
+    // 创建一个普通地址
+    let normalAddr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 检查是否为链路本地地址
+    let isLinkLocal1 = linkLocalAddr.isLinkLocal()
+    let isLinkLocal2 = normalAddr.isLinkLocal()
+    
+    println("169.254.1.2是链路本地地址: ${isLinkLocal1}")
+    println("192.168.1.2是链路本地地址: ${isLinkLocal2}")
+}
+```
+
+运行结果：
+
+```text
+169.254.1.2是链路本地地址: true
+192.168.1.2是链路本地地址: false
+```
 
 ### func isLoopback()
 
@@ -1260,6 +2386,35 @@ public func isLoopback(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是环回地址，否则返回 false。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个环回地址
+    let loopbackAddr = IPv4Address.localhost
+    
+    // 创建一个普通地址
+    let normalAddr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 检查是否为环回地址
+    let isLoopback1 = loopbackAddr.isLoopback()
+    let isLoopback2 = normalAddr.isLoopback()
+    
+    println("127.0.0.1是环回地址: ${isLoopback1}")
+    println("192.168.1.2是环回地址: ${isLoopback2}")
+}
+```
+
+运行结果：
+
+```text
+127.0.0.1是环回地址: true
+192.168.1.2是环回地址: false
+```
+
 ### func isMulticast()
 
 ```cangjie
@@ -1271,6 +2426,35 @@ public func isMulticast(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是多播地址，否则返回 false。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个多播地址 (224.0.0.1)
+    let multicastAddr = IPv4Address(224u8, 0u8, 0u8, 1u8)
+    
+    // 创建一个普通地址
+    let normalAddr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 检查是否为多播地址
+    let isMulticast1 = multicastAddr.isMulticast()
+    let isMulticast2 = normalAddr.isMulticast()
+    
+    println("224.0.0.1是多播地址: ${isMulticast1}")
+    println("192.168.1.2是多播地址: ${isMulticast2}")
+}
+```
+
+运行结果：
+
+```text
+224.0.0.1是多播地址: true
+192.168.1.2是多播地址: false
+```
 
 ### func isPrivate()
 
@@ -1284,6 +2468,35 @@ public func isPrivate(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是私有地址，否则返回 false。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个私有地址 (192.168.x.x)
+    let privateAddr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 创建一个公网地址
+    let publicAddr = IPv4Address(8u8, 8u8, 8u8, 8u8)  // Google DNS
+    
+    // 检查是否为私有地址
+    let isPrivate1 = privateAddr.isPrivate()
+    let isPrivate2 = publicAddr.isPrivate()
+    
+    println("192.168.1.2是私有地址: ${isPrivate1}")
+    println("8.8.8.8是私有地址: ${isPrivate2}")
+}
+```
+
+运行结果：
+
+```text
+192.168.1.2是私有地址: true
+8.8.8.8是私有地址: false
+```
+
 ### func isUnspecified()
 
 ```cangjie
@@ -1295,6 +2508,35 @@ public func isUnspecified(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是“未指定” IP 地址，否则返回 false。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个未指定地址
+    let unspecifiedAddr = IPv4Address.unspecified
+    
+    // 创建一个普通地址
+    let normalAddr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 检查是否为未指定地址
+    let isUnspecified1 = unspecifiedAddr.isUnspecified()
+    let isUnspecified2 = normalAddr.isUnspecified()
+    
+    println("0.0.0.0是未指定地址: ${isUnspecified1}")
+    println("192.168.1.2是未指定地址: ${isUnspecified2}")
+}
+```
+
+运行结果：
+
+```text
+0.0.0.0是未指定地址: true
+192.168.1.2是未指定地址: false
+```
 
 ### func toBits()
 
@@ -1308,6 +2550,31 @@ public func toBits(): UInt32
 
 - [UInt32](../../../std/core/core_package_api/core_package_intrinsics.md#uint32) - 本机字节序的 [UInt32](../../../std/core/core_package_api/core_package_intrinsics.md#uint32) 值。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4地址
+    let ipv4Addr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 将IPv4地址转换为UInt32值
+    let bits = ipv4Addr.toBits()
+    
+    println("IPv4地址: ${ipv4Addr}")
+    println("对应的UInt32值: ${bits}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址: 192.168.1.2
+对应的UInt32值: 3232235778
+```
+
 ### func toIPv6Compatible()
 
 ```cangjie
@@ -1320,6 +2587,31 @@ public func toIPv6Compatible(): IPv6Address
 
 - [IPv6Address](net_package_classes.md#class-ipv6address) - [IPv6Address](net_package_classes.md#class-ipv6address) 对象。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4地址
+    let ipv4Addr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 将IPv4地址转换为IPv6兼容地址
+    let ipv6Compatible = ipv4Addr.toIPv6Compatible()
+    
+    println("IPv4地址: ${ipv4Addr}")
+    println("IPv6兼容地址: ${ipv6Compatible}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址: 192.168.1.2
+IPv6兼容地址: ::c0a8:102
+```
+
 ### func toIPv6Mapped()
 
 ```cangjie
@@ -1331,6 +2623,31 @@ public func toIPv6Mapped(): IPv6Address
 返回值：
 
 - [IPv6Address](net_package_classes.md#class-ipv6address) - [IPv6Address](net_package_classes.md#class-ipv6address) 对象。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4地址
+    let ipv4Addr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 将IPv4地址转换为IPv6映射地址
+    let ipv6Mapped = ipv4Addr.toIPv6Mapped()
+    
+    println("IPv4地址: ${ipv4Addr}")
+    println("IPv6映射地址: ${ipv6Mapped}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址: 192.168.1.2
+IPv6映射地址: ::ffff:192.168.1.2
+```
 
 ### func writeBigEndian(Array\<Byte>)
 
@@ -1352,6 +2669,36 @@ public func writeBigEndian(buffer: Array<Byte>): Int64
 
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 写入的数据的字节数。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4地址
+    let ipv4Addr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 创建一个字节数组缓冲区
+    var buffer = [0u8, 0u8, 0u8, 0u8]
+    
+    // 将IPv4地址以大端序方式写入字节数组
+    let bytesWritten = ipv4Addr.writeBigEndian(buffer)
+    
+    println("IPv4地址: ${ipv4Addr}")
+    println("写入的字节数: ${bytesWritten}")
+    println("字节数组内容: ${buffer}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址: 192.168.1.2
+写入的字节数: 4
+字节数组内容: [192, 168, 1, 2]
+```
+
 ### func toString()
 
 ```cangjie
@@ -1363,6 +2710,31 @@ public func toString(): String
 返回值：
 
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 当前 [IPv4Address](net_package_classes.md#class-ipv4address) 的文本表示字符串，比如 `a.b.c.d`。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4地址
+    let ipv4Addr = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 获取IPv4地址的字符串表示
+    let addrString = ipv4Addr.toString()
+    
+    println("IPv4地址对象: ${ipv4Addr}")
+    println("字符串表示: ${addrString}")
+}
+```
+
+运行结果：
+
+```text
+IPv4地址对象: 192.168.1.2
+字符串表示: 192.168.1.2
+```
 
 ### operator func <=(IPv4Address)
 
@@ -1380,6 +2752,37 @@ public operator func <=(rhs: IPv4Address): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果本 [IPv4Address](net_package_classes.md#class-ipv4address) 对象小于等于被比较的 [IPv4Address](net_package_classes.md#class-ipv4address) 对象，则返回 `true`；否则，返回 `false`。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建两个IPv4地址
+    let addr1 = IPv4Address(192u8, 168u8, 1u8, 2u8)   // 192.168.1.2
+    let addr2 = IPv4Address(192u8, 168u8, 1u8, 10u8)  // 192.168.1.10
+    let addr3 = IPv4Address(192u8, 168u8, 1u8, 2u8)   // 192.168.1.2
+    
+    // 比较IPv4地址
+    let result1 = addr1 <= addr2
+    let result2 = addr2 <= addr1
+    let result3 = addr1 <= addr3
+    
+    println("${addr1} <= ${addr2}: ${result1}")
+    println("${addr2} <= ${addr1}: ${result2}")
+    println("${addr1} <= ${addr3}: ${result3}")
+}
+```
+
+运行结果：
+
+```text
+192.168.1.2 <= 192.168.1.10: true
+192.168.1.10 <= 192.168.1.2: false
+192.168.1.2 <= 192.168.1.2: true
+```
+
 ### operator func ==(IPv4Address)
 
 ```cangjie
@@ -1396,6 +2799,36 @@ public operator func ==(rhs: IPv4Address): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPv4Address](net_package_classes.md#class-ipv4address) 对象相等，则返回 `true`；否则，返回 `false`。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建两个相同的IPv4地址
+    let addr1 = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    let addr2 = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 创建一个不同的IPv4地址
+    let addr3 = IPv4Address(192u8, 168u8, 1u8, 3u8)
+    
+    // 比较IPv4地址是否相等
+    let result1 = addr1 == addr2
+    let result2 = addr1 == addr3
+    
+    println("${addr1} == ${addr2}: ${result1}")
+    println("${addr1} == ${addr3}: ${result2}")
+}
+```
+
+运行结果：
+
+```text
+192.168.1.2 == 192.168.1.2: true
+192.168.1.2 == 192.168.1.3: false
+```
+
 ### operator func !=(IPv4Address)
 
 ```cangjie
@@ -1411,6 +2844,36 @@ public operator func !=(rhs: IPv4Address): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPv4Address](net_package_classes.md#class-ipv4address) 对象不等，则返回 `true`；否则，返回 `false`。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.net.*
+
+main() {
+    // 创建两个相同的IPv4地址
+    let addr1 = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    let addr2 = IPv4Address(192u8, 168u8, 1u8, 2u8)
+    
+    // 创建一个不同的IPv4地址
+    let addr3 = IPv4Address(192u8, 168u8, 1u8, 3u8)
+    
+    // 比较IPv4地址是否不等
+    let result1 = addr1 != addr2
+    let result2 = addr1 != addr3
+    
+    println("${addr1} != ${addr2}: ${result1}")
+    println("${addr1} != ${addr3}: ${result2}")
+}
+```
+
+运行结果：
+
+```text
+192.168.1.2 != 192.168.1.2: false
+192.168.1.2 != 192.168.1.3: true
+```
 
 ## class IPv6Address
 
@@ -1442,6 +2905,24 @@ public static let localhost: IPv6Address = IPv6Address(0u16, 0, 0, 0, 0, 0, 0, 1
 
 类型：[IPv6Address](net_package_classes.md#class-ipv6address)
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let ipv6Addr = IPv6Address.localhost
+    println("IPv6地址: ${ipv6Addr}")
+}
+```
+
+运行结果：
+
+```text
+IPv6地址: ::1
+```
+
 ### static let unspecified
 
 ```cangjie
@@ -1452,6 +2933,24 @@ public static let unspecified: IPv6Address = IPv6Address(0u16, 0, 0, 0, 0, 0, 0,
 
 类型：[IPv6Address](net_package_classes.md#class-ipv6address)
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let ipv6Addr = IPv6Address.unspecified
+    println("IPv6地址: ${ipv6Addr}")
+}
+```
+
+运行结果：
+
+```text
+IPv6地址: ::
+```
+
 ### prop scopeId
 
 ```cangjie
@@ -1461,6 +2960,31 @@ public prop scopeId: ?UInt32
 功能：获取默认范围 ID。
 
 类型：[Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32)>
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个不带范围ID的IPv6地址
+    let ipv6AddrWithoutScope = IPv6Address(0u16, 0, 0, 0, 0, 0, 0, 1)
+    
+    // 获取范围ID
+    let scopeId = ipv6AddrWithoutScope.scopeId
+    
+    println("IPv6地址: ${ipv6AddrWithoutScope}")
+    println("范围ID: ${scopeId}")
+}
+```
+
+运行结果：
+
+```text
+IPv6地址: ::1
+范围ID: None
+```
 
 ### init(Array\<Byte>, ?UInt32)
 
@@ -1478,6 +3002,31 @@ public init(octets: Array<Byte>, scopeId!: ?UInt32 = None)
 
 - octets: [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Byte](../../core/core_package_api/core_package_types.md#type-byte)> - 大端序字节数组。
 - scopeId!: ?[UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) - 范围 ID。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个包含IPv6地址的大端序字节数组 (::1 的字节数组表示)
+    let bytes: Array<Byte> = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+    
+    // 使用字节数组创建IPv6地址
+    let ipv6Addr = IPv6Address(bytes)
+    
+    println("字节数组: ${bytes}")
+    println("IPv6地址: ${ipv6Addr}")
+}
+```
+
+运行结果：
+
+```text
+字节数组: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+IPv6地址: ::1
+```
 
 ### init(UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, UInt16, ?UInt32)
 
@@ -1499,6 +3048,26 @@ public init(a: UInt16, b: UInt16, c: UInt16, d: UInt16, e: UInt16, f: UInt16, g:
 - h: [UInt16](../../core/core_package_api/core_package_intrinsics.md#uint16) - 16-bit 分段。
 - scopeId!: ?[UInt32](../../core/core_package_api/core_package_intrinsics.md#uint32) - 范围 ID。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 使用8个16-bit分段创建IPv6地址 (::1 的表示)
+    let ipv6Addr = IPv6Address(0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 1u16)
+    
+    println("IPv6地址: ${ipv6Addr}")
+}
+```
+
+运行结果：
+
+```text
+IPv6地址: ::1
+```
+
 ### static func readBigEndian(Array\<Byte>)
 
 ```cangjie
@@ -1518,6 +3087,31 @@ public static func readBigEndian(buffer: Array<Byte>): IPv6Address
 返回值：
 
 - [IPv6Address](net_package_classes.md#class-ipv6address) - [IPv6Address](net_package_classes.md#class-ipv6address) 对象。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个包含IPv6地址的大端序字节数组 (::1 的字节数组表示)
+    let bytes: Array<Byte> = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+    
+    // 从字节数组中读取IPv6地址
+    let ipv6Addr = IPv6Address.readBigEndian(bytes)
+    
+    println("字节数组: ${bytes}")
+    println("IPv6地址: ${ipv6Addr}")
+}
+```
+
+运行结果：
+
+```text
+字节数组: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+IPv6地址: ::1
+```
 
 ### func getPrefix(UInt8)
 
@@ -1539,6 +3133,31 @@ public func getPrefix(prefixLen: UInt8): IPPrefix
 
 - [IPPrefix](net_package_classes.md#class-ipprefix) - 网络前缀对象。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv6地址
+    let ipv6Addr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 根据指定的网络前缀长度创建网络前缀对象
+    let prefix = ipv6Addr.getPrefix(64u8)
+    
+    println("IPv6地址: ${ipv6Addr}")
+    println("网络前缀: ${prefix}")
+}
+```
+
+运行结果：
+
+```text
+IPv6地址: 2001:db8:1:2:ffff:ffff:ffff:ffff
+网络前缀: 2001:db8:1:2:ffff:ffff:ffff:ffff/64
+```
+
 ### func isGlobalUnicast()
 
 ```cangjie
@@ -1550,6 +3169,35 @@ public func isGlobalUnicast(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是全局单播地址，否则返回 false。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个全局单播IPv6地址
+    let globalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 创建一个环回地址
+    let loopbackAddr = IPv6Address(0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 1u16)
+    
+    // 检查是否为全局单播地址
+    let isGlobal1 = globalAddr.isGlobalUnicast()
+    let isGlobal2 = loopbackAddr.isGlobalUnicast()
+    
+    println("2001:db8:1:2:ffff:ffff:ffff:ffff是全局单播地址: ${isGlobal1}")
+    println("::1是全局单播地址: ${isGlobal2}")
+}
+```
+
+运行结果：
+
+```text
+2001:db8:1:2:ffff:ffff:ffff:ffff是全局单播地址: true
+::1是全局单播地址: false
+```
 
 ### func isIPv4Mapped()
 
@@ -1563,6 +3211,35 @@ public func isIPv4Mapped(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是 IPv4 映射地址，否则返回 false。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4映射的IPv6地址 (::ffff:192.168.1.2)
+    let ipv4MappedAddr = IPv6Address(0u16, 0u16, 0u16, 0u16, 0u16, 0xffffu16, 0xc0a8u16, 0x102u16)
+    
+    // 创建一个普通IPv6地址
+    let normalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 检查是否为IPv4映射地址
+    let isMapped1 = ipv4MappedAddr.isIPv4Mapped()
+    let isMapped2 = normalAddr.isIPv4Mapped()
+    
+    println("::ffff:192.168.1.2是IPv4映射地址: ${isMapped1}")
+    println("2001:db8:1:2:ffff:ffff:ffff:ffff是IPv4映射地址: ${isMapped2}")
+}
+```
+
+运行结果：
+
+```text
+::ffff:192.168.1.2是IPv4映射地址: true
+2001:db8:1:2:ffff:ffff:ffff:ffff是IPv4映射地址: false
+```
+
 ### func isLinkLocal()
 
 ```cangjie
@@ -1574,6 +3251,35 @@ public func isLinkLocal(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是链路本地地址，否则返回 false。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个链路本地IPv6地址 (fe80::1)
+    let linkLocalAddr = IPv6Address(0xfe80u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 1u16)
+    
+    // 创建一个普通IPv6地址
+    let normalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 检查是否为链路本地地址
+    let isLinkLocal1 = linkLocalAddr.isLinkLocal()
+    let isLinkLocal2 = normalAddr.isLinkLocal()
+    
+    println("fe80::1是链路本地地址: ${isLinkLocal1}")
+    println("2001:db8:1:2:ffff:ffff:ffff:ffff是链路本地地址: ${isLinkLocal2}")
+}
+```
+
+运行结果：
+
+```text
+fe80::1是链路本地地址: true
+2001:db8:1:2:ffff:ffff:ffff:ffff是链路本地地址: false
+```
 
 ### func isLoopback()
 
@@ -1587,6 +3293,35 @@ public func isLoopback(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是环回地址，否则返回 false。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个环回IPv6地址
+    let loopbackAddr = IPv6Address(0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 1u16)
+    
+    // 创建一个普通IPv6地址
+    let normalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 检查是否为环回地址
+    let isLoopback1 = loopbackAddr.isLoopback()
+    let isLoopback2 = normalAddr.isLoopback()
+    
+    println("::1是环回地址: ${isLoopback1}")
+    println("2001:db8:1:2:ffff:ffff:ffff:ffff是环回地址: ${isLoopback2}")
+}
+```
+
+运行结果：
+
+```text
+::1是环回地址: true
+2001:db8:1:2:ffff:ffff:ffff:ffff是环回地址: false
+```
+
 ### func isMulticast()
 
 ```cangjie
@@ -1598,6 +3333,35 @@ public func isMulticast(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是多播地址，否则返回 false。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个多播IPv6地址 (ff02::1)
+    let multicastAddr = IPv6Address(0xff02u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 1u16)
+    
+    // 创建一个普通IPv6地址
+    let normalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 检查是否为多播地址
+    let isMulticast1 = multicastAddr.isMulticast()
+    let isMulticast2 = normalAddr.isMulticast()
+    
+    println("ff02::1是多播地址: ${isMulticast1}")
+    println("2001:db8:1:2:ffff:ffff:ffff:ffff是多播地址: ${isMulticast2}")
+}
+```
+
+运行结果：
+
+```text
+ff02::1是多播地址: true
+2001:db8:1:2:ffff:ffff:ffff:ffff是多播地址: false
+```
 
 ### func isPrivate()
 
@@ -1611,6 +3375,35 @@ public func isPrivate(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是私有地址，否则返回 false。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个私有IPv6地址 (fc00::1)
+    let privateAddr = IPv6Address(0xfc00u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 1u16)
+    
+    // 创建一个全局单播IPv6地址
+    let globalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 检查是否为私有地址
+    let isPrivate1 = privateAddr.isPrivate()
+    let isPrivate2 = globalAddr.isPrivate()
+    
+    println("fc00::1是私有地址: ${isPrivate1}")
+    println("2001:db8:1:2:ffff:ffff:ffff:ffff是私有地址: ${isPrivate2}")
+}
+```
+
+运行结果：
+
+```text
+fc00::1是私有地址: true
+2001:db8:1:2:ffff:ffff:ffff:ffff是私有地址: false
+```
+
 ### func isTeredo()
 
 ```cangjie
@@ -1623,6 +3416,35 @@ public func isTeredo(): Bool
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是 `Teredo` 地址，否则返回 false。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个Teredo IPv6地址 (2001::1)
+    let teredoAddr = IPv6Address(0x2001u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 1u16)
+    
+    // 创建一个普通IPv6地址
+    let normalAddr = IPv6Address(0x2002u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 检查是否为Teredo地址
+    let isTeredo1 = teredoAddr.isTeredo()
+    let isTeredo2 = normalAddr.isTeredo()
+    
+    println("2001::1是Teredo地址: ${isTeredo1}")
+    println("2002:db8:1:2:ffff:ffff:ffff:ffff是Teredo地址: ${isTeredo2}")
+}
+```
+
+运行结果：
+
+```text
+2001::1是Teredo地址: true
+2002:db8:1:2:ffff:ffff:ffff:ffff是Teredo地址: false
+```
+
 ### func isUnspecified()
 
 ```cangjie
@@ -1634,6 +3456,35 @@ public func isUnspecified(): Bool
 返回值：
 
 - [Bool](../../../std/core/core_package_api/core_package_intrinsics.md#bool) - 返回 true 表示是“未指定” IP 地址，否则返回 false。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个未指定的IPv6地址
+    let unspecifiedAddr = IPv6Address(0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16)
+    
+    // 创建一个普通IPv6地址
+    let normalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 检查是否为未指定地址
+    let isUnspecified1 = unspecifiedAddr.isUnspecified()
+    let isUnspecified2 = normalAddr.isUnspecified()
+    
+    println("::是未指定地址: ${isUnspecified1}")
+    println("2001:db8:1:2:ffff:ffff:ffff:ffff是未指定地址: ${isUnspecified2}")
+}
+```
+
+运行结果：
+
+```text
+::是未指定地址: true
+2001:db8:1:2:ffff:ffff:ffff:ffff是未指定地址: false
+```
 
 ### func scope(?UInt32)
 
@@ -1651,6 +3502,36 @@ public func scope(scopeId: ?UInt32): IPv6Address
 
 - [IPv6Address](net_package_classes.md#class-ipv6address) - 转换后的 [IPv6Address](net_package_classes.md#class-ipv6address) 对象。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv6地址
+    let ipv6Addr = IPv6Address(0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 0u16, 1u16)
+    
+    // 为IPv6地址添加范围ID
+    let scopedAddr = ipv6Addr.scope(Some(5u32))
+    
+    // 移除范围ID
+    let unscopedAddr = scopedAddr.scope(None)
+    
+    println("原始IPv6地址: ${ipv6Addr}")
+    println("带范围ID的地址: ${scopedAddr}")
+    println("移除范围ID的地址: ${unscopedAddr}")
+}
+```
+
+运行结果：
+
+```text
+原始IPv6地址: ::1
+带范围ID的地址: ::1%5
+移除范围ID的地址: ::1
+```
+
 ### func toIPv4()
 
 ```cangjie
@@ -1663,6 +3544,39 @@ public func toIPv4(): ?IPv4Address
 
 - ?[IPv4Address](net_package_classes.md#class-ipv4address) - ?[IPv4Address](net_package_classes.md#class-ipv4address) 值。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4映射的IPv6地址 (::ffff:192.168.1.2)
+    let ipv6MappedAddr = IPv6Address(0u16, 0u16, 0u16, 0u16, 0u16, 0xffffu16, 0xc0a8u16, 0x102u16)
+    
+    // 创建一个普通IPv6地址
+    let normalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 将IPv6地址转换为IPv4地址
+    let ipv4Addr1 = ipv6MappedAddr.toIPv4()
+    let ipv4Addr2 = normalAddr.toIPv4()
+    
+    println("IPv6映射地址: ${ipv6MappedAddr}")
+    println("转换后的IPv4地址: ${ipv4Addr1}")
+    println("普通IPv6地址: ${normalAddr}")
+    println("转换后的IPv4地址: ${ipv4Addr2}")
+}
+```
+
+运行结果：
+
+```text
+IPv6映射地址: ::ffff:192.168.1.2
+转换后的IPv4地址: Some(192.168.1.2)
+普通IPv6地址: 2001:db8:1:2:ffff:ffff:ffff:ffff
+转换后的IPv4地址: None
+```
+
 ### func toIPv4Mapped()
 
 ```cangjie
@@ -1674,6 +3588,39 @@ public func toIPv4Mapped(): ?IPv4Address
 返回值：
 
 - ?[IPv4Address](net_package_classes.md#class-ipv4address) - ?[IPv4Address](net_package_classes.md#class-ipv4address) 值。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv4映射的IPv6地址 (::ffff:192.168.1.2)
+    let ipv6MappedAddr = IPv6Address(0u16, 0u16, 0u16, 0u16, 0u16, 0xffffu16, 0xc0a8u16, 0x102u16)
+    
+    // 创建一个普通IPv6地址
+    let normalAddr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 将IPv6地址转换为IPv4映射地址
+    let ipv4Mapped1 = ipv6MappedAddr.toIPv4Mapped()
+    let ipv4Mapped2 = normalAddr.toIPv4Mapped()
+    
+    println("IPv6映射地址: ${ipv6MappedAddr}")
+    println("转换后的IPv4映射地址: ${ipv4Mapped1}")
+    println("普通IPv6地址: ${normalAddr}")
+    println("转换后的IPv4映射地址: ${ipv4Mapped2}")
+}
+```
+
+运行结果：
+
+```text
+IPv6映射地址: ::ffff:192.168.1.2
+转换后的IPv4映射地址: Some(192.168.1.2)
+普通IPv6地址: 2001:db8:1:2:ffff:ffff:ffff:ffff
+转换后的IPv4映射地址: None
+```
 
 ### func writeBigEndian(Array\<Byte>)
 
@@ -1695,6 +3642,36 @@ public func writeBigEndian(buffer: Array<Byte>): Int64
 
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 写入的数据的字节数。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv6地址
+    let ipv6Addr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 创建一个字节数组缓冲区
+    var buffer: Array<Byte> = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    
+    // 将IPv6地址以大端序方式写入字节数组
+    let bytesWritten = ipv6Addr.writeBigEndian(buffer)
+    
+    println("IPv6地址: ${ipv6Addr}")
+    println("写入的字节数: ${bytesWritten}")
+    println("字节数组内容: ${buffer}")
+}
+```
+
+运行结果：
+
+```text
+IPv6地址: 2001:db8:1:2:ffff:ffff:ffff:ffff
+写入的字节数: 16
+字节数组内容: [32, 1, 13, 184, 0, 1, 0, 2, 255, 255, 255, 255, 255, 255, 255, 255]
+```
+
 ### func toString()
 
 ```cangjie
@@ -1706,6 +3683,31 @@ public func toString(): String
 返回值：
 
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - 当前 [IPv6Address](net_package_classes.md#class-ipv6address) 的文本表示字符串，比如 `2001:db8:1:2:ffff:ffff:ffff:ffff`。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建一个IPv6地址
+    let ipv6Addr = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 获取IPv6地址的字符串表示
+    let addrString = ipv6Addr.toString()
+    
+    println("IPv6地址对象: ${ipv6Addr}")
+    println("字符串表示: ${addrString}")
+}
+```
+
+运行结果：
+
+```text
+IPv6地址对象: 2001:db8:1:2:ffff:ffff:ffff:ffff
+字符串表示: 2001:db8:1:2:ffff:ffff:ffff:ffff
+```
 
 ### operator func <=(IPv6Address)
 
@@ -1723,6 +3725,37 @@ public operator func <=(rhs: IPv6Address): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果本 [IPv6Address](net_package_classes.md#class-ipv6address) 对象小于等于被比较的 [IPv6Address](net_package_classes.md#class-ipv6address) 对象，则返回 `true`；否则，返回 `false`。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建两个IPv6地址
+    let addr1 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    let addr2 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xfffeu16)
+    let addr3 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 比较IPv6地址
+    let result1 = addr1 <= addr2
+    let result2 = addr2 <= addr1
+    let result3 = addr1 <= addr3
+    
+    println("${addr1} <= ${addr2}: ${result1}")
+    println("${addr2} <= ${addr1}: ${result2}")
+    println("${addr1} <= ${addr3}: ${result3}")
+}
+```
+
+运行结果：
+
+```text
+2001:db8:1:2:ffff:ffff:ffff:ffff <= 2001:db8:1:2:ffff:ffff:ffff:fffe: false
+2001:db8:1:2:ffff:ffff:ffff:fffe <= 2001:db8:1:2:ffff:ffff:ffff:ffff: true
+2001:db8:1:2:ffff:ffff:ffff:ffff <= 2001:db8:1:2:ffff:ffff:ffff:ffff: true
+```
+
 ### operator func ==(IPv6Address)
 
 ```cangjie
@@ -1739,6 +3772,36 @@ public operator func ==(rhs: IPv6Address): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPv6Address](net_package_classes.md#class-ipv6address) 对象相等，则返回 `true`；否则，返回 `false`。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建两个相同的IPv6地址
+    let addr1 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    let addr2 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 创建一个不同的IPv6地址
+    let addr3 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xfffeu16)
+    
+    // 比较IPv6地址是否相等
+    let result1 = addr1 == addr2
+    let result2 = addr1 == addr3
+    
+    println("${addr1} == ${addr2}: ${result1}")
+    println("${addr1} == ${addr3}: ${result2}")
+}
+```
+
+运行结果：
+
+```text
+2001:db8:1:2:ffff:ffff:ffff:ffff == 2001:db8:1:2:ffff:ffff:ffff:ffff: true
+2001:db8:1:2:ffff:ffff:ffff:ffff == 2001:db8:1:2:ffff:ffff:ffff:fffe: false
+```
+
 ### operator func !=(IPv6Address)
 
 ```cangjie
@@ -1754,6 +3817,36 @@ public operator func !=(rhs: IPv6Address): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果两个 [IPv6Address](net_package_classes.md#class-ipv6address) 对象不等，则返回 `true`；否则，返回 `false`。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 创建两个相同的IPv6地址
+    let addr1 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    let addr2 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xffffu16)
+    
+    // 创建一个不同的IPv6地址
+    let addr3 = IPv6Address(0x2001u16, 0xdb8u16, 0x1u16, 0x2u16, 0xffffu16, 0xffffu16, 0xffffu16, 0xfffeu16)
+    
+    // 比较IPv6地址是否不等
+    let result1 = addr1 != addr2
+    let result2 = addr1 != addr3
+    
+    println("${addr1} != ${addr2}: ${result1}")
+    println("${addr1} != ${addr3}: ${result2}")
+}
+```
+
+运行结果：
+
+```text
+2001:db8:1:2:ffff:ffff:ffff:ffff != 2001:db8:1:2:ffff:ffff:ffff:ffff: false
+2001:db8:1:2:ffff:ffff:ffff:ffff != 2001:db8:1:2:ffff:ffff:ffff:fffe: true
+```
 
 ## class RawSocket
 
@@ -1790,6 +3883,21 @@ public prop localAddr: RawAddress
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或无法获取本地地址时，抛出异常。
 
+示例：
+<!-- run -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let socket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+    
+    // 获取只读属性localAddr（已废弃）
+    // 注意：此属性已废弃，建议使用localAddress
+    let localAddr = socket.localAddr
+}
+```
+
 ### prop localAddress
 
 ```cangjie
@@ -1803,6 +3911,20 @@ public prop localAddress: RawAddress
 异常：
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或无法获取本地地址时，抛出异常。
+
+示例：
+<!-- run -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let socket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+    
+    // 获取只读属性localAddress
+    let localAddress = socket.localAddress
+}
+```
 
 ### prop readTimeout
 
@@ -1818,6 +3940,23 @@ public mut prop readTimeout: ?Duration
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭时，抛出异常。
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当设置的读超时时间为负时，抛出异常。
+
+示例：
+<!-- run -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let socket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+    
+    // 设置可读写属性readTimeout
+    socket.readTimeout = 1000 * Duration.millisecond
+    
+    // 获取可读写属性readTimeout
+    let readTimeout = socket.readTimeout
+}
+```
 
 ### prop remoteAddr <sup>(deprecated)</sup>
 
@@ -1837,6 +3976,65 @@ public prop remoteAddr: RawAddress
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或无法获取对端地址时，抛出异常。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印客户端地址和接收的消息
+        println(clientSocket.remoteAddr.addr)
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+[10, 0, 60, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 127, 0, 0, 1, 0, 0, 0, 0]
+Received message: Hello, cangjie server.
+```
+
 ### prop remoteAddress
 
 ```cangjie
@@ -1850,6 +4048,65 @@ public prop remoteAddress: RawAddress
 异常：
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或无法获取对端地址时，抛出异常。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印客户端地址和接收的消息
+        println(clientSocket.remoteAddress.addr)
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+[10, 0, 60, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 127, 0, 0, 1, 0, 0, 0, 0]
+Received message: Hello, cangjie server.
+```
 
 ### prop writeTimeout
 
@@ -1865,6 +4122,23 @@ public mut prop writeTimeout: ?Duration
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭时，抛出异常。
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当设置的写超时时间为负时，抛出异常。
+
+示例：
+<!-- run -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let socket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+    
+    // 设置可读写属性writeTimeout
+    socket.writeTimeout = 1000 * Duration.millisecond
+    
+    // 获取可读写属性writeTimeout
+    let writeTimeout = socket.writeTimeout
+}
+```
 
 ### init(SocketDomain, SocketType, ProtocolType)
 
@@ -1883,6 +4157,17 @@ public init(domain: SocketDomain, `type`: SocketType, protocol: ProtocolType)
 异常：
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当通信域、类型、协议组合无法创建套接字时，抛出异常。
+
+示例：
+<!-- run -->
+
+```cangjie
+import std.net.*
+
+main() {
+    let socket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+}
+```
 
 ### func accept(?Duration)
 
@@ -1905,6 +4190,63 @@ public func accept(timeout!: ?Duration = None): RawSocket
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或接收失败时，抛出异常。
 - [SocketTimeoutException](net_package_exceptions.md#class-sockettimeoutexception) - 当等待超时时，抛出异常。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印接收的消息
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
+
 ### func bind(RawAddress)
 
 ```cangjie
@@ -1921,6 +4263,63 @@ public func bind(addr: RawAddress): Unit
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或绑定失败时，抛出异常。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印接收的消息
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
+
 ### func close()
 
 ```cangjie
@@ -1928,6 +4327,63 @@ public func close(): Unit
 ```
 
 功能：关闭当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印接收的消息
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
 
 ### func connect(RawAddress, ?Duration)
 
@@ -1947,6 +4403,63 @@ public func connect(addr: RawAddress, timeout!: ?Duration = None): Unit
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或接收失败时，抛出异常。
 - [SocketTimeoutException](net_package_exceptions.md#class-sockettimeoutexception) - 当等待超时时，抛出异常。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印接收的消息
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
+
 ### func getSocketOption(Int32, Int32, CPointer\<Byte>, CPointer\<Int32>)
 
 ```cangjie
@@ -1957,14 +4470,74 @@ public unsafe func getSocketOption(level: Int32, option: Int32, value: CPointer<
 
 参数：
 
-- level: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - 套接字选项级别。
-- option: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - 套接字选项名。
+- level: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - [套接字选项级别](./net_package_structs.md#struct-optionlevel)。
+- option: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - [套接字选项名](./net_package_structs.md#struct-optionname)。
 - value: [CPointer](../../core/core_package_api/core_package_intrinsics.md#cpointert)\<[Byte](../../core/core_package_api/core_package_types.md#type-byte)> - 套接字选项值。
 - len: [CPointer](../../core/core_package_api/core_package_intrinsics.md#cpointert)\<[Int32](../../core/core_package_api/core_package_intrinsics.md#int32)> - 套接字选项值的长度。
 
 异常：
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或获取套接字选项失败时，抛出异常。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化IPv4 TCP服务器套接字
+    let tcpServerSocket = RawSocket(SocketDomain.IPV4, SocketType.STREAM, ProtocolType.TCP)
+    
+    // 设置SO_REUSEADDR选项（允许端口复用）
+    let reuseAddrEnableValue: Array<Byte> = [1, 0, 0, 0]
+    let enableValuePtr = unsafe { acquireArrayRawData(reuseAddrEnableValue) }.pointer
+    unsafe { 
+        tcpServerSocket.setSocketOption(
+            OptionLevel.SOCKET, 
+            OptionName.SO_REUSEADDR, 
+            enableValuePtr, 
+            Int32(reuseAddrEnableValue.size)
+        )
+    }
+    unsafe { releaseArrayRawData(acquireArrayRawData(reuseAddrEnableValue)) }  // 释放设置值的指针资源
+    
+    // 准备获取套接字选项值
+    let optionValue: Array<Byte> = [0, 0, 0, 0]
+    let valuePtr = unsafe { acquireArrayRawData(optionValue) }.pointer  // 对应getSocketOption的value参数
+    
+    // 长度指针
+    var lenPtr: CPointer<Int32> = LibC.malloc<Int32>(count: 1)  // 对应getSocketOption的len参数
+    unsafe { lenPtr.write(10) }  // 初始化长度（需≥选项值实际字节数）
+    
+    // 调用getSocketOption获取选项值
+    unsafe { 
+        tcpServerSocket.getSocketOption(
+            OptionLevel.SOCKET, 
+            OptionName.SO_REUSEADDR, 
+            valuePtr, 
+            lenPtr
+        )
+    }
+    unsafe { releaseArrayRawData(acquireArrayRawData(optionValue)) }  // 释放缓冲区指针资源
+    
+    // 读取并打印指针实际返回的值
+    let actualLen = unsafe { lenPtr.read() }  // 从lenPtr获取实际长度值
+    unsafe { LibC.free(lenPtr) }  // 释放长度指针内存
+    println("套接字选项值: ${optionValue}")
+    println("套接字选项值的长度: ${actualLen}")
+    
+    // 关闭套接字释放资源
+    tcpServerSocket.close()
+}
+```
+
+运行结果：
+
+```text
+套接字选项值: [1, 0, 0, 0]
+套接字选项值的长度: 4
+```
 
 ### func listen(Int32)
 
@@ -1981,6 +4554,63 @@ public func listen(backlog: Int32): Unit
 异常：
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或监听失败时，抛出异常。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印接收的消息
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
 
 ### func receive(Array\<Byte>, Int32)
 
@@ -2004,6 +4634,63 @@ public func receive(buffer: Array<Byte>, flags: Int32): Int64
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或接收数据失败时，抛出异常。
 - [SocketTimeoutException](net_package_exceptions.md#class-sockettimeoutexception) - 当超过指定的读超时时间时，抛出异常。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印接收的消息
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
+
 ### func receiveFrom(Array\<Byte>, Int32)
 
 ```cangjie
@@ -2026,6 +4713,48 @@ public func receiveFrom(buffer: Array<Byte>, flags: Int32): (RawAddress, Int64)
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或接收数据失败时，抛出异常。
 - [SocketTimeoutException](net_package_exceptions.md#class-sockettimeoutexception) - 当超过指定的读超时时间时，抛出异常。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 明确区分UDP服务端和客户端套接字
+    let udpServerSocket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+    let udpClientSocket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+
+    try {
+        // 清晰表达"服务器绑定的地址"
+        let serverBindAddress = RawAddress([2, 0, 39, 40, 127, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
+        udpServerSocket.bind(serverBindAddress)
+        
+        // 异步发送逻辑：明确"发送的数据"和目标地址
+        spawn {
+            let clientSendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            udpClientSocket.sendTo(serverBindAddress, clientSendData, 0)
+        }
+        
+        // 接收逻辑：区分"接收缓冲区"、"接收大小"和"接收的消息"
+        let receiveBuffer = Array<Byte>(100, repeat: 0)
+        let (_, receivedSize) = udpServerSocket.receiveFrom(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 释放资源
+        udpClientSocket.close()
+        udpServerSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
+
 ### func send(Array\<Byte>, Int32)
 
 ```cangjie
@@ -2043,6 +4772,63 @@ public func send(buffer: Array<Byte>, flags: Int32): Unit
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或发送数据失败时，抛出异常。
 - [SocketTimeoutException](net_package_exceptions.md#class-sockettimeoutexception) - 当超过指定的写超时时间时，抛出异常。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化服务器和客户端的TCP套接字（IPv6协议）
+    let serverSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    let clientSocket = RawSocket(SocketDomain.IPV6, SocketType.STREAM, ProtocolType.TCP)
+    
+    try {
+        // 构建IPv6地址结构的字节数组（共28字节）
+        let addressBytes = Array<Byte>(28, repeat: 0)
+        addressBytes[0..2] = [10, 0] // 地址族：AF_INET6（IPv6）
+        addressBytes[2..4] = [60, 101] // 端口号（网络字节序）
+        addressBytes[18..24] = [255, 255, 127, 0, 0, 1] // IPv6地址（嵌入IPv4回环地址127.0.0.1）
+        
+        // 封装地址信息
+        let serverAddress = RawAddress(addressBytes)
+        
+        // 服务器绑定地址并开始监听
+        serverSocket.bind(serverAddress)  // 如果出现 "Address already in use" 可以注释这行再执行一次，可以立刻释放端口
+        serverSocket.listen(100)
+        
+        // 启动客户端连接并发送消息（异步执行）
+        spawn {
+            clientSocket.connect(serverAddress)
+            let sendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            clientSocket.send(sendData, 0)
+        }
+        
+        // 等待客户端连接（预留2秒时间）
+        sleep(Duration.second * 2)
+        
+        // 服务器接受连接并接收消息
+        var acceptedClientSocket = serverSocket.accept(timeout: Duration.Zero)
+        let receiveBuffer = Array<Byte>(100, repeat: 0) // 接收缓冲区（100字节）
+        let receivedSize = acceptedClientSocket.receive(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        // 打印接收的消息
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 确保套接字关闭，释放资源
+        clientSocket.close()
+        serverSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
 
 ### func sendTo(RawAddress, Array\<Byte>, Int32)
 
@@ -2063,6 +4849,48 @@ public func sendTo(addr: RawAddress, buffer: Array<Byte>, flags: Int32): Unit
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭、发送数据失败或者 macOS 平台下 `connect` 被调用后调用 `sendTo` 时，抛出异常。
 - [SocketTimeoutException](net_package_exceptions.md#class-sockettimeoutexception) - 当超过指定的写超时时间时，抛出异常。
 
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 明确区分UDP服务端和客户端套接字
+    let udpServerSocket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+    let udpClientSocket = RawSocket(SocketDomain.IPV4, SocketType.DATAGRAM, ProtocolType.UDP)
+
+    try {
+        // 清晰表达"服务器绑定的地址"
+        let serverBindAddress = RawAddress([2, 0, 39, 40, 127, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
+        udpServerSocket.bind(serverBindAddress)
+        
+        // 异步发送逻辑：明确"发送的数据"和目标地址
+        spawn {
+            let clientSendData: Array<Byte> = "Hello, cangjie server.".toArray()
+            udpClientSocket.sendTo(serverBindAddress, clientSendData, 0)
+        }
+        
+        // 接收逻辑：区分"接收缓冲区"、"接收大小"和"接收的消息"
+        let receiveBuffer = Array<Byte>(100, repeat: 0)
+        let (_, receivedSize) = udpServerSocket.receiveFrom(receiveBuffer, 0)
+        let receivedMessage = String.fromUtf8(receiveBuffer.slice(0, receivedSize))
+        
+        println("Received message: ${receivedMessage}")
+    } finally {
+        // 释放资源
+        udpClientSocket.close()
+        udpServerSocket.close()
+    }
+}
+```
+
+运行结果：
+
+```text
+Received message: Hello, cangjie server.
+```
+
 ### func setSocketOption(Int32, Int32, CPointer\<Byte>, Int32)
 
 ```cangjie
@@ -2073,14 +4901,74 @@ public unsafe func setSocketOption(level: Int32, option: Int32, value: CPointer<
 
 参数：
 
-- level: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - 套接字选项级别。
-- option: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - 套接字选项名。
+- level: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - [套接字选项级别](./net_package_structs.md#struct-optionlevel)。
+- option: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - [套接字选项名](./net_package_structs.md#struct-optionname)。
 - value: [CPointer](../../core/core_package_api/core_package_intrinsics.md#cpointert)\<[Byte](../../core/core_package_api/core_package_types.md#type-byte)> - 套接字选项值。
 - len: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32) - 套接字选项值的长度。
 
 异常：
 
 - [SocketException](net_package_exceptions.md#class-socketexception) - 当前 [RawSocket](net_package_classes.md#class-rawsocket) 实例已经关闭，或设置套接字选项失败时，抛出异常。
+
+示例：
+<!-- verify -->
+
+```cangjie
+import std.net.*
+
+main() {
+    // 初始化IPv4 TCP服务器套接字
+    let tcpServerSocket = RawSocket(SocketDomain.IPV4, SocketType.STREAM, ProtocolType.TCP)
+    
+    // 设置SO_REUSEADDR选项（允许端口复用）
+    let reuseAddrEnableValue: Array<Byte> = [1, 0, 0, 0]
+    let enableValuePtr = unsafe { acquireArrayRawData(reuseAddrEnableValue) }.pointer
+    unsafe { 
+        tcpServerSocket.setSocketOption(
+            OptionLevel.SOCKET, 
+            OptionName.SO_REUSEADDR, 
+            enableValuePtr, 
+            Int32(reuseAddrEnableValue.size)
+        )
+    }
+    unsafe { releaseArrayRawData(acquireArrayRawData(reuseAddrEnableValue)) }  // 释放设置值的指针资源
+    
+    // 准备获取套接字选项值
+    let optionValue: Array<Byte> = [0, 0, 0, 0]
+    let valuePtr = unsafe { acquireArrayRawData(optionValue) }.pointer  // 对应getSocketOption的value参数
+    
+    // 长度指针
+    var lenPtr: CPointer<Int32> = LibC.malloc<Int32>(count: 1)  // 对应getSocketOption的len参数
+    unsafe { lenPtr.write(10) }  // 初始化长度（需≥选项值实际字节数）
+    
+    // 调用getSocketOption获取选项值
+    unsafe { 
+        tcpServerSocket.getSocketOption(
+            OptionLevel.SOCKET, 
+            OptionName.SO_REUSEADDR, 
+            valuePtr, 
+            lenPtr
+        )
+    }
+    unsafe { releaseArrayRawData(acquireArrayRawData(optionValue)) }  // 释放缓冲区指针资源
+    
+    // 读取并打印指针实际返回的值
+    let actualLen = unsafe { lenPtr.read() }  // 从lenPtr获取实际长度值
+    unsafe { LibC.free(lenPtr) }  // 释放长度指针内存
+    println("套接字选项值: ${optionValue}")
+    println("套接字选项值的长度: ${actualLen}")
+    
+    // 关闭套接字释放资源
+    tcpServerSocket.close()
+}
+```
+
+运行结果：
+
+```text
+套接字选项值: [1, 0, 0, 0]
+套接字选项值的长度: 4
+```
 
 ## class SocketAddress
 
