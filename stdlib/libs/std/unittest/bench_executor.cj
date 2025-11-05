@@ -249,15 +249,9 @@ class BenchmarkResult {
     prop median: Float64 { get() {
         bootstrapped.resultSample.sample.percentile(0.5)
     }}
-    prop medianCI99: Float64 { get() {
-        (bootstrapped.resultSample.sample.percentile(0.99) - bootstrapped.resultSample.sample.percentile(0.01)) / 2.0
-    }}
 
     prop mean: Float64 { get() {
         bootstrapped.resultSample.sample.mean()
-    }}
-    prop meanCI99: Float64 { get() {
-        (bootstrapped.meanStats.sample.percentile(0.99) - bootstrapped.meanStats.sample.percentile(0.01)) / 2.0
     }}
 
     prop overhead: Float64 { get() {
@@ -355,15 +349,15 @@ class BenchmarkResult {
 
         progress.println{
             "  mean:           " +
-            converter.toString(mean - meanCI99) + " .. " +
-            converter.toString(mean + meanCI99) + "  " +
+            converter.toString(bootstrapped.meanStats.sample.percentile(0.01)) + " .. " +
+            converter.toString(bootstrapped.meanStats.sample.percentile(0.99)) + "  " +
             "Err " + plusMinus + (errorEstPercent).format(".1") + "%"
         }
 
         progress.println{
             "  median:         " +
-            converter.toString(median - medianCI99) + " .. " +
-            converter.toString(median + medianCI99)
+            converter.toString(bootstrapped.resultSample.sample.percentile(0.01)) + " .. " +
+            converter.toString(bootstrapped.resultSample.sample.percentile(0.99))
         }
 
         let r2Low = bootstrapped.r2Stats.sample.percentile(0.01)
