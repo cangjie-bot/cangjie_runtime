@@ -104,8 +104,6 @@ void SignalStack::Handler(int signal, siginfo_t* siginfo, void* ucontextRaw)
         case SIGSEGV:
         case SIGBUS:
         case SIGFPE:
-        case SIGABRT:
-        case SIGILL:
             HandlerImpl(args);
             break;
         default:

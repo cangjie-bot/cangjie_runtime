@@ -271,6 +271,14 @@ void SignalManager::AddHandlerToSignalStack(int signal, SignalAction* sa)
         LOG(RTLOG_FATAL, "Invalid signal %d", signal);
     }
 
+    if (signal == SIGPIPE) {
+        sigset_t set;
+        CHECK_SIGNAL_CALL(sigemptyset, (&set), "sigemptyset failed in AddHandlerToSignalStack");
+        CHECK_SIGNAL_CALL(sigaddset, (&set, SIGPIPE), "sigaddset failed in AddHandlerToSignalStack");
+        CHECK_SIGNAL_CALL(pthread_sigmask, (SIG_UNBLOCK, &set, nullptr),
+                          "pthread_sigmask failed in AddHandlerToSignalStack");
+    }
+
     SignalStack::GetStacks()[signal].AddHandler(sa);
     SignalStack::GetStacks()[signal].MarkSig(signal);
 }
