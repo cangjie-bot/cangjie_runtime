@@ -33,7 +33,7 @@ public init(data: Array<T>)
 main() {
     var arr: Array<Int64> = [1, 2, 3]
     // 初始化迭代器
-    ArrayIterator(arr)
+    let ai = ArrayIterator(arr)
     println("迭代器初始化成功")
     return 0
 }
@@ -199,7 +199,6 @@ public func compare(that: Box<T>): Ordering
 示例：
 
 <!-- verify -->
-
 ```cangjie
 struct Data <: Comparable<Data> {
     var a: Int64 = 0
