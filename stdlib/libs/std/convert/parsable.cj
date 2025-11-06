@@ -924,7 +924,7 @@ func getTryDataAndFlag(data: String, isSigned: Bool, _: String): (Array<Byte>, I
         return ([], 1)
     }
     let (rawData, isNegative) = match (data[0]) {
-        case '+' => return ([], 0)
+        case '+' => (unsafe { data.rawData() }[1..], 1)
         case '-' =>
             if (isSigned) {
                 (unsafe { data.rawData() }[1..], 0)
