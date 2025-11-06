@@ -4310,29 +4310,12 @@ public class StructTypeInfo <: TypeInfo
 
 > **注意：**
 >
-> 不支持平台：macOS、iOS。
+> - 不支持平台：macOS、iOS。
+> - 由于实现限制，目前 `Struct` 类型的变量/属性修改需要参考如下代码手动 box/unbox。
 
 父类型：
 
 - [TypeInfo](#class-typeinfo)
-
-由于实现限制，目前 `Struct` 类型的变量/属性修改需要参考如下代码手动 box/unbox。
-
-```cangjie
-import std.reflect.*
-
-public struct SA {
-    public var v1 = 11
-}
-
-main() {
-    var sa = SA()
-    let saObj: Any = sa
-    StructTypeInfo.of<SA>().getInstanceVariable("v1").setValue(saObj, 22)
-    sa = (saObj as SA).getOrThrow()
-    println(sa.v1) // should be 22
-}
-```
 
 ### prop constructors
 
