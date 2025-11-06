@@ -1704,7 +1704,6 @@ Parameters:
 
 ```cangjie
 public open func nextUInt8(): UInt8
-```
 
 Function: Retrieves a pseudo-random number of type [UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8).
 
