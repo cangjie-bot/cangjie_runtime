@@ -30,6 +30,7 @@ elseif ((IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1))
         "Exception.cpp"
         "EhTable.cpp"
         "ExceptionCApi.cpp"
+	"ObjCException.cpp"
         "${CMAKE_SOURCE_DIR}/src/arch/ios/RestoreContextForEH.S"
     )
 elseif ((CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64") AND (WINDOWS_FLAG MATCHES 0))
