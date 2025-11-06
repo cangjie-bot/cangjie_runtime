@@ -30,6 +30,7 @@ elseif ((IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1))
         "Exception.cpp"
         "EhTable.cpp"
         "ExceptionCApi.cpp"
+	"ObjCException.cpp"
         "${CMAKE_SOURCE_DIR}/src/arch/ios/RestoreContextForEH.S"
     )
 elseif ((CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64") AND (WINDOWS_FLAG MATCHES 0))
@@ -55,3 +56,11 @@ elseif (WINDOWS_FLAG MATCHES 1)
     )
 endif()
 add_library(Exception STATIC ${SRC_LIST})
+if (IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1)
+	target_compile_options(Exception PRIVATE -Wno-elaborated-enum-base)
+	target_compile_options(Exception PRIVATE -Wno-availability)
+        find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
+        if (COREFOUNDATION_FRAMEWORK)
+            target_link_libraries(Exception $(COREFOUNDATION_FRAMEWORK))
+        endif()
+endif()
