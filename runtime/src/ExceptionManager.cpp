@@ -9,6 +9,9 @@
 #include "Base/LogFile.h"
 #include "Common/Runtime.h"
 #include "Exception/ExceptionCApi.h"
+#ifdef __APPLE__
+#include "Exception/CFException.h"
+#endif
 #include "ExceptionManager.inline.h"
 #include "Mutator/Mutator.h"
 #include "ObjectModel/MObject.h"
@@ -121,6 +124,7 @@ void ExceptionManager::DumpException()
         const char* summary = "Uncaught exception was found.";
         CString exceptionMsg(eWrapper.GetExceptionMessage());
 #if defined(__APPLE__)
+        CFException::ReportBacktraceToIosIpsLog(eWrapper);
         LOG(RTLOG_ERROR, summary);
         LOG(RTLOG_ERROR, exceptionMsg.Str());
 #endif
