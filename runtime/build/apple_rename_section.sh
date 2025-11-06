@@ -12,7 +12,7 @@ shift 2
 
 if [ ${platform} == "macos_cangjie" ] || [ ${platform} == "mac_x86_64_cangjie" ] || [ ${platform} == "mac_aarch64_cangjie" ]; then
   mac_sdk_path=$(xcrun --show-sdk-path)
-  mac_sdk_major_version=$(xcrun --show_sdk_version | cut -d '.' -f 1)
+  mac_sdk_major_version=$(xcrun --show-sdk-version | cut -d '.' -f 1)
 
   # The no_eh_labels: tell ld64 not to produces .eh labels on all FDEs,
   # as it will lead to incompatibility with ld64.lld.
