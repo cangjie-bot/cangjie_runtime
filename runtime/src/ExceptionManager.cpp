@@ -199,6 +199,9 @@ void ExceptionManager::DumpException()
 #endif
             LOG(RTLOG_INFO, "\t ... Some frames are not displayed ...\n");
         }
+#if defined(__OHOS__) && (__OHOS__ == 1)
+        LOG(RTLOG_FATAL, "Throw an uncaught exception: %s", clsName.Str());
+#endif
     }
 }
 
