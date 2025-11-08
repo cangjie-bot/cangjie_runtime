@@ -347,670 +347,172 @@ public enum TokenKind <: ToString {
 
     public operator func ==(right: TokenKind): Bool {
         match (this) {
-            case DOT => match (right) {
-                case DOT => true
-                case _ => false
-            }
-            case COMMA => match (right) {
-                case COMMA => true
-                case _ => false
-            }
-            case LPAREN => match (right) {
-                case LPAREN => true
-                case _ => false
-            }
-            case RPAREN => match (right) {
-                case RPAREN => true
-                case _ => false
-            }
-            case LSQUARE => match (right) {
-                case LSQUARE => true
-                case _ => false
-            }
-            case RSQUARE => match (right) {
-                case RSQUARE => true
-                case _ => false
-            }
-            case LCURL => match (right) {
-                case LCURL => true
-                case _ => false
-            }
-            case RCURL => match (right) {
-                case RCURL => true
-                case _ => false
-            }
-            case EXP => match (right) {
-                case EXP => true
-                case _ => false
-            }
-            case MUL => match (right) {
-                case MUL => true
-                case _ => false
-            }
-            case MOD => match (right) {
-                case MOD => true
-                case _ => false
-            }
-            case DIV => match (right) {
-                case DIV => true
-                case _ => false
-            }
-            case ADD => match (right) {
-                case ADD => true
-                case _ => false
-            }
-            case SUB => match (right) {
-                case SUB => true
-                case _ => false
-            }
-            case INCR => match (right) {
-                case INCR => true
-                case _ => false
-            }
-            case DECR => match (right) {
-                case DECR => true
-                case _ => false
-            }
-            case AND => match (right) {
-                case AND => true
-                case _ => false
-            }
-            case OR => match (right) {
-                case OR => true
-                case _ => false
-            }
-            case COALESCING => match (right) {
-                case COALESCING => true
-                case _ => false
-            }
-            case PIPELINE => match (right) {
-                case PIPELINE => true
-                case _ => false
-            }
-            case COMPOSITION => match (right) {
-                case COMPOSITION => true
-                case _ => false
-            }
-            case NOT => match (right) {
-                case NOT => true
-                case _ => false
-            }
-            case BITAND => match (right) {
-                case BITAND => true
-                case _ => false
-            }
-            case BITNOT => match (right) {
-                case BITNOT => true
-                case _ => false
-            }
-            case BITOR => match (right) {
-                case BITOR => true
-                case _ => false
-            }
-            case BITXOR => match (right) {
-                case BITXOR => true
-                case _ => false
-            }
-            case LSHIFT => match (right) {
-                case LSHIFT => true
-                case _ => false
-            }
-            case RSHIFT => match (right) {
-                case RSHIFT => true
-                case _ => false
-            }
-            case COLON => match (right) {
-                case COLON => true
-                case _ => false
-            }
-            case SEMI => match (right) {
-                case SEMI => true
-                case _ => false
-            }
-            case ASSIGN => match (right) {
-                case ASSIGN => true
-                case _ => false
-            }
-            case ADD_ASSIGN => match (right) {
-                case ADD_ASSIGN => true
-                case _ => false
-            }
-            case SUB_ASSIGN => match (right) {
-                case SUB_ASSIGN => true
-                case _ => false
-            }
-            case MUL_ASSIGN => match (right) {
-                case MUL_ASSIGN => true
-                case _ => false
-            }
-            case EXP_ASSIGN => match (right) {
-                case EXP_ASSIGN => true
-                case _ => false
-            }
-            case DIV_ASSIGN => match (right) {
-                case DIV_ASSIGN => true
-                case _ => false
-            }
-            case MOD_ASSIGN => match (right) {
-                case MOD_ASSIGN => true
-                case _ => false
-            }
-            case AND_ASSIGN => match (right) {
-                case AND_ASSIGN => true
-                case _ => false
-            }
-            case OR_ASSIGN => match (right) {
-                case OR_ASSIGN => true
-                case _ => false
-            }
-            case BITAND_ASSIGN => match (right) {
-                case BITAND_ASSIGN => true
-                case _ => false
-            }
-            case BITOR_ASSIGN => match (right) {
-                case BITOR_ASSIGN => true
-                case _ => false
-            }
-            case BITXOR_ASSIGN => match (right) {
-                case BITXOR_ASSIGN => true
-                case _ => false
-            }
-            case LSHIFT_ASSIGN => match (right) {
-                case LSHIFT_ASSIGN => true
-                case _ => false
-            }
-            case RSHIFT_ASSIGN => match (right) {
-                case RSHIFT_ASSIGN => true
-                case _ => false
-            }
-            case ARROW => match (right) {
-                case ARROW => true
-                case _ => false
-            }
-            case BACKARROW => match (right) {
-                case BACKARROW => true
-                case _ => false
-            }
-            case DOUBLE_ARROW => match (right) {
-                case DOUBLE_ARROW => true
-                case _ => false
-            }
-            case RANGEOP => match (right) {
-                case RANGEOP => true
-                case _ => false
-            }
-            case CLOSEDRANGEOP => match (right) {
-                case CLOSEDRANGEOP => true
-                case _ => false
-            }
-            case ELLIPSIS => match (right) {
-                case ELLIPSIS => true
-                case _ => false
-            }
-            case HASH => match (right) {
-                case HASH => true
-                case _ => false
-            }
-            case AT => match (right) {
-                case AT => true
-                case _ => false
-            }
-            case QUEST => match (right) {
-                case QUEST => true
-                case _ => false
-            }
-            case LT => match (right) {
-                case LT => true
-                case _ => false
-            }
-            case GT => match (right) {
-                case GT => true
-                case _ => false
-            }
-            case LE => match (right) {
-                case LE => true
-                case _ => false
-            }
-            case GE => match (right) {
-                case GE => true
-                case _ => false
-            }
-            case IS => match (right) {
-                case IS => true
-                case _ => false
-            }
-            case AS => match (right) {
-                case AS => true
-                case _ => false
-            }
-            case NOTEQ => match (right) {
-                case NOTEQ => true
-                case _ => false
-            }
-            case EQUAL => match (right) {
-                case EQUAL => true
-                case _ => false
-            }
-            case WILDCARD => match (right) {
-                case WILDCARD => true
-                case _ => false
-            }
-            case INT8 => match (right) {
-                case INT8 => true
-                case _ => false
-            }
-            case INT16 => match (right) {
-                case INT16 => true
-                case _ => false
-            }
-            case INT32 => match (right) {
-                case INT32 => true
-                case _ => false
-            }
-            case INT64 => match (right) {
-                case INT64 => true
-                case _ => false
-            }
-            case INTNATIVE => match (right) {
-                case INTNATIVE => true
-                case _ => false
-            }
-            case UINT8 => match (right) {
-                case UINT8 => true
-                case _ => false
-            }
-            case UINT16 => match (right) {
-                case UINT16 => true
-                case _ => false
-            }
-            case UINT32 => match (right) {
-                case UINT32 => true
-                case _ => false
-            }
-            case UINT64 => match (right) {
-                case UINT64 => true
-                case _ => false
-            }
-            case UINTNATIVE => match (right) {
-                case UINTNATIVE => true
-                case _ => false
-            }
-            case FLOAT16 => match (right) {
-                case FLOAT16 => true
-                case _ => false
-            }
-            case FLOAT32 => match (right) {
-                case FLOAT32 => true
-                case _ => false
-            }
-            case FLOAT64 => match (right) {
-                case FLOAT64 => true
-                case _ => false
-            }
-            case RUNE => match (right) {
-                case RUNE => true
-                case _ => false
-            }
-            case BOOLEAN => match (right) {
-                case BOOLEAN => true
-                case _ => false
-            }
-            case NOTHING => match (right) {
-                case NOTHING => true
-                case _ => false
-            }
-            case UNIT => match (right) {
-                case UNIT => true
-                case _ => false
-            }
-            case STRUCT => match (right) {
-                case STRUCT => true
-                case _ => false
-            }
-            case ENUM => match (right) {
-                case ENUM => true
-                case _ => false
-            }
-            case VARRAY => match (right) {
-                case VARRAY => true
-                case _ => false
-            }
-            case THISTYPE => match (right) {
-                case THISTYPE => true
-                case _ => false
-            }
-            case PACKAGE => match (right) {
-                case PACKAGE => true
-                case _ => false
-            }
-            case IMPORT => match (right) {
-                case IMPORT => true
-                case _ => false
-            }
-            case CLASS => match (right) {
-                case CLASS => true
-                case _ => false
-            }
-            case INTERFACE => match (right) {
-                case INTERFACE => true
-                case _ => false
-            }
-            case FUNC => match (right) {
-                case FUNC => true
-                case _ => false
-            }
-            case MACRO => match (right) {
-                case MACRO => true
-                case _ => false
-            }
-            case QUOTE => match (right) {
-                case QUOTE => true
-                case _ => false
-            }
-            case DOLLAR => match (right) {
-                case DOLLAR => true
-                case _ => false
-            }
-            case LET => match (right) {
-                case LET => true
-                case _ => false
-            }
-            case VAR => match (right) {
-                case VAR => true
-                case _ => false
-            }
-            case CONST => match (right) {
-                case CONST => true
-                case _ => false
-            }
-            case TYPE => match (right) {
-                case TYPE => true
-                case _ => false
-            }
-            case INIT => match (right) {
-                case INIT => true
-                case _ => false
-            }
-            case THIS => match (right) {
-                case THIS => true
-                case _ => false
-            }
-            case SUPER => match (right) {
-                case SUPER => true
-                case _ => false
-            }
-            case IF => match (right) {
-                case IF => true
-                case _ => false
-            }
-            case ELSE => match (right) {
-                case ELSE => true
-                case _ => false
-            }
-            case CASE => match (right) {
-                case CASE => true
-                case _ => false
-            }
-            case TRY => match (right) {
-                case TRY => true
-                case _ => false
-            }
-            case CATCH => match (right) {
-                case CATCH => true
-                case _ => false
-            }
-            case FINALLY => match (right) {
-                case FINALLY => true
-                case _ => false
-            }
-            case FOR => match (right) {
-                case FOR => true
-                case _ => false
-            }
-            case DO => match (right) {
-                case DO => true
-                case _ => false
-            }
-            case WHILE => match (right) {
-                case WHILE => true
-                case _ => false
-            }
-            case THROW => match (right) {
-                case THROW => true
-                case _ => false
-            }
-            case RETURN => match (right) {
-                case RETURN => true
-                case _ => false
-            }
-            case CONTINUE => match (right) {
-                case CONTINUE => true
-                case _ => false
-            }
-            case BREAK => match (right) {
-                case BREAK => true
-                case _ => false
-            }
-            case IN => match (right) {
-                case IN => true
-                case _ => false
-            }
-            case NOT_IN => match (right) {
-                case NOT_IN => true
-                case _ => false
-            }
-            case MATCH => match (right) {
-                case MATCH => true
-                case _ => false
-            }
-            case WHERE => match (right) {
-                case WHERE => true
-                case _ => false
-            }
-            case EXTEND => match (right) {
-                case EXTEND => true
-                case _ => false
-            }
-            case WITH => match (right) {
-                case WITH => true
-                case _ => false
-            }
-            case PROP => match (right) {
-                case PROP => true
-                case _ => false
-            }
-            case STATIC => match (right) {
-                case STATIC => true
-                case _ => false
-            }
-            case PUBLIC => match (right) {
-                case PUBLIC => true
-                case _ => false
-            }
-            case PRIVATE => match (right) {
-                case PRIVATE => true
-                case _ => false
-            }
-            case INTERNAL => match (right) {
-                case INTERNAL => true
-                case _ => false
-            }
-            case PROTECTED => match (right) {
-                case PROTECTED => true
-                case _ => false
-            }
-            case OVERRIDE => match (right) {
-                case OVERRIDE => true
-                case _ => false
-            }
-            case REDEF => match (right) {
-                case REDEF => true
-                case _ => false
-            }
-            case ABSTRACT => match (right) {
-                case ABSTRACT => true
-                case _ => false
-            }
-            case SEALED => match (right) {
-                case SEALED => true
-                case _ => false
-            }
-            case OPEN => match (right) {
-                case OPEN => true
-                case _ => false
-            }
-            case FOREIGN => match (right) {
-                case FOREIGN => true
-                case _ => false
-            }
-            case INOUT => match (right) {
-                case INOUT => true
-                case _ => false
-            }
-            case MUT => match (right) {
-                case MUT => true
-                case _ => false
-            }
-            case UNSAFE => match (right) {
-                case UNSAFE => true
-                case _ => false
-            }
-            case OPERATOR => match (right) {
-                case OPERATOR => true
-                case _ => false
-            }
-            case SPAWN => match (right) {
-                case SPAWN => true
-                case _ => false
-            }
-            case SYNCHRONIZED => match (right) {
-                case SYNCHRONIZED => true
-                case _ => false
-            }
-            case UPPERBOUND => match (right) {
-                case UPPERBOUND => true
-                case _ => false
-            }
-            case MAIN => match (right) {
-                case MAIN => true
-                case _ => false
-            }
-            case IDENTIFIER => match (right) {
-                case IDENTIFIER => true
-                case _ => false
-            }
-            case PACKAGE_IDENTIFIER => match (right) {
-                case PACKAGE_IDENTIFIER => true
-                case _ => false
-            }
-            case INTEGER_LITERAL => match (right) {
-                case INTEGER_LITERAL => true
-                case _ => false
-            }
-            case RUNE_BYTE_LITERAL => match (right) {
-                case RUNE_BYTE_LITERAL => true
-                case _ => false
-            }
-            case FLOAT_LITERAL => match (right) {
-                case FLOAT_LITERAL => true
-                case _ => false
-            }
-            case COMMENT => match (right) {
-                case COMMENT => true
-                case _ => false
-            }
-            case NL => match (right) {
-                case NL => true
-                case _ => false
-            }
-            case END => match (right) {
-                case END => true
-                case _ => false
-            }
-            case SENTINEL => match (right) {
-                case SENTINEL => true
-                case _ => false
-            }
-            case RUNE_LITERAL => match (right) {
-                case RUNE_LITERAL => true
-                case _ => false
-            }
-            case STRING_LITERAL => match (right) {
-                case STRING_LITERAL => true
-                case _ => false
-            }
-            case SINGLE_QUOTED_STRING_LITERAL => match (right) {
-                case SINGLE_QUOTED_STRING_LITERAL => true
-                case _ => false
-            }
-            case JSTRING_LITERAL => match (right) {
-                case JSTRING_LITERAL => true
-                case _ => false
-            }
-            case MULTILINE_STRING => match (right) {
-                case MULTILINE_STRING => true
-                case _ => false
-            }
-            case MULTILINE_RAW_STRING => match (right) {
-                case MULTILINE_RAW_STRING => true
-                case _ => false
-            }
-            case BOOL_LITERAL => match (right) {
-                case BOOL_LITERAL => true
-                case _ => false
-            }
-            case UNIT_LITERAL => match (right) {
-                case UNIT_LITERAL => true
-                case _ => false
-            }
-            case DOLLAR_IDENTIFIER => match (right) {
-                case DOLLAR_IDENTIFIER => true
-                case _ => false
-            }
-            case ANNOTATION => match (right) {
-                case ANNOTATION => true
-                case _ => false
-            }
-            case AT_EXCL => match (right) {
-                case AT_EXCL => true
-                case _ => false
-            }
-            case DOUBLE_COLON => match (right) {
-                case DOUBLE_COLON => true
-                case _ => false
-            }
-            case COMMON => match (right) {
-                case COMMON => true
-                case _ => false
-            }
-            case PLATFORM => match (right) {
-                case PLATFORM => true
-                case _ => false
-            }
-            case HANDLE => match (right) {
-                case HANDLE => true
-                case _ => false
-            }
-            case PERFORM => match (right) {
-                case PERFORM => true
-                case _ => false
-            }
-            case RESUME => match (right) {
-                case RESUME => true
-                case _ => false
-            }
-            case THROWING => match (right) {
-                case THROWING => true
-                case _ => false
-            }
-            case FEATURES => match (right) {
-                case FEATURES => true
-                case _ => false
-            }
-            case ILLEGAL => match (right) {
-                case ILLEGAL => true
-                case _ => false
-            }
+            case (DOT, DOT) => true
+            case (COMMA, COMMA) => true
+            case (LPAREN, LPAREN) => true
+            case (RPAREN, RPAREN) => true
+            case (LSQUARE, LSQUARE) => true
+            case (RSQUARE, RSQUARE) => true
+            case (LCURL, LCURL) => true
+            case (RCURL, RCURL) => true
+            case (EXP, EXP) => true
+            case (MUL, MUL) => true
+            case (MOD, MOD) => true
+            case (DIV, DIV) => true
+            case (ADD, ADD) => true
+            case (SUB, SUB) => true
+            case (INCR, INCR) => true
+            case (DECR, DECR) => true
+            case (AND, AND) => true
+            case (OR, OR) => true
+            case (COALESCING, COALESCING) => true
+            case (PIPELINE, PIPELINE) => true
+            case (COMPOSITION, COMPOSITION) => true
+            case (NOT, NOT) => true
+            case (BITAND, BITAND) => true
+            case (BITNOT, BITNOT) => true
+            case (BITOR, BITOR) => true
+            case (BITXOR, BITXOR) => true
+            case (LSHIFT, LSHIFT) => true
+            case (RSHIFT, RSHIFT) => true
+            case (COLON, COLON) => true
+            case (SEMI, SEMI) => true
+            case (ASSIGN, ASSIGN) => true
+            case (ADD_ASSIGN, ADD_ASSIGN) => true
+            case (SUB_ASSIGN, SUB_ASSIGN) => true
+            case (MUL_ASSIGN, MUL_ASSIGN) => true
+            case (EXP_ASSIGN, EXP_ASSIGN) => true
+            case (DIV_ASSIGN, DIV_ASSIGN) => true
+            case (MOD_ASSIGN, MOD_ASSIGN) => true
+            case (AND_ASSIGN, AND_ASSIGN) => true
+            case (OR_ASSIGN, OR_ASSIGN) => true
+            case (BITAND_ASSIGN, BITAND_ASSIGN) => true
+            case (BITOR_ASSIGN, BITOR_ASSIGN) => true
+            case (BITXOR_ASSIGN, BITXOR_ASSIGN) => true
+            case (LSHIFT_ASSIGN, LSHIFT_ASSIGN) => true
+            case (RSHIFT_ASSIGN, RSHIFT_ASSIGN) => true
+            case (ARROW, ARROW) => true
+            case (BACKARROW, BACKARROW) => true
+            case (DOUBLE_ARROW, DOUBLE_ARROW) => true
+            case (RANGEOP, RANGEOP) => true
+            case (CLOSEDRANGEOP, CLOSEDRANGEOP) => true
+            case (ELLIPSIS, ELLIPSIS) => true
+            case (HASH, HASH) => true
+            case (AT, AT) => true
+            case (QUEST, QUEST) => true
+            case (LT, LT) => true
+            case (GT, GT) => true
+            case (LE, LE) => true
+            case (GE, GE) => true
+            case (IS, IS) => true
+            case (AS, AS) => true
+            case (NOTEQ, NOTEQ) => true
+            case (EQUAL, EQUAL) => true
+            case (WILDCARD, WILDCARD) => true
+            case (INT8, INT8) => true
+            case (INT16, INT16) => true
+            case (INT32, INT32) => true
+            case (INT64, INT64) => true
+            case (INTNATIVE, INTNATIVE) => true
+            case (UINT8, UINT8) => true
+            case (UINT16, UINT16) => true
+            case (UINT32, UINT32) => true
+            case (UINT64, UINT64) => true
+            case (UINTNATIVE, UINTNATIVE) => true
+            case (FLOAT16, FLOAT16) => true
+            case (FLOAT32, FLOAT32) => true
+            case (FLOAT64, FLOAT64) => true
+            case (RUNE, RUNE) => true
+            case (BOOLEAN, BOOLEAN) => true
+            case (NOTHING, NOTHING) => true
+            case (UNIT, UNIT) => true
+            case (STRUCT, STRUCT) => true
+            case (ENUM, ENUM) => true
+            case (VARRAY, VARRAY) => true
+            case (THISTYPE, THISTYPE) => true
+            case (PACKAGE, PACKAGE) => true
+            case (IMPORT, IMPORT) => true
+            case (CLASS, CLASS) => true
+            case (INTERFACE, INTERFACE) => true
+            case (FUNC, FUNC) => true
+            case (MACRO, MACRO) => true
+            case (QUOTE, QUOTE) => true
+            case (DOLLAR, DOLLAR) => true
+            case (LET, LET) => true
+            case (VAR, VAR) => true
+            case (CONST, CONST) => true
+            case (TYPE, TYPE) => true
+            case (INIT, INIT) => true
+            case (THIS, THIS) => true
+            case (SUPER, SUPER) => true
+            case (IF, IF) => true
+            case (ELSE, ELSE) => true
+            case (CASE, CASE) => true
+            case (TRY, TRY) => true
+            case (CATCH, CATCH) => true
+            case (FINALLY, FINALLY) => true
+            case (FOR, FOR) => true
+            case (DO, DO) => true
+            case (WHILE, WHILE) => true
+            case (THROW, THROW) => true
+            case (RETURN, RETURN) => true
+            case (CONTINUE, CONTINUE) => true
+            case (BREAK, BREAK) => true
+            case (IN, IN) => true
+            case (NOT_IN, NOT_IN) => true
+            case (MATCH, MATCH) => true
+            case (WHERE, WHERE) => true
+            case (EXTEND, EXTEND) => true
+            case (WITH, WITH) => true
+            case (PROP, PROP) => true
+            case (STATIC, STATIC) => true
+            case (PUBLIC, PUBLIC) => true
+            case (PRIVATE, PRIVATE) => true
+            case (INTERNAL, INTERNAL) => true
+            case (PROTECTED, PROTECTED) => true
+            case (OVERRIDE, OVERRIDE) => true
+            case (REDEF, REDEF) => true
+            case (ABSTRACT, ABSTRACT) => true
+            case (SEALED, SEALED) => true
+            case (OPEN, OPEN) => true
+            case (FOREIGN, FOREIGN) => true
+            case (INOUT, INOUT) => true
+            case (MUT, MUT) => true
+            case (UNSAFE, UNSAFE) => true
+            case (OPERATOR, OPERATOR) => true
+            case (SPAWN, SPAWN) => true
+            case (SYNCHRONIZED, SYNCHRONIZED) => true
+            case (UPPERBOUND, UPPERBOUND) => true
+            case (MAIN, MAIN) => true
+            case (IDENTIFIER, IDENTIFIER) => true
+            case (PACKAGE_IDENTIFIER, PACKAGE_IDENTIFIER) => true
+            case (INTEGER_LITERAL, INTEGER_LITERAL) => true
+            case (RUNE_BYTE_LITERAL, RUNE_BYTE_LITERAL) => true
+            case (FLOAT_LITERAL, FLOAT_LITERAL) => true
+            case (COMMENT, COMMENT) => true
+            case (NL, NL) => true
+            case (END, END) => true
+            case (SENTINEL, SENTINEL) => true
+            case (RUNE_LITERAL, RUNE_LITERAL) => true
+            case (STRING_LITERAL, STRING_LITERAL) => true
+            case (SINGLE_QUOTED_STRING_LITERAL, SINGLE_QUOTED_STRING_LITERAL) => true
+            case (JSTRING_LITERAL, JSTRING_LITERAL) => true
+            case (MULTILINE_STRING, MULTILINE_STRING) => true
+            case (MULTILINE_RAW_STRING, MULTILINE_RAW_STRING) => true
+            case (BOOL_LITERAL, BOOL_LITERAL) => true
+            case (UNIT_LITERAL, UNIT_LITERAL) => true
+            case (DOLLAR_IDENTIFIER, DOLLAR_IDENTIFIER) => true
+            case (ANNOTATION, ANNOTATION) => true
+            case (AT_EXCL, AT_EXCL) => true
+            case (DOUBLE_COLON, DOUBLE_COLON) => true
+            case (COMMON, COMMON) => true
+            case (PLATFORM, PLATFORM) => true
+            case (HANDLE, HANDLE) => true
+            case (PERFORM, PERFORM) => true
+            case (RESUME, RESUME) => true
+            case (THROWING, THROWING) => true
+            case (FEATURES, FEATURES) => true
+            case (ILLEGAL, ILLEGAL) => true
             case _ => false
         }
     }
