@@ -336,20 +336,26 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
         maxMeasureBatch = this.batchSize.start
         let maxBatch = batchRange.end.ceilTo(maxMeasureBatch)
 
-        if (batchCount < 50) {
-            doMacroBench(maxBatch, batchCount)
+        let benchExecTime: Duration
+        Runtime.lastAccountedResult = 0.0
+        if (batchCount < 50 || (benchmark.measurement as Runtime)?.measuresGC() == Some(true)) {
+            benchExecTime = doMacroBench(maxBatch, batchCount)
         } else {
-            doMicroBench(maxBatch, batchCount)
+            benchExecTime = doMicroBench(maxBatch, batchCount)
         }
         
         // add some overhead calculations to collect at least some overhead statistics if not enough normal batches
         for (i in min(batchCount, 10 - this.batchSize.start * 10 / maxBatch)..10) {
             runMultipleAndMeasure(0, maxBatch) 
         }
+
+        progress.println {
+            "Finished in ${printDuration(benchExecTime)}. Analysing results:"
+        }
     }
 
     @OverflowWrapping
-    private func doMicroBench(maxBatch: Int64, batchCount: Int64) {
+    private func doMicroBench(maxBatch: Int64, batchCount: Int64): Duration {
         let max = Float64(maxBatch)
         let avgStep = max / Float64(batchCount)
 
@@ -380,10 +386,12 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
                 break
             }
         }
+
+        DateTime.now() - start
     }
 
     @OverflowWrapping
-    private func doMacroBench(max: Int64, batchCount: Int64) {
+    private func doMacroBench(max: Int64, batchCount: Int64): Duration {
         let avgStep = Float64(max) / Float64(batchCount)
         let start = DateTime.now()
 
@@ -399,11 +407,7 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
             }
         }
 
-        progress.println {
-            let realExecTime = DateTime.now() - start
-            "Finished in ${printDuration(realExecTime)}. Analysing results:"
-        }
-        
+        DateTime.now() - start
     }
 
     func calcBatchSize(): (Range<Int64>, Int64) {
