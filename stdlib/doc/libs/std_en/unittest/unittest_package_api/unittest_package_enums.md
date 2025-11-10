@@ -296,4 +296,38 @@ Function: Converts counter to string representation.
 
 Return Value:
 
-- [String](../../core/core_package_api/core_package_structs.md#struct-string) - String representation of the processor counter.
+- [String](../../core/core_package_api/core_package_structs.md#struct-string) - String representation of the processor counter. 
+
+## enum RuntimeInfo
+
+```cangjie
+public enum RuntimeInfo <: ToString { 
+    | GCCount
+    | GCTime
+    | AllocatedMemory
+}
+```
+
+### GCCount
+
+```cangjie
+GCCount
+```
+
+Function: Measures average number of GC invocations
+
+### GCTime
+
+```cangjie
+GCTime
+```
+
+Function: Measures how much each benchmark invocation increases GC duration.
+
+### AllocatedMemory
+
+```cangjie
+AllocatedMemory
+```
+
+Function: Measures how much memory was allocated

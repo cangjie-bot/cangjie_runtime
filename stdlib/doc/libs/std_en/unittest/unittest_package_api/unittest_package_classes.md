@@ -399,6 +399,8 @@ Function: Gets whether this strategy is infinite.
 
 Type: [Bool](../../core/core_package_api/core_package_intrinsics.md#bool).### func intoBenchmark(String, Configuration, (T, Int64, Int64) -> Float64)
 
+## func intoBenchmark(String, Configuration, (T, Int64, Int64) -> Float64)
+
 ```cangjie
 public func intoBenchmark(
     caseName!: String,
@@ -414,6 +416,30 @@ Parameters:
 - caseName!: [String](../../core/core_package_api/core_package_structs.md#struct-string) - Test case name.
 - configuration!: [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) - Configuration information.
 - doRun!: (T, Int64, Int64) -> Float64 - Performance test case execution body.
+
+Return Value:
+
+- [Benchmark](#class-benchmark) - Performance test case object.
+
+## func intoBenchmark(String, Configuration, Measurement, (T, Int64, Int64, Int64, Measurement) -> Float64)
+
+```cangjie
+public func intoBenchmark(
+    caseName!: String,
+    configuration!: Configuration,
+    measurement!: Measurement,
+    doRun!: (T, Int64, Int64, Int64, Measurement) -> Float64
+): Benchmark
+```
+
+Function: A helper function used by macro-generated code. Creates a performance test case using this strategy.
+
+Parameters:
+
+- caseName!: [String](../../core/core_package_api/core_package_structs.md#struct-string) - Test case name.
+- configuration!: [Configuration](../../unittest_common/unittest_common_package_api/unittest_common_package_classes.md#class-configuration) - Configuration information.
+- measurement!: [Measurement](./unittest_package_interfaces.md#interface-measurement) - Measurement used by created benchmark.
+- doRun!: (T, Int64, Int64, Int64, Measurement) -> Float64 - Performance test case execution body.
 
 Return Value:
 

@@ -1517,6 +1517,83 @@ Function: A simple text description of this measurement that will be displayed i
 
 Type: [String](../../core/core_package_api/core_package_structs.md#struct-string).
 
+## struct Runtime
+
+```cangjie
+public struct Runtime <: Measurement {
+    public Runtime(counter: RuntimeInfo)
+}
+```
+
+Function: Measures various metrics provided by Cangjie runtime
+
+Parent Types:
+
+- [Measurement](unittest_package_interfaces.md#interface-measurement)
+
+### prop conversionTable
+
+```cangjie
+prop conversionTable: MeasurementUnitTable
+```
+
+Function: Provides the conversion table for corresponding runtime metric.
+
+Type: [MeasurementUnitTable](../unittest_package_api/unittest_package_types.md#type-measurementunittable).
+
+### prop name
+
+```cangjie
+prop name: String
+```
+
+Function: Provides a unique display name for the current runtime metric.
+
+Type: [String](../../core/core_package_api/core_package_structs.md#struct-string).
+
+### prop textDescription
+
+```cangjie
+prop textDescription: String
+```
+
+Function: A simple text description of this measurement that will be displayed in certain reports.
+
+Type: [String](../../core/core_package_api/core_package_structs.md#struct-string).
+
+
+### Runtime(RuntimeInfo)
+
+```cangjie
+public Runtime(counter: RuntimeInfo)
+```
+
+Function: Constructor specifying the runtime metric to measure.
+
+Parameters:
+
+- counter: [RuntimeInfo](../unittest_package_api/unittest_package_enums.md#enum-runtimeinfo) - Specifies the counter.
+
+### func measure()
+
+```cangjie
+public func measure(): Float64
+```
+
+Function: Returns the value of the specified runtime metric.
+
+Return Value:
+
+- [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - The computed data for statistical analysis.
+
+### func setup()
+
+```cangjie
+func setup()
+```
+
+Function: Initialization routine for this measurement. Called before each benchmark step.
+
 ## struct Perf
 
 ```cangjie
