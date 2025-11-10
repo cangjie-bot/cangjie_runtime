@@ -323,7 +323,7 @@ private:
     Uptr base[0];
 };
 
-class ATTR_PACKED(4) TypeTemplate {
+class TypeTemplate {
 public:
     inline bool IsRawArray() const;
     inline bool IsVArray() const;
