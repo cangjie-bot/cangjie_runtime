@@ -1086,3 +1086,40 @@ public class ConcurrentHashMapIterator<K, V> <: Iterator<(K, V)> where K <: Hash
         return ((hash & (curHT.buckets.size - 1)) == index)
     }
 }
+
+extend<K, V> ConcurrentHashMap<K, V> <: Equatable<ConcurrentHashMap<K, V>> where V <: Equatable<V> {
+    public operator func ==(rhs: ConcurrentHashMap<K, V>): Bool {
+        if (refEq(this, right)) {
+            return true
+        }
+        if (size != rhs.size) {
+            return false
+        }
+        for ((leftKey, leftValue) in this) {
+            var a = match (rhs.get(leftKey)) {
+                case Some(v) => v
+                case None => return false
+            }
+            if (a != leftValue) {
+                return false
+            }
+        }
+        return true
+    }
+
+    public operator func !=(rhs: ConcurrentHashMap<K, V>): Bool {
+        if (size != rhs.size) {
+            return true
+        }
+        for ((leftKey, leftValue) in this) {
+            var a = match (rhs.get(leftKey)) {
+                case Some(v) = v
+                case None => return true
+            }
+            if (a != leftValue) {
+                return true
+            }
+        }
+        return false
+    }
+}
