@@ -196,7 +196,7 @@ extend<T> BufferedInputStream<T> <: Seekable where T <: Seekable {
                 inputStream.seek(Begin(oldPos))
             }
 
-            length - oldPos
+            length - oldPos + availLen
         }
     }
 
