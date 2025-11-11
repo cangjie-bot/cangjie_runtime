@@ -337,7 +337,8 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
         let maxBatch = batchRange.end.ceilTo(maxMeasureBatch)
 
         let benchExecTime: Duration
-        if (batchCount < 50) {
+        Runtime.lastAccountedResult = 0.0
+        if (batchCount < 50 || (benchmark.measurement as Runtime)?.measuresGC() == Some(true)) {
             benchExecTime = doMacroBench(maxBatch, batchCount)
         } else {
             benchExecTime = doMicroBench(maxBatch, batchCount)
