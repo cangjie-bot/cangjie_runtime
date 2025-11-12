@@ -35,3 +35,11 @@ func intrinsicRefEq(a: Object, b: Object): Bool
 @When[backend == "cjnative"]
 @Intrinsic
 func intrinsicRefEqRawArray<T>(a: RawArray<T>, b: RawArray<T>): Bool
+
+@When[backend == "cjnative"]
+@Intrinsic
+public func getTypeForTypeParameter<T>(): CString
+
+@When[backend == "cjnative"]
+@Intrinsic
+public func isSubtypeTypes<T, BaseT>(): Bool
