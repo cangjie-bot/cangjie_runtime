@@ -54,12 +54,12 @@ class TypeTemplateParser {
             }
             let genericParams = ArrayList<CPointer<Unit>>(data[i].size) {
                 j =>
-                let typeStr = data[i][j]
-                if (typeStr.contains("<")) {
-                    map.get(typeStr) ?? throw InfoNotFoundException("TypeInfo `${typeStr}` not found.")
-                } else {
-                    TypeInfo.get(typeStr)._info
-                }
+                    let typeStr = data[i][j]
+                    if (typeStr.contains("<")) {
+                        map.get(typeStr) ?? throw InfoNotFoundException("TypeInfo `${typeStr}` not found.")
+                    } else {
+                        TypeInfo.get(typeStr)._info
+                    }
             }
             let info = getOrCreateTypeInfoForReflect(template.info, genericParams.toArray())
             if (info.isNull()) {
@@ -108,7 +108,7 @@ class InheritedAndExtendedMembers {
 /**
  * Contains the reflective information that is common for classes, interfaces, structs and primitive types.
  */
-sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
+abstract sealed class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     private static let CACHE = HashMap<String, TypeInfo>()
 
     // this is a pointer to type metadata
@@ -291,8 +291,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             throw ReflectException("Unexpected empty qualifiedName.")
         }
 
-
-        let typeInfo = if(isPrimitive(typeInfoPointer)) {
+        let typeInfo = if (isPrimitive(typeInfoPointer)) {
             PrimitiveTypeInfo(typeInfoPointer, qualifiedName)
         } else if (isInterface(typeInfoPointer)) {
             InterfaceTypeInfo(typeInfoPointer)
@@ -300,6 +299,12 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             ClassTypeInfo(typeInfoPointer)
         } else if (isStruct(typeInfoPointer)) {
             StructTypeInfo(typeInfoPointer)
+        } else if (isEnum(typeInfoPointer)) {
+            EnumTypeInfo(typeInfoPointer)
+        } else if (isTuple(typeInfoPointer)) {
+            TupleTypeInfo(typeInfoPointer)
+        } else if (isFunc(typeInfoPointer)) {
+            FunctionTypeInfo(typeInfoPointer)
         } else {
             throw ReflectException("Type \"${qualifiedName}\" is not supported.")
         }
@@ -547,7 +552,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
      */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
-   }
+    }
 
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
