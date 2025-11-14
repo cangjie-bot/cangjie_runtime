@@ -377,8 +377,6 @@ public:
     inline bool IsRawArray() const;
     inline bool IsVArray() const;
     inline bool IsWeakRefType() const;
-    inline bool IsForeignType() const;
-    inline bool IsExportedType() const;
     inline bool IsArrayType() const;
     inline bool IsStructType() const;
     inline bool IsPrimitiveType() const;
