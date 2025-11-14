@@ -167,17 +167,6 @@ if(NOT DARWIN)
 endif()
 
 make_cangjie_lib(
-    std-ref IS_SHARED
-    DEPENDS cangjie${BACKEND_TYPE}Ref
-    CANGJIE_STD_LIB_DEPENDS
-        std-core
-    OBJECTS ${output_cj_object_dir}/std/ref.o)
-
-    add_library(cangjie-std-ref ${output_cj_object_dir}/std/ref.o)
-    set_target_properties(cangjie-std-ref PROPERTIES LINKER_LANGUAGE C)
-    install(TARGETS cangjie-std-ref DESTINATION lib/${output_triple_name}_${CJNATIVE_BACKEND}${SANITIZER_SUBPATH})
-
-make_cangjie_lib(
     std-sort IS_SHARED
     DEPENDS cangjie${BACKEND_TYPE}Sort
     CANGJIE_STD_LIB_DEPENDS std-core std-math std-collection
