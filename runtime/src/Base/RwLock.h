@@ -9,7 +9,6 @@
 #define MRT_RWLOCK_H
 #include <atomic>
 #include <pthread.h>
-#include "Log.h"
 
 namespace MapleRuntime {
 class RwLock {
