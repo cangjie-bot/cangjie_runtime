@@ -21,8 +21,6 @@ import std.collection.*
  * And parse functions (including special meanings of parameters.
  * in the form of "-" and "--") , Supported by the GNU software.
  * This class uses some methods of String and Rune classes for implementation.
- *
- * @since 0.17.4
  */
 @Deprecated[message: "Use global function `public func parseArguments(args: Array<String>, specs: Array<ArgumentSpec>): ParsedArguments` instead."]
 public class ArgOpt {

@@ -14,6 +14,7 @@ import std.convert.*
 const IPV4_ADDRESS_LEN: Int64 = 4
 const IPV6_ADDRESS_LEN: Int64 = 16
 
+
 sealed abstract class IPAddress <: ToString & Equatable<IPAddress> & Hashable & BigEndianOrder<IPAddress> {
     public prop size: Int64 {
         get() {
