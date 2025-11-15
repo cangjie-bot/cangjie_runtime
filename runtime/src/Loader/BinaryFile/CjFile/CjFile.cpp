@@ -59,6 +59,8 @@ void CJFile::LoadWinCJFileMeta()
     cJFileMeta.gcRootSize = *header->tables[GC_ROOT_TABLE].tableSize / sizeof(U64);
     cJFileMeta.packageInfoTbl.packageInfoBasePtr = *header->tables[PACKINFO_TABLE].tableAddr;
     cJFileMeta.packageInfoTbl.packageInfoTotalSize = *header->tables[PACKINFO_TABLE].tableSize;
+    cjFileMeta.typeExtTbl.typeExtBasePtr = reinterpret_cast<TypeExt*>(header->tables[TYPE_EXT_TABLE].tableAddr);
+    cjFileMeta.typeExtTbl.typeExtTotalSize = header->tables[TYPE_EXT_TABLE].tableSize;
     Heap::GetHeap().RegisterStaticRoots(cJFileMeta.gcRootsAddr, cJFileMeta.gcRootSize);
 }
 #elif defined(__APPLE__)
@@ -99,6 +101,8 @@ void CJFile::LoadMacCJFileMeta()
     cJFileMeta.gcRootSize = *header->tables[GC_ROOT_TABLE].tableSize / sizeof(U64);
     cJFileMeta.packageInfoTbl.packageInfoBasePtr = *header->tables[PACKINFO_TABLE].tableAddr;
     cJFileMeta.packageInfoTbl.packageInfoTotalSize = *header->tables[PACKINFO_TABLE].tableSize;
+    cjFileMeta.typeExtTbl.typeExtBasePtr = reinterpret_cast<TypeExt*>(*header->tables[TYPE_EXT_TABLE].tableAddr;
+    cjFileMeta.typeExtTbl.typeExtTotalSize = *header->tables[TYPE_EXT_TABLE].tableSize;
     Heap::GetHeap().RegisterStaticRoots(cJFileMeta.gcRootsAddr, cJFileMeta.gcRootSize);
 }
 #else
@@ -143,6 +147,8 @@ void CJFile::LoadLinuxCJFileMeta()
     cJFileMeta.gcRootSize = header->tables[GC_ROOT_TABLE].tableSize / sizeof(U64);
     cJFileMeta.packageInfoTbl.packageInfoBasePtr = begin + header->tables[PACKINFO_TABLE].tableOffset;
     cJFileMeta.packageInfoTbl.packageInfoTotalSize = header->tables[PACKINFO_TABLE].tableSize;
+    cJFileMeta.typeExtTbl.typeExtBasePtr = reinterpret_cast<TypeExt*>(begin + header->tables[TYPE_EXT_TABLE].tableOffset);
+    cJFileMeta.typeExtTbl.typeExtTotalSize = header->tables[TYPE_EXT_TABLE].tableSize;
     Heap::GetHeap().RegisterStaticRoots(cJFileMeta.gcRootsAddr, cJFileMeta.gcRootSize);
 }
 #endif
