@@ -205,7 +205,11 @@ function(add_cangjie_library target_name)
             ${module_name_argument})
     endif()
     if(CMAKE_CROSSCOMPILING)
-        set(COMPILE_CMD ${COMPILE_CMD} "--target=${TRIPLE}")
+        if(CMAKE_ANDROID_API EQUAL 26)
+            set(COMPILE_CMD ${COMPILE_CMD} "--target=${TRIPLE}${CMAKE_ANDROID_API}")
+        else()
+            set(COMPILE_CMD ${COMPILE_CMD} "--target=${TRIPLE}")
+        endif()
         if(NOT ("${CANGJIE_TARGET_TOOLCHAIN}" STREQUAL ""))
             set(COMPILE_CMD ${COMPILE_CMD} "-B${CANGJIE_TARGET_TOOLCHAIN}")
         endif()
@@ -246,7 +250,6 @@ function(add_cangjie_library target_name)
 
     set(ENV{LD_LIBRARY_PATH} $ENV{LD_LIBRARY_PATH}:${CMAKE_BINARY_DIR}/lib)
     string(TOLOWER ${TARGET_TRIPLE_DIRECTORY_PREFIX}_${BACKEND} output_cj_lib_dir)
-
     add_custom_target(
         ${target_name} ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${output_dir}
