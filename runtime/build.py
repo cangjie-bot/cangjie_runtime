@@ -53,7 +53,9 @@ def do_build(args):
     # Adjust CMAKE_INSTALL_PREFIX based on target_args
     if target_platform == "ohos":
         install_prefix = os.path.join(prefix_path, f"linux_ohos_{mode}")
-    elif target_platform == "android":
+    elif target_platform == "android26":
+        install_prefix = os.path.join(prefix_path, f"linux_android_{mode}")
+    elif target_platform == "android31" or target_platform == "android":
         install_prefix = os.path.join(prefix_path, f"linux_android31_{mode}")
     elif target_platform == "ios-simulator":
         install_prefix = os.path.join(prefix_path, f"ios_simulator_{mode}")
