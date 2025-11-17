@@ -139,24 +139,6 @@ func createExceptTypePattern(pattern: NodeFormat_Pattern): ExceptTypePattern {
     return ExceptTypePattern(p, colon, types, bitOr)
 }
 
-func createCommandTypePattern(pattern: NodeFormat_Pattern): CommandTypePattern {
-    var commandTypePattern = match (pattern.GetPatternAsCommandTypePattern()) {
-        case Some(v) => v
-        case None => throw ParseASTException("In createCommandTypePattern function: get commandTypePattern")
-    }
-    var p = generatePatternAST(commandTypePattern.GetPattern())
-    var colon: Token = Token(TokenKind.COLON).addPosition(commandTypePattern.GetColonPos())
-    var types: ArrayList<TypeNode> = ArrayList<TypeNode>()
-    for (tp in commandTypePattern.GetTypes()) {
-        types.add(generateTypeAST(tp))
-    }
-    var bitOr = Tokens()
-    for (pos in commandTypePattern.GetBitOrPosVec()) {
-        bitOr.append(Token(TokenKind.BITOR).addPosition(pos))
-    }
-    return CommandTypePattern(p, colon, types, bitOr)
-}
-
 func createTypePattern(pattern: NodeFormat_Pattern): TypePattern {
     var typePattern = match (pattern.GetPatternAsTypePattern()) {
         case Some(v) => v
