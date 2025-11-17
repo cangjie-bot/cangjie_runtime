@@ -69,7 +69,6 @@ func generatePatternAST(patternNode: Option<NodeFormat_Pattern>): Pattern {
         case "var_or_enum_pattern" => createVarOrEnumPattern(pattern, nodeBase.GetBegin())
         case "type_pattern" => createTypePattern(pattern)
         case "except_type_pattern" => createExceptTypePattern(pattern)
-        case "effect_type_pattern" => createCommandTypePattern(pattern)
         case "wildcard_pattern" => createWildcardPattern(pattern, nodeBase.GetBegin())
         case _ => throw ParseASTException("Unsupported parse the pattern node: ${astKind}.\n")
     }
