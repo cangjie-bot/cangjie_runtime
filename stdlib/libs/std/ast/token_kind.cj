@@ -346,7 +346,7 @@ public enum TokenKind <: ToString {
       ...
 
     public operator func ==(right: TokenKind): Bool {
-        match (this) {
+        match ((this, right)) {
             case (DOT, DOT) => true
             case (COMMA, COMMA) => true
             case (LPAREN, LPAREN) => true
