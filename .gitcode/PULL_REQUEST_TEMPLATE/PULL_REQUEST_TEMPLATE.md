@@ -27,6 +27,11 @@ Please describe the type of changes in this Pull Request (reason). **Simply save
 - [ ] Pass. Please provide screenshots below.
 - [ ] Not applicable. Please explain the reasons below.
 
+### Results of compiling and running the documentation example code:
+
+- [ ] Pass. Please provide screenshots below.
+- [ ] Not applicable.
+
 ## Related Issues (Required)
 
 Please provide links to issues related to this Pull Request.
