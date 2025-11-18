@@ -199,6 +199,22 @@ RTErrorCode InitCJRuntime(const struct RuntimeParam* param)
     unsigned int cpus = std::thread::hardware_concurrency();
     uint32_t defaultProcs = cpus != 0 ? static_cast<uint32_t>(cpus) : 8;
     size_t initHeapSize = param->heapParam.heapSize == 0 ? 64 * 1024 : param->heapParam.heapSize;
+#if defined(__OHOS__)
+    // use limited heap size in OHOS devices --
+    // (   , 2GB] -- 128MB
+    // (2GB, 8GB) -- 256MB
+    // [8GB,    ) -- 512MB
+    if (g_sysmemSize <= 2U * MapleRuntime::GB) {
+        // 128MB
+        initHeapSize = 128 * 1024;
+    } else if (g_sysmemSize < 8U * MapleRuntime::GB) {
+        // 256MB
+        initHeapSize = 256 * 1024;
+    } else {
+        // 512MB
+        initHeapSize = 512 * 1024;
+    }
+#endif
     RuntimeParam config = {
         .heapParam = {
             // Default value of region size is 64KB.
