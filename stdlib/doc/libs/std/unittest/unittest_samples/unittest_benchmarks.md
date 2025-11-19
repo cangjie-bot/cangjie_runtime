@@ -130,22 +130,47 @@ class ArrayBenchmarks {
 }
 ```
 
-得到的输出如下：
+The output will consist of two parts：detailed progress and statistics for each case, and overall summary in the end.
+
+So for each case as it is being executed and analysed the following information will be printed as soon as each corresponding part is finished:
 
 ```text
-TP: package, time elapsed: 18438985580 ns, RESULT:
-    TCS: ArrayBenchmarks, time elapsed: 18438962951 ns, RESULT:
-    | Case           | Args   |   Median |         Err |   Err% |     Mean |
-    |:---------------|:-------|---------:|------------:|-------:|---------:|
-    | hashCodeArray  | 1000   | 10.68 us |  ±0.0832 us |  ±0.8% | 10.57 us |
-    | hashCodeArray  | 10000  | 104.3 us |   ±0.504 us |  ±0.5% | 103.8 us |
-    |                |        |          |             |        |          |
-    | hashCodeString | 1000   | 165.7 ns |   ±0.513 ns |  ±0.3% | 165.6 ns |
-    | hashCodeString | 10000  | 1.576 us | ±0.00644 us |  ±0.4% | 1.563 us |
+Starting the benchmark `ArrayBenchmarks.hashCodeArray(1000)`.
+    Warming up for 1.000 s.
+    Starting measurements of 200 batches. Measuring Duration.
+    Max batch size: 4578, estimated execution time: 5.002 s.
+Analysing results:
+  percentiles:    [   10%        50%        90%        95%        99%        ]  
+  time:           [   10.92 us   10.96 us   11.02 us   11.05 us   11.20 us   ]  
+  mean:           10.93 us .. 11.01 us  Err ±0.3%
+  median:         10.89 us .. 11.20 us
+  R²:             0.996 .. 1.000
+  stddev:         16.18 ns
+```
+The framework uses linear regression and bootstrapping to calculate various statistical parameters, their confidence intervals and estimate probability distribution of the final result.
+
+```text
+TP: asdf, time elapsed: 27527020086 ns, RESULT:
+    TCS: ArrayBenchmarks, time elapsed: 27527017991 ns, RESULT:
+    100% = previous run
+    | Case           | Args   |   Median |         Err |   Err% |     Mean |  Ratio |
+    |:---------------|:-------|---------:|------------:|-------:|---------:|-------:|
+    | hashCodeArray  | 1000   | 10.96 us |  ±0.0371 us |  ±0.3% | 10.97 us |  +0.4% |
+    | hashCodeArray  | 10000  | 104.9 us |   ±0.192 us |  ±0.2% | 105.0 us |  +0.0% |
+    |                |        |          |             |        |          |        |
+    | hashCodeString | 1000   | 161.5 ns |   ±0.292 ns |  ±0.2% | 161.7 ns |  +0.3% |
+    | hashCodeString | 10000  | 1.565 us | ±0.00398 us |  ±0.3% | 1.566 us |  +0.3% |
 Summary: TOTAL: 2
     PASSED: 2, SKIPPED: 0, ERROR: 0
     FAILED: 0
 ```
+Currently this final table contains the following statistical parameters for each benchmark:
+ - Median, estimated median duration of the benchmark. 
+ - Err, indicates how presice framework was able to estimate result. Currently, this is an absolute value of a radius of a 99% confidence intervar for median.
+ - Err%, same as Err, but outputs a relative value.
+ - Mean, estimated average duration of the benchmark.
+ - Ratio, optional column that output comparison results. It helps to quickly estimate changes in performance. By default it will compare current result with output of previous execution of the same benchmark. But it can be customized with `baseline` configuration parameter of @Configure macro.
+
 
 此时，框架将长度作为初始输入参数。在基准测试开始前，只为特定基准生成相关数据，因此不会影响后续基准测试。此处减少了代码冗余，甚至可以将 `[1000, 10000]` 数组移动到独立变量中来进一步减少冗余。此外，由于数据在框架内部处理，编译器无法直接获取精确的参数值进行优化。
 
@@ -313,7 +338,7 @@ class Foo {
 - `minBatches`：指定工作负载拆分后的最小批处理量。默认情况下，框架会根据预热结果在10到200之间选择最合适的值。注意，指定过大的值可能导致统计分析时间过长。
 - `warmup`：指定框架调用函数执行基准测试的预热时间。
 - `minDuration`：指定基准测试的目标持续时间。框架会选择批处理大小和批处理量，使整个基准测试阶段的执行时间略微超过`minDuration`的目标值。
-- `explicitGC`：指定批处理之间如何执行GC。默认情况下，框架会在批处理之间触发GC，尝试均匀分配GC工作负载。否则，对于内存分配密集型的基准测试，可能会出现不可知的GC波动，影响测试结果。但对于一些没有内存分配的基准测试，这种行为可能会导致结果不准确或不稳定。若要禁用此行为，可以将该参数设置为 `Disable`。
+- `explicitGC`：指定批处理之间如何执行GC。By default, when necessary, the framework will trigger GC between batches and wait for its completion. This is necessary to ensure that unpredictability and uneven distribution of GC work do not affect results of benchmarking. Also GC workload during benchmark in general does not represent GC workload in real world scenarios because it depends heavily on surrounding code. However if it is necessary to include GC influence on result, `Light` and `Disabled` values can be used. Or it can be measured directly with `Runtime` measurements.
 
 此外，有时可能需要迭代多个不同值的参数，以验证其是否影响结果。为了支持这种需求，框架提供了数据DSL的特殊语法形式：`config.<parameter> in <strategy>`。
 
@@ -329,6 +354,14 @@ class Foo {
 }
 ```
 
+#### Runtime measurements and explicitGC 
+
+`explicitGC` option influences how runtime invokes GC and `Runtime` measurements are affected by GC, so it is important to understand how they interact with each other and what exact scenarios do they measure. 
+
+ - `Heavy` option runs GC between benchmark batches. This means that both GC and benchmark work on otherwise idle state, so their possible interaction is reduced to minimum. It means that `Runtime(GCTime)` will measure how much each iteration of benchmark will increase duration of subsequent GC if this GC will be running on idle environment.
+ - `Light` option starts GC before benchmark batch but does not wait for GC to finish. This means that both GC and benchmark are execuing at the same time their interaction is increased to a maximum. It means that `Runtime(GCTime)` will measure how much each iteration of benchmark will increase duration of subsequent GC if this GC will be running while prodiction code is executing. When comparing this result with previous option, it can be used to measure how much contention there is between benchmark and GC.
+ - `Disabled` option prevents framework from doing explicit calls for GC, but it still can be triggered internally by runtime according to some heuristics, just like it happens in production scenario. So this case `Runtime(GCTime)` measures how much each iteration of benchmark will increase duration GC when accounting for how often GC is invoked by runtime.
+
 ### 避免不必要的优化
 
 在基准测试复杂代码时，通常代码会包含一些能够影响其行为的参数。因此，为了执行一个确定性的基准测试，你可能需要为这些参数指定具体的值。基准测试代码可能如下所示：
@@ -342,7 +375,7 @@ func foo(): Unit {
 }
 ```
 
-但是，可能存在这样的情况：这个函数在真实程序中并不是这么调用的。也就是说，`param` 的值在真实程序中是运行时计算出来的，而在这里我们使用了字面常量，允许编译器在优化时利用这些信息。问题在于，我们希望基准测试的 `complexCode` 能够准确模拟它在真实程序中的表现。因此，解决这个问题的方法是使用策略来隐藏编译器看到的确切值。
+However, it is possible that this function is not called this way in the actual program. In other words, the value of `param` is computed at runtime in the real program, whereas here we use a literal constant, allowing the compiler to exploit this information during optimization. The issue is that we want the benchmarked `complexCode` to accurately simulate its behavior in the real program. Thus, the solution is to use strategies to hide the exact values from the compiler. 
 
 <!-- run -->
 ```cangjie
@@ -353,6 +386,28 @@ func foo(arg: Int64): Unit {
 }
 ```
 
-然而，这里依然存在另一个问题。`complexCode` 的返回值没有被使用。如果编译器检测到它可以部分或完全移除这个函数调用，将会发生优化。为了解决这个问题，应该通过黑盒处理返回值。这个功能仍在开发中，所以目前的临时解决方法是将返回值存储在全局变量中。
+Yet another problem remains. The return value of `complexCode` is unused. If the compiler detects that it can partially or entirely remove this function call, optimization will occur. To address this, Cangjie standard library provides special `std.runtime.blackBox` function. Semantically this is just an identity function. But it is specially handled by compiler to ensure that values passed into `blackBox` are hidden from various optimizations.
 
-<!-- 待办：黑盒 -->
+<!-- run -->
+```cangjie
+func complexCode(param: arg) { /* code to benchmark*/ }
+
+@Bench[arg in [ 1 ]]
+@Test
+func foo(arg: Int64): Unit {
+    blackBox(complexCode(param: arg))
+}
+```
+
+Internally framework already passes return value of benchmarked function into `blackBox`. But it is still useful for some intermediate parameters.
+So unless more complex strategy is necessary the simplest way to write benchmark correctly is:
+
+<!-- run -->
+```cangjie
+func complexCode(param: arg) { /* code to benchmark*/ }
+
+@Test
+func foo() {
+    complexCode(param: blackBox(1))
+}
+```
