@@ -31,6 +31,8 @@ if (current_os == "ohos") {
     cj_config.platform_target = "linux_ohos_aarch64_cjnative"
   } else if (target_cpu == "x86_64") {
     cj_config.platform_target = "linux_ohos_x86_64_cjnative"
+  } else if (target_cpu == "arm") {
+    cj_config.platform_target = "linux_ohos_arm_cjnative"
   } else {
     assert(false, "unsupport cpu type ${target_cpu}")
   }
