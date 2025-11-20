@@ -9,6 +9,8 @@
 #include "Common/Runtime.h"
 #include "os/Path.h"
 
+#include <regex>
+
 namespace MapleRuntime {
 const char* g_stableVersion = "0.59.6";
 CjSemanticVersion::CjSemanticVersion()
@@ -77,7 +79,32 @@ SemanticVersionInfo::SemanticVersionInfo(CString& version)
     if (version.IsEmpty()) {
         return;
     }
-    auto tokens = CString::Split(version, '.');
+    CString coreVersion;
+    int dashPos = version.Find('-');
+    int plusPos = version.Find('+');
+    int endPos = version.Length() - 1;
+    if (dashPos == endPos || plusPos == endPos) {
+        LOG(RTLOG_ERROR, "The version %s is incorrect.", version.Str());
+        return;
+    }
+    if (dashPos >= 0 && plusPos >= 0) {
+        if (dashPos > plusPos) {
+            LOG(RTLOG_ERROR, "The version %s is incorrect.", version.Str());
+            return;
+        }
+        coreVersion = version.SubStr(0, dashPos);
+        preRelease = version.SubStr(dashPos + 1, plusPos - dashPos - 1);
+        buildMetaData = version.SubStr(plusPos + 1);
+    } else if (dashPos < 0) {
+        coreVersion = version.SubStr(0, plusPos);
+        buildMetaData = version.SubStr(plusPos + 1);
+    } else if (plusPos < 0) {
+        coreVersion = version.SubStr(0, dashPos);
+        preRelease = version.SubStr(dashPos + 1);
+    } else {
+        coreVersion = version;
+    }
+    auto tokens = CString::Split(coreVersion, '.');
     if (tokens.size() != static_cast<size_t>(VersionType::VERSION_TYPE_NUMBER)) {
         LOG(RTLOG_ERROR, "The version %s is incorrect.", version.Str());
         return;
