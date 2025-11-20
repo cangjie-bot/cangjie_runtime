@@ -286,8 +286,8 @@ void TypeInfo::AddMTable(TypeInfo* itf, ExtensionData* extensionData)
     }
 }
 
-static std::pair<bool, ExtensionData*> ResolveExtensionData(
-    TypeInfo* ti, TypeInfo* resolveTi, ExtensionData* extensionData, TypeInfo* itf, bool needCheckStop = false,
+static bool ResolveExtensionData(
+    TypeInfo* ti, TypeInfo* resolveTi, ExtensionData* extensionData, bool needCheckStop = false,
     const std::function<void(TypeInfo*)> getInterface = nullptr)
 {
     U16 typeArgNum = resolveTi->GetTypeArgNum();
@@ -302,7 +302,7 @@ static std::pair<bool, ExtensionData*> ResolveExtensionData(
     U32 thisID = resolveTi->GetUUID();
     if (needCheckStop) {
         if (extensionData == nullptr) {
-            return {false, nullptr};
+            return false;
         }
         void* targetType = extensionData->GetTargetType();
         // We've traversed all related EDs.
@@ -311,23 +311,23 @@ static std::pair<bool, ExtensionData*> ResolveExtensionData(
         if (extensionData->TargetIsTypeInfo()) {
             auto tSourceGeneric = reinterpret_cast<TypeInfo*>(targetType)->GetSourceGeneric();
             if (tSourceGeneric == nullptr && reinterpret_cast<TypeInfo*>(targetType)->GetUUID() != thisID) {
-                return {false, nullptr};
+                return false;
             }
             if (tSourceGeneric != nullptr) {
                 if (rSourceGeneric == nullptr) {
-                    return {false, nullptr};
+                    return false;
                 } else if (manager->GetTypeTemplateUUID(tSourceGeneric) !=
                            manager->GetTypeTemplateUUID(rSourceGeneric)) {
-                    return {false, nullptr};
+                    return false;
                 } else if (reinterpret_cast<TypeInfo*>(targetType)->GetUUID() != thisID) {
-                    return {true, nullptr};
+                    return true;
                 }
             }
         } else {
             if (rSourceGeneric == nullptr ||
                 manager->GetTypeTemplateUUID(reinterpret_cast<TypeTemplate*>(targetType)) !=
                 manager->GetTypeTemplateUUID(rSourceGeneric)) {
-                return {false, nullptr};
+                return false;
             }
         }
     }
@@ -344,15 +344,12 @@ static std::pair<bool, ExtensionData*> ResolveExtensionData(
             getInterface(extItf);
         }
         ti->AddMTable(extItf, extensionData);
-        if (extItf == itf) {
-           return {true, extensionData};
-        }
     }
-    return {true, nullptr};
+    return true;
 }
 
-static ExtensionData* ResolveInnerExtensionDefs(TypeInfo* ti, TypeInfo* resolveTi, TypeInfo* itf,
-    const std::function<void(TypeInfo*)> getInterface)
+static void ResolveInnerExtensionDefs(
+    TypeInfo* ti, TypeInfo* resolveTi, const std::function<void(TypeInfo*)> getInterface)
 {
     // Normally, after all ExtensionDefs of the class are loaded, the branch should not enter again.
     // ExtensionDatas = [A_A, B_A, B_B, B_I1, B_I2, ..., C_A, C_B, C_C, C_I1, ...]. If this is C, and itf is I1,
@@ -362,11 +359,11 @@ static ExtensionData* ResolveInnerExtensionDefs(TypeInfo* ti, TypeInfo* resolveT
     // The MTable of `resolveTi` has been completed already, and can be merged into MTable of `ti`.
     if (!resolveTi->GetMTableDesc()->NeedResolveInner()) {
         if (ti == resolveTi) {
-            return nullptr;
+            return;
         }
         auto& resolve_ti_mtable = resolveTi->GetMTableDesc()->mTable;
         ti->GetMTableDesc()->mTable.insert(resolve_ti_mtable.begin(), resolve_ti_mtable.end());
-        return nullptr;
+        return;
     }
     if (ti != resolveTi) {
         auto& resolve_ti_mtable = resolveTi->GetMTableDesc()->mTable;
@@ -375,55 +372,42 @@ static ExtensionData* ResolveInnerExtensionDefs(TypeInfo* ti, TypeInfo* resolveT
 
     ExtensionData** vExtensionPtr = resolveTi->GetvExtensionDataStart();
     if (vExtensionPtr == nullptr) {
-        return nullptr;
+        return;
     }
     U16 initIndex = resolveTi->GetValidInheritNum();
-    // ... update mtable
+    // update mtable
     U16 cnt = 0;
     while (cnt < initIndex) {
-        ResolveExtensionData(ti, resolveTi, *vExtensionPtr, itf, true, getInterface);
+        ResolveExtensionData(ti, resolveTi, *vExtensionPtr, true, getInterface);
         ++vExtensionPtr;
         ++cnt;
     }
-    // vExtensionPtr += initIndex;
     MTableBitmap& bitmap = resolveTi->GetMTableDesc()->mTableBitmap;
-    ExtensionData* found = nullptr;
     if (bitmap.tag != 0) {
         bitmap.ForEachBit(
-            [ti, resolveTi, getInterface, itf, &found](ExtensionData* extensionData) {
-                auto tmp = ResolveExtensionData(ti, resolveTi, extensionData, itf, false, getInterface).second;
-                found = found ? found : tmp;
+            [ti, resolveTi, getInterface](ExtensionData* extensionData) {
+                ResolveExtensionData(ti, resolveTi, extensionData, false, getInterface);
             }, vExtensionPtr);
-        return found;
+        return;
     }
     while (true) {
-        auto res = ResolveExtensionData(ti, resolveTi, *vExtensionPtr, itf, true, getInterface);
-        if (!res.first) {
+        auto res = ResolveExtensionData(ti, resolveTi, *vExtensionPtr, true, getInterface);
+        if (!res) {
             break;
         }
-        found = found ? found : res.second;
         ++vExtensionPtr;
     }
-    return found;
 }
 
-ExtensionData* TypeInfo::TraverseInnerExtensionDefs(TypeInfo* itf, const std::function<void(TypeInfo*)> getInterface)
+void TypeInfo::TraverseInnerExtensionDefs(const std::function<void(TypeInfo*)> getInterface)
 {
     if (!this->mTableDesc->needsResolveInner) {
-        if (itf) {
-            auto it = mTableDesc->mTable.find(itf->GetUUID());
-            if (it != mTableDesc->mTable.end()) {
-                return it->second.first;
-            }
-        }
-        return nullptr;
+        return;
     }
     TypeInfo* curType = this;
     this->mTableDesc->pending = true;
-    ExtensionData* found = nullptr;
     while (curType) {
-        auto tmp = ResolveInnerExtensionDefs(this, curType, itf, getInterface);
-        found = found ? found : tmp;
+        ResolveInnerExtensionDefs(this, curType, getInterface);
         if (curType->IsRawArray() || curType->IsVArray() || curType->IsCPointer()) {
             break;
         }
@@ -431,10 +415,9 @@ ExtensionData* TypeInfo::TraverseInnerExtensionDefs(TypeInfo* itf, const std::fu
     }
     this->mTableDesc->pending = false;
     this->mTableDesc->needsResolveInner = false;
-    return found;
 }
 
-ExtensionData* TypeInfo::TraverseOuterExtensionDefs(TypeInfo* itf, std::function<void(TypeInfo*)> getInterface)
+void TypeInfo::TraverseOuterExtensionDefs(const std::function<void(TypeInfo*)> getInterface)
 {
     U16 typeArgNum = GetTypeArgNum();
     TypeInfo** typeArgs = nullptr;
@@ -447,9 +430,8 @@ ExtensionData* TypeInfo::TraverseOuterExtensionDefs(TypeInfo* itf, std::function
     } else {
         typeArgs = GetTypeArgs();
     }
-    ExtensionData* found = nullptr;
     LoaderManager::GetInstance()->GetLoader()->VisitExtensionData(this,
-        [this, typeArgNum, typeArgs, getInterface, itf, &found](ExtensionData* extensionData) {
+        [this, typeArgNum, typeArgs, getInterface](ExtensionData* extensionData) {
             uintptr_t matched = false;
             void* whereCondFn = reinterpret_cast<void*>(extensionData->GetWhereCondFn());
             if (whereCondFn == nullptr) {
@@ -467,15 +449,10 @@ ExtensionData* TypeInfo::TraverseOuterExtensionDefs(TypeInfo* itf, std::function
                 }
                 TypeInfoManager::GetInstance()->AddTypeInfo(extItf);
                 this->AddMTable(extItf, extensionData);
-				if (extItf == itf) {
-					found = extensionData;
-					return true;
-				}
             }
             return false;
         },
         sourceGeneric);
-    return found;
 }
 
 void TypeInfo::GetInterfaces(std::vector<TypeInfo*> &itfs)
@@ -548,14 +525,8 @@ ExtensionData* TypeInfo::FindExtensionData(TypeInfo* itf, bool searchRecursively
                     return itf->IsInterface() && searchRecursively ? FindExtensionDataRecursively(itf) : nullptr;
                 }
             }
-            auto found = TraverseInnerExtensionDefs(itf);
-			if (found) {
-				return found;
-			}
-            found = TraverseOuterExtensionDefs(itf);
-			if (found) {
-				return found;
-			}
+            TraverseInnerExtensionDefs();
+            TraverseOuterExtensionDefs();
         }
     }
     auto& mTable = mTableDesc->mTable;
