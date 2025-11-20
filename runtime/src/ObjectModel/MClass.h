@@ -356,7 +356,7 @@ public:
 
     CString GetTypeInfoName(U32 argSize, TypeInfo* args[]);
     ReflectInfo* GetReflectInfo() const { return reflectInfo; }
-    TypeInfo* GetFieldTypeInfo(U16 fieldIdx, U32 argSize, TypeInfo* args[]);
+    TypeInfo* GetFieldType(U16 fieldIdx, U32 argSize, TypeInfo* args[]);
     TypeInfo* GetSuperTypeInfo(U32 argSize, TypeInfo* args[]);
     FuncRef GetFinalizeMethod() const { return finalizerMethod; }
     static void* ExecuteGenericFunc(void* genericFunc, U32 argSize, TypeInfo* args[]);
@@ -437,11 +437,11 @@ public:
     inline U16 GetValidInheritNum() const;
     inline bool IsInheritNumValid() { return validInheritNum != INVALID_INHERIT_NUM; }
 
+    inline TypeInfo** GetFieldTypes() const { return fields; }
     inline TypeInfo* GetFieldType(U16 idx) const;
     inline TypeInfo* GetComponentTypeInfo() const;
     inline U16 GetTypeArgNum() const { return typeArgsNum; }
     inline U32 GetFieldOffsets(U16 idx) const { return fieldOffsets[idx]; }
-    inline TypeInfo* GetFieldTypeInfo(U16 idx) const { return fields[idx]; }
     inline TypeInfo** GetTypeArgs() const { return typeArgs; }
     inline TypeTemplate* GetSourceGeneric() const { return sourceGeneric; }
     inline ExtensionData** GetvExtensionDataStart() const { return vExtensionDataStart; }

@@ -78,7 +78,7 @@ ReflectInfo* TypeInfo::GetReflectInfo()
     return reflectInfo;
 }
 
-TypeInfo* TypeTemplate::GetFieldTypeInfo(U16 fieldIdx, U32 argSize, TypeInfo* args[])
+TypeInfo* TypeTemplate::GetFieldType(U16 fieldIdx, U32 argSize, TypeInfo* args[])
 {
     GenericFunc genericFunc = GetFieldGenericFunc(fieldIdx);
     void* ret = ExecuteGenericFunc(reinterpret_cast<void*>(genericFunc), argSize, args);

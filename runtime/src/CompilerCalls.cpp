@@ -783,7 +783,7 @@ extern "C" ObjectPtr MCC_GetSubPackages(PackageInfo* packageInfo, TypeInfo* arra
     LoaderManager::GetInstance()->GetSubPackages(packageInfo, subPackages);
     size_t subPkgCnt = subPackages.size();
     // Array<CPointer<Unit>> layout likes { Rarray<CPointer<Unit>>, Int64, Int64 }
-    TypeInfo* rawArrayTi = arrayTi->GetFieldTypeInfo(0); // 0: first field type RawArray<CPointer<Unit>>.ti
+    TypeInfo* rawArrayTi = arrayTi->GetFieldType(0); // 0: first field type RawArray<CPointer<Unit>>.ti
     ArrayRef rawArrayObj = ObjectManager::NewKnownWidthArray(subPkgCnt, rawArrayTi,
         ObjectManager::ArrayElemBits::ELEM_64B, AllocType::RAW_POINTER_OBJECT);
     for (size_t idx = 0; idx < subPkgCnt; ++idx) {
@@ -983,7 +983,29 @@ extern "C" bool MCC_IsPrimitive(TypeInfo* ti) { return ti->IsPrimitiveType(); }
 
 extern "C" bool MCC_IsGeneric(TypeInfo* ti) { return ti->IsGeneric(); }
 
+// todo, how about temp enum?
+extern "C" bool MCC_IsEnum(TypeInfo* ti) { return ti->IsEnum(); }
+
+extern "C" bool MCC_IsFunction(TypeInfo* ti) { return ti->IsFunc(); }
+
+extern "C" bool MCC_IsTuple(TypeInfo* ti) { return ti->IsTuple(); }
+
 extern "C" bool MCC_IsReflectUnsupportedType(TypeInfo* ti) { return ti->IsReflectUnsupportedType(); }
+
+// for tuple
+extern "C" U32 MCC_GetNumOfTypeInfoFields(TypeInfo* ti) { return ti->GetFieldNum(); }
+
+extern "C" TypeInfo** MCC_GetTypeInfoFields(TypeInfo* ti) { return ti->GetFieldTypes(); }
+
+extern "C" ObjRef MCC_NewAndInit(TypeInfo* ti, void* args) {
+    // to impl TODO
+    return nullptr;
+    // return ObjectManager::NewAndInit(ti, args);
+}
+extern "C" ArrayRef MCC_GetAssociatedValues(TypeInfo* ti) {
+    // to impl TODO
+    return nullptr;
+}
 
 // @deprecated
 extern "C" U32 MCC_GetQualifiedNameLength(TypeInfo* ti) { return 0; }
