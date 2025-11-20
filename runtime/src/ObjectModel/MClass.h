@@ -531,10 +531,8 @@ private:
     TypeInfo() = delete;
     ~TypeInfo() = delete;
 
-    ExtensionData* TraverseInnerExtensionDefs(
-        TypeInfo* itf = nullptr, const std::function<void(TypeInfo*)> getInterface = nullptr);
-    ExtensionData* TraverseOuterExtensionDefs(
-        TypeInfo* itf = nullptr, std::function<void(TypeInfo*)> getInterface = nullptr);
+    void TraverseInnerExtensionDefs(const std::function<void(TypeInfo*)> getInterface = nullptr);
+    void TraverseOuterExtensionDefs(const std::function<void(TypeInfo*)> getInterface = nullptr);
     // find ExtensionData of this TypeInfo and itf
     ExtensionData* FindExtensionData(TypeInfo* itf, bool searchRecursively = false);
     ExtensionData* FindExtensionDataRecursively(TypeInfo* itf);
