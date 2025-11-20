@@ -9,6 +9,8 @@
 #include "Common/Runtime.h"
 #include "os/Path.h"
 
+#include <regex>
+
 namespace MapleRuntime {
 const char* g_stableVersion = "0.59.6";
 CjSemanticVersion::CjSemanticVersion()
@@ -77,11 +79,30 @@ SemanticVersionInfo::SemanticVersionInfo(CString& version)
     if (version.IsEmpty()) {
         return;
     }
-    auto tokens = CString::Split(version, '.');
-    if (tokens.size() != static_cast<size_t>(VersionType::VERSION_TYPE_NUMBER)) {
+    CString coreVersion;
+    std::regex pattern(R"(^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)
+        (?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?
+        (?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$)");
+    if (!std::regex_match(std::string(version.Str()), pattern)) {
         LOG(RTLOG_ERROR, "The version %s is incorrect.", version.Str());
         return;
     }
+    int dashPos = version.Find('-');
+    int plusPos = version.Find('+');
+    if (dashPos >= 0 && plusPos >= 0) {
+        coreVersion = version.SubStr(0, dashPos);
+        preRelease = version.SubStr(dashPos + 1, plusPos - dashPos - 1);
+        buildMetaData = version.SubStr(plusPos + 1);
+    } else if (dashPos < 0) {
+        coreVersion = version.SubStr(0, plusPos);
+        buildMetaData = version.SubStr(plusPos + 1);
+    } else if (plusPos < 0) {
+        coreVersion = version.SubStr(0, dashPos);
+        preRelease = version.SubStr(dashPos + 1);
+    } else {
+        coreVersion = version;
+    }
+    auto tokens = CString::Split(coreVersion, '.');
     major = CString::ParsePosNumFromEnv(tokens[static_cast<size_t>(VersionType::MAJOR)]);
     minor = CString::ParsePosNumFromEnv(tokens[static_cast<size_t>(VersionType::MINOR)]);
     patch = CString::ParsePosNumFromEnv(tokens[static_cast<size_t>(VersionType::PATCH)]);
