@@ -181,9 +181,7 @@ inline bool TypeInfo::IsGeneric() const
 
 inline bool TypeInfo::IsReflectUnsupportedType() const
 {
-    return type == TypeKind::TYPE_KIND_VARRAY ||
-           type == TypeKind::TYPE_KIND_TUPLE ||
-           type == TypeKind::TYPE_KIND_ENUM;
+    return type == TypeKind::TYPE_KIND_VARRAY;
 }
 
 
