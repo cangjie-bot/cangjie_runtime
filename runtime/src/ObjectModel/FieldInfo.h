@@ -13,6 +13,7 @@
 
 namespace MapleRuntime {
 class TypeInfo;
+class BaseObject;
 class ATTR_PACKED(4) InstanceFieldInfo {
 public:
     const char* GetName(TypeInfo* declaringTypeInfo) const;
@@ -47,5 +48,20 @@ private:
     Uptr addr;
     U64 annotationMethod;
 };
+
+namespace FieldInitializer {
+    bool SetPrimitiveField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj);
+    bool SetStructField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj);
+    bool SetVArrayField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj);
+    void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args);
+    ObjRef CreateEnumObject(TypeInfo* ti, MSize size);
+    void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum);
+    void SetEnumTag(ObjRef obj, TypeInfo* typeInfo);
+    // Helper functions for ToAny functionality
+    BaseObject* FieldToAny(ObjRef obj, TypeInfo* fieldTi, U32 offset);
+    BaseObject* StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Uptr fieldAddr);
+    BaseObject* PrimitiveToAny(TypeInfo* fieldTi, Uptr fieldAddr);
+    BaseObject* VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr);
+}
 } // namespace MapleRuntime
 #endif // MRT_FIELDINFO_H

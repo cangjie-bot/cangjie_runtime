@@ -19,6 +19,8 @@
 #include "ObjectModel/MClass.inline.h"
 #include "ObjectModel/MObject.inline.h"
 
+#include "Common/TypeDef.h"
+
 namespace MapleRuntime {
 inline ObjRef ObjectManager::NewObject(const TypeInfo* ti, MSize size, AllocType allocType)
 {
