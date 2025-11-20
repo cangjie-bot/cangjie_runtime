@@ -37,7 +37,7 @@ inline U32 InstanceFieldInfo::GetOffset(TypeInfo* declaringTypeInfo) const
 TypeInfo* InstanceFieldInfo::GetFieldType(TypeInfo* declaringTypeInfo)
 {
     CHECK(!(fieldIdx > declaringTypeInfo->GetFieldNum()));
-    return declaringTypeInfo->GetFieldTypeInfo(fieldIdx);
+    return declaringTypeInfo->GetFieldType(fieldIdx);
 }
 
 void* InstanceFieldInfo::GetValue(TypeInfo* declaringTi, ObjRef instanceObj)
