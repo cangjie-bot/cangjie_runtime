@@ -698,7 +698,7 @@ void TypeInfoManager::FillOffsets(TypeInfo* newTypeInfo, TypeTemplate* tt, U32 a
     } else {
         U32 fieldNum = tt->GetFieldNum();
         for (U16 fieldIdx = 0; fieldIdx < fieldNum; ++fieldIdx) {
-            TypeInfo* fieldTi = tt->GetFieldTypeInfo(fieldIdx, argSize, args);
+            TypeInfo* fieldTi = tt->GetFieldType(fieldIdx, argSize, args);
             newTypeInfo->SetFieldType(fieldIdx, fieldTi);
             // Nothing and Unit type, size is 0
             if (fieldTi->IsNothing() || fieldTi->IsUnit()) {
