@@ -78,8 +78,25 @@ enum class SignpostType: uint8_t {
 #define OS_SIGNPOST_ID_NULL ((os_signpost_id_t)0)
 #define OS_SIGNPOST_ID_INVALID ((os_signpost_id_t)~0)
 #define INTERVAL_FORMAT_STR "name:%s"
-#define INTERVAL_ASYNC_FORMAT_STR "name:%s id: %d"
+#define INTERVAL_ASYNC_FORMAT_STR "name:%s, taskId: %d"
 #define EVENT_FORMAT_STR "name:%s, count: %lld"
+#define NEG_NUM_FORMAT_STR "name:%s, taskId/count: %s"
+
+#define SIGNPOST_INT32(val) ({ \
+    static char buf[32]; \
+    snprintf(buf, sizeof(buf), "%d", (val)); \
+    buf; \
+})
+#define SIGNPOST_INT64(val) ({ \
+    static char buf[64]; \
+    snprintf(buf, sizeof(buf), "%lld", (val)); \
+    buf; \
+})
+#define OS_LOG_FMT(name, str) \
+    __attribute__((section("__TEXT,__oslogstring,cstring_literals"), internal_linkage)) \
+    static const char name[] = str
+OS_LOG_FMT(PRINT_NEG_NUM_FMT, "name:%{public}s, taskId/count:%{public}s");
+
 #ifdef __cplusplus
 extern "C" {
 #endif
