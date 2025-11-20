@@ -114,13 +114,10 @@ void* TypeTemplate::ExecuteGenericFunc(void* genericFunc, U32 argSize, TypeInfo*
 
 ReflectInfo* TypeInfo::GetReflectInfo()
 {
-    if (reflectInfo != nullptr) {
-        return reflectInfo;
-    }
     return reflectInfo;
 }
 
-TypeInfo* TypeTemplate::GetFieldTypeInfo(U16 fieldIdx, U32 argSize, TypeInfo* args[])
+TypeInfo* TypeTemplate::GetFieldType(U16 fieldIdx, U32 argSize, TypeInfo* args[])
 {
     GenericFunc genericFunc = GetFieldGenericFunc(fieldIdx);
     void* ret = ExecuteGenericFunc(reinterpret_cast<void*>(genericFunc), argSize, args);
@@ -784,6 +781,12 @@ bool TypeInfo::ReflectIsEnable() const { return static_cast<bool>(flag & FLAG_RE
 
 bool TypeTemplate::ReflectIsEnable() const { return static_cast<bool>(flag & FLAG_REFLECTION); }
 
+bool TypeTemplate::IsEnumCtor() const
+{
+    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get IsEnumCtor result, but the type is not Enum.");
+    return enumInfo->GetModifier() & MODIFIER_ENUM_CTOR;
+}
+
 void* ReflectInfo::GetAnnotations(TypeInfo* arrayTi)
 {
     return MapleRuntime::GetAnnotations(annotationMethod, arrayTi);
@@ -794,7 +797,16 @@ U32 TypeInfo::GetModifier()
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
         return MODIFIER_INVALID;
     }
-    return GetReflectInfo()->GetModifier();
+    if (IsEnum()) {
+        return enumInfo->GetModifier();
+    } else {
+        return GetReflectInfo()->GetModifier();
+    }
+}
+bool TypeInfo::IsEnumCtor() const
+{
+    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get IsEnumCtor result, but the type is not Enum.");
+    return enumInfo->GetModifier() & MODIFIER_ENUM_CTOR;
 }
 
 U32 TypeInfo::GetNumOfInstanceFieldInfos()
@@ -832,6 +844,9 @@ U32 TypeInfo::GetNumOfInstanceMethodInfos()
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
         return 0;
     }
+    if (IsEnum()) {
+        return GetEnumInfo()->GetNumOfInstanceMethodInfos();
+    }
     return GetReflectInfo()->GetNumOfInstanceMethodInfos();
 }
 
@@ -839,6 +854,9 @@ U32 TypeInfo::GetNumOfStaticMethodInfos()
 {
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
         return 0;
+    }
+    if (IsEnum()) {
+        return GetEnumInfo()->GetNumOfStaticMethodInfos();
     }
     return GetReflectInfo()->GetNumOfStaticMethodInfos();
 }
@@ -860,15 +878,48 @@ StaticFieldInfo* TypeInfo::GetStaticFieldInfo(U32 index)
 
 MethodInfo* TypeInfo::GetInstanceMethodInfo(U32 index)
 {
+    if (IsEnum()) {
+        return GetEnumInfo()->GetInstanceMethodInfo(index);
+    }
     return GetReflectInfo()->GetInstanceMethodInfo(index);
 }
 
 MethodInfo* TypeInfo::GetStaticMethodInfo(U32 index)
 {
+    if (IsEnum()) {
+        return GetEnumInfo()->GetStaticMethodInfo(index);
+    }
     return GetReflectInfo()->GetStaticMethodInfo(index);
 }
 
-void* TypeInfo::GetAnnotations(TypeInfo* arrayTi) { return GetReflectInfo()->GetAnnotations(arrayTi); }
+U32 TypeInfo::GetNumOfEnumCtor()
+{
+    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get the number of constructors, but the type is not Enum.");
+    if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
+        return 0;
+    }
+    return GetEnumInfo()->GetNumOfEnumCtor();
+}
+
+EnumCtorInfo* TypeInfo::GetEnumCtor(U32 idx)
+{
+    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get the Enum's constructor, but the type is not Enum.");
+    return GetEnumInfo()->GetEnumCtor(idx);
+}
+
+void* TypeInfo::GetAnnotations(TypeInfo* arrayTi)
+{
+    if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
+        return nullptr;
+    }
+    if (IsEnum() || IsTempEnum()) {
+        if (IsEnumCtor()) {
+            return GetEnumCtorReflectInfo()->GetAnnotations(arrayTi);
+        }
+        return GetEnumInfo()->GetAnnotations(arrayTi);
+    }
+    return GetReflectInfo()->GetAnnotations(arrayTi);
+}
 
 FuncRef TypeInfo::GetFinalizeMethod() const
 {
@@ -910,6 +961,20 @@ bool TypeInfo::NeedRefresh()
 	return false;
 }
 
+EnumCtorInfo* EnumInfo::GetEnumCtor(U32 idx) const
+{
+    CHECK(idx < GetNumOfEnumCtor());
+    EnumCtorInfo* enumCtorInfo = enumCtorInfos.GetDataRef();
+    return enumCtorInfo + idx;
+}
+
+TypeInfo* EnumInfo::GetCtorTypeInfo(U32 idx) const
+{
+    CHECK(idx < GetNumOfEnumCtor());
+    EnumCtorInfo* enumCtorInfo = GetEnumCtor(idx);
+    return enumCtorInfo->GetTypeInfo();
+}
+
 void EnumInfo::SetEnumCtors(void* ctors)
 {
     enumCtorInfos.refOffset = reinterpret_cast<Uptr>(ctors) - reinterpret_cast<Uptr>(this);
@@ -938,5 +1003,10 @@ MethodInfo* EnumInfo::GetStaticMethodInfo(U32 index)
 void EnumCtorInfo::SetName(const char* pName)
 {
     name.refOffset = reinterpret_cast<Uptr>(pName) - reinterpret_cast<Uptr>(this);
+}
+
+void* EnumCtorReflectInfo::GetAnnotations(TypeInfo* arrayTi)
+{
+    return MapleRuntime::GetAnnotations(annotationMethod, arrayTi);
 }
 } // namespace MapleRuntime
