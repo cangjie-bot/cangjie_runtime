@@ -237,7 +237,7 @@ class TestCaseExecutor<T> <: Executor {
 
             // It was decided that we should print full number of reduction steps
             // instead of reduction step number on which we found latest shrinked failure
-            result.add(failure.withUpdatedStep(CaseStep(argDescription(lastInput.value))))
+            result.add(failure.withUpdatedStep(CaseStep(argDescription(input))))
 
             if (strategy.isInfinite) {
                 break

@@ -353,9 +353,15 @@ public class InputParameter {
         position += 1
         repr = toStringOrPlaceholder(param)
     }
+    func clone(): InputParameter {
+        let res = InputParameter(name)
+        res.position = position
+        res.repr = repr
+        return res
+    }
 }
 
-type ShrinkResult = (RunStepResult)
+type ShrinkResult = (RunStepResult, Array<InputParameter>)
 
 /**
  * Base class for all combinators of `DataStategy`es.
@@ -396,14 +402,18 @@ sealed abstract class DataStrategyProcessor<T> {
         }
     }
 
+    static func deepCloneParamInfo(arr: Array<InputParameter>) {
+        Array(arr.size) { i => arr[i].clone() }
+    }
+
     func shrink(
         configuration: Configuration,
         runSingle: (T, Array<InputParameter>) -> RunStepResult
     ): ?ProcessorResult {
         try {
             this.currentReduction = 0
-            let shrunkInfo = doShrinkWith(configuration, runSingle) ?? return None
-            Failure(lastItemInfo(), shrunkInfo)
+            let (stepResult, itemInfo) = doShrinkWith(configuration, runSingle) ?? return None
+            Failure(itemInfo, stepResult)
         } catch (e: Exception) {
             StrategyError(e)
         }
@@ -435,7 +445,7 @@ sealed abstract class DataStrategyProcessor<T> {
                 let info = lastItemInfo()
                 let stepResult = runSingle(shrinked, info)
                 if (stepResult.hasFailures()) {
-                    result = stepResult
+                    result = (stepResult, deepCloneParamInfo(lastItemInfo()))
                     noCandidates = false
                     break
                 }
