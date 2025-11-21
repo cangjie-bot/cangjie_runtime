@@ -139,7 +139,8 @@ void CJFileLoader::GetSubPackages(PackageInfo* packageInfo, std::vector<PackageI
 void CJFileLoader::VisitExtensionData(
     TypeInfo* ti, const std::function<bool(ExtensionData* ed)>& f, TypeTemplate* tt) const
 {
-    ti->TryInitMTableNoLock();
+    ti->TryInitMTable();
+    std::lock_guard<std::recursive_mutex> lock(ti->GetMTableDesc()->mTableMutex);
     auto mtDesc = ti->GetMTableDesc();
     if (mtDesc->waitedExtensionDatas.empty()) {
         return;

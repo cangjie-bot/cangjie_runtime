@@ -180,15 +180,13 @@ void TypeInfo::TryInitMTableNoLock()
         auto tiUUID = GetUUID();
         auto tim = TypeInfoManager::GetInstance();
         auto desc = tim->GetMTableDesc(tiUUID);
-        if (desc) {
-            SetMTableDesc(desc);
-        } else {
+        if (desc == nullptr) {
             U64 bitmap = GetResolveBitmapFromMTableDesc();
             desc = new (std::nothrow) MTableDesc(bitmap);
-            SetMTableDesc(desc);
             CHECK_DETAIL(desc != nullptr, "fail to allocate MTableDesc");
-            tim->RecordMTableDesc(tiUUID, mTableDesc);
+            tim->RecordMTableDesc(tiUUID, desc);
         }
+        SetMTableDesc(desc);
     }
 }
 
