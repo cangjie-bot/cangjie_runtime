@@ -59,6 +59,7 @@ const char MANGLE_PTR_STR[] = "CPointer";
 const char MANGLE_CSTRING_STR[] = "CString";
 const char BASE62_CHARS[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const char DECIMAL_CHARS[] = "0123456789";
+const char WRAPPED_FUNCTION_ATTR_INFO[] = "[[wrapped_function]]";
 
 constexpr size_t BASE62_CHARS_SIZE = 62;
 constexpr uint32_t MAX_ARGS_SIZE = 16;
@@ -467,6 +468,9 @@ T DemangleInfo<T>::GetFullName(const T& scopeRes, const uint32_t argsNum) const
                 }
             } else {
                 fullDemangledName += identifier;
+                if(type == TypeKind::WRAPPED_FUNCTION) {
+                    fullDemangledName += WRAPPED_FUNCTION_ATTR_INFO;
+                }
             }
             fullDemangledName += GetGenericTypes();
             fullDemangledName += GetArgTypesName(argsNum);
@@ -547,7 +551,7 @@ T DemangleInfo<T>::GetArgTypesName(const uint32_t argsNum) const
 template<typename T>
 bool DemangleInfo<T>::IsFunctionLike() const
 {
-    return type == TypeKind::FUNCTION_DECL || type == TypeKind::LAMBDA_FUNCTION || type == TypeKind::FUNCTION;
+    return type == TypeKind::FUNCTION_DECL || type == TypeKind::LAMBDA_FUNCTION || type == TypeKind::FUNCTION || type == TypeKind::WRAPPED_FUNCTION;
 }
 
 template<typename T>
@@ -1025,11 +1029,17 @@ DemangleInfo<T> Demangler<T>::DemangleNestedDecls(bool isClass, bool isParamInit
             }
         }
         char ch;
+        bool isWrappedEnd = false;
         if (PeekChar(ch) && IsFunction(ch)) {
             SkipChar(MANGLE_FUNCTION_PREFIX);
             typeKind = TypeKind::FUNCTION_DECL;
             auto funcTys = DemangleFunctionParameterTypes().args;
             curDi.functionParameterTypes = funcTys;
+            //wrapper function like "_CVN7default1S4testHv$N7default1SE$CN7default1IE"
+            if(currentIndex < mangledName.Length() && mangledName[currentIndex] == MANGLE_WRAPPED_FUNCTION_END) 
+            {
+                isWrappedEnd = true;
+            }
             SkipOptionalChar(END);
         }
         auto j = i % MAX_ARGS_SIZE;
@@ -1048,6 +1058,10 @@ DemangleInfo<T> Demangler<T>::DemangleNestedDecls(bool isClass, bool isParamInit
             argsArr[j] = curDi.GetFullName(scopeResolution);
         }
         lastElement = curDi;
+        if(isWrappedEnd) 
+        {
+            break;
+        }
     }
     result += GetArgTypesFullName(argsArr, i % (MAX_ARGS_SIZE + 1), delimiter);
     DemangleInfo<T> resDi = { result, typeKind, isValid };
@@ -1139,6 +1153,11 @@ template<typename T>
 DemangleInfo<T> Demangler<T>::DemangleCommonDecl(bool isClass)
 {
     bool isGlobalVariableInitPrefix = false;
+    bool isWrappedFunction = false;
+    if(mangledName[currentIndex] == MANGLE_WRAPPER_PREFIX[0]) {
+        SkipString(MANGLE_WRAPPER_PREFIX);
+        isWrappedFunction = true;
+    }
     if (mangledName[currentIndex] == MANGLE_NESTED_PREFIX[0]) {
         SkipString(MANGLE_NESTED_PREFIX);
     } else {
@@ -1169,6 +1188,9 @@ DemangleInfo<T> Demangler<T>::DemangleCommonDecl(bool isClass)
     if (isGlobalVariableInitPrefix) {
         di.type = TypeKind::COMMON_DECL;
     }
+    if(isWrappedFunction) {
+        di.type = TypeKind::WRAPPED_FUNCTION;
+    }
     return di;
 }
 
@@ -1188,7 +1210,7 @@ DemangleInfo<T> Demangler<T>::DemangleDecl()
         return di;
     }
 
-    if (mangledName[currentIndex] == END) {
+    if (mangledName[currentIndex] == END || (di.type == TypeKind::WRAPPED_FUNCTION && mangledName[currentIndex] == MANGLE_WRAPPED_FUNCTION_END)) {
         return di;
     }
 
@@ -1302,7 +1324,7 @@ DemangleInfo<T> Demangler<T>::DemangleFunctionParameterTypes()
         currentIndex += MANGLE_CHAR_LEN;
     } else {
         // Generic type may be next to a string, like "6<init>"
-        while (IsNotEndOfMangledName() && !IsCurrentCharDigit(mangledName[currentIndex])) {
+        while (IsNotEndOfMangledName() && !IsCurrentCharDigit(mangledName[currentIndex]) && mangledName[currentIndex] != MANGLE_WRAPPED_FUNCTION_END) {
             auto curDi = DemangleNextUnit();
             if (!isValid) {
                 break;
