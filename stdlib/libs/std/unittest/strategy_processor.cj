@@ -345,17 +345,17 @@ public open class LazyCyclicNode {
 }
 
 // public only due to protected sealed functions being implicitly public
-public class InputParameter {
+public struct InputParameter {
     var position: Int64 = -1
     var repr: String = ""
     InputParameter(let name: String) {}
-    func update<T>(param: T) {
+    mut func update<T>(param: T) {
         position += 1
         repr = toStringOrPlaceholder(param)
     }
 }
 
-type ShrinkResult = (RunStepResult)
+type ShrinkResult = (RunStepResult, Array<InputParameter>)
 
 /**
  * Base class for all combinators of `DataStategy`es.
@@ -402,8 +402,8 @@ sealed abstract class DataStrategyProcessor<T> {
     ): ?ProcessorResult {
         try {
             this.currentReduction = 0
-            let shrunkInfo = doShrinkWith(configuration, runSingle) ?? return None
-            Failure(lastItemInfo(), shrunkInfo)
+            let (stepResult, itemInfo) = doShrinkWith(configuration, runSingle) ?? return None
+            Failure(itemInfo, stepResult)
         } catch (e: Exception) {
             StrategyError(e)
         }
@@ -435,7 +435,7 @@ sealed abstract class DataStrategyProcessor<T> {
                 let info = lastItemInfo()
                 let stepResult = runSingle(shrinked, info)
                 if (stepResult.hasFailures()) {
-                    result = stepResult
+                    result = (stepResult, lastItemInfo())
                     noCandidates = false
                     break
                 }
