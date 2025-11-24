@@ -7,7 +7,7 @@
 # toolchain for linux12_x86_64
 
 # Platform
-set(PLATFORM_NAME "ios_simulator_cangjie")
+set(PLATFORM_NAME "ios_simulator_aarch64_cangjie")
 
 # Environment info
 set(OS "ios")
@@ -147,8 +147,7 @@ add_compile_definitions(
 set(CMAKE_SHARED_LINKER_FLAGS
     "-m64 \
     -rdynamic \
-    -L${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/hwsecurec/lib/ios \
-    -lsecurec \
+    -lboundscheck \
     -lpthread"
 )
 
