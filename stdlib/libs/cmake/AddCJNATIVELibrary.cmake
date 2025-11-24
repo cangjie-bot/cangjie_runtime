@@ -528,7 +528,7 @@ if(TRIPLE STREQUAL "arm-linux-ohos")
 endif()
 make_cangjie_lib(
     std-ast IS_SHARED ${STD_AST_ALLOW_UNDEFINED}
-    DEPENDS cangjie${BACKEND_TYPE}AST cangjie-std-astFFI-objs
+    DEPENDS cangjie${BACKEND_TYPE}AST cangjie-std-astFFI
     CANGJIE_STD_LIB_DEPENDS
         std-core
         std-collection
@@ -537,9 +537,8 @@ make_cangjie_lib(
         std-math
     OBJECTS ${output_cj_object_dir}/std/ast.o
     FLAGS
-        $<TARGET_OBJECTS:cangjie-std-astFFI-objs>
         ${arm32_ast_support}
-        -lcangjie-ast-support
+        -lcangjie-std-astFFI
         ${STDCPP_FLAG}
         ${GCC_S_FLAG}
         $<$<NOT:$<BOOL:${ANDROID}>>:-lpthread>
