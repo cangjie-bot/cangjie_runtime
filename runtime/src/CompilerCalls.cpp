@@ -1199,7 +1199,6 @@ extern "C" bool MCC_IsTuple(TypeInfo* ti) { return ti->IsTuple(); }
 extern "C" bool MCC_IsReflectUnsupportedType(TypeInfo* ti) { return ti->IsReflectUnsupportedType(); }
 
 // reflect support function
-
 extern "C" U32 MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
 {
     if (!funcTi->IsFunc()) {
@@ -1258,14 +1257,64 @@ extern "C" U32 MCC_GetNumOfTypeInfoFields(TypeInfo* ti) { return ti->GetFieldNum
 
 extern "C" TypeInfo** MCC_GetTypeInfoFields(TypeInfo* ti) { return ti->GetFieldTypes(); }
 
-extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
-    // to impl TODO
-    return nullptr;
-    // return ObjectManager::NewAndInit(ti, args);
+extern "C" ObjRef MCC_NewAndInitObject(const TypeInfo* ti, void* args) {
+    // 创建一个objref，把ti放进去
+    // 把args里的元素一个个解析后放进去
+    MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+    return ObjectManager::NewObjectAndInit(ti, size, args);
 }
-extern "C" ArrayRef MCC_GetAssociatedValues(TypeInfo* ti) {
-    // to impl TODO
-    return nullptr;
+extern "C" ArrayRef MCC_GetAssociatedValues(ObjRef tupleObj) {
+    // 先从obj里取出ti
+    TypeInfo* ti = tupleObj->GetTypeInfo();
+    // 从ti中获取fields、offsets
+    U16 fieldNum = ti->GetFieldNum();
+    // 创建一个ArrayRef
+    ArrayRef array = ObjectManager::NewArray(fieldNum, ti);
+    // 根据fields、offsets把一个一个元素实例取出来并放到ArrayRef里，返回ArrayRef
+    for (int idx = 0; idx < fieldNum; idx++) {
+        TypeInfo* fieldTi = ti->GetFieldType(idx);
+        U32 offset = ti->GetFieldOffset(idx);
+        Uptr fieldAddr = reinterpret_cast<Uptr>(tupleObj) + TYPEINFO_PTR_SIZE + offset;
+        ObjRef obj = nullptr;
+        if (fieldTi->IsRef()) {
+            MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+            obj = ObjectManager::NewObject(fieldTi, size);
+            auto tmp = Heap::GetBarrier().ReadReference(tupleObj, tupleObj->GetRefField(offset + TYPEINFO_PTR_SIZE));
+            Heap::GetBarrier().WriteReference(obj, obj->GetRefField(TYPEINFO_PTR_SIZE), tmp);
+        } else if (fieldTi->IsStruct() || fieldTi->IsTuple()) {
+            MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+            MSize fieldSize = fieldTi->GetInstanceSize();
+            obj = ObjectManager::NewObject(fieldTi, size);
+            void* tmp = malloc(fieldSize);
+            Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), tupleObj, fieldAddr, fieldSize);
+            Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE, fieldSize,
+                reinterpret_cast<MAddress>(tmp), fieldSize);
+            free(tmp);
+        } else if (fieldTi->IsPrimitiveType()) {
+            MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+            obj = ObjectManager::NewObject(fieldTi, size);
+            if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE),
+                         fieldTi->GetInstanceSize(),
+                         reinterpret_cast<void*>(fieldAddr),
+                         fieldTi->GetInstanceSize()) != EOK) {
+                LOG(RTLOG_ERROR, "MCC_GetAssociatedValues memcpy_s fail");
+            }
+        } else if (fieldTi->IsVArray()) {
+            // VArray is only used to store value types,
+            // so we can copy the memory directly
+            MSize vArraySize = fieldTi->GetFieldNum() * fieldTi->GetComponentTypeInfo()->GetInstanceSize();
+            MSize size = MRT_ALIGN(vArraySize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+            obj = ObjectManager::NewObject(fieldTi, size);
+            if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE), vArraySize,
+                         reinterpret_cast<void*>(fieldAddr), vArraySize) != EOK) {
+                LOG(RTLOG_ERROR, "MCC_GetAssociatedValues memcpy_s fail");
+            }
+        } else {
+            LOG(RTLOG_FATAL, "%s not to supported", fieldTi->GetName());
+        }
+        array->SetRefElement(idx, obj);
+    }
+    return array;
 }
 
 // @deprecated
@@ -1463,7 +1512,7 @@ static bool IsTupleTypeOf(ObjectPtr obj, TypeInfo* typeInfo, TypeInfo* targetTyp
     for (U16 idx = 0; idx < ti->GetFieldNum(); ++idx) {
         TypeInfo* fieldTypeInfo = ti->GetFieldType(idx);
         TypeInfo* fieldTargetTI = targetTypeInfo->GetFieldType(idx);
-        U32 offset = ti->GetFieldOffsets(idx) + base;
+        U32 offset = ti->GetFieldOffset(idx) + base;
         ObjectPtr curObj = nullptr;
         if (fieldTargetTI->IsRef()) {
             if (!fieldTypeInfo->IsClass() && !fieldTypeInfo->IsInterface()) {
