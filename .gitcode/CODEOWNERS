@@ -78,3 +78,6 @@ OAT.xml @xuanjz
 
 /stdlib/doc/libs/std/objectpool/ @ChaosJohn @luojianing
 /stdlib/doc/libs/std/regex/ @ChaosJohn @luojianing
+
+# demangle
+/runtime/src/Demangler/ @Yessy @neilliuistaken
