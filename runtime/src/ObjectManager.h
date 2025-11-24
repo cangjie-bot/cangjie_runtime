@@ -27,6 +27,8 @@ public:
     void Fini() const {};
 
     static inline ObjRef NewObject(const TypeInfo* ti, MSize size, AllocType allocType = AllocType::MOVEABLE_OBJECT);
+    static inline ObjRef NewObjectAndInit(const TypeInfo* ti, MSize size, void* args,
+                                          AllocType allocType = AllocType::MOVEABLE_OBJECT);
     static inline ObjRef NewWeakRefObject(const TypeInfo* ti, MSize size,
                                           AllocType allocType = AllocType::MOVEABLE_OBJECT);
     static inline ObjRef NewPinnedObject(const TypeInfo* ti, MSize size, bool isFinalizer);

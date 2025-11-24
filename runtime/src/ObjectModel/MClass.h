@@ -447,7 +447,7 @@ public:
     inline TypeInfo* GetFieldType(U16 idx) const;
     inline TypeInfo* GetComponentTypeInfo() const;
     inline U16 GetTypeArgNum() const { return typeArgsNum; }
-    inline U32 GetFieldOffsets(U16 idx) const { return fieldOffsets[idx]; }
+    inline U32 GetFieldOffset(U16 idx) const { return fieldOffsets[idx]; }
     inline TypeInfo** GetTypeArgs() const { return typeArgs; }
     inline TypeTemplate* GetSourceGeneric() const;
     inline ExtensionData** GetvExtensionDataStart() const;

@@ -31,7 +31,7 @@ const char* InstanceFieldInfo::GetName(TypeInfo* declaringTypeInfo) const
 inline U32 InstanceFieldInfo::GetOffset(TypeInfo* declaringTypeInfo) const
 {
     CHECK(!(fieldIdx > declaringTypeInfo->GetFieldNum()));
-    return declaringTypeInfo->GetFieldOffsets(fieldIdx);
+    return declaringTypeInfo->GetFieldOffset(fieldIdx);
 }
 
 TypeInfo* InstanceFieldInfo::GetFieldType(TypeInfo* declaringTypeInfo)
