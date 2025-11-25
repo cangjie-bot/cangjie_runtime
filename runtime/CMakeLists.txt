@@ -157,10 +157,10 @@ elseif (IOS_FLAG MATCHES 1)
 elseif (IOS_SIMULATOR_FLAG MATCHES 1)
     if (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
         message("build cjthread for ios simulator x86_64")
-        execute_process(COMMAND sh build/build_cjthread.sh -p ios_simulator_cangjie_x86_64 ${CMAKE_BUILD_TYPE} STATIC ${CJTHREAD_SAN_PRARM} ${OTHER_DEFINITIONS} ${CMAKE_INSTALL_PREFIX} ${TARGET_ARCH} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+        execute_process(COMMAND sh build/build_cjthread.sh -p ios_simulator_x86_64_cangjie ${CMAKE_BUILD_TYPE} STATIC ${CJTHREAD_SAN_PRARM} ${OTHER_DEFINITIONS} ${CMAKE_INSTALL_PREFIX} ${TARGET_ARCH} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     else()
-        message("build cjthread for ios simulator")
-        execute_process(COMMAND sh build/build_cjthread.sh -p ios_simulator_cangjie ${CMAKE_BUILD_TYPE} STATIC ${CJTHREAD_SAN_PRARM} ${OTHER_DEFINITIONS} ${CMAKE_INSTALL_PREFIX} ${TARGET_ARCH} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+        message("build cjthread for ios simulator aarch64")
+        execute_process(COMMAND sh build/build_cjthread.sh -p ios_simulator_aarch64_cangjie ${CMAKE_BUILD_TYPE} STATIC ${CJTHREAD_SAN_PRARM} ${OTHER_DEFINITIONS} ${CMAKE_INSTALL_PREFIX} ${TARGET_ARCH} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endif()
 else ()
     if (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
@@ -415,7 +415,7 @@ elseif (IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1)
     if (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
         add_library(cjstart OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/x86_64_ios/Cjstart.S)
     else()
-        add_library(cjstart OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/ios/Cjstart.S)
+        add_library(cjstart OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/aarch64_ios/Cjstart.S)
     endif()
 elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
     add_library(cjstart OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/aarch64_linux/Cjstart.S)
@@ -578,12 +578,12 @@ if (IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1 OR WINDOWS_FLAG MATCHES 1
     elseif (IOS_SIMULATOR_FLAG MATCHES 1)
         if (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
             add_custom_command(TARGET cangjie-runtime-static POST_BUILD
-                COMMAND sh ${CMAKE_SOURCE_DIR}/build/build_cjthread.sh -p ios_simulator_cangjie_x86_64 ${CMAKE_BUILD_TYPE} STATIC ${CJTHREAD_SAN_PRARM} ${OTHER_DEFINITIONS} ${CMAKE_INSTALL_PREFIX} ${TARGET_ARCH} "apple_static_lib" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                COMMAND sh ${CMAKE_SOURCE_DIR}/build/build_cjthread.sh -p ios_simulator_x86_64_cangjie ${CMAKE_BUILD_TYPE} STATIC ${CJTHREAD_SAN_PRARM} ${OTHER_DEFINITIONS} ${CMAKE_INSTALL_PREFIX} ${TARGET_ARCH} "apple_static_lib" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 VERBATIM
             )
         else()
             add_custom_command(TARGET cangjie-runtime-static POST_BUILD
-                COMMAND sh ${CMAKE_SOURCE_DIR}/build/build_cjthread.sh -p ios_simulator_cangjie ${CMAKE_BUILD_TYPE} STATIC ${CJTHREAD_SAN_PRARM} ${OTHER_DEFINITIONS} ${CMAKE_INSTALL_PREFIX} ${TARGET_ARCH} "apple_static_lib" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                COMMAND sh ${CMAKE_SOURCE_DIR}/build/build_cjthread.sh -p ios_simulator_aarch64_cangjie ${CMAKE_BUILD_TYPE} STATIC ${CJTHREAD_SAN_PRARM} ${OTHER_DEFINITIONS} ${CMAKE_INSTALL_PREFIX} ${TARGET_ARCH} "apple_static_lib" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 VERBATIM
             )
         endif()

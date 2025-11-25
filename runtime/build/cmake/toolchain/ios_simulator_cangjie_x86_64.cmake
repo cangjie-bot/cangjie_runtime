@@ -7,14 +7,14 @@
 # toolchain for linux12_x86_64
 
 # Platform
-set(PLATFORM_NAME "ios_simulator_cangjie_x86_64")
+set(PLATFORM_NAME "ios_simulator_x86_64_cangjie")
 
 # Environment info
 set(OS "ios")
 
-set(CPU_CORE "arm64")
-set(CPU_FAMILY "arm")
-set(CPU_TYPE "armarch8")
+set(CPU_CORE "x86_64")
+set(CPU_FAMILY "x86")
+set(CPU_TYPE "i686")
 set(MEM_TYPE "mem")
 set(BYTE_ORDER "le")
 set(COMPILER "gnu")
@@ -128,9 +128,9 @@ add_compile_definitions(
    "_LARGEFILE_SOURCE"
    "_FILE_OFFSET_BITS=64"
    "VOS_OS_VER=VOS_LINUX"
-   "VOS_HARDWARE_PLATFORM=VOS_ARM"
-   "MRT_HARDWARE_PLATFORM=MRT_ARM"
-   "VOS_CPU_TYPE=VOS_CORTEXA72"
+   "VOS_HARDWARE_PLATFORM=VOS_X86"
+   "MRT_HARDWARE_PLATFORM=MRT_X86"
+   "VOS_CPU_TYPE=VOS_X86"
    "VOS_WORDSIZE=64"
    "VOS_BYTE_ORDER=VOS_LITTLE_ENDIAN"
    "USE___THREAD"
@@ -147,8 +147,7 @@ add_compile_definitions(
 set(CMAKE_SHARED_LINKER_FLAGS
     "-m64 \
     -rdynamic \
-    -L${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/hwsecurec/lib/ios \
-    -lsecurec \
+    -lboundscheck \
     -lpthread"
 )
 
