@@ -59,7 +59,8 @@ func isAbsolutePath(path: String): Bool {
 
 @When[os != "Windows"]
 func toAbsolutePath(path: Path): Path {
-    path.checkPath()
+    PathValidator.throwIfEmptyOrContainsNullByte("path", path, true)
+
     let raw = path.toString()
     if (isAbsolutePath(raw)) {
         return path
@@ -138,7 +139,8 @@ func isAbsolutePath(path: String): Bool {
 
 @When[os == "Windows"]
 func toAbsolutePath(path: Path): Path {
-    path.checkPath()
+    PathValidator.throwIfEmptyOrContainsNullByte("path", path, true)
+
     let raw = path.toString()
     if (isAbsolutePath(raw) || raw.size == 2 && raw[1] == b':') {
         return path

@@ -125,21 +125,6 @@ public class Directory {
         walk(Path(path), f)
     }
 
-    private static func copyCheck(sourceDirPath: String, destinationDirPath: String, overwrite: Bool): Unit {
-        if (sourceDirPath.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The path 'sourceDirPath' value ${unsafe { sourceDirPath.rawData() }} contains null character.")
-        }
-        if (destinationDirPath.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The path 'destinationDirPath' value ${unsafe { destinationDirPath.rawData() }} contains null character.")
-        }
-        if (!exists(sourceDirPath)) {
-            throw FSException("The path 'sourceDirPath' `${sourceDirPath}` does not exist.")
-        }
-        if (!overwrite && exists(destinationDirPath)) {
-            throw FSException("The path 'destinationDirPath' `${destinationDirPath}` is already exists and overwrite is false.")
-        }
-    }
-
     private static func createSubDirectory(parent: String, name: String): String {
         if (name.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The name value ${unsafe { name.rawData() }} contains null character.")
@@ -221,7 +206,15 @@ public class Directory {
      * @throws IllegalArgumentException while path contains null character.
      */
     static func copy(sourceDirPath: String, destinationDirPath: String, overwrite: Bool): Unit {
-        copyCheck(sourceDirPath, destinationDirPath, overwrite)
+        PathValidator.throwIfEmptyOrContainsNullByte("sourceDirPath", sourceDirPath, true)
+        PathValidator.throwIfEmptyOrContainsNullByte("destinationDirPath", destinationDirPath, true)
+        if (!exists(sourceDirPath)) {
+            throw FSException("The path 'sourceDirPath' `${sourceDirPath}` does not exist.")
+        }
+        if (!overwrite && exists(destinationDirPath)) {
+            throw FSException("The path 'destinationDirPath' `${destinationDirPath}` is already exists and overwrite is false.")
+        }
+
         if (!exists(destinationDirPath)) {
             Directory.create(destinationDirPath, recursive: true)
         }
@@ -319,7 +312,7 @@ public class Directory {
 func checkDirectoryPath(path: Path): Path {
     let info = FileInfo(path)
     if (!info.isDirectory()) {
-        throw FSException("The path `${path}` is not a directory!")
+        throw FSException("The path `${path}` is not a directory.")
     }
     return info.path
 }
