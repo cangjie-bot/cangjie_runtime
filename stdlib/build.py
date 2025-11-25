@@ -77,6 +77,8 @@ def generate_cmake_defs(args):
             toolchain_file = "mingw_x86_64_toolchain.cmake"
         elif args.target == "arm64-apple-ios11-simulator":
             toolchain_file = "ios_simulator_arm64_toolchain.cmake"
+        elif args.target == "x86_64-apple-ios11-simulator":
+            toolchain_file = "ios_simulator_x86_64_toolchain.cmake"
         elif args.target == "arm64-apple-ios11":
             toolchain_file = "ios_arm64_toolchain.cmake"
         elif "aarch64-linux-android" in args.target:
@@ -134,6 +136,8 @@ def build(args):
         args.target = "x86_64-w64-mingw32"
     elif args.target == "ios-simulator-aarch64":
         args.target = "arm64-apple-ios11-simulator"
+    elif args.target == "ios-simulator-x86_64":
+        args.target = "x86_64-apple-ios11-simulator"
     elif args.target == "ios-aarch64":
         args.target = "arm64-apple-ios11"
     elif args.target == "android-aarch64":
@@ -225,6 +229,8 @@ def install(args):
             args.host = "x86_64-w64-mingw32"
         elif args.host == "ios-simulator-aarch64":
             args.host = "arm64-apple-ios11-simulator"
+        elif args.host == "ios-simulator-x86_64":
+            args.host = "x86_64-apple-ios11-simulator"
         elif args.host == "ios-aarch64":
             args.host = "arm64-apple-ios11"
         elif args.host == "android-aarch64":
@@ -371,6 +377,7 @@ SupportedTarget = [
     "ohos-x86_64",
     "windows-x86_64",
     "ios-simulator-aarch64",
+    "ios-simulator-x86_64",
     "ios-aarch64",
     "android-aarch64",
     "android-x86_64"
