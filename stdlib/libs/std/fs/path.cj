@@ -345,7 +345,7 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
             if (availLen <= 0) {
                 try {
                     let errMessage = result.msg.toString()
-                    throw FSException("Failed to canonical path `${pathStr}`: \"${errMessage.trimAscii()}\".")
+                    throw FSException("Failed to canonical path `${pathStr}` return ${result.rtnCode}: \"${errMessage.trimAscii()}\".")
                 } finally {
                     LibC.free(result.msg)
                 }
@@ -356,10 +356,10 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
 
     func checkPath(): Unit {
         if (_rawPath.isEmpty()) {
-            throw IllegalArgumentException("The rawPath is an empty string.")
+            throw IllegalArgumentException("The path 'rawPath' is an empty string.")
         }
         if (_rawPath.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The rawPath value ${unsafe { _rawPath.rawData() }} contains null character.")
+            throw IllegalArgumentException("The path 'rawPath' value ${unsafe { _rawPath.rawData() }} contains null character.")
         }
     }
 }

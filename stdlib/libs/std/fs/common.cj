@@ -25,7 +25,7 @@ private func checkCopy(sourcePath: Path, to: Path): Unit {
         throw IllegalArgumentException("The path 'to' value ${unsafe { to._rawPath.rawData() }} contains null character.")
     }
     if (sourcePath == to) {
-        throw FSException("The 'sourcePath' `${sourcePath}` and 'to' `${to}` are the same path.")
+        throw FSException("The path 'sourcePath' `${sourcePath}` and 'to' `${to}` are the same path.")
     }
 }
 
@@ -106,7 +106,7 @@ public func remove(path: String, recursive!: Bool = false): Unit {
             }
             try {
                 let errMessage = ret.msg.toString()
-                throw FSException("Failed to remove `${path}` because `${errMessage.trimAscii()}`.")
+                throw FSException("Failed to remove `${path}` return ${ret.rtnCode}: \"${errMessage.trimAscii()}\".")
             } finally {
                 LibC.free(ret.msg)
             }
@@ -148,7 +148,7 @@ public func rename(sourcePath: String, to!: String, overwrite!: Bool = false): U
     }
 
     if (Path(sourcePath) == Path(to)) {
-        throw FSException("The 'sourcePath' `${sourcePath}` and 'to' `${to}` are the same path.")
+        throw FSException("The path 'sourcePath' `${sourcePath}` and 'to' `${to}` are the same path.")
     }
 
     if (exists(to) && !overwrite) {
@@ -168,7 +168,7 @@ public func rename(sourcePath: String, to!: String, overwrite!: Bool = false): U
         }
         try {
             let errMessage = result.msg.toString()
-            throw FSException("Failed to rename `${sourcePath}` to `${to}` because `${errMessage.trimAscii()}`.")
+            throw FSException("Failed to rename `${sourcePath}` to `${to}` return ${ret.rtnCode}:\"${errMessage.trimAscii()}\".")
         } finally {
             unsafe { LibC.free(result.msg) }
         }

@@ -26,7 +26,7 @@ public class HardLink {
             throw IllegalArgumentException("The path 'to' is empty!")
         }
         if (link.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The 'link' value ${unsafe { link.rawData() }} contains null character.")
+            throw IllegalArgumentException("The path 'link' value ${unsafe { link.rawData() }} contains null character.")
         }
         if (to.contains(NULL_BYTE)) {
             throw IllegalArgumentException("The path 'to' value ${unsafe { to.rawData() }} contains null character.")
@@ -43,7 +43,7 @@ public class HardLink {
                 if (ret.rtnCode != 0) {
                     try {
                         let errMessage = ret.msg.toString()
-                        throw FSException("Failed to create hard link `${link}` to `${to}` return ${ret.rtnCode}: ${errMessage.trimAscii()}.")
+                        throw FSException("Failed to create hard link `${link}` to `${to}` return ${ret.rtnCode}: \"${errMessage.trimAscii()}\".")
                     } finally {
                         LibC.free(ret.msg)
                     }

@@ -449,10 +449,12 @@ public struct CPointerHandle<T> where T <: CType {
  */
 @Frozen
 public unsafe func acquireArrayRawData<T>(arr: Array<T>): CPointerHandle<T> where T <: CType {
-    CPointerHandle<T>(acquireRawData<T>(arr.rawptr) + arr.start, arr)
+    throw Exception()
+    //CPointerHandle<T>(acquireRawData<T>(arr.rawptr) + arr.start, arr)
 }
 
 @Frozen
 public unsafe func releaseArrayRawData<T>(handle: CPointerHandle<T>): Unit where T <: CType {
-    releaseRawData(handle.array.rawptr, handle.pointer - handle.array.start)
+    throw Exception()
+    //releaseRawData(handle.array.rawptr, handle.pointer - handle.array.start)
 }

@@ -488,7 +488,7 @@ public class File <: Resource & IOStream & Seekable {
         if (!isHandleValid(_fileDescriptor._fileHandle)) {
             var errMsg = "Failed to open the file `${pathStr}."
             if (fsInfoErrMsg != "") {
-                errMsg += fsInfoErrMsg
+                errMsg += " ${fsInfoErrMsg}"
             }
             throw FSException(errMsg)
         }
