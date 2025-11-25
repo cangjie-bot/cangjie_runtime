@@ -183,21 +183,21 @@ void ExceptionManager::DumpException()
 #ifdef __APPLE__
             PRINT_INFO("\t ... Some frames are not displayed ...\n");
 #endif
-            LOG(RTLOG_INFO, "\t ... Some frames are not displayed ...\n");
+            LOG(RTLOG_ERROR, "\t ... Some frames are not displayed ...\n");
         }
         for (auto ste : stackTrace) {
 #ifdef __APPLE__
             PRINT_INFO("\t at %s%s%s(%s:%lld)\n", ste.className.Str(), ste.className.Length() > 0 ? "." : "",
                        ste.methodName.Str(), ste.fileName.Str(), ste.lineNumber);
 #endif
-            LOG(RTLOG_INFO, "\t at %s%s%s(%s:%ld)\n", ste.className.Str(), ste.className.Length() > 0 ? "." : "",
+            LOG(RTLOG_ERROR, "\t at %s%s%s(%s:%ld)\n", ste.className.Str(), ste.className.Length() > 0 ? "." : "",
                 ste.methodName.Str(), ste.fileName.Str(), ste.lineNumber);
         }
         if (sofFoldedFlag == SofStackFlag::BOTTOM_FOLDED) {
 #ifdef __APPLE__
             PRINT_INFO("\t ... Some frames are not displayed ...\n");
 #endif
-            LOG(RTLOG_INFO, "\t ... Some frames are not displayed ...\n");
+            LOG(RTLOG_ERROR, "\t ... Some frames are not displayed ...\n");
         }
 #if defined(__OHOS__) && (__OHOS__ == 1)
         // In OHOS, C calling Cangjie: uncaught exception allow C-side execution to continue without proactive exit,
