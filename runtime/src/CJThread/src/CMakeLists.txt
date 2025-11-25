@@ -58,7 +58,8 @@ $<TARGET_OBJECTS:external>
 )
 
 if ((${PLATFORM_NAME} STREQUAL "ios_cangjie" OR ${PLATFORM_NAME} STREQUAL "ios_simulator_cangjie" OR 
-     ${PLATFORM_NAME} STREQUAL "mac_x86_64_cangjie" OR ${PLATFORM_NAME} STREQUAL "mac_aarch64_cangjie") AND 
+     ${PLATFORM_NAME} STREQUAL "mac_x86_64_cangjie" OR ${PLATFORM_NAME} STREQUAL "mac_aarch64_cangjie" OR
+     ${PLATFORM_NAME} STREQUAL "ios_cangjie_x86_64" OR ${PLATFORM_NAME} STREQUAL "ios_simulator_cangjie_x86_64") AND 
     ("${APPLE_STATIC_BUILD}" STREQUAL "true"))
     add_custom_command(TARGET cangjie-thread PRE_BUILD
         COMMAND sh ${CMAKE_SOURCE_DIR}/../../build/apple_rename_section.sh 
@@ -81,6 +82,7 @@ if(${PLATFORM_NAME} STREQUAL "linux_aarch64_cangjie" OR ${PLATFORM_NAME} STREQUA
     ${PLATFORM_NAME} STREQUAL "linux12_x86_64_cangjie" OR ${PLATFORM_NAME} STREQUAL "linux12_x86_64_fuzz" OR
     ${PLATFORM_NAME} STREQUAL "linux12_x86_64_gcov" OR ${PLATFORM_NAME} STREQUAL "linux12_x86_64" OR
     ${PLATFORM_NAME} STREQUAL "ios_cangjie" OR ${PLATFORM_NAME} STREQUAL "ios_simulator_cangjie" OR
+    ${PLATFORM_NAME} STREQUAL "ios_cangjie_x86_64" OR ${PLATFORM_NAME} STREQUAL "ios_simulator_cangjie_x86_64" OR
     ${PLATFORM_NAME} STREQUAL "mac_x86_64_cangjie" OR ${PLATFORM_NAME} STREQUAL "mac_aarch64_cangjie" OR
     ${PLATFORM_NAME} STREQUAL "windows_x86_64" OR ${PLATFORM_NAME} STREQUAL "cross_windows_x86_64")
 install(TARGETS cangjie-thread ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${TARGET_ARCH}${SANITIZER_SUBPATH})
