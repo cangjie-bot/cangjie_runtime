@@ -14,15 +14,17 @@
 package std.fs
 
 public func canonicalize(path: String): Path {
-    Path(path).checkPath()
+    PathValidator.throwIfEmptyOrContainsNullByte("path", path, true)
     if (!exists(path)) {
         throw FSException("Failed to canonical: the path `${path}` may not exist or permission denied!")
     }
+
     return Path(processPathHeader(path, Path.canonicalizePath(path)))
 }
 
 public func canonicalize(path: Path): Path {
-    path.checkPath()
+    PathValidator.throwIfEmptyOrContainsNullByte("path", path, true)
+
     let rawPath = path.toString()
     if (!exists(rawPath)) {
         throw FSException("Failed to canonical: the path `${path}` may not exist or permission denied!")
@@ -63,7 +65,7 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
      */
     public prop parent: Path {
         get() {
-            checkPath()
+            PathValidator.throwIfEmptyOrContainsNullByte("path", _rawPath, false)
             return getParent(_rawPath)
         }
     }
@@ -74,7 +76,7 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
      */
     public prop fileName: String {
         get() {
-            checkPath()
+            PathValidator.throwIfEmptyOrContainsNullByte("path", _rawPath, false)
             return getFileName(_rawPath)
         }
     }
@@ -85,7 +87,7 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
      */
     public prop extensionName: String {
         get() {
-            checkPath()
+            PathValidator.throwIfEmptyOrContainsNullByte("path", _rawPath, false)
             let name = this.fileName
             if (let Some(dot) <- name.lastIndexOf(b'.')) {
                 return name[dot + 1..]
@@ -100,7 +102,7 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
      */
     public prop fileNameWithoutExtension: String {
         get() {
-            checkPath()
+            PathValidator.throwIfEmptyOrContainsNullByte("path", _rawPath, false)
             let name = this.fileName
             if (let Some(dot) <- name.lastIndexOf(b'.')) {
                 return name[..dot]
@@ -114,7 +116,7 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
      * or path is empty.
      */
     public func isAbsolute(): Bool {
-        checkPath()
+        PathValidator.throwIfEmptyOrContainsNullByte("path", _rawPath, false)
         return isAbsolutePath(_rawPath)
     }
 
@@ -123,7 +125,7 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
      * or path is empty.
      */
     public func isRelative(): Bool {
-        checkPath()
+        PathValidator.throwIfEmptyOrContainsNullByte("path", _rawPath, false)
         return !isAbsolutePath(_rawPath)
     }
 
@@ -142,10 +144,9 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
      * @throws FSException if path is an absolute path.
      */
     public func join(path: String): Path {
-        if (path.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The path value ${unsafe { path.rawData() }} contains null character.")
-        }
-        checkPath()
+        PathValidator.throwIfContainsNullByte("path", path, true)
+        PathValidator.throwIfEmptyOrContainsNullByte("path", _rawPath, false)
+
         if (path.isEmpty()) {
             if (isSlash(_rawPath[_rawPath.size - 1])) {
                 return this
@@ -353,13 +354,50 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
             realPathArr.slice(0, availLen)
         }
     }
+}
 
-    func checkPath(): Unit {
-        if (_rawPath.isEmpty()) {
-            throw IllegalArgumentException("The path 'rawPath' is an empty string.")
+class PathValidator {
+    private init() {} // static class
+
+    static func throwIfEmpty(name: String, path: Path, isInput: Bool): Unit {
+        throwIfEmpty(name, path._rawPath)
+    }
+
+    static func throwIfEmpty(name: String, path: String, isInput: Bool): Unit {
+        if (path.isEmpty()) {
+            throw IllegalArgumentException(generateExceptionMessage(name, "is empty", isInput))
         }
-        if (_rawPath.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The path 'rawPath' value ${unsafe { _rawPath.rawData() }} contains null character.")
+    }
+
+    static func throwIfContainsNullByte(name: String, path: Path, isInput: Bool): Unit {
+        throwIfContainsNullByte(name, path._rawPath)
+    }
+
+    static func throwIfContainsNullByte(name: String, path: String, isInput: Bool): Unit {
+        if (path.contains(NULL_BYTE)) {
+            throw IllegalArgumentException(generateExceptionMessage(name, "value ${unsafe { path.rawData() }} contains null character", isInput))
         }
+    }
+
+    static func throwIfEmptyOrContainsNullByte(name: String, path: Path, isInput: Bool): Unit {
+        throwIfEmptyOrContainsNullByte(name, path._rawPath)
+    }
+
+    static func throwIfEmptyOrContainsNullByte(name: String, path: String, isInput: Bool): Unit {
+        throwIfEmpty(name, path, isInput)
+        throwIfContainsNullByte(name, path, isInput)
+    }
+
+    private func generateExceptionMessage(name: String, postfix: String): String {
+        let sb = StringBuilder(if (isInput) { "The input path " } else { "The path " })
+        if (name != "path") {
+            sb.append('\'')
+            sb.append(name)
+            sb.append('\'')
+            sb.append(' ')
+        }
+        sb.append(postfix)
+        sb.append('.')
+        return sb.toString()
     }
 }

@@ -19,18 +19,8 @@ public class HardLink {
     }
 
     public static func create(link: String, to!: String): Unit {
-        if (link.isEmpty()) {
-            throw IllegalArgumentException("The path 'link' is empty!")
-        }
-        if (to.isEmpty()) {
-            throw IllegalArgumentException("The path 'to' is empty!")
-        }
-        if (link.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The path 'link' value ${unsafe { link.rawData() }} contains null character.")
-        }
-        if (to.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The path 'to' value ${unsafe { to.rawData() }} contains null character.")
-        }
+        PathValidator.throwIfEmptyOrContainsNullByte("link", link, true)
+        PathValidator.throwIfEmptyOrContainsNullByte("to", to, true)
 
         unsafe {
             try (cPath1 = LibC.mallocCString(link).asResource(), cPath2 = LibC.mallocCString(to).asResource()) {
