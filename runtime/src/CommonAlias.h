@@ -175,6 +175,14 @@ extern "C" MRT_EXPORT bool CJ_MCC_IsTuple(TypeInfo* ti) __attribute__((alias("MC
 extern "C" MRT_EXPORT bool CJ_MCC_IsReflectUnsupportedType(TypeInfo* ti)
     __attribute__((alias("MCC_IsReflectUnsupportedType")));
 
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFunctionParameters(TypeInfo* funcTi)
+    __attribute__((alias("MCC_GetFunctionParameters")));
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
+    __attribute__((alias("MCC_GetNumOfFunctionParameters")));
+extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetFunctionReturnType(TypeInfo* ti)
+    __attribute__((alias("MCC_GetFunctionReturnType")));
+
+// for tuple
 extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfTypeInfoFields(TypeInfo* ti)
     __attribute__((alias("MCC_GetNumOfTypeInfoFields")));
 extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetTypeInfoFields(TypeInfo* ti)
