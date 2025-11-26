@@ -244,6 +244,14 @@ extern "C" MRT_EXPORT bool CJ_MCC_IsReflectUnsupportedType(TypeInfo* ti);
 __asm__(".global _CJ_MCC_IsReflectUnsupportedType\n\t.set _CJ_MCC_IsReflectUnsupportedType, "
     "_MCC_IsReflectUnsupportedType");
 
+// for function
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFunctionParameters(TypeInfo* funcTi);
+__asm__(".global _CJ_MCC_GetNumOfFunctionParameters\n\t.set _CJ_MCC_GetNumOfFunctionParameters, _MCC_GetNumOfFunctionParameters");
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFunctionParameters(TypeInfo* funcTi);
+__asm__(".global _CJ_MCC_GetFunctionParameters\n\t.set _CJ_MCC_GetFunctionParameters, _MCC_GetFunctionParameters");
+extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetFunctionReturnType(TypeInfo* ti);
+__asm__(".global _CJ_MCC_GetFunctionReturnType\n\t.set _CJ_MCC_GetFunctionReturnType, _MCC_GetFunctionReturnType");
+
 // for tuple
 extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfTypeInfoFields(TypeInfo* ti);
 __asm__(".global _CJ_MCC_GetNumOfTypeInfoFields\n\t.set _CJ_MCC_GetNumOfTypeInfoFields, _MCC_GetNumOfTypeInfoFields");
