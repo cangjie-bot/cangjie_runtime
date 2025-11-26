@@ -16,7 +16,7 @@ package std.fs
 public func canonicalize(path: String): Path {
     PathValidator.throwIfEmptyOrContainsNullByte("path", path, true)
     if (!exists(path)) {
-        throw FSException("Failed to canonical: the path `${path}` may not exist or permission denied!")
+        throw FSException("Failed to canonical: the input path `${path}` may not exist or permission denied!")
     }
 
     return Path(processPathHeader(path, Path.canonicalizePath(path)))
@@ -27,7 +27,7 @@ public func canonicalize(path: Path): Path {
 
     let rawPath = path.toString()
     if (!exists(rawPath)) {
-        throw FSException("Failed to canonical: the path `${path}` may not exist or permission denied!")
+        throw FSException("Failed to canonical: the input path `${path}` may not exist or permission denied!")
     }
     return Path(processPathHeader(rawPath, Path.canonicalizePath(rawPath)))
 }
@@ -154,7 +154,7 @@ public struct Path <: Equatable<Path> & Hashable & ToString {
             return Path(String.join([_rawPath, SLASH_STRING]))
         }
         if (isAbsolutePath(path)) {
-            throw FSException("The path `${path}` cannot be an absolute path!")
+            throw FSException("The input path `${path}` cannot be an absolute path!")
         }
         var newPath = if (isSlash(_rawPath[_rawPath.size - 1])) {
             String.join([_rawPath, path])
@@ -360,7 +360,7 @@ class PathValidator {
     private init() {} // static class
 
     static func throwIfEmpty(name: String, path: Path, isInput: Bool): Unit {
-        throwIfEmpty(name, path._rawPath)
+        throwIfEmpty(name, path.toString())
     }
 
     static func throwIfEmpty(name: String, path: String, isInput: Bool): Unit {
@@ -370,7 +370,7 @@ class PathValidator {
     }
 
     static func throwIfContainsNullByte(name: String, path: Path, isInput: Bool): Unit {
-        throwIfContainsNullByte(name, path._rawPath)
+        throwIfContainsNullByte(name, path.toString())
     }
 
     static func throwIfContainsNullByte(name: String, path: String, isInput: Bool): Unit {
@@ -380,7 +380,7 @@ class PathValidator {
     }
 
     static func throwIfEmptyOrContainsNullByte(name: String, path: Path, isInput: Bool): Unit {
-        throwIfEmptyOrContainsNullByte(name, path._rawPath)
+        throwIfEmptyOrContainsNullByte(name, path.toString())
     }
 
     static func throwIfEmptyOrContainsNullByte(name: String, path: String, isInput: Bool): Unit {
@@ -388,7 +388,7 @@ class PathValidator {
         throwIfContainsNullByte(name, path, isInput)
     }
 
-    private func generateExceptionMessage(name: String, postfix: String): String {
+    private func generateExceptionMessage(name: String, postfix: String, isInput: Bool): String {
         let sb = StringBuilder(if (isInput) { "The input path " } else { "The path " })
         if (name != "path") {
             sb.append('\'')

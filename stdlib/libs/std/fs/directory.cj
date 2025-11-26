@@ -25,7 +25,7 @@ public class Directory {
     public static func create(path: String, recursive!: Bool = false): Unit {
         let normalPath = removeTralingSlashChar(path)
         if (exists(normalPath)) {
-            throw FSException("The path `${path}` is already exists.")
+            throw FSException("The input path `${path}` is already exists.")
         }
         if (recursive) {
             Directory.createRecursive(normalPath)
@@ -126,9 +126,7 @@ public class Directory {
     }
 
     private static func createSubDirectory(parent: String, name: String): String {
-        if (name.contains(NULL_BYTE)) {
-            throw IllegalArgumentException("The name value ${unsafe { name.rawData() }} contains null character.")
-        }
+        PathValidator.throwIfEmptyOrContainsNullByte("name", name, false)
         if (containsSlash(name)) {
             throw FSException("The name `${name}` contains path information.")
         }
@@ -209,10 +207,10 @@ public class Directory {
         PathValidator.throwIfEmptyOrContainsNullByte("sourceDirPath", sourceDirPath, true)
         PathValidator.throwIfEmptyOrContainsNullByte("destinationDirPath", destinationDirPath, true)
         if (!exists(sourceDirPath)) {
-            throw FSException("The path 'sourceDirPath' `${sourceDirPath}` does not exist.")
+            throw FSException("The input path 'sourceDirPath' `${sourceDirPath}` does not exist.")
         }
         if (!overwrite && exists(destinationDirPath)) {
-            throw FSException("The path 'destinationDirPath' `${destinationDirPath}` is already exists and overwrite is false.")
+            throw FSException("The input path 'destinationDirPath' `${destinationDirPath}` is already exists and overwrite is false.")
         }
 
         if (!exists(destinationDirPath)) {
@@ -312,7 +310,7 @@ public class Directory {
 func checkDirectoryPath(path: Path): Path {
     let info = FileInfo(path)
     if (!info.isDirectory()) {
-        throw FSException("The path `${path}` is not a directory.")
+        throw FSException("The input path `${path}` is not a directory.")
     }
     return info.path
 }

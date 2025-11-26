@@ -100,7 +100,7 @@ public class File <: Resource & IOStream & Seekable {
         let filePath: Path = Path(path)
         let parent = filePath.parent
         if (!parent.isEmpty() && !exists(parent)) {
-            throw FSException("The path 'parent' `${parent}` does not exist.")
+            throw FSException("The input path 'parent' `${parent}` does not exist.")
         }
         // Because `filePath` may not exist before `openFile` is executed, `FileInfo` does not check whether the path exists.
         _fileInfo = FileInfo(filePath, false)
@@ -307,7 +307,7 @@ public class File <: Resource & IOStream & Seekable {
      */
     public static func create(path: String): File {
         if (exists(path)) {
-            throw FSException("The file `${path}` is already exists!")
+            throw FSException("The file `${path}` is already exists.")
         }
         return File(path, Write)
     }
