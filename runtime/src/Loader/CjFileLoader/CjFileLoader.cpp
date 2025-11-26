@@ -4,7 +4,6 @@
 //
 // See https://cangjie-lang.cn/pages/LICENSE for license information.
 
-
 #include "CjFileLoader.h"
 
 #include "ExceptionManager.inline.h"
@@ -54,7 +53,10 @@ void CJFileLoader::UnregisterLoadFile(Uptr fileMetaAddr)
         RemoveLoadedFiles(file);
     }
 }
-void CJFileLoader::AddLoadedFiles(BaseFile* baseFile) { loadedFiles.push_back(baseFile); }
+void CJFileLoader::AddLoadedFiles(BaseFile* baseFile)
+{
+    loadedFiles.push_back(baseFile);
+}
 
 BaseFile* CJFileLoader::CreateFileRefFromAddr(Uptr fileMetaAddr)
 {
@@ -82,13 +84,13 @@ void CJFileLoader::AddPackageInfos(BaseFile* baseFile)
         const char* pkgName = packageInfo->GetPackageName();
         auto pkgIt = packageInfos.find(pkgName);
         if (pkgIt == packageInfos.end()) {
-            packageInfos.insert({ pkgName, packageInfo });
+            packageInfos.insert({pkgName, packageInfo});
             // record the relation between file and the packageInfo,
             // identify whether multiple packages exist in a file.
             auto fileIt = filePackageMap.find(baseFile->GetBaseName().Str());
             if (fileIt == filePackageMap.end()) {
-                std::vector<PackageInfo*> pkgs { packageInfo };
-                filePackageMap.insert({ baseFile->GetBaseName().Str(), pkgs });
+                std::vector<PackageInfo*> pkgs{packageInfo};
+                filePackageMap.insert({baseFile->GetBaseName().Str(), pkgs});
             } else {
                 fileIt->second.push_back(packageInfo);
             }
@@ -124,10 +126,10 @@ bool CJFileLoader::FileHasMultiPackage(const char* path)
     return false;
 }
 
-void CJFileLoader::GetSubPackages(PackageInfo* packageInfo, std::vector<PackageInfo*> &subPackages)
+void CJFileLoader::GetSubPackages(PackageInfo* packageInfo, std::vector<PackageInfo*>& subPackages)
 {
     CString prefix = CString(packageInfo->GetPackageName()) + ".";
-    for (auto &pkgInfoPair : packageInfos) {
+    for (auto& pkgInfoPair : packageInfos) {
         PackageInfo* pkgInfo = pkgInfoPair.second;
         if (CString(pkgInfo->GetPackageName()).StartWith(prefix)) {
             subPackages.emplace_back(pkgInfo);
@@ -136,8 +138,7 @@ void CJFileLoader::GetSubPackages(PackageInfo* packageInfo, std::vector<PackageI
 }
 
 // Traverse outer extension data grouped by BaseFile
-void CJFileLoader::VisitExtensionData(
-    TypeInfo* ti, const std::function<bool(ExtensionData* ed)>& f, TypeTemplate* tt) const
+void CJFileLoader::VisitExtensionData(TypeInfo* ti, const std::function<bool(ExtensionData* ed)>& f, TypeTemplate* tt) const
 {
     ti->TryInitMTable();
     std::lock_guard<std::recursive_mutex> lock(ti->GetMTableDesc()->mTableMutex);
@@ -190,8 +191,7 @@ void CJFileLoader::ParseEnumCtor(TypeInfo* ti)
     return;
 #endif
     if (ti->IsGenericTypeInfo()) {
-        return TypeInfoManager::GetInstance()->ParseEnumInfo(
-            ti->GetSourceGeneric(), ti->GetTypeArgNum(), ti->GetTypeArgs(), ti);
+        return TypeInfoManager::GetInstance()->ParseEnumInfo(ti->GetSourceGeneric(), ti->GetTypeArgNum(), ti->GetTypeArgs(), ti);
     }
     EnumInfo* ei = ti->GetEnumInfo();
     if (ei == nullptr || ei->GetNumOfEnumCtor() == 0 || ei->IsParsed()) {
@@ -204,8 +204,7 @@ void CJFileLoader::ParseEnumCtor(TypeInfo* ti)
         if (fn == nullptr) {
             continue;
         }
-        TypeInfo* enumTi = reinterpret_cast<TypeInfo*>(
-            TypeTemplate::ExecuteGenericFunc(fn, ti->GetTypeArgNum(), ti->GetTypeArgs()));
+        TypeInfo* enumTi = reinterpret_cast<TypeInfo*>(TypeTemplate::ExecuteGenericFunc(fn, ti->GetTypeArgNum(), ti->GetTypeArgs()));
         enumCtorInfo->SetTypeInfo(enumTi);
     }
     ei->SetParsed();
@@ -357,7 +356,7 @@ TypeInfo* CJFileLoader::FindTypeInfoFromLoadedFiles(const char* typeInfoName)
     }
     CString pkgName;
     CString typeInfoNameStr = CString(typeInfoName);
-    int idx = typeInfoNameStr.Find(':');
+    int idx = typeInfoNameStr.RFind(":");
     if (idx < 0) {
         pkgName = "std.core";
     } else {
@@ -370,7 +369,7 @@ TypeInfo* CJFileLoader::FindTypeInfoFromLoadedFiles(const char* typeInfoName)
         if (ti == nullptr) {
             return nullptr;
         }
-        typeInfoCache.insert({ typeInfoName, ti });
+        typeInfoCache.insert({typeInfoName, ti});
         return ti;
     }
     return nullptr;
@@ -384,7 +383,7 @@ TypeTemplate* CJFileLoader::FindTypeTemplateFromLoadedFiles(const char* typeTemp
     }
     CString pkgName;
     CString typeTemplateNameStr = CString(typeTemplateName);
-    int idx = typeTemplateNameStr.Find(':');
+    int idx = typeTemplateNameStr.RFind(":");
     if (idx < 0) {
         pkgName = "std.core";
     } else {
@@ -397,7 +396,7 @@ TypeTemplate* CJFileLoader::FindTypeTemplateFromLoadedFiles(const char* typeTemp
         if (tt == nullptr) {
             return nullptr;
         }
-        typeTemplateCache.insert({ typeTemplateName, tt });
+        typeTemplateCache.insert({typeTemplateName, tt});
         return tt;
     }
     return nullptr;
@@ -405,7 +404,7 @@ TypeTemplate* CJFileLoader::FindTypeTemplateFromLoadedFiles(const char* typeTemp
 
 void CJFileLoader::RecordTypeInfo(TypeInfo* ti)
 {
-    typeInfoCache.insert({ ti->GetName(), ti });
+    typeInfoCache.insert({ti->GetName(), ti});
 }
 
 void CJFileLoader::ClearLoadedFiles()
@@ -430,7 +429,7 @@ bool CJFileLoader::LibInit(const char* libName)
 #ifdef __OHOS__
 void CJFileLoader::RegisterLoadFunc(void* loadFunc)
 {
-    binLoadApi.binLoad = (void*(*)(const char*))(loadFunc);
+    binLoadApi.binLoad = (void* (*)(const char*))(loadFunc);
 }
 #endif
 
@@ -440,12 +439,10 @@ void* CJFileLoader::LoadCJLibrary(const char* libName)
     if (handler != nullptr) {
         std::lock_guard<std::mutex> lock(libCjsoHandlersMutex);
         CString baseName = Os::Path::GetBaseName(libName);
-        auto handlerIt =
-            std::find_if(cjLibHandlers.begin(), cjLibHandlers.end(), [&baseName](const LibNameToHandler& info) {
-                return baseName == Os::Path::GetBaseName(info.baseName.Str());
-            });
+        auto handlerIt = std::find_if(cjLibHandlers.begin(), cjLibHandlers.end(),
+                                      [&baseName](const LibNameToHandler& info) { return baseName == Os::Path::GetBaseName(info.baseName.Str()); });
         if (handlerIt == cjLibHandlers.end()) {
-            cjLibHandlers.push_back({ baseName, handler });
+            cjLibHandlers.push_back({baseName, handler});
         }
     }
     return handler;
@@ -459,9 +456,7 @@ int CJFileLoader::UnloadLibrary(const char* libName)
     CString baseName = Os::Path::GetBaseName(libName);
     std::lock_guard<std::mutex> lock(libCjsoHandlersMutex);
     auto handlerIt =
-        std::find_if(cjLibHandlers.begin(), cjLibHandlers.end(), [&baseName](const LibNameToHandler& info) {
-            return baseName == Os::Path::GetBaseName(info.baseName.Str());
-        });
+            std::find_if(cjLibHandlers.begin(), cjLibHandlers.end(), [&baseName](const LibNameToHandler& info) { return baseName == Os::Path::GetBaseName(info.baseName.Str()); });
     if (handlerIt == cjLibHandlers.end()) {
         return -1;
     }
@@ -477,9 +472,7 @@ Uptr CJFileLoader::FindSymbol(const CString libName, const CString symName) cons
 {
     CString baseName = Os::Path::GetBaseName(libName.Str());
     auto handlerIt =
-        std::find_if(cjLibHandlers.begin(), cjLibHandlers.end(), [&baseName](const LibNameToHandler& info) {
-            return baseName == Os::Path::GetBaseName(info.baseName.Str());
-        });
+            std::find_if(cjLibHandlers.begin(), cjLibHandlers.end(), [&baseName](const LibNameToHandler& info) { return baseName == Os::Path::GetBaseName(info.baseName.Str()); });
     if (handlerIt == cjLibHandlers.end()) {
         return 0;
     }
@@ -509,8 +502,7 @@ bool CJFileLoader::DoInitImage(BaseFile* baseFile) const
             }
             if (ExceptionManager::HasPendingException()) {
                 ExceptionRef ex = ExceptionManager::GetPendingException();
-                LOG(RTLOG_ERROR, "Init Image fail! exception occurrence when init image, exception:%s ",
-                    ex->GetTypeInfo()->GetName());
+                LOG(RTLOG_ERROR, "Init Image fail! exception occurrence when init image, exception:%s ", ex->GetTypeInfo()->GetName());
                 ExceptionManager::ClearPendingException();
                 return false;
             }
@@ -562,8 +554,7 @@ void CJFileLoader::TryThrowException(Uptr fileMetaAddr)
     CString packageVersion = file->GetSDKVersion();
     CString msg = "executable cangjie file ";
     msg.Append(packageName);
-    msg.Append(CString::FormatString(" version %s is not compatible with deployed cangjie runtime version %s",
-        packageVersion.Str(), compatibility.GetRuntimeSDKVersion()));
+    msg.Append(CString::FormatString(" version %s is not compatible with deployed cangjie runtime version %s", packageVersion.Str(), compatibility.GetRuntimeSDKVersion()));
 #ifndef DISABLE_VERSION_CHECK
     ExceptionManager::IncompatiblePackageExpection(msg);
     RemoveLoadedFiles(file);
