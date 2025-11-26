@@ -1152,6 +1152,61 @@ extern "C" bool MCC_IsTuple(TypeInfo* ti) { return ti->IsTuple(); }
 
 extern "C" bool MCC_IsReflectUnsupportedType(TypeInfo* ti) { return ti->IsReflectUnsupportedType(); }
 
+// reflect support function
+
+extern "C" U32 MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
+{
+    if (!funcTi->IsFunc()) {
+        return 0;
+    }
+    auto super = funcTi->GetSuperTypeInfo();
+    if (!super || !super->IsFunc()) {
+        return 0;
+    }
+
+    // Now, `super` both are Closure type.
+    // Get function type from Closure type, i.e., typeArgs[0]:
+    TypeInfo* funcType = super->GetTypeArgs()[0];
+    U16 typeArgNum = funcType->GetTypeArgNum();
+
+    return typeArgNum - 1;
+}
+
+extern "C" TypeInfo** MCC_GetFunctionParameters(TypeInfo* funcTi)
+{
+    if (!funcTi->IsFunc()) {
+        return nullptr;
+    }
+    auto super = funcTi->GetSuperTypeInfo();
+    if (!super || !super->IsFunc()) {
+        return nullptr;
+    }
+
+    // Now, `super` both are Closure type.
+    // Get function type from Closure type, i.e., typeArgs[0]:
+    TypeInfo* funcType = super->GetTypeArgs()[0];
+
+    TypeInfo** params = funcType->GetTypeArgs() + 1;
+    return params;
+}
+
+extern "C" TypeInfo* MCC_GetFunctionReturnType(TypeInfo* funcTi)
+{
+    if (!funcTi->IsFunc()) {
+        return nullptr;
+    }
+    auto super = funcTi->GetSuperTypeInfo();
+    if (!super || !super->IsFunc()) {
+        return nullptr;
+    }
+
+    // Now, `super` both are Closure type.
+    // Get function type from Closure type, i.e., typeArgs[0]:
+    TypeInfo* funcType = super->GetTypeArgs()[0];
+
+    return funcType->GetTypeArgs()[0];
+}
+
 // for tuple
 extern "C" U32 MCC_GetNumOfTypeInfoFields(TypeInfo* ti) { return ti->GetFieldNum(); }
 
