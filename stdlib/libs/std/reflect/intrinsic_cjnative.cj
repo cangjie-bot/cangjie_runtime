@@ -24,6 +24,15 @@ func isPrimitive(ti: CPointer<Unit>): Bool
 func isClass(ti: CPointer<Unit>): Bool
 
 @Intrinsic
+func isTuple(ti: CPointer<Unit>): Bool
+
+@Intrinsic
+func isFunction(ti: CPointer<Unit>): Bool
+
+@Intrinsic
+func isEnum(ti: CPointer<Unit>): Bool
+
+@Intrinsic
 func isGeneric(ti: CPointer<Unit>): Bool
 
 @Intrinsic
@@ -234,3 +243,15 @@ func getPackageVersion(packageInfo: CPointer<Unit>): CPointer<UInt8>
 
 @Intrinsic
 func getSubPackages(packageInfo: CPointer<Unit>, arrayTi: CPointer<Unit>): Any
+
+@Intrinsic
+func getNumOfTypeInfoFields(ti: CPointer<Unit>): UInt32 /* return tuple elements count */
+
+@Intrinsic
+func getTypeInfoFields(ti: CPointer<Unit>): CPointer<Unit> /* return pointer to array of TypeInfo */
+
+@Intrinsic
+func newAndInitObject(ti: CPointer<Unit>, args: Array<Any>): Object
+
+@Intrinsic
+func getAssociatedValues(tupleObj: Any): Any
