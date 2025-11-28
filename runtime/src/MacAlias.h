@@ -257,8 +257,8 @@ extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfTypeInfoFields(TypeInfo* ti);
 __asm__(".global _CJ_MCC_GetNumOfTypeInfoFields\n\t.set _CJ_MCC_GetNumOfTypeInfoFields, _MCC_GetNumOfTypeInfoFields");
 extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetTypeInfoFields(TypeInfo* ti);
 __asm__(".global _CJ_MCC_GetTypeInfoFields\n\t.set _CJ_MCC_GetTypeInfoFields, _MCC_GetTypeInfoFields");
-extern "C" MRT_EXPORT ObjectRef CJ_MCC_NewAndInit(TypeInfo* ti, void* args);
-__asm__(".global _CJ_MCC_NewAndInit\n\t.set _CJ_MCC_NewAndInit, _MCC_NewAndInit");
+extern "C" MRT_EXPORT ObjectRef CJ_MCC_NewAndInitObject(TypeInfo* ti, void* args);
+__asm__(".global _CJ_MCC_NewAndInitObject\n\t.set _CJ_MCC_NewAndInitObject, _MCC_NewAndInitObject");
 extern "C" MRT_EXPORT ArrayRef CJ_MCC_GetAssociatedValues(TypeInfo* ti);
 __asm__(".global _CJ_MCC_GetAssociatedValues\n\t.set _CJ_MCC_GetAssociatedValues, _MCC_GetAssociatedValues");
 
