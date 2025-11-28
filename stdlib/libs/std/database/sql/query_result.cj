@@ -46,4 +46,12 @@ public interface QueryResult <: Resource {
 
     @When[backend == "cjnative"]
     func getOrNull<T>(index: Int64): ?T
+
+    func get<T>(column: String): T {
+        throw UnsupportedException("QueryResult.get(String) is not implemented")
+    }
+
+    func getOrNull<T>(column: String): ?T {
+        throw UnsupportedException("QueryResult.getOrNull(String) is not implemented")
+    }
 }
