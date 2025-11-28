@@ -1212,7 +1212,7 @@ extern "C" U32 MCC_GetNumOfTypeInfoFields(TypeInfo* ti) { return ti->GetFieldNum
 
 extern "C" TypeInfo** MCC_GetTypeInfoFields(TypeInfo* ti) { return ti->GetFieldTypes(); }
 
-extern "C" ObjRef MCC_NewAndInit(TypeInfo* ti, void* args) {
+extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     // to impl TODO
     return nullptr;
     // return ObjectManager::NewAndInit(ti, args);
