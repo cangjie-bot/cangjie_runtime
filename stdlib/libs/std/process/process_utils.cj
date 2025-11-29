@@ -20,7 +20,7 @@ const INVALID_HANDLE: IntNative = 0
 
 @When[os == "Windows"]
 func isHandleValid(fileHandle: IntNative): Bool {
-    return fileHandle != -1
+    return fileHandle != INVALID_HANDLE
 }
 
 @When[os == "Windows"]

@@ -17,7 +17,8 @@
 #define EXPAND_MUL (2)
 #define WINDOWS_UNIX_EPOCH_DIFF_MILLISECONDS (11644473600000L)
 
-typedef struct ProcessStartInfo {
+typedef struct ProcessStartInfo
+{
     char* programeName;
     char* commandLine;
     char* workingDirectory;
@@ -27,7 +28,8 @@ typedef struct ProcessStartInfo {
     HANDLE stdErr;
 } ProcessStartInfo;
 
-typedef struct ProcessRtnData {
+typedef struct ProcessRtnData
+{
     int32_t pid;
     HANDLE handle;
     HANDLE stdIn;
@@ -37,7 +39,8 @@ typedef struct ProcessRtnData {
     char* errMessage; // returns the error information string.
 } ProcessRtnData;
 
-typedef struct ExitInfo {
+typedef struct ExitInfo
+{
     int64_t exitCode;
     bool error;
 } ExitInfo;
@@ -165,8 +168,7 @@ static char* GetErrMessage(int32_t errCode)
         return NULL;
     }
 
-    if (FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, NULL, errCode,
-        MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT), errMsg, BUF_LEN, NULL) == 0) {
+    if (FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, NULL, errCode, MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT), errMsg, BUF_LEN, NULL) == 0) {
         free(errMsg);
         return NULL;
     }
@@ -251,8 +253,7 @@ static void InitStartUpInfoW(STARTUPINFOW* si, HANDLE stdIOE[STD_COUNT][WR_COUNT
     si->hStdError = stdIOE[STDERR][WRITE];
 }
 
-static void AfterCreate(
-    ProcessStartInfo* info, ProcessRtnData* processData, HANDLE stdIOE[STD_COUNT][WR_COUNT], PROCESS_INFORMATION* pi)
+static void AfterCreate(ProcessStartInfo* info, ProcessRtnData* processData, HANDLE stdIOE[STD_COUNT][WR_COUNT], PROCESS_INFORMATION* pi)
 {
     if (info->stdIn == NULL) {
         (void)CloseHandle(stdIOE[STDIN][READ]);
@@ -310,8 +311,7 @@ extern ProcessRtnData* CJ_OS_StartProcess(ProcessStartInfo* info)
         return NULL;
     }
 
-    HANDLE stdIOE[STD_COUNT][WR_COUNT] = {
-        {info->stdIn, info->stdIn}, {info->stdOut, info->stdOut}, {info->stdErr, info->stdErr}};
+    HANDLE stdIOE[STD_COUNT][WR_COUNT] = {{info->stdIn, info->stdIn}, {info->stdOut, info->stdOut}, {info->stdErr, info->stdErr}};
     HANDLE pipe[STD_COUNT][WR_COUNT] = {{NULL, NULL}, {NULL, NULL}, {NULL, NULL}};
     if (!InitHandle(info, stdIOE, pipe)) {
         HandleError(processData);
@@ -349,8 +349,7 @@ extern ProcessRtnData* CJ_OS_StartProcess(ProcessStartInfo* info)
     STARTUPINFOW si;
     ZeroMemory(&si, sizeof(STARTUPINFOW));
     InitStartUpInfoW(&si, stdIOE);
-    BOOL ret = CreateProcessW(programeNameW, commandLineW, NULL, NULL, TRUE, CREATE_UNICODE_ENVIRONMENT, environmentW,
-        workingDirectoryW, &si, &pi);
+    BOOL ret = CreateProcessW(programeNameW, commandLineW, NULL, NULL, TRUE, CREATE_UNICODE_ENVIRONMENT, environmentW, workingDirectoryW, &si, &pi);
     free(programeNameW);
     free(commandLineW);
     free(environmentW);
@@ -410,8 +409,7 @@ int64_t GetProcessTime(int32_t pid, int8_t kind)
     }
 
     FILETIME processTime[PROCESS_TIME_ARRAY_LENGTH + 1]; // [creationTime, exitTime, kernelTime, userTime]
-    if (!GetProcessTimes(processHandle, &processTime[TIMEKIND_CREATE], &processTime[TIMEKIND_EXIT],
-        &processTime[TIMEKIND_SYSTEM], &processTime[TIMEKIND_USER])) {
+    if (!GetProcessTimes(processHandle, &processTime[TIMEKIND_CREATE], &processTime[TIMEKIND_EXIT], &processTime[TIMEKIND_SYSTEM], &processTime[TIMEKIND_USER])) {
         CloseHandle(processHandle);
         return ERROR_GET_PROCESS_TIME_FAILED;
     }
@@ -747,6 +745,28 @@ extern int64_t CJ_OS_FileRead(HANDLE fd, char* buffer, size_t maxLen)
 {
     DWORD numOfBytesToRead = (DWORD)maxLen;
     DWORD numOfBytesRead = 0;
+
+    // On Windows, ReadFile blocks until either data arrives or the writer closes.
+    // PeekNamedPipe lets us avoid blocking forever when the pipe is still open but no data is available.
+    DWORD bytesAvail = 0;
+    DWORD bytesLeft = 0;
+    if (!PeekNamedPipe(fd, NULL, 0, NULL, &bytesAvail, &bytesLeft)) {
+        DWORD err = GetLastError();
+        if (err == ERROR_BROKEN_PIPE) {
+            return 0; // writer already closed
+        }
+        if (err != ERROR_INVALID_HANDLE) {
+            return -1; // unexpected failure
+        }
+        // For non-pipe handles (e.g., console), fall back to blocking ReadFile below.
+    } else {
+        if (bytesAvail == 0) {
+            return 0;
+        }
+        if (bytesAvail < numOfBytesToRead) {
+            numOfBytesToRead = bytesAvail;
+        }
+    }
     BOOL success = ReadFile(fd, buffer, numOfBytesToRead, &numOfBytesRead, NULL);
     if (!success) {
         if (GetLastError() == ERROR_BROKEN_PIPE) {
@@ -783,13 +803,13 @@ extern intptr_t CJ_OS_GetStdHandle(int32_t fd)
 
 extern HANDLE CJ_OS_GetNulFileHandle()
 {
-    HANDLE hFile = CreateFile("NUL", // FileName
-        GENERIC_WRITE,               // DesiredAccess, only write operation in nul pipe.
-        0,                           // ShareMode
-        NULL,                        // SecurityAttributes
-        OPEN_EXISTING,               // CreationDisposition
-        FILE_ATTRIBUTE_NORMAL,       // FlagsAndAttributes
-        NULL);                       // TemplateFile
+    HANDLE hFile = CreateFile("NUL",                 // FileName
+                              GENERIC_WRITE,         // DesiredAccess, only write operation in nul pipe.
+                              0,                     // ShareMode
+                              NULL,                  // SecurityAttributes
+                              OPEN_EXISTING,         // CreationDisposition
+                              FILE_ATTRIBUTE_NORMAL, // FlagsAndAttributes
+                              NULL);                 // TemplateFile
     // System resource, no need to free.
     if (hFile == INVALID_HANDLE_VALUE) {
         return NULL;
@@ -828,8 +848,7 @@ extern HANDLE CJ_OS_OpenFile()
 
     DWORD access = OPEN_EXISTING;
     DWORD mode = GENERIC_READ | GENERIC_WRITE;
-    HANDLE fd = CreateFileW(
-        wPath, mode, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, access, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE fd = CreateFileW(wPath, mode, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, access, FILE_ATTRIBUTE_NORMAL, NULL);
 
     free((void*)wPath);
     if (fd == INVALID_HANDLE_VALUE) {
