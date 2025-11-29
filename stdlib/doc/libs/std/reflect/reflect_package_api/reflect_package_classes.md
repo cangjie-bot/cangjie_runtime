@@ -883,6 +883,56 @@ public operator func ==(that: ConstructorInfo): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果该构造器信息与 `that` 相等则返回 `true`，否则返回 `false`。
 
+## class EnumConstructorInfo
+
+```cangjie
+public class EnumConstructorInfo <: Equatable<EnumConstructorInfo> & Hashable & ToString
+```
+
+功能：描述枚举构造子信息。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+## class EnumTypeInfo
+
+```cangjie
+public class EnumTypeInfo <: TypeInfo
+```
+
+功能：`Enum` 类型的类型信息。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+父类型：
+
+- [TypeInfo](#class-typeinfo)
+
+### prop constructors
+
+```cangjie
+public prop constructors: Collection<EnumConstructorInfo>
+```
+
+功能：获取该 [EnumTypeInfo](#class-enumtypeinfo) 对应的所有枚举构造子信息，返回对应集合。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+类型：[Collection](../../core/core_package_api/core_package_interfaces.md#interface-collectiont)\<[EnumConstructorInfo](#class-enumconstructorinfo)>
+
+### static func get(String)
+
+```cangjie
+public redef static func get(qualifiedName: String): EnumTypeInfo
+```
+
+功能：获取给定限定名称所对应类型的 [EnumTypeInfo](#class-enumtypeinfo)。
+
 ## class GenericTypeInfo
 
 ```cangjie
@@ -4729,6 +4779,124 @@ main(): Unit {
 static area: Int64
 ```
 
+## class TupleTypeInfo
+
+```cangjie
+public class TupleTypeInfo <: TypeInfo
+```
+
+功能：描述元组类型的类型信息。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+父类型：
+
+- [TypeInfo](#class-typeinfo)
+
+### prop elements
+
+```cangjie
+public prop elements: ReadOnlyList<TypeInfo>
+```
+
+功能：获取该 [TupleTypeInfo](#class-tupletypeinfo) 对应元组中各元素的类型信息列表，按元组声明顺序返回。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+类型：[ReadOnlyList](../../collection/collection_package_api/collection_package_interface.md#interface-readonlylistt)\<[TypeInfo](#class-typeinfo)>
+
+### static func of(Any)
+
+```cangjie
+public static func of(instance: Any): TupleTypeInfo
+```
+
+功能：获取给定实例的运行时类型所对应的 [TupleTypeInfo](#class-tupletypeinfo)。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+参数：
+
+- instance: [Any](../../core/core_package_api/core_package_interfaces.md#interface-any) - 运行时类型为元组的实例。
+
+返回值：
+
+- [TupleTypeInfo](#class-tupletypeinfo) - 实例 `instance` 的运行时类型所对应的类型信息。
+
+异常：
+
+- [IllegalTypeException](reflect_package_exceptions.md#class-illegaltypeexception) - 如果获取到的类型信息不是 [TupleTypeInfo](#class-tupletypeinfo)，则抛出异常。
+
+### static func of\<T>()
+
+```cangjie
+public static redef func of<T>(): TupleTypeInfo
+```
+
+功能：获取给定类型 `T` 对应的 [TupleTypeInfo](#class-tupletypeinfo)。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+返回值：
+
+- [TupleTypeInfo](#class-tupletypeinfo) - `T` 类型对应的元组类型信息。
+
+异常：
+
+- [IllegalTypeException](reflect_package_exceptions.md#class-illegaltypeexception) - 如果获取到的类型信息不是 [TupleTypeInfo](#class-tupletypeinfo)，则抛出异常。
+
+### func construct(Array\<Any>)
+
+```cangjie
+public func construct(args: Array<Any>): Any
+```
+
+功能：按元组各元素的顺序传入实参列表，构造该 [TupleTypeInfo](#class-tupletypeinfo) 对应的元组实例，返回构造结果。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+参数：
+
+- args: [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Any](../../core/core_package_api/core_package_interfaces.md#interface-any)> - 元组各元素的取值，顺序与元组声明一致。
+
+返回值：
+
+- [Any](../../core/core_package_api/core_package_interfaces.md#interface-any) - 构造出的元组实例。
+
+异常：
+
+- [MisMatchException](reflect_package_exceptions.md#class-mismatchexception) - 如果 `args` 的数量或类型与元组元素不匹配，则抛出异常。
+
+### func destruct(Any)
+
+```cangjie
+public func destruct(instance: Any): ReadOnlyList<Any>
+```
+
+功能：将指定元组实例拆解为各元素的只读列表并返回。
+
+> **注意：**
+>
+> 不支持平台：macOS、iOS。
+
+参数：
+
+- instance: [Any](../../core/core_package_api/core_package_interfaces.md#interface-any) - 该 [TupleTypeInfo](#class-tupletypeinfo) 对应类型的实例。
+
+返回值：
+
+- [ReadOnlyList](../../collection/collection_package_api/collection_package_interface.md#interface-readonlylistt)\<[Any](../../core/core_package_api/core_package_interfaces.md#interface-any)> - 元组实例中的元素值列表，顺序与元组声明一致。
+
 ## class TypeInfo
 
 ```cangjie
@@ -4916,7 +5084,7 @@ public static func get(qualifiedName: String): TypeInfo
 > **注意：**
 >
 > - 不支持平台：macOS、iOS。
-> - 目前， 类型的限定名称 `qualifiedName` 不支持 `Nothing` 类型、函数类型、元组类型和`enum` 类型的限定名称。
+> - 目前， 类型的限定名称 `qualifiedName` 不支持 `Nothing` 类型的限定名称。
 
 参数：
 
@@ -4964,10 +5132,6 @@ public static func of(a: Any): TypeInfo
 > 不支持平台：macOS、iOS。
 
 运行时类型是指在程序运行时，通过动态绑定确定的类型，运行时类型与实例对象相绑定。在继承等场景下运行时类型和静态类型可能不一致。
-
-> **注意：**
->
-> 目前，实例 `a` 不支持运行时类型为函数类型、元组类型、`enum` 类型。
 
 参数：
 
@@ -5041,7 +5205,7 @@ public static func of<T>(): TypeInfo
 > **注意：**
 >
 > - 不支持平台：macOS、iOS。
-> - 目前，泛型 `T` 不支持 `Nothing` 类型、函数类型、元组类型和`enum` 类型。
+> - 目前，泛型 `T` 不支持 `Nothing` 类型。
 > - `T` 支持传入类型别名，包括内置类型别名（如 [Int](../../core/core_package_api/core_package_types.md#type-int)、[UInt](../../core/core_package_api/core_package_types.md#type-uint) 和 `Rune` 等）与用户自定义类型别名。
 
 返回值：
