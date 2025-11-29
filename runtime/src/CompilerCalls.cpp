@@ -980,9 +980,23 @@ extern "C" TypeInfo* MCC_GetOrCreateTypeInfoForReflect(TypeTemplate* tt, void* a
     Uptr base = reinterpret_cast<Uptr>(&(cjArray->rawPtr->data));
     void* mem = calloc(len, TYPEINFO_PTR_SIZE);
     TypeInfo** typeInfos = static_cast<TypeInfo**>(mem);
+    GenericTypeInfo* genericArgs = reinterpret_cast<GenericTypeInfo*>(
+        tt->GetReflectInfo()->GetDeclaringGenericTypeInfo());
     for (U64 idx = 0; idx < len; ++idx) {
         typeInfos[idx] = *reinterpret_cast<TypeInfo**>(base + idx * TYPEINFO_PTR_SIZE);
+        GenericTypeInfo* genericArg = static_cast<GenericTypeInfo*>(genericArgs->GetGenericArg(idx));
+        if (genericArg->GetGenericConstraintNum() == 0) {
+            continue;
+        }
+        for (U64 constraintIdx = 0; constraintIdx < genericArg->GetGenericConstraintNum(); ++constraintIdx) {
+            TypeInfo* constraint = genericArg->GetGenericConstraint(constraintIdx);
+            if (!typeInfos[idx]->IsSubType(constraint)) {
+                free(mem);
+                return nullptr;
+            }
+        }
     }
+
     TypeInfo* ti = TypeInfoManager::GetInstance()->GetOrCreateTypeInfo(tt, len, typeInfos);
     free(mem);
     return ti;
