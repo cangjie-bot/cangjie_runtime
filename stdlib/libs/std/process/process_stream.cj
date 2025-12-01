@@ -24,11 +24,14 @@ struct FileDescriptor {
     }
 }
 
+@When[os == "Windows"]
+const READ_AGAIN: Int64 = -2
+
 class ProcessInputStream <: InputStream {
     var inputStream: InputStream
 
-    init(fileDescriptor: FileDescriptor) {
-        inputStream = PipeInputStream(fileDescriptor)
+    init(fileDescriptor: FileDescriptor, processHandle!: IntNative = INVALID_HANDLE) {
+        inputStream = PipeInputStream(fileDescriptor, processHandle: processHandle)
     }
 
     public func read(buffer: Array<Byte>): Int64 {
@@ -118,8 +121,18 @@ class PipeOutputStream <: OutputStream & Resource {
 class PipeInputStream <: InputStream & Resource {
     var _fileDescriptor: FileDescriptor = FileDescriptor(INVALID_HANDLE)
 
-    init(fileDescriptor: FileDescriptor) {
+    @When[os == "Windows"]
+    var _processHandle: IntNative = INVALID_HANDLE
+
+    @When[os != "Windows"]
+    init(fileDescriptor: FileDescriptor, processHandle!: IntNative = INVALID_HANDLE) {
         this._fileDescriptor = fileDescriptor
+    }
+
+    @When[os == "Windows"]
+    init(fileDescriptor: FileDescriptor, processHandle!: IntNative = INVALID_HANDLE) {
+        this._fileDescriptor = fileDescriptor
+        this._processHandle = processHandle
     }
 
     public func read(buffer: Array<Byte>): Int64 {
@@ -131,11 +144,18 @@ class PipeInputStream <: InputStream & Resource {
             throw IllegalArgumentException("The buffer is empty.")
         }
 
-        let readBytes: Int64 = directRead(buffer)
-        if (readBytes < 0) {
-            throw ProcessException("The stream read Error.")
+        while (true) {
+            let readBytes: Int64 = directRead(buffer)
+            @When[os == "Windows"]
+            let _ = if (readBytes == READ_AGAIN) {
+                continue
+            }
+            if (readBytes < 0) {
+                throw ProcessException("The stream read Error.")
+            }
+            return readBytes
         }
-        return readBytes
+        return 0
     }
 
     public func isClosed(): Bool {
@@ -161,6 +181,18 @@ class PipeInputStream <: InputStream & Resource {
      *
      * @return Length successfully written into the array buffer
      */
+    @When[os == "Windows"]
+    private func directRead(buffer: Array<Byte>): Int64 {
+        unsafe {
+            let bufPtr: CPointerHandle<Byte> = acquireArrayRawData(buffer)
+            let readSize: Int64 = CJ_OS_FileReadWithProcess(this._fileDescriptor._fileHandle, this._processHandle,
+                bufPtr.pointer, UIntNative(buffer.size))
+            releaseArrayRawData(bufPtr)
+            return readSize
+        }
+    }
+
+    @When[os != "Windows"]
     private func directRead(buffer: Array<Byte>): Int64 {
         unsafe {
             let bufPtr: CPointerHandle<Byte> = acquireArrayRawData(buffer)
