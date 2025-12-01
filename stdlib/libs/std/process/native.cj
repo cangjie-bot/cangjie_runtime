@@ -152,6 +152,8 @@ foreign {
     func CJ_OS_GetEnvVal(envName: CString): CString
 
     func CJ_OS_SetEnvEntry(envEntry: CString): Int32
+
+    func CJ_OS_FileReadWithProcess(fd: IntNative, processHandle: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Int64 // -1: failed, -2: retry, 0: end, (>0): size read
 }
 
 @When[os == "Windows"]
