@@ -12,6 +12,7 @@
 #include <windows.h>
 #include <processenv.h>
 #include <wchar.h>
+#include <stdio.h>
 
 #define BUF_LEN (256)
 #define EXPAND_MUL (2)
@@ -203,40 +204,82 @@ static wchar_t* Environment2Widechar(char* environment)
 
 static bool InitHandle(ProcessStartInfo* info, HANDLE stdIOE[STD_COUNT][WR_COUNT], HANDLE pipe[STD_COUNT][WR_COUNT])
 {
-    if (info->stdIn == NULL) {
-        if (CreatePipe(&stdIOE[STDIN][READ], &stdIOE[STDIN][WRITE], NULL, 0) == 0) {
+    // create overlapped, inheritable anonymous pipes using unique named pipes
+    SECURITY_ATTRIBUTES sa;
+    sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+    sa.lpSecurityDescriptor = NULL;
+    sa.bInheritHandle = TRUE;
+
+    for (int i = 0; i < STD_COUNT; ++i) {
+        if ((i == STDIN && info->stdIn != NULL) ||
+            (i == STDOUT && info->stdOut != NULL) ||
+            (i == STDERR && info->stdErr != NULL)) {
+            continue; // using provided handle
+        }
+
+        char pipeNameA[MAX_PATH];
+        static volatile LONG pipeCounter = 0;
+        LONG current = InterlockedIncrement(&pipeCounter);
+        DWORD pid = GetCurrentProcessId();
+        DWORD tid = GetCurrentThreadId();
+        int nameLen = sprintf_s(pipeNameA, MAX_PATH, "\\\\.\\Pipe\\cj_pipe_%08lX_%08lX_%08lX",
+            (unsigned long)pid, (unsigned long)tid, (unsigned long)current);
+        if (nameLen <= 0) {
             return false;
         }
-        pipe[STDIN][READ] = stdIOE[STDIN][READ];
-        pipe[STDIN][WRITE] = stdIOE[STDIN][WRITE];
-    }
-
-    if (info->stdOut == NULL) {
-        if (CreatePipe(&stdIOE[STDOUT][READ], &stdIOE[STDOUT][WRITE], NULL, 0) == 0) {
+        wchar_t* pipeNameW = Char2Widechar(pipeNameA);
+        if (pipeNameW == NULL) {
             return false;
         }
-        pipe[STDOUT][READ] = stdIOE[STDOUT][READ];
-        pipe[STDOUT][WRITE] = stdIOE[STDOUT][WRITE];
-    }
 
-    if (info->stdErr == NULL) {
-        if (CreatePipe(&stdIOE[STDERR][READ], &stdIOE[STDERR][WRITE], NULL, 0) == 0) {
+        DWORD serverAccess = (i == STDIN) ? (PIPE_ACCESS_OUTBOUND | FILE_FLAG_OVERLAPPED | FILE_FLAG_FIRST_PIPE_INSTANCE)
+                                          : (PIPE_ACCESS_INBOUND | FILE_FLAG_OVERLAPPED | FILE_FLAG_FIRST_PIPE_INSTANCE);
+        HANDLE server = CreateNamedPipeW(pipeNameW, serverAccess,
+            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
+            1, 4096, 4096, 0, &sa);
+        if (server == INVALID_HANDLE_VALUE) {
+            free(pipeNameW);
             return false;
         }
-        pipe[STDERR][READ] = stdIOE[STDERR][READ];
-        pipe[STDERR][WRITE] = stdIOE[STDERR][WRITE];
-    }
 
-    if (SetHandleInformation(stdIOE[STDIN][READ], HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT) == 0) {
-        return false;
-    }
+        DWORD clientAccess = (i == STDIN) ? GENERIC_READ : GENERIC_WRITE;
+        HANDLE client = CreateFileW(pipeNameW, clientAccess, 0, &sa, OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, NULL);
+        free(pipeNameW);
+        if (client == INVALID_HANDLE_VALUE) {
+            CloseHandle(server);
+            return false;
+        }
 
-    if (SetHandleInformation(stdIOE[STDOUT][WRITE], HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT) == 0) {
-        return false;
-    }
-
-    if (SetHandleInformation(stdIOE[STDERR][WRITE], HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT) == 0) {
-        return false;
+        if (i == STDIN) {
+            // parent writes (server), child reads (client)
+            stdIOE[STDIN][READ] = client;
+            stdIOE[STDIN][WRITE] = server;
+            pipe[STDIN][READ] = client;
+            pipe[STDIN][WRITE] = server;
+            // parent write end should not be inherited by child
+            if (SetHandleInformation(stdIOE[STDIN][WRITE], HANDLE_FLAG_INHERIT, 0) == 0) {
+                return false;
+            }
+            // child read end should be inheritable
+            if (SetHandleInformation(stdIOE[STDIN][READ], HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT) == 0) {
+                return false;
+            }
+        } else {
+            // parent reads (server), child writes (client)
+            stdIOE[i][READ] = server;
+            stdIOE[i][WRITE] = client;
+            pipe[i][READ] = server;
+            pipe[i][WRITE] = client;
+            // parent read end should not be inherited
+            if (SetHandleInformation(stdIOE[i][READ], HANDLE_FLAG_INHERIT, 0) == 0) {
+                return false;
+            }
+            // child write end should be inheritable
+            if (SetHandleInformation(stdIOE[i][WRITE], HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT) == 0) {
+                return false;
+            }
+        }
     }
 
     return true;
@@ -745,16 +788,99 @@ extern int64_t CJ_OS_CloseFile(HANDLE fd)
 
 extern int64_t CJ_OS_FileRead(HANDLE fd, char* buffer, size_t maxLen)
 {
-    DWORD numOfBytesToRead = (DWORD)maxLen;
-    DWORD numOfBytesRead = 0;
-    BOOL success = ReadFile(fd, buffer, numOfBytesToRead, &numOfBytesRead, NULL);
-    if (!success) {
-        if (GetLastError() == ERROR_BROKEN_PIPE) {
-            return 0;
-        }
+    OVERLAPPED ovl;
+    (void)memset_s(&ovl, sizeof(ovl), 0, sizeof(ovl));
+    ovl.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (ovl.hEvent == NULL) {
         return -1;
     }
 
+    DWORD numOfBytesToRead = (DWORD)maxLen;
+    DWORD numOfBytesRead = 0;
+    BOOL success = ReadFile(fd, buffer, numOfBytesToRead, &numOfBytesRead, &ovl);
+    if (!success) {
+        DWORD err = GetLastError();
+        if (err == ERROR_IO_PENDING) {
+            DWORD waitRes = WaitForSingleObject(ovl.hEvent, INFINITE);
+            if (waitRes == WAIT_OBJECT_0) {
+                if (!GetOverlappedResult(fd, &ovl, &numOfBytesRead, FALSE)) {
+                    CloseHandle(ovl.hEvent);
+                    err = GetLastError();
+                    if (err == ERROR_BROKEN_PIPE) {
+                        return 0;
+                    }
+                    return -1;
+                }
+            } else if (waitRes == WAIT_FAILED) {
+                CloseHandle(ovl.hEvent);
+                return -1;
+            }
+        } else if (err == ERROR_BROKEN_PIPE) {
+            CloseHandle(ovl.hEvent);
+            return 0;
+        } else {
+            CloseHandle(ovl.hEvent);
+            return -1;
+        }
+    }
+
+    CloseHandle(ovl.hEvent);
+    return (int64_t)numOfBytesRead;
+}
+
+#define CJ_READ_AGAIN (-2)
+#define CJ_READ_TIMEOUT_MS (50)
+
+extern int64_t CJ_OS_FileReadWithProcess(HANDLE fd, HANDLE processHandle, char* buffer, size_t maxLen)
+{
+    OVERLAPPED ovl;
+    (void)memset_s(&ovl, sizeof(ovl), 0, sizeof(ovl));
+    ovl.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (ovl.hEvent == NULL) {
+        return -1;
+    }
+
+    DWORD numOfBytesToRead = (DWORD)maxLen;
+    DWORD numOfBytesRead = 0;
+    BOOL success = ReadFile(fd, buffer, numOfBytesToRead, &numOfBytesRead, &ovl);
+    if (!success) {
+        DWORD err = GetLastError();
+        if (err == ERROR_IO_PENDING) {
+            HANDLE waitHandles[2] = {ovl.hEvent, processHandle};
+            DWORD waitCount = processHandle != NULL ? 2 : 1;
+            DWORD waitRes = WaitForMultipleObjects(waitCount, waitHandles, FALSE, CJ_READ_TIMEOUT_MS);
+            if (waitRes == WAIT_OBJECT_0) {
+                if (!GetOverlappedResult(fd, &ovl, &numOfBytesRead, FALSE)) {
+                    CloseHandle(ovl.hEvent);
+                    err = GetLastError();
+                    if (err == ERROR_BROKEN_PIPE) {
+                        return 0;
+                    }
+                    return -1;
+                }
+            } else if (waitRes == WAIT_OBJECT_0 + 1) { // process exited
+                (void)CancelIoEx(fd, &ovl);
+                CloseHandle(ovl.hEvent);
+                return 0;
+            } else if (waitRes == WAIT_TIMEOUT) {
+                (void)CancelIoEx(fd, &ovl);
+                CloseHandle(ovl.hEvent);
+                return CJ_READ_AGAIN;
+            } else { // WAIT_FAILED
+                (void)CancelIoEx(fd, &ovl);
+                CloseHandle(ovl.hEvent);
+                return -1;
+            }
+        } else if (err == ERROR_BROKEN_PIPE) {
+            CloseHandle(ovl.hEvent);
+            return 0;
+        } else {
+            CloseHandle(ovl.hEvent);
+            return -1;
+        }
+    }
+
+    CloseHandle(ovl.hEvent);
     return (int64_t)numOfBytesRead;
 }
 

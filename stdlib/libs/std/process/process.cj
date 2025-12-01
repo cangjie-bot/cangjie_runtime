@@ -777,7 +777,20 @@ func createEnvironmentBlock(environments: ?Map<String, String>): CStringResource
     return unsafe { LibC.mallocCString(envBlockBuilder.toString()).asResource() }
 }
 
+
+
 func initStdStream(processRtnData: ProcessRtnData): (OutputStream, InputStream, InputStream) {
+    @When[os == "Windows"]
+    func getProcessHandle() {
+        return processRtnData.handle
+    }
+
+    @When[os != "Windows"]
+    func getProcessHandle() {
+        return INVALID_HANDLE
+    }
+
+    let processHandle: IntNative = getProcessHandle()
     let stdInStream: OutputStream
     if (processRtnData.stdInHandle == INVALID_HANDLE) {
         stdInStream = NullProcessStream()
@@ -789,14 +802,14 @@ func initStdStream(processRtnData: ProcessRtnData): (OutputStream, InputStream, 
     if (processRtnData.stdOutHandle == INVALID_HANDLE) {
         stdOutStream = NullProcessStream()
     } else {
-        stdOutStream = ProcessInputStream(FileDescriptor(processRtnData.stdOutHandle))
+        stdOutStream = ProcessInputStream(FileDescriptor(processRtnData.stdOutHandle), processHandle: processHandle)
     }
 
     let stdErrStream: InputStream
     if (processRtnData.stdErrHandle == INVALID_HANDLE) {
         stdErrStream = NullProcessStream()
     } else {
-        stdErrStream = ProcessInputStream(FileDescriptor(processRtnData.stdErrHandle))
+        stdErrStream = ProcessInputStream(FileDescriptor(processRtnData.stdErrHandle), processHandle: processHandle)
     }
 
     return (stdInStream, stdOutStream, stdErrStream)
