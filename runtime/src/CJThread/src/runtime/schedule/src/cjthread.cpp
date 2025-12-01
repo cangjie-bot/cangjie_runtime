@@ -58,7 +58,8 @@ void CJThreadStackMemFree(struct CJThread *cjthread, char *stackTopAddr, size_t 
     int error;
 
     if (cjthread->schedule->schdCJThread.stackProtect == false) {
-        stackFreeAddr = stackTopAddr;
+        pageSize = SchedulePageSize();
+        stackFreeAddr = stackTopAddr - pageSize;
         free(stackFreeAddr);
     } else {
         pageSize = SchedulePageSize();
@@ -93,7 +94,8 @@ void CJThreadStackMemFree(struct CJThread *cjthread, char *stackTopAddr, size_t 
     MapleRuntime::Sanitizer::TsanFree(stackTopAddr, stackSize);
 #endif
     if (cjthread->schedule->schdCJThread.stackProtect == false) {
-        StackMemFreeInternel(stackTopAddr, stackSize);
+        pageSize = SchedulePageSize();
+        StackMemFreeInternel(stackTopAddr - pageSize, stackSize + pageSize);
     } else {
         pageSize = SchedulePageSize();
         stackFreeAddr = stackTopAddr - pageSize;
@@ -253,13 +255,14 @@ char *CJThreadStackMemAlloc(struct Schedule *schedule, struct CJThread *cjthread
 
     if (schedule->schdCJThread.stackProtect == false) {
         /* low address------------high address
-        * ----------------------
-        * |                    |
-        * |   cjthread stack   |
-        * |                    |
-        * ----------------------
+        * -----------------------------------------
+        * |               |                        |
+        * | reserved page |      cjthread stack    |
+        * |               |                        |
+        * ------------------------------------------
         */
-        *totalSize = stackSizeAlign;
+        pageSize = SchedulePageSize();
+        *totalSize = pageSize + stackSizeAlign;
         stackAddr = static_cast<char *>(malloc(*totalSize));
         if (stackAddr == nullptr) {
             LOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "alloc stack failed,  os memory is not enough size is %zu",
@@ -268,6 +271,7 @@ char *CJThreadStackMemAlloc(struct Schedule *schedule, struct CJThread *cjthread
             return nullptr;
         }
         cjthread->stack.protectAddr = 0;
+        stackAddr = stackAddr + pageSize;
     } else {
         /* low address--------------------------------high address
         * -----------------------------------------
@@ -344,18 +348,20 @@ char *CJThreadStackMemAlloc(struct Schedule *schedule, struct CJThread *cjthread
 
     if (schedule->schdCJThread.stackProtect == false) {
         /* low address------------high address
-        * ----------------------
-        * |                    |
-        * |   cjthread stack   |
-        * |                    |
-        * ----------------------
+        * -----------------------------------------
+        * |               |                        |
+        * | reserved page |      cjthread stack    |
+        * |               |                        |
+        * ------------------------------------------
         */
-       *totalSize = stackSizeAlign;
+        pageSize = SchedulePageSize();
+        *totalSize = pageSize + stackSizeAlign;
         stackAddr = StackMemAllocInternal(*totalSize);
         if (stackAddr == nullptr) {
             return nullptr;
         }
         cjthread->stack.protectAddr = 0;
+        stackAddr = stackAddr + pageSize;
     } else {
         /* low address--------------------------------high address
         * -----------------------------------------
