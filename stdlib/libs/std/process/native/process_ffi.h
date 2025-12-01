@@ -49,6 +49,11 @@ typedef struct ProcessInfo {
 #define PROCESS_STATUS_NOT_EXIST (-1)
 #define PROCESS_STATUS_PID_REUSED (-2)
 
+#ifdef _WIN32
+// helper for overlapped pipe read with process handle wait
+int64_t CJ_OS_FileReadWithProcess(void* fd, void* processHandle, char* buffer, size_t maxLen);
+#endif
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
