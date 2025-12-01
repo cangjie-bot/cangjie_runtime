@@ -118,14 +118,14 @@ void TypeInfo::SetMTableDesc(MTableDesc* desc)
 void TypeInfo::TryInitMTable()
 {
     if (IsMTableDescUnInitialized()) {
-        TypeInfoManager* manager = TypeInfoManager::GetInstance();
-        std::lock_guard<std::recursive_mutex> lock(manager->tiMutex);
+        TypeInfoManager& manager = TypeInfoManager::GetTypeInfoManager();
+        std::lock_guard<std::recursive_mutex> lock(manager.tiMutex);
         if (IsMTableDescUnInitialized()) {
             U64 bitmap = GetResolveBitmapFromMTableDesc();
             MTableDesc* desc = new (std::nothrow) MTableDesc(bitmap);
             SetMTableDesc(desc);
             CHECK_DETAIL(desc != nullptr, "fail to allocate MTableDesc");
-            manager->RecordMTableDesc(mTableDesc);
+            manager.RecordMTableDesc(mTableDesc);
         }
     }
 }
@@ -137,7 +137,7 @@ void TypeInfo::TryInitMTableNoLock()
         MTableDesc* desc = new (std::nothrow) MTableDesc(bitmap);
         SetMTableDesc(desc);
         CHECK_DETAIL(desc != nullptr, "fail to allocate MTableDesc");
-        TypeInfoManager::GetInstance()->RecordMTableDesc(mTableDesc);
+        TypeInfoManager::GetTypeInfoManager().RecordMTableDesc(mTableDesc);
     }
 }
 
@@ -175,7 +175,7 @@ static bool ResolveExtensionData(TypeInfo* ti, TypeInfo* resolveTi, ExtensionDat
         }
         void* targetType = extensionData->GetTargetType();
         // We've traversed all related EDs.
-        auto manager = TypeInfoManager::GetInstance();
+        auto& manager = TypeInfoManager::GetTypeInfoManager();
         auto rSourceGeneric = resolveTi->GetSourceGeneric();
         if (extensionData->TargetIsTypeInfo()) {
             auto tSourceGeneric = reinterpret_cast<TypeInfo*>(targetType)->GetSourceGeneric();
@@ -185,8 +185,8 @@ static bool ResolveExtensionData(TypeInfo* ti, TypeInfo* resolveTi, ExtensionDat
             if (tSourceGeneric != nullptr) {
                 if (rSourceGeneric == nullptr) {
                     return false;
-                } else if (manager->GetTypeTemplateUUID(tSourceGeneric) !=
-                           manager->GetTypeTemplateUUID(rSourceGeneric)) {
+                } else if (manager.GetTypeTemplateUUID(tSourceGeneric) !=
+                           manager.GetTypeTemplateUUID(rSourceGeneric)) {
                     return false;
                 } else if (reinterpret_cast<TypeInfo*>(targetType)->GetUUID() != thisID) {
                     return true;
@@ -194,8 +194,8 @@ static bool ResolveExtensionData(TypeInfo* ti, TypeInfo* resolveTi, ExtensionDat
             }
         } else {
             if (rSourceGeneric == nullptr ||
-                manager->GetTypeTemplateUUID(reinterpret_cast<TypeTemplate*>(targetType)) !=
-                manager->GetTypeTemplateUUID(rSourceGeneric)) {
+                manager.GetTypeTemplateUUID(reinterpret_cast<TypeTemplate*>(targetType)) !=
+                manager.GetTypeTemplateUUID(rSourceGeneric)) {
                 return false;
             }
         }
@@ -305,7 +305,7 @@ void TypeInfo::TraverseOuterExtensionDefs(std::function<void(TypeInfo*)> getInte
                 if (getInterface != nullptr) {
                     getInterface(itf);
                 }
-                TypeInfoManager::GetInstance()->AddTypeInfo(itf);
+                TypeInfoManager::GetTypeInfoManager().AddTypeInfo(itf);
                 this->AddMTable(itf, extensionData->GetFuncTable());
             }
             return false;
@@ -426,7 +426,7 @@ bool TypeInfo::IsSubType(TypeInfo* typeInfo)
         if (super != nullptr && super->IsFunc()) {
             return false;
         }
-        TypeInfo* objectTi = TypeInfoManager::GetInstance()->GetObjectTypeInfo();
+        TypeInfo* objectTi = TypeInfoManager::GetTypeInfoManager().GetObjectTypeInfo();
         if (objectTi != nullptr && typeInfo == objectTi) {
             return true;
         }
@@ -442,7 +442,7 @@ bool TypeInfo::IsSubType(TypeInfo* typeInfo)
             return GetSuperTypeInfo()->IsSubType(typeInfo);
         }
         // All types are subtypes of the Any type.
-        if (typeInfo == TypeInfoManager::GetInstance()->GetAnyTypeInfo()) {
+        if (typeInfo == TypeInfoManager::GetTypeInfoManager().GetAnyTypeInfo()) {
             return true;
         }
         TryInitMTable();

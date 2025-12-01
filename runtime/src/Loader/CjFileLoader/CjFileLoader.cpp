@@ -153,7 +153,7 @@ void CJFileLoader::ParseEnumCtor(TypeInfo* ti)
     return;
 #endif
     if (ti->IsGenericTypeInfo()) {
-        return TypeInfoManager::GetInstance()->ParseEnumInfo(
+        return TypeInfoManager::GetTypeInfoManager().ParseEnumInfo(
             ti->GetSourceGeneric(), ti->GetTypeArgNum(), ti->GetTypeArgs(), ti);
     }
     EnumInfo* ei = ti->GetEnumInfo();
@@ -183,12 +183,12 @@ void CJFileLoader::RegisterTypeInfoCreatedByFE(BaseFile* baseFile)
         constexpr uint32_t typeInfoAlign = 16u;
         constexpr uint32_t sizeAlign = MRT_ALIGN(sizeof(TypeInfo), typeInfoAlign);
         typeInfoBase += sizeAlign;
-        TypeInfoManager::GetInstance()->AddTypeInfo(ti);
+        TypeInfoManager::GetTypeInfoManager().AddTypeInfo(ti);
         if (ti->IsEnum() || ti->IsTempEnum()) {
             ParseEnumCtor(ti);
         }
     }
-    TypeInfoManager::GetInstance()->InitAnyAndObjectType();
+    TypeInfoManager::GetTypeInfoManager().InitAnyAndObjectType();
 
     Uptr staticGIBase = baseFile->GetStaticGIBase();
     Uptr staticGIEnd = staticGIBase + baseFile->GetStaticGISize();
@@ -205,7 +205,7 @@ void CJFileLoader::RegisterTypeInfoCreatedByFE(BaseFile* baseFile)
         if (ti->IsEnum() || ti->IsTempEnum()) {
             continue;
         } else if (ti->IsGenericTypeInfo() && ti->ReflectInfoIsNull() && !ti->GetSourceGeneric()->ReflectInfoIsNull()) {
-            TypeInfoManager::GetInstance()->FillReflectInfo(ti->GetSourceGeneric(), ti);
+            TypeInfoManager::GetTypeInfoManager().FillReflectInfo(ti->GetSourceGeneric(), ti);
         }
     }
 }
@@ -227,9 +227,9 @@ void CJFileLoader::RegisterOuterTypeExtensions(BaseFile* baseFile)
         // need to be collected in `extensionDatas`.
         if (extensionData->TargetIsTypeInfo()) {
             TypeInfo* itf = extensionData->GetInterfaceTypeInfo();
-            TypeInfoManager::GetInstance()->AddTypeInfo(itf);
+            TypeInfoManager::GetTypeInfoManager().AddTypeInfo(itf);
             TypeInfo* ti = reinterpret_cast<TypeInfo*>(extensionData->GetTargetType());
-            TypeInfoManager::GetInstance()->AddTypeInfo(ti);
+            TypeInfoManager::GetTypeInfoManager().AddTypeInfo(ti);
             ti->AddMTable(itf, extensionData->GetFuncTable());
             continue;
         }
