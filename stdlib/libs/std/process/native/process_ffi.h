@@ -31,7 +31,8 @@ extern "C" {
 #define MILLI_SECOND_TO_HUNDRED_NANO_SECOND (10000)
 #define MILLI_SECOND_TO_MICRO_SECOND (1000)
 
-typedef struct ProcessInfo {
+typedef struct ProcessInfo
+{
     char* command;
     char** commandLine;
     char** arguments;
