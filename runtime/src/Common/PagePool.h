@@ -124,7 +124,7 @@ public:
     // return unused pages to os
     void Trim() const {}
 
-    MRT_EXPORT static PagePool& Instance() noexcept;
+    MRT_EXPORT static PagePool& Instance();
 
 protected:
     uint8_t* MapMemory(size_t size, const char* memName, bool isCommit = false) const
