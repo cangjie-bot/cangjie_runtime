@@ -23,6 +23,7 @@ public interface Collection<T> <: Iterable<T> {
     func isEmpty(): Bool
 
     func toArray(): Array<T> {
+        println("[Debug] Collection.toArray")
         return Array<T>(this)
     }
 }

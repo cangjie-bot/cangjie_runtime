@@ -40,8 +40,11 @@ public struct Array<T> {
 
     @Frozen
     init(elements: Collection<T>) {
+        println("[Debug] Array.init(Collection)")
         this.start = 0
+        println("[Debug] RawArray init start")
         this.rawptr = RawArray<T>(elements)
+        println("[Debug] RawArray done.")
         this.len = arraySize(rawptr)
     }
 
@@ -434,7 +437,7 @@ public struct Array<T> {
 
     /**
      * @description Extracts elements from the array at specified intervals and returns a new array.
-     * 
+     *
      * @param count the interval for selection.
      * @returns a new array containing all elements extracted from the source array at intervals.
      * @throws IllegalArgumentException, if count < 0.
@@ -461,7 +464,7 @@ public struct Array<T> {
 
     /**
      * @description Extracts a specific number of elements from the array and returns a new array.
-     * 
+     *
      * @param count the number of elements to take.
      * @returns a new array with the specified number of elements taken.
      * @throws IllegalArgumentException, if count < 0.
@@ -481,7 +484,7 @@ public struct Array<T> {
 
     /**
      * @description Skips a specific number of elements and returns a new array.
-     * 
+     *
      * @param count the number of elements to skip.
      * @returns a new array with the specified number of elements skipped.
      * @throws IllegalArgumentException, if count < 0.
@@ -505,7 +508,7 @@ public struct Array<T> {
 
     /**
      * @description Returns a new array containing elements that satisfy the filtering condition.
-     * 
+     *
      * @param predicate the given condition.
      * @returns a new array containing elements that satisfy the filtering condition.
      */
@@ -527,7 +530,7 @@ public struct Array<T> {
 
     /**
      * @description Applies a transformation closure (transform) to each element in the array, where the closure returns an array, then "flattens" and concatenates all returned arrays into a single result array.
-     * 
+     *
      * @param transform the given mapping function.
      * @returns the new array after being "mapped" and "flattened".
      */
@@ -541,8 +544,8 @@ public struct Array<T> {
 
     /**
      * @description Performs filtering and mapping operations simultaneously, returning a new array.
-     * 
-     * @param transform the given mapping function. If the function's return value is Some, it corresponds to the filter's predicate being true; 
+     *
+     * @param transform the given mapping function. If the function's return value is Some, it corresponds to the filter's predicate being true;
               otherwise, it is false.
      * @returns a new array after filtering and mapping.
      */
@@ -567,7 +570,7 @@ public struct Array<T> {
 
     /**
      * @description Returns a new array with the given element inserted between every two elements.
-     * 
+     *
      * @param separator the given element.
      * @returns a new array.
      */
@@ -588,7 +591,7 @@ public struct Array<T> {
 
     /**
      * @description Iterates over all elements and performs the given operation.
-     * 
+     *
      * @param action the given operation function.
      */
     public func forEach(action: (T) -> Unit): Unit {
@@ -599,7 +602,7 @@ public struct Array<T> {
 
     /**
      * @description Determine whether all elements in the array satisfy the condition.
-     * 
+     *
      * @param predicate the given condition.
      * @returns true if all elements in the array satisfy the condition, otherwise returns false.
      */
@@ -614,7 +617,7 @@ public struct Array<T> {
 
     /**
      * @description Determine whether all elements in the array satisfy the condition.
-     * 
+     *
      * @param predicate the given condition.
      * @returns Whether there is any element that satisfies the condition.
      */
@@ -629,7 +632,7 @@ public struct Array<T> {
 
     /**
      * @description Determine whether all elements in the array do not satisfy the condition.
-     * 
+     *
      * @param separator the given element.
      * @returns a new array.
      */
@@ -644,7 +647,7 @@ public struct Array<T> {
 
     /**
      * @description Computes from left to right using the specified initial value.
-     * 
+     *
      * @param initial the given initial value of type R.
      * @param operation the given computation function.
      * @returns the final computed value.
@@ -659,7 +662,7 @@ public struct Array<T> {
 
     /**
      * @description Compute from left to right using the first element as the initial value.
-     * 
+     *
      * @param operation the given computation function.
      * @returns the computation result.
      */
@@ -678,7 +681,7 @@ public struct Array<T> {
 extend<T> Array<T> {
     /**
      * @description Merges two arrays into a new array (the length depends on the shorter array).
-     * 
+     *
      * @param other one of the arrays to be merged.
      * @returns a new array.
      */
@@ -696,7 +699,7 @@ extend<T> Array<T> {
 
     /**
      * @description Used to obtain an array with indices.
-     * 
+     *
      * @returns a new array with indices.
      */
     public func enumerate(): Array<(Int64, T)> {
