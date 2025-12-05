@@ -153,11 +153,11 @@ public class InstanceVariableInfo <: Equatable<InstanceVariableInfo> & Hashable 
         findAnnotation<T>(annotations)
     }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
@@ -316,11 +316,11 @@ public class StaticVariableInfo <: Equatable<StaticVariableInfo> & Hashable & To
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
@@ -451,11 +451,11 @@ public class GlobalVariableInfo <: Equatable<GlobalVariableInfo> & Hashable & To
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 

@@ -45,7 +45,7 @@ enum Result<T> {
 }
 
 extend<T> Result<T> <: ToString where T <: ToString {
-    public func toString(): String {
+    func toString(): String {
         match (this) {
             case Ok(v) => return v.toString()
             case Err(v) => return v.message

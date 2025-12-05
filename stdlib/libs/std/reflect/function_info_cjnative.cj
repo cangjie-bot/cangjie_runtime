@@ -211,11 +211,11 @@ public class InstanceFunctionInfo <: Equatable<InstanceFunctionInfo> & Hashable 
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
@@ -434,11 +434,11 @@ public class StaticFunctionInfo <: Equatable<StaticFunctionInfo> & Hashable & To
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
@@ -615,11 +615,11 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
@@ -773,11 +773,11 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
     public operator func ==(that: StaticPropertyInfo): Bool {
@@ -901,11 +901,11 @@ public class ConstructorInfo <: Equatable<ConstructorInfo> & Hashable & ToString
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
@@ -1074,11 +1074,11 @@ public class GlobalFunctionInfo <: Equatable<GlobalFunctionInfo> & Hashable & To
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 

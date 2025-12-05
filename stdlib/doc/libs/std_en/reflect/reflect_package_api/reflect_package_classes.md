@@ -703,18 +703,6 @@ Exceptions:
 - [IllegalTypeException](reflect_package_exceptions.md#class-illegaltypeexception) - Thrown if the runtime type of any argument in `args` is not a subtype of the declared type of the corresponding parameter in the constructor.
 - [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - If the invoked constructor throws an exception internally, it will be wrapped as an [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) and rethrown.
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -726,18 +714,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the annotation if successfully matched, returns `None` in case of duplicate annotations or matching failure.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func hashCode()
 
@@ -962,18 +938,6 @@ Exceptions:
 - [IllegalTypeException](reflect_package_exceptions.md#class-illegaltypeexception) - Thrown if `args` and `genericTypeArgs` do not satisfy the type constraints of the global function's parameters.
 - [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - If the invoked global function throws an exception internally, it will be wrapped as an [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) and rethrown.
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -985,18 +949,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the matched annotation if successful, returns `None` in case of duplicate annotations or matching failure.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func hashCode()
 
@@ -1103,18 +1055,6 @@ Function: Retrieves the type information of the declared type of the global vari
 
 Type: [TypeInfo](reflect_package_classes.md#class-typeinfo)
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -1138,18 +1078,6 @@ Function: Gets the value of the global variable corresponding to this [GlobalVar
 Return Value:
 
 - [Any](../../core/core_package_api/core_package_interfaces.md#interface-any) - The value of the global variable.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func hashCode()
 
@@ -1436,18 +1364,6 @@ Execution Result:
 Some(20)
 ```
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -1459,18 +1375,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the matched annotation if successful, or `None` in case of duplicate annotations or matching failure.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func hashCode()
 
@@ -1621,18 +1525,6 @@ Function: Gets the type information of the declared type for the instance member
 
 Type: [TypeInfo](reflect_package_classes.md#class-typeinfo)
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -1644,18 +1536,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the annotation if successfully matched, or `None` in case of duplicate annotations or matching failure.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func getValue(Any)
 
@@ -1892,18 +1772,6 @@ Function: Gets the type information of the declared type for the instance member
 
 Type: [TypeInfo](reflect_package_classes.md#class-typeinfo)
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotations<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the specified qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -1915,18 +1783,6 @@ Function: Attempts to retrieve the annotation with the given qualified name that
 Return Value:
 
 - ?T - Returns the annotation if successfully matched, or `None` in case of duplicate annotations or failed matching.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations that apply to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations that apply to this object.
 
 ### func getValue(Any)
 
@@ -2605,18 +2461,6 @@ Function: Retrieves the type information corresponding to the declared type of t
 
 Type: [TypeInfo](reflect_package_classes.md#class-typeinfo)
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -2628,18 +2472,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the annotation if successfully matched, returns `None` in case of duplicate annotations or matching failure.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func hashCode()
 
@@ -3027,18 +2859,6 @@ Exceptions:
 - [IllegalTypeException](reflect_package_exceptions.md#class-illegaltypeexception) - Thrown if the argument list `args` and generic type argument list `genericTypeArgs` do not satisfy the type constraints of the static member function's parameters.
 - [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) - If the static member function internally throws an exception, it will be wrapped as an [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception) and rethrown.
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -3050,18 +2870,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the matched annotation if successful, or `None` in case of duplicate annotations or matching failure.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func hashCode()
 
@@ -3184,18 +2992,6 @@ Function: Gets the type information of the declaration type corresponding to thi
 
 Type: [TypeInfo](reflect_package_classes.md#class-typeinfo)
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -3207,18 +3003,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the matched annotation if successful, or `None` in case of duplicate annotations or no match.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func getValue()
 
@@ -3467,18 +3251,6 @@ Function: Gets the type information of the declaration type corresponding to thi
 
 Type: [TypeInfo](reflect_package_classes.md#class-typeinfo)
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -3490,18 +3262,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the annotation if successfully matched, returns `None` in case of duplicate annotations or matching failure.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func getValue()
 
@@ -4368,18 +4128,6 @@ Output:
 default.Rectangular
 ```
 
-### func findAllAnnotations\<T>() where T <: Annotation
-
-```cangjie
-public func findAllAnnotatios<T>(): Array<T> where T <: Annotation
-```
-
-Function: Retrieves all annotations with the given qualified name.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - Returns an empty array if no annotations of type T are found; otherwise returns an array containing all annotation objects of the specified type.
-
 ### func findAnnotation\<T>() where T <: Annotation
 
 ```cangjie
@@ -4391,18 +4139,6 @@ Function: Attempts to retrieve an annotation with the given qualified name that 
 Return Value:
 
 - ?T - Returns the annotation if successfully matched, or `None` in case of duplicate annotations or matching failure.
-
-### func getAllAnnotations()
-
-```cangjie
-public func getAllAnnotations(): Array<Annotation>
-```
-
-Function: Retrieves all annotations applied to this object.
-
-Return Value:
-
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Annotation](./reflect_package_types.md#type-annotation--object)> - All annotations applied to this object.
 
 ### func getInstanceFunction(String, Array\<TypeInfo>)
 
