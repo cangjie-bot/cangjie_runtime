@@ -97,11 +97,11 @@ public class ParameterInfo <: Equatable<ParameterInfo> & Hashable & ToString {
         findAnnotation<T>(annotations)
    }
 
-    public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
+    protected func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
     }
 
-    public func getAllAnnotations(): Array<Annotation> {
+    protected func getAllAnnotations(): Array<Annotation> {
         annotations.toArray()
     }
 
