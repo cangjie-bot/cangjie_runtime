@@ -26,7 +26,7 @@ extern "C" {
 
 extern GetTlsHookFunc g_getTlsFunc;
 
-MRT_INLINE static struct void *MutatorGetTemp(void)
+MRT_INLINE static void *MutatorGetTemp(void)
 {
     uintptr_t *addr = g_getTlsFunc();
     return (void*)(*(addr + MUTATOR_OFFSET));
