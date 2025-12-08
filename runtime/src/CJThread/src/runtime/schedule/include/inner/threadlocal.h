@@ -22,8 +22,15 @@ extern "C" {
 #define PREEMPT_FLAG_OFFSET 4
 #define PROTECT_ADDR_OFFSET 5
 #define PREEMPT_REQUEST_OFFSET 6
+#define MUTATOR_OFFSET 1
 
 extern GetTlsHookFunc g_getTlsFunc;
+
+MRT_INLINE static struct void *MutatorGetTemp(void)
+{
+    uintptr_t *addr = g_getTlsFunc();
+    return (void*)(*(addr + MUTATOR_OFFSET));
+}
 
 MRT_INLINE static struct CJThread *CJThreadGet(void)
 {

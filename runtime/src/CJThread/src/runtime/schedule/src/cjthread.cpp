@@ -1080,6 +1080,10 @@ int CJThreadPark(ParkCallbackFunc func, TraceEvent waitReason, void *arg)
     struct CJThread *cjthread;
 
     cjthread = CJThreadGet();
+    if (cjthread == nullptr) {
+        void* mutatorTemp = MutatorGetTemp();
+        LOG(RTLOG_FATAL, "cjthread is null in CJThreadPark, mutator %p", mutatorTemp);
+    }
     cjthread->result = 0;
 
 #ifdef __OHOS__
