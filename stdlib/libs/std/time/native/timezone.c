@@ -38,7 +38,7 @@ char* CJ_TIME_GetLocalTimeZoneProperty()
     if (timeNdk == NULL) {
         return NULL;
     }
-    int (*getZoneFunc) (char*, int64_t) = dlsym(timeNdk, NDK_NAME);
+    int (*getZoneFunc) (char*, uint32_t) = dlsym(timeNdk, NDK_NAME);
     if (getZoneFunc == NULL) {
         dlclose(timeNdk);
         return NULL;

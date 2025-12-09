@@ -282,6 +282,7 @@ extern uint8_t* CJ_TIME_GetTzDataById(const char* id, int64_t* len)
     close(fd);
     *len = (int64_t)length;
     return tzData;
-#endif
+#else
     return NULL;
+#endif
 }
