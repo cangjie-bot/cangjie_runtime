@@ -321,7 +321,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
                 case None =>
                     let typeName = getTypeNameByQualifiedName(qualifiedName)
                     _name = typeName
-                    typeName
+                    _name
             }
         }
     }
@@ -336,7 +336,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
                 case None =>
                     let name = getQualifiedName(_info)
                     _qualifiedName = name
-                    name
+                    _qualifiedName
             }
         }
     }
@@ -344,35 +344,32 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
     // return qualifiedName with space from runtime
     private static func getQualifiedName(pointer: CPointer<Unit>): String {
         let namePointer = getTypeName(pointer)
-        return if (let qualifiedName <- CString(namePointer).toString()) {
-            var formatted = ArrayList<Byte>()
-            for (idx in 0 .. qualifiedName.size - 1) {
-                let ch = qualifiedName[idx]
+        let qualifiedName = CString(namePointer).toString()
+        let formatted = StringBuilder()
+        for (idx in 0 .. qualifiedName.size - 1) {
+            let ch = qualifiedName[idx]
+            if (ch == b':') {
                 let nextCh = qualifiedName[idx + 1]
-                let prefixCh = qualifiedName.get(idx-1) ?? b' '
+                let prefixCh = qualifiedName.get(idx - 1) ?? b' '
 
-                let isOrgPrefix = (ch == b':' && nextCh == b':')
-                let isOrgSuffix = (idx > 1 && ch == b':' && prefixCh == b':')
+                let isOrgPrefix = nextCh == b':'
+                let isOrgSuffix = (idx > 1) && (prefixCh == b':')
 
                 if (isOrgPrefix || isOrgSuffix) {
-                    formatted.add(b':')
+                    formatted.append(b':')
                     continue
                 }
-
-                formatted.add(if (ch == b':') {
-                    b'.'
-                } else {
-                    ch
-                })
-                if (ch == b',') {
-                    formatted.add(b' ')
-                }
+                formatted.append(b'.')
+                continue
             }
-            formatted.add(qualifiedName[qualifiedName.size - 1])
-            String.fromUtf8(formatted.toArray()).replace("std.core.", "")
-        } else {
-            throw ReflectException("Unexpected empty qualifiedName.")
+
+            formatted.append(ch)
+            if (ch == b',') {
+                formatted.append(b' ')
+            }
         }
+        formatted.append(qualifiedName[qualifiedName.size - 1])
+        formatted.toString().replace("std.core.", "")
     }
 
     /**
@@ -460,16 +457,12 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
                             (getOrCreate(pointer) as InterfaceTypeInfo) ?? throw MisMatchException(
                                 "Super interface info of '${qualifiedName}' can not cast to InterfaceTypeInfo."))
                     }
+
                     let anyType = (TypeInfo.of<Any>() as InterfaceTypeInfo).getOrThrow()
-                    var hasAny = false
-                    for (ti in interfaceList) {
-                        if (ti == anyType) {
-                            hasAny = true
-                        }
-                    }
-                    if (!hasAny) {
+                    if (!interfaceList.contains(anyType)) {
                         interfaceList.add(anyType)
                     }
+
                     let infos = interfaceList.toArray()
                     _superInterfaces = infos
                     infos

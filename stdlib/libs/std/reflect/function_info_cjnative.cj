@@ -598,13 +598,13 @@ public class InstancePropertyInfo <: Equatable<InstancePropertyInfo> & Hashable 
             throw IllegalSetException("Attempt to modify abstract variable '${name}'")
         }
         if (!isMutable()) {
-            throw IllegalSetException("Attempt to modify immutable property '${name}'")
+            throw IllegalSetException("Attempt to modify immutable variable '${name}'")
         }
 
         // instance type is checked in apply
         match (_setterInfo) {
             case Some(v) => v.apply(instance, Array<Any>(1, repeat: newValue))
-            case None => throw IllegalSetException("Attempt to modify immutable property '${name}'")
+            case None => throw IllegalSetException("Attempt to modify immutable value '${name}'")
         }
     }
 
@@ -758,11 +758,11 @@ public class StaticPropertyInfo <: Equatable<StaticPropertyInfo> & Hashable & To
      */
     public func setValue(newValue: Any): Unit {
         if (!isMutable()) {
-            throw IllegalSetException("Attempt to modify immutable property '${name}'")
+            throw IllegalSetException("Attempt to modify immutable variable '${name}'")
         }
         match (_setterInfo) {
             case Some(v) => v.apply(TypeInfo.getOrCreate(_declaringTypeInfo), Array<Any>(1, repeat: newValue))
-            case None => throw IllegalSetException("Attempt to modify immutable property '${name}'")
+            case None => throw IllegalSetException("Attempt to modify immutable variable '${name}'")
         }
     }
 
