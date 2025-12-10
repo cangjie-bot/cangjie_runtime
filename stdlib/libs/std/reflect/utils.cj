@@ -106,11 +106,8 @@ func checkArgsSizeAndType(parameters: ReadOnlyList<ParameterInfo>, args: Array<A
     if (parameters.size != args.size) {
         throw IllegalArgumentException("The input parameter item does not comply with the required quantity.")
     }
-    for (i in 0..args.size) {
-        if (!TypeInfo.of(args[i]).isSubtypeOf(parameters[i].typeInfo)) {
-            throw IllegalTypeException(
-                "The input parameter does not match the type of the input parameter required by the function.")
-        }
+    for (i in 0..args.size where !TypeInfo.of(args[i]).isSubtypeOf(parameters[i].typeInfo)) {
+        throw IllegalTypeException("The input parameter does not match the type of the input parameter required by the function.")
     }
 }
 
