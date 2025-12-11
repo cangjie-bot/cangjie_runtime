@@ -211,6 +211,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some value
@@ -260,6 +261,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 // Define a function to convert Int64 to Option<String>
 func intToStringOption(x: Int64): Option<String> {
@@ -362,6 +364,7 @@ Exceptions:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some value
@@ -410,6 +413,7 @@ Exceptions:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some value
@@ -454,6 +458,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some value
@@ -492,6 +497,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some value
@@ -534,6 +540,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some value
@@ -590,6 +597,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create identical Some values
@@ -652,6 +660,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create identical Some values
@@ -722,6 +731,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some value
@@ -788,6 +798,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some value
@@ -844,6 +855,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create a Some(Some(42)) value of Option<Option<Int64>> type
@@ -952,6 +964,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create Ordering instances
@@ -1013,6 +1026,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create Ordering instances
@@ -1072,6 +1086,7 @@ Returns:
 Example:
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // Create Ordering instances
@@ -1167,34 +1182,4 @@ Returns:
 
 - [String](core_package_structs.md#struct-string) - The converted string.
 
-### func ==(ThreadState)
 
-```cangjie
-public operator func ==(rhs: ThreadState): Bool
-```
-
-Function: Compares two [ThreadState](core_package_enums.md#enum-threadstate) enum values for equality.
-
-Parameters:
-
-- rhs: [ThreadState](core_package_enums.md#enum-threadstate) - Another [ThreadState](core_package_enums.md#enum-threadstate) enum value to compare with the current object.
-
-Returns:
-
-- [Bool](core_package_intrinsics.md#bool) - Returns true if the two [ThreadState](core_package_enums.md#enum-threadstate) enums are identical, otherwise false.
-
-### func !=(ThreadState)
-
-```cangjie
-public operator func !=(rhs: ThreadState): Bool
-```
-
-Function: Compares two [ThreadState](core_package_enums.md#enum-threadstate) enum values for inequality.
-
-Parameters:
-
-- rhs: [ThreadState](core_package_enums.md#enum-threadstate) - Another [ThreadState](core_package_enums.md#enum-threadstate) enum value to compare with the current object.
-
-Returns:
-
-- [Bool](core_package_intrinsics.md#bool) - Returns true if the two [ThreadState](core_package_enums.md#enum-threadstate) enums are different, otherwise false.

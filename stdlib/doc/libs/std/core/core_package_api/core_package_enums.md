@@ -211,6 +211,7 @@ public func filter(predicate: (T) -> Bool): Option<T>
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建一个Some值
@@ -260,6 +261,7 @@ public func flatMap<R>(transform: (T) -> Option<R>): Option<R>
 示例：
 
 <!-- verify -->
+
 ```cangjie
 // 定义一个函数，将Int64转换为Option<String>
 func intToStringOption(x: Int64): Option<String> {
@@ -362,6 +364,7 @@ public func getOrThrow(exception: ()->Exception): T
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建一个Some值
@@ -410,6 +413,7 @@ public func getOrThrow(): T
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建一个Some值
@@ -454,6 +458,7 @@ public func isNone(): Bool
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建一个Some值
@@ -492,6 +497,7 @@ public func isSome(): Bool
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建一个Some值
@@ -534,6 +540,7 @@ public func map<R>(transform: (T)-> R): Option<R>
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建一个Some值
@@ -582,6 +589,7 @@ public func flatten(): Option<T>
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建Option<Option<Int64>>类型的Some(Some(42))值
@@ -621,7 +629,6 @@ None展开后: None
 链式展开Some(Some(Some("Hello"))): Some(Hello)
 ```
 
-
 ### extend\<T> Option\<T> <: Equatable\<Option\<T>> where T <: Equatable\<T>
 
 ```cangjie
@@ -653,6 +660,7 @@ public operator func !=(that: Option<T>): Bool
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建相同的Some值
@@ -715,6 +723,7 @@ public operator func ==(that: Option<T>): Bool
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建相同的Some值
@@ -785,6 +794,7 @@ public func hashCode(): Int64
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建Some值
@@ -851,6 +861,7 @@ public func toString(): String
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建Some值
@@ -953,6 +964,7 @@ public func compare(that: Ordering): Ordering
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建Ordering实例
@@ -1014,6 +1026,7 @@ public func hashCode(): Int64
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建Ordering实例
@@ -1073,6 +1086,7 @@ public func toString(): String
 示例：
 
 <!-- verify -->
+
 ```cangjie
 main() {
     // 创建Ordering实例
@@ -1168,34 +1182,4 @@ public func toString(): String
 
 - [String](core_package_structs.md#struct-string) - 转化后的字符串。
 
-### operator func !=(ThreadState)
 
-```cangjie
-public operator func !=(rhs: ThreadState): Bool
-```
-
-功能：用于比较两个[ThreadState](core_package_enums.md#enum-threadstate)枚举值是否不相等。
-
-参数：
-
-- rhs:  [ThreadState](core_package_enums.md#enum-threadstate)  - 要与当前对象进行比较的另一个[ThreadState](core_package_enums.md#enum-threadstate)枚举值。
-
-返回值：
-
-- [Bool](core_package_intrinsics.md#bool) - 如果两个[ThreadState](core_package_enums.md#enum-threadstate)枚举不相同则返回true，否则返回false。
-
-### operator func ==(ThreadState)
-
-```cangjie
-public operator func ==(rhs: ThreadState): Bool
-```
-
-功能：用于比较两个[ThreadState](core_package_enums.md#enum-threadstate)枚举值是否相等。
-
-参数：
-
-- rhs:  [ThreadState](core_package_enums.md#enum-threadstate)  - 要与当前对象进行比较的另一个[ThreadState](core_package_enums.md#enum-threadstate)枚举值。
-
-返回值：
-
-- [Bool](core_package_intrinsics.md#bool) - 如果两个[ThreadState](core_package_enums.md#enum-threadstate)枚举相同则返回true，否则返回false。
