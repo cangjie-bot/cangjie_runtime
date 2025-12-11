@@ -144,7 +144,6 @@ public static prop Platform: Endian
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     let e = Endian.Platform
@@ -211,7 +210,6 @@ public func filter(predicate: (T) -> Bool): Option<T>
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建一个Some值
@@ -261,7 +259,6 @@ public func flatMap<R>(transform: (T) -> Option<R>): Option<R>
 示例：
 
 <!-- verify -->
-
 ```cangjie
 // 定义一个函数，将Int64转换为Option<String>
 func intToStringOption(x: Int64): Option<String> {
@@ -323,7 +320,6 @@ public func getOrDefault(other: () -> T): T
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     var value1: Option<Int64> = Some(2)
@@ -364,7 +360,6 @@ public func getOrThrow(exception: ()->Exception): T
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建一个Some值
@@ -413,7 +408,6 @@ public func getOrThrow(): T
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建一个Some值
@@ -458,7 +452,6 @@ public func isNone(): Bool
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建一个Some值
@@ -497,7 +490,6 @@ public func isSome(): Bool
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建一个Some值
@@ -540,7 +532,6 @@ public func map<R>(transform: (T)-> R): Option<R>
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建一个Some值
@@ -589,7 +580,6 @@ public func flatten(): Option<T>
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建Option<Option<Int64>>类型的Some(Some(42))值
@@ -660,7 +650,6 @@ public operator func !=(that: Option<T>): Bool
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建相同的Some值
@@ -723,7 +712,6 @@ public operator func ==(that: Option<T>): Bool
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建相同的Some值
@@ -794,7 +782,6 @@ public func hashCode(): Int64
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建Some值
@@ -861,7 +848,6 @@ public func toString(): String
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建Some值
@@ -964,7 +950,6 @@ public func compare(that: Ordering): Ordering
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建Ordering实例
@@ -1026,7 +1011,6 @@ public func hashCode(): Int64
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建Ordering实例
@@ -1086,7 +1070,6 @@ public func toString(): String
 示例：
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // 创建Ordering实例

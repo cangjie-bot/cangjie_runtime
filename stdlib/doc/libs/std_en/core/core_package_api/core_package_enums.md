@@ -144,7 +144,6 @@ Exceptions:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     let e = Endian.Platform
@@ -211,7 +210,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some value
@@ -261,7 +259,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 // Define a function to convert Int64 to Option<String>
 func intToStringOption(x: Int64): Option<String> {
@@ -323,7 +320,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     var value1: Option<Int64> = Some(2)
@@ -364,7 +360,6 @@ Exceptions:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some value
@@ -413,7 +408,6 @@ Exceptions:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some value
@@ -458,7 +452,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some value
@@ -497,7 +490,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some value
@@ -540,7 +532,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some value
@@ -597,7 +588,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create identical Some values
@@ -660,7 +650,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create identical Some values
@@ -731,7 +720,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some value
@@ -798,7 +786,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some value
@@ -855,7 +842,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create a Some(Some(42)) value of Option<Option<Int64>> type
@@ -964,7 +950,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create Ordering instances
@@ -1026,7 +1011,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create Ordering instances
@@ -1086,7 +1070,6 @@ Returns:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     // Create Ordering instances
