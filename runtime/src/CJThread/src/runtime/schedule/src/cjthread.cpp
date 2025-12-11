@@ -99,11 +99,11 @@ void CJThreadStackMemFree(struct CJThread *cjthread, char *stackTopAddr, size_t 
         stackFreeAddr = stackTopAddr - pageSize;
         error = mprotect(stackFreeAddr, pageSize, PROT_READ | PROT_WRITE);
         if (error) {
-            LOG_ERROR(errno, "mprotect failed. size is %u", pageSize);
+            HILOG_ERROR(errno, "mprotect failed in CJThreadStackMemFree. size is %u", pageSize);
         }
         error = munmap(stackFreeAddr, stackSize + pageSize);
         if (error) {
-            LOG_ERROR(errno, "munmap failed. size is %u", stackSize + pageSize);
+            HILOG_ERROR(errno, "munmap failed in CJThreadStackMemFree. size is %u", stackSize + pageSize);
         }
     }
 }
@@ -168,7 +168,6 @@ MRT_STATIC_INLINE int CJThreadInit(struct CJThread *newCJThread, struct ArgAttr 
         // cause memory corruption.
         error = memcpy_s(argBuffer, argAttr->argSize, argAttr->argStart, argAttr->argSize);
         if (error) {
-            LOG_ERROR(error, "cjthread init failed");
             return error;
         }
         newCJThread->argStart = argBuffer;
@@ -227,7 +226,7 @@ struct CJThread *CJThreadAndArgsMemAlloc()
 
     ptr = malloc(totalSize);
     if (ptr == nullptr) {
-        LOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "malloc failed");
+        HILOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "cjthread malloc failed");
         return nullptr;
     }
 
@@ -235,7 +234,7 @@ struct CJThread *CJThreadAndArgsMemAlloc()
     error = memset_s(cjthread, corouSize, 0, corouSize);
     if (error) {
         free(ptr);
-        LOG_ERROR(error, "memset_s failed");
+        HILOG_ERROR(error, "cjthread memset_s failed");
         return nullptr;
     }
     return cjthread;
@@ -262,9 +261,8 @@ char *CJThreadStackMemAlloc(struct Schedule *schedule, struct CJThread *cjthread
         *totalSize = stackSizeAlign;
         stackAddr = static_cast<char *>(malloc(*totalSize));
         if (stackAddr == nullptr) {
-            LOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "alloc stack failed,  os memory is not enough size is %zu",
-                      *totalSize);
-            LOG(RTLOG_FATAL, "allocate cj stack failed because the os memory is not enough, size is %zu", *totalSize);
+            HILOG_FATAL(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "alloc stack failed,  os memory is not enough size is %zu",
+                        *totalSize);
             return nullptr;
         }
         cjthread->stack.protectAddr = 0;
@@ -283,8 +281,7 @@ char *CJThreadStackMemAlloc(struct Schedule *schedule, struct CJThread *cjthread
                                                 MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
         if (addr == nullptr) {
             error = (int)GetLastError();
-            LOG_ERROR(error, "allocate cj stack failed because the os memory is not enough, size is %u", *totalSize);
-            LOG(RTLOG_FATAL, "allocate cj stack failed because the os memory is not enough, size is %u", *totalSize);
+            HILOG_FATAL(error, "allocate cj stack failed because the os memory is not enough, size is %u", *totalSize);
             return nullptr;
         }
         if (!VirtualProtect(addr, pageSize, PAGE_NOACCESS, &oldProt)) {
@@ -309,7 +306,7 @@ static char* StackMemAllocInternal(size_t allocSize)
         void* stackAddr = mmap(nullptr, allocSize, PROT_READ | PROT_WRITE,
                                MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         if (stackAddr == MAP_FAILED) {
-            LOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "allocate stack failed");
+            HILOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "allocate cjthread stack with huge page failed");
             return nullptr;
         }
 #ifdef CANGJIE_HWASAN_SUPPORT
@@ -324,7 +321,7 @@ static char* StackMemAllocInternal(size_t allocSize)
     } else {
         char* stackAddr = static_cast<char*>(malloc(allocSize));
         if (stackAddr == nullptr) {
-            LOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "allocate stack failed");
+            HILOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "allocate cjthread stack failed");
             return nullptr;
         }
 #ifdef CANGJIE_HWASAN_SUPPORT
@@ -368,7 +365,7 @@ char *CJThreadStackMemAlloc(struct Schedule *schedule, struct CJThread *cjthread
         *totalSize = pageSize + stackSizeAlign;
         addr = (char *)mmap(nullptr, *totalSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         if (addr == MAP_FAILED) {
-            LOG_ERROR(errno, "mmap failed, size is %u", *totalSize);
+            HILOG_ERROR(errno, "cjthread stack mmap failed, size is %u", *totalSize);
             return nullptr;
         }
 #if defined (__linux__) || defined(__OHOS__) || defined(__ANDROID__)
@@ -380,7 +377,7 @@ char *CJThreadStackMemAlloc(struct Schedule *schedule, struct CJThread *cjthread
         // The stack protection area is set to unreadable and non writable
         error = mprotect(addr, pageSize, PROT_NONE);
         if (error) {
-            LOG_ERROR(errno, "mprotect failed, page_size: %u", pageSize);
+            HILOG_ERROR(errno, "cjthread stack mprotect failed, page_size: %u", pageSize);
             munmap(addr, *totalSize);
             return nullptr;
         }
@@ -449,7 +446,7 @@ struct CJThread *CJThreadAlloc(struct Schedule *schedule, struct ArgAttr *argAtt
         addToList = (coBuf != NO_BUF) ? true : false;
     }
     if (newCJThread == nullptr) {
-        LOG_ERROR(errno, "cjthread malloc failed");
+        HILOG_ERROR(errno, "cjthread malloc failed");
         return nullptr;
     }
 
@@ -457,7 +454,7 @@ struct CJThread *CJThreadAlloc(struct Schedule *schedule, struct ArgAttr *argAtt
 
     error = CJThreadInit(newCJThread, argAttr);
     if (error) {
-        LOG_ERROR(error, "CJThreadInit failed");
+        HILOG_ERROR(error, "CJThreadInit failed");
         CJThreadFree(newCJThread, coBuf);
         return nullptr;
     }
@@ -737,25 +734,25 @@ MRT_STATIC_INLINE int CJThreadAttrCheck(const struct CJThreadAttrInner *attr, CJ
                                         const void *argStart, unsigned int argSize)
 {
     if (func == nullptr) {
-        LOG_ERROR(ERRNO_SCHD_CJTHREAD_ARG_INVALID, "CJThreadFunc is nullptr");
+        HILOG_ERROR(ERRNO_SCHD_CJTHREAD_ARG_INVALID, "CJThreadFunc is nullptr");
         return ERRNO_SCHD_CJTHREAD_ARG_INVALID;
     }
     if ((argStart != nullptr && argSize == 0) || (argStart == nullptr && argSize != 0)) {
-        LOG_ERROR(ERRNO_SCHD_CJTHREAD_ARG_INVALID, "argStart is %s, size is %d",
+        HILOG_ERROR(ERRNO_SCHD_CJTHREAD_ARG_INVALID, "argStart is %s, size is %d",
                   argStart == nullptr ? "nullptr" : "not nullptr", argSize);
         return ERRNO_SCHD_CJTHREAD_ARG_INVALID;
     }
 
     if (attr != nullptr) {
         if (attr->stackSize > CJTHREAD_MAX_STACK_SIZE) {
-            LOG_ERROR(ERRNO_SCHD_CJTHREAD_STACK_SIZE_INVALID, "attr stack size is %lu, max is %lu",
+            HILOG_ERROR(ERRNO_SCHD_CJTHREAD_STACK_SIZE_INVALID, "attr stack size is %lu, max is %lu",
                       attr->stackSize, CJTHREAD_MAX_STACK_SIZE);
             return ERRNO_SCHD_CJTHREAD_STACK_SIZE_INVALID;
         }
     }
 
     if (argSize > COARGS_SIZE_MAX) {
-        LOG_ERROR(ERRNO_SCHD_CJTHREAD_ARG_INVALID, "argSize is %u, max is %u",
+        HILOG_ERROR(ERRNO_SCHD_CJTHREAD_ARG_INVALID, "argSize is %u, max is %u",
                   argSize, COARGS_SIZE_MAX);
         return ERRNO_SCHD_CJTHREAD_ARG_INVALID;
     }
@@ -803,7 +800,7 @@ struct CJThread* CJThreadBuild(ScheduleHandle schedule, const struct CJThreadAtt
     argAttr.argSize = argSize;
     if (targetSchedule == nullptr || (targetSchedule->scheduleType != SCHEDULE_DEFAULT &&
                                    targetSchedule->state == SCHEDULE_WAITING)) {
-        LOG_ERROR(ERRNO_SCHD_INVALID, "can't new cjthread!");
+        HILOG_ERROR(ERRNO_SCHD_INVALID, "can't new cjthread because schedule state is waiting");
         return nullptr;
     }
     scheduleCJThread = &targetSchedule->schdCJThread;
@@ -825,7 +822,7 @@ struct CJThread* CJThreadBuild(ScheduleHandle schedule, const struct CJThreadAtt
     }
     newCJThread = CJThreadAlloc(targetSchedule, &argAttr, &stackAttr, buf);
     if (newCJThread == nullptr) {
-        LOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "cjthread alloc failed");
+        HILOG_ERROR(ERRNO_SCHD_CJTHREAD_ALLOC_FAILED, "cjthread alloc failed");
         if (targetSchedule->scheduleType != SCHEDULE_DEFAULT) {
             atomic_fetch_sub(&scheduleCJThread->cjthreadNum, 1ULL);
         }
@@ -861,14 +858,14 @@ CJThreadHandle CJThreadNew(ScheduleHandle schedule, const struct CJThreadAttr *a
 #elif defined(__ANDROID__)
     TRACE_START(MapleRuntime::TraceInfoFormat(TRACE_CJTHREAD_NEW, cjthreadId));
 #endif
-    int error;
+    int error = 0;
     struct Schedule *currentSchedule;
     struct Schedule *targetSchedule = (struct Schedule *)schedule;
     struct ScheduleCJThread *scheduleCJThread = &targetSchedule->schdCJThread;
     currentSchedule = ScheduleGet();
     struct CJThread* newCJThread = CJThreadBuild(schedule, attrUser, func, argStart, argSize, isSignal);
     if (newCJThread == nullptr) {
-        LOG_ERROR(ERRNO_SCHD_CJTHREAD_NULL, "build cjthread failed");
+        HILOG_ERROR(ERRNO_SCHD_CJTHREAD_NULL, "build cjthread failed");
         return nullptr;
     }
     // Set cjthread id in CJThreadNew
@@ -895,7 +892,7 @@ CJThreadHandle CJThreadNew(ScheduleHandle schedule, const struct CJThreadAttr *a
         if (targetSchedule->scheduleType != SCHEDULE_DEFAULT) {
             atomic_fetch_sub(&scheduleCJThread->cjthreadNum, 1ULL);
         }
-        LOG_ERROR(error, "cjthread add to queue failed");
+        HILOG_ERROR(error, "cjthread add to queue failed");
         return nullptr;
     }
 
@@ -918,7 +915,7 @@ CJThreadHandle CJThreadNewToSchedule(ScheduleHandle schedule, const struct CJThr
                                      CJThreadFunc func, const void *argStart, unsigned int argSize, bool isSignal)
 {
     if (schedule == nullptr) {
-        LOG_ERROR(ERRNO_SCHD_INVALID, "schedule null invalid");
+        HILOG_ERROR(ERRNO_SCHD_INVALID, "schedule null invalid");
         return nullptr;
     }
     return CJThreadNew(schedule, attr, func, argStart, argSize, isSignal);
@@ -928,7 +925,7 @@ CJThreadHandle CJThreadNewToDefault(const struct CJThreadAttr *attr, CJThreadFun
                                     const void *argStart, unsigned int argSize)
 {
     if (g_scheduleManager.defaultSchedule == nullptr) {
-        LOG_ERROR(ERRNO_SCHD_INVALID, "schedule null invalid");
+        HILOG_ERROR(ERRNO_SCHD_INVALID, "schedule null invalid");
         return nullptr;
     }
     return CJThreadNew(g_scheduleManager.defaultSchedule, attr, func, argStart, argSize);
@@ -1095,7 +1092,7 @@ int CJThreadPark(ParkCallbackFunc func, TraceEvent waitReason, void *arg)
     // cjthread is with foreign context if singleModelC2NCount size greater than 1.
     // cjthread is on UI thread if schedule type is SCHEDULE_UI_THREAD.
     if (cjthread->schedule->scheduleType == SCHEDULE_UI_THREAD && cjthread->singleModelC2NCount > 0) {
-        LOG(RTLOG_WARNING, "parking cjthread with foreign function context on UI thread is not permitted.");
+        HILOG_WARN(ERRNO_SCHD_UITHREAD_ERROR, "parking cjthread with foreign function context on UI thread is not permitted.");
         return CJThreadParkInForeignThread(cjthread, func, arg);
     }
 #endif
