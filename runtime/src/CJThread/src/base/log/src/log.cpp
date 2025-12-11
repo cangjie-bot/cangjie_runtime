@@ -8,6 +8,7 @@
 #include <libgen.h>
 #include "securec.h"
 #include "log.h"
+#include "Base/Log.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -77,7 +78,6 @@ void LogWrite(ThreadLogLevel level,
 #ifdef MRT_WINDOWS
     free((void *)fileName);
 #endif
-
     va_start(alist, fmt);
     ret = vsnprintf_s(output + len, LOG_BUF_SIZE - len, LOG_BUF_SIZE - len - 1, fmt, alist);
     va_end(alist);
@@ -86,7 +86,6 @@ void LogWrite(ThreadLogLevel level,
         printf("%s\r\n", output);
         return;
     }
-
     func = g_logFunc;
     if (func != nullptr) {
         func(output);
@@ -97,6 +96,19 @@ void LogWrite(ThreadLogLevel level,
     if (level == ThreadLogLevel::LOG_LEVEL_FATAL) {
         abort();
     }
+}
+
+void HiLogWrite(RTLogLevel level, const char *fmt, ...)
+{
+#if defined (__OHOS__) || defined(__ANDROID__) || defined(__IOS__)
+    va_list args;
+    va_start(args, fmt);
+    MapleRuntime::HiLogForCJThread(level, fmt, args);
+    va_end(args);
+#else
+    (void)level;
+    (void)fmt;
+#endif
 }
 
 void LogRegister(LogFunc logFunc, bool enable, int level)
