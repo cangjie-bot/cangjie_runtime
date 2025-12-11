@@ -242,6 +242,11 @@ extern "C" {
 #define ERRNO_SCHD_WRONG_TYPE ((MID_SCHEDULE) | 0x504)
 
 /**
+* @brief 0x10040505 something wrong with ui thread
+*/
+#define ERRNO_SCHD_UITHREAD_ERROR ((MID_SCHEDULE) | 0x505)
+
+/**
 * @brief The flag bit is set to - 1 when preemption is triggered.
 */
 #define PREEMPT_DO_FLAG ((uintptr_t)-1)
@@ -1485,7 +1490,7 @@ unsigned long long CJ_MRT_GetCJThreadNumberUnsafe(void);
  */
 int CJ_MRT_GetAllCJThreadInfo(void *cjthreadBufPtr, unsigned int num);
 
-#ifdef MRT_IOS
+#ifdef __IOS__
 /**
  * @brief Maximum length of a cjthread stack string.
  */
