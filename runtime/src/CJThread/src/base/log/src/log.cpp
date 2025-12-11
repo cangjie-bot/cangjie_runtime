@@ -8,6 +8,7 @@
 #include <libgen.h>
 #include "securec.h"
 #include "log.h"
+#include "Base/Log.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -97,6 +98,35 @@ void LogWrite(ThreadLogLevel level,
     if (level == ThreadLogLevel::LOG_LEVEL_FATAL) {
         abort();
     }
+}
+
+void HiLogWrite(ThreadLogLevel level,
+              unsigned int errorCode,
+              const char *fileName,
+              unsigned short line,
+              const char *fmt,
+              ...)
+{
+#if defined (__OHOS__) || defined(__ANDROID__) || defined(__IOS__)
+    (void)errorCode;
+    (void)fileName;
+    (void)line;
+    switch (level) {
+        case ThreadLogLevel::LOG_LEVEL_WARNING:
+            LOG(RTLOG_WARNING, fmt);
+            break;
+        case ThreadLogLevel::LOG_LEVEL_ERROR:
+            LOG(RTLOG_ERROR, fmt);
+            break;
+        case ThreadLogLevel::LOG_LEVEL_FATAL:
+            LOG(RTLOG_FATAL, fmt);
+            break;
+        default:
+            break;
+    }
+#else
+    LogWrite(level, errorCode, fileName, line, fmt);
+#endif
 }
 
 void LogRegister(LogFunc logFunc, bool enable, int level)

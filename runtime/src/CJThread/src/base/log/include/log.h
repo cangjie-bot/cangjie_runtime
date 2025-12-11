@@ -97,6 +97,39 @@ enum ThreadLogLevel {
     } while (0)
 
 /**
+ * @brief Function for recording error log on the file or hilog.
+ * @param  errorCode    [IN]  error code
+ * @param  fmt          [IN]  log format
+ * @param  args         [IN]  args
+ */
+#define HILOG_WARN(errorCode, fmt, args...) \
+    do { \
+        HiLogWrite(ThreadLogLevel::LOG_LEVEL_WARNING, (errorCode), VOSFILENAME, __LINE__, fmt, ##args); \
+    } while (0)
+
+/**
+ * @brief Function for recording error log on the file or hilog.
+ * @param  errorCode    [IN]  error code
+ * @param  fmt          [IN]  log format
+ * @param  args         [IN]  args
+ */
+#define HILOG_ERROR(errorCode, fmt, args...) \
+    do { \
+        HiLogWrite(ThreadLogLevel::LOG_LEVEL_ERROR, (errorCode), VOSFILENAME, __LINE__, fmt, ##args); \
+    } while (0)
+
+/**
+ * @brief Function for recording fatal log on the file or hilog.
+ * @param  errorCode    [IN]  error code
+ * @param  fmt          [IN]  log format
+ * @param  args         [IN]  args
+ */
+#define HILOG_FATAL(errorCode, fmt, args...) \
+    do { \
+        HiLogWrite(ThreadLogLevel::LOG_LEVEL_FATAL, (errorCode), VOSFILENAME, __LINE__, fmt, ##args); \
+    } while (0)
+
+/**
  * @brief Write log information to the file.
  * @attention
  * @param  level        [IN]  level
@@ -107,6 +140,23 @@ enum ThreadLogLevel {
  * @retval void
  */
 void LogWrite(ThreadLogLevel level,
+              unsigned int errorCode,
+              const char *fileName,
+              unsigned short line,
+              const char *fmt,
+              ...);
+
+/**
+ * @brief Write log information to the file or hilog.
+ * @attention
+ * @param  level        [IN]  level
+ * @param  errorCode    [IN]  error code
+ * @param  fileName     [IN]  file
+ * @param  line         [IN]  line
+ * @param  fmt          [IN]  format
+ * @retval void
+ */
+void HiLogWrite(ThreadLogLevel level,
               unsigned int errorCode,
               const char *fileName,
               unsigned short line,
