@@ -174,6 +174,7 @@ int ProcessorLocalWrite(struct CJThread *cjthread, bool isReschd)
             error = ProcessorGlobalWrite(&cjthread, 1);
             if (error) {
                 LOG_ERROR(error, "write global queue failed!");
+                printf("CANGJIE-RUNTIME write global queue failed!\n");
             }
             return error;
         }
@@ -191,6 +192,7 @@ int ProcessorLocalWrite(struct CJThread *cjthread, bool isReschd)
             error = ProcessorGlobalWrite(&obj, 1);
             if (error) {
                 LOG_ERROR(error, "write global queue failed!");
+                printf("CANGJIE-RUNTIME write global queue failed!\n");
             }
             return error;
         }

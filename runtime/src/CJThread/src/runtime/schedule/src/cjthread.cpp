@@ -450,6 +450,7 @@ struct CJThread *CJThreadAlloc(struct Schedule *schedule, struct ArgAttr *argAtt
     }
     if (newCJThread == nullptr) {
         LOG_ERROR(errno, "cjthread malloc failed");
+        printf("CANGJIE-RUNTIME cjthread malloc failed!\n");
         return nullptr;
     }
 
@@ -459,6 +460,7 @@ struct CJThread *CJThreadAlloc(struct Schedule *schedule, struct ArgAttr *argAtt
     if (error) {
         LOG_ERROR(error, "CJThreadInit failed");
         CJThreadFree(newCJThread, coBuf);
+        printf("CANGJIE-RUNTIME CJThreadInit failed!\n");
         return nullptr;
     }
 
@@ -473,6 +475,7 @@ struct CJThread *CJThreadAlloc(struct Schedule *schedule, struct ArgAttr *argAtt
         if (addToList) {
             if (ScheduleAllCJThreadListAdd(newCJThread) != 0) {
                 CJThreadMemFree(newCJThread);
+                printf("CANGJIE-RUNTIME ScheduleAllCJThreadListAdd failed!\n");
                 return nullptr;
             }
         }
@@ -801,10 +804,12 @@ struct CJThread* CJThreadBuild(ScheduleHandle schedule, const struct CJThreadAtt
     if (targetSchedule == nullptr || (targetSchedule->scheduleType != SCHEDULE_DEFAULT &&
                                    targetSchedule->state == SCHEDULE_WAITING)) {
         LOG_ERROR(ERRNO_SCHD_INVALID, "can't new cjthread!");
+        printf("CANGJIE-RUNTIME can't new cjthread!\n");
         return nullptr;
     }
     scheduleCJThread = &targetSchedule->schdCJThread;
     if (CJThreadAttrCheck(attr, func, argStart, argSize) != 0) {
+        printf("CANGJIE-RUNTIME cjthread attr check failed\n");
         return nullptr;
     }
 
@@ -826,6 +831,7 @@ struct CJThread* CJThreadBuild(ScheduleHandle schedule, const struct CJThreadAtt
         if (targetSchedule->scheduleType != SCHEDULE_DEFAULT) {
             atomic_fetch_sub(&scheduleCJThread->cjthreadNum, 1ULL);
         }
+        printf("CANGJIE-RUNTIME cjthread alloc failed\n");
         return nullptr;
     }
 
@@ -866,6 +872,7 @@ CJThreadHandle CJThreadNew(ScheduleHandle schedule, const struct CJThreadAttr *a
     struct CJThread* newCJThread = CJThreadBuild(schedule, attrUser, func, argStart, argSize, isSignal);
     if (newCJThread == nullptr) {
         LOG_ERROR(ERRNO_SCHD_CJTHREAD_NULL, "build cjthread failed");
+        printf("CANGJIE-RUNTIME build cjthread failed, cjthreadId: %llu\n", cjthreadId);
         return nullptr;
     }
     // Set cjthread id in CJThreadNew
@@ -893,6 +900,7 @@ CJThreadHandle CJThreadNew(ScheduleHandle schedule, const struct CJThreadAttr *a
             atomic_fetch_sub(&scheduleCJThread->cjthreadNum, 1ULL);
         }
         LOG_ERROR(error, "cjthread add to queue failed");
+        printf("CANGJIE-RUNTIME cjthread add to queue failed, cjthreadId: %llu, error: %d\n", cjthreadId, error);
         return nullptr;
     }
 
