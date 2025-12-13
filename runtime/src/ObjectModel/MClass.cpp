@@ -190,6 +190,43 @@ void TypeInfo::TryInitMTableNoLock()
     }
 }
 
+namespace {
+inline bool IsSameRootPackage(TypeInfo* itf1, TypeInfo* itf2)
+{
+    auto name1 = itf1->GetName();
+    auto name2 = itf2->GetName();
+    U32 pos = 0U;
+    char ch = name1[pos];
+    while (ch == name2[pos]) {
+        if (ch == '.' | ch == ':') {
+            return true;
+        }
+        ++pos;
+        ch = name1[pos];
+        if ((ch == ':' && name2[pos] == '.') || (ch == '.' && name2[pos] == ':')) {
+            return true;
+        }
+    }
+    return false;
+}
+
+inline bool ReCheck(TypeInfo* itf, ExtensionData* extensionData)
+{
+    if (itf == nullptr || extensionData == nullptr) {
+        return false;
+    }
+
+    auto targetOfED = extensionData->GetTargetType();
+    auto target = extensionData->TargetIsTypeInfo() ? (void*)itf : (void*)(itf->GetSourceGeneric());
+    if (target != targetOfED) {
+        return false;
+    }
+
+    auto interfaceTI = extensionData->GetInterfaceTypeInfo(itf->GetTypeArgNum(), itf->GetTypeArgs());
+    return itf == interfaceTI;
+}
+};
+
 /**
  * Since adding a virtual method at the end of the virtual function table of an interface/class
  * is ABI compatible, the runtime needs to update the funcTable field of ExtensionData. For
@@ -221,56 +258,42 @@ void TypeInfo::TryUpdateExtensionData(TypeInfo* itf, ExtensionData* extensionDat
     if (this->GetUUID() == itf->GetUUID()) {
         return;
     }
-    /* change to check module name */
-    auto thisName = GetName();
-    auto itfName = itf->GetName();
-    U32 pos = 0U;
-    char ch = thisName[pos];
-    while (ch == itfName[pos]) {
-        if (ch == '.' | ch == ':') {
-            return;
-        }
-        ++pos;
-        ch = thisName[pos];
-        if ((ch == ':' && itfName[pos] == '.') || (ch == '.' && itfName[pos] == ':')) {
-            return;
-        }
-    }
-
-    auto itfExtData = itf->FindExtensionData(itf);
-    if (itfExtData) {
-        auto ftSize = extensionData->GetFuncTableSize();
-        auto itfFtSize = itfExtData->GetFuncTableSize();
-        auto incrementalSize = itfFtSize - ftSize;
-        if (incrementalSize > 0) {
-            TryInitMTable();
-            TraverseInnerExtensionDefs();
-            for (auto superTypePair : mTableDesc->mTable) {
-                auto superTi = superTypePair.second.second;
-                // make sure super is the subtype of itf, and super is the direct super type of this type.
-                if (superTypePair.second.first->flag != 0b10000000) {
-                    continue;
+    auto itfVExtensionDataStart = itf->GetvExtensionDataStart();
+    CHECK_DETAIL(itfVExtensionDataStart != nullptr, "itfVExtensionDataStart is nullptr");
+    auto itfExtData = IsInterface() ? *itfVExtensionDataStart
+                                    : *(itfVExtensionDataStart + validInheritNum - 1);
+    CHECK_DETAIL(ReCheck(itf, itfExtData), "ReCheck failed in TryUpdateExtensionData");
+    auto ftSize = extensionData->GetFuncTableSize();
+    auto itfFtSize = itfExtData->GetFuncTableSize();
+    auto incrementalSize = itfFtSize - ftSize;
+    if (incrementalSize > 0 && !IsSameRootPackage(this, itf)) {
+        TryInitMTable();
+        TraverseInnerExtensionDefs();
+        for (auto superTypePair : mTableDesc->mTable) {
+            auto superTi = superTypePair.second.second;
+            // make sure super is the subtype of itf, and super is the direct super type of this type.
+            if (superTypePair.second.first->flag != 0b10000000) {
+                continue;
+            }
+            auto edOfSuper = superTi->FindExtensionData(itf);
+            if (edOfSuper) {
+                if (edOfSuper->GetFuncTableSize() != itfFtSize) {
+                    superTi->TryUpdateExtensionData(itf, edOfSuper);
                 }
-                auto edOfSuper = superTi->FindExtensionData(itf);
-                if (edOfSuper) {
-                    if (edOfSuper->GetFuncTableSize() != itfFtSize) {
-                        superTi->TryUpdateExtensionData(itf, edOfSuper);
-                    }
-                    FuncPtr* newFt = reinterpret_cast<FuncPtr*>(
-                        TypeInfoManager::GetTypeInfoManager().Allocate(itfFtSize * sizeof(FuncPtr)));
-                    if (ftSize > 0) {
-                        CHECK(memcpy_s(reinterpret_cast<void*>(newFt),
-                                            sizeof(FuncPtr) * ftSize,
-                                            reinterpret_cast<void*>(extensionData->GetFuncTable()),
-                                            sizeof(FuncPtr) * ftSize) == EOK);
-                    }
-                    CHECK(memcpy_s(reinterpret_cast<void*>(newFt + ftSize),
-                                    sizeof(FuncPtr) * incrementalSize,
-                                    reinterpret_cast<void*>(edOfSuper->GetFuncTable() + ftSize),
-                                    sizeof(FuncPtr) * incrementalSize) == EOK);
-                    extensionData->UpdateFuncTable(itfFtSize, newFt);
-                    break;
+                FuncPtr* newFt = reinterpret_cast<FuncPtr*>(
+                    TypeInfoManager::GetTypeInfoManager().Allocate(itfFtSize * sizeof(FuncPtr)));
+                if (ftSize > 0) {
+                    CHECK(memcpy_s(reinterpret_cast<void*>(newFt),
+                                        sizeof(FuncPtr) * ftSize,
+                                        reinterpret_cast<void*>(extensionData->GetFuncTable()),
+                                        sizeof(FuncPtr) * ftSize) == EOK);
                 }
+                CHECK(memcpy_s(reinterpret_cast<void*>(newFt + ftSize),
+                                sizeof(FuncPtr) * incrementalSize,
+                                reinterpret_cast<void*>(edOfSuper->GetFuncTable() + ftSize),
+                                sizeof(FuncPtr) * incrementalSize) == EOK);
+                extensionData->UpdateFuncTable(itfFtSize, newFt);
+                break;
             }
         }
     }
@@ -516,8 +539,8 @@ ExtensionData* TypeInfo::FindExtensionDataRecursively(TypeInfo* itf)
 
 ExtensionData* TypeInfo::FindExtensionData(TypeInfo* itf, bool searchRecursively)
 {
-	TryInitMTable();
-	auto itfUUID = itf->GetUUID();
+    TryInitMTable();
+    auto itfUUID = itf->GetUUID();
     if (!mTableDesc->IsFullyHandled()) {
         std::lock_guard<std::recursive_mutex> lock(mTableDesc->mTableMutex);
         if (!mTableDesc->IsFullyHandled()) {
