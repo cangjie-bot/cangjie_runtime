@@ -19,9 +19,9 @@ struct ProcessInfo {
 
 foreign {
     // Process
-    func CJ_OS_GetProcessHandle(pid: Int32): IntNative
+    func CJ_OS_GetProcessHandle(pid: Int32): UIntNative
 
-    func CJ_OS_CloseProcessHandle(handle: IntNative): Unit
+    func CJ_OS_CloseProcessHandle(handle: UIntNative): Unit
 
     func CJ_OS_GetProcessInfoByPid(pid: Int32): CPointer<ProcessInfo>
 
@@ -61,7 +61,7 @@ foreign {
 }
 
 @When[backend == "cjnative"]
-foreign func FiniCJRuntime(): Int64
+foreign func FiniCJRuntime(): Int32
 
 @When[os != "Windows"]
 foreign {
@@ -131,7 +131,7 @@ foreign {
     // Process
     func CJ_OS_StartProcess(startInfo: CPointer<ProcessStartInfo>): CPointer<ProcessRtnData>
 
-    func CJ_OS_WaitSubProcessExit(handle: IntNative): CPointer<ExitInfo>
+    func CJ_OS_WaitSubProcessExit(handle: UIntNative): CPointer<ExitInfo>
     // Directory
     func CJ_OS_GetSystemDirectory(): CString
 
@@ -143,7 +143,7 @@ foreign {
 
     func CJ_OS_FileWrite(fd: IntNative, buffer: CPointer<Byte>, maxLen: UIntNative): Bool // -1: failed, (>=0): the size of buffer be written
 
-    func CJ_OS_GetStdHandle(fd: IntNative): IntNative
+    func CJ_OS_GetStdHandle(fd: Int32): IntNative
 
     func CJ_OS_OpenFile(): IntNative
 

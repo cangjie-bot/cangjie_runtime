@@ -53,7 +53,7 @@ foreign {
     func CJ_OS_SetEnvEntry(envEntry: CString): Int32
 
     @FastNative
-    func CJ_OS_GetStdHandle(fd: IntNative): IntNative
+    func CJ_OS_GetStdHandle(fd: Int32): IntNative
 
     @FastNative
     func CJ_OS_CloseFile(fd: IntNative): Int64 // -1: failed, (>= 0): success
@@ -90,7 +90,7 @@ foreign {
 foreign func CJ_OS_HomeDir(): CString
 
 @When[backend == "cjnative"]
-foreign func FiniCJRuntime(): Int64
+foreign func FiniCJRuntime(): Int32
 
 @C
 struct ProcessInfo {
