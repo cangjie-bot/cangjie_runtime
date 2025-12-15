@@ -1082,7 +1082,9 @@ int CJThreadPark(ParkCallbackFunc func, TraceEvent waitReason, void *arg)
     cjthread = CJThreadGet();
     if (cjthread == nullptr) {
         void* mutatorTemp = MutatorGetTemp();
-        LOG(RTLOG_FATAL, "cjthread is null in CJThreadPark, mutator %p", mutatorTemp);
+        MapleRuntime::Mutator* m = reinterpret_cast<MapleRuntime::Mutator*>(mutatorTemp);
+        bool fromFina = m->GetMutatorFina();
+        LOG(RTLOG_FATAL, "cjthread is null in CJThreadPark, mutator %p, is fromFina %d", mutatorTemp, fromFina);
     }
     cjthread->result = 0;
 

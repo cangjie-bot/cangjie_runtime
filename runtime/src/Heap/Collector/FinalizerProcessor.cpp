@@ -214,7 +214,8 @@ void FinalizerProcessor::ProcessFinalizableList()
         Mutator* mutator = ThreadLocal::GetMutator();
 
         CHECK_DETAIL(finalizerMethod != nullptr, "%p has no finalize method", finalizeObjAddr);
-        LOG(RTLOG_ERROR, "finalize method %p with mutator %p", finalizeObjAddr, mutator);
+        // LOG(RTLOG_ERROR, "finalize method %p with mutator %p", finalizeObjAddr, mutator);
+        mutator->SetMutatorFina(true);
         void (*finalizer)(BaseObject*, TypeInfo*) = reinterpret_cast<void (*)(BaseObject*, TypeInfo*)>(finalizerMethod);
         // finalize method return void, (moving) gc may take place here
         mutator->SetManagedContext(true);

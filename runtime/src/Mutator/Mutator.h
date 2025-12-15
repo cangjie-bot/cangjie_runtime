@@ -413,6 +413,10 @@ public:
 
     void MutatorUnlock() { mutatorLock.unlock(); }
 
+    void SetMutatorFina(bool from) { fromFina = from; }
+
+    bool GetMutatorFina() { return fromFina; }
+
     void PreparedToRun(ThreadLocalData* tlData)
     {
         if (UNLIKELY(tlData->buffer == nullptr)) {
@@ -548,6 +552,8 @@ private:
         AllocBuffer* allocBuffer = { nullptr };
         ScheduleHandle schedule = { nullptr };
     } foreignThreadInfo;
+
+    bool fromFina = { false };
 };
 
 // This function is mainly used to initialize the context of mutator.
