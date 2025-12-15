@@ -41,7 +41,7 @@ static BOOL GetFileAttr(const char* path, WIN32_FILE_ATTRIBUTE_DATA* wfad);
 static int32_t GetDosDevicePathLocation(char* cPath, int64_t pathLen);
 static int64_t FileTime(const char* path, enum FILE_TIME_TYPE ty);
 static int64_t FileSize(const wchar_t* path);
-static int64_t GetDirectorySize(const wchar_t* path);
+static int64_t GetDirectorySize(const wchar_t* wPath);
 static int64_t IsFileExecutable(const char* path);
 static int64_t GetSubDatas(const char* path, uint8_t* buffer, int64_t bufferLen);
 static inline bool IsSlash(char c);

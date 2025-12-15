@@ -206,7 +206,6 @@ inline __attribute__((always_inline)) static int64_t StrStrN(const uint8_t* org,
 int64_t StrStrN(const uint8_t* org, int64_t ol, const uint8_t* sub,
                        int64_t sl, bool (*memcmpFunc)(const uint8_t*, const uint8_t*, int64_t))
 {
-
     if (!org || !sub || !memcmpFunc || ol < 0 || sl < 0) {
         return -1;
     }
