@@ -13,7 +13,7 @@ import std.process.Process
 
 foreign func EnableANSITerminal(): Bool
 
-foreign func DisableANSITerminal(): Bool
+foreign func DisableANSITerminal(): Unit
 
 var isConsoleUtf8: Bool = true
 

@@ -79,17 +79,17 @@ static char* GetErrMessage(int32_t errCode)
     return errMsg;
 }
 
-extern int64_t CJ_OS_FileRead(int32_t fd, char* buffer, size_t maxLen)
+extern int64_t CJ_OS_FileRead(ssize_t fd, char* buffer, size_t maxLen)
 {
-    return (int64_t)read(fd, (char*)buffer, maxLen);
+    return (int64_t)read((int)fd, (char*)buffer, maxLen);
 }
 
-extern bool CJ_OS_FileWrite(int32_t fd, const char* buffer, size_t maxLen)
+extern bool CJ_OS_FileWrite(ssize_t fd, const char* buffer, size_t maxLen)
 {
     const char* ptr = buffer;
     size_t remainingLen = maxLen;
     while (remainingLen > 0) {
-        ssize_t writeSize = write(fd, (char*)ptr, remainingLen);
+        ssize_t writeSize = write((int)fd, (char*)ptr, remainingLen);
         if (writeSize <= 0) {
             break;
         }
@@ -99,9 +99,9 @@ extern bool CJ_OS_FileWrite(int32_t fd, const char* buffer, size_t maxLen)
     return (int64_t)remainingLen == 0;
 }
 
-extern int64_t CJ_OS_CloseFile(int32_t fd)
+extern int64_t CJ_OS_CloseFile(ssize_t fd)
 {
-    return (int64_t)close(fd);
+    return (int64_t)close((int)fd);
 }
 
 void FreeTwoDimensionalArray(char** strArray)
@@ -428,7 +428,7 @@ extern ProcessRtnData* CJ_OS_StartProcess(ProcessStartInfo* info)
 }
 
 /* Waiting for the process to end. */
-extern int32_t CJ_OS_WaitSubProcessExit(int32_t pid)
+extern int64_t CJ_OS_WaitSubProcessExit(int32_t pid)
 {
     errno = 0;
     int status;

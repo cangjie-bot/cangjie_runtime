@@ -23,7 +23,7 @@ let MAX_TIMEOUT_DURATION: Duration = Duration.nanosecond * MAX_TIMEOUT_NS
 
 public open class Process {
     var _pid: Int64 = -1
-    var _handle: IntNative = INVALID_HANDLE
+    var _handle: UIntNative = INVALID_HANDLE
     var _name: ?String = ""
     var _command: ?String = ""
     var _arguments: ?Array<String> = Array<String>()
