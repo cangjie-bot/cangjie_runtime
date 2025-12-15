@@ -344,7 +344,7 @@ func getStdInHandle(): IntNative {
 
 @When[os == "Windows"]
 func getStdHandle(fd: IntNative): IntNative {
-    unsafe { CJ_OS_GetStdHandle(fd) }
+    unsafe { CJ_OS_GetStdHandle(Int32(fd)) }
 }
 
 @When[backend == "cjnative"]

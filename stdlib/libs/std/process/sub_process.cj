@@ -326,7 +326,7 @@ func getWaitExitCode(timeout: Duration, pid: Int32, handle: IntNative): Int64 {
     let exitCode: Int64
     if (timeout > Duration.Zero) {
         let future: Future<CPointer<ExitInfo>> = spawn {
-            => return unsafe { CJ_OS_WaitSubProcessExit(handle) }
+            => return unsafe { CJ_OS_WaitSubProcessExit(UIntNative(handle)) }
         }
         var waitExitInfo_cp: CPointer<ExitInfo> = CPointer<ExitInfo>()
         try {
@@ -345,7 +345,7 @@ func getWaitExitCode(timeout: Duration, pid: Int32, handle: IntNative): Int64 {
 
     var waitExitInfo_cp: CPointer<ExitInfo> = CPointer<ExitInfo>()
     try {
-        waitExitInfo_cp = unsafe { CJ_OS_WaitSubProcessExit(handle) }
+        waitExitInfo_cp = unsafe { CJ_OS_WaitSubProcessExit(UIntNative(handle)) }
         return parseExitInfoPointer(waitExitInfo_cp, pid)
     } finally {
         if (!waitExitInfo_cp.isNull()) {

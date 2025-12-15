@@ -16,7 +16,7 @@ const STDIN_FD: IntNative = 0
 const STDOUT_FD: IntNative = 1
 const STDERR_FD: IntNative = 2
 @When[os == "Windows"]
-const INVALID_HANDLE: IntNative = 0
+const INVALID_HANDLE: UIntNative = 0
 
 @When[os == "Windows"]
 func isHandleValid(fileHandle: IntNative): Bool {
@@ -25,7 +25,7 @@ func isHandleValid(fileHandle: IntNative): Bool {
 
 @When[os == "Windows"]
 func getStdHandle(fd: IntNative): IntNative {
-    return unsafe { CJ_OS_GetStdHandle(fd) }
+    return unsafe { CJ_OS_GetStdHandle(Int32(fd)) }
 }
 
 @When[os == "Windows"]
@@ -71,7 +71,7 @@ func getNameFromCommand(cmd: ?String): Option<String> {
 }
 
 @When[os != "Windows"]
-const INVALID_HANDLE: IntNative = -1
+const INVALID_HANDLE: UIntNative = -1
 
 @When[os != "Windows"]
 func getNulFileHandle(): Option<IntNative> {
