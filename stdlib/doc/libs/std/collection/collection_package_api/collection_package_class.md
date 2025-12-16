@@ -1212,6 +1212,46 @@ public func all(predicate: (T) -> Bool): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果 [ArrayList](collection_package_class.md#class-arraylistt) 中所有元素都满足条件，返回 true，否则返回 false
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(2)
+    list.add(4)
+    list.add(6)
+    list.add(8)
+    
+    // 检查所有元素是否都是偶数
+    let allEven = list.all({element: Int64 =>
+        element % 2 == 0
+    })
+    
+    println("所有元素都是偶数: ${allEven}")  // true
+    
+    // 添加一个奇数
+    list.add(5)
+    
+    let allEvenAfterAdd = list.all({element: Int64 =>
+        element % 2 == 0
+    })
+    
+    println("添加奇数后所有元素都是偶数: ${allEvenAfterAdd}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+所有元素都是偶数: true
+添加奇数后所有元素都是偶数: false
+```
+
 ### func any((T) -> Bool)
 
 ```cangjie
@@ -1227,6 +1267,46 @@ public func any(predicate: (T) -> Bool): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 是否存在任意满足条件的元素。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(3)
+    list.add(5)
+    list.add(7)
+    
+    // 检查是否存在偶数
+    let hasEven = list.any({element: Int64 =>
+        element % 2 == 0
+    })
+    
+    println("存在偶数: ${hasEven}")  // false
+    
+    // 添加一个偶数
+    list.add(2)
+    
+    let hasEvenAfterAdd = list.any({element: Int64 =>
+        element % 2 == 0
+    })
+    
+    println("添加偶数后存在偶数: ${hasEvenAfterAdd}")  // true
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+存在偶数: false
+添加偶数后存在偶数: true
+```
 
 ### func clear()
 
@@ -1334,6 +1414,40 @@ public func filter(predicate: (T) -> Bool): ArrayList<T>
 
 - [ArrayList](collection_package_class.md#class-arraylistt)\<T> - 返回一个满足筛选条件的元素的新集合。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    list.add(4)
+    list.add(5)
+    list.add(6)
+    
+    // 筛选出所有偶数
+    let evenNumbers = list.filter({element: Int64 =>
+        element % 2 == 0
+    })
+    
+    println("原列表: ${list}")        // [1, 2, 3, 4, 5, 6]
+    println("偶数列表: ${evenNumbers}")  // [2, 4, 6]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [1, 2, 3, 4, 5, 6]
+偶数列表: [2, 4, 6]
+```
+
 ### func filterMap\<R>((T) -> ?R)
 
 ```cangjie
@@ -1350,6 +1464,44 @@ public func filterMap<R>(transform: (T) -> ?R): ArrayList<R>
 
 - [ArrayList](collection_package_class.md#class-arraylistt)\<R> - 返回一个筛选和映射后的新[ArrayList](collection_package_class.md#class-arraylistt)。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(-2)
+    list.add(-1)
+    list.add(0)
+    list.add(1)
+    list.add(2)
+    
+    // 筛选出正数并将其转换为字符串
+    let positiveStrings = list.filterMap<String>({element: Int64 =>
+        if (element > 0) {
+            return Option.Some(element.toString())
+        } else {
+            return None
+        }
+    })
+    
+    println("原列表: ${list}")
+    println("正数字符串列表: ${positiveStrings}")
+    println("类型检查: ${positiveStrings[0] is String}")
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [-2, -1, 0, 1, 2]
+正数字符串列表: [1, 2]
+类型检查: true
+```
+
 ### func flatMap\<R>((T) -> ArrayList\<R>)
 
 ```cangjie
@@ -1365,6 +1517,40 @@ public func flatMap<R>(transform: (T) -> ArrayList<R>): ArrayList<R>
 返回值：
 
 - [ArrayList](collection_package_class.md#class-arraylistt)\<R> -  被“映射（map）”和“压平（flatten）”后的新 [ArrayList](collection_package_class.md#class-arraylistt)。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    
+    // 对每个元素创建一个包含该元素和其平方的列表，然后压平
+    let flattened = list.flatMap<Int64>({element: Int64 =>
+        let subList = ArrayList<Int64>()
+        subList.add(element)
+        subList.add(element * element)
+        return subList
+    })
+    
+    println("原列表: ${list}")          // [1, 2, 3]
+    println("压平映射后: ${flattened}")   // [1, 1, 2, 4, 3, 9]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [1, 2, 3]
+压平映射后: [1, 1, 2, 4, 3, 9]
+```
 
 ### func fold\<R>(R, (R, T) -> R)
 
@@ -1383,6 +1569,38 @@ public func fold<R>(initial: R, operation: (R, T) -> R): R
 
 - R - 返回最终计算得到的值。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    list.add(4)
+    
+    // 计算所有元素的乘积
+    let product = list.fold<Int64>(1, {accumulator: Int64, element: Int64 =>
+        accumulator * element
+    })
+    
+    println("原列表: ${list}")      // [1, 2, 3, 4]
+    println("元素乘积: ${product}")   // 24
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [1, 2, 3, 4]
+元素乘积: 24
+```
+
 ### func forEach((T) -> Unit)
 
 ```cangjie
@@ -1394,6 +1612,50 @@ public func forEach(action: (T) -> Unit): Unit
 参数：
 
 - action: (T) -> [Unit](../../core/core_package_api/core_package_intrinsics.md#unit) - 给定的操作函数。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    list.add(4)
+    list.add(5)
+    
+    // 遍历并打印每个元素
+    println("列表元素:")
+    list.forEach({element: Int64 =>
+        println(element)
+    })
+    
+    // 计算元素总和
+    let sum = Box<Int64>(0)
+    list.forEach({element: Int64 =>
+        sum.value = sum.value + element
+    })
+    
+    println("元素总和: ${sum.value}")  // 15
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+列表元素:
+1
+2
+3
+4
+5
+元素总和: 15
+```
 
 ### func get(Int64)
 
@@ -1536,6 +1798,49 @@ public func intersperse(separator: T): ArrayList<T>
 
 - [ArrayList](collection_package_class.md#class-arraylistt)\<T> - 返回一个新 [ArrayList](collection_package_class.md#class-arraylistt)。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<String>()
+    list.add("apple")
+    list.add("banana")
+    list.add("cherry")
+    
+    // 在每个元素之间插入分隔符
+    let interspersed = list.intersperse("-")
+    
+    println("原列表: ${list}")          // ["apple", "banana", "cherry"]
+    println("插入分隔符后: ${interspersed}") // ["apple", "-", "banana", "-", "cherry"]
+    
+    // 数字列表示例
+    let numbers = ArrayList<Int64>()
+    numbers.add(1)
+    numbers.add(2)
+    numbers.add(3)
+    numbers.add(4)
+    
+    let numberInterspersed = numbers.intersperse(0)
+    
+    println("数字原列表: ${numbers}")        // [1, 2, 3, 4]
+    println("数字插入分隔符后: ${numberInterspersed}") // [1, 0, 2, 0, 3, 0, 4]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [apple, banana, cherry]
+插入分隔符后: [apple, -, banana, -, cherry]
+数字原列表: [1, 2, 3, 4]
+数字插入分隔符后: [1, 0, 2, 0, 3, 0, 4]
+```
+
 ### func isEmpty()
 
 ```cangjie
@@ -1625,11 +1930,52 @@ public func map<R>(transform: (T) -> R): ArrayList<R>
 
 参数：
 
-- transform: (T) ->R - 给定的映射函数。
+- transform: (T) -> R - 给定的映射函数。
 
 返回值：
 
 - [ArrayList](collection_package_class.md#class-arraylistt)\<R> - 返回一个新的 [ArrayList](collection_package_class.md#class-arraylistt)。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    list.add(4)
+    list.add(5)
+    
+    // 将每个元素平方
+    let squared = list.map<Int64>({element: Int64 =>
+        element * element
+    })
+    
+    println("原列表: ${list}")      // [1, 2, 3, 4, 5]
+    println("平方后: ${squared}")    // [1, 4, 9, 16, 25]
+    
+    // 将数字转换为字符串
+    let strings = list.map<String>({element: Int64 =>
+        element.toString()
+    })
+    
+    println("转换为字符串: ${strings}")  // ["1", "2", "3", "4", "5"]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [1, 2, 3, 4, 5]
+平方后: [1, 4, 9, 16, 25]
+转换为字符串: [1, 2, 3, 4, 5]
+```
 
 ### func none((T) -> Bool)
 
@@ -1647,6 +1993,46 @@ public func none(predicate: (T) -> Bool): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 当前 [ArrayList](collection_package_class.md#class-arraylistt) 中元素是否都不满足条件。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(3)
+    list.add(5)
+    list.add(7)
+    
+    // 检查是否所有元素都不是偶数
+    let noEven = list.none({element: Int64 =>
+        element % 2 == 0
+    })
+    
+    println("所有元素都不是偶数: ${noEven}")  // true
+    
+    // 添加一个偶数
+    list.add(2)
+    
+    let noEvenAfterAdd = list.none({element: Int64 =>
+        element % 2 == 0
+    })
+    
+    println("添加偶数后所有元素都不是偶数: ${noEvenAfterAdd}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+所有元素都不是偶数: true
+添加偶数后所有元素都不是偶数: false
+```
+
 ### func reduce((T, T) -> T)
 
 ```cangjie
@@ -1662,6 +2048,56 @@ public func reduce(operation: (T, T) -> T): Option<T>
 返回值：
 
 - [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<T> - 返回计算结果。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+    list.add(4)
+    list.add(5)
+    
+    // 计算最大值
+    let max = list.reduce({a: Int64, b: Int64 =>
+        if (a > b) {
+            return a
+        } else {
+            return b
+        }
+    })
+    
+    println("原列表: ${list}")      // [1, 2, 3, 4, 5]
+    println("最大值: ${max}")       // Some(5)
+    
+    // 空列表的情况
+    let emptyList = ArrayList<Int64>()
+    let emptyMax = emptyList.reduce({a: Int64, b: Int64 =>
+        if (a > b) {
+            return a
+        } else {
+            return b
+        }
+    })
+    
+    println("空列表的最大值: ${emptyMax}")  // None
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [1, 2, 3, 4, 5]
+最大值: Some(5)
+空列表的最大值: None
+```
 
 ### func remove(Int64)
 
@@ -1927,6 +2363,42 @@ public func skip(count: Int64): ArrayList<T>
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 count < 0 时，抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..6) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4, 5]
+    
+    // 跳过前3个元素
+    let skipped = list.skip(3)
+    
+    println("原列表: ${list}")      // [0, 1, 2, 3, 4, 5]
+    println("跳过后: ${skipped}")    // [3, 4, 5]
+    
+    // 跳过所有元素
+    let skipAll = list.skip(10)
+    
+    println("跳过10个元素后: ${skipAll}")  // []
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [0, 1, 2, 3, 4, 5]
+跳过后: [3, 4, 5]
+跳过10个元素后: []
+```
+
 ### func slice(Range\<Int64>)
 
 ```cangjie
@@ -2124,6 +2596,36 @@ public func step(count: Int64): ArrayList<T>
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 count <= 0 时，抛出异常。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..8) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4, 5, 6, 7]
+    
+    // 每隔2个元素取一个
+    let stepped = list.step(3)
+    
+    println("原列表: ${list}")      // [0, 1, 2, 3, 4, 5, 6, 7]
+    println("步长为3: ${stepped}")   // [0, 3, 6]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [0, 1, 2, 3, 4, 5, 6, 7]
+步长为3: [0, 3, 6]
+```
+
 ### func take(Int64)
 ```cangjie
 public func take(count: Int64): ArrayList<T>
@@ -2144,6 +2646,42 @@ public func take(count: Int64): ArrayList<T>
 异常：
 
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 count < 0 时，抛出异常。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<Int64>()
+    for (i in 0..6) {
+        list.add(i)
+    }
+    // list现在是[0, 1, 2, 3, 4, 5]
+    
+    // 取前3个元素
+    let taken = list.take(3)
+    
+    println("原列表: ${list}")      // [0, 1, 2, 3, 4, 5]
+    println("取前3个: ${taken}")    // [0, 1, 2]
+    
+    // 取超过列表长度的元素
+    let takeMore = list.take(10)
+    
+    println("取10个元素: ${takeMore}")  // [0, 1, 2, 3, 4, 5]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [0, 1, 2, 3, 4, 5]
+取前3个: [0, 1, 2]
+取10个元素: [0, 1, 2, 3, 4, 5]
+```
 
 ### func toArray()
 
@@ -2373,6 +2911,42 @@ public func enumerate(): ArrayList<(Int64, T)>
 
 - [ArrayList](collection_package_class.md#class-arraylistt)\<([Int64](../../core/core_package_api/core_package_intrinsics.md#int64), T)> - 返回一个带索引的新 [ArrayList](collection_package_class.md#class-arraylistt)。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let list = ArrayList<String>()
+    list.add("apple")
+    list.add("banana")
+    list.add("cherry")
+    
+    // 获取带索引的列表
+    let enumerated = list.enumerate()
+    
+    println("原列表: ${list}") // ["apple", "banana", "cherry"]
+    
+    // 遍历带索引的列表
+    enumerated.forEach({element: (Int64, String) =>
+        let (index, value) = element
+        println("索引 ${index}: ${value}")
+    })
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原列表: [apple, banana, cherry]
+索引 0: apple
+索引 1: banana
+索引 2: cherry
+```
+
 #### func zip\<R>(ArrayList\<R>)
 
 ```cangjie
@@ -2388,6 +2962,49 @@ public func zip<R>(other: ArrayList<R>): ArrayList<(T, R)>
 返回值：
 
 - [ArrayList](collection_package_class.md#class-arraylistt)\<(T, R)> - 返回一个新 [ArrayList](collection_package_class.md#class-arraylistt) 。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let names = ArrayList<String>()
+    names.add("Alice")
+    names.add("Bob")
+    names.add("Charlie")
+    
+    let ages = ArrayList<Int64>()
+    ages.add(25)
+    ages.add(30)
+    ages.add(35)
+    
+    // 将两个列表合并
+    let zipped = names.zip<Int64>(ages)
+    
+    println("姓名列表: ${names}")      // ["Alice", "Bob", "Charlie"]
+    println("年龄列表: ${ages}")      // [25, 30, 35]
+    
+    // 遍历合并后的列表
+    zipped.forEach({element: (String, Int64) =>
+        let (name, age) = element
+        println("${name} 的年龄是 ${age} 岁")
+    })
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+姓名列表: [Alice, Bob, Charlie]
+年龄列表: [25, 30, 35]
+Alice 的年龄是 25 岁
+Bob 的年龄是 30 岁
+Charlie 的年龄是 35 岁
+```
 
 ### extend\<T> ArrayList\<T> <: Equatable\<ArrayList\<T>> where T <: Equatable\<T>
 
@@ -4432,6 +5049,44 @@ public func all(predicate: (K, V) -> Bool): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 如果 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) 中所有键值对都满足条件，返回 true，否则返回 false
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 检查所有值是否都大于5
+    let allGreaterThanFive = map.all({key: String, value: Int64 =>
+        value > 5
+    })
+    
+    println("所有值都大于5: ${allGreaterThanFive}")  // true
+    
+    // 检查所有值是否都大于25
+    let allGreaterThanTwentyFive = map.all({key: String, value: Int64 =>
+        value > 25
+    })
+    
+    println("所有值都大于25: ${allGreaterThanTwentyFive}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+所有值都大于5: true
+所有值都大于25: false
+```
+
 ### func any((K, V) -> Bool)
 
 ```cangjie
@@ -4447,6 +5102,44 @@ public func any(predicate: (K, V) -> Bool): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 是否存在任意满足条件的键值对。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 检查是否存在值大于35的键值对
+    let anyGreaterThanThirtyFive = map.any({key: String, value: Int64 =>
+        value > 35
+    })
+    
+    println("存在值大于35的键值对: ${anyGreaterThanThirtyFive}")  // true
+    
+    // 检查是否存在值大于50的键值对
+    let anyGreaterThanFifty = map.any({key: String, value: Int64 =>
+        value > 50
+    })
+    
+    println("存在值大于50的键值对: ${anyGreaterThanFifty}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+存在值大于35的键值对: true
+存在值大于50的键值对: false
+```
 
 ### func clear()
 
@@ -4697,6 +5390,38 @@ public func filter(predicate: (K, V) -> Bool): HashMap<K, V>
 
 - [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek)\<K, V> - 返回一个满足筛选条件的键值对的新集合。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 筛选出值大于25的键值对
+    let filtered = map.filter({key: String, value: Int64 =>
+        value > 25
+    })
+    
+    println("原映射: ${map}")      // [("a", 10), ("b", 20), ("c", 30), ("d", 40)]
+    println("筛选后: ${filtered}")   // [("c", 30), ("d", 40)]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原映射: [(a, 10), (b, 20), (c, 30), (d, 40)]
+筛选后: [(c, 30), (d, 40)]
+```
+
 ### func fold\<R>(R, (R, K, V) -> R)
 
 ```cangjie
@@ -4714,6 +5439,38 @@ public func fold<R>(initial: R, operation: (R, K, V) -> R): R
 
 - R - 返回最终计算得到的值。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 计算所有值的总和
+    let sum = map.fold<Int64>(0, {accumulator: Int64, key: String, value: Int64 =>
+        accumulator + value
+    })
+    
+    println("原映射: ${map}")      // [("a", 10), ("b", 20), ("c", 30), ("d", 40)]
+    println("值的总和: ${sum}")     // 100
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原映射: [(a, 10), (b, 20), (c, 30), (d, 40)]
+值的总和: 100
+```
+
 ### func forEach((K, V) -> Unit)
 
 ```cangjie
@@ -4725,6 +5482,39 @@ public func forEach(action: (K, V) -> Unit): Unit
 参数：
 
 - action: (K, V) -> [Unit](../../core/core_package_api/core_package_intrinsics.md#unit) - 给定的操作函数。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 遍历并打印每个键值对
+    println("映射中的键值对:")
+    map.forEach({key: String, value: Int64 =>
+        println("  ${key}: ${value}")
+    })
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+映射中的键值对:
+  a: 10
+  b: 20
+  c: 30
+  d: 40
+```
 
 ### func get(K)
 
@@ -4934,6 +5724,38 @@ public func mapValues<R>(transform: (K, V) -> R): HashMap<K, R>
 
 - [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek)\<K, R> - 返回一个新的 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek)。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 将所有值转换为字符串
+    let stringMap = map.mapValues<String>({key: String, value: Int64 =>
+        value.toString()
+    })
+    
+    println("原映射: ${map}")         // [("a", 10), ("b", 20), ("c", 30), ("d", 40)]
+    println("字符串映射: ${stringMap}")  // [("a", "10"), ("b", "20"), ("c", "30"), ("d", "40")]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原映射: [(a, 10), (b, 20), (c, 30), (d, 40)]
+字符串映射: [(a, 10), (b, 20), (c, 30), (d, 40)]
+```
+
 ### func mapValues\<R>((V) -> R)
 
 ```cangjie
@@ -4949,6 +5771,38 @@ public func mapValues<R>(transform: (V) -> R): HashMap<K, R>
 返回值：
 
 - [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek)\<K, R> - 返回一个新的 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek)。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 将所有值平方
+    let squaredMap = map.mapValues<Int64>({value: Int64 =>
+        value * value
+    })
+    
+    println("原映射: ${map}")          // [("a", 10), ("b", 20), ("c", 30), ("d", 40)]
+    println("平方映射: ${squaredMap}")   // [("a", 100), ("b", 400), ("c", 900), ("d", 1600)]
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原映射: [(a, 10), (b, 20), (c, 30), (d, 40)]
+平方映射: [(a, 100), (b, 400), (c, 900), (d, 1600)]
+```
 
 ### func none((K, V) -> Bool)
 
@@ -4966,6 +5820,44 @@ public func none(predicate: (K, V) -> Bool): Bool
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 当前 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) 中键值对是否都不满足条件。
 
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 检查是否所有值都不大于50
+    let noneGreaterThanFifty = map.none({key: String, value: Int64 =>
+        value > 50
+    })
+    
+    println("所有值都不大于50: ${noneGreaterThanFifty}")  // true
+    
+    // 检查是否所有值都不大于35
+    let noneGreaterThanThirtyFive = map.none({key: String, value: Int64 =>
+        value > 35
+    })
+    
+    println("所有值都不大于35: ${noneGreaterThanThirtyFive}")  // false
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+所有值都不大于50: true
+所有值都不大于35: false
+```
+
 ### func reduce((V, V) -> V)
 
 ```cangjie
@@ -4981,6 +5873,55 @@ public func reduce(operation: (V, V) -> V): Option<V>
 返回值：
 
 - [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<V> - 返回计算结果。
+
+示例：
+
+<!-- verify -->
+```cangjie
+import std.collection.*
+
+main() {
+    let map = HashMap<String, Int64>()
+    map["a"] = 10
+    map["b"] = 20
+    map["c"] = 30
+    map["d"] = 40
+    
+    // 计算所有值的最大值
+    let max = map.reduce({a: Int64, b: Int64 =>
+        if (a > b) {
+            return a
+        } else {
+            return b
+        }
+    })
+    
+    println("原映射: ${map}")      // [("a", 10), ("b", 20), ("c", 30), ("d", 40)]
+    println("最大值: ${max}")       // Some(40)
+    
+    // 空映射的情况
+    let emptyMap = HashMap<String, Int64>()
+    let emptyMax = emptyMap.reduce({a: Int64, b: Int64 =>
+        if (a > b) {
+            return a
+        } else {
+            return b
+        }
+    })
+    
+    println("空映射的最大值: ${emptyMax}")  // None
+    
+    return 0
+}
+```
+
+运行结果：
+
+```text
+原映射: [(a, 10), (b, 20), (c, 30), (d, 40)]
+最大值: Some(40)
+空映射的最大值: None
+```
 
 ### func remove(Collection\<K>)
 
