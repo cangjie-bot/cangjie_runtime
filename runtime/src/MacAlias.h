@@ -231,9 +231,36 @@ __asm__(".global _CJ_MCC_IsPrimitive\n\t.set _CJ_MCC_IsPrimitive, _MCC_IsPrimiti
 extern "C" MRT_EXPORT bool CJ_MCC_IsGeneric(TypeInfo* ti);
 __asm__(".global _CJ_MCC_IsGeneric\n\t.set _CJ_MCC_IsGeneric, _MCC_IsGeneric");
 
+extern "C" MRT_EXPORT bool CJ_MCC_IsEnum(TypeInfo* ti);
+__asm__(".global _CJ_MCC_IsEnum\n\t.set _CJ_MCC_IsEnum, _MCC_IsEnum");
+
+extern "C" MRT_EXPORT bool CJ_MCC_IsFunction(TypeInfo* ti);
+__asm__(".global _CJ_MCC_IsFunction\n\t.set _CJ_MCC_IsFunction, _MCC_IsFunction");
+
+extern "C" MRT_EXPORT bool CJ_MCC_IsTuple(TypeInfo* ti);
+__asm__(".global _CJ_MCC_IsTuple\n\t.set _CJ_MCC_IsTuple, _MCC_IsTuple");
+
 extern "C" MRT_EXPORT bool CJ_MCC_IsReflectUnsupportedType(TypeInfo* ti);
 __asm__(".global _CJ_MCC_IsReflectUnsupportedType\n\t.set _CJ_MCC_IsReflectUnsupportedType, "
     "_MCC_IsReflectUnsupportedType");
+
+// for function
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFunctionParameters(TypeInfo* funcTi);
+__asm__(".global _CJ_MCC_GetNumOfFunctionParameters\n\t.set _CJ_MCC_GetNumOfFunctionParameters, _MCC_GetNumOfFunctionParameters");
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFunctionParameters(TypeInfo* funcTi);
+__asm__(".global _CJ_MCC_GetFunctionParameters\n\t.set _CJ_MCC_GetFunctionParameters, _MCC_GetFunctionParameters");
+extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetFunctionReturnType(TypeInfo* ti);
+__asm__(".global _CJ_MCC_GetFunctionReturnType\n\t.set _CJ_MCC_GetFunctionReturnType, _MCC_GetFunctionReturnType");
+
+// for tuple
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfTypeInfoFields(TypeInfo* ti);
+__asm__(".global _CJ_MCC_GetNumOfTypeInfoFields\n\t.set _CJ_MCC_GetNumOfTypeInfoFields, _MCC_GetNumOfTypeInfoFields");
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetTypeInfoFields(TypeInfo* ti);
+__asm__(".global _CJ_MCC_GetTypeInfoFields\n\t.set _CJ_MCC_GetTypeInfoFields, _MCC_GetTypeInfoFields");
+extern "C" MRT_EXPORT ObjectRef CJ_MCC_NewAndInitObject(TypeInfo* ti, void* args);
+__asm__(".global _CJ_MCC_NewAndInitObject\n\t.set _CJ_MCC_NewAndInitObject, _MCC_NewAndInitObject");
+extern "C" MRT_EXPORT ArrayRef CJ_MCC_GetAssociatedValues(TypeInfo* ti);
+__asm__(".global _CJ_MCC_GetAssociatedValues\n\t.set _CJ_MCC_GetAssociatedValues, _MCC_GetAssociatedValues");
 
 extern "C" MRT_EXPORT U32 CJ_MCC_GetQualifiedNameLength(TypeInfo* ti);
 __asm__(".global _CJ_MCC_GetQualifiedNameLength\n\t.set _CJ_MCC_GetQualifiedNameLength, _MCC_GetQualifiedNameLength");

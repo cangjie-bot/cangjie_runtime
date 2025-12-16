@@ -169,8 +169,28 @@ extern "C" MRT_EXPORT bool CJ_MCC_IsInterface(TypeInfo* ti) __attribute__((alias
 extern "C" MRT_EXPORT bool CJ_MCC_IsStruct(TypeInfo* ti) __attribute__((alias("MCC_IsStruct")));
 extern "C" MRT_EXPORT bool CJ_MCC_IsPrimitive(TypeInfo* ti) __attribute__((alias("MCC_IsPrimitive")));
 extern "C" MRT_EXPORT bool CJ_MCC_IsGeneric(TypeInfo* ti) __attribute__((alias("MCC_IsGeneric")));
+extern "C" MRT_EXPORT bool CJ_MCC_IsEnum(TypeInfo* ti) __attribute__((alias("MCC_IsEnum")));
+extern "C" MRT_EXPORT bool CJ_MCC_IsFunction(TypeInfo* ti) __attribute__((alias("MCC_IsFunction")));
+extern "C" MRT_EXPORT bool CJ_MCC_IsTuple(TypeInfo* ti) __attribute__((alias("MCC_IsTuple")));
 extern "C" MRT_EXPORT bool CJ_MCC_IsReflectUnsupportedType(TypeInfo* ti)
     __attribute__((alias("MCC_IsReflectUnsupportedType")));
+
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFunctionParameters(TypeInfo* funcTi)
+    __attribute__((alias("MCC_GetFunctionParameters")));
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
+    __attribute__((alias("MCC_GetNumOfFunctionParameters")));
+extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetFunctionReturnType(TypeInfo* ti)
+    __attribute__((alias("MCC_GetFunctionReturnType")));
+
+// for tuple
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfTypeInfoFields(TypeInfo* ti)
+    __attribute__((alias("MCC_GetNumOfTypeInfoFields")));
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetTypeInfoFields(TypeInfo* ti)
+    __attribute__((alias("MCC_GetTypeInfoFields")));
+extern "C" MRT_EXPORT ObjectRef CJ_MCC_NewAndInitObject(TypeInfo* ti, void* args)
+    __attribute__((alias("MCC_NewAndInitObject")));
+extern "C" MRT_EXPORT ArrayRef CJ_MCC_GetAssociatedValues(TypeInfo* ti)
+    __attribute__((alias("MCC_GetAssociatedValues")));
 
 extern "C" MRT_EXPORT U32 CJ_MCC_GetQualifiedNameLength(TypeInfo* ti)
     __attribute__((alias("MCC_GetQualifiedNameLength")));
