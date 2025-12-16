@@ -1917,7 +1917,7 @@ public func skip(count: Int64): ArrayList<T>
 
 参数：
 
-- count: [Int64](core_package_intrinsics.md#int64) - 要跳过的个数。
+- count: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 要跳过的个数。
 
 返回值：
 
@@ -2114,7 +2114,7 @@ public func step(count: Int64): ArrayList<T>
 
 参数：
 
-- count: [Int64](core_package_intrinsics.md#int64) - 选取的间隔
+- count: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 选取的间隔
 
 返回值：
 
@@ -2135,7 +2135,7 @@ public func take(count: Int64): ArrayList<T>
 
 参数：
 
-- count: [Int64](core_package_intrinsics.md#int64) - 要取出的个数。
+- count: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 要取出的个数。
 
 返回值：
 
@@ -9528,7 +9528,7 @@ public func skip(count: Int64): LinkedList<T>
 
 参数：
 
-- count: [Int64](core_package_intrinsics.md#int64) - 要跳过的个数。
+- count: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 要跳过的个数。
 
 返回值：
 
@@ -9649,7 +9649,7 @@ public func step(count: Int64): LinkedList<T>
 
 参数：
 
-- count: [Int64](core_package_intrinsics.md#int64) - 选取的间隔
+- count: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 选取的间隔
 
 返回值：
 
@@ -9670,7 +9670,7 @@ public func take(count: Int64): LinkedList<T>
 
 参数：
 
-- count: [Int64](core_package_intrinsics.md#int64) - 要取出的个数。
+- count: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 要取出的个数。
 
 返回值：
 
@@ -13291,7 +13291,7 @@ public func filter(predicate: (T) -> Bool): TreeSet<T>
 
 - [TreeSet](collection_package_class.md#class-treesett-where-t--comparablet)\<T> - 返回一个满足筛选条件的元素的新集合。
 
-### func filterMap\<R>((T) -> Option<R>)
+### func filterMap\<R>((T) -> Option\<R>)
 
 ```cangjie
 public func filterMap<R>(transform: (T) -> Option<R>): TreeSet<R> where R <: Comparable<R>
@@ -13301,7 +13301,7 @@ public func filterMap<R>(transform: (T) -> Option<R>): TreeSet<R> where R <: Com
 
 参数：
 
-- transform: (T) -> Option<R> - 给定的映射函数。函数返回值为 Some 对应 filter 的 predicate 为 true，反之表示 false。
+- transform: (T) -> Option\<R> - 给定的映射函数。函数返回值为 Some 对应 filter 的 predicate 为 true，反之表示 false。
 
 返回值：
 
