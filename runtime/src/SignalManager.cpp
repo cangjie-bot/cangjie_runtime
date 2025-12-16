@@ -27,10 +27,10 @@ namespace MapleRuntime {
 
 void SignalManager::Init()
 {
+#if !defined(__OHOS__) && !defined(__ANDROID__)
     PrepareSigStack();
     // Block some ignored signals
     BlockSignals();
-#if !defined(__OHOS__) && !defined(__ANDROID__)
     // Install unexpected handler first
     InstallUnexpectedSignalHandlers();
     // Install sigsegv handler
@@ -42,7 +42,9 @@ void SignalManager::Init()
 
 void SignalManager::Fini()
 {
+#if !defined(__OHOS__) && !defined(__ANDROID__)
     FreeSigStack();
+#endif
 }
 
 void SignalManager::PrepareSigStack()
