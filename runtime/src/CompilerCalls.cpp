@@ -1198,6 +1198,31 @@ extern "C" bool MCC_IsTuple(TypeInfo* ti) { return ti->IsTuple(); }
 
 extern "C" bool MCC_IsReflectUnsupportedType(TypeInfo* ti) { return ti->IsReflectUnsupportedType(); }
 
+// reflect support enum
+extern "C" U32 MCC_GetNumOfEnumConstructInfos(TypeInfo* ti)
+{
+    if (!ti->IsEnum()) {
+        return 0;
+    }
+    return ti->GetNumOfEnumCtor();
+}
+
+extern "C" TypeInfo* MCC_GetEnumConstructInfo(TypeInfo* ti, U32 idx)
+{
+    return ti->GetEnumCtor(idx);
+}
+
+extern "C" U32 MCC_GetEnumTag(ObjRef obj)
+{
+    struct EnumLayout {
+        TypeInfo* ti;
+        U32 tag;
+    };
+    CHECK_DETAIL(!(obj->GetTypeInfo()->IsEnum()), "To get Enum tag, but the type is not Enum.");
+    // todo, need barrier??
+    return reinterpret_cast<EnumLayout*>(obj)->tag;
+}
+
 // reflect support function
 extern "C" U32 MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
 {
@@ -1485,7 +1510,7 @@ extern "C" bool CJ_MCC_IsSubType(TypeInfo* typeInfo, TypeInfo* superTypeInfo)
     if (typeInfo == superTypeInfo) {
         return true;
     }
-    
+
     bool isSub = typeInfo->IsSubType(superTypeInfo);
     return isSub;
 }
