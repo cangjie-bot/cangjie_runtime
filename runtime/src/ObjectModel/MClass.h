@@ -439,7 +439,7 @@ public:
     inline U32 GetNumOfEnumCtor() const { return enumCtorInfoCnt; }
     inline U32 GetNumOfInstanceMethodInfos() const { return instanceMethodCnt; }
     inline U32 GetNumOfStaticMethodInfos() const { return staticMethodCnt; }
-    inline EnumCtorInfo* GetEnumCtor(U32 idx) const;
+    EnumCtorInfo* GetEnumCtor(U32 idx) const;
     inline TypeInfo* GetCtorTypeInfo(U32 idx) const;
     void* GetAnnotations(TypeInfo* arrayTi);
     MethodInfo* GetInstanceMethodInfo(U32 index) const;
@@ -614,6 +614,9 @@ public:
 
     U32 GetNumOfStaticFieldInfos();
     StaticFieldInfo* GetStaticFieldInfo(U32 index);
+
+    U32 GetNumOfEnumCtor();
+    TypeInfo* GetEnumCtor(U32 idx);
 
     PackageInfo* GetPackageInfo();
     void* GetAnnotations(TypeInfo* arrayTi);
