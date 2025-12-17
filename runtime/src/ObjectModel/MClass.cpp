@@ -860,6 +860,21 @@ MethodInfo* TypeInfo::GetStaticMethodInfo(U32 index)
     return GetReflectInfo()->GetStaticMethodInfo(index);
 }
 
+U32 TypeInfo::GetNumOfEnumCtor()
+{
+    CHECK_DETAIL(!IsEnum(), "To get the number of constructors, but the type is not Enum.");
+    if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
+        return 0;
+    }
+    return GetEnumInfo()->GetNumOfEnumCtor();
+}
+
+TypeInfo* TypeInfo::GetEnumCtor(U32 idx)
+{
+    CHECK_DETAIL(!IsEnum(), "To get the Enum's constructor, but the type is not Enum.");
+    return GetEnumInfo()->GetEnumCtor(idx)->GetTypeInfo();
+}
+
 void* TypeInfo::GetAnnotations(TypeInfo* arrayTi) { return GetReflectInfo()->GetAnnotations(arrayTi); }
 
 FuncRef TypeInfo::GetFinalizeMethod() const
@@ -900,6 +915,13 @@ bool TypeInfo::NeedRefresh()
 		return true;
 	}
 	return false;
+}
+
+EnumCtorInfo* EnumInfo::GetEnumCtor(U32 idx) const
+{
+    CHECK(idx < GetNumOfEnumCtor());
+    EnumCtorInfo* enumCtorInfo = enumCtorInfos.GetDataRef();
+    return enumCtorInfo + idx;
 }
 
 void EnumInfo::SetEnumCtors(void* ctors)
