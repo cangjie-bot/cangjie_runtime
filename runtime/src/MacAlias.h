@@ -252,6 +252,14 @@ __asm__(".global _CJ_MCC_GetFunctionParameters\n\t.set _CJ_MCC_GetFunctionParame
 extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetFunctionReturnType(TypeInfo* ti);
 __asm__(".global _CJ_MCC_GetFunctionReturnType\n\t.set _CJ_MCC_GetFunctionReturnType, _MCC_GetFunctionReturnType");
 
+// for enum
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfEnumConstructInfos(TypeInfo* ti);
+__asm__(".global _CJ_MCC_GetNumOfEnumConstructInfos\n\t.set _CJ_MCC_GetNumOfEnumConstructInfos, _MCC_GetNumOfEnumConstructInfos");
+extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetEnumConstructInfo(TypeInfo* ti, U32 idx);
+__asm__(".global _CJ_MCC_GetEnumConstructInfo\n\t.set _CJ_MCC_GetEnumConstructInfo, _MCC_GetEnumConstructInfo");
+extern "C" MRT_EXPORT U32 CJ_MCC_GetEnumTag(ObjRef obj);
+__asm__(".global _CJ_MCC_GetEnumTag\n\t.set _CJ_MCC_GetEnumTag, _MCC_GetEnumTag");
+
 // for tuple
 extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfTypeInfoFields(TypeInfo* ti);
 __asm__(".global _CJ_MCC_GetNumOfTypeInfoFields\n\t.set _CJ_MCC_GetNumOfTypeInfoFields, _MCC_GetNumOfTypeInfoFields");
