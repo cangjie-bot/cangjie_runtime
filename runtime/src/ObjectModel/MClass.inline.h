@@ -268,14 +268,6 @@ inline U32 TypeInfo::GetClassSize() const
 {
     return sizeof(TypeInfo);
 }
-
-inline EnumCtorInfo* EnumInfo::GetEnumCtor(U32 idx) const
-{
-    CHECK(idx < GetNumOfEnumCtor());
-    EnumCtorInfo* enumCtorInfo = enumCtorInfos.GetDataRef();
-    return enumCtorInfo + idx;
-}
-
 inline const char* GenericTypeInfo::GetSourceGenericName() { return tt->GetName(); }
 } // namespace MapleRuntime
 #endif // MRT_MCLASS_INLINE_H
