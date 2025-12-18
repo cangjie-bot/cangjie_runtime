@@ -1922,7 +1922,6 @@ main() {
 Key: 1, Value: First
 ```
 
-
 ## class ConcurrentHashMapIterator\<K, V> where K <: Hashable & Equatable\<K>
 
 ```cangjie
@@ -2872,7 +2871,7 @@ public init(capacity: Int64, elements: Array<E>)
 
 异常：
 
-- [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果 capacity 小于等于 0 或小于数组元素elements 的 size 则抛出异常。
+- [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果 capacity 小于等于 0 或小于数组元素 elements 的 size 则抛出异常。
 
 示例：
 
@@ -2922,7 +2921,7 @@ public init(capacity: Int64, elements: Collection<E>)
 
 异常：
 
-- [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果 capacity 小于等于 0 或小于迭代器元素elements 的 size 则抛出异常。
+- [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 如果 capacity 小于等于 0 或小于迭代器元素 elements 的 size 则抛出异常。
 
 示例：
 

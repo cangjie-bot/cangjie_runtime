@@ -1,4 +1,4 @@
-# Exception Classes
+# Exceptions
 
 ## class OvershiftException
 
