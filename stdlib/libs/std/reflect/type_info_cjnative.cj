@@ -21,7 +21,7 @@ class TypeTemplate {
     }
 
     static func get(typeinfoName: String): TypeTemplate {
-        let name = if (typeinfoName.contains(".")) {
+        let name = if (typeinfoName.contains(".") || typeinfoName.contains("/")) {
             unsafe { LibC.mallocCString(typeinfoName) }
         } else {
             unsafe { LibC.mallocCString("std.core." + typeinfoName) }
@@ -44,8 +44,12 @@ class TypeTemplateParser {
     var map = HashMap<String, CPointer<Unit>>()
     func parse(string: String): TypeInfo {
         let name = unsafe { string.rawData() }
-        parseGenericString(name, 0, name.size)
-        templates.reverse()
+        var idx = 0
+        while (idx < name.size && name[idx] != b'<') {
+            idx += 1
+        }
+        let templateName = String.fromUtf8(name[0..idx]).trimAscii()
+        parseGenericString(name, idx + 1, name.size, templateName)
         for (i in 0..templates.size) {
             let tt = templates[i]
             let template = TypeTemplate.get(tt)
@@ -54,12 +58,12 @@ class TypeTemplateParser {
             }
             let genericParams = ArrayList<CPointer<Unit>>(data[i].size) {
                 j =>
-                let typeStr = data[i][j]
-                if (typeStr.contains("<")) {
-                    map.get(typeStr) ?? throw InfoNotFoundException("TypeInfo `${typeStr}` not found.")
-                } else {
-                    TypeInfo.get(typeStr)._info
-                }
+                    let typeStr = data[i][j]
+                    if (typeStr.contains("<")) {
+                        map.get(typeStr) ?? throw InfoNotFoundException("TypeInfo `${typeStr}` not found.")
+                    } else {
+                        TypeInfo.get(typeStr)._info
+                    }
             }
             let info = getOrCreateTypeInfoForReflect(template.info, genericParams.toArray())
             if (info.isNull()) {
@@ -75,21 +79,20 @@ class TypeTemplateParser {
         throw InfoNotFoundException("Cannot find ${name.toString()}.")
     }
 
-    func parseGenericString(name: Array<Byte>, begin: Int64, end: Int64): Int64 {
+    func parseGenericString(name: Array<Byte>, begin: Int64, end: Int64, templateName: String): Int64 {
         if (begin >= end) {
             return end
         }
         var strs: ArrayList<String> = ArrayList<String>()
         var start = begin
-        var count = 0
         var idx = begin
         while (idx < end) {
             if (name[idx] == b'<') {
-                count += 1
-                templates.add(String.fromUtf8(name[start..idx]).trimAscii())
-                idx = parseGenericString(name, idx + 1, end)
+                let nestedTemplateName = String.fromUtf8(name[start..idx]).trimAscii()
+                idx = parseGenericString(name, idx + 1, end, nestedTemplateName)
             } else if (name[idx] == b'>') {
                 strs.add(String.fromUtf8(name[start..idx]).trimAscii())
+                templates.add(templateName)
                 data.add(strs)
                 return idx
             } else if (name[idx] == b',') {
@@ -102,8 +105,7 @@ class TypeTemplateParser {
     }
 }
 
-class InheritedAndExtendedMembers {
-}
+class InheritedAndExtendedMembers {}
 
 /**
  * Contains the reflective information that is common for classes, interfaces, structs and primitive types.
@@ -169,27 +171,36 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             let name = normalize(qualifiedName)
             return if (!name.contains("<")) {
                 let (realName, typeInfoPointer) = getInfoPointerByQualifiedName(name)
-                let newQualifiedName = realName.replace("std.core.", "")
+                let canonicalName = getQualifiedName(typeInfoPointer)
                 if (isGeneric(typeInfoPointer)) {
-                    createGenericTypeInfo(typeInfoPointer, newQualifiedName)
+                    createGenericTypeInfo(typeInfoPointer, canonicalName)
                 } else {
-                    createConcreteTypeInfo(typeInfoPointer, newQualifiedName)
+                    createConcreteTypeInfo(typeInfoPointer, canonicalName)
                 }
             } else {
-                TypeTemplateParser().parse(name.replace("std.core.", ""))
+                TypeTemplateParser().parse(stripStdCorePrefix(name))
             }
+        }
+    }
+
+    private static func stripStdCorePrefix(name: String): String {
+        let prefix = "std.core."
+        return if (name.startsWith(prefix)) {
+            name[prefix.size..]
+        } else {
+            name
         }
     }
 
     private static func normalize(qualifiedName: String): String {
         let (isPrimitive, _, _) = checkPrimitive(qualifiedName)
-        let hasPrefix = qualifiedName.contains(".")
-        let isGeneric = qualifiedName.contains("<")
-
         // 1. primitive type should use mangled name to find type
-        // 2. qualifiedName in std.core should omits prefix, but runtime need it, must complete qualifiedName here
-        let replacedName = qualifiedName.replace("::", "/")
+        // 2. qualifiedName in org::pkg.type should omits prefix, but runtime need it, must complete qualifiedName here
+        // 3. runtime use '/' to separate namespace, need replace '::' with '/'
+        let replacedName = qualifiedName.replace("::", "/") // replace org::pkg.type to org/pkg.type
         let stripedName = replacedName.replace(" ", "")
+        let hasPrefix = stripedName.contains(".") || stripedName.contains("/") // need add std.core. prefix
+        let isGeneric = qualifiedName.contains("<")
         match ((isPrimitive, hasPrefix, isGeneric)) {
             case (true, _, _) => unsafe { stripedName }
             case (_, _, true) => unsafe { parseGeneric(stripedName) }
@@ -204,7 +215,8 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             let typeInfoPointer = getTypeByQualifiedName(cstring.getChars())
             LibC.free(cstring)
             if (typeInfoPointer.isNull()) {
-                throw InfoNotFoundException("TypeInfo '${qualifiedName.replace("std.core.", "")}' not found.")
+                let displayName = stripStdCorePrefix(qualifiedName).replace("/", "::")
+                throw InfoNotFoundException("TypeInfo '${displayName}' not found.")
             }
             (qualifiedName, typeInfoPointer)
         }
@@ -292,15 +304,22 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             throw ReflectException("Unexpected empty qualifiedName.")
         }
 
-
-        let typeInfo = if(isPrimitive(typeInfoPointer)) {
+        let typeInfo = if (isPrimitive(typeInfoPointer)) {
             PrimitiveTypeInfo(typeInfoPointer, qualifiedName)
         } else if (isInterface(typeInfoPointer)) {
             InterfaceTypeInfo(typeInfoPointer)
+        } else if (isFunction(typeInfoPointer)) {
+            FunctionTypeInfo(typeInfoPointer)
         } else if (isClass(typeInfoPointer)) {
             ClassTypeInfo(typeInfoPointer)
+        } else if (isEnum(typeInfoPointer)) {
+            EnumTypeInfo(typeInfoPointer)
         } else if (isStruct(typeInfoPointer)) {
             StructTypeInfo(typeInfoPointer)
+        } else if (isTuple(typeInfoPointer)) {
+            TupleTypeInfo(typeInfoPointer)
+        } else if (isFunction(typeInfoPointer)) {
+            FunctionTypeInfo(typeInfoPointer)
         } else {
             throw ReflectException("Type \"${qualifiedName}\" is not supported.")
         }
@@ -370,7 +389,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
             }
         }
         formatted.add(qualifiedName[qualifiedName.size - 1])
-        String.fromUtf8(formatted.toArray()).replace("std.core.", "")
+        stripStdCorePrefix(String.fromUtf8(formatted.toArray()))
     }
 
     /**
@@ -558,7 +577,7 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
      */
     public func findAnnotation<T>(): ?T where T <: Annotation {
         findAnnotation<T>(annotations)
-   }
+    }
 
     public func findAllAnnotations<T>(): Array<T> where T <: Annotation {
         findAllAnnotations<T>(annotations)
@@ -592,11 +611,15 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         for (index in 0..Int64(num)) {
             let pointer = getInstanceMethodInfo(_info, UInt32(index))
             if (pointer.isNull()) {
-                throw InfoNotFoundException("TypeInfo find instance functions failed!")
+                throw InfoNotFoundException(
+                    "Failed to get instance functions for type `${qualifiedName}`: method info at index ${index} is null."
+                )
             }
             let name = getFuncName(pointer)
             if (name.isEmpty()) {
-                throw ReflectException("Unexpected empty instance func name.")
+                throw ReflectException(
+                    "Unexpected empty instance function name for type `${qualifiedName}` at index ${index}."
+                )
             }
             // prop func starts with $
             // need filter $toAny , which is generated by compiler
@@ -641,11 +664,15 @@ sealed abstract class TypeInfo <: Equatable<TypeInfo> & Hashable & ToString {
         for (index in 0..Int64(num)) {
             let pointer = getStaticMethodInfo(_info, UInt32(index))
             if (pointer.isNull()) {
-                throw InfoNotFoundException("TypeInfo find static functions failed!")
+                throw InfoNotFoundException(
+                    "Failed to get static functions for type `${qualifiedName}`: method info at index ${index} is null."
+                )
             }
             let name = getFuncName(pointer)
             if (name.isEmpty()) {
-                throw ReflectException("Unexpected empty static func name.")
+                throw ReflectException(
+                    "Unexpected empty static function name for type `${qualifiedName}` at index ${index}."
+                )
             }
             // prop func starts with $
             if (name.startsWith("$")) {
