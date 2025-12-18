@@ -63,7 +63,7 @@ main(): Unit {
     let outputSpec = ArgumentSpec.Long("output", ArgumentMode.RequiredValue)
     let verboseSpec = ArgumentSpec.Short(r'v', ArgumentMode.OptionalValue)
     
-    // 创建specs数组
+    // 创建 specs 数组
     let specs = [helpSpec, outputSpec, verboseSpec]
     
     // 创建参数数组

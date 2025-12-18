@@ -538,9 +538,9 @@ let foo = mock<Foo>()
 @On(foo.bar(argThat<Int64> { arg => arg > 0 })).returns(...)
 ```
 
-    > **注意：**
-    >
-    > 上例仅适用于 `mock object` 。`spy object` 的行为不同。
+> **注意：**
+>
+> 上例仅适用于 `mock object` 。`spy object` 的行为不同。
 
 <!-- code_no_check -->
 
@@ -1253,6 +1253,8 @@ public static func ordered(statements: Array<VerifyStatement>): Unit
 验证模式为 `exhaustive` (全量匹配，验证范围内的所有执行情况都应在验证动作中被指定)。
 
 举例来说:
+
+<!-- code_no_check -->
 
 ```cangjie
 for (i in 0..4) {

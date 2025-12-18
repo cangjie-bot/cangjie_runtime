@@ -79,7 +79,7 @@ Hierarchy
 | [SocketOptions](./net_package_api/net_package_structs.md#struct-socketoptions) | `SocketOptions` stores some parameter constants for setting socket options for subsequent calls. |
 | [SocketType](./net_package_api/net_package_structs.md#struct-sockettype) | Provides commonly used socket types and the functionality to construct socket types by specifying an `Int32` value. |
 
-### Exception Classes
+### Exceptions
 
 |              Exception Class Name          |           Functionality           |
 | ----------------------------------- | --------------------------------- |

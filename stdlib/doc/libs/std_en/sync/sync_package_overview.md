@@ -157,7 +157,7 @@ count: 5
 | ------------ | ------------ |
 | [ConditionID <sup>(deprecated)</sup>](./sync_package_api/sync_package_structs.md#struct-conditionid-deprecated) | Represents a condition variable for mutex locks. See [MultiConditionMonitor](./sync_package_api/sync_package_classes.md#class-multiconditionmonitor-deprecated). |
 
-### Exception Classes
+### Exceptions
 
 |  Exception | Function  |
 | ------------ | ------------ |

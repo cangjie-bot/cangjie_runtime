@@ -154,7 +154,7 @@ The Cangjie ast package provides `Macro With Context` related functions for obta
 | [WildcardExpr](./ast_package_api/ast_package_classes.md#class-wildcardexpr) | Represents a wildcard expression node. |
 | [WildcardPattern](./ast_package_api/ast_package_classes.md#class-wildcardpattern) | Represents a wildcard pattern node. |
 
-### Enumeration
+### Enums
 
 | Enumeration Name | Functionality |
 | --------------------------------- | ---------------------------------- |
@@ -169,7 +169,7 @@ The Cangjie ast package provides `Macro With Context` related functions for obta
 | [Position](./ast_package_api/ast_package_structs.md#struct-position) | Data structure representing position information, containing file ID, line number, and column number. |
 | [Token](./ast_package_api/ast_package_structs.md#struct-token) | Lexical unit type. |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class Name | Functionality |
 | --------------------------------- | ---------------------------------- |
