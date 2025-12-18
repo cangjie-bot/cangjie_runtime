@@ -54,11 +54,11 @@ public static func getExportedRef(handle: UInt64): ?ExportedRef
 
 参数:
 
- - handle: [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - [createExportHandle](#static-func-createexporthandleexportedref) 的返回值。
+- handle: [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - [createExportHandle](#static-func-createexporthandleexportedref) 的返回值。
 
- 返回值：
+返回值：
 
-  - ?[ExportedRef](#class-exportedref) - 如果 `handle` 有效，则返回 [ExportedRef](#class-exportedref) 对象，否则返回 `None`。
+- ?[ExportedRef](#class-exportedref) - 如果 `handle` 有效，则返回 [ExportedRef](#class-exportedref) 对象，否则返回 `None`。
 
 ### static func removeExportedRef(UInt64)
 
@@ -70,7 +70,7 @@ public static func removeExportedRef(handle: UInt64): Unit
 
 参数：
 
- - handle: [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - [createExportHandle](#static-func-createexporthandleexportedref) 的返回值。
+- handle: [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - [createExportHandle](#static-func-createexporthandleexportedref) 的返回值。
 
 ### static func crossAccessBarrier(UInt64)
 
@@ -82,7 +82,7 @@ public static func crossAccessBarrier(handle: UInt64): Unit
 
 参数：
 
- - handle: [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - [createExportHandle](#static-func-createexporthandleexportedref) 的返回值。
+- handle: [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - [createExportHandle](#static-func-createexporthandleexportedref) 的返回值。
 
 ### static func createExportHandle(ExportedRef)
 
@@ -94,8 +94,8 @@ public static func createExportHandle(ref: ExportedRef): UInt64
 
 参数：
 
- - ref: [ExportedRef](#class-exportedref) - 需要生成 `handle` 的对象实例。
+- ref: [ExportedRef](#class-exportedref) - 需要生成 `handle` 的对象实例。
 
 返回值：
 
- - [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - 为 [ExportedRef](#class-exportedref) 对象生成的 `handle`。
+- [UInt64](../../core/core_package_api/core_package_intrinsics.md#uint64) - 为 [ExportedRef](#class-exportedref) 对象生成的 `handle`。

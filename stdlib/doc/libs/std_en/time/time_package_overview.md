@@ -152,7 +152,7 @@ The representation range of different number types varies based on actual value 
 | [DateTime](./time_package_api/time_package_structs.md#struct-datetime) | `DateTime` represents a datetime, describing a specific point in time, and provides functionalities for reading, calculating, comparing, converting, serializing, and deserializing datetime based on time zones. |
 | [MonoTime](./time_package_api/time_package_structs.md#struct-monotime) | `MonoTime` represents monotonic time, a time type used to measure elapsed time, similar to a running stopwatch, and provides functionalities for obtaining current time, calculation, and comparison. |
 
-### Exception Classes
+### Exceptions
 
 |                 Exception Class Name              |                Functionality                |
 | ------------------------------------------------ | ------------------------------------------ |

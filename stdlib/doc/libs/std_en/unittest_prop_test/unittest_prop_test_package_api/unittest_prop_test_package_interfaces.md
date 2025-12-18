@@ -1,4 +1,4 @@
-# Interface
+# Interfaces
 
 ## interface ArbitraryRange\<T>
 

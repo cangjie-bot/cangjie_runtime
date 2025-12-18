@@ -1320,6 +1320,7 @@ main() {
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): ArrayList<T>
 ```
@@ -2104,6 +2105,7 @@ main() {
 ```
 
 ### func step(Int64)
+
 ```cangjie
 public func step(count: Int64): ArrayList<T>
 ```
@@ -2125,6 +2127,7 @@ public func step(count: Int64): ArrayList<T>
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 count <= 0 时，抛出异常。
 
 ### func take(Int64)
+
 ```cangjie
 public func take(count: Int64): ArrayList<T>
 ```
@@ -3993,7 +3996,6 @@ main() {
 字符串长度: 9
 ```
 
-
 ## class HashMap\<K, V> where K <: Hashable & Equatable\<K>
 
 ```cangjie
@@ -4683,6 +4685,7 @@ main() {
 ```
 
 ### func filter((K, V) -> Bool)
+
 ```cangjie
 public func filter(predicate: (K, V) -> Bool): HashMap<K, V>
 ```
@@ -6402,6 +6405,7 @@ main() {
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): HashSet<T>
 ```
@@ -8640,6 +8644,7 @@ public func clear(): Unit
 功能：删除链表中的所有元素。
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): LinkedList<T>
 ```
@@ -8946,6 +8951,7 @@ main() {
 使用for-in语法遍历:
 苹果 香蕉 橙子 葡萄 
 ```
+
 ### func map\<R>((T) -> R)
 
 ```cangjie
@@ -9639,6 +9645,7 @@ main() {
 ```
 
 ### func step(Int64)
+
 ```cangjie
 public func step(count: Int64): LinkedList<T>
 ```
@@ -9660,6 +9667,7 @@ public func step(count: Int64): LinkedList<T>
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 count <= 0 时，抛出异常。
 
 ### func take(Int64)
+
 ```cangjie
 public func take(count: Int64): LinkedList<T>
 ```
@@ -11270,6 +11278,7 @@ entryView用于提供对TreeMap中特定键值对的引用视图访问
 ```
 
 ### func filter((K, V) -> Bool)
+
 ```cangjie
 public func filter(predicate: (K, V) -> Bool): TreeMap<K, V>
 ```
@@ -13277,6 +13286,7 @@ main() {
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): TreeSet<T>
 ```

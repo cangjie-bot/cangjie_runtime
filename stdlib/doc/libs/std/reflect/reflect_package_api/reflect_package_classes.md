@@ -1128,7 +1128,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -2135,7 +2135,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -2708,7 +2708,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -3853,7 +3853,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -4652,7 +4652,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -5612,7 +5612,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -6256,6 +6256,7 @@ sealed子类型数量: 3
 子类型: Circle
 子类型: Square
 ```
+
 ### static func get(String)
 
 ```cangjie
@@ -6508,6 +6509,7 @@ main(): Unit {
 ```text
 全局变量数量: 2
 ```
+
 ### prop functions
 
 ```cangjie
@@ -6556,6 +6558,7 @@ main(): Unit {
 ```text
 全局函数数量: 2
 ```
+
 ### prop name
 
 ```cangjie
@@ -6802,6 +6805,7 @@ main(): Unit {
 ```text
 子包数量: 0
 ```
+
 ### prop typeInfos
 
 ```cangjie
@@ -6847,6 +6851,7 @@ main(): Unit {
 ```text
 类型数量: 3
 ```
+
 ### prop version
 
 ```cangjie
@@ -6961,7 +6966,7 @@ public static func load(path: String): PackageInfo
 
 - [ReflectException](reflect_package_exceptions.md#class-reflectexception) - 如果共享库加载失败，则会抛出异常。
 - [ReflectException](reflect_package_exceptions.md#class-reflectexception) - 如果具有相同包名称或相同文件名的共享库被重复加载，则会抛出异常。
-- [ReflectException](reflect_package_exceptions.md#class-reflectexception) - 如果动态库内部存在多个Package，则抛出异常。
+- [ReflectException](reflect_package_exceptions.md#class-reflectexception) - 如果动态库内部存在多个 Package，则抛出异常。
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当路径不合法时，抛出异常。
 
 示例：
@@ -7526,7 +7531,7 @@ public prop index: Int64
 > **注意：**
 >
 > - 不支持平台：macOS、iOS。
-> - `index` 从0开始计数。
+> - `index` 从 0 开始计数。
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
@@ -7682,7 +7687,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -8763,7 +8768,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -9426,7 +9431,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -10242,7 +10247,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -12030,7 +12035,7 @@ public func findAllAnnotations<T>(): Array<T> where T <: Annotation
 
 返回值：
 
-- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定T类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
+- [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<T> - 若无指定 T 类型的注解时，返回空数组；若有相关注解时，将所有该类型注解对象构成的数组返回。
 
 示例：
 
@@ -12086,7 +12091,7 @@ public func findAnnotation<T>(): ?T where T <: Annotation
 >
 > 不支持平台：macOS、iOS。
 
-返回值： 
+返回值：
 
 - ?T - 如果成功匹配则返回该注解，重复标注或者无法匹配时返回 `None`。
 
