@@ -98,7 +98,7 @@ The collection types provided by this package do not support concurrency safety.
 | [TreeMap\<K, V> where K <: Comparable\<K>](./collection_package_api/collection_package_class.md#class-treemapk-v-where-k--comparablek) | An implementation of the [Map\<K, V>](./collection_package_api/collection_package_interface.md#interface-mapk-v) interface based on a balanced binary search tree. |
 | [TreeSet\<T> where T <: Comparable\<T>](./collection_package_api/collection_package_class.md#class-treesett-where-t--comparablet) | An implementation of the [Set\<T>](./collection_package_api/collection_package_interface.md#interface-sett) interface based on [TreeMap\<K, V>](./collection_package_api/collection_package_class.md#class-treemapk-v-where-k--comparablek). |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class Name | Description |
 | ------------ | ------------ |

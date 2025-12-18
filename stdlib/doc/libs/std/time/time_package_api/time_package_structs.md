@@ -35,7 +35,7 @@ public struct DateTime <: ToString & Hashable & Comparable<DateTime> & Formattab
 public static prop UnixEpoch: DateTime
 ```
 
-功能：获取 Unix 时间纪元，即表示零时区 `1970年1月1日0时0分0秒0纳秒` 的 [DateTime](time_package_structs.md#struct-datetime) 实例。
+功能：获取 Unix 时间纪元，即表示零时区 `1970 年 1 月 1 日 0 时 0 分 0 秒 0 纳秒` 的 [DateTime](time_package_structs.md#struct-datetime) 实例。
 
 类型：[DateTime](time_package_structs.md#struct-datetime)
 

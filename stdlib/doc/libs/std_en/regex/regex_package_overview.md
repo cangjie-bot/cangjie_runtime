@@ -113,7 +113,7 @@ In Cangjie, there are some special rules:
 | [MatchData](./regex_package_api/regex_package_structs.md#struct-matchdata) | Stores regex matching results and provides query functions. |
 | [Position](./regex_package_api/regex_package_structs.md#struct-position) | Stores position information as a half-open interval. |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class Name | Function |
 | -------------------- | -------- |
