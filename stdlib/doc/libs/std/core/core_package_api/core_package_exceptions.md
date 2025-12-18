@@ -320,7 +320,6 @@ public open prop message: String
 
 类型：[String](core_package_structs.md#struct-string)
 
-
 示例：
 
 <!-- verify -->
@@ -499,7 +498,7 @@ main() {
 打印异常堆栈信息:
 An exception has occurred:
 Exception: 测试异常
-	 at default.main()(/path/path/temp_printStackTrace_example.cj:4)
+    at default.main()(/path/path/temp_printStackTrace_example.cj:4)
 ```
 
 ### func toString()
