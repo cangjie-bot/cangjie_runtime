@@ -46,7 +46,7 @@ Command-line arguments: Generally distinguished by whether they are prefixed wit
 |------------------------------------------------------------------------------------- | ------------------------ |
 | [ParsedArguments](./argopt_package_api/argopt_package_struct.md#struct-parsedarguments) | Argument parsing results. |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class Name | Functionality |
 | --------------------------------- | ---------------------------------- |
