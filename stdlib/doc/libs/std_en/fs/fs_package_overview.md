@@ -48,7 +48,7 @@ Currently supports Linux, macOS, and Windows platforms.
 | [FileInfo](./fs_package_api/fs_package_structs.md#struct-fileinfo) | Represents file metadata in the file system, providing functions for querying and setting file attributes. |
 | [Path](./fs_package_api/fs_package_structs.md#struct-path) | Provides path-related functions. |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class Name | Description |
 | --------------------------- | ------------------------ |
