@@ -34,7 +34,7 @@ The overflow package provides implementations of these interfaces for all intege
 | [WrappingOp](./overflow_package_api/overflow_package_interfaces.md#interface-wrappingopt) | Truncates higher bits beyond target type's bit width when overflow occurs. |
 | [WrappingPow](./overflow_package_api/overflow_package_interfaces.md#interface-wrappingpow) | Provides power operation interface using wrapping strategy. |
 
-### Exception Classes
+### Exceptions
 
 | Class Name | Functionality |
 | --------- | ------------ |
