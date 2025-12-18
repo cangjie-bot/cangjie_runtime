@@ -362,28 +362,28 @@ Assert Failed: `(foo(10, y: "test" + s) == foo(s.size, y: s) + bar(a))`
 
 1. 单个 `@Tag` 在测试函数上。
 
-<!-- code_no_check -->
-```cangjie
-@Tag[Unittest]
-func test() {}
-```
+    <!-- code_no_check -->
+    ```cangjie
+    @Tag[Unittest]
+    func test() {}
+    ```
 
 2. 单个 `@Tag` 包含多个标签名，用逗号分隔。
 
-<!-- code_no_check -->
-```cangjie
-@Tag[Unittest, TestAuthor]
-func test() {}
-```
+    <!-- code_no_check -->
+    ```cangjie
+    @Tag[Unittest, TestAuthor]
+    func test() {}
+    ```
 
 3. 多个 `@Tag` 在测试函数上。
 
-<!-- code_no_check -->
-```cangjie
-@Tag[Smoke]
-@Tag[Backend, JiraTask3271]
-func test() {}
-```
+    <!-- code_no_check -->
+    ```cangjie
+    @Tag[Smoke]
+    @Tag[Backend, JiraTask3271]
+    func test() {}
+    ```
 
 ### 规则与约束
 

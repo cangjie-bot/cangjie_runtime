@@ -6256,6 +6256,7 @@ sealed子类型数量: 3
 子类型: Circle
 子类型: Square
 ```
+
 ### static func get(String)
 
 ```cangjie
@@ -6508,6 +6509,7 @@ main(): Unit {
 ```text
 全局变量数量: 2
 ```
+
 ### prop functions
 
 ```cangjie
@@ -6556,6 +6558,7 @@ main(): Unit {
 ```text
 全局函数数量: 2
 ```
+
 ### prop name
 
 ```cangjie
@@ -6802,6 +6805,7 @@ main(): Unit {
 ```text
 子包数量: 0
 ```
+
 ### prop typeInfos
 
 ```cangjie
@@ -6847,6 +6851,7 @@ main(): Unit {
 ```text
 类型数量: 3
 ```
+
 ### prop version
 
 ```cangjie
@@ -12086,7 +12091,7 @@ public func findAnnotation<T>(): ?T where T <: Annotation
 >
 > 不支持平台：macOS、iOS。
 
-返回值： 
+返回值：
 
 - ?T - 如果成功匹配则返回该注解，重复标注或者无法匹配时返回 `None`。
 

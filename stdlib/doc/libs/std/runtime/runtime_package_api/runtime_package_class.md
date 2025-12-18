@@ -24,7 +24,6 @@ public class Signal <: ToString {
 >
 > 不支持平台：Windows。
 
-
 ### static const SIGALRM
 
 ```cangjie

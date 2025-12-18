@@ -292,7 +292,6 @@ public static func isEmpty(path: String): Bool
 - [FSException](fs_package_exceptions.md#class-fsexception) - 如果指定路径不存在、指定路径不是目录或判断过程中底层接口发生错误，则抛出异常。
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当指定路径为空或包含空字符时，抛出异常。
 
-
 示例：
 
 <!-- verify -->

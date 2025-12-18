@@ -193,7 +193,6 @@ Note: DriverManager.register() may throw SqlException
 if a driver with the same name is already registered.
 ```
 
-
 ## class PooledDatasource
 
 ```cangjie
@@ -1669,7 +1668,6 @@ main() {
 Created SqlDate with value: 2012-01-01T00:00:00Z
 SqlDate name: SqlDate
 ```
-
 
 ## class SqlDecimal <sup>(deprecated)</sup>
 
@@ -4066,7 +4064,6 @@ Created SqlNullableTime with value: Some(2012-01-01T00:00:00Z)
 Created SqlNullableTime with value: None
 ```
 
-
 ## class SqlNullableTimestamp <sup>(deprecated)</sup>
 
 ```cangjie
@@ -5269,7 +5266,6 @@ public static const URL: String = "url"
 
 类型：[String](../../core/core_package_api/core_package_structs.md#struct-string)
 
-
 示例：
 
 <!-- verify -->
@@ -5682,7 +5678,6 @@ main() {
 ```text
 Created SqlTime with value: 2012-01-01T00:00:00Z
 ```
-
 
 ## class SqlTimestamp <sup>(deprecated)</sup>
 

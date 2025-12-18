@@ -1922,7 +1922,6 @@ main() {
 Key: 1, Value: First
 ```
 
-
 ## class ConcurrentHashMapIterator\<K, V> where K <: Hashable & Equatable\<K>
 
 ```cangjie

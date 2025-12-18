@@ -516,7 +516,7 @@ Possible Execution Result:
 Printing exception stack trace:
 An exception has occurred:
 Exception: Test exception
-	 at default.main()(/path/path/temp_printStackTrace_example.cj:4)
+    at default.main()(/path/path/temp_printStackTrace_example.cj:4)
 ```
 
 ### func toString()
@@ -551,7 +551,8 @@ Execution Result:
 ```text
 Default exception string: Exception
 Exception with message string: Exception: Custom exception message
-``````markdown
+```
+
 ## class IllegalArgumentException
 
 ```cangjie

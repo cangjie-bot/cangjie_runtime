@@ -483,6 +483,7 @@ After partial fill: [1, -1, -1, -1, 5]
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): Array<T> 
 ```
@@ -780,6 +781,7 @@ Reversed string array: [Cangjie, World, Hello]
 ```
 
 ### func skip(Int64)
+
 ```cangjie
 public func skip(count: Int64): Array<T>
 ```
@@ -914,6 +916,7 @@ Right slice: [3, 4, 5]
 ```
 
 ### func step(Int64)
+
 ```cangjie
 public func step(count: Int64): Array<T>
 ```
@@ -983,6 +986,7 @@ After swapping index 2 with itself: [1, 4, 3, 2, 5]
 ```
 
 ### func take(Int64)
+
 ```cangjie
 public func take(count: Int64): Array<T>
 ```
@@ -2174,7 +2178,7 @@ main() {
     let arr1 = [1, 2, 3, 4, 5]
     let arr2 = [1, 2, 3, 4, 5]
     let arr3 = [1, 2, 3, 4, 6]
-    let arr4 = [1, 2, 3]```markdown
+    let arr4 = [1, 2, 3]
     println("Array 1: ${arr1}")
     println("Array 2: ${arr2}")
     println("Array 3: ${arr3}")
@@ -2300,7 +2304,7 @@ String array 3: [Hello, Cangjie]
 strArr1 == strArr2: true
 strArr1 == strArr3: false
 ```
-    
+
 ### extend\<T> Array\<T> where T <: ToString
 
 ```cangjie
@@ -5616,7 +5620,10 @@ main() {
 Output:
 
 ```text
-Range hash code: -198835925178762## struct String
+Range hash code: -198835925178762
+```
+
+## struct String
 
 ```cangjie
 public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToString {
@@ -6660,11 +6667,11 @@ Output:
 ```text
 String 1: '', is ASCII blank: true
 String 2: '   ', is ASCII blank: true
-String 3: '	
+String 3: ' 
 
 ', is ASCII blank: true
 String 4: 'Hello', is ASCII blank: false
-String 5: ' 	
+String 5: '  
 
  ', is ASCII blank: true
 ```
@@ -7539,6 +7546,7 @@ public func split(str: String, maxSplits: Int64, removeEmpty!: Bool = false): Ar
 Function: Splits the string with a maximum split count and optional empty entry removal.
 
 Special cases:
+
 - maxSplit = 0: Returns empty array
 - maxSplit = 1: Returns original string
 - Negative maxSplit: Performs complete split
@@ -8024,13 +8032,13 @@ Execution result:
 ```text
 Original string 1: '  Hello, World  '
 Trimmed string 1: 'Hello, World'
-Original string 2: '	
+Original string 2: ' 
  Hello, 世界 
 '
 Trimmed string 2: 'Hello, 世界'
 Original string 3: 'Hello'
 Trimmed string 3: 'Hello'
-Original string 4: '   	
+Original string 4: '    
 
   '
 Trimmed string 4: ''
@@ -8086,13 +8094,13 @@ Execution result:
 ```text
 Original string 1: 'Hello, World  '
 Trimmed end string 1: 'Hello, World'
-Original string 2: 'Hello, 世界	
+Original string 2: 'Hello, 世界 
 
 '
 Trimmed end string 2: 'Hello, 世界'
 Original string 3: 'Hello'
 Trimmed end string 3: 'Hello'
-Original string 4: '   	
+Original string 4: '    
 
   '
 Trimmed end string 4: ''
@@ -8148,13 +8156,13 @@ Execution result:
 ```text
 Original string 1: '  Hello, World'
 Trimmed start string 1: 'Hello, World'
-Original string 2: '	
+Original string 2: ' 
 
 Hello, 世界'
 Trimmed start string 2: 'Hello, 世界'
 Original string 3: 'Hello'
 Trimmed start string 3: 'Hello'
-Original string 4: '   	
+Original string 4: '    
 
   '
 Trimmed start string 4: ''
