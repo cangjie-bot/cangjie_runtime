@@ -516,7 +516,7 @@ public func reserve(additional: Int64): Unit
 
 功能：增加此双端队列的容量。
 
-将双端队列扩容 additional 大小，当 additional 小于等于零时，不发生扩容；当此双端队列剩余容量大于等于 additional 时，不发生扩容；当此双端队列剩余容量小于 additional 时，取（原始容量的1.5倍向下取整）与（additional + 已使用容量）两个值中的最大值进行扩容。
+将双端队列扩容 additional 大小，当 additional 小于等于零时，不发生扩容；当此双端队列剩余容量大于等于 additional 时，不发生扩容；当此双端队列剩余容量小于 additional 时，取（原始容量的 1.5 倍向下取整）与（additional + 已使用容量）两个值中的最大值进行扩容。
 
 参数：
 
@@ -1383,6 +1383,7 @@ main() {
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): ArrayList<T>
 ```
@@ -2176,7 +2177,7 @@ public func reserve(additional: Int64): Unit
 
 功能：增加此 [ArrayList](collection_package_class.md#class-arraylistt) 实例的容量。
 
-将 [ArrayList](collection_package_class.md#class-arraylistt) 扩容 additional 大小，当 additional 小于等于零时，不发生扩容；当 [ArrayList](collection_package_class.md#class-arraylistt) 剩余容量大于等于 additional 时，不发生扩容；当 [ArrayList](collection_package_class.md#class-arraylistt) 剩余容量小于 additional 时，取（原始容量的1.5倍向下取整）与（additional + 已使用容量）两个值中的最大值进行扩容。
+将 [ArrayList](collection_package_class.md#class-arraylistt) 扩容 additional 大小，当 additional 小于等于零时，不发生扩容；当 [ArrayList](collection_package_class.md#class-arraylistt) 剩余容量大于等于 additional 时，不发生扩容；当 [ArrayList](collection_package_class.md#class-arraylistt) 剩余容量小于 additional 时，取（原始容量的 1.5 倍向下取整）与（additional + 已使用容量）两个值中的最大值进行扩容。
 
 参数：
 
@@ -2491,6 +2492,7 @@ main() {
 ```
 
 ### func step(Int64)
+
 ```cangjie
 public func step(count: Int64): ArrayList<T>
 ```
@@ -2538,6 +2540,7 @@ main() {
 ```
 
 ### func take(Int64)
+
 ```cangjie
 public func take(count: Int64): ArrayList<T>
 ```
@@ -4506,7 +4509,6 @@ main() {
 字符串长度: 9
 ```
 
-
 ## class HashMap\<K, V> where K <: Hashable & Equatable\<K>
 
 ```cangjie
@@ -5268,6 +5270,7 @@ main() {
 ```
 
 ### func filter((K, V) -> Bool)
+
 ```cangjie
 public func filter(predicate: (K, V) -> Bool): HashMap<K, V>
 ```
@@ -5953,7 +5956,7 @@ public func reserve(additional: Int64): Unit
 
 功能：扩容当前的[HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek)。
 
-将 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) 扩容 additional 大小当 additional 小于等于零时，不发生扩容；当 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) 剩余容量大于等于 additional 时，不发生扩容；当 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) 剩余容量小于 additional 时，取（原始容量的1.5倍向下取整）与（additional + 已使用容量）中的最大值进行扩容。
+将 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) 扩容 additional 大小当 additional 小于等于零时，不发生扩容；当 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) 剩余容量大于等于 additional 时，不发生扩容；当 [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) 剩余容量小于 additional 时，取（原始容量的 1.5 倍向下取整）与（additional + 已使用容量）中的最大值进行扩容。
 
 参数：
 
@@ -7203,6 +7206,7 @@ main() {
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): HashSet<T>
 ```
@@ -7349,7 +7353,7 @@ main() {
         }
     }
 
-    // 使用for-in循环遍历（内部使用iterator）
+    // 使用 for-in 循环遍历（内部使用 iterator）
     println("\n使用for-in循环遍历:")
     for (element in set) {
         println("- ${element}")
@@ -7661,7 +7665,7 @@ main() {
 public func reserve(additional: Int64): Unit
 ```
 
-功能：将 [HashSet](collection_package_class.md#class-hashsett-where-t--hashable--equatablet) 扩容 additional 大小，当 additional 小于等于零时，不发生扩容；当 [HashSet](collection_package_class.md#class-hashsett-where-t--hashable--equatablet) 剩余容量大于等于 additional 时，不发生扩容；当 [HashSet](collection_package_class.md#class-hashsett-where-t--hashable--equatablet) 剩余容量小于 additional 时，取（原始容量的1.5倍向下取整）与（additional + 已使用容量）中的最大值进行扩容。
+功能：将 [HashSet](collection_package_class.md#class-hashsett-where-t--hashable--equatablet) 扩容 additional 大小，当 additional 小于等于零时，不发生扩容；当 [HashSet](collection_package_class.md#class-hashsett-where-t--hashable--equatablet) 剩余容量大于等于 additional 时，不发生扩容；当 [HashSet](collection_package_class.md#class-hashsett-where-t--hashable--equatablet) 剩余容量小于 additional 时，取（原始容量的 1.5 倍向下取整）与（additional + 已使用容量）中的最大值进行扩容。
 
 参数：
 
@@ -9441,6 +9445,7 @@ public func clear(): Unit
 功能：删除链表中的所有元素。
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): LinkedList<T>
 ```
@@ -9569,7 +9574,7 @@ main() {
     if (let Some(node) <- middleNode) {
         println("从节点值 ${node.value} 开始向前遍历:")
 
-        // 使用forward方法从中间节点向后遍历到尾部
+        // 使用 forward 方法从中间节点向后遍历到尾部
         let iterator = list.forward(node)
         for (element in iterator) {
             print("${element} ")
@@ -9725,7 +9730,7 @@ main() {
     println("第一个元素: ${list.first}")
     println("最后一个元素: ${list.last}")
 
-    // 使用for-in语法（内部也使用iterator()）
+    // 使用 for-in 语法（内部也使用 iterator()）
     println("使用for-in语法遍历:")
     for (fruit in list) {
         print("${fruit} ")
@@ -9747,6 +9752,7 @@ main() {
 使用for-in语法遍历:
 苹果 香蕉 橙子 葡萄 
 ```
+
 ### func map\<R>((T) -> R)
 
 ```cangjie
@@ -10440,6 +10446,7 @@ main() {
 ```
 
 ### func step(Int64)
+
 ```cangjie
 public func step(count: Int64): LinkedList<T>
 ```
@@ -10461,6 +10468,7 @@ public func step(count: Int64): LinkedList<T>
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - 当 count <= 0 时，抛出异常。
 
 ### func take(Int64)
+
 ```cangjie
 public func take(count: Int64): LinkedList<T>
 ```
@@ -12075,6 +12083,7 @@ entryView用于提供对TreeMap中特定键值对的引用视图访问
 ```
 
 ### func filter((K, V) -> Bool)
+
 ```cangjie
 public func filter(predicate: (K, V) -> Bool): TreeMap<K, V>
 ```
@@ -12368,7 +12377,7 @@ main() {
         println("${key}: ${value}")
     }
 
-    // 使用for-in循环自动遍历（内部使用iterator）
+    // 使用 for-in 循环自动遍历（内部使用 iterator）
     println("\n使用for-in循环遍历:")
     for ((key, value) in map) {
         println("${key}: ${value}")
@@ -14082,6 +14091,7 @@ main() {
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): TreeSet<T>
 ```
