@@ -31,7 +31,7 @@ This package offers cross-platform unified operation capabilities, currently sup
 | --------------------------- | ------------------------ |
 | [ProcessRedirect](./process_package_api/process_package_enums.md#enum-processredirect) | Used to set the redirection mode of child process standard streams when creating a process. |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class Name | Description |
 | --------------------------- | ------------------------ |

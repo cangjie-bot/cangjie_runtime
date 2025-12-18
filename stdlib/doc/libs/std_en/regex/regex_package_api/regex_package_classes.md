@@ -1,4 +1,4 @@
-# Class
+# Classes
 
 ## class Matcher <sup>(deprecated)</sup>
 

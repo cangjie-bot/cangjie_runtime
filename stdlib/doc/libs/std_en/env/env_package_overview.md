@@ -46,7 +46,7 @@ In Unix/Linux systems, standard input, standard output, and standard error corre
 | [removeVariable()](./env_package_api/env_package_funcs.md#func-removevariablestring) | Removes an environment variable by its specified name. |
 | [setVariable()](./env_package_api/env_package_funcs.md#func-setvariablestring-string) | Sets an environment variable pair for the current process. |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class | Functionality |
 | --------------------------- | ------------------------ |

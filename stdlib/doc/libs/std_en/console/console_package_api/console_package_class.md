@@ -1,4 +1,4 @@
-# Class
+# Classes
 
 ## class Console <sup>(deprecated)</sup>
 

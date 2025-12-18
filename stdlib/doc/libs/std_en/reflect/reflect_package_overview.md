@@ -55,7 +55,7 @@ This package currently does not support macOS platform.
 |-----------------------------------------------------------------------------------------------------------------------------------------------| ------------------------ |
 | [ModifierInfo](./reflect_package_api/reflect_package_enums.md#enum-modifierinfo) | Describes modifier information. |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class Name                                                                                                                      | Functionality                                                |
 |---------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
