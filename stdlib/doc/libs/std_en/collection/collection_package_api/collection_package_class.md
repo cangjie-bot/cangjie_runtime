@@ -1,4 +1,4 @@
-# Class
+# Classes
 
 ## class ArrayDeque\<T>
 
@@ -1320,6 +1320,7 @@ Cloned list remains unchanged: [1, 2, 3]
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): ArrayList<T>
 ```
@@ -2104,6 +2105,7 @@ After stable sorting: [4, 3, 2, 1]
 ```
 
 ### func step(Int64)
+
 ```cangjie
 public func step(count: Int64): ArrayList<T>
 ```
@@ -2125,6 +2127,7 @@ Exceptions:
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - Thrown when count <= 0.
 
 ### func take(Int64)
+
 ```cangjie
 public func take(count: Int64): ArrayList<T>
 ```
@@ -3247,6 +3250,7 @@ public func reserve(additional: Int64): Unit
 Function: Increases the capacity of this queue.
 
 Expands the queue by additional size. No expansion occurs when:
+
 1. additional ≤ 0
 2. Remaining capacity ≥ additional
 When expansion is needed, the new capacity will be the maximum between:
@@ -4837,6 +4841,7 @@ Modified value for key 'key1': 150
 ```
 
 ### func filter((K, V) -> Bool)
+
 ```cangjie
 public func filter(predicate: (K, V) -> Bool): HashMap<K, V>
 ```
@@ -5311,10 +5316,12 @@ public func reserve(additional: Int64): Unit
 Function: Expands the current [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek).
 
 Expands the [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) by the specified `additional` size. No expansion occurs if:
+
 - `additional` ≤ 0
 - The remaining capacity of [HashMap](collection_package_class.md#class-hashmapk-v-where-k--hashable--equatablek) ≥ `additional`
 
 When expansion is needed, the new capacity is set to the maximum of:
+
 1. Original capacity × 1.5 (rounded down)
 2. `additional` + used capacity
 
@@ -6135,6 +6142,7 @@ Parameters:
 Returns:
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if all elements satisfy the condition; otherwise, returns false.
+
 ### func any((T) -> Bool)
 
 ```cangjie
@@ -6417,6 +6425,7 @@ Contains all elements from the other HashSet
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): HashSet<T>
 ```
@@ -8858,6 +8867,7 @@ public func clear(): Unit
 Function: Removes all elements from the linked list.
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): LinkedList<T>
 ```
@@ -9852,6 +9862,7 @@ Last element of original list: 2
 ```
 
 ### func step(Int64)
+
 ```cangjie
 public func step(count: Int64): LinkedList<T>
 ```
@@ -9873,6 +9884,7 @@ Exceptions:
 - [IllegalArgumentException](../../core/core_package_api/core_package_exceptions.md#class-illegalargumentexception) - Thrown when count <= 0.
 
 ### func take(Int64)
+
 ```cangjie
 public func take(count: Int64): LinkedList<T>
 ```
@@ -11284,6 +11296,7 @@ entryView provides reference view access to specific key-value pairs in TreeMap
 ```
 
 ### func filter((K, V) -> Bool)
+
 ```cangjie
 public func filter(predicate: (K, V) -> Bool): TreeMap<K, V>
 ```
@@ -13291,6 +13304,7 @@ Contains all ['fig', 'grape']: false
 ```
 
 ### func filter((T) -> Bool)
+
 ```cangjie
 public func filter(predicate: (T) -> Bool): TreeSet<T>
 ```
@@ -13410,8 +13424,7 @@ Forward traversal from cherry (inclusive):
 Forward traversal from cherry (exclusive):
   date
   elderberry
-```Here is the professional translation of the provided Markdown content from Chinese to English, maintaining all structural and formatting elements:
-
+```
 
 ### func isEmpty()
 
