@@ -1,4 +1,4 @@
-# Class
+# Classes
 
 ## class BufferedInputStream\<T> where T <: InputStream
 

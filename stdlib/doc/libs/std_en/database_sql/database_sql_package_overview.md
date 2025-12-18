@@ -107,7 +107,7 @@ The following table shows the correspondence between SQL data types and Cangjie 
 | [TransactionDeferrableMode](./database_sql_package_api/database_sql_package_enums.md#enum-transactiondeferrablemode) | Deferrable mode for transactions.                           |
 | [TransactionIsoLevel](./database_sql_package_api/database_sql_package_enums.md#enum-transactionisolevel) | Defines when and how the results of operations in one transaction become visible to concurrent transactions in a database system. |
 
-### Exception Classes
+### Exceptions
 
 | Exception Class Name                                         | Functionality                |
 | ------------------------------------------------------------ | ---------------------------- |
