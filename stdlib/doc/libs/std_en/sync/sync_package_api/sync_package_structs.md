@@ -1,4 +1,4 @@
-# Struct
+# Structs
 
 ## struct ConditionID <sup>(deprecated)</sup>
 

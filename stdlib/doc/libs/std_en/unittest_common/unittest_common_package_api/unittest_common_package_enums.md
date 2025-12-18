@@ -1,4 +1,4 @@
-# Enumeration
+# Enums
 
 ## enum Color
 

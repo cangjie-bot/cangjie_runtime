@@ -44,7 +44,7 @@ I/O operations refer to data exchange operations between programs and external d
 | ---------------------------------- | ------------------------------- |
 | [SeekPosition](./io_package_api/io_package_enums.md#enum-seekposition) | Input stream interface. |
 
-### Exception Classes
+### Exceptions
 
 |              Exception Class Name         |           Functionality         |
 | ---------------------------------- | ------------------------------- |
