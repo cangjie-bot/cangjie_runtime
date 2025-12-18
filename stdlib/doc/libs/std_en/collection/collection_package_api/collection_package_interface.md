@@ -463,8 +463,8 @@ Type: K
 public mut prop value: ?V
 ```
 
-Function: Reads or modifies the value corresponding to the view in the original map.  
-When setting a non-null value, if the view's value does not exist, a new element will be added to the original map corresponding to this view.  
+Function: Reads or modifies the value corresponding to the view in the original map.
+When setting a non-null value, if the view's value does not exist, a new element will be added to the original map corresponding to this view.
 When set to `None`, the current Entry will be deleted. After deletion, the view can still be used.
 
 Type: ?V
@@ -1132,4 +1132,5 @@ Description: Removes and returns the top element of the stack.
 Returns:
 
 - ?T - The removed top element. Returns `None` if the stack is empty.
+
 ```
