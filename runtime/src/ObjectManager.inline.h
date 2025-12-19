@@ -44,8 +44,7 @@ inline ObjRef ObjectManager::NewObjectAndInit(const TypeInfo* ti, MSize size, vo
         U32 offset = ti->GetFieldOffset(idx);
         Uptr argAddr = reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE + offset;
         if (argType->IsRef()) {
-            auto arg = Heap::GetBarrier().ReadReference(argObj, argObj->GetRefField(TYPEINFO_PTR_SIZE));
-            obj->StoreRef(offset + TYPEINFO_PTR_SIZE, static_cast<ObjRef>(arg));
+            obj->StoreRef(offset + TYPEINFO_PTR_SIZE, argObj);
         } else if (argType->IsStruct() || argType->IsTuple()) {
             MSize argSize = argType->GetInstanceSize();
             void* tmp = malloc(argSize);
