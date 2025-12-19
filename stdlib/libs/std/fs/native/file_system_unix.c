@@ -429,6 +429,9 @@ extern int64_t CJ_FS_DirGetData(const char* path, uint8_t* buffer, int64_t buffe
         return -1;
     }
     int64_t index = 0;
+    // return value of previous call CJ_FS_DirGetNumber
+    // UInt8 name_size + UInt8 file_type + UInt8[256] filename
+    int64_t cnt = bufferLen / 258;
     struct dirent* dirInfo = NULL;
     while ((dirInfo = readdir(dirPtr)) != NULL) {
         if ((strcmp(".", dirInfo->d_name) == 0) || (strcmp("..", dirInfo->d_name) == 0)) {
@@ -445,6 +448,10 @@ extern int64_t CJ_FS_DirGetData(const char* path, uint8_t* buffer, int64_t buffe
             return -1;
         }
         index += (int64_t)nameLen;
+        cnt--;
+        if (cnt <= 0) {
+            break;
+        }
     }
     (void)closedir(dirPtr);
     return index;

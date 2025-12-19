@@ -349,6 +349,9 @@ static int64_t GetSubDatas(const char* path, uint8_t* buffer, int64_t bufferLen)
     free((void*)conv);
     HANDLE hFind = FindFirstFileW(dirPath, &fileData);
     int64_t index = 0;
+    // return value of previous call CJ_FS_DirGetNumber
+    // UInt8 name_size + UInt8 file_type + UInt8[256] filename
+    int64_t cnt = bufferLen / 258;
 
     if (hFind == INVALID_HANDLE_VALUE) {
         return -1;
@@ -366,6 +369,10 @@ static int64_t GetSubDatas(const char* path, uint8_t* buffer, int64_t bufferLen)
         }
         buffer[index + TYPE_OFFSET] = FileType(fileData.dwFileAttributes);
         index += buffer[index] + PATH_OFFSET;
+        cnt--;
+        if (cnt <= 0) {
+            break;
+        }
     } while (FindNextFileW(hFind, &fileData));
 
     int errCode = GetLastError();
