@@ -1288,13 +1288,14 @@ extern "C" ObjRef MCC_NewAndInitObject(const TypeInfo* ti, void* args) {
     MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     return ObjectManager::NewObjectAndInit(ti, size, args);
 }
-extern "C" ArrayRef MCC_GetAssociatedValues(ObjRef tupleObj) {
+extern "C" ObjRef MCC_GetAssociatedValues(ObjRef tupleObj, TypeInfo* arrayTi) {
     // 先从obj里取出ti
     TypeInfo* ti = tupleObj->GetTypeInfo();
     // 从ti中获取fields、offsets
     U16 fieldNum = ti->GetFieldNum();
     // 创建一个ArrayRef
-    ArrayRef array = ObjectManager::NewArray(fieldNum, ti);
+    TypeInfo* rawArrayTi = arrayTi->GetFieldType(0);
+    ArrayRef array = ObjectManager::NewArray(fieldNum, rawArrayTi);
     // 根据fields、offsets把一个一个元素实例取出来并放到ArrayRef里，返回ArrayRef
     for (int idx = 0; idx < fieldNum; idx++) {
         TypeInfo* fieldTi = ti->GetFieldType(idx);
@@ -1339,7 +1340,14 @@ extern "C" ArrayRef MCC_GetAssociatedValues(ObjRef tupleObj) {
         }
         array->SetRefElement(idx, obj);
     }
-    return array;
+    U32 size = arrayTi->GetInstanceSize();
+    MSize arrayObjSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+    ObjRef arrayObj = ObjectManager::NewObject(arrayTi, arrayObjSize, AllocType::RAW_POINTER_OBJECT);
+    Heap::GetBarrier().WriteReference(arrayObj, arrayObj->GetRefField(TYPEINFO_PTR_SIZE), static_cast<BaseObject*>(array));
+    CJArray* cjArray = reinterpret_cast<CJArray*>(reinterpret_cast<Uptr>(arrayObj) + TYPEINFO_PTR_SIZE);
+    cjArray->start = 0;
+    cjArray->length = fieldNum;
+    return arrayObj;
 }
 
 // @deprecated
