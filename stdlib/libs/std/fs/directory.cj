@@ -234,7 +234,11 @@ public class Directory {
      * @throws FSException if get number of obtain members in the directory failed
      */
     private static func getSubData(path: String): (Array<Byte>, Int64) {
-        let arr = Array<Byte>((256 + 2) * size(path), repeat: 0) // UInt8 name_size + UInt8 file_type + UInt8[256]
+        let subFilesSize = size(path)
+        if (subFilesSize == 0) {
+            return (Array<Byte>(), 0)
+        }
+        let arr = Array<Byte>((256 + 2) * subFilesSize, repeat: 0) // UInt8 name_size + UInt8 file_type + UInt8[256]
         unsafe {
             let cPath = LibC.mallocCString(path)
             let arrPtr: CPointerHandle<Byte> = acquireArrayRawData(arr)
