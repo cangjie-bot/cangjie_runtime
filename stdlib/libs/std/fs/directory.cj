@@ -106,21 +106,40 @@ public class Directory {
         readFrom(Path(path))
     }
 
+    /*
+     * @throws FSException if the input path is not a directory.
+     * @throws FSException if get handle of the directory failed.
+     */
     public static func walk(path: Path, f: (FileInfo) -> Bool): Unit {
         let absPath = checkDirectoryPath(path)
-        let (subData, subSize) = getSubData(absPath.toString())
-        var pos = 0
-        while (pos < subSize) {
-            try {
-                let len = Int64(subData[pos])
-                let name = String.fromUtf8(subData.slice(pos + 2, len))
-                pos = pos + len + 2
-                let fullPathName = String.join([absPath.toString(), name], delimiter: SLASH_STRING)
-                if (!f(FileInfo(Path(fullPathName), false))) {
-                    return
-                }
-            } catch (e: Exception) {
-                throw FSException("Failed to get file info: ${e.message}.")
+        let absPathStr = absPath.toString()
+
+        func walkFuncWrapper(cstr: CString): Bool {
+            let fileName = cstr.toString()
+            unsafe { LibC.free(cstr) }
+            let fullPathName = String.join([absPathStr, fileName], delimiter: SLASH_STRING)
+            f(FileInfo(Path(fullPathName), false))
+        }
+
+        var dirHandle: UIntNative = 0
+        let cPath = unsafe { LibC.mallocCString(absPathStr) }
+        let firstFile = unsafe { CJ_FS_GetDirHandleAndFirstFile(cPath, inout dirHandle) }
+        unsafe { LibC.free(cPath) }
+        if (dirHandle == 0) {
+            throw FSException("Failed to obtain members in the directory `${path}`.")
+        }
+
+        // firstFile only has value on windows
+        if (!firstFile.isNull() && !walkFuncWrapper(firstFile)) {
+            unsafe { CJ_FS_CloseDirHandle(dirHandle) }
+            return
+        }
+    
+        while (true) {
+            let cstr = unsafe { CJ_FS_ReadDirHandle(dirHandle) }
+            if (cstr.isNull() || !walkFuncWrapper(cstr)) {
+                unsafe { CJ_FS_CloseDirHandle(dirHandle) }
+                return
             }
         }
     }
@@ -253,7 +272,7 @@ public class Directory {
             releaseArrayRawData(arrPtr)
             LibC.free(cPath)
             if (ret < 0) {
-                throw FSException("Failed to obtain members in the directory.")
+                throw FSException("Failed to obtain members in the directory `${path}`.")
             } else if (ret == 0) {
                 return (Array<Byte>(), 0)
             } else {
@@ -271,7 +290,7 @@ public class Directory {
             let ret: Int64 = CJ_FS_DirGetNumber(cPath)
             LibC.free(cPath)
             if (ret < 0) {
-                throw FSException("Failed to get number of subFiles in directory.")
+                throw FSException("Failed to get number of subFiles in directory `${pathStr}`.")
             }
             return ret
         }
