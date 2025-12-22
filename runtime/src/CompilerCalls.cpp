@@ -1192,7 +1192,16 @@ extern "C" bool MCC_IsGeneric(TypeInfo* ti) { return ti->IsGeneric(); }
 // todo, how about temp enum?
 extern "C" bool MCC_IsEnum(TypeInfo* ti) { return ti->IsEnum(); }
 
-extern "C" bool MCC_IsFunction(TypeInfo* ti) { return ti->IsFunc(); }
+extern "C" bool MCC_IsFunction(TypeInfo* ti) {
+    if (ti->IsFunc()) {
+        return true;
+    }
+    auto super = ti->GetSuperTypeInfo();
+    if (super == nullptr) {
+        return false;
+    }
+    return super->IsFunc();
+}
 
 extern "C" bool MCC_IsTuple(TypeInfo* ti) { return ti->IsTuple(); }
 
@@ -1226,17 +1235,19 @@ extern "C" U32 MCC_GetEnumTag(ObjRef obj)
 // reflect support function
 extern "C" U32 MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
 {
-    if (!funcTi->IsFunc()) {
-        return 0;
-    }
+    TypeInfo* ti = nullptr;
     auto super = funcTi->GetSuperTypeInfo();
-    if (!super || !super->IsFunc()) {
+    if (funcTi->IsFunc()) {
+        ti = funcTi;
+    } else if (super != nullptr && super->IsFunc()) {
+        ti = super;
+    } else {
         return 0;
     }
 
     // Now, `super` both are Closure type.
     // Get function type from Closure type, i.e., typeArgs[0]:
-    TypeInfo* funcType = super->GetTypeArgs()[0];
+    TypeInfo* funcType = ti->GetTypeArgs()[0];
     U16 typeArgNum = funcType->GetTypeArgNum();
 
     return typeArgNum - 1;
@@ -1244,17 +1255,19 @@ extern "C" U32 MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
 
 extern "C" TypeInfo** MCC_GetFunctionParameters(TypeInfo* funcTi)
 {
-    if (!funcTi->IsFunc()) {
-        return nullptr;
-    }
+    TypeInfo* ti = nullptr;
     auto super = funcTi->GetSuperTypeInfo();
-    if (!super || !super->IsFunc()) {
+    if (funcTi->IsFunc()) {
+        ti = funcTi;
+    } else if (super != nullptr && super->IsFunc()) {
+        ti = super;
+    } else {
         return nullptr;
     }
 
     // Now, `super` both are Closure type.
     // Get function type from Closure type, i.e., typeArgs[0]:
-    TypeInfo* funcType = super->GetTypeArgs()[0];
+    TypeInfo* funcType = ti->GetTypeArgs()[0];
 
     TypeInfo** params = funcType->GetTypeArgs() + 1;
     return params;
@@ -1262,17 +1275,19 @@ extern "C" TypeInfo** MCC_GetFunctionParameters(TypeInfo* funcTi)
 
 extern "C" TypeInfo* MCC_GetFunctionReturnType(TypeInfo* funcTi)
 {
-    if (!funcTi->IsFunc()) {
-        return nullptr;
-    }
+    TypeInfo* ti = nullptr;
     auto super = funcTi->GetSuperTypeInfo();
-    if (!super || !super->IsFunc()) {
+    if (funcTi->IsFunc()) {
+        ti = funcTi;
+    } else if (super != nullptr && super->IsFunc()) {
+        ti = super;
+    } else {
         return nullptr;
     }
 
     // Now, `super` both are Closure type.
     // Get function type from Closure type, i.e., typeArgs[0]:
-    TypeInfo* funcType = super->GetTypeArgs()[0];
+    TypeInfo* funcType = ti->GetTypeArgs()[0];
 
     return funcType->GetTypeArgs()[0];
 }
