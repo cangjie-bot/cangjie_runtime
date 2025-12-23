@@ -1017,7 +1017,7 @@ public class AtomicReference<T> where T <: Object {
     @Frozen
     @Deprecated[message: "Use `public func load(): T` instead."]
     public func load(memoryOrder!: MemoryOrder): T {
-        load<AtomicReference<T>, T>(this, DefaultMemoryOrder)
+        load<AtomicReference<T>, T>(this, memoryOrder)
     }
 
     @Frozen
@@ -1028,7 +1028,7 @@ public class AtomicReference<T> where T <: Object {
     @Frozen
     @Deprecated[message: "Use `public func store(val: T): Unit` instead."]
     public func store(val: T, memoryOrder!: MemoryOrder): Unit {
-        store<AtomicReference<T>, T>(this, val, DefaultMemoryOrder)
+        store<AtomicReference<T>, T>(this, val, memoryOrder)
     }
 
     @Frozen
@@ -1039,7 +1039,7 @@ public class AtomicReference<T> where T <: Object {
     @Frozen
     @Deprecated[message: "Use `public func swap(val: T): T` instead."]
     public func swap(val: T, memoryOrder!: MemoryOrder): T {
-        swap<AtomicReference<T>, T>(this, val, DefaultMemoryOrder)
+        swap<AtomicReference<T>, T>(this, val, memoryOrder)
     }
 
     @Frozen
@@ -1050,7 +1050,7 @@ public class AtomicReference<T> where T <: Object {
     @Frozen
     @Deprecated[message: "Use `public func compareAndSwap(old: T, new: T): Bool` instead."]
     public func compareAndSwap(old: T, new: T, successOrder!: MemoryOrder, failureOrder!: MemoryOrder): Bool {
-        return compareAndSwap<AtomicReference<T>, T>(this, old, new, DefaultMemoryOrder, DefaultMemoryOrder)
+        return compareAndSwap<AtomicReference<T>, T>(this, old, new, successOrder, failureOrder)
     }
 }
 
@@ -1089,7 +1089,7 @@ public class AtomicOptionReference<T> where T <: Object {
     @Frozen
     @Deprecated[message: "Use `public func load(): Option<T>` instead."]
     public func load(memoryOrder!: MemoryOrder): Option<T> {
-        load<AtomicOptionReference<T>, Option<T>>(this, DefaultMemoryOrder)
+        load<AtomicOptionReference<T>, Option<T>>(this, memoryOrder)
     }
 
     /**
@@ -1106,7 +1106,7 @@ public class AtomicOptionReference<T> where T <: Object {
     @Frozen
     @Deprecated[message: "Use `public func store(val: Option<T>): Unit` instead."]
     public func store(val: Option<T>, memoryOrder!: MemoryOrder): Unit {
-        store<AtomicOptionReference<T>, Option<T>>(this, val, DefaultMemoryOrder)
+        store<AtomicOptionReference<T>, Option<T>>(this, val, memoryOrder)
     }
 
     /**
@@ -1125,7 +1125,7 @@ public class AtomicOptionReference<T> where T <: Object {
     @Frozen
     @Deprecated[message: "Use `public func swap(val: Option<T>): Option<T>` instead."]
     public func swap(val: Option<T>, memoryOrder!: MemoryOrder): Option<T> {
-        swap<AtomicOptionReference<T>, Option<T>>(this, val, DefaultMemoryOrder)
+        swap<AtomicOptionReference<T>, Option<T>>(this, val, memoryOrder)
     }
 
     /**
@@ -1173,8 +1173,8 @@ public class AtomicOptionReference<T> where T <: Object {
                 case Some(v) => Option<Object>.Some(v)
                 case _ => Option<Object>.None
             },
-            DefaultMemoryOrder,
-            DefaultMemoryOrder
+            successOrder,
+            failureOrder
         )
     }
 }
