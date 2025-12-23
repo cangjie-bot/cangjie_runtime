@@ -23,7 +23,7 @@ foreign func CJ_CONSOLE_Flush(fd: Int32): Unit
 
 @Deprecated[message: "This class migrate to the std.env."]
 public class ConsoleWriter <: OutputStream {
-    private let mutex: ReentrantMutex = ReentrantMutex()
+    private let mutex: Mutex = Mutex()
 
     /* Write buffer size is 512 bytes */
     private let bufferSize: Int64 = 512
