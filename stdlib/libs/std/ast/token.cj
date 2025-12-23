@@ -13,8 +13,8 @@ public struct Token <: ToBytes {
          Fields
      */
     public let kind: TokenKind
-    public let value: String
     public let pos: Position
+    public let value: String
     public var delimiterNum: UInt16 = 1 // Delimiter r'#' number for raw string.
     protected var isSingleQuote = false
 

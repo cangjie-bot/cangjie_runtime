@@ -10,9 +10,9 @@ package std.ast
 
 public struct Position <: ToBytes {
     /* Fields */
+    public let column: Int32
     public let fileID: UInt32
     public let line: Int32
-    public let column: Int32
 
     /* Constructors */
 
