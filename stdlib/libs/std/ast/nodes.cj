@@ -1265,7 +1265,11 @@ public class PackageHeader <: Node {
 }
 
 public enum ImportKind <: ToString {
-    Single | Alias | All | Multi
+    | Single
+    | Alias
+    | All
+    | Multi
+    | ...
 
     public func toString(): String {
         return match (this) {
@@ -1273,6 +1277,7 @@ public enum ImportKind <: ToString {
             case Alias => "Alias"
             case All => "All"
             case Multi => "Multi"
+            case _ => throw ASTException("Invalid ImportKind")
         }
     }
 }
