@@ -199,12 +199,7 @@ func bind(): Unit
 ## interface StreamingSocket
 
 ```cangjie
-public interface StreamingSocket <: IOStream & Resource & ToString {
-    prop localAddress: SocketAddress
-    prop remoteAddress: SocketAddress
-    mut prop readTimeout: ?Duration
-    mut prop writeTimeout: ?Duration
-}
+public interface StreamingSocket <: IOStream & Resource & ToString {}
 ```
 
 功能：双工流模式下的运行的 `Socket`，可被读写。

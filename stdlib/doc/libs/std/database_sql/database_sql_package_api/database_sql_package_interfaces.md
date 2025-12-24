@@ -4,12 +4,12 @@
 
 ```cangjie
 public interface ColumnInfo {
-    prop displaySize: Int64
-    prop length: Int64
     prop name: String
-    prop nullable: Bool
-    prop scale: Int64
     prop typeName: String
+    prop length: Int64
+    prop scale: Int64
+    prop nullable: Bool
+    prop displaySize: Int64
 }
 ```
 
@@ -89,9 +89,9 @@ prop typeName: String
 ```cangjie
 public interface Connection <: Resource {
     prop state: ConnectionState
-    func createTransaction(): Transaction
     func getMetaData(): Map<String, String>
     func prepareStatement(sql: String): Statement
+    func createTransaction(): Transaction
 }
 ```
 
@@ -165,8 +165,8 @@ func prepareStatement(sql: String): Statement
 
 ```cangjie
 public interface Datasource <: Resource {
-    func connect(): Connection
     func setOption(key: String, value: String): Unit
+    func connect(): Connection
 }
 ```
 
@@ -208,8 +208,8 @@ func setOption(key: String, value: String): Unit
 ```cangjie
 public interface Driver {
     prop name: String
-    prop preferredPooling: Bool
     prop version: String
+    prop preferredPooling: Bool
     func open(connectionString: String, opts: Array<(String, String)>): Datasource
 }
 ```
@@ -402,7 +402,7 @@ prop name: String
 ## interface SqlNullableDbType <sup>(deprecated)</sup>
 
 ```cangjie
-public interface SqlNullableDbType <: SqlDbType
+public interface SqlNullableDbType <: SqlDbType {}
 ```
 
 功能：允许 `null` 值的 sql 数据类型父类。

@@ -2164,8 +2164,8 @@ public operator func !=(rhs: SocketAddress): Bool
 
 ```cangjie
 public class TcpServerSocket <: ServerSocket {
-    public init(bindAt!: SocketAddress)
     public init(bindAt!: UInt16)
+    public init(bindAt!: SocketAddress)
 }
 ```
 
@@ -2629,7 +2629,7 @@ public mut prop quickAcknowledge: Bool
 ### prop readTimeout
 
 ```cangjie
-public override mut prop readTimeout: ?Duration
+public mut override prop readTimeout: ?Duration
 ```
 
 功能：设置和读取读操作超时时间。
@@ -2689,7 +2689,7 @@ public mut prop sendBufferSize: Int64
 ### prop writeTimeout
 
 ```cangjie
-public override mut prop writeTimeout: ?Duration
+public mut override prop writeTimeout: ?Duration
 ```
 
 功能：设置和读取写操作超时时间。
@@ -3001,7 +3001,7 @@ public override func write(payload: Array<Byte>): Unit
 ### operator func !=(TcpSocket)
 
 ```cangjie
-public override operator func !=(other: TcpSocket): Bool
+public operator override func !=(other: TcpSocket): Bool
 ```
 
 功能：判断两个 [TcpSocket](net_package_classes.md#class-tcpsocket) 实例是否不等。
@@ -3017,7 +3017,7 @@ public override operator func !=(other: TcpSocket): Bool
 ### operator func ==(TcpSocket)
 
 ```cangjie
-public override operator func ==(other: TcpSocket): Bool
+public operator override func ==(other: TcpSocket): Bool
 ```
 
 功能：判断两个 [TcpSocket](net_package_classes.md#class-tcpsocket) 实例是否相等。
@@ -3034,8 +3034,8 @@ public override operator func ==(other: TcpSocket): Bool
 
 ```cangjie
 public class UdpSocket <: DatagramSocket {
-    public init(bindAt!: SocketAddress)
     public init(bindAt!: UInt16)
+    public init(bindAt!: SocketAddress)
 }
 ```
 
@@ -3080,7 +3080,7 @@ public mut prop receiveBufferSize: Int64
 ### prop receiveTimeout
 
 ```cangjie
-public override mut prop receiveTimeout: ?Duration
+public mut override prop receiveTimeout: ?Duration
 ```
 
 功能：设置和读取 `receive/receiveFrom` 操作超时时间。
@@ -3477,8 +3477,8 @@ public override func toString(): String
 
 ```cangjie
 public class UnixDatagramSocket <: DatagramSocket {
-    public init(bindAt!: SocketAddress)
     public init(bindAt!: String)
+    public init(bindAt!: SocketAddress)
 }
 ```
 
@@ -3528,7 +3528,7 @@ public mut prop receiveBufferSize: Int64
 ### prop receiveTimeout
 
 ```cangjie
-public override mut prop receiveTimeout: ?Duration
+public mut override prop receiveTimeout: ?Duration
 ```
 
 功能：设置和读取 `receive/receiveFrom` 操作超时时间。
