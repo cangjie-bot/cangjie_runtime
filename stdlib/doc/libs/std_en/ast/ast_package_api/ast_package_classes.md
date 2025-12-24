@@ -4,8 +4,8 @@
 
 ```cangjie
 public class Annotation <: Node {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -223,8 +223,8 @@ Parameters:
 
 ```cangjie
 public class ArrayLiteral <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -326,8 +326,8 @@ Parameters:
 
 ```cangjie
 public class AsExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -425,8 +425,8 @@ Parameters:
 
 ```cangjie
 public class AssignExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -524,8 +524,8 @@ Parameters:
 
 ```cangjie
 public class BinaryExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -709,8 +709,8 @@ Parameters:
 
 ```cangjie
 public class Body <: Node {
-    public init()
     public init(decls: ArrayList<Decl>)
+    public init()
 }
 ```
 
@@ -806,8 +806,8 @@ Parameters:
 
 ```cangjie
 public class CallExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -919,8 +919,8 @@ Parameters:
 
 ```cangjie
 public class ClassDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -1032,8 +1032,8 @@ Parameters:
 
 ```cangjie
 public class CommandTypePattern <: Pattern {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -1104,12 +1104,36 @@ Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) — Thrown if the input tokens cannot be parsed into a valid `CommandTypePattern` node.
 
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
+
 ## class ConstPattern
 
 ```cangjie
 public class ConstPattern <: Pattern {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -1292,7 +1316,7 @@ Parameters:
 ## class Decl
 
 ```cangjie
-public open class Decl <: Node
+public open class Decl <: Node {}
 ```
 
 Function: The parent class of all declaration nodes, inheriting from the [Node](ast_package_classes.md#class-node) class, providing common interfaces for all declaration nodes.
@@ -1305,10 +1329,20 @@ Parent Type:
 
 - [Node](#class-node)
 
+### var annotations_
+
+```cangjie
+protected var annotations_: ArrayList<Annotation> = ArrayList<Annotation>()
+```
+
+Function: Gets or sets the list of annotations applied to the [Decl](ast_package_classes.md#class-decl) node.
+
+Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Annotation](ast_package_classes.md#class-annotation)>
+
 ### var identifier_
 
 ```cangjie
-protected var identifier_: Token
+protected var identifier_: Token = Token()
 ```
 
 Function: Gets or sets the identifier of the declaration node, such as `foo` in `class foo {}`.
@@ -1318,7 +1352,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 ### var keyword_
 
 ```cangjie
-protected var keyword_: Token
+protected var keyword_: Token = Token()
 ```
 
 Function: Gets or sets the keyword of the declaration node.
@@ -1328,7 +1362,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 ### var modifiers_
 
 ```cangjie
-protected var modifiers_: ArrayList<Modifier>
+protected var modifiers_: ArrayList<Modifier> = ArrayList<Modifier>()
 ```
 
 Function: Gets or sets the modifier list of the node.
@@ -1338,7 +1372,7 @@ Type: [ArrayList](../../collection/collection_package_api/collection_package_cla
 ### var node
 
 ```cangjie
-protected var node: Node
+protected var node: Node = Expr()
 ```
 
 Function: Gets or sets the parameter node of the [Decl](ast_package_classes.md#class-decl) node.
@@ -1486,7 +1520,7 @@ Return Value:
 ### func toTokens()
 
 ```cangjie
-public func toTokens(): Tokens
+public open func toTokens(): Tokens
 ```
 
 Function: Converts the current syntax tree node into the [Tokens](ast_package_classes.md#class-tokens) type.
@@ -1498,7 +1532,7 @@ Return Value:
 ### func traverse(Visitor)
 
 ```cangjie
-public func traverse(v: Visitor): Unit
+public open func traverse(v: Visitor): Unit
 ```
 
 Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
@@ -1511,8 +1545,8 @@ Parameters:
 
 ```cangjie
 public class DoWhileExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -1650,8 +1684,8 @@ Parameters:
 
 ```cangjie
 public class EnumDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -1815,8 +1849,8 @@ Parameters:
 
 ```cangjie
 public class EnumPattern <: Pattern {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -1942,8 +1976,8 @@ Parameters:
 
 ```cangjie
 public class ExceptTypePattern <: Pattern {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -2040,7 +2074,7 @@ Parameters:
 ## class Expr
 
 ```cangjie
-public open class Expr <: Node
+public open class Expr <: Node {}
 ```
 
 Function: The parent class of all expression nodes, inheriting from the [Node](ast_package_classes.md#class-node) node.
@@ -2077,12 +2111,12 @@ Function: Returns the precedence of the current expression node.
 
 Return Value:
 
-- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
+- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) -The precedence of the current expression node.
 
 ### func toTokens()
 
 ```cangjie
-public func toTokens(): Tokens
+public open func toTokens(): Tokens
 ```
 
 Function: Converts the current syntax tree node to the [Tokens](ast_package_classes.md#class-tokens) type.
@@ -2094,7 +2128,7 @@ Return Value:
 ### func traverse(Visitor)
 
 ```cangjie
-public func traverse(v: Visitor): Unit
+public open func traverse(v: Visitor): Unit
 ```
 
 Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
@@ -2107,8 +2141,8 @@ Parameters:
 
 ```cangjie
 public class ExtendDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -2240,12 +2274,164 @@ Parameters:
 
 - v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
 
+## class FeatureId
+
+```cangjie
+public class FeatureId <: Node {
+    public init()
+}
+```
+
+Function: Represents a feature name node.
+
+> **Note:**
+>
+> Feature identifier consists of usual identifiers which separe by dots. Feature name can not be escaped by backticks.
+
+Parent Type:
+
+- [Node](#class-node)
+
+### prop dots
+
+Function: Gets or sets the lexical unit sequence of the dots separating identifiers in the feature name in the [FeatureId](ast_package_classes.md#class-featureid) node. For example, the two "." in `features { user.define.sample }`.
+
+Type: [Tokens](ast_package_classes.md#class-tokens)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "." lexical units.
+
+### prop identifiers
+
+Function: Gets of sets the identifiers of the [FeatureId](ast_package_classes.md#class-featureid) node.
+
+Type: [Tokens](ast_package_classes.md#class-tokens)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Tokens](ast_package_classes.md#class-tokens) is not a sequence of "IDENTIFIER" lexical units.
+
+### init()
+
+```cangjie
+public init()
+```
+
+Function: Constructs a default [FeatureId](ast_package_classes.md#class-featureid) object.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Returns:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
+
+## class FeaturesDirective
+
+```cangjie
+public class FeaturesDirective <: Node {
+    public init(inputs: Tokens)
+    public init()
+}
+```
+
+Function: Represents a features directive node.
+
+> **Note:**
+>
+> Features directive declaration must start with keyword `features`, and must appear before the package header of the source file.
+
+Parent Type:
+
+- [Node](#class-node)
+
+### prop keyword
+
+```cangjie
+public mut prop keyword: Token
+```
+
+Function: Gets or sets the `features` keyword lexical unit in the [FeaturesDirective](ast_package_classes.md#class-featuresdirective) node.
+
+Type: [Token](ast_package_structs.md#struct-token)
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the set [Token](ast_package_structs.md#struct-token) is not the `features` keyword.
+
+### init()
+
+```cangjie
+public init()
+```
+
+Function: Constructs a default [FeaturesDirective](ast_package_classes.md#class-featuresdirective) object.
+
+### init(Tokens)
+
+```cangjie
+public init(inputs: Tokens)
+```
+
+Function: Constructs a [FeaturesDirective](ast_package_classes.md#class-featuresdirective) object.
+
+Parameters:
+
+- inputs: [Tokens](ast_package_classes.md#class-tokens) - The lexical unit collection ([Tokens](ast_package_classes.md#class-tokens)) sequence used to construct the [PackageHeader](ast_package_classes.md#class-featuresdirective) type.
+
+Exceptions:
+
+- [ASTException](ast_package_exceptions.md#class-astexception) - Thrown when the input [Tokens](ast_package_classes.md#class-tokens) type cannot be constructed as a [PackageHeader](ast_package_classes.md#class-featuresdirective) node.
+
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
+
+Returns:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of the [Visitor](ast_package_classes.md#class-visitor) type.
+
+
 ## class ForInExpr
 
 ```cangjie
 public class ForInExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -2423,8 +2609,8 @@ Parameters:
 
 ```cangjie
 public class FuncDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -2586,8 +2772,8 @@ Parameters:
 
 ```cangjie
 public open class FuncParam <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -2720,7 +2906,7 @@ Return Value:
 ### func toTokens()
 
 ```cangjie
-public func toTokens(): Tokens
+public open func toTokens(): Tokens
 ```
 
 Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
@@ -2732,7 +2918,7 @@ Return Value:
 ### func traverse(Visitor)
 
 ```cangjie
-public func traverse(v: Visitor): Unit
+public open func traverse(v: Visitor): Unit
 ```
 
 Purpose: Traverses the current syntax tree node and its child nodes. To terminate traversal early, override the `visit` function and call `breakTraverse` to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
@@ -2745,8 +2931,8 @@ Parameters:
 
 ```cangjie
 public class FuncType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -3010,8 +3196,8 @@ Parameters:
 
 ```cangjie
 public class GenericParam <: Node {
-    public init()
     public init(parameters: Tokens)
+    public init()
 }
 ```
 
@@ -3125,8 +3311,8 @@ An example of a [Handler](ast_package_classes.md#class-handler) node:
 
 ```cangjie
 public class IfExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -3283,6 +3469,8 @@ public class ImportContent <: Node {
     public init()
 }
 ```
+
+Function: Represents the specific declaration content of a package import statement node, such as `pkg.a.b` in import `pkg.a.b`.
 
 Parent Type:
 
@@ -3478,8 +3666,8 @@ Parameters:
 
 ```cangjie
 public class ImportList <: Node {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -3589,8 +3777,8 @@ Parameters:
 
 ```cangjie
 public class IncOrDecExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -3672,8 +3860,8 @@ Parameters:
 
 ```cangjie
 public class InterfaceDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -3785,8 +3973,8 @@ Parameters:
 
 ```cangjie
 public class IsExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -3884,8 +4072,8 @@ Parameters:
 
 ```cangjie
 public class JumpExpr <: Expr {
-    public init()
     public init(kind: Tokens)
+    public init()
 }
 ```
 
@@ -3957,8 +4145,8 @@ Parameters:
 
 ```cangjie
 public class LambdaExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -4084,8 +4272,8 @@ Parameters:
 
 ```cangjie
 public class LetPatternExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -4197,8 +4385,8 @@ Parameters:
 
 ```cangjie
 public class LitConstExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -4272,8 +4460,8 @@ Parameters:
 
 ```cangjie
 public class MacroDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -4413,8 +4601,8 @@ Parameters:
 
 ```cangjie
 public class MacroExpandDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -4578,8 +4766,8 @@ Parameters:
 
 ```cangjie
 public class MacroExpandExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -4890,7 +5078,7 @@ Parameters:
 ## class MacroMessage
 
 ```cangjie
-public class MacroMessage
+public class MacroMessage {}
 ```
 
 Function: Records messages sent by inner macros.
@@ -4995,8 +5183,8 @@ Return Value:
 
 ```cangjie
 public class MainDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -5293,8 +5481,8 @@ Parameters:
 
 ```cangjie
 public class MatchExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -5452,8 +5640,8 @@ Parameters:
 
 ```cangjie
 public class MemberAccess <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -5603,8 +5791,8 @@ Parameters:
 
 ```cangjie
 public class Modifier <: Node {
-    public init()
     public init(keyword: Token)
+    public init()
 }
 ```
 
@@ -5673,7 +5861,7 @@ Parameters:
 ## class Node
 
 ```cangjie
-abstract sealed class Node <: ToTokens
+abstract sealed class Node <: ToTokens {}
 ```
 
 Function: The parent class of all Cangjie syntax tree nodes.
@@ -5748,8 +5936,8 @@ Parameters:
 
 ```cangjie
 public class OptionalExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -5837,8 +6025,8 @@ Parameters:
 
 ```cangjie
 public class PackageHeader <: Node {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -5978,8 +6166,8 @@ Parameters:
 
 ```cangjie
 public class ParenExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -6081,8 +6269,8 @@ Parameters:
 
 ```cangjie
 public class ParenType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -6183,7 +6371,7 @@ Parameters:
 ## class Pattern
 
 ```cangjie
-public open class Pattern <: Node
+public open class Pattern <: Node {}
 ```
 
 Function: The parent class of all pattern matching nodes, inherits from the [Node](ast_package_classes.md#class-node) class.
@@ -6211,7 +6399,7 @@ Return Value:
 ### func toTokens()
 
 ```cangjie
-public func toTokens(): Tokens
+public open func toTokens(): Tokens
 ```
 
 Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
@@ -6223,7 +6411,7 @@ Return Value:
 ### func traverse(Visitor)
 
 ```cangjie
-public func traverse(v: Visitor): Unit
+public open func traverse(v: Visitor): Unit
 ```
 
 Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
@@ -6236,8 +6424,8 @@ Parameters:
 
 ```cangjie
 public class PerformExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -6297,12 +6485,36 @@ Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) — Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be parsed into a [PerformExpr](ast_package_classes.md#class-performexpr) node.
 
+### func toTokens()
+
+```cangjie
+public open func toTokens(): Tokens
+```
+
+Function: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted [Tokens](ast_package_classes.md#class-tokens) type node.
+
+### func traverse(Visitor)
+
+```cangjie
+public open func traverse(v: Visitor): Unit
+```
+
+Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to stop traversal. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
+
 ## class PrefixType
 
 ```cangjie
 public class PrefixType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -6386,8 +6598,8 @@ Parameters:
 
 ```cangjie
 public class PrimaryCtorDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -6511,8 +6723,8 @@ Parameters:
 
 ```cangjie
 public class PrimitiveType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -6586,8 +6798,8 @@ Parameters:
 
 ```cangjie
 public class PrimitiveTypeExpr <: Expr {
-    public init()
     public init(kind: Tokens)
+    public init()
 }
 ```
 
@@ -6661,8 +6873,8 @@ Parameters:
 
 ```cangjie
 public class Program <: Node {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -6687,6 +6899,16 @@ public mut prop decls: ArrayList<Decl>
 Function: Gets or sets the list of declaration nodes defined within the TopLevel scope of the Cangjie source code file.
 
 Type: [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Decl](ast_package_classes.md#class-decl)>
+
+### prop featuresDirective
+
+```cangjie
+public mut prop featuresDirective: Option<FeaturesDirective> 
+```
+
+Function: Gets or sets the features directive node defined within the TopLevel scope of the Cangjie source code file.
+
+Type: [Option](../../core/core_package_api/core_package_enums.md#enum-optiont)\<[FeaturesDirective](ast_package_classes.md#class-featuresdirective)>
 
 ### prop importLists
 
@@ -6760,8 +6982,8 @@ Parameters:
 
 ```cangjie
 public class PropDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -6905,8 +7127,8 @@ Parameters:
 
 ```cangjie
 public class QualifiedType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -7056,8 +7278,8 @@ Parameters:
 
 ```cangjie
 public class QuoteExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -7172,7 +7394,7 @@ Parameters:
 ## class QuoteToken
 
 ```cangjie
-public class QuoteToken <: Expr
+public class QuoteToken <: Expr {}
 ```
 
 Purpose: Represents any valid `token` within a `quote` expression node.
@@ -7219,8 +7441,8 @@ Parameters:
 
 ```cangjie
 public class RangeExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -7350,8 +7572,8 @@ Parameters:
 
 ```cangjie
 public class RefExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -7477,8 +7699,8 @@ Parameters:
 
 ```cangjie
 public class RefType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -7604,8 +7826,8 @@ Parameters:
 
 ```cangjie
 public class ResumeExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -7617,16 +7839,6 @@ A [ResumeExpr](ast_package_classes.md#class-resumeexpr) node example:
 Parent Types:
 
 - [Expr](ast_package_classes.md#class-expr)
-
-### prop expr
-
-```cangjie
-public mut prop expr: Option<Expr>
-```
-
-Function: Gets or sets the expression following the `resume` keyword.
-
-Type: [Option\<Expr>](ast_package_classes.md#class-expr)
 
 ### prop keywordR
 
@@ -7714,12 +7926,36 @@ Exceptions:
 
 - [ASTException](ast_package_exceptions.md#class-astexception) — Thrown when the input [Tokens](ast_package_classes.md#class-tokens) cannot be parsed as a valid [ResumeExpr](ast_package_classes.md#class-resumeexpr) node.
 
+### func toTokens()
+
+```cangjie
+public func toTokens(): Tokens
+```
+
+Purpose: Converts the current syntax tree node into [Tokens](ast_package_classes.md#class-tokens) type.
+
+Return Value:
+
+- [Tokens](ast_package_classes.md#class-tokens) - The converted node of [Tokens](ast_package_classes.md#class-tokens) type.
+
+### func traverse(Visitor)
+
+```cangjie
+public func traverse(v: Visitor): Unit
+```
+
+Purpose: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call `breakTraverse` to halt traversal. See [Custom Visitor Function for AST Traversal Example](../ast_samples/traverse.md).
+
+Parameters:
+
+- v: [Visitor](ast_package_classes.md#class-visitor) - An instance of [Visitor](ast_package_classes.md#class-visitor) type.
+
 ## class ResumptionTypePattern
 
 ```cangjie
 public class ResumptionTypePattern <: Pattern {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -7793,8 +8029,8 @@ Exceptions:
 
 ```cangjie
 public class ReturnExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -7886,8 +8122,8 @@ Parameters:
 
 ```cangjie
 public class SpawnExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -8017,8 +8253,8 @@ Parameters:
 
 ```cangjie
 public class StructDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -8130,8 +8366,8 @@ Parameters:
 
 ```cangjie
 public class SubscriptExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -8243,8 +8479,8 @@ Parameters:
 
 ```cangjie
 public class SynchronizedExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -8370,8 +8606,8 @@ Parameters:
 
 ```cangjie
 public class ThisType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -8443,8 +8679,8 @@ Parameters:
 
 ```cangjie
 public class ThrowExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -8549,7 +8785,7 @@ Parent Types:
 ### var tokens
 
 ```cangjie
-protected var tokens: ArrayList<Token>
+protected var tokens: ArrayList<Token> = ArrayList<Token>(0)
 ```
 
 Function: Gets or sets all [Token](ast_package_structs.md#struct-token) stored internally in [ArrayList](../../collection/collection_package_api/collection_package_class.md#class-arraylistt)\<[Token](ast_package_structs.md#struct-token)> format.
@@ -8885,8 +9121,8 @@ Return Value:
 
 ```cangjie
 public class TrailingClosureExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -8970,8 +9206,8 @@ Parameters:
 
 ```cangjie
 public class TryExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -9141,8 +9377,8 @@ Parameters:
 
 ```cangjie
 public class TupleLiteral <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -9244,8 +9480,8 @@ Parameters:
 
 ```cangjie
 public class TuplePattern <: Pattern {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -9361,8 +9597,8 @@ Parameters:
 
 ```cangjie
 public class TupleType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -9464,8 +9700,8 @@ Parameters:
 
 ```cangjie
 public class TypeAliasDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -9557,8 +9793,8 @@ Parameters:
 
 ```cangjie
 public class TypeConvExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -9669,7 +9905,7 @@ Parameters:
 ## class TypeNode
 
 ```cangjie
-public open class TypeNode <: Node
+public open class TypeNode <: Node {}
 ```
 
 Function: The parent class of all type nodes, inherits from [Node](ast_package_classes.md#class-node).
@@ -9705,7 +9941,7 @@ Type: [Token](ast_package_structs.md#struct-token)
 ### func toTokens()
 
 ```cangjie
-public func toTokens(): Tokens
+public open func toTokens(): Tokens
 ```
 
 Function: Converts the current syntax tree node into a [Tokens](ast_package_classes.md#class-tokens) type.
@@ -9717,7 +9953,7 @@ Return Value:
 ### func traverse(Visitor)
 
 ```cangjie
-public func traverse(v: Visitor): Unit
+public open func traverse(v: Visitor): Unit
 ```
 
 Function: Traverses the current syntax tree node and its child nodes. To terminate child node traversal early, override the `visit` function and call the `breakTraverse` function to terminate traversal prematurely. See [Custom Visitor Function for Traversing AST Objects Example](../ast_samples/traverse.md).
@@ -9746,8 +9982,8 @@ Return Value:
 
 ```cangjie
 public class TypePattern <: Pattern {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -9845,8 +10081,8 @@ Parameters:
 
 ```cangjie
 public class UnaryExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -9928,8 +10164,8 @@ Parameters:
 
 ```cangjie
 public class VArrayExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -10041,8 +10277,8 @@ Parameters:
 
 ```cangjie
 public class VArrayType <: TypeNode {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -10178,8 +10414,8 @@ Parameters:
 
 ```cangjie
 public class VarDecl <: Decl {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -10329,8 +10565,8 @@ Parameters:
 
 ```cangjie
 public class VarOrEnumPattern <: Pattern {
-    public init()
     public init(identifier: Token)
+    public init()
 }
 ```
 
@@ -10404,8 +10640,8 @@ Parameters:
 
 ```cangjie
 public class VarPattern <: Pattern {
-    public init()
     public init(identifier: Token)
+    public init()
 }
 ```
 
@@ -10478,7 +10714,7 @@ Parameters:
 ## class Visitor
 
 ```cangjie
-public abstract class Visitor
+public abstract class Visitor {}
 ```
 
 Function: An abstract class that internally defines default `visit` functions for accessing different types of AST nodes.
@@ -10506,7 +10742,7 @@ Function: Determines whether traversal should be stopped.
 
 Return Value:
 
-- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool)
+- [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - Returns true if traversal should be stopped; otherwise, returns false.
 
 ### func visit(Annotation)
 
@@ -10626,6 +10862,18 @@ Function: Defines the operation when visiting a node, requires override.
 Parameters:
 
 - _: [ClassDecl](ast_package_classes.md#class-classdecl) - The node being traversed of type [ClassDecl](ast_package_classes.md#class-classdecl).
+
+### func visit(CommandTypePattern)
+
+```cangjie
+protected open func visit(_: CommandTypePattern): Unit
+```
+
+Function: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [CommandTypePattern](ast_package_classes.md#class-commandtypepattern) - The node being traversed of type [CommandTypePattern](ast_package_classes.md#class-commandtypepattern).
 
 ### func visit(ConstPattern)
 
@@ -11095,6 +11343,18 @@ Parameters:
 
 - _: [Pattern](ast_package_classes.md#class-pattern) - The node being traversed of type [Pattern](ast_package_classes.md#class-pattern).
 
+### func visit(PerformExpr)
+
+```cangjie
+protected open func visit(_: PerformExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [PerformExpr](ast_package_classes.md#class-performexpr) - The node being traversed of type [PerformExpr](ast_package_classes.md#class-performexpr).
+
 ### func visit(PrefixType)
 
 ```cangjie
@@ -11226,6 +11486,18 @@ Purpose: Defines the operation when visiting a node, requires override.
 Parameters:
 
 - _: [RefType](ast_package_classes.md#class-reftype) - The node being traversed of type [RefType](ast_package_classes.md#class-reftype).
+
+### func visit(ResumeExpr)
+
+```cangjie
+protected open func visit(_: ResumeExpr): Unit
+```
+
+Purpose: Defines the operation when visiting a node, requires override.
+
+Parameters:
+
+- _: [ResumeExpr](ast_package_classes.md#class-resumeexpr) - The node being traversed of type [ResumeExpr](ast_package_classes.md#class-resumeexpr).
 
 ### func visit(ReturnExpr)
 
@@ -11531,8 +11803,8 @@ Parameters:
 
 ```cangjie
 public class WhileExpr <: Expr {
-    public init()
     public init(inputs: Tokens)
+    public init()
 }
 ```
 
@@ -11658,8 +11930,8 @@ Parameters:
 
 ```cangjie
 public class WildcardExpr <: Expr {
-    public init()
     public init(keyword: Tokens)
+    public init()
 }
 ```
 
@@ -11735,8 +12007,8 @@ Parameters:
 
 ```cangjie
 public class WildcardPattern <: Pattern {
-    public init()
     public init(keyword: Tokens)
+    public init()
 }
 ```
 
