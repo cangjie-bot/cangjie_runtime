@@ -422,9 +422,9 @@ public interface SqlNullableDbType <: SqlDbType
 ```cangjie
 public interface Statement <: Resource {
     prop parameterColumnInfos: Array<ColumnInfo>
-    func query(params: Array<SqlDbType>): QueryResult
     func setOption(key: String, value: String): Unit
     func update(params: Array<SqlDbType>): UpdateResult
+    func query(params: Array<SqlDbType>): QueryResult
     func set<T>(index: Int64, value: T): Unit
     func setNull(index: Int64): Unit
     func update(): UpdateResult
@@ -572,15 +572,15 @@ func update(): UpdateResult
 
 ```cangjie
 public interface Transaction {
+    mut prop isoLevel: TransactionIsoLevel
     mut prop accessMode: TransactionAccessMode
     mut prop deferrableMode: TransactionDeferrableMode
-    mut prop isoLevel: TransactionIsoLevel
     func begin(): Unit
     func commit(): Unit
-    func release(savePointName: String): Unit
     func rollback(): Unit
     func rollback(savePointName: String): Unit
     func save(savePointName: String): Unit
+    func release(savePointName: String): Unit
 }
 ```
 
@@ -706,8 +706,8 @@ func save(savePointName: String): Unit
 
 ```cangjie
 public interface UpdateResult {
-    prop lastInsertId: Int64
     prop rowCount: Int64
+    prop lastInsertId: Int64
 }
 ```
 
