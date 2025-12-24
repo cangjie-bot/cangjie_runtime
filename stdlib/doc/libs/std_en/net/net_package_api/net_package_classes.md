@@ -940,9 +940,9 @@ main() {
 
 ```cangjie
 public class IPv4Address <: IPAddress & ToString & Equatable<IPv4Address> & LessOrEqual<IPv4Address> {
-    public static let broadcast = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
-    public static let localhost = IPv4Address(0x7F, 0, 0, 0x01)
-    public static let unspecified = IPv4Address(0, 0, 0, 0)
+    public static let broadcast: IPv4Address = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
+    public static let localhost: IPv4Address = IPv4Address(0x7F, 0, 0, 0x01)
+    public static let unspecified: IPv4Address = IPv4Address(0, 0, 0, 0)
     public init(bits: UInt32)
     public init(a: Byte, b: Byte, c: Byte, d: Byte)
 }
@@ -960,7 +960,7 @@ Parent Types:
 ### static let broadcast
 
 ```cangjie
-public static let broadcast = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
+public static let broadcast: IPv4Address = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
 ```
 
 Function: Returns the broadcast address of [IPv4Address](net_package_classes.md#class-ipv4address): `255.255.255.255`.
@@ -1118,9 +1118,9 @@ Return Value:
 
 ```cangjie
 public class IPv4Address <: IPAddress & ToString & Equatable<IPv4Address> & LessOrEqual<IPv4Address> {
-    public static let broadcast = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
-    public static let localhost = IPv4Address(0x7F, 0, 0, 0x01)
-    public static let unspecified = IPv4Address(0, 0, 0, 0)
+    public static let localhost: IPv4Address = IPv4Address(0x7F, 0, 0, 0x01)
+    public static let unspecified: IPv4Address = IPv4Address(0, 0, 0, 0)
+    public static let broadcast: IPv4Address = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
     public init(bits: UInt32)
     public init(a: Byte, b: Byte, c: Byte, d: Byte)
 }
@@ -1138,7 +1138,7 @@ Parent Types:
 ### static let broadcast
 
 ```cangjie
-public static let broadcast = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
+public static let broadcast: IPv4Address = IPv4Address(0xFF, 0xFF, 0xFF, 0xFF)
 ```
 
 Function: Returns the broadcast address of [IPv4Address](net_package_classes.md#class-ipv4address): `255.255.255.255`.
@@ -1545,7 +1545,7 @@ public class TcpServerSocket <: ServerSocket {
 
 Function: A server-side socket for listening to TCP connections.
 
-After socket creation, properties can be configured through attributes and the `setSocketOptionXX` interface. 
+After socket creation, properties can be configured through attributes and the `setSocketOptionXX` interface.
 To start listening, call `bind()` to bind the socket to a local port. The `accept()` interface will accept TCP connections, blocking until a connection is established. If there are already connections in the queue, it may return immediately.
 The socket must be explicitly closed via `close`.
 
@@ -2380,7 +2380,7 @@ public class UdpSocket <: DatagramSocket {
 
 Function: Provides UDP datagram communication.
 
-After creating an instance of `UdpSocket`, the `bind()` method must be called to bind the socket, allowing it to receive datagrams without establishing a connection to a remote endpoint. `UdpSocket` can also establish connections via the `connect()/disconnect()` interfaces. The UDP protocol requires that transmitted datagrams do not exceed 64KB in size.  
+After creating an instance of `UdpSocket`, the `bind()` method must be called to bind the socket, allowing it to receive datagrams without establishing a connection to a remote endpoint. `UdpSocket` can also establish connections via the `connect()/disconnect()` interfaces. The UDP protocol requires that transmitted datagrams do not exceed 64KB in size.
 `UdpSocket` must be explicitly closed using `close()`. For more information, refer to [DatagramSocket](net_package_interfaces.md#interface-datagramsocket).
 
 Parent Type:
@@ -2466,7 +2466,7 @@ public mut prop reusePort: Bool
 
 Function: Sets and reads the `SO_REUSEPORT` property.
 
-On Windows, `SO_REUSEADDR` can be used, but `SO_REUSEPORT` is not supported, so an exception will be thrown.  
+On Windows, `SO_REUSEADDR` can be used, but `SO_REUSEPORT` is not supported, so an exception will be thrown.
 The default behavior and post-configuration effects depend on the system. Before use, consult the system-specific documentation for `SO_REUSEPORT`.
 
 Type: [Bool](../../core/core_package_api/core_package_intrinsics.md#bool)
@@ -2820,8 +2820,8 @@ public class UnixDatagramSocket <: DatagramSocket {
 
 Function: Provides host communication capabilities based on datagrams.
 
-After a [UnixDatagramSocket](net_package_classes.md#class-unixdatagramsocket) instance is created, the `bind()` interface should be explicitly called for binding. `Unix` datagram sockets do not require connection or multiple handshakes with remote endpoints. However, users can also establish and terminate connections with remote endpoints using the `connect/disconnect` interface.  
-Unlike UDP, UDS has no packet size limitation, with restrictions coming from the operating system and interface implementation.  
+After a [UnixDatagramSocket](net_package_classes.md#class-unixdatagramsocket) instance is created, the `bind()` interface should be explicitly called for binding. `Unix` datagram sockets do not require connection or multiple handshakes with remote endpoints. However, users can also establish and terminate connections with remote endpoints using the `connect/disconnect` interface.
+Unlike UDP, UDS has no packet size limitation, with restrictions coming from the operating system and interface implementation.
 Socket resources need to be explicitly released using the `close` interface. Refer to [DatagramSocket](net_package_interfaces.md#interface-datagramsocket) for more information.
 
 > **Note:**

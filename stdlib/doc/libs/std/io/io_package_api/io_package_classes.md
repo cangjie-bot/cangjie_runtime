@@ -5,8 +5,8 @@
 ```cangjie
 public class BufferedInputStream<T> <: InputStream where T <: InputStream {
     public init(input: T)
-    public init(input: T, buffer: Array<Byte>)
     public init(input: T, capacity: Int64)
+    public init(input: T, buffer: Array<Byte>)
 }
 ```
 
@@ -1122,9 +1122,7 @@ public prop capacity: Int64
 
 功能：获取当前缓冲区容量。
 
-返回值：
-
-- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 当前缓冲区容量。
+类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
 ### init()
 
@@ -1303,7 +1301,7 @@ main(): Unit {
 ```text
 11
 Hello World
-buffer after clear: 
+buffer after clear:
 capacity after clear: 11
 ```
 
@@ -1450,7 +1448,7 @@ nextByte: None
 ### func reserve(Int64)
 
 ```cangjie
-public func reserve(additional: Int64): Unit
+public func reserve(addition: Int64): Unit
 ```
 
 功能：将缓冲区扩容指定大小。
