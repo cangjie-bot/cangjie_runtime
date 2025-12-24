@@ -32,9 +32,17 @@ extend DerivingTarget {
             Tokens()
         }
 
+        // If the extended type contains the @Hide annotation, bring it to the extension declaration.
+        let annotation = declaration.annotations |> filter { it: Annotation => it.identifier.value == 'Hide' } |> first
+        let hide = if (let Some(anno) <- annotation) {
+            anno.toTokens()
+        } else {
+            Tokens()
+        }
+
         let targetType = toType()
         let e = parseDecl(quote(
-            extend $generics $targetType {
+            $hide extend $generics $targetType {
             }
         )) as ExtendDecl ?? throw Exception()
 
