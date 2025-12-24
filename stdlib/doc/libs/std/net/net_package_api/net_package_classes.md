@@ -4260,8 +4260,8 @@ public override func toString(): String
 
 ```cangjie
 public class UnixSocket <: StreamingSocket {
-    public init(address: SocketAddress, localAddress!: ?SocketAddress = None)
     public init(path: String, localPath!: ?String = None)
+    public init(address: SocketAddress, localAddress!: ?SocketAddress = None)
 }
 ```
 
@@ -4294,7 +4294,7 @@ public override prop localAddress: SocketAddress
 ### prop readTimeout
 
 ```cangjie
-public override mut prop readTimeout: ?Duration
+public mut override prop readTimeout: ?Duration
 ```
 
 功能：设置和读取读操作超时时间。
@@ -4354,7 +4354,7 @@ public mut prop sendBufferSize: Int64
 ### prop writeTimeout
 
 ```cangjie
-public override mut prop writeTimeout: ?Duration
+public mut override prop writeTimeout: ?Duration
 ```
 
 功能：设置和读取写操作超时时间。
