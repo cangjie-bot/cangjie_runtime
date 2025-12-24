@@ -5,8 +5,8 @@
 ```cangjie
 public class BufferedInputStream<T> <: InputStream where T <: InputStream {
     public init(input: T)
-    public init(input: T, buffer: Array<Byte>)
     public init(input: T, capacity: Int64)
+    public init(input: T, buffer: Array<Byte>)
 }
 ```
 
@@ -1118,9 +1118,7 @@ public prop capacity: Int64
 
 Functionality: Gets the current buffer capacity.
 
-Return Value:
-
-- [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - The current buffer capacity.
+Type: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 
 ### init()
 
@@ -1444,7 +1442,7 @@ nextByte: None
 ### func reserve(Int64)
 
 ```cangjie
-public func reserve(additional: Int64): Unit
+public func reserve(addition: Int64): Unit
 ```
 
 Function: Expands the buffer by the specified size.
