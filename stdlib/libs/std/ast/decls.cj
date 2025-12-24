@@ -75,7 +75,7 @@ public open class Decl <: Node {
     private var constraintCommas_: Tokens = Tokens()
     private var isGenericDecl_: Bool = false
     protected var node: Node = Expr()
-    public mut open prop identifier: Token {
+    public open mut prop identifier: Token {
         get() {
             identifier_
         }
@@ -756,7 +756,7 @@ public class ExtendDecl <: Decl {
     private var superTypes_: ArrayList<TypeNode> = ArrayList<TypeNode>()
     private var superTypeBitAnds_: Tokens = Tokens()
     private var body_ = Body()
-    public mut override prop identifier: Token {
+    public override mut prop identifier: Token {
         get() {
             throw ASTException("Current ExtendDecl don't have identifier")
         }
