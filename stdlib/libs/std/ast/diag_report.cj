@@ -14,11 +14,13 @@ package std.ast
 public enum DiagReportLevel {
     | ERROR
     | WARNING
+    | ...
 
     public func level(): Int32 {
         let num = match (this) {
             case ERROR => 0
             case WARNING => 1
+            case _ => throw ASTException("Invalid DiagReportLevel")
         }
         return Int32(num)
     }
