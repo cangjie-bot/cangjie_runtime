@@ -199,12 +199,7 @@ Exceptions:
 ## interface StreamingSocket
 
 ```cangjie
-public interface StreamingSocket <: IOStream & Resource & ToString {
-    prop localAddress: SocketAddress
-    prop remoteAddress: SocketAddress
-    mut prop readTimeout: ?Duration
-    mut prop writeTimeout: ?Duration
-}
+public interface StreamingSocket <: IOStream & Resource & ToString {}
 ```
 
 Description: A `Socket` operating in full-duplex streaming mode, supporting both read and write operations.

@@ -728,12 +728,12 @@ Parameters:
 
 ```cangjie
 public struct SocketDomain <: Equatable<SocketDomain> & ToString & Hashable {
-    public static let IPV4: SocketDomain = SocketDomain(2)
-    public static let IPV6: SocketDomain
-    public static let NETLINK: SocketDomain = SocketDomain(16)
-    public static let PACKET: SocketDomain = SocketDomain(17)
-    public static let UNIX: SocketDomain
-    public init(domain: Int32)
+    public static let IPV4: SocketDomain = SocketDomain(AF_INET)
+    public static let IPV6: SocketDomain = SocketDomain(AF_INET6)
+    public static let UNIX: SocketDomain = SocketDomain(AF_UNIX)
+    public static let NETLINK: SocketDomain = SocketDomain(AF_NETLINK)
+    public static let PACKET: SocketDomain = SocketDomain(AF_PACKET)
+    public init(domain: Int32) 
 }
 ```
 
@@ -748,7 +748,7 @@ Parent Types:
 ### static let IPV4
 
 ```cangjie
-public static let IPV4: SocketDomain = SocketDomain(2)
+public static let IPV4: SocketDomain = SocketDomain(AF_INET)
 ```
 
 Function: `IPv4` communication domain.
@@ -758,7 +758,7 @@ Type: [SocketDomain](net_package_structs.md#struct-socketdomain)
 ### static let IPV6
 
 ```cangjie
-public static let IPV6: SocketDomain
+public static let IPV6: SocketDomain = SocketDomain(AF_INET6)
 ```
 
 Function: `IPv6` communication domain. Values vary by system:
@@ -772,7 +772,7 @@ Type: [SocketDomain](net_package_structs.md#struct-socketdomain)
 ### static let NETLINK
 
 ```cangjie
-public static let NETLINK: SocketDomain = SocketDomain(16)
+public static let NETLINK: SocketDomain = SocketDomain(AF_NETLINK)
 ```
 
 Function: Communication between the kernel and user-space processes.
@@ -786,7 +786,7 @@ Type: [SocketDomain](net_package_structs.md#struct-socketdomain)
 ### static let PACKET
 
 ```cangjie
-public static let PACKET: SocketDomain = SocketDomain(17)
+public static let PACKET: SocketDomain = SocketDomain(AF_PACKET)
 ```
 
 Function: Allows user-space programs to directly access network packets.
@@ -800,7 +800,7 @@ Type: [SocketDomain](net_package_structs.md#struct-socketdomain)
 ### static let UNIX
 
 ```cangjie
-public static let UNIX: SocketDomain
+public static let UNIX: SocketDomain = SocketDomain(AF_UNIX)
 ```
 
 Function: Local communication. Values vary by system:
@@ -882,9 +882,9 @@ Return Value:
 
 ```cangjie
 public struct SocketKeepAliveConfig <: ToString & Equatable<SocketKeepAliveConfig> {
-    public let count: UInt32
     public let idle: Duration
     public let interval: Duration
+    public let count: UInt32
     public init(idle!: Duration = Duration.second * 45, interval!: Duration = Duration.second * 5, count!: UInt32 = 5)
 }
 ```
@@ -958,7 +958,7 @@ Return Value:
 ### operator func !=(SocketKeepAliveConfig)
 
 ```cangjie
-public override operator func !=(other: SocketKeepAliveConfig): Bool
+public operator override func !=(other: SocketKeepAliveConfig): Bool
 ```
 
 Function: Determines if two [SocketKeepAliveConfig](net_package_structs.md#struct-socketkeepaliveconfig) instances are unequal.
@@ -974,7 +974,7 @@ Return Value:
 ### operator func ==(SocketKeepAliveConfig)
 
 ```cangjie
-public override operator func ==(other: SocketKeepAliveConfig): Bool
+public operator override func ==(other: SocketKeepAliveConfig): Bool
 ```
 
 Function: Determines if two [SocketKeepAliveConfig](net_package_structs.md#struct-socketkeepaliveconfig) instances are equal.
@@ -991,18 +991,18 @@ Return Value:
 
 ```cangjie
 public struct SocketOptions {
-    public static const IPPROTO_TCP: Int32 = 6
-    public static const IPPROTO_UDP: Int32 = 17
-    public static const SOL_SOCKET: Int32
-    public static const SO_BINDTODEVICE: Int32
-    public static const SO_KEEPALIVE: Int32
-    public static const SO_LINGER: Int32
-    public static const SO_RCVBUF: Int32
-    public static const SO_REUSEADDR: Int32
-    public static const SO_REUSEPORT: Int32
-    public static const SO_SNDBUF: Int32
-    public static const TCP_NODELAY: Int32 = 0x0001
-    public static const TCP_QUICKACK: Int32
+    public static const SOL_SOCKET: Int32 = SOL_SOCKET
+    public static const IPPROTO_TCP: Int32 = IPPROTO_TCP
+    public static const IPPROTO_UDP: Int32 = IPPROTO_UDP
+    public static const SO_KEEPALIVE: Int32 = SOCK_KEEPALIVE
+    public static const TCP_NODELAY: Int32 = SOCK_TCP_NODELAY
+    public static const TCP_QUICKACK: Int32 = SOCK_TCP_QUICKACK
+    public static const SO_LINGER: Int32 = SOCK_LINGER
+    public static const SO_SNDBUF: Int32 = SOCK_SNDBUF
+    public static const SO_RCVBUF: Int32 = SOCK_RCVBUF
+    public static const SO_REUSEADDR: Int32 = SOCK_REUSEADDR
+    public static const SO_REUSEPORT: Int32 = SOCK_REUSEPORT
+    public static const SO_BINDTODEVICE: Int32 = SOCK_BINDTODEVICE
 }
 ```
 
@@ -1011,7 +1011,7 @@ Function: [SocketOptions](net_package_structs.md#struct-socketoptions) stores co
 ### const IPPROTO_TCP <sup>(deprecated)</sup>
 
 ```cangjie
-public static const IPPROTO_TCP: Int32 = 6
+public static const IPPROTO_TCP: Int32 = IPPROTO_TCP
 ```
 
 Function: Constant for setting socket option `level` to `IPPROTO_TCP`.
@@ -1025,7 +1025,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const IPPROTO_UDP <sup>(deprecated)</sup>
 
 ```cangjie
-public static const IPPROTO_UDP: Int32 = 17
+public static const IPPROTO_UDP: Int32 = IPPROTO_UDP
 ```
 
 Function: Constant for setting socket option `level` to `IPPROTO_UDP`.
@@ -1039,7 +1039,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const SOL_SOCKET <sup>(deprecated)</sup>
 
 ```cangjie
-public static const SOL_SOCKET: Int32
+public static const SOL_SOCKET: Int32 = SOL_SOCKET
 ```
 
 Function: Constant for setting socket option `level` to `SOL_SOCKET`. Values vary by system:
@@ -1057,7 +1057,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const SO_BINDTODEVICE
 
 ```cangjie
-public static const SO_BINDTODEVICE: Int32
+public static const SO_BINDTODEVICE: Int32 = SOCK_BINDTODEVICE
 ```
 
 Function: Constant for setting socket option `optname` to `SO_BINDTODEVICE`. Values vary by system:
@@ -1071,7 +1071,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const SO_KEEPALIVE
 
 ```cangjie
-public static const SO_KEEPALIVE: Int32
+public static const SO_KEEPALIVE: Int32 = SOCK_KEEPALIVE
 ```
 
 Function: Constant for setting socket option `optname` to `SO_KEEPALIVE`. Values vary by system:
@@ -1085,7 +1085,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const SO_LINGER
 
 ```cangjie
-public static const SO_LINGER: Int32
+public static const SO_LINGER: Int32 = SOCK_LINGER
 ```
 
 Function: Constant for setting socket option `optname` to `SO_LINGER`. Values vary by system:
@@ -1099,7 +1099,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const SO_RCVBUF
 
 ```cangjie
-public static const SO_RCVBUF: Int32
+public static const SO_RCVBUF: Int32 = SOCK_RCVBUF
 ```
 
 Function: Constant for setting socket option `optname` to `SO_RCVBUF`. Values vary by system:
@@ -1113,7 +1113,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const SO_REUSEADDR
 
 ```cangjie
-public static const SO_REUSEADDR: Int32
+public static const SO_REUSEADDR: Int32 = SOCK_REUSEADDR
 ```
 
 Function: Constant for setting socket option `optname` to `SO_REUSEADDR`. Values vary by system:
@@ -1127,7 +1127,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const SO_REUSEPORT
 
 ```cangjie
-public static const SO_REUSEPORT: Int32
+public static const SO_REUSEPORT: Int32 = SOCK_REUSEPORT
 ```
 
 Function: Constant for setting socket option `optname` to `SO_REUSEPORT`. Values vary by system:
@@ -1141,7 +1141,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const SO_SNDBUF
 
 ```cangjie
-public static const SO_SNDBUF: Int32
+public static const SO_SNDBUF: Int32 = SOCK_SNDBUF
 ```
 
 Function: Constant for setting socket option `optname` to `SO_SNDBUF`. Values vary by system:
@@ -1155,7 +1155,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const TCP_NODELAY
 
 ```cangjie
-public static const TCP_NODELAY: Int32 = 0x0001
+public static const TCP_NODELAY: Int32 = SOCK_TCP_NODELAY
 ```
 
 Function: Constant for setting socket option `optname` to `TCP_NODELAY`.
@@ -1165,7 +1165,7 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 ### const TCP_QUICKACK
 
 ```cangjie
-public static const TCP_QUICKACK: Int32
+public static const TCP_QUICKACK: Int32 = SOCK_TCP_QUICKACK
 ```
 
 Function: Constant for setting socket option `optname` to `TCP_QUICKACK`. Values vary by system:
@@ -1180,11 +1180,11 @@ Type: [Int32](../../core/core_package_api/core_package_intrinsics.md#int32)
 
 ```cangjie
 public struct SocketType <: Equatable<SocketType> & ToString & Hashable {
-    public static let DATAGRAM: SocketType = SocketType(2)
-    public static let RAW: SocketType = SocketType(3)
-    public static let SEQPACKET: SocketType = SocketType(5)
-    public static let STREAM: SocketType = SocketType(1)
-    public init(`type`: Int32)
+    public static let STREAM: SocketType = SocketType(SOCKET_STREAM)
+    public static let DATAGRAM: SocketType = SocketType(SOCKET_DGRAM)
+    public static let RAW: SocketType = SocketType(SOCKET_RAW)
+    public static let SEQPACKET: SocketType = SocketType(SOCKET_SEQPACKET)
+    public init(`type`: Int32) 
 }
 ```
 
@@ -1198,7 +1198,7 @@ Parent Types:
 ### static let DATAGRAM
 
 ```cangjie
-public static let DATAGRAM: SocketType = SocketType(2)
+public static let DATAGRAM: SocketType = SocketType(SOCKET_DGRAM)
 ```
 
 Function: Datagram socket type.
@@ -1208,7 +1208,7 @@ Type: [SocketType](net_package_structs.md#struct-sockettype)
 ### static let RAW
 
 ```cangjie
-public static let RAW: SocketType = SocketType(3)
+public static let RAW: SocketType = SocketType(SOCKET_RAW)
 ```
 
 Function: Raw socket type.
@@ -1218,7 +1218,7 @@ Type: [SocketType](net_package_structs.md#struct-sockettype)
 ### static let SEQPACKET
 
 ```cangjie
-public static let SEQPACKET: SocketType = SocketType(5)
+public static let SEQPACKET: SocketType = SocketType(SOCKET_SEQPACKET)
 ```
 
 Function: Sequenced packet socket type.
@@ -1228,7 +1228,7 @@ Type: [SocketType](net_package_structs.md#struct-sockettype)
 ### static let STREAM
 
 ```cangjie
-public static let STREAM: SocketType = SocketType(1)
+public static let STREAM: SocketType = SocketType(SOCKET_STREAM)
 ```
 
 Function: Stream socket type.

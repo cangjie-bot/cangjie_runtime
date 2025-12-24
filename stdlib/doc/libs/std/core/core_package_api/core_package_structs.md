@@ -1213,8 +1213,8 @@ main(): Int64 {
 
 ```cangjie
 public struct CPointerHandle<T> where T <: CType {
-    public let array: Array<T>
     public let pointer: CPointer<T>
+    public let array: Array<T>
     public init()
     public init(ptr: CPointer<T>, arr: Array<T>)
 }
@@ -1579,16 +1579,16 @@ public mut func write(value: UInt8): Unit
 
 ```cangjie
 public struct Duration <: ToString & Hashable & Comparable<Duration> {
-    public static const Max: Duration = Duration(0x7FFF_FFFF_FFFF_FFFF, 999999999)
-    public static const Min: Duration = Duration(-0x8000_0000_0000_0000, 0)
-    public static const Zero: Duration = Duration(0, 0)
-    public static const day: Duration = Duration(24 * 60 * 60, 0)
-    public static const hour: Duration = Duration(60 * 60, 0)
+    public static const nanosecond: Duration = Duration(0, 1)
     public static const microsecond: Duration = Duration(0, 1000u32)
     public static const millisecond: Duration = Duration(0, 1000000u32)
-    public static const minute: Duration = Duration(60, 0)
-    public static const nanosecond: Duration = Duration(0, 1)
     public static const second: Duration = Duration(1, 0)
+    public static const minute: Duration = Duration(SECS_PER_MINUTE, 0)
+    public static const hour: Duration = Duration(SECS_PER_HOUR, 0)
+    public static const day: Duration = Duration(SECS_PER_DAY, 0)
+    public static const Zero: Duration = Duration(0, 0)
+    public static const Max: Duration = Duration(MAX_INT64, MAX_NANOSECOND)
+    public static const Min: Duration = Duration(MIN_INT64, 0)
 }
 ```
 
@@ -1608,7 +1608,7 @@ public struct Duration <: ToString & Hashable & Comparable<Duration> {
 ### static const Max
 
 ```cangjie
-public static const Max: Duration = Duration(0x7FFF_FFFF_FFFF_FFFF, 999999999)
+public static const Max: Duration = Duration(MAX_INT64, MAX_NANOSECOND)
 ```
 
 功能：表示最大时间间隔的 [Duration](core_package_structs.md#struct-duration) 实例。
@@ -1618,7 +1618,7 @@ public static const Max: Duration = Duration(0x7FFF_FFFF_FFFF_FFFF, 999999999)
 ### static const Min
 
 ```cangjie
-public static const Min: Duration = Duration(-0x8000_0000_0000_0000, 0)
+public static const Min: Duration = Duration(MIN_INT64, 0)
 ```
 
 功能：表示最小时间间隔的 [Duration](core_package_structs.md#struct-duration) 实例。
@@ -1638,7 +1638,7 @@ public static const Zero: Duration = Duration(0, 0)
 ### static const day
 
 ```cangjie
-public static const day: Duration = Duration(24 * 60 * 60, 0)
+public static const day: Duration = Duration(SECS_PER_DAY, 0)
 ```
 
 功能：表示 1 天时间间隔的 [Duration](core_package_structs.md#struct-duration) 实例。
@@ -1648,7 +1648,7 @@ public static const day: Duration = Duration(24 * 60 * 60, 0)
 ### static const hour
 
 ```cangjie
-public static const hour: Duration = Duration(60 * 60, 0)
+public static const hour: Duration = Duration(SECS_PER_HOUR, 0)
 ```
 
 功能：表示 1 小时时间间隔的 [Duration](core_package_structs.md#struct-duration) 实例。
@@ -1678,7 +1678,7 @@ public static const millisecond: Duration = Duration(0, 1000000u32)
 ### static const minute
 
 ```cangjie
-public static const minute: Duration = Duration(60, 0)
+public static const minute: Duration = Duration(SECS_PER_MINUTE, 0)
 ```
 
 功能：表示 1 分钟时间间隔的 [Duration](core_package_structs.md#struct-duration) 实例。
@@ -2098,7 +2098,7 @@ public operator func >=(r: Duration): Bool
 ## struct LibC
 
 ```cangjie
-public struct LibC
+public struct LibC {}
 ```
 
 功能：提供了仓颉中较为高频使用的 C 接口，如申请、释放堆上 [CType](core_package_interfaces.md#interface-ctype) 实例。
@@ -2211,12 +2211,12 @@ main() {
 
 ```cangjie
 public struct Range<T> <: Iterable<T> where T <: Countable<T> & Comparable<T> & Equatable<T> {
-    public let end: T
-    public let hasEnd: Bool
-    public let hasStart: Bool
-    public let isClosed: Bool
     public let start: T
+    public let end: T
     public let step: Int64
+    public let hasStart: Bool
+    public let hasEnd: Bool
+    public let isClosed: Bool
     public const init(start: T, end: T, step: Int64, hasStart: Bool, hasEnd: Bool, isClosed: Bool)
 }
 ```

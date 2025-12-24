@@ -732,12 +732,12 @@ public init(addr: Array<Byte>)
 
 ```cangjie
 public struct SocketDomain <: Equatable<SocketDomain> & ToString & Hashable {
-    public static let IPV4: SocketDomain = SocketDomain(2)
-    public static let IPV6: SocketDomain
-    public static let NETLINK: SocketDomain = SocketDomain(16)
-    public static let PACKET: SocketDomain = SocketDomain(17)
-    public static let UNIX: SocketDomain
-    public init(domain: Int32)
+    public static let IPV4: SocketDomain = SocketDomain(AF_INET)
+    public static let IPV6: SocketDomain = SocketDomain(AF_INET6)
+    public static let UNIX: SocketDomain = SocketDomain(AF_UNIX)
+    public static let NETLINK: SocketDomain = SocketDomain(AF_NETLINK)
+    public static let PACKET: SocketDomain = SocketDomain(AF_PACKET)
+    public init(domain: Int32) 
 }
 ```
 
@@ -752,7 +752,7 @@ public struct SocketDomain <: Equatable<SocketDomain> & ToString & Hashable {
 ### static let IPV4
 
 ```cangjie
-public static let IPV4: SocketDomain = SocketDomain(2)
+public static let IPV4: SocketDomain = SocketDomain(AF_INET)
 ```
 
 功能：`IPv4` 通信域。
@@ -762,7 +762,7 @@ public static let IPV4: SocketDomain = SocketDomain(2)
 ### static let IPV6
 
 ```cangjie
-public static let IPV6: SocketDomain
+public static let IPV6: SocketDomain = SocketDomain(AF_INET6)
 ```
 
 功能：`IPv6` 通信域。不同系统下的值分别为：
@@ -776,7 +776,7 @@ public static let IPV6: SocketDomain
 ### static let NETLINK
 
 ```cangjie
-public static let NETLINK: SocketDomain = SocketDomain(16)
+public static let NETLINK: SocketDomain = SocketDomain(AF_NETLINK)
 ```
 
 功能：内核和用户空间进程之间通信。
@@ -790,7 +790,7 @@ public static let NETLINK: SocketDomain = SocketDomain(16)
 ### static let PACKET
 
 ```cangjie
-public static let PACKET: SocketDomain = SocketDomain(17)
+public static let PACKET: SocketDomain = SocketDomain(AF_PACKET)
 ```
 
 功能：允许用户空间程序直接访问网络数据包。
@@ -804,7 +804,7 @@ public static let PACKET: SocketDomain = SocketDomain(17)
 ### static let UNIX
 
 ```cangjie
-public static let UNIX: SocketDomain
+public static let UNIX: SocketDomain = SocketDomain(AF_UNIX)
 ```
 
 功能：本机通信。不同系统下的值分别为：
@@ -886,9 +886,9 @@ public operator func ==(r: SocketDomain): Bool
 
 ```cangjie
 public struct SocketKeepAliveConfig <: ToString & Equatable<SocketKeepAliveConfig> {
-    public let count: UInt32
     public let idle: Duration
     public let interval: Duration
+    public let count: UInt32
     public init(idle!: Duration = Duration.second * 45, interval!: Duration = Duration.second * 5, count!: UInt32 = 5)
 }
 ```
@@ -963,7 +963,7 @@ public override func toString(): String
 ### operator func !=(SocketKeepAliveConfig)
 
 ```cangjie
-public override operator func !=(other: SocketKeepAliveConfig): Bool
+public operator override func !=(other: SocketKeepAliveConfig): Bool
 ```
 
 功能：判断两个 [SocketKeepAliveConfig](net_package_structs.md#struct-socketkeepaliveconfig) 实例是否不等。
@@ -979,7 +979,7 @@ public override operator func !=(other: SocketKeepAliveConfig): Bool
 ### operator func ==(SocketKeepAliveConfig)
 
 ```cangjie
-public override operator func ==(other: SocketKeepAliveConfig): Bool
+public operator override func ==(other: SocketKeepAliveConfig): Bool
 ```
 
 功能：判断两个 [SocketKeepAliveConfig](net_package_structs.md#struct-socketkeepaliveconfig) 实例是否相等。
@@ -996,18 +996,18 @@ public override operator func ==(other: SocketKeepAliveConfig): Bool
 
 ```cangjie
 public struct SocketOptions {
-    public static const IPPROTO_TCP: Int32 = 6
-    public static const IPPROTO_UDP: Int32 = 17
-    public static const SOL_SOCKET: Int32
-    public static const SO_BINDTODEVICE: Int32
-    public static const SO_KEEPALIVE: Int32
-    public static const SO_LINGER: Int32
-    public static const SO_RCVBUF: Int32
-    public static const SO_REUSEADDR: Int32
-    public static const SO_REUSEPORT: Int32
-    public static const SO_SNDBUF: Int32
-    public static const TCP_NODELAY: Int32 = 0x0001
-    public static const TCP_QUICKACK: Int32
+    public static const SOL_SOCKET: Int32 = SOL_SOCKET
+    public static const IPPROTO_TCP: Int32 = IPPROTO_TCP
+    public static const IPPROTO_UDP: Int32 = IPPROTO_UDP
+    public static const SO_KEEPALIVE: Int32 = SOCK_KEEPALIVE
+    public static const TCP_NODELAY: Int32 = SOCK_TCP_NODELAY
+    public static const TCP_QUICKACK: Int32 = SOCK_TCP_QUICKACK
+    public static const SO_LINGER: Int32 = SOCK_LINGER
+    public static const SO_SNDBUF: Int32 = SOCK_SNDBUF
+    public static const SO_RCVBUF: Int32 = SOCK_RCVBUF
+    public static const SO_REUSEADDR: Int32 = SOCK_REUSEADDR
+    public static const SO_REUSEPORT: Int32 = SOCK_REUSEPORT
+    public static const SO_BINDTODEVICE: Int32 = SOCK_BINDTODEVICE
 }
 ```
 
@@ -1016,7 +1016,7 @@ public struct SocketOptions {
 ### static const IPPROTO_TCP <sup>(deprecated)</sup>
 
 ```cangjie
-public static const IPPROTO_TCP: Int32 = 6
+public static const IPPROTO_TCP: Int32 = IPPROTO_TCP
 ```
 
 功能：常数，用于将套接字选项的 `level` 层级设为 `IPPROTO_TCP`。
@@ -1030,7 +1030,7 @@ public static const IPPROTO_TCP: Int32 = 6
 ### static const IPPROTO_UDP <sup>(deprecated)</sup>
 
 ```cangjie
-public static const IPPROTO_UDP: Int32 = 17
+public static const IPPROTO_UDP: Int32 = IPPROTO_UDP
 ```
 
 功能：常数，用于将套接字选项的 `level` 层级设为 `IPPROTO_UDP`。
@@ -1062,7 +1062,7 @@ public static const SOL_SOCKET: Int32
 ### static const SO_BINDTODEVICE
 
 ```cangjie
-public static const SO_BINDTODEVICE: Int32
+public static const SO_BINDTODEVICE: Int32 = SOCK_BINDTODEVICE
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `SO_BINDTODEVICE`。不同系统下的值分别为：
@@ -1076,7 +1076,7 @@ public static const SO_BINDTODEVICE: Int32
 ### static const SO_KEEPALIVE
 
 ```cangjie
-public static const SO_KEEPALIVE: Int32
+public static const SO_KEEPALIVE: Int32 = SOCK_KEEPALIVE
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `SO_KEEPALIVE`。不同系统下的值分别为：
@@ -1090,7 +1090,7 @@ public static const SO_KEEPALIVE: Int32
 ### static const SO_LINGER
 
 ```cangjie
-public static const SO_LINGER: Int32
+public static const SO_LINGER: Int32 = SOCK_LINGER
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `SO_LINGER`。不同系统下的值分别为：
@@ -1104,7 +1104,7 @@ public static const SO_LINGER: Int32
 ### static const SO_RCVBUF
 
 ```cangjie
-public static const SO_RCVBUF: Int32
+public static const SO_RCVBUF: Int32 = SOCK_RCVBUF
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `SO_RCVBUF`。不同系统下的值分别为：
@@ -1118,7 +1118,7 @@ public static const SO_RCVBUF: Int32
 ### static const SO_REUSEADDR
 
 ```cangjie
-public static const SO_REUSEADDR: Int32
+public static const SO_REUSEADDR: Int32 = SOCK_REUSEADDR
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `SO_REUSEADDR`。不同系统下的值分别为：
@@ -1132,7 +1132,7 @@ public static const SO_REUSEADDR: Int32
 ### static const SO_REUSEPORT
 
 ```cangjie
-public static const SO_REUSEPORT: Int32
+public static const SO_REUSEPORT: Int32 = SOCK_REUSEPORT
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `SO_REUSEPORT`。不同系统下的值分别为：
@@ -1146,7 +1146,7 @@ public static const SO_REUSEPORT: Int32
 ### static const SO_SNDBUF
 
 ```cangjie
-public static const SO_SNDBUF: Int32
+public static const SO_SNDBUF: Int32 = SOCK_SNDBUF
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `SO_SNDBUF`。不同系统下的值分别为：
@@ -1160,7 +1160,7 @@ public static const SO_SNDBUF: Int32
 ### static const TCP_NODELAY
 
 ```cangjie
-public static const TCP_NODELAY: Int32 = 0x0001
+public static const TCP_NODELAY: Int32 = SOCK_TCP_NODELAY
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `TCP_NODELAY`。
@@ -1170,7 +1170,7 @@ public static const TCP_NODELAY: Int32 = 0x0001
 ### static const TCP_QUICKACK
 
 ```cangjie
-public static const TCP_QUICKACK: Int32
+public static const TCP_QUICKACK: Int32 = SOCK_TCP_QUICKACK
 ```
 
 功能：常数，用于将套接字选项的 `optname` 设为 `TCP_QUICKACK`。不同系统下的值分别为：
@@ -1185,11 +1185,11 @@ public static const TCP_QUICKACK: Int32
 
 ```cangjie
 public struct SocketType <: Equatable<SocketType> & ToString & Hashable {
-    public static let DATAGRAM: SocketType = SocketType(2)
-    public static let RAW: SocketType = SocketType(3)
-    public static let SEQPACKET: SocketType = SocketType(5)
-    public static let STREAM: SocketType = SocketType(1)
-    public init(`type`: Int32)
+    public static let STREAM: SocketType = SocketType(SOCKET_STREAM)
+    public static let DATAGRAM: SocketType = SocketType(SOCKET_DGRAM)
+    public static let RAW: SocketType = SocketType(SOCKET_RAW)
+    public static let SEQPACKET: SocketType = SocketType(SOCKET_SEQPACKET)
+    public init(`type`: Int32) 
 }
 ```
 
@@ -1204,7 +1204,7 @@ public struct SocketType <: Equatable<SocketType> & ToString & Hashable {
 ### static let DATAGRAM
 
 ```cangjie
-public static let DATAGRAM: SocketType = SocketType(2)
+public static let DATAGRAM: SocketType = SocketType(SOCKET_DGRAM)
 ```
 
 功能：数据报套接字类型。
@@ -1214,7 +1214,7 @@ public static let DATAGRAM: SocketType = SocketType(2)
 ### static let RAW
 
 ```cangjie
-public static let RAW: SocketType = SocketType(3)
+public static let RAW: SocketType = SocketType(SOCKET_RAW)
 ```
 
 功能：原始套接字类型。
@@ -1224,7 +1224,7 @@ public static let RAW: SocketType = SocketType(3)
 ### static let SEQPACKET
 
 ```cangjie
-public static let SEQPACKET: SocketType = SocketType(5)
+public static let SEQPACKET: SocketType = SocketType(SOCKET_SEQPACKET)
 ```
 
 功能：有序数据包套接字类型。
@@ -1234,7 +1234,7 @@ public static let SEQPACKET: SocketType = SocketType(5)
 ### static let STREAM
 
 ```cangjie
-public static let STREAM: SocketType = SocketType(1)
+public static let STREAM: SocketType = SocketType(SOCKET_STREAM)
 ```
 
 功能：流式套接字类型。

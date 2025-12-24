@@ -97,8 +97,8 @@ public static func of(format: String): DateTimeFormat
 
 ```cangjie
 public class TimeZone <: ToString & Equatable<TimeZone> {
-    public static let Local: TimeZone
-    public static let UTC: TimeZone
+    public static let UTC: TimeZone = TimeZone("UTC", 0)
+    public static let Local: TimeZone = initLocal()
     public init(id: String, offset: Duration)
 }
 ```
@@ -113,7 +113,7 @@ public class TimeZone <: ToString & Equatable<TimeZone> {
 ### static let Local
 
 ```cangjie
-public static let Local: TimeZone
+public static let Local: TimeZone = initLocal()
 ```
 
 功能：获取本地时区。
@@ -132,7 +132,7 @@ public static let Local: TimeZone
 ### static let UTC
 
 ```cangjie
-public static let UTC: TimeZone
+public static let UTC: TimeZone = TimeZone("UTC", 0)
 ```
 
 功能：获取 UTC 时区。

@@ -1055,10 +1055,10 @@ Execution Result:
 
 ```cangjie
 public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)> where K <: Hashable & Equatable<K> {
-    public init(concurrencyLevel!: Int64 = 16)
-    public init(capacity: Int64, concurrencyLevel!: Int64 = 16)
-    public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = 16)
-    public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = 16)
+    public init(concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
+    public init(capacity: Int64, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
+    public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
+    public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 }
 ```
 
@@ -1102,7 +1102,7 @@ Type: [Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
 ### init(Collection\<(K, V)>, Int64)
 
 ```cangjie
-public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = 16)
+public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 ```
 
 Function: Constructs a [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) with the provided iterator elements and specified concurrency level. This constructor sets the capacity of [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) based on the size of the provided iterator elements.
@@ -1115,7 +1115,7 @@ Parameters:
 ### init(Int64)
 
 ```cangjie
-public init(concurrencyLevel!: Int64 = 16)
+public init(concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 ```
 
 Function: Constructs a [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) with default initial capacity (16) and specified concurrency level (defaults to 16).
@@ -1127,7 +1127,7 @@ Parameters:
 ### init(Int64, (Int64) -> (K, V), Int64)
 
 ```cangjie
-public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = 16)
+public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 ```
 
 Function: Constructs a [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) with the specified size, initialization function elements, and concurrency level. This constructor sets the capacity of [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) based on the size parameter.
@@ -1145,7 +1145,7 @@ Exceptions:
 ### init(Int64, Int64)
 
 ```cangjie
-public init(capacity: Int64, concurrencyLevel!: Int64 = 16)
+public init(capacity: Int64, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 ```
 
 Function: Constructs a [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) with the specified initial capacity and concurrency level (defaults to 16).
