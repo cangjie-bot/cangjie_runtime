@@ -1189,8 +1189,7 @@ extern "C" bool MCC_IsPrimitive(TypeInfo* ti) { return ti->IsPrimitiveType(); }
 
 extern "C" bool MCC_IsGeneric(TypeInfo* ti) { return ti->IsGeneric(); }
 
-// todo, how about temp enum?
-extern "C" bool MCC_IsEnum(TypeInfo* ti) { return ti->IsEnum(); }
+extern "C" bool MCC_IsEnum(TypeInfo* ti) { return ti->IsEnum() || ti->IsTempEnum(); }
 
 extern "C" bool MCC_IsFunction(TypeInfo* ti) {
     if (ti->IsFunc()) {
@@ -1208,15 +1207,15 @@ extern "C" bool MCC_IsTuple(TypeInfo* ti) { return ti->IsTuple(); }
 extern "C" bool MCC_IsReflectUnsupportedType(TypeInfo* ti) { return ti->IsReflectUnsupportedType(); }
 
 // reflect support enum
-extern "C" U32 MCC_GetNumOfEnumConstructInfos(TypeInfo* ti)
+extern "C" U32 MCC_GetNumOfEnumConstructorInfos(TypeInfo* ti)
 {
-    if (!ti->IsEnum()) {
+    if (!ti->IsEnum() && !ti->IsTempEnum()) {
         return 0;
     }
     return ti->GetNumOfEnumCtor();
 }
 
-extern "C" TypeInfo* MCC_GetEnumConstructInfo(TypeInfo* ti, U32 idx)
+extern "C" TypeInfo* MCC_GetEnumConstructorInfo(TypeInfo* ti, U32 idx)
 {
     return ti->GetEnumCtor(idx);
 }
