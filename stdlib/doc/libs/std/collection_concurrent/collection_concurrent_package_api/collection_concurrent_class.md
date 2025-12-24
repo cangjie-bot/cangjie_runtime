@@ -478,8 +478,8 @@ None
 ```cangjie
 public class LinkedBlockingQueue<E> {
     public let capacity: Int64
-    public init()
     public init(capacity: Int64)
+    public init()
     public init(capacity: Int64, elements: Array<E>)
     public init(capacity: Int64, elements: Collection<E>)
 }
@@ -1055,10 +1055,10 @@ main() {
 
 ```cangjie
 public class ConcurrentHashMap<K, V> <: ConcurrentMap<K, V> & Collection<(K, V)> where K <: Hashable & Equatable<K> {
-    public init(concurrencyLevel!: Int64 = 16)
-    public init(capacity: Int64, concurrencyLevel!: Int64 = 16)
-    public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = 16)
-    public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = 16)
+    public init(concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
+    public init(capacity: Int64, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
+    public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
+    public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 }
 ```
 
@@ -1102,7 +1102,7 @@ public prop size: Int64
 ### init(Collection\<(K, V)>, Int64)
 
 ```cangjie
-public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = 16)
+public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 ```
 
 功能：构造一个带有传入迭代器和指定并发度的 [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek)。该构造函数根据传入迭代器元素 elements 的 size 设置 [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) 的容量。
@@ -1115,7 +1115,7 @@ public init(elements: Collection<(K, V)>, concurrencyLevel!: Int64 = 16)
 ### init(Int64)
 
 ```cangjie
-public init(concurrencyLevel!: Int64 = 16)
+public init(concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 ```
 
 功能：构造一个具有默认初始容量（16）和指定并发度（默认等于 16）的 [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek)。
@@ -1127,7 +1127,7 @@ public init(concurrencyLevel!: Int64 = 16)
 ### init(Int64, (Int64) -> (K, V), Int64)
 
 ```cangjie
-public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = 16)
+public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 ```
 
 功能：构造具有传入大小和初始化函数元素以及指定并发度的 [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek)。该构造函数根据参数 size 设置 [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) 的容量。
@@ -1145,7 +1145,7 @@ public init(size: Int64, initElement: (Int64) -> (K, V), concurrencyLevel!: Int6
 ### init(Int64, Int64)
 
 ```cangjie
-public init(capacity: Int64, concurrencyLevel!: Int64 = 16)
+public init(capacity: Int64, concurrencyLevel!: Int64 = DEFAULT_CONCUR_LEVEL)
 ```
 
 功能：构造一个带有传入容量大小和指定并发度（默认等于 16）的 [ConcurrentHashMap](collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek)。

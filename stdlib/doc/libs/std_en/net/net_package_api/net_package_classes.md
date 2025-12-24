@@ -1538,8 +1538,8 @@ Return Value:
 
 ```cangjie
 public class TcpServerSocket <: ServerSocket {
-    public init(bindAt!: SocketAddress)
     public init(bindAt!: UInt16)
+    public init(bindAt!: SocketAddress)
 }
 ```
 
@@ -2002,7 +2002,7 @@ Type: [Bool](../../core/core_package_api/core_package_intrinsics.md#bool)
 ### prop readTimeout
 
 ```cangjie
-public override mut prop readTimeout: ?Duration
+public mut override prop readTimeout: ?Duration
 ```
 
 Function: Sets and reads the read operation timeout duration.
@@ -2062,7 +2062,7 @@ Exceptions:
 ### prop writeTimeout
 
 ```cangjie
-public override mut prop writeTimeout: ?Duration
+public mut override prop writeTimeout: ?Duration
 ```
 
 Function: Sets and reads the write operation timeout duration.
@@ -2373,8 +2373,8 @@ Exceptions:
 
 ```cangjie
 public class UdpSocket <: DatagramSocket {
-    public init(bindAt!: SocketAddress)
     public init(bindAt!: UInt16)
+    public init(bindAt!: SocketAddress)
 }
 ```
 
@@ -2419,7 +2419,7 @@ Exceptions:
 ### prop receiveTimeout
 
 ```cangjie
-public override mut prop receiveTimeout: ?Duration
+public mut override prop receiveTimeout: ?Duration
 ```
 
 Function: Sets and reads the timeout for `receive/receiveFrom` operations.
@@ -2813,8 +2813,8 @@ Return Value:
 
 ```cangjie
 public class UnixDatagramSocket <: DatagramSocket {
-    public init(bindAt!: SocketAddress)
     public init(bindAt!: String)
+    public init(bindAt!: SocketAddress)
 }
 ```
 
@@ -2864,7 +2864,7 @@ Exceptions:
 ### prop receiveTimeout
 
 ```cangjie
-public override mut prop receiveTimeout: ?Duration
+public mut override prop receiveTimeout: ?Duration
 ```
 
 Function: Sets and reads the timeout for `receive/receiveFrom` operations.
