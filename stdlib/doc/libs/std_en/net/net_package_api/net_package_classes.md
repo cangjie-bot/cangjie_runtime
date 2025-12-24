@@ -3577,8 +3577,8 @@ Return Value:
 
 ```cangjie
 public class UnixSocket <: StreamingSocket {
-    public init(address: SocketAddress, localAddress!: ?SocketAddress = None)
     public init(path: String, localPath!: ?String = None)
+    public init(address: SocketAddress, localAddress!: ?SocketAddress = None)
 }
 ```
 
@@ -3611,7 +3611,7 @@ Exceptions:
 ### prop readTimeout
 
 ```cangjie
-public override mut prop readTimeout: ?Duration
+public mut override prop readTimeout: ?Duration
 ```
 
 Function: Sets and reads the read operation timeout duration.
@@ -3671,7 +3671,7 @@ Exceptions:
 ### prop writeTimeout
 
 ```cangjie
-public override mut prop writeTimeout: ?Duration
+public mut override prop writeTimeout: ?Duration
 ```
 
 Function: Sets and reads the write operation timeout duration.
