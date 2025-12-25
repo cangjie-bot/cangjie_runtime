@@ -936,7 +936,11 @@ import std.unittest.testmacro.*
 
 main() {
     let v4: ?IPSocketAddress = IPSocketAddress.tryParse("192.168.1.2:8080")
-    let v6: ?## class IPv4Address
+    let v6: ?
+}
+```
+
+## class IPv4Address
 
 ```cangjie
 public class IPv4Address <: IPAddress & ToString & Equatable<IPv4Address> & LessOrEqual<IPv4Address> {

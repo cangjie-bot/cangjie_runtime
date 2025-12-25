@@ -540,7 +540,7 @@ protected open func terminateAliveProcess(pid: Int32, force: Bool): Unit
 ## class SubProcess
 
 ```cangjie
-public class SubProcess <: Process
+public class SubProcess <: Process {}
 ```
 
 功能：此类为子进程类，继承 [Process](process_package_classes.md#class-process) 类，提供对子进程操作相关功能。
