@@ -482,10 +482,12 @@ Functionality: Terminates the process.
 
 Parameters:
 
-- force!: [Bool](../../core/core_package_api/core_package_intrinsics.md## class SubProcess
+- force!: [Bool](../../core/core_package_api/core_package_intrinsics.md)
+
+## class SubProcess
 
 ```cangjie
-public class SubProcess <: Process
+public class SubProcess <: Process {}
 ```
 
 Functionality: This class represents a subprocess, inheriting from the [Process](process_package_classes.md#class-process) class, providing operations related to subprocess management.
