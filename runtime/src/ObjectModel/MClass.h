@@ -480,7 +480,7 @@ public:
     StaticFieldInfo* GetStaticFieldInfo(U32 index);
 
     U32 GetNumOfEnumCtor();
-    TypeInfo* GetEnumCtor(U32 idx);
+    EnumCtorInfo* GetEnumCtor(U32 idx);
 
     PackageInfo* GetPackageInfo();
     void* GetAnnotations(TypeInfo* arrayTi);
