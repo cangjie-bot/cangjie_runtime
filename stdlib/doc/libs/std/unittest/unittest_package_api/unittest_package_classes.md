@@ -122,6 +122,28 @@ public class Benchmark {}
 
 功能：该类提供创建和运行单个性能测试用例的方法。
 
+<!-- run -->
+```cangjie
+import std.unittest.*
+
+main() {
+    let conf = Configuration()
+    conf.set(KeyWarmup.warmup, Duration.Zero)
+    conf.set(KeyMinDuration.minDuration, Duration.nanosecond)
+    let bench = Benchmark.create("ordinary", configuration: conf, body: { => })
+
+    println("Running ${bench.name}...")
+    bench.run().reportTo(ConsoleReporter())
+    let parametrized = Benchmark.createParameterized(
+        "parametrized", [1, 2, 3], 
+        configuration: conf,  body: { _ => }
+    )
+
+    println("Running ${parametrized.name}...")
+    parametrized.run().reportTo(ConsoleReporter())
+}
+```
+
 ### prop name
 
 ```cangjie
@@ -290,6 +312,20 @@ public class ConsoleReporter <: Reporter<TestReport, Unit> & Reporter<BenchRepor
 - [Reporter](unittest_package_interfaces.md#interface-reporter)\<[TestReport](#class-testreport), [Unit](../../core/core_package_api/core_package_intrinsics.md#unit)>
 - [Reporter](unittest_package_interfaces.md#interface-reporter)\<[BenchReport](#class-benchreport), [Unit](../../core/core_package_api/core_package_intrinsics.md#unit)>
 
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+main() {
+    let testCase = UnitTestCase.create("testCase", body: { => 
+        @Fail("failing test")
+    })
+    let report = testCase.run()
+    report.reportTo(ConsoleReporter())
+}
+```
+
 ### ConsoleReporter(Bool)
 
 ```cangjie
@@ -317,6 +353,23 @@ public class TextReporter<PP> <: Reporter<TestReport, PP> & Reporter<BenchReport
 - [Reporter](unittest_package_interfaces.md#interface-reporter)\<[TestReport](#class-testreport), PP>
 - [Reporter](unittest_package_interfaces.md#interface-reporter)\<[BenchReport](#class-benchreport), PP>
 
+<!-- run -->
+```cangjie
+import std.unittest.common.*
+import std.unittest.*
+import std.unittest.testmacro.*
+
+main() {
+    let testCase = UnitTestCase.create("testCase", body: { => 
+        @Fail("failing test")
+    })
+    let report = testCase.run()
+    let pp = PrettyText()
+    report.reportTo(TextReporter(into: pp))
+    println(pp.toString())
+}
+```
+
 ### TextReporter(PP)
 
 ```cangjie
@@ -343,6 +396,22 @@ public class CsvReporter <: Reporter<BenchReport, Unit> {
 
 - [Reporter](unittest_package_interfaces.md#interface-reporter)\<[BenchReport](#class-benchreport), [Unit](../../core/core_package_api/core_package_intrinsics.md#unit)>
 
+<!-- run -->
+```cangjie
+import std.fs.*
+import std.unittest.*
+
+main() {
+    let conf = Configuration()
+    conf.set(KeyWarmup.warmup, Duration.Zero)
+    conf.set(KeyMinDuration.minDuration, Duration.nanosecond)
+    let bench = Benchmark.create("bench", configuration: conf, body: { => })
+    bench.run().reportTo(CsvReporter(Path(".")))
+    let report = File.readFrom("./benchmarks/bench-default.TestCase_bench.csv") |> String.fromUtf8
+    println(report)
+}
+```
+
 ### CsvReporter(Path)
 
 ```cangjie
@@ -368,6 +437,22 @@ public class CsvRawReporter <: Reporter<BenchReport, Unit> {
 父类型：
 
 - [Reporter](unittest_package_interfaces.md#interface-reporter)\<[BenchReport](#class-benchreport), [Unit](../../core/core_package_api/core_package_intrinsics.md#unit)>
+
+<!-- run -->
+```cangjie
+import std.fs.*
+import std.unittest.*
+
+main() {
+    let conf = Configuration()
+    conf.set(KeyWarmup.warmup, Duration.Zero)
+    conf.set(KeyMinDuration.minDuration, Duration.nanosecond)
+    let bench = Benchmark.create("bench", configuration: conf, body: { => })
+    bench.run().reportTo(CsvRawReporter(Path(".")))
+    let report = File.readFrom("./benchmarks/bench-default.TestCase_bench.csv") |> String.fromUtf8
+    println(report)
+}
+```
 
 ### CsvRawReporter(Path)
 
@@ -928,6 +1013,26 @@ sealed abstract class Report {}
 
 功能：打印测试用例结果报告的基类。
 
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+main() {
+    let suite = TestSuite
+        .builder("tests")
+        .add(UnitTestCase.create("case1", body: { => @Fail("failing case") }))
+        .add(UnitTestCase.create("case2", body: { => @Assert(1 + 2, 3) }))
+        .build()
+    let report = suite.runTests()
+    println("Cases: ${report.caseCount}")
+    println("Skipped: ${report.skippedCount}")
+    println("Passed: ${report.passedCount}")
+    println("Errors: ${report.errorCount}")
+    println("Failed: ${report.failedCount}")
+}
+```
+
 ### prop errorCount
 
 ```cangjie
@@ -1035,6 +1140,37 @@ public class TestGroup {}
 
 功能：提供构建和运行测试组合方法的类。
 
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+main() {
+    let suite1 = TestSuite
+        .builder("tests")
+        .add(UnitTestCase.create("case1", body: { => @Fail("failing case") }))
+        .add(UnitTestCase.create("case2", body: { => @Assert(1 + 2, 3) }))
+        .build()
+    let suite2 = TestSuite
+        .builder("benchmarks")
+        .add(Benchmark.create("bench", body: { => }))
+        .build()
+    let group = TestGroup
+        .builder("group")
+        .add(suite1)
+        .add(suite2)
+        .build()
+
+    println("Running ${group.name}...")
+    group.runTests().reportTo(ConsoleReporter())
+
+    let conf = Configuration()
+    conf.set(KeyWarmup.warmup, Duration.Zero)
+    conf.set(KeyMinDuration.minDuration, Duration.nanosecond)
+    group.runBenchmarks(conf).reportTo(ConsoleReporter())
+}
+```
+
 ### prop name
 
 ```cangjie
@@ -1140,6 +1276,8 @@ public class TestGroupBuilder {}
 ```
 
 功能：提供配置测试组合的方法的构造器。
+
+请看示例： [TestGroup](#class-testgroup).
 
 ### func add(Benchmark)
 
@@ -1335,6 +1473,38 @@ public class TestSuite {}
 
 功能：提供构建和执行测试套方法的类。
 
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+main() {
+    let template = TestSuite
+        .builder("template")
+        .beforeEach({ => println("Starting case!") })
+        .afterEach({ name => println("Finished with ${name}") })
+        .build()
+    let suite = TestSuite
+        .builder("suite")
+        .template(template)
+        .add(UnitTestCase.create("case1", body: { => @Fail("failing case") }))
+        .add(UnitTestCase.create("case2", body: { => @Assert(1 + 2, 3) }))
+        .add(Benchmark.create("bench", body: { => }))
+        .beforeAll({ => println("All tests are about to run!") })
+        .afterAll({ => println("All tests are finished!") })
+        .build()
+
+    println("Running tests from ${suite.name}...")
+    suite.runTests().reportTo(ConsoleReporter())
+
+    println("Running benchmarks from ${suite.name}...")
+    let conf = Configuration()
+    conf.set(KeyWarmup.warmup, Duration.Zero)
+    conf.set(KeyMinDuration.minDuration, Duration.nanosecond)
+    suite.runBenchmarks(conf).reportTo(ConsoleReporter())
+}
+```
+
 ### prop name
 
 ```cangjie
@@ -1440,6 +1610,8 @@ public class TestSuiteBuilder {}
 ```
 
 功能：提供配置测试套方法的测试套构造器。
+
+请看示例： [TestSuite](#class-testsuite).
 
 ### func add(Benchmark)
 
@@ -1637,6 +1809,28 @@ public class UnitTestCase {}
 
 功能：提供创建和执行单元测试用例的方法的类。
 
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+main() {
+    let testCase = UnitTestCase.create("ordinary", body: { => 
+        @Fail("failing test")
+    })
+
+    println("Running ${testCase.name}...")
+    testCase.run().reportTo(ConsoleReporter())
+    let parametrizedTestCase = UnitTestCase.createParameterized(
+        "parametrized", [1, 2, 3], 
+        body: { x => @Assert(1 <= x && x <= 3) }
+    )
+
+    println("Running ${parametrizedTestCase.name}...")
+    parametrizedTestCase.run().reportTo(ConsoleReporter())
+}
+```
+
 ### prop name
 
 ```cangjie
@@ -1743,6 +1937,27 @@ public class XmlReporter <: Reporter<TestReport, Unit> {
 
 - [Reporter](unittest_package_interfaces.md#interface-reporter)\<[TestReport](#class-testreport), [Unit](../../core/core_package_api/core_package_intrinsics.md#unit)>
 
+<!-- run -->
+```cangjie
+import std.fs.*
+import std.unittest.*
+import std.unittest.testmacro.*
+
+main() {
+    let testCase = UnitTestCase.create("testCase", body: { =>
+        @Fail("failing example")
+    })
+    let suite1 = TestSuite.builder("suite1").add(testCase).build()
+    let suite2 = TestSuite.builder("suite2").build()
+    let group = TestGroup.builder("group").add(suite1).add(suite2).build()
+    group.runTests().reportTo(XmlReporter(Path(".")))
+    let report1 = File.readFrom("./tests/test-group.suite1.xml") |> String.fromUtf8
+    let report2 = File.readFrom("./tests/test-group.suite2.xml") |> String.fromUtf8
+    println(report1)
+    println(report2)
+}
+```
+
 ### XmlReporter(Path)
 
 ```cangjie
@@ -1768,6 +1983,25 @@ public class XmlPerPackageReporter <: Reporter<TestReport, Unit> {
 父类型：
 
 - [Reporter](unittest_package_interfaces.md#interface-reporter)\<[TestReport](#class-testreport), [Unit](../../core/core_package_api/core_package_intrinsics.md#unit)>
+
+<!-- run -->
+```cangjie
+import std.fs.*
+import std.unittest.*
+import std.unittest.testmacro.*
+
+main() {
+    let testCase = UnitTestCase.create("testCase", body: { =>
+        @Fail("failing example")
+    })
+    let suite1 = TestSuite.builder("suite1").add(testCase).build()
+    let suite2 = TestSuite.builder("suite2").build()
+    let group = TestGroup.builder("group").add(suite1).add(suite2).build()
+    group.runTests().reportTo(XmlPerPackageReporter(Path(".")))
+    let report = File.readFrom("./tests/test-group.xml") |> String.fromUtf8
+    println(report)
+}
+```
 
 ### XmlPerPackageReporter(Path)
 

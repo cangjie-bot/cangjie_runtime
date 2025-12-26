@@ -266,6 +266,50 @@ public interface Measurement {
 功能：该接口指定如何在性能测试期间测量数据以及如何在报告中显示数据。
 实现接口的实例可以作为宏 `@Measure` 的属性传递。
 
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+var fuel: Float64 = 0.0
+
+class FuelMeasurement <: Measurement {
+    public func setup() {
+        fuel = 0.0
+    }
+
+    public func measure(): Float64 {
+        fuel
+    }
+
+    public prop name: String {
+        get() { "Fuel"}
+    }
+
+    public prop textDescription: String {
+        get() { "Measuring gallons of fuel spent"}
+    }
+
+    public prop conversionTable: MeasurementUnitTable {
+        get() { [(1.0, "gallon")] }
+    }
+}
+
+@Test
+@Measure[FuelMeasurement()]
+@Configure[
+    minDuration: Duration.nanosecond,
+    warmup: Duration.nanosecond,
+    batchSize: 10
+]
+class BenchClass {
+    @Bench
+    func foo() {
+        fuel += 2.0
+    }
+}
+```
+
 ### prop conversionTable
 
 ```cangjie
@@ -337,6 +381,27 @@ public interface NearEquatable<CT, D> {
 ```
 
 功能：判断某个对象是否基于这个 delta 近似相等。
+
+<!-- run -->
+```cangjie
+import std.math.*
+import std.unittest.*
+import std.unittest.common.*
+import std.unittest.testmacro.*
+
+struct ApproxArray<T> <: NearEquatable<ApproxArray<T>, Int64> {
+    ApproxArray(let xs: Array<T>) {}
+
+    public func isNear(obj: ApproxArray<T>, delta!: Int64): Bool {
+        abs(this.xs.size - obj.xs.size) <= delta
+    } 
+}
+
+@Test
+func test() {
+    @Assert(ApproxArray([1, 2]) == ApproxArray([1]), delta: 1)
+}
+```
 
 ### func isNear(CT, D)
 
