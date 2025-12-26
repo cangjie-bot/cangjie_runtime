@@ -1006,8 +1006,15 @@ import std.collection.concurrent.*
 
 main() {
     // 使用初始化函数创建ConcurrentHashMap
-    let map = ConcurrentHashMap<Int64, String>(3, { i => (i + 1, match(i) { case 0 => "One" case 1 => "Two" case 2 => "Three" case _ => "" }) }, concurrencyLevel: 8)
-    
+    let map = ConcurrentHashMap<Int64, String>(3, {
+        i => (i + 1, match (i) {
+                case 0 => "One"
+                case 1 => "Two"
+                case 2 => "Three"
+                case _ => ""
+            })
+    }, concurrencyLevel: 8)
+
     println("ConcurrentHashMap大小: ${map.size}")
     
     // 验证元素是否正确添加
