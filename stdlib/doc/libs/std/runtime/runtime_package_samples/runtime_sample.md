@@ -4,7 +4,7 @@
 
 示例：
 
-<!-- verify -->
+<!-- run -->
 ```cangjie
 import std.env.*
 import std.runtime.*
@@ -41,7 +41,7 @@ main() {
 }
 ```
 
-运行结果：
+可能的运行结果：
 
 ```text
 81632 E CJNatvie Handle signal: 3.
@@ -54,7 +54,7 @@ end
 
 示例：
 
-<!-- verify -->
+<!-- run -->
 ```cangjie
 import std.env.*
 import std.runtime.*
@@ -90,7 +90,8 @@ main() {
     return 0
 }
 ```
-运行结果：
+
+可能的运行结果：
 
 ```text
 82934 E CJNative Handle signal: 3.
