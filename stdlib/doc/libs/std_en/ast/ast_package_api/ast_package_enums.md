@@ -264,6 +264,9 @@ public enum TokenKind <: ToString {
     PERFORM|                  /*  "perform"          */
     RESUME|                   /*  "resume"           */
     THROWING|                 /*  "throwing"         */
+    COMMON|                   /*  "common"           */
+    PLATFORM|                 /*  "platform"         */
+    FEATURES|                 /*  "features"         */
     ...
 }
 ```
@@ -514,6 +517,14 @@ COMMENT
 
 Function: Constructs an enumeration instance representing *comment*.
 
+### COMMON
+
+```cangjie
+COMMON
+```
+
+Function: Constructs an enumeration instance representing `common`.
+
 ### COMPOSITION
 
 ```cangjie
@@ -666,6 +677,14 @@ EXTEND
 
 Function: Constructs an enumeration instance representing `extend`.
 
+### FEATURES
+
+```cangjie
+FEATURES
+```
+
+Function: Constructs an enumeration instance representing `features`.
+
 ### FINALLY
 
 ```cangjie
@@ -777,6 +796,14 @@ PACKAGE_IDENTIFIER
 ```
 
 Function: Constructs an enumeration instance representing *package identifier*.
+
+### PLATFORM
+
+```cangjie
+PLATFORM
+```
+
+Function: Constructs an enumeration instance representing `PLATFORM`.
 
 ### IF
 
