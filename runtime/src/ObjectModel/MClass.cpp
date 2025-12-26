@@ -870,17 +870,17 @@ MethodInfo* TypeInfo::GetStaticMethodInfo(U32 index)
 
 U32 TypeInfo::GetNumOfEnumCtor()
 {
-    CHECK_DETAIL(!IsEnum(), "To get the number of constructors, but the type is not Enum.");
+    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get the number of constructors, but the type is not Enum.");
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
         return 0;
     }
     return GetEnumInfo()->GetNumOfEnumCtor();
 }
 
-TypeInfo* TypeInfo::GetEnumCtor(U32 idx)
+EnumCtorInfo* TypeInfo::GetEnumCtor(U32 idx)
 {
-    CHECK_DETAIL(!IsEnum(), "To get the Enum's constructor, but the type is not Enum.");
-    return GetEnumInfo()->GetEnumCtor(idx)->GetTypeInfo();
+    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get the Enum's constructor, but the type is not Enum.");
+    return GetEnumInfo()->GetEnumCtor(idx);
 }
 
 void* TypeInfo::GetAnnotations(TypeInfo* arrayTi) { return GetReflectInfo()->GetAnnotations(arrayTi); }
