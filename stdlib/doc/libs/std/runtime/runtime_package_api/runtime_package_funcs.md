@@ -1,21 +1,21 @@
 # 函数
 
 ## func blackBox\<T>(T)
- 
+
 ```cangjie
 public func blackBox<T>(input: T): T
 ```
- 
+
 功能：指示编译器传入的变量进入优化黑盒，无法进行死代码消除等优化。
- 
+
 参数：
- 
+
 - input: T - 进入优化黑洞的变量。
- 
+
 返回值：
- 
+
 - T - 若变量仍需被使用，则可使用该返回值进行调用。
- 
+
 ## func dumpHeapData(Path)
 
 ```cangjie
@@ -242,11 +242,11 @@ public func startCPUProfiling(): Unit
 
 > **注意：**
 >
-> [startCPUProfiling](./runtime_package_funcs.md/#func-startcpuprofiling)与[stopCPUProfiling(Path)](./runtime_package_funcs.md#func-stopcpuprofilingpath)两个函数必须一一对应。
+> [startCPUProfiling](#func-startcpuprofiling)与[stopCPUProfiling(Path)](./runtime_package_funcs.md#func-stopcpuprofilingpath)两个函数必须一一对应。
 
 异常：
 
-- ProfilingInfoException - 若调用了[startCPUProfiling](./runtime_package_funcs.md/#func-startcpuprofiling)后，没有调用[stopCPUProfiling(Path)](./runtime_package_funcs.md#func-stopcpuprofilingpath)，而是又调用了[startCPUProfiling](./runtime_package_funcs.md/#func-startcpuprofiling)则抛出异常。
+- ProfilingInfoException - 若调用了[startCPUProfiling](#func-startcpuprofiling)后，没有调用[stopCPUProfiling(Path)](./runtime_package_funcs.md#func-stopcpuprofilingpath)，而是又调用了[startCPUProfiling](#func-startcpuprofiling)则抛出异常。
 
 ## func stopCPUProfiling(Path)
 
@@ -258,12 +258,12 @@ public func stopCPUProfiling(path: Path): Unit
 
 > **注意：**
 >
-> [startCPUProfiling](./runtime_package_funcs.md/#func-startcpuprofiling)与[stopCPUProfiling(Path)](./runtime_package_funcs.md#func-stopcpuprofilingpath)两个函数必须一一对应。
+> [startCPUProfiling](#func-startcpuprofiling)与[stopCPUProfiling(Path)](./runtime_package_funcs.md#func-stopcpuprofilingpath)两个函数必须一一对应。
 
 参数：
 
-- path: [Path](../../fs/fs_package_api/fs_package_structs.md/#struct-path) - 生成记录文件的文件路径。
+- path: [Path](../../fs/fs_package_api/fs_package_structs.md#struct-path) - 生成记录文件的文件路径。
 
 异常：
 
-- ProfilingInfoException - 若没有调用了[startCPUProfiling](./runtime_package_funcs.md/#func-startcpuprofiling)，直接调用[stopCPUProfiling(Path)](./runtime_package_funcs.md#func-stopcpuprofilingpath)则抛出异常。
+- ProfilingInfoException - 若没有调用了[startCPUProfiling](#func-startcpuprofiling)，直接调用[stopCPUProfiling(Path)](./runtime_package_funcs.md#func-stopcpuprofilingpath)则抛出异常。

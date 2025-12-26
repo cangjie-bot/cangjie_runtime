@@ -4391,7 +4391,7 @@ public func findAnnotation<T>(): ?T where T <: Annotation
 
 功能：尝试获取拥有给定限定名称且作用于该对象的注解。
 
-返回值： 
+返回值：
 
 - ?T - 如果成功匹配则返回该注解，重复标注或者无法匹配时返回 `None`。
 

@@ -395,7 +395,7 @@ Assert Failed: `(foo(10, y: "test" + s) == foo(s.size, y: s) + bar(a))`
 func test() {}
 ```
 
-2. 单个 `@Tag` 包含多个标签名，用逗号分隔。
+1. 单个 `@Tag` 包含多个标签名，用逗号分隔。
 
 <!-- code_no_check -->
 ```cangjie
@@ -403,7 +403,7 @@ func test() {}
 func test() {}
 ```
 
-3. 多个 `@Tag` 在测试函数上。
+1. 多个 `@Tag` 在测试函数上。
 
 <!-- code_no_check -->
 ```cangjie
