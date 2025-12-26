@@ -1215,9 +1215,14 @@ extern "C" U32 MCC_GetNumOfEnumConstructorInfos(TypeInfo* ti)
     return ti->GetNumOfEnumCtor();
 }
 
-extern "C" TypeInfo* MCC_GetEnumConstructorInfo(TypeInfo* ti, U32 idx)
+extern "C" EnumCtorInfo* MCC_GetEnumConstructorInfo(TypeInfo* ti, U32 idx)
 {
     return ti->GetEnumCtor(idx);
+}
+
+extern "C" const char* MCC_GetEnumConstructorName(EnumCtorInfo* ti)
+{
+    return ti->GetName();
 }
 
 extern "C" U32 MCC_GetEnumTag(ObjRef obj)
@@ -1317,14 +1322,16 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef tupleObj, TypeInfo* arrayTi) {
         Uptr fieldAddr = reinterpret_cast<Uptr>(tupleObj) + TYPEINFO_PTR_SIZE + offset;
         ObjRef obj = nullptr;
         if (fieldTi->IsRef()) {
-            MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-            obj = ObjectManager::NewObject(fieldTi, size);
             auto tmp = Heap::GetBarrier().ReadReference(tupleObj, tupleObj->GetRefField(offset + TYPEINFO_PTR_SIZE));
-            Heap::GetBarrier().WriteReference(obj, obj->GetRefField(TYPEINFO_PTR_SIZE), tmp);
-        } else if (fieldTi->IsStruct() || fieldTi->IsTuple()) {
-            MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+            obj = static_cast<ObjRef>(tmp);
+        } else if (fieldTi->IsStruct() || fieldTi->IsTuple() || fieldTi->IsEnum()) {
             MSize fieldSize = fieldTi->GetInstanceSize();
+            MSize size = MRT_ALIGN(fieldSize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
             obj = ObjectManager::NewObject(fieldTi, size);
+            if (fieldSize == 0) {
+                array->SetRefElement(idx, obj);
+                continue;
+            }
             void* tmp = malloc(fieldSize);
             Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), tupleObj, fieldAddr, fieldSize);
             Heap::GetBarrier().WriteStruct(obj, reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE, fieldSize,
@@ -1563,7 +1570,11 @@ static bool IsTupleTypeOf(ObjectPtr obj, TypeInfo* typeInfo, TypeInfo* targetTyp
         ObjectPtr curObj = nullptr;
         if (fieldTargetTI->IsRef()) {
             if (!fieldTypeInfo->IsClass() && !fieldTypeInfo->IsInterface()) {
-                return false;
+                if (!fieldTypeInfo->IsSubType(fieldTargetTI)) {
+                    return false;
+                } else {
+                    continue;
+                }
             }
             if (Heap::IsHeapAddress(obj)) {
                 curObj = Heap::GetBarrier().ReadReference(obj, obj->GetRefField(offset));
