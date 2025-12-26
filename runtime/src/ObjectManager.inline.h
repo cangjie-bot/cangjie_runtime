@@ -45,8 +45,12 @@ inline ObjRef ObjectManager::NewObjectAndInit(const TypeInfo* ti, MSize size, vo
         Uptr argAddr = reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE + offset;
         if (argType->IsRef()) {
             obj->StoreRef(offset + TYPEINFO_PTR_SIZE, argObj);
-        } else if (argType->IsStruct() || argType->IsTuple()) {
+        } else if (argType->IsStruct() || argType->IsTuple() || argType->IsEnum()) {
             MSize argSize = argType->GetInstanceSize();
+            if (argSize == 0) {
+                refField++;
+                continue;
+            }
             void* tmp = malloc(argSize);
             Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), argObj, 
                 reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE, argSize);
