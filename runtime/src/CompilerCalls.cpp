@@ -1280,7 +1280,7 @@ extern "C" TypeInfo** MCC_GetFunctionSignatureTypes(TypeInfo* funcTi)
 // for tuple
 extern "C" U32 MCC_GetNumOfFieldTypes(TypeInfo* ti) { return ti->GetFieldNum(); }
 
-extern "C" TypeInfo** MCC_GetFieldType(TypeInfo* ti) { return ti->GetFieldTypes(); }
+extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti) { return ti->GetFieldTypes(); }
 
 extern "C" ObjRef MCC_NewAndInitObject(const TypeInfo* ti, void* args) {
     // 创建一个objref，把ti放进去
