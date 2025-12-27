@@ -257,6 +257,8 @@ extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetEnumConstructInfo(TypeInfo* ti, U32 id
 __asm__(".global _CJ_MCC_GetEnumConstructorInfo\n\t.set _CJ_MCC_GetEnumConstructorInfo, _MCC_GetEnumConstructorInfo");
 extern "C" MRT_EXPORT const char* CJ_MCC_GetEnumConstructorName(EnumCtorInfo* ti);
 __asm__(".global _CJ_MCC_GetEnumConstructorName\n\t.set _CJ_MCC_GetEnumConstructorName, _MCC_GetEnumConstructorName");
+extern "C" MRT_EXPORT EnumCtorInfo* CJ_MCC_GetEnumConstructorInfoFromAny(ObjRef obj);
+__asm__(".global _CJ_MCC_GetEnumConstructorInfoFromAny\n\t.set _CJ_MCC_GetEnumConstructorInfoFromAny, _MCC_GetEnumConstructorInfoFromAny");
 extern "C" MRT_EXPORT U32 CJ_MCC_GetEnumTag(ObjRef obj);
 __asm__(".global _CJ_MCC_GetEnumTag\n\t.set _CJ_MCC_GetEnumTag, _MCC_GetEnumTag");
 
