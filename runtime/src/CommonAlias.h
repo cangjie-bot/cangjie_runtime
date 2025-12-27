@@ -175,12 +175,10 @@ extern "C" MRT_EXPORT bool CJ_MCC_IsTuple(TypeInfo* ti) __attribute__((alias("MC
 extern "C" MRT_EXPORT bool CJ_MCC_IsReflectUnsupportedType(TypeInfo* ti)
     __attribute__((alias("MCC_IsReflectUnsupportedType")));
 
-extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFunctionParameters(TypeInfo* funcTi)
-    __attribute__((alias("MCC_GetFunctionParameters")));
-extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
-    __attribute__((alias("MCC_GetNumOfFunctionParameters")));
-extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetFunctionReturnType(TypeInfo* ti)
-    __attribute__((alias("MCC_GetFunctionReturnType")));
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFunctionSignatureTypes(TypeInfo* funcTi)
+    __attribute__((alias("MCC_GetFunctionSignatureTypes")));
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFunctionSignatureTypes(TypeInfo* funcTi)
+    __attribute__((alias("MCC_GetNumOfFunctionSignatureTypes")));
 
 // for enum
 extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfEnumConstructorInfos(TypeInfo* ti)
@@ -193,10 +191,10 @@ extern "C" MRT_EXPORT U32 CJ_MCC_GetEnumTag(ObjRef obj)
     __attribute__((alias("MCC_GetEnumTag")));
 
 // for tuple
-extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfTypeInfoFields(TypeInfo* ti)
-    __attribute__((alias("MCC_GetNumOfTypeInfoFields")));
-extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetTypeInfoFields(TypeInfo* ti)
-    __attribute__((alias("MCC_GetTypeInfoFields")));
+extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFieldTypes(TypeInfo* ti)
+    __attribute__((alias("MCC_GetNumOfFieldTypes")));
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFieldType(TypeInfo* ti)
+    __attribute__((alias("MCC_GetFieldType")));
 extern "C" MRT_EXPORT ObjRef CJ_MCC_NewAndInitObject(TypeInfo* ti, void* args)
     __attribute__((alias("MCC_NewAndInitObject")));
 extern "C" MRT_EXPORT ObjRef CJ_MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi)
