@@ -157,6 +157,7 @@ void TypeInfo::SetGCTib(GCTib gctib)
 void TypeInfo::SetMTableDesc(MTableDesc* desc)
 {
     this->mTableDesc = desc;
+    std::atomic_thread_fence(std::memory_order_seq_cst);
     // 15: The most significant bit indicates whether the mTable is initialized.
     validInheritNum = validInheritNum & ((1ULL << 15) - 1);
 }
