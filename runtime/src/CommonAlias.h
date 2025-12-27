@@ -187,6 +187,8 @@ extern "C" MRT_EXPORT TypeInfo* CJ_MCC_GetEnumConstructorInfo(TypeInfo* ti, U32 
     __attribute__((alias("MCC_GetEnumConstructorInfo")));
 extern "C" MRT_EXPORT const char* CJ_MCC_GetEnumConstructorName(EnumCtorInfo* ti)
     __attribute__((alias("MCC_GetEnumConstructorName")));
+extern "C" MRT_EXPORT EnumCtorInfo* CJ_MCC_GetEnumConstructorInfoFromAny(ObjRef obj)
+    __attribute__((alias("MCC_GetEnumConstructorInfoFromAny")));
 extern "C" MRT_EXPORT U32 CJ_MCC_GetEnumTag(ObjRef obj)
     __attribute__((alias("MCC_GetEnumTag")));
 
