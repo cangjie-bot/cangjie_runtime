@@ -43,7 +43,7 @@ union MTableBitmap {
     BIT_TYPE shortBitmap;
     LargeBitmap* largeBitmap;
     BIT_TYPE tag;
-    
+
     void ForEachBit(const std::function<void(ExtensionData*)>& visitor, ExtensionData** vExtensionPtr)
     {
         bool isSmallBitmap = tag & SIGN_BIT;
@@ -147,7 +147,7 @@ struct StdGCTib {
     void VisitAllField(U8 &bitmapWord, MAddress &fieldAddr, const RefFieldVisitor &visitor) const
     {
         visitor(*reinterpret_cast<RefField<> *>(fieldAddr));
- 
+
         // go next ref word.
         bitmapWord >>= BITS_FOR_REF;
         fieldAddr += sizeof(RefField<>);
