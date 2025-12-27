@@ -1237,7 +1237,7 @@ extern "C" U32 MCC_GetEnumTag(ObjRef obj)
 }
 
 // reflect support function
-extern "C" U32 MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
+extern "C" U32 MCC_GetNumOfFunctionSignatureTypes(TypeInfo* funcTi)
 {
     TypeInfo* ti = nullptr;
     auto super = funcTi->GetSuperTypeInfo();
@@ -1257,7 +1257,7 @@ extern "C" U32 MCC_GetNumOfFunctionParameters(TypeInfo* funcTi)
     return typeArgNum - 1;
 }
 
-extern "C" TypeInfo** MCC_GetFunctionParameters(TypeInfo* funcTi)
+extern "C" TypeInfo** MCC_GetFunctionSignatureTypes(TypeInfo* funcTi)
 {
     TypeInfo* ti = nullptr;
     auto super = funcTi->GetSuperTypeInfo();
@@ -1277,29 +1277,10 @@ extern "C" TypeInfo** MCC_GetFunctionParameters(TypeInfo* funcTi)
     return params;
 }
 
-extern "C" TypeInfo* MCC_GetFunctionReturnType(TypeInfo* funcTi)
-{
-    TypeInfo* ti = nullptr;
-    auto super = funcTi->GetSuperTypeInfo();
-    if (funcTi->IsFunc()) {
-        ti = funcTi;
-    } else if (super != nullptr && super->IsFunc()) {
-        ti = super;
-    } else {
-        return nullptr;
-    }
-
-    // Now, `super` both are Closure type.
-    // Get function type from Closure type, i.e., typeArgs[0]:
-    TypeInfo* funcType = ti->GetTypeArgs()[0];
-
-    return funcType->GetTypeArgs()[0];
-}
-
 // for tuple
-extern "C" U32 MCC_GetNumOfTypeInfoFields(TypeInfo* ti) { return ti->GetFieldNum(); }
+extern "C" U32 MCC_GetNumOfFieldTypes(TypeInfo* ti) { return ti->GetFieldNum(); }
 
-extern "C" TypeInfo** MCC_GetTypeInfoFields(TypeInfo* ti) { return ti->GetFieldTypes(); }
+extern "C" TypeInfo** MCC_GetFieldType(TypeInfo* ti) { return ti->GetFieldTypes(); }
 
 extern "C" ObjRef MCC_NewAndInitObject(const TypeInfo* ti, void* args) {
     // 创建一个objref，把ti放进去
