@@ -1254,7 +1254,7 @@ extern "C" U32 MCC_GetNumOfFunctionSignatureTypes(TypeInfo* funcTi)
     TypeInfo* funcType = ti->GetTypeArgs()[0];
     U16 typeArgNum = funcType->GetTypeArgNum();
 
-    return typeArgNum - 1;
+    return typeArgNum;
 }
 
 extern "C" TypeInfo** MCC_GetFunctionSignatureTypes(TypeInfo* funcTi)
@@ -1273,7 +1273,7 @@ extern "C" TypeInfo** MCC_GetFunctionSignatureTypes(TypeInfo* funcTi)
     // Get function type from Closure type, i.e., typeArgs[0]:
     TypeInfo* funcType = ti->GetTypeArgs()[0];
 
-    TypeInfo** params = funcType->GetTypeArgs() + 1;
+    TypeInfo** params = funcType->GetTypeArgs();
     return params;
 }
 
