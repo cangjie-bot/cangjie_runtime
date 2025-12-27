@@ -43,7 +43,7 @@ union MTableBitmap {
     BIT_TYPE shortBitmap;
     LargeBitmap* largeBitmap;
     BIT_TYPE tag;
-    
+
     void ForEachBit(const std::function<void(ExtensionData*)>& visitor, ExtensionData** vExtensionPtr)
     {
         bool isSmallBitmap = tag & SIGN_BIT;
@@ -73,10 +73,10 @@ union MTableBitmap {
 };
 
 struct MTableDesc {
+    std::recursive_mutex mTableMutex;
     std::unordered_map<U32, std::pair<ExtensionData*, TypeInfo*>> mTable;
     std::vector<BaseFile*> waitedExtensionDatas;
     MTableBitmap mTableBitmap;
-    std::recursive_mutex mTableMutex;
     bool pending = false;
     bool needsResolveInner = true;
     explicit MTableDesc(BIT_TYPE bitmap_);
@@ -147,7 +147,7 @@ struct StdGCTib {
     void VisitAllField(U8 &bitmapWord, MAddress &fieldAddr, const RefFieldVisitor &visitor) const
     {
         visitor(*reinterpret_cast<RefField<> *>(fieldAddr));
- 
+
         // go next ref word.
         bitmapWord >>= BITS_FOR_REF;
         fieldAddr += sizeof(RefField<>);
