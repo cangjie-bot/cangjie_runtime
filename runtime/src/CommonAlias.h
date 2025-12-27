@@ -193,8 +193,8 @@ extern "C" MRT_EXPORT U32 CJ_MCC_GetEnumTag(ObjRef obj)
 // for tuple
 extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFieldTypes(TypeInfo* ti)
     __attribute__((alias("MCC_GetNumOfFieldTypes")));
-extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFieldType(TypeInfo* ti)
-    __attribute__((alias("MCC_GetFieldType")));
+extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFieldTypes(TypeInfo* ti)
+    __attribute__((alias("MCC_GetFieldTypes")));
 extern "C" MRT_EXPORT ObjRef CJ_MCC_NewAndInitObject(TypeInfo* ti, void* args)
     __attribute__((alias("MCC_NewAndInitObject")));
 extern "C" MRT_EXPORT ObjRef CJ_MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi)
