@@ -244,7 +244,7 @@ public static func create<T>(name: String): ConfigurationKey
 
 - name: [String](../../../std/core/core_package_api/core_package_structs.md#struct-string) - 配置键值的名称。
 
-返回值:
+返回值：
 
 - [ConfigurationKey](#class-configurationkey) - 创建的配置键值。
 

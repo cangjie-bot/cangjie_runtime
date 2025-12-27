@@ -320,7 +320,7 @@ func setup()
 ### prop info
 
 ```cangjie
-prop info: Measure
+prop info: MeasurementInfo
 ```
 
 功能：具体测量的汇总信息。
@@ -507,7 +507,7 @@ public func isNear(obj: Float64, delta!: RelativeDelta<Float64>): Bool
 ## interface Reporter\<TReport, TReturn>
 
 ```cangjie
-sealed interface Reporter <TReport, TReturn>
+sealed interface Reporter <TReport, TReturn> {}
 ```
 
 功能：报告器基础接口。
