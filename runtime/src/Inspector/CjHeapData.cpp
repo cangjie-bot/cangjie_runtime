@@ -29,7 +29,6 @@ static bool g_oomIsTrigged = false;
 
 void CjHeapData::WriteHeap()
 {
-    WriteFixedHeader();
     WriteString();
     WriteAllClassLoad();
     WriteAllStructClassLoad();
@@ -79,7 +78,16 @@ void CjHeapData::DumpHeap()
         }
     } else {
         // dump for cjprof
+#if defined(__ANDROID__)
+        time_t now = time(0);
+        struct tm *local_time = localtime(&now);
+        char time_str[80];
+        strftime(time_str, sizeof(time_str), "%Y%m%d%H%M%S", local_time);
+        CString output = CString("/storage/emulated/0/Documents/") + CString("cjheap-") + CString(time_str) + CString(".data");
+        fp = fopen(output.Str(), "wb");
+#else
         fp = fopen("item_data.dat.cache", "wb");
+#endif
     }
 
     if (!fp) {

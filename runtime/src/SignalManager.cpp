@@ -211,6 +211,7 @@ void SignalManager::InstallSIGUSR1Handlers() const
     sa.scMask = mask;
     sa.scFlags = SA_SIGINFO | SA_ONSTACK;
     AddHandlerToSignalStack(SIGUSR1, &sa);
+    AddHandlerToSignalStack(34, &sa);
 }
 
 bool SignalManager::HandleUnexpectedSIGUSR1(int sig, siginfo_t* info, void* context)
