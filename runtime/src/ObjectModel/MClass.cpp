@@ -27,9 +27,9 @@ namespace MapleRuntime {
 class ThreadSafeOuterTypeInfoCache {
 public:
     static ThreadSafeOuterTypeInfoCache& GetInstance()
-    { 
-        static ThreadSafeOuterTypeInfoCache instance; 
-        return instance; 
+    {
+        static ThreadSafeOuterTypeInfoCache instance;
+        return instance;
     }
 
     void Insert(U32 objTypeUUID, U32 introTypeUUID, U64 methodIdx, TypeInfo* methodOuterTypeInfo)
@@ -157,6 +157,7 @@ void TypeInfo::SetGCTib(GCTib gctib)
 void TypeInfo::SetMTableDesc(MTableDesc* desc)
 {
     this->mTableDesc = desc;
+    std::atomic_thread_fence(std::memory_order_seq_cst);
     // 15: The most significant bit indicates whether the mTable is initialized.
     validInheritNum = validInheritNum & ((1ULL << 15) - 1);
 }
@@ -555,12 +556,18 @@ ExtensionData* TypeInfo::FindExtensionData(TypeInfo* itf, bool searchRecursively
 
 FuncPtr* TypeInfo::GetMTable(TypeInfo* itf)
 {
+    if (GetUUID() == 0) {
+        TypeInfoManager::GetTypeInfoManager().AddTypeInfo(this);
+    }
     if (IsTempEnum() && GetSuperTypeInfo()) {
         return GetSuperTypeInfo()->GetMTable(itf);
     }
     auto extensionData = FindExtensionData(itf, true);
 	if (extensionData == nullptr) {
         LOG(RTLOG_FATAL, "funcTable is nullptr, ti: %s, itf: %s", GetName(), itf->GetName());
+    }
+    if (IsMTableDescUnInitialized()) {
+        TryInitMTable();
     }
 	TryUpdateExtensionData(itf, extensionData);
 	FuncPtr* funcTable = extensionData->GetFuncTable();
