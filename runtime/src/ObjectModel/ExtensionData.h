@@ -12,6 +12,12 @@
 #include "MClass.h"
 
 namespace MapleRuntime {
+union OuterTiUnion {
+    using OuterTiFunc = TypeInfo* (*)(TypeInfo* childTi);
+    TypeInfo* outerTypeInfo;
+    OuterTiFunc outerTiFunc;
+};
+
 class ATTR_PACKED(4) ExtensionData {
 public:
     bool TargetIsTypeInfo() { return argNum == 0; }
@@ -27,6 +33,18 @@ public:
     FuncPtr* GetFuncTable() const { return funcTable; }
     void UpdateFuncTable(U16 ftSize, FuncPtr* newFt) { funcTableSize  = ftSize; funcTable = newFt; }
     U16 GetFuncTableSize() const { return funcTableSize; }
+    bool HasOuterTiFastPath() const { return (flag & 0b1) != 0; }
+    TypeInfo* GetOuterTi(TypeInfo* childTi, U64 index) const
+    {
+        if (!HasOuterTiFastPath()) {
+            return nullptr;
+        }
+        bool isConcrete = (childTi->GetTypeArgNum() == 0);
+        OuterTiUnion* outerTiUnionStart = reinterpret_cast<OuterTiUnion*>(
+            reinterpret_cast<uint8_t*>(funcTable) + sizeof(FuncPtr) * funcTableSize);
+        return isConcrete ? outerTiUnionStart[index].outerTypeInfo
+                          : outerTiUnionStart[index].outerTiFunc(childTi);
+    }
 
 //private: // temporary solution
 public:
@@ -45,6 +63,7 @@ public:
     };
     FuncPtr whereCondFn;
     FuncPtr* funcTable;
+    // The OuterTiUnion array is behind funcTable in memory, the offset depends on funcTableSize.
 };
 } // namespace MapleRuntime
 #endif // MRT_EXTENSION_DATA_H
