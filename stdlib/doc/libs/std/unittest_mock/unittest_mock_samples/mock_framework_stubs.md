@@ -350,6 +350,8 @@ func test() {
 
 有两种可用的模式 `ReturnsDefaults` 和 `SyntheticFields` 。这些模式通过枚举类型 `StubMode` 表示。可以通过在创建 mock 对象时将其传递给 `mock` 函数来为特定的 mock 对象启用桩模式。
 
+<!-- code_no_check -->
+
 ```cangjie
 public func mock<T>(modes: Array<StubMode>): T
 ```
