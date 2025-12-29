@@ -942,7 +942,7 @@ IS
 JSTRING_LITERAL
 ```
 
-功能：构造一个表示 JavaSTRING字面量 的枚举实例。
+功能：构造一个表示 Java String 字面量 的枚举实例。
 
 ### LCURL
 
