@@ -1,4 +1,4 @@
-# 常量&变量
+# 变量&常量
 
 ## const AT_EMPTY_PATH <sup>(deprecated)</sup>
 
