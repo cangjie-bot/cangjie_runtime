@@ -854,7 +854,21 @@ func createQuoteToken(expr: NodeFormat_Expr): Expr {
     var tks = Tokens()
     for (tk in tkp.GetTokens()) {
         match (tk) {
-            case Some(v) => tks.append(Token(getTokenKind(v.GetKind()), v.GetValue()).addPosition(v.GetPos()))
+            case Some(v) => 
+                let delimiterNum = v.GetDelimiterNum()
+                let isSingle = v.GetIsSingleQuote()
+                let hasEscape = v.GetHasEscape()
+                var tokenKind = getTokenKind(v.GetKind())
+                if (tokenKind == STRING_LITERAL && isSingle == true) {
+                    tokenKind = SINGLE_QUOTED_STRING_LITERAL
+                }
+                var token = Token(tokenKind, v.GetValue()).addPosition(v.GetPos())
+                token.delimiterNum = UInt16(delimiterNum)
+                token.isSingleQuote = isSingle
+                if (hasEscape) {
+                    tks.append(Token(TokenKind.ILLEGAL, "\\", v.GetPos().fileId, v.GetPos().line, v.GetPos().column - 1))
+                }
+                tks.append(token)
             case None => ()
         }
     }
