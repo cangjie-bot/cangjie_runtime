@@ -949,6 +949,13 @@ EnumCtorInfo* EnumInfo::GetEnumCtor(U32 idx) const
     return enumCtorInfo + idx;
 }
 
+TypeInfo* EnumInfo::GetCtorTypeInfo(U32 idx) const
+{
+    CHECK(idx < GetNumOfEnumCtor());
+    EnumCtorInfo* enumCtorInfo = GetEnumCtor(idx);
+    return enumCtorInfo->GetTypeInfo();
+}
+
 void EnumInfo::SetEnumCtors(void* ctors)
 {
     enumCtorInfos.refOffset = reinterpret_cast<Uptr>(ctors) - reinterpret_cast<Uptr>(this);

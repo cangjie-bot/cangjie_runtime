@@ -440,7 +440,7 @@ public:
     inline U32 GetNumOfInstanceMethodInfos() const { return instanceMethodCnt; }
     inline U32 GetNumOfStaticMethodInfos() const { return staticMethodCnt; }
     EnumCtorInfo* GetEnumCtor(U32 idx) const;
-    inline TypeInfo* GetCtorTypeInfo(U32 idx) const;
+    TypeInfo* GetCtorTypeInfo(U32 idx) const;
     void* GetAnnotations(TypeInfo* arrayTi);
     MethodInfo* GetInstanceMethodInfo(U32 index) const;
     MethodInfo* GetStaticMethodInfo(U32 index);

@@ -1229,19 +1229,17 @@ extern "C" const char* MCC_GetEnumConstructorName(EnumCtorInfo* ti)
     return ti->GetName();
 }
 
-extern "C" U32 MCC_GetEnumTag(ObjRef obj)
-{
-    struct EnumLayout {
-        TypeInfo* ti;
-        U32 tag;
-    };
-    CHECK_DETAIL(!(obj->GetTypeInfo()->IsEnum()), "To get Enum tag, but the type is not Enum.");
-    // todo, need barrier??
-    return reinterpret_cast<EnumLayout*>(obj)->tag;
-}
-
 extern "C" EnumCtorInfo* MCC_GetEnumConstructorInfoFromAny(ObjRef obj) {
-    return nullptr;
+    TypeInfo* ti = obj->GetTypeInfo();
+    I32 tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
+    EnumInfo* enumInfo = nullptr;
+    if (!ti->IsTempEnum()) {
+        enumInfo = ti->GetEnumInfo();
+    } else {
+        enumInfo = ti->GetSuperTypeInfo()->GetEnumInfo();
+    }
+    CHECK_DETAIL(enumInfo != nullptr, "enumInfo is nullptr");
+    return enumInfo->GetEnumCtor(tag);
 }
 
 // reflect support function
@@ -1286,25 +1284,53 @@ extern "C" TypeInfo** MCC_GetFunctionSignatureTypes(TypeInfo* funcTi)
 }
 
 // for tuple
-extern "C" U32 MCC_GetNumOfFieldTypes(TypeInfo* ti) { return ti->GetFieldNum(); }
+extern "C" U32 MCC_GetNumOfFieldTypes(TypeInfo* ti)
+{
+    U32 num = ti->GetFieldNum();
+    if (ti->IsEnum() || ti->IsTempEnum()) {
+        return num - 1;
+    }
+    return num;
+}
 
-extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti) { return ti->GetFieldTypes(); }
+extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
+{
+    TypeInfo** fieldTypes = ti->GetFieldTypes();
+    if (ti->IsEnum() || ti->IsTempEnum()) {
+        return fieldTypes + 1;
+    }
+    return fieldTypes;
+}
 
-extern "C" ObjRef MCC_NewAndInitObject(const TypeInfo* ti, void* args) {
-    // 创建一个objref，把ti放进去
-    MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-    ObjRef obj = ObjectManager::NewObject(ti, size);
+static void SetEnumTag(ObjRef obj, TypeInfo* typeInfo)
+{
+    TypeInfo* enumTi = typeInfo->GetSuperTypeInfo();
+    EnumInfo* enumInfo = enumTi->GetEnumInfo();
+    U32 num = enumInfo->GetNumOfEnumCtor();
+    for (I32 idx = 0; idx < num; idx++) {
+        TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(idx);
+        if (typeInfo->GetUUID() == ctorTypeInfo->GetUUID()) {
+            obj->Store(TYPEINFO_PTR_SIZE, idx);
+            break;
+        }
+    }
+}
 
-    // 把args里的元素一个个解析后放进去
+static void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
+{
     CJRawArray* cjRawArray = static_cast<CJArray*>(args)->rawPtr;
     U64 argCnt = cjRawArray->len;
     ObjRef rawArray = reinterpret_cast<ObjRef>(cjRawArray);
     RefField<false>* refField = reinterpret_cast<RefField<false>*>(&(cjRawArray->data));
     for (U64 idx = 0; idx < argCnt; ++idx) {
         ObjRef argObj = static_cast<ObjRef>(Heap::GetBarrier().ReadReference(rawArray, *refField));
-        // 从argObj中取出值，放入ObjRef
         TypeInfo* argType = ti->GetFieldType(idx);
         U32 offset = ti->GetFieldOffset(idx);
+        if (ti->IsEnum() || ti->IsTempEnum()) {
+            // For enum and temp enum, skip the first element (the tag).
+            argType = ti->GetFieldType(idx + 1);
+            offset = ti->GetFieldOffset(idx + 1);
+        }
         Uptr argAddr = reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE + offset;
         if (argType->IsRef()) {
             obj->StoreRef(offset + TYPEINFO_PTR_SIZE, argObj);
@@ -1340,43 +1366,63 @@ extern "C" ObjRef MCC_NewAndInitObject(const TypeInfo* ti, void* args) {
         }
         refField++;
     }
+}
+
+extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
+    MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+    ObjRef obj = nullptr;
+
+    // Need set tag for enum and temp enum.
+    if (ti->IsEnum()) {
+        // For enum types, the object's TypeInfo should be the enum's TypeInfo.
+        // Current ti is the constructor's TypeInfo of the enum.
+        TypeInfo* enumTi = ti->GetSuperTypeInfo();
+        obj = ObjectManager::NewObject(enumTi, size);
+        SetEnumTag(obj, ti);
+    } else if (ti->IsTempEnum()) {
+        obj = ObjectManager::NewObject(ti, size);
+        SetEnumTag(obj, ti);
+    } else {
+        obj = ObjectManager::NewObject(ti, size);
+    }
+    CHECK_DETAIL(obj != nullptr, "MCC_NewAndInitObject failed, obj is nullptr");
+
+    // Parse fields from args and store them into obj.
+    SetFieldFromArgs(obj, ti, args);
     return obj;
 }
 
-extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
-    // 先从obj里取出ti
-    TypeInfo* ti = obj->GetTypeInfo();
-    // 从ti中获取fields、offsets
-    U16 fieldNum = ti->GetFieldNum();
-    // 创建一个ArrayRef
-    TypeInfo* rawArrayTi = arrayTi->GetFieldType(0);
-    ArrayRef array = ObjectManager::NewArray(fieldNum, rawArrayTi);
-    // 根据fields、offsets把一个一个元素实例取出来并放到ArrayRef里，返回ArrayRef
+static void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum)
+{
     for (int idx = 0; idx < fieldNum; idx++) {
         TypeInfo* fieldTi = ti->GetFieldType(idx);
         U32 offset = ti->GetFieldOffset(idx);
+        if (ti->IsEnum() || ti->IsTempEnum()) {
+            // For enum and temp enum, skip the first element (the tag).
+            fieldTi = ti->GetFieldType(idx + 1);
+            offset = ti->GetFieldOffset(idx + 1);
+        }
         Uptr fieldAddr = reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE + offset;
-        ObjRef filedObj = nullptr;
+        BaseObject* fieldObj = nullptr;
         if (fieldTi->IsRef()) {
-            auto tmp = Heap::GetBarrier().ReadReference(obj, obj->GetRefField(offset + TYPEINFO_PTR_SIZE));
-            filedObj = static_cast<ObjRef>(tmp);
+            fieldObj = Heap::GetBarrier().ReadReference(obj, obj->GetRefField(offset + TYPEINFO_PTR_SIZE));
         } else if (fieldTi->IsStruct() || fieldTi->IsTuple() || fieldTi->IsEnum()) {
             MSize fieldSize = fieldTi->GetInstanceSize();
             MSize size = MRT_ALIGN(fieldSize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-            filedObj = ObjectManager::NewObject(fieldTi, size);
+            fieldObj = ObjectManager::NewObject(fieldTi, size);
             if (fieldSize == 0) {
-                array->SetRefElement(idx, filedObj);
+                array->SetRefElement(idx, fieldObj);
                 continue;
             }
             void* tmp = malloc(fieldSize);
             Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), obj, fieldAddr, fieldSize);
-            Heap::GetBarrier().WriteStruct(filedObj, reinterpret_cast<Uptr>(filedObj) + TYPEINFO_PTR_SIZE, fieldSize,
+            Heap::GetBarrier().WriteStruct(fieldObj, reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE, fieldSize,
                 reinterpret_cast<MAddress>(tmp), fieldSize);
             free(tmp);
         } else if (fieldTi->IsPrimitiveType()) {
             MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-            filedObj = ObjectManager::NewObject(fieldTi, size);
-            if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(filedObj) + TYPEINFO_PTR_SIZE),
+            fieldObj = ObjectManager::NewObject(fieldTi, size);
+            if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE),
                          fieldTi->GetInstanceSize(),
                          reinterpret_cast<void*>(fieldAddr),
                          fieldTi->GetInstanceSize()) != EOK) {
@@ -1387,16 +1433,39 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
             // so we can copy the memory directly
             MSize vArraySize = fieldTi->GetFieldNum() * fieldTi->GetComponentTypeInfo()->GetInstanceSize();
             MSize size = MRT_ALIGN(vArraySize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-            filedObj = ObjectManager::NewObject(fieldTi, size);
-            if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(filedObj) + TYPEINFO_PTR_SIZE), vArraySize,
+            fieldObj = ObjectManager::NewObject(fieldTi, size);
+            if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE), vArraySize,
                          reinterpret_cast<void*>(fieldAddr), vArraySize) != EOK) {
                 LOG(RTLOG_ERROR, "MCC_GetAssociatedValues memcpy_s fail");
             }
         } else {
             LOG(RTLOG_FATAL, "%s not to supported", fieldTi->GetName());
         }
-        array->SetRefElement(idx, filedObj);
+        array->SetRefElement(idx, fieldObj);
     }
+}
+
+extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
+    TypeInfo* ti = obj->GetTypeInfo();
+    U16 fieldNum = ti->GetFieldNum();
+    // For enum and temp enum, fields include the tag,
+    // but the tag is not part of associated values.
+    if (ti->IsEnum()) {
+        // The object's TypeInfo(ti) is the enum's TypeInfo.
+        // Read the tag, and get constructor's TypeInfo based on the tag.
+        I32 tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
+        EnumInfo* enumInfo = ti->GetEnumInfo();
+        ti = enumInfo->GetCtorTypeInfo(tag);
+        fieldNum -= 1;
+    } else if (ti->IsTempEnum()) {
+        fieldNum -= 1;
+    }
+
+    TypeInfo* rawArrayTi = arrayTi->GetFieldType(0);
+    ArrayRef array = ObjectManager::NewArray(fieldNum, rawArrayTi);
+    // Extract fields from obj and put them into array.
+    SetElementFromObject(array, obj, ti, fieldNum);
+
     U32 size = arrayTi->GetInstanceSize();
     MSize arrayObjSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef arrayObj = ObjectManager::NewObject(arrayTi, arrayObjSize, AllocType::RAW_POINTER_OBJECT);
