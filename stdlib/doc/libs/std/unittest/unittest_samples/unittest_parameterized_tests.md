@@ -230,6 +230,206 @@ func testNonsense(array: Array<Int64>) {
 通过这两个配置参数，就可以设置框架的最大步骤数。
 例如，对于上面的这个小测试，参数设置为一个大的数值可能没有多大意义。之前的运行已经表明，通常不到10步，测试就会失败。
 
+## 带有自定义 DataShrinker 的示例
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.prop_test.*
+import std.collection.*
+import std.random.*
+
+
+class Person <: ToString {
+    let name: String
+    let age: Int64
+    let email: String
+    
+    init(name: String, age: Int64, email: String) {
+        this.name = name
+        this.age = age
+        this.email = email
+    }
+    
+    public func toString(): String {
+        return "Person(name='${name}', age=${age}, email='${email}')"
+    }
+}
+
+class PersonShrinker <: DataShrinker<Person> {
+    public func shrink(value: Person): Iterable<Person> {
+        let results = ArrayList<Person>()
+        
+        // Strategy 1: Empty/default values
+        results.add(Person("", 0, ""))
+        
+        // Strategy 2: Simplify each field individually
+        if (value.name.size > 0) {
+            results.add(Person("a", value.age, value.email))
+        }
+        if (value.age != 0) {
+            results.add(Person(value.name, 0, value.email))
+        }
+        if (value.email.size > 0) {
+            results.add(Person(value.name, value.age, "a@b"))
+        }
+        
+        // Strategy 3: Halve numeric values
+        if (value.age > 1) {
+            results.add(Person(value.name, value.age / 2, value.email))
+        }
+        
+        // Strategy 4: Shorten name
+        if (value.name.size > 1) {
+            let halfName = value.name[0..(value.name.size / 2)]
+            results.add(Person(halfName, value.age, value.email))
+        }
+        
+        return results
+    }
+}
+
+extend Person <: Arbitrary<Person> {
+    public static func arbitrary(random: RandomSource): Generator<Person> {
+        let sampleNames = ["John", "Alice", "Bob", "Charlie", "Diana", "Eve", "Frank"]
+        let sampleDomains = ["example.com", "work.com", "company.com", "email.com", "test.com"]
+        // Generate random person using provided RandomSource
+        let randomIndex = Int64(random.nextUInt32()) % Int64(sampleNames.size)
+        let randomDomainIndex = Int64(random.nextUInt32()) % Int64(sampleDomains.size)
+        let randomAge = Int64(random.nextUInt32()) % 80  // Age 0-79
+        
+        let name = sampleNames[randomIndex] + " Smith"
+        let email = sampleNames[randomIndex] + "@" + sampleDomains[randomDomainIndex]
+        
+        return Generators.generate { Person(name, randomAge, email) }
+    }
+}
+
+
+class PersonStrategy <: DataStrategy<Person> {
+    let samplePeople: Array<Person>
+    
+    init() {
+        this.samplePeople = [
+            Person("John Doe", 25, "john@example.com"),
+            Person("Alice Smith", 30, "alice@work.com"),
+            Person("Bob Johnson", 45, "bob@company.com"),
+            Person("Charlie Brown", 60, "charlie@email.com"),
+            Person("Diana Prince", 35, "diana@justice.com")
+        ]
+    }
+    
+    public prop isInfinite: Bool {
+        get() { return false }
+    }
+    
+    public func provider(configuration: Configuration): DataProvider<Person> {
+        return samplePeople
+    }
+    
+    public func shrinker(configuration: Configuration): DataShrinker<Person> {
+        return PersonShrinker()
+    }
+}
+
+@Test
+class PersonTests {
+    @TestCase
+    func testPersonShrinker() {
+        let shrinker = PersonShrinker()
+        let original = Person("John Doe", 35, "john.doe@example.com")
+        
+        println("Original person: ${original}")
+        println("Shrunk versions:")
+        
+        for (shrunk in shrinker.shrink(original)) {
+            println("  - ${shrunk}")
+        }   
+        
+        @Assert(shrinker.shrink(original).iterator().next().isSome())
+    }
+    
+    @TestCase
+    func testPersonWithStrategy() {
+        let personStrategy = PersonStrategy()
+        let provider = personStrategy.provider(defaultConfiguration())
+        
+        println("Testing with deterministic strategy:")
+        for (person in provider.provide()) {
+            println("  - ${person}")
+            @Assert(person.age <= 70)
+        }
+    }
+    
+    @TestCase
+    func testPersonWithRandomData() {
+        // Test with multiple random persons using Random
+        for (i in 0..5) {
+            let random = Random(UInt64(i))  // Use seed for reproducibility
+            let generator = Person.arbitrary(random)
+            let person = generator.next()  // Call the generator to get a Person
+            
+            println("Testing random person ${i}: ${person}")
+            
+            // Test that fails if person is too old
+            @Assert(person.age <= 50)
+        }
+    }
+    
+    @TestCase[person in random<Person>()]
+    func testPersonWithBuiltInRandomSyntax(person: Person) {
+        println("Testing person with built-in random syntax: ${person}")
+        @Assert(person.age <= 50)
+    }
+}
+```
+
+Output:
+```text
+Original person: Person(name='John Doe', age=35, email='john.doe@example.com')
+Shrunk versions:
+  - Person(name='', age=0, email='')
+  - Person(name='a', age=35, email='john.doe@example.com')
+  - Person(name='John Doe', age=0, email='john.doe@example.com')
+  - Person(name='John Doe', age=35, email='a@b')
+  - Person(name='John Doe', age=17, email='john.doe@example.com')
+  - Person(name='John', age=35, email='john.doe@example.com')
+Testing with deterministic strategy:
+  - Person(name='John Doe', age=25, email='john@example.com')
+  - Person(name='Alice Smith', age=30, email='alice@work.com')
+  - Person(name='Bob Johnson', age=45, email='bob@company.com')
+  - Person(name='Charlie Brown', age=60, email='charlie@email.com')
+  - Person(name='Diana Prince', age=35, email='diana@justice.com')
+Testing random person 0: Person(name='Alice Smith', age=57, email='Alice@test.com')
+Testing person with built-in random syntax: Person(name='John Smith', age=7, email='John@test.com')
+Testing person with built-in random syntax: Person(name='Eve Smith', age=27, email='Eve@work.com')
+Testing person with built-in random syntax: Person(name='Eve Smith', age=12, email='Eve@work.com')
+Testing person with built-in random syntax: Person(name='Charlie Smith', age=65, email='Charlie@example.com')
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 2870831 ns, RESULT:
+    TCS: PersonTests, time elapsed: 2865917 ns, RESULT:
+    [ PASSED ] CASE: testPersonShrinker (433985 ns)
+    [ PASSED ] CASE: testPersonWithStrategy (152129 ns)
+    [ FAILED ] CASE: testPersonWithRandomData (139911 ns)
+    Assert Failed: `(person.age <= 50 == true)`
+       left: false
+      right: true
+
+    [ FAILED ] CASE: testPersonWithBuiltInRandomSyntax (44782 ns)
+    REASON: After 4 generation steps:
+        person = Person(name=\'Charlie Smith\', age=65, email=\'Charlie@example.com\')
+    with randomSeed = 1766660451293893218
+    Assert Failed: `(person.age <= 50 == true)`
+       left: false
+      right: true
+
+Summary: TOTAL: 4
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 2, listed below:
+            TCS: PersonTests, CASE: testPersonWithRandomData
+            TCS: PersonTests, CASE: testPersonWithBuiltInRandomSyntax (failed after 4 steps)
+```                                                                   
+
 ## 类型参数化测试
 
 虽然当前排序的测试仅针对整型数组排序，但函数本身支持对其他任何类型排序。但元素必须是可比较的，这样才能排序。

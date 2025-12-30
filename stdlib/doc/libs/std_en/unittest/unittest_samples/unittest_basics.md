@@ -289,6 +289,250 @@ func test() {
 }
 ```
 
+## `@CustomAssertion`
+
+The `@CustomAssertion` macro allows you to create reusable, domain-specific assertions that integrate seamlessly with the testing framework. Custom assertions must:
+
+1. Be top-level functions
+2. Have `AssertionCtx` as their first parameter
+3. Provide meaningful error messages
+4. Return useful values for chaining
+
+### Example
+<!-- run -->
+```cangjie
+import std.collection.*
+
+@CustomAssertion
+public func checkNotNone<T>(
+    ctx: AssertionCtx,
+    value: ?T,
+    errorMessage!: String = "Expected ${ctx.arg("value")} to be Some(_) but got None."
+): T {
+    if (let Some(res) <- value) {
+        return res
+    }
+    ctx.fail(errorMessage)
+}
+
+@Test
+func testSuccess() {
+    let maybeValue = Option<Int64>.Some(42)
+    let unwrapped = @Assert[checkNotNone](maybeValue)
+}
+
+@Test
+func testFail() {
+    let maybeValue = Option<Int64>.None
+    let unwrapped = @Assert[checkNotNone](maybeValue)
+}
+
+@CustomAssertion
+public func iterableWithoutNone<T>(ctx: AssertionCtx, iter: Iterable<?T>): Array<T> {
+    iter |> enumerate |> map { pair: (Int64, ?T) =>
+        let (index, elem) = pair
+        return @Assert[checkNotNone](
+            elem,
+            errorMessage: "Element at index ${index} is None. Expected all elements to be Some(_)"
+        )
+    } |> collectArray
+}
+
+@Test
+func testIterableFail() {
+    let iter = [Option<Int64>.Some(1), Option<Int64>.Some(2), Option<Int64>.None]
+    let result = @Assert[iterableWithoutNone](iter)
+}
+```
+
+### Output
+```text
+TP: default, time elapsed: 1943510 ns, RESULT:
+    TCS: TestCase_testSuccess, time elapsed: 853058 ns, RESULT:
+    [ PASSED ] CASE: testSuccess (432856 ns)
+    TCS: TestCase_testFail, time elapsed: 426161 ns, RESULT:
+    [ FAILED ] CASE: testFail (270125 ns)
+    Assert Failed: @Assert[checkNotNone](maybeValue):
+    └── Assert Failed: `(Expected <value not found> to be Some(_) but got None.)`
+
+    TCS: TestCase_testIterableFail, time elapsed: 626869 ns, RESULT:
+    [ FAILED ] CASE: testIterableFail (513480 ns)
+    Assert Failed: @Assert[iterableWithoutNone](iter):
+    └── @Assert[checkNotNone](elem, Element at index 2 is None. Expected all elements to be Some(_)):
+          └── Assert Failed: `(Element at index 2 is None. Expected all elements to be Some(_))`
+
+Summary: TOTAL: 3
+    PASSED: 1, SKIPPED: 0, ERROR: 0
+    FAILED: 2, listed below:
+            TCS: TestCase_testFail, CASE: testFail
+            TCS: TestCase_testIterableFail, CASE: testIterableFail
+```
+
+## `DataShrinker<T>`
+
+The primary use of `DataShrinker<T>`:
+
+- Random test data is generated using `Arbitrary<T>`
+- When a test fails, `DataShrinker<T>` automatically finds smaller failing examples
+- This helps identify the minimal conditions that cause failures
+
+<!-- run -->
+```cangjie
+@Test[data in random()]
+func testArrayProperties(data: Array<Int64>) {
+    // If test fails with a large random array, framework will:
+    // 1. Try smaller arrays (empty, fewer elements)
+    // 2. Try arrays with smaller individual elements
+    // 3. Continue until minimal failing case is found
+    @Assert(data.fold(0, { l, r => l + r }) >= 0)
+}
+```
+
+Output:
+
+```text
+[ FAILED ] CASE: testArrayProperties (41869 ns)
+    REASON: After 3 generation steps and 200 reduction steps:
+        data = [0]
+    with randomSeed = 1766584201127051269
+    Assert Failed: `(data.fold(0, { l, r =>
+    l + r
+}) >= 0 == true)`
+       left: false
+      right: true
+
+Summary: TOTAL: 1
+    PASSED: 0, SKIPPED: 0, ERROR: 0
+    FAILED: 1, listed below:
+            TCS: TestCase_testArrayProperties, CASE: testArrayProperties (failed after 3 steps)
+```
+
+DataShrinker found minimal and simplest example where test fails: `data = [0]`.
+
+### Custom type `DataShrinker` example
+
+#### Custom Type Definition
+```cangjie
+class Person {
+    let name: String
+    let age: Int64
+    let email: String
+    
+    init(name: String, age: Int64, email: String) {
+        this.name = name
+        this.age = age
+        this.email = email
+    }
+    
+    func toString(): String {
+        return "Person(name='${name}', age=${age}, email='${email}')"
+    }
+}
+```
+
+#### Custom `DataShrinker` Implementation
+```cangjie
+class PersonShrinker <: DataShrinker<Person> {
+    func shrink(value: Person): Iterable<Person> {
+        let results = ArrayList<Person>()
+        
+        // Strategy 1: Empty/default values
+        results.append(Person("", 0, ""))
+        
+        // Strategy 2: Simplify each field individually
+        if (value.name.size > 0) {
+            results.append(Person("a", value.age, value.email))
+        }
+        if (value.age != 0) {
+            results.append(Person(value.name, 0, value.email))
+        }
+        if (value.email.size > 0) {
+            results.append(Person(value.name, value.age, "a@b"))
+        }
+        
+        // Strategy 3: Halve numeric values
+        if (value.age > 1) {
+            results.append(Person(value.name, value.age / 2, value.email))
+        }
+        
+        // Strategy 4: Shorten strings
+        if (value.name.size > 1) {
+            let halfName = value.name[0..(value.name.size / 2)]
+            results.append(Person(halfName, value.age, value.email))
+        }
+        
+        return results
+    }
+}
+```
+
+### Usage in Tests
+
+#### Direct Testing of Shrinker
+```cangjie
+@Test
+class CustomTypeShrinkerTests {
+    @TestCase
+    func testPersonShrinker() {
+        let shrinker = PersonShrinker()
+        let original = Person("John Doe", 35, "john.doe@example.com")
+        
+        println("Original person: ${original}")
+        println("Shrunk versions:")
+        
+        for (shrunk in shrinker.shrink(original)) {
+            // custom shrunk checks
+            println("  - ${shrunk}")
+        }
+        
+        @Assert(shrinker.shrink(original).size > 0)
+    }
+}
+```
+
+Output
+```text
+Original person: Person(name='John Doe', age=35, email='john.doe@example.com')
+Shrunk versions:
+  - Person(name='', age=0, email='')
+  - Person(name='a', age=35, email='john.doe@example.com')
+  - Person(name='John Doe', age=0, email='john.doe@example.com')
+  - Person(name='John Doe', age=35, email='a@b')
+  - Person(name='John Doe', age=17, email='john.doe@example.com')
+  - Person(name='John', age=35, email='john.doe@example.com')
+```
+
+#### Build-in usage of Shrinker with custom type
+see [full example](unittest_parameterized_tests.md#example-with-custom-datashrinker)
+
+### Key Shrinking Strategies for Custom Types
+
+#### 1. Field-by-Field Simplification
+- Reduce each field individually while keeping others unchanged
+- Helps identify which specific field causes the failure
+
+#### 2. Zero/Default Values
+- Try empty strings, zero numbers, null values
+- Often reveals the minimal failing condition
+
+#### 3. Numeric Reduction
+- Halve numeric values
+- Reduces magnitude systematically
+
+#### 4. String Shortening
+- Reduce string length
+- Use simpler characters
+
+#### 5. Domain-Specific Logic
+- Apply knowledge about the domain to create meaningful smaller cases
+
+### Benefits
+
+1. **Root Cause Analysis**: Identify which field causes test failures
+2. **Minimal Examples**: Find the smallest failing input
+3. **Domain Knowledge**: Apply specific shrinking logic relevant to your types
+4. **Debugging Aid**: Clear, simple failing cases make debugging easier
+
 ## Test Lifecycle
 
 Test cases sometimes share setup or cleanup code. The framework supports four lifecycle phases, each configured via specific macros. Lifecycle steps can only be specified for `@Test` classes, not top-level `@Test` functions.
@@ -372,6 +616,43 @@ Three configuration methods are available:
 - Using the `@Configure` macro
 - Direct command-line arguments during test execution or via `cjpm test`
 - Using `cjpm` configuration files
+
+### Example
+
+<!-- run -->
+```cangjie
+// Define custom option using @UnittestOption macro
+@UnittestOption[String](testEnvironment)
+@UnittestOption[Int64](maxRetries) 
+@UnittestOption[Bool](enableLogging)
+
+@Test
+@Configure[testEnvironment: "production", maxRetries: 3, enableLogging: true]
+class BasicConfigurationTest {
+    @TestCase
+    func testConfigurationAccess() {
+        let config = Configuration()
+        
+        // Set configuration values programmatically
+        config.setByName("testEnvironment", "staging")
+        config.setByName("maxRetries", 5)
+        config.setByName("enableLogging", false)
+        
+        // Retrieve configuration values
+        let env = config.getByName<String>("testEnvironment") ?? "default"
+        let retries = config.getByName<Int64>("maxRetries") ?? 1
+        let logging = config.getByName<Bool>("enableLogging") ?? false
+        
+        println("Environment: ${env}")
+        println("Max retries: ${retries}")
+        println("Logging enabled: ${logging}")
+        
+        @Assert(env == "staging")
+        @Assert(retries == 5)
+        @Assert(!logging)
+    }
+}
+```
 
 <!-- TODO: configuration conversion algorithm -->
 

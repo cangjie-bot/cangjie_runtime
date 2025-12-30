@@ -294,6 +294,247 @@ func test() {
 }
 ```
 
+## `@CustomAssertion`
+`@CustomAssertion` 宏允许您创建可复用、领域特定的断言，这些断言能与测试框架无缝集成。自定义断言必须满足以下条件：
+
+1. 必须是顶层函数
+2. 首个参数必须是 `AssertionCtx`
+3. 提供有意义的错误信息
+4. 返回可用于链式调用的有效值
+
+### Example
+<!-- run -->
+```cangjie
+import std.collection.*
+
+@CustomAssertion
+public func checkNotNone<T>(
+    ctx: AssertionCtx,
+    value: ?T,
+    errorMessage!: String = "Expected ${ctx.arg("value")} to be Some(_) but got None."
+): T {
+    if (let Some(res) <- value) {
+        return res
+    }
+    ctx.fail(errorMessage)
+}
+
+@Test
+func testSuccess() {
+    let maybeValue = Option<Int64>.Some(42)
+    let unwrapped = @Assert[checkNotNone](maybeValue)
+}
+
+@Test
+func testFail() {
+    let maybeValue = Option<Int64>.None
+    let unwrapped = @Assert[checkNotNone](maybeValue)
+}
+
+@CustomAssertion
+public func iterableWithoutNone<T>(ctx: AssertionCtx, iter: Iterable<?T>): Array<T> {
+    iter |> enumerate |> map { pair: (Int64, ?T) =>
+        let (index, elem) = pair
+        return @Assert[checkNotNone](
+            elem,
+            errorMessage: "Element at index ${index} is None. Expected all elements to be Some(_)"
+        )
+    } |> collectArray
+}
+
+@Test
+func testIterableFail() {
+    let iter = [Option<Int64>.Some(1), Option<Int64>.Some(2), Option<Int64>.None]
+    let result = @Assert[iterableWithoutNone](iter)
+}
+```
+
+### Output
+```text
+TP: default, time elapsed: 1943510 ns, RESULT:
+    TCS: TestCase_testSuccess, time elapsed: 853058 ns, RESULT:
+    [ PASSED ] CASE: testSuccess (432856 ns)
+    TCS: TestCase_testFail, time elapsed: 426161 ns, RESULT:
+    [ FAILED ] CASE: testFail (270125 ns)
+    Assert Failed: @Assert[checkNotNone](maybeValue):
+    └── Assert Failed: `(Expected <value not found> to be Some(_) but got None.)`
+
+    TCS: TestCase_testIterableFail, time elapsed: 626869 ns, RESULT:
+    [ FAILED ] CASE: testIterableFail (513480 ns)
+    Assert Failed: @Assert[iterableWithoutNone](iter):
+    └── @Assert[checkNotNone](elem, Element at index 2 is None. Expected all elements to be Some(_)):
+          └── Assert Failed: `(Element at index 2 is None. Expected all elements to be Some(_))`
+
+Summary: TOTAL: 3
+    PASSED: 1, SKIPPED: 0, ERROR: 0
+    FAILED: 2, listed below:
+            TCS: TestCase_testFail, CASE: testFail
+            TCS: TestCase_testIterableFail, CASE: testIterableFail
+```
+
+## `DataShrinker<T>`
+随机测试数据通过 `Arbitrary<T>` 生成
+测试失败时，`DataShrinker<T>` 会自动找出更小的失败用例
+这有助于定位导致失败的最小触发条件
+
+<!-- run -->
+```cangjie
+@Test[data in random()]
+func testArrayProperties(data: Array<Int64>) {
+    // If test fails with a large random array, framework will:
+    // 1. Try smaller arrays (empty, fewer elements)
+    // 2. Try arrays with smaller individual elements
+    // 3. Continue until minimal failing case is found
+    @Assert(data.fold(0, { l, r => l + r }) >= 0)
+}
+```
+
+Output:
+
+```text
+[ FAILED ] CASE: testArrayProperties (41869 ns)
+    REASON: After 3 generation steps and 200 reduction steps:
+        data = [0]
+    with randomSeed = 1766584201127051269
+    Assert Failed: `(data.fold(0, { l, r =>
+    l + r
+}) >= 0 == true)`
+       left: false
+      right: true
+
+Summary: TOTAL: 1
+    PASSED: 0, SKIPPED: 0, ERROR: 0
+    FAILED: 1, listed below:
+            TCS: TestCase_testArrayProperties, CASE: testArrayProperties (failed after 3 steps)
+```
+
+`DataShrinker` 已找到测试失败的最小且最简单的示例：`data = [0]`。
+
+### 自定义类型 `DataShrinker` 示例
+
+#### 自定义类型定义
+```cangjie
+class Person {
+    let name: String
+    let age: Int64
+    let email: String
+    
+    init(name: String, age: Int64, email: String) {
+        this.name = name
+        this.age = age
+        this.email = email
+    }
+    
+    func toString(): String {
+        return "Person(name='${name}', age=${age}, email='${email}')"
+    }
+}
+```
+
+#### 自定义 `DataShrinker` 实现
+```cangjie
+class PersonShrinker <: DataShrinker<Person> {
+    func shrink(value: Person): Iterable<Person> {
+        let results = ArrayList<Person>()
+        
+        // Strategy 1: Empty/default values
+        results.append(Person("", 0, ""))
+        
+        // Strategy 2: Simplify each field individually
+        if (value.name.size > 0) {
+            results.append(Person("a", value.age, value.email))
+        }
+        if (value.age != 0) {
+            results.append(Person(value.name, 0, value.email))
+        }
+        if (value.email.size > 0) {
+            results.append(Person(value.name, value.age, "a@b"))
+        }
+        
+        // Strategy 3: Halve numeric values
+        if (value.age > 1) {
+            results.append(Person(value.name, value.age / 2, value.email))
+        }
+        
+        // Strategy 4: Shorten strings
+        if (value.name.size > 1) {
+            let halfName = value.name[0..(value.name.size / 2)]
+            results.append(Person(halfName, value.age, value.email))
+        }
+        
+        return results
+    }
+}
+```
+
+### 测试中的使用
+
+#### Shrinker 的直接测试
+
+```cangjie
+@Test
+class CustomTypeShrinkerTests {
+    @TestCase
+    func testPersonShrinker() {
+        let shrinker = PersonShrinker()
+        let original = Person("John Doe", 35, "john.doe@example.com")
+        
+        println("Original person: ${original}")
+        println("Shrunk versions:")
+        
+        for (shrunk in shrinker.shrink(original)) {
+            // custom shrunk checks
+            println("  - ${shrunk}")
+        }
+        
+        @Assert(shrinker.shrink(original).size > 0)
+    }
+}
+```
+
+Output
+```text
+Original person: Person(name='John Doe', age=35, email='john.doe@example.com')
+Shrunk versions:
+  - Person(name='', age=0, email='')
+  - Person(name='a', age=35, email='john.doe@example.com')
+  - Person(name='John Doe', age=0, email='john.doe@example.com')
+  - Person(name='John Doe', age=35, email='a@b')
+  - Person(name='John Doe', age=17, email='john.doe@example.com')
+  - Person(name='John', age=35, email='john.doe@example.com')
+```
+
+#### 内置 Shrinker 在自定义类型中的使用
+请参阅 [完整示例](unittest_parameterized_tests.md#带有自定义-datashrinker-的示例)
+
+### 自定义类型的关键 收缩(Shrinking) 策略
+
+#### 1. 字段逐一简化
+- 逐个缩减每个字段，同时保持其他字段不变
+- 有助于确定具体是哪个字段导致失败
+
+#### 2. 零值/默认值测试
+- 尝试空字符串、零数值、空值
+- 常能揭示导致失败的最小条件
+
+#### 3. 数值缩减
+- 将数值减半
+- 系统性地减小数值规模
+
+#### 4. 字符串缩短
+- 减少字符串长度
+- 使用更简单的字符
+
+#### 5. 领域特定逻辑
+- 运用领域知识创建有意义且更精简的案例
+
+### 优势
+
+1. **根因分析**：精确定位导致测试失败的字段
+2. **最小示例**：找出最小的失败输入
+3. **领域知识应用**：使用与类型相关的特定收缩逻辑
+4. **调试辅助**：清晰简洁的失败案例使调试更简单
+
 ## 测试生命周期
 
 测试用例之间有时可以共享创建或清理代码。测试框架支持4个生命周期步骤，分别通过相应的宏来设置。只能为 `@Test` 测试类指定生命周期步骤，不能为 `@Test` 顶层函数指定生命周期步骤。
@@ -377,6 +618,42 @@ class Foo {
 - 使用 `@Configure` 宏
 - 直接在运行测试时或在 `cjpm test` 测试中使用命令行参数
 - 使用 `cjpm` 配置文件
+
+### 例子
+<!-- run -->
+```cangjie
+// Define custom option using @UnittestOption macro
+@UnittestOption[String](testEnvironment)
+@UnittestOption[Int64](maxRetries) 
+@UnittestOption[Bool](enableLogging)
+
+@Test
+@Configure[testEnvironment: "production", maxRetries: 3, enableLogging: true]
+class BasicConfigurationTest {
+    @TestCase
+    func testConfigurationAccess() {
+        let config = Configuration()
+        
+        // Set configuration values programmatically
+        config.setByName("testEnvironment", "staging")
+        config.setByName("maxRetries", 5)
+        config.setByName("enableLogging", false)
+        
+        // Retrieve configuration values
+        let env = config.getByName<String>("testEnvironment") ?? "default"
+        let retries = config.getByName<Int64>("maxRetries") ?? 1
+        let logging = config.getByName<Bool>("enableLogging") ?? false
+        
+        println("Environment: ${env}")
+        println("Max retries: ${retries}")
+        println("Logging enabled: ${logging}")
+        
+        @Assert(env == "staging")
+        @Assert(retries == 5)
+        @Assert(!logging)
+    }
+}
+```
 
 <!-- TODO: configuration conversion algorithm -->
 
