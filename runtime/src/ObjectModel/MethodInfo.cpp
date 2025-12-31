@@ -576,4 +576,59 @@ void* MethodInfo::ApplyCJMethod(ObjRef instanceObj, void* genericArgs, void* act
     MemoryFree(sret);
     return any;
 }
+
+DynamicMethodInfo::DynamicMethodInfo(ObjRef obj) {
+    this->instanceObj = obj;
+    this->functionTi = obj->GetTypeInfo();
+    TypeInfo* ti = nullptr;
+        auto super = this->functionTi->GetSuperTypeInfo();
+        if (this->functionTi->IsFunc()) {
+            ti = this->functionTi;
+        } else if (super != nullptr && super->IsFunc()) {
+            ti = super;
+        } else {
+            LOG(RTLOG_FATAL, "DynamicMethodInfo: functionTi is not a function type");
+        }
+
+        TypeInfo* funcType = ti->GetTypeArgs()[0];
+        this->parameterCount = funcType->GetTypeArgNum() - 1;
+        this->functionPointer = *reinterpret_cast<Uptr*>(reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE);
+        this->returnType = funcType->GetTypeArgs()[0];
+        this->parameterTypes = &(funcType->GetTypeArgs()[1]);
+}
+
+void* DynamicMethodInfo::ApplyCangjieMethod(void* argsArray)
+{
+    ScopedAllocBuffer scopedAllocBuffer;
+    ArgValue argValues;
+    CJArray* actualArgs = static_cast<CJArray*>(argsArray);
+    U64 actualArgCount = actualArgs->rawPtr->len;
+    if (actualArgCount != parameterCount) {
+        LOG(RTLOG_FATAL, "DynamicMethodInfo: actualArgCount %d != parameterCount %d", actualArgCount, parameterCount);
+    }
+
+    size_t retObjSize = MRT_ALIGN(returnType->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
+    ObjRef retObj = ObjectManager::NewObject(returnType, retObjSize);
+    argValues.AddInt64(reinterpret_cast<I64>(&retObj));
+    argValues.AddReference(instanceObj);
+
+    CJRawArray* cjRawArray = static_cast<CJArray*>(argsArray)->rawPtr;
+    ObjRef rawArray = reinterpret_cast<ObjRef>(cjRawArray);
+    RefField<false>* refField = reinterpret_cast<RefField<false>*>(&(cjRawArray->data));
+    for (U64 actualArgIdx = 0; actualArgIdx < actualArgCount; ++actualArgIdx) {
+        ObjRef argObj = static_cast<ObjRef>(Heap::GetBarrier().ReadReference(rawArray, *refField));
+        argValues.AddReference(argObj);
+        refField++;
+    }
+
+    // add outerTi
+    argValues.AddInt64(reinterpret_cast<I64>(functionTi));
+    uintptr_t threadData = MapleRuntime::MRT_GetThreadLocalData();
+    ApplyCangjieMethodStub(argValues.GetData(), argValues.GetStackSize(), entryPoint, threadData);
+
+    if (ExceptionManager::HasPendingException()) {
+        ExceptionManager::ThrowPendingException();
+    }
+    return retObj;
+}
 } // namespace MapleRuntime
