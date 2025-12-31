@@ -1010,6 +1010,10 @@ extern "C" bool MCC_MethodEntryPointIsNull(MethodInfo* methodInfo) { return meth
 
 extern "C" void* MCC_ApplyCJInstanceMethod(MethodInfo* methodInfo, ObjRef obj, void* args)
 {
+    if (methodInfo == nullptr) {
+        DynamicMethodInfo mthInfo(obj);
+        return mthInfo.ApplyCangjieMethod(args);
+    }
     return methodInfo->ApplyCJMethod(obj, nullptr, args, nullptr);
 }
 
@@ -1311,7 +1315,7 @@ extern "C" ObjRef MCC_NewAndInitObject(const TypeInfo* ti, void* args) {
                 continue;
             }
             void* tmp = malloc(argSize);
-            Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), argObj, 
+            Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), argObj,
                 reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE, argSize);
             Heap::GetBarrier().WriteStruct(obj, argAddr, argSize, reinterpret_cast<MAddress>(tmp), argSize);
             free(tmp);
@@ -1330,7 +1334,7 @@ extern "C" ObjRef MCC_NewAndInitObject(const TypeInfo* ti, void* args) {
                          reinterpret_cast<void*>(reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE),
                          vArraySize) != EOK) {
                 LOG(RTLOG_ERROR, "NewObjectAndInit memcpy_s fail");
-            }   
+            }
         } else {
             LOG(RTLOG_FATAL, "%s not to supported", argType->GetName());
         }
