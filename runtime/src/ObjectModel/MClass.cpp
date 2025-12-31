@@ -589,19 +589,28 @@ TypeInfo* TypeInfo::GetMethodOuterTIWithCache(TypeInfo* itf, U64 index)
         LOG(RTLOG_FATAL, "expected interface %s is not in class %s", itf->GetName(), GetName());
         return nullptr;
     }
+    // The outer ti is not cached yet.
+    auto* ed = it->second.GetExtensionData();
+        // The extension data can't be nullptr here.
+    CHECK(ed != nullptr);
+    if (LIKELY(ed->HasOuterTiFastPath())) {
+        if (this->GetTypeArgNum() == 0) {
+            return ed->GetOuterTiFast(index);
+        }
+    }
+
     auto* outerTi = it->second.GetCachedTypeInfo(index);
     if (LIKELY(outerTi != nullptr)) {
         return outerTi;
     }
-    // The outer ti is not cached yet.
-    auto* ed = it->second.GetExtensionData();
-    // The extension data can't be nullptr here.
-    CHECK(ed != nullptr);
-    outerTi = ed->GetOuterTi(this, index);
-    if (outerTi != nullptr) {
+
+    if (LIKELY(ed->HasOuterTiFastPath())) {
+        outerTi = ed->GetOuterTiSlow(this, index);
         it->second.SetCachedTypeInfo(index, outerTi);
+        return outerTi;
     }
-    return outerTi;
+
+    return nullptr;
 }
 TypeInfo* TypeInfo::GetMethodOuterTI(TypeInfo* itf, U64 index)
 {

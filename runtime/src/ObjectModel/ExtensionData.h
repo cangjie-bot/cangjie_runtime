@@ -34,16 +34,18 @@ public:
     void UpdateFuncTable(U16 ftSize, FuncPtr* newFt) { funcTableSize  = ftSize; funcTable = newFt; }
     U16 GetFuncTableSize() const { return funcTableSize; }
     bool HasOuterTiFastPath() const { return (flag & 0b1) != 0; }
-    TypeInfo* GetOuterTi(TypeInfo* childTi, U64 index) const
+    TypeInfo* GetOuterTiSlow(TypeInfo* childTi, U64 index) const
     {
-        if (!HasOuterTiFastPath()) {
-            return nullptr;
-        }
-        bool isConcrete = (childTi->GetTypeArgNum() == 0);
         OuterTiUnion* outerTiUnionStart = reinterpret_cast<OuterTiUnion*>(
             reinterpret_cast<uint8_t*>(funcTable) + sizeof(FuncPtr) * funcTableSize);
-        return isConcrete ? outerTiUnionStart[index].outerTypeInfo
-                          : outerTiUnionStart[index].outerTiFunc(childTi);
+        return outerTiUnionStart[index].outerTiFunc(childTi);
+    }
+
+    TypeInfo* GetOuterTiFast(U64 index) const
+    {
+        OuterTiUnion* outerTiUnionStart = reinterpret_cast<OuterTiUnion*>(
+            reinterpret_cast<uint8_t*>(funcTable) + sizeof(FuncPtr) * funcTableSize);
+        return outerTiUnionStart[index].outerTypeInfo;
     }
 
 //private: // temporary solution
