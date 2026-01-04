@@ -243,6 +243,9 @@ void TypeInfo::TryUpdateExtensionData(TypeInfo* itf, ExtensionData* extensionDat
     if (this->GetUUID() == itfUUID) {
         return;
     }
+    if (LIKELY(extensionData->IsFuncTableUpdated())) {
+        return;
+    }
     auto itfVExtensionDataStart = itf->GetvExtensionDataStart();
     CHECK_DETAIL(itfVExtensionDataStart != nullptr, "itfVExtensionDataStart is nullptr");
     auto itfExtData = itf->IsInterface() ? *itfVExtensionDataStart
@@ -283,6 +286,7 @@ void TypeInfo::TryUpdateExtensionData(TypeInfo* itf, ExtensionData* extensionDat
         }
         mTable.find(itfUUID)->second.ResetAtomicInfoArray(itfFtSize);
     }
+    extensionData->SetFuncTableUpdated();
 }
 
 // This interface mustn't be invoked locklessly.
@@ -546,14 +550,16 @@ ExtensionData* TypeInfo::FindExtensionData(TypeInfo* itf, bool searchRecursively
 
 FuncPtr* TypeInfo::GetMTable(TypeInfo* itf)
 {
-    if (IsTempEnum() && GetSuperTypeInfo()) {
+    if (UNLIKELY(IsTempEnum() && GetSuperTypeInfo())) {
         return GetSuperTypeInfo()->GetMTable(itf);
     }
     auto extensionData = FindExtensionData(itf, true);
-	if (extensionData == nullptr) {
+	if (UNLIKELY(extensionData == nullptr)) {
         LOG(RTLOG_FATAL, "funcTable is nullptr, ti: %s, itf: %s", GetName(), itf->GetName());
     }
-	TryUpdateExtensionData(itf, extensionData);
+    if (UNLIKELY(!extensionData->IsFuncTableUpdated())) {
+        TryUpdateExtensionData(itf, extensionData);
+    }
 	FuncPtr* funcTable = extensionData->GetFuncTable();
 	CHECK(funcTable);
     return funcTable;

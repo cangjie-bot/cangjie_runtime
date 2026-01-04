@@ -27,13 +27,15 @@ public:
     FuncPtr* GetFuncTable() const { return funcTable; }
     void UpdateFuncTable(U16 ftSize, FuncPtr* newFt) { funcTableSize  = ftSize; funcTable = newFt; }
     U16 GetFuncTableSize() const { return funcTableSize; }
+    bool IsFuncTableUpdated() const { return (flag & 0b00000010) != 0; }
+    void SetFuncTableUpdated() { flag |= 0b00000010; }
 
 //private: // temporary solution
 public:
     U32 argNum;
     U8 isInterfaceTypeInfo;
     // optimization: use 1 byte to speed up the search of mtable.
-    U8 flag;
+    U8 flag; // bit-1: funcTable updated, bit-7: direct supertype
     U16 funcTableSize;
     union {
         TypeTemplate* tt;
