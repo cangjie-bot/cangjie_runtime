@@ -1,8 +1,8 @@
-# 仓颉编程语言 - 标准库编译构建
+# 构建仓颉标准库
 
 ## 构建准备
 
-构建前需要完成编译环境的搭建，详情请查看[构建依赖工具](https://gitcode.com/Cangjie/cangjie_build/blob/dev/docs/env_zh.md)
+仓颉标准库支持在 Ubuntu/MacOS（x86_64, aarch64）环境中编译构建。构建前需要完成编译环境的搭建，详情请查看[构建依赖工具](https://gitcode.com/Cangjie/cangjie_build/blob/dev/docs/env_zh.md)
 
 ## 构建步骤
 
@@ -10,13 +10,13 @@
 
 1. 配置 cjc
 
-   ```
+   ```shell
    source <源码构建的cjc路径，如..../output/envsetup.sh>
    ```
 
    可以通过下面的命令验证cjc是否配置成功，若出现版本信息，证明cjc配置成功
 
-   ```
+   ```shell
    cjc -v
    ```
 
@@ -24,13 +24,13 @@
 
    下载源码
 
-   ```
+   ```shell
    git clone https://gitcode.com/Cangjie/cangjie_runtime.git
    ```
 
    进入 std 目录，对标准库源码进行编译，执行 `build.py` 脚本，脚本支持构建、清理、和安装三个功能
 
-   ```
+   ```shell
    cd std
    python3 build.py clean
    python3 build.py build -t release --target-lib=<runtime构建产物路径> --target-lib=<openssl lib路径>
@@ -46,7 +46,7 @@
 
 output 目录结构如下：
 
-```
+```text
 output
 ├── lib     #标准库static lib
 ├── modules #标准库cjo文件
@@ -58,10 +58,10 @@ output
 `build.py` 的 `build` 功能提供如下额外选项：
 
 - `--target`：指定构建平台，默认为native，支持的target如下所示（交叉编译请参考[仓颉SDK集成构建指导书](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)）：
-  - `native`（默认值）
-  - `ohos-aarch64` ： 交叉编译ohos(aarch64)
-  - `ohos-x86_64` ：交叉编译ohos(x86_64)
-  - `windows-x86_64` ： linux交叉编译windows
+    - `native`（默认值）
+    - `ohos-aarch64` ： 交叉编译ohos(aarch64)
+    - `ohos-x86_64` ：交叉编译ohos(x86_64)
+    - `windows-x86_64` ： linux交叉编译windows
 - `--target-toolchain` ：指定编译工具所在路径（交叉编译需要指定）
 - `--target-sysroot` ：指定编译目标系统库所在目录（交叉编译需要指定）
 - `--build-args` ：cjc构建选项（可选）
@@ -76,7 +76,7 @@ output
 
 您也可以参阅 [build.py](https://gitcode.com/Cangjie/cangjie_runtime/blob/dev/std/build.py) 或通过 `--help` 选项了解更多编译选项：
 
-```
+```shell
 python3 build.py --help
 python3 build.py build --help
 python3 build.py install --help
