@@ -297,7 +297,7 @@ public static const IP_TOS: Int32
 public static const IP_TTL: Int32
 ```
 
-功能：用于限制[IP]()数据包在网络中传输最大跳数的套接字选项。不同系统下的值分别为：
+功能：用于限制 IP 数据包在网络中传输最大跳数的套接字选项。不同系统下的值分别为：
 
 - macOS: 0x0004
 - Windows: 0x0004
