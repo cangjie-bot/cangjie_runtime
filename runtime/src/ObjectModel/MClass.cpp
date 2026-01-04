@@ -243,46 +243,62 @@ void TypeInfo::TryUpdateExtensionData(TypeInfo* itf, ExtensionData* extensionDat
     if (this->GetUUID() == itfUUID) {
         return;
     }
-    auto itfVExtensionDataStart = itf->GetvExtensionDataStart();
-    CHECK_DETAIL(itfVExtensionDataStart != nullptr, "itfVExtensionDataStart is nullptr");
-    auto itfExtData = itf->IsInterface() ? *itfVExtensionDataStart
-                                         : *(itfVExtensionDataStart + itf->GetValidInheritNum() - 1);
-    auto ftSize = extensionData->GetFuncTableSize();
-    auto itfFtSize = itfExtData->GetFuncTableSize();
-    auto incrementalSize = itfFtSize - ftSize;
-    if (incrementalSize > 0 && !IsSameRootPackage(this, itf)) {
-        TryInitMTable();
-        TraverseInnerExtensionDefs();
-        auto& mTable = mTableDesc->mTable;
-        for (auto& superTypePair : mTable) {
-            auto superTi = superTypePair.second.GetSuperTi();
-            // make sure super is the subtype of itf, and super is the direct super type of this type.
-            if (superTypePair.second.GetExtensionData()->flag != 0b10000000) {
-                continue;
-            }
-            auto edOfSuper = superTi->FindExtensionData(itf);
-            if (edOfSuper) {
-                if (edOfSuper->GetFuncTableSize() != itfFtSize) {
-                    superTi->TryUpdateExtensionData(itf, edOfSuper);
-                }
-                FuncPtr* newFt = reinterpret_cast<FuncPtr*>(
-                    TypeInfoManager::GetTypeInfoManager().Allocate(itfFtSize * sizeof(FuncPtr)));
-                if (ftSize > 0) {
-                    CHECK(memcpy_s(reinterpret_cast<void*>(newFt),
-                                        sizeof(FuncPtr) * ftSize,
-                                        reinterpret_cast<void*>(extensionData->GetFuncTable()),
-                                        sizeof(FuncPtr) * ftSize) == EOK);
-                }
-                CHECK(memcpy_s(reinterpret_cast<void*>(newFt + ftSize),
-                                sizeof(FuncPtr) * incrementalSize,
-                                reinterpret_cast<void*>(edOfSuper->GetFuncTable() + ftSize),
-                                sizeof(FuncPtr) * incrementalSize) == EOK);
-                extensionData->UpdateFuncTable(itfFtSize, newFt);
-                break;
-            }
+    do {
+        if (LIKELY(extensionData->IsFuncTableUpdated())) {
+            return;
         }
-        mTable.find(itfUUID)->second.ResetAtomicInfoArray(itfFtSize);
-    }
+
+        auto itfVExtensionDataStart = itf->GetvExtensionDataStart();
+        CHECK_DETAIL(itfVExtensionDataStart != nullptr, "itfVExtensionDataStart is nullptr");
+        auto itfExtData = itf->IsInterface() ? *itfVExtensionDataStart
+                                            : *(itfVExtensionDataStart + itf->GetValidInheritNum() - 1);
+        auto ftSize = extensionData->GetFuncTableSize();
+        auto itfFtSize = itfExtData->GetFuncTableSize();
+        auto incrementalSize = itfFtSize - ftSize;
+        if (incrementalSize == 0) {
+            extensionData->SetFuncTableUpdated();
+            return;
+        }
+
+        if (!extensionData->TryLockFuncTable()) {
+            continue;
+        }
+
+        if (!IsSameRootPackage(this, itf)) {
+            TryInitMTable();
+            TraverseInnerExtensionDefs();
+            auto& mTable = mTableDesc->mTable;
+            for (auto& superTypePair : mTable) {
+                auto superTi = superTypePair.second.GetSuperTi();
+                // make sure super is the subtype of itf, and super is the direct super type of this type.
+                if (superTypePair.second.GetExtensionData()->flag != 0b10000000) {
+                    continue;
+                }
+                auto edOfSuper = superTi->FindExtensionData(itf);
+                if (edOfSuper) {
+                    if (edOfSuper->GetFuncTableSize() != itfFtSize) {
+                        superTi->TryUpdateExtensionData(itf, edOfSuper);
+                    }
+                    FuncPtr* newFt = reinterpret_cast<FuncPtr*>(
+                        TypeInfoManager::GetTypeInfoManager().Allocate(itfFtSize * sizeof(FuncPtr)));
+                    if (ftSize > 0) {
+                        CHECK(memcpy_s(reinterpret_cast<void*>(newFt),
+                                            sizeof(FuncPtr) * ftSize,
+                                            reinterpret_cast<void*>(extensionData->GetFuncTable()),
+                                            sizeof(FuncPtr) * ftSize) == EOK);
+                    }
+                    CHECK(memcpy_s(reinterpret_cast<void*>(newFt + ftSize),
+                                    sizeof(FuncPtr) * incrementalSize,
+                                    reinterpret_cast<void*>(edOfSuper->GetFuncTable() + ftSize),
+                                    sizeof(FuncPtr) * incrementalSize) == EOK);
+                    extensionData->UpdateFuncTable(itfFtSize, newFt);
+                    break;
+                }
+            }
+            mTable.find(itfUUID)->second.ResetAtomicInfoArray(itfFtSize);
+        }
+        extensionData->SetFuncTableUpdated();
+    } while (true);
 }
 
 // This interface mustn't be invoked locklessly.
@@ -546,14 +562,16 @@ ExtensionData* TypeInfo::FindExtensionData(TypeInfo* itf, bool searchRecursively
 
 FuncPtr* TypeInfo::GetMTable(TypeInfo* itf)
 {
-    if (IsTempEnum() && GetSuperTypeInfo()) {
+    if (UNLIKELY(IsTempEnum() && GetSuperTypeInfo())) {
         return GetSuperTypeInfo()->GetMTable(itf);
     }
     auto extensionData = FindExtensionData(itf, true);
-	if (extensionData == nullptr) {
+	if (UNLIKELY(extensionData == nullptr)) {
         LOG(RTLOG_FATAL, "funcTable is nullptr, ti: %s, itf: %s", GetName(), itf->GetName());
     }
-	TryUpdateExtensionData(itf, extensionData);
+    if (UNLIKELY(!extensionData->IsFuncTableUpdated())) {
+        TryUpdateExtensionData(itf, extensionData);
+    }
 	FuncPtr* funcTable = extensionData->GetFuncTable();
 	CHECK(funcTable);
     return funcTable;
