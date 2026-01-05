@@ -70,8 +70,7 @@ private:
     U8 isInterfaceTypeInfo;
     // optimization: use 1 byte to speed up the search of mtable.
     // bit-0: codegen has computed the outer ti as the fast path.
-   .
-    U8 flag;
+    U8 flag; // bit-1&2: funcTable updated, bit-7: direct supertype
     U16 funcTableSize;
     union {
         TypeTemplate* tt;
