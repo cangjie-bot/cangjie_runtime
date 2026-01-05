@@ -183,9 +183,16 @@ func dumpCommonContent(currentIndent: UInt16, upperBound: Token, superTypes: Arr
     return ret
 }
 
-func referenceType2Tokens(upperBound: Token, superTypes: ArrayList<TypeNode>, superTypeBitAnds: Tokens,
-    constraint: ArrayList<GenericConstraint>, constraintCommas: Tokens): Tokens {
-    let ret = Tokens()
+struct RefTypeUpperBoundInfo {
+    upperBound: Token
+    superTypes: ArrayList<TypeNode>
+    superTypeBitAnds: Tokens
+}
+
+func referenceType2Tokens(ret: Tokens, upperBoundInfo: RefTypeUpperBoundInfo, constraint: ArrayList<GenericConstraint>, constraintCommas: Tokens, body: Body) {
+    let upperBound = upperBoundInfo.upperBound
+    let superTypes = upperBoundInfo.superTypes
+    let superTypeBitAnds = upperBoundInfo.superTypeBitAnds
     if (!superTypes.isEmpty()) {
         if (upperBound.kind != ILLEGAL) {
             ret.append(upperBound)
@@ -206,7 +213,7 @@ func referenceType2Tokens(upperBound: Token, superTypes: ArrayList<TypeNode>, su
         }
         ret.append(constraint[index].toTokens())
     }
-    return ret
+    ret.append(body.toTokens())
 }
 
 extend Tokens {
