@@ -580,15 +580,12 @@ FuncPtr* TypeInfo::GetMTable(TypeInfo* itf)
 
 TypeInfo* TypeInfo::GetMethodOuterTIWithCache(TypeInfo* itf, U64 index)
 {
-    // mTableDesc is not initialized yet.
-    if (UNLIKELY(IsMTableDescUnInitialized())) {
-        return nullptr;
+    // mTableDesc is not initialized yet, or mTableDesc is initialized,
+    // but mTable is not fully handled yet.
+    if (UNLIKELY(IsMTableDescUnInitialized() || !mTableDesc->IsFullyHandled())) {
+        (void)FindExtensionData(itf, true);
     }
 
-    // mTableDesc is initialized, but mTable is not fully handled yet.
-    if (UNLIKELY(!mTableDesc->IsFullyHandled())) {
-        return nullptr;
-    }
     auto& mTable = mTableDesc->mTable;
     auto it = mTable.find(itf->GetUUID());
     if (it == mTable.end()) {
@@ -632,6 +629,10 @@ TypeInfo* TypeInfo::GetMethodOuterTI(TypeInfo* itf, U64 index)
 	FuncPtr* funcTable = extensionData->GetFuncTable();
 	auto funcPtr = funcTable[index];
 	for (auto& superTypePair : mTableDesc->mTable) {
+        ExtensionData* extensionData = superTypePair.second.GetExtensionData();
+        if (!extensionData->IsTargetHasSameSourceWith(this)) {
+            continue;
+        }
         auto superTi = superTypePair.second.GetSuperTi();
         // Avoid infinite recursion. The mTAble may contain itself.
 		if (superTi == this || superTi->GetUUID() == GetUUID()) {
