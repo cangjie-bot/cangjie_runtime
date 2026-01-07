@@ -55,6 +55,15 @@ bool RegionSpace::ShouldRetryAllocation(size_t& tryTimes, size_t size) const
         return true;
     }
     VLOG(REPORT, "Cannot allocate memory of %zu(B), throw an OutOfMemory exception", size);
+    size_t reqAlloc = ToAllocSize(size);
+    size_t allocated = AllocatedBytes();
+    size_t usedPages = GetUsedPageSize();
+    size_t currentCapacity = GetCurrentCapacity();
+    size_t maxCapacity = GetMaxCapacity();
+    LOG(RTLOG_ERROR, "OOM: req_obj %zu B, req_alloc %zu B, allocated %zu B, "
+        "used_pages %zu B, current_capacity %zu B, max_capacity %zu B",
+        size, reqAlloc, allocated, usedPages, currentCapacity, maxCapacity);
+
     ExceptionManager::OutOfMemory();
     return false;
 }
