@@ -511,6 +511,6 @@ char** GetCurrentProcessEnvironment(int32_t pid)
     for (size_t i = 0; i < envCount; i++) {
         environment[i] = strdup(environ[i]);
     }
-    printf("GetCurrentProcessEnvironment success: envCount = %d\n", envCount);
+    printf("GetCurrentProcessEnvironment success: envCount = %zu\n", envCount);
     return environment;
 }
