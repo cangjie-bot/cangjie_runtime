@@ -348,10 +348,10 @@ void GetProcessCmdAndEnv(pid_t pid, ProcessInfo* out)
     char* argv = GetProcessArgs(pid, &size);
     if (argv == NULL || size == 0) {
         if (argv == NULL) {
-            printf("GetProcessArgs failed\n")
+            printf("GetProcessArgs failed\n");
         }
         if (size == 0) {
-            printf("GetProcessArgs size is 0\n")
+            printf("GetProcessArgs size is 0\n");
         }
         return;
     }
