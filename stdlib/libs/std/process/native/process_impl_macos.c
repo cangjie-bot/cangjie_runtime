@@ -302,15 +302,18 @@ char* GetProcessArgs(pid_t pid, size_t* length)
     // Get the maximum size of the arguments
     int mib2[SYSCTL_ARGNUM_ARGMAX] = {CTL_KERN, KERN_ARGMAX};
     if (sysctl(mib2, SYSCTL_ARGNUM_ARGMAX, &maxArgsLen, &size, NULL, 0) == -1) {
+        printf("sysctl get maxArgsLen failed\n");
         return NULL;
     }
 
     if (maxArgsLen <= 0) {
+        printf("GetProcessArgs maxArgsLen is 0\n");
         return NULL;
     }
 
     char* argv = (char*)malloc(maxArgsLen);
     if (argv == NULL) {
+        printf("malloc failed\n");
         return NULL;
     }
 
@@ -318,6 +321,7 @@ char* GetProcessArgs(pid_t pid, size_t* length)
     size = (size_t)maxArgsLen;
     if (sysctl(mib3, SYSCTL_ARGNUM_PROCARGS2, argv, &size, NULL, 0) == -1) {
         free(argv);
+        printf("sysctl get argv failed\n");
         return NULL;
     }
 
@@ -343,6 +347,12 @@ void GetProcessCmdAndEnv(pid_t pid, ProcessInfo* out)
     size_t size = 0;
     char* argv = GetProcessArgs(pid, &size);
     if (argv == NULL || size == 0) {
+        if (argv == NULL) {
+            printf("GetProcessArgs failed\n");
+        }
+        if (size == 0) {
+            printf("GetProcessArgs size is 0\n");
+        }
         return;
     }
 
