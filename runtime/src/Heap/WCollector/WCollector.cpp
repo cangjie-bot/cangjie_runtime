@@ -217,7 +217,8 @@ void WCollector::TraceRefField(BaseObject* obj, RefField<>& field, WorkStack& wo
     if (!Heap::IsHeapAddress(latest)) {
         return;
     }
-    CHECK(latest->IsValidObject());
+    CHECK_DETAIL(latest->IsValidObject(), "Invalid object %p is referenced by object %p: %s and offset %zd", latest,
+                 obj, obj->GetTypeInfo()->GetName(), BaseObject::FieldOffset(obj, &field));
     RefField<> newField = GetAndTryTagRefField(latest);
     if (oldField.GetFieldValue() == newField.GetFieldValue()) {
         DLOG(TRACE, "trace obj %p ref@%p: %p<%p>(%zu)", obj, &field, latest, latest->GetTypeInfo(), latest->GetSize());

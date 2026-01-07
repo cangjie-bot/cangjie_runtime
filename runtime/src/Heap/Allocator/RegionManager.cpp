@@ -741,7 +741,7 @@ void RegionManager::DumpRegionInfo() const
 }
 #endif
 
-void RegionManager::DumpRegionStats(const char* msg) const
+void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
 {
     size_t totalSize = regionHeapEnd - regionHeapStart;
     size_t totalUnits = totalSize / RegionInfo::UNIT_SIZE;
@@ -798,78 +798,107 @@ void RegionManager::DumpRegionStats(const char* msg) const
     size_t dirtyUnits = freeRegionManager.GetDirtyUnitCount();
     size_t listedUnits = fromUnits + garbageUnits + recentFullUnits + tlRegions +
         rawPointerPinnedRegions + largeUnits + recentlargeUnits + pinnedUnits + recentPinnedUnits;
+    if (triggerOOM) {
+        LOG(RTLOG_ERROR, msg);
 
-    VLOG(REPORT, msg);
+        LOG(RTLOG_ERROR, "\ttotal units: %zu (%zu B)", totalUnits, totalSize);
+        LOG(RTLOG_ERROR, "\tactive units: %zu (%zu B)", activeUnits, activeSize);
 
-    VLOG(REPORT, "\ttotal units: %zu (%zu B)", totalUnits, totalSize);
-    VLOG(REPORT, "\tactive units: %zu (%zu B)", activeUnits, activeSize);
+        LOG(RTLOG_ERROR, "\ttl-regions %zu: %zu units (%zu B, alloc %zu)", tlRegions,  tlUnits, tlSize, allocTLSize);
+        LOG(RTLOG_ERROR, "\tfrom-regions %zu: %zu units (%zu B, alloc %zu)", fromRegions,  fromUnits, fromSize, allocFromSize);
+        LOG(RTLOG_ERROR, "\trecent-full regions %zu: %zu units (%zu B, alloc %zu)",
+             recentFullRegions, recentFullUnits, recentFullSize, allocRecentFullSize);
+        LOG(RTLOG_ERROR, "\tgarbage regions %zu: %zu units (%zu B, alloc %zu)",
+             garbageRegions, garbageUnits, garbageSize, allocGarbageSize);
+        LOG(RTLOG_ERROR, "\tpinned regions %zu: %zu units (%zu B, alloc %zu)",
+             pinnedRegions, pinnedUnits, pinnedSize, allocPinnedSize);
+        LOG(RTLOG_ERROR, "\trecent pinned regions %zu: %zu units (%zu B, alloc %zu)",
+             recentPinnedRegions, recentPinnedUnits, recentPinnedSize, allocRecentPinnedSize);
+        LOG(RTLOG_ERROR, "\trawPointer pinned regions %zu: %zu units (%zu B, alloc %zu)",
+             rawPointerPinnedRegions, rawPointerPinnedUnits, rawPointerPinnedSize, allocRawPointerPinnedSize);
+        LOG(RTLOG_ERROR, "\tlarge-object regions %zu: %zu units (%zu B, alloc %zu)",
+             largeRegions, largeUnits, largeSize, allocLargeSize);
+        LOG(RTLOG_ERROR, "\trecent large-object regions %zu: %zu units (%zu B, alloc %zu)",
+             recentlargeRegions, recentlargeUnits, recentLargeSize, allocRecentLargeSize);
 
-    VLOG(REPORT, "\ttl-regions %zu: %zu units (%zu B, alloc %zu)", tlRegions,  tlUnits, tlSize, allocTLSize);
-    VLOG(REPORT, "\tfrom-regions %zu: %zu units (%zu B, alloc %zu)", fromRegions,  fromUnits, fromSize, allocFromSize);
-    VLOG(REPORT, "\trecent-full regions %zu: %zu units (%zu B, alloc %zu)",
-         recentFullRegions, recentFullUnits, recentFullSize, allocRecentFullSize);
-    VLOG(REPORT, "\tgarbage regions %zu: %zu units (%zu B, alloc %zu)",
-         garbageRegions, garbageUnits, garbageSize, allocGarbageSize);
-    VLOG(REPORT, "\tpinned regions %zu: %zu units (%zu B, alloc %zu)",
-         pinnedRegions, pinnedUnits, pinnedSize, allocPinnedSize);
-    VLOG(REPORT, "\trecent pinned regions %zu: %zu units (%zu B, alloc %zu)",
-         recentPinnedRegions, recentPinnedUnits, recentPinnedSize, allocRecentPinnedSize);
-    VLOG(REPORT, "\trawPointer pinned regions %zu: %zu units (%zu B, alloc %zu)",
-         rawPointerPinnedRegions, rawPointerPinnedUnits, rawPointerPinnedSize, allocRawPointerPinnedSize);
-    VLOG(REPORT, "\tlarge-object regions %zu: %zu units (%zu B, alloc %zu)",
-         largeRegions, largeUnits, largeSize, allocLargeSize);
-    VLOG(REPORT, "\trecent large-object regions %zu: %zu units (%zu B, alloc %zu)",
-         recentlargeRegions, recentlargeUnits, recentLargeSize, allocRecentLargeSize);
+        LOG(RTLOG_ERROR, "\tlisted units: %zu (%zu B)", listedUnits, listedUnits * RegionInfo::UNIT_SIZE);
+        LOG(RTLOG_ERROR, "\tused units: %zu (%zu B)", usedUnits, usedUnits * RegionInfo::UNIT_SIZE);
+        LOG(RTLOG_ERROR, "\treleased units: %zu (%zu B)", releasedUnits, releasedUnits * RegionInfo::UNIT_SIZE);
+        LOG(RTLOG_ERROR, "\tdirty units: %zu (%zu B)", dirtyUnits, dirtyUnits * RegionInfo::UNIT_SIZE);
+    } else {
 
-    VLOG(REPORT, "\tlisted units: %zu (%zu B)", listedUnits, listedUnits * RegionInfo::UNIT_SIZE);
-    VLOG(REPORT, "\tused units: %zu (%zu B)", usedUnits, usedUnits * RegionInfo::UNIT_SIZE);
-    VLOG(REPORT, "\treleased units: %zu (%zu B)", releasedUnits, releasedUnits * RegionInfo::UNIT_SIZE);
-    VLOG(REPORT, "\tdirty units: %zu (%zu B)", dirtyUnits, dirtyUnits * RegionInfo::UNIT_SIZE);
+        VLOG(REPORT, msg);
 
-    TRACE_COUNT("CJRT_GC_totalSize", totalSize);
-    TRACE_COUNT("CJRT_GC_totalUnits", totalUnits);
-    TRACE_COUNT("CJRT_GC_activeSize", activeSize);
-    TRACE_COUNT("CJRT_GC_activeUnits", activeUnits);
-    TRACE_COUNT("CJRT_GC_tlRegions", tlRegions);
-    TRACE_COUNT("CJRT_GC_tlUnits", tlUnits);
-    TRACE_COUNT("CJRT_GC_tlSize", tlSize);
-    TRACE_COUNT("CJRT_GC_allocTLSize", allocTLSize);
-    TRACE_COUNT("CJRT_GC_fromRegions", fromRegions);
-    TRACE_COUNT("CJRT_GC_fromUnits", fromUnits);
-    TRACE_COUNT("CJRT_GC_fromSize", fromSize);
-    TRACE_COUNT("CJRT_GC_allocFromSize", allocFromSize);
-    TRACE_COUNT("CJRT_GC_recentFullRegions", recentFullRegions);
-    TRACE_COUNT("CJRT_GC_recentFullUnits", recentFullUnits);
-    TRACE_COUNT("CJRT_GC_recentFullSize", recentFullSize);
-    TRACE_COUNT("CJRT_GC_allocRecentFullSize", allocRecentFullSize);
-    TRACE_COUNT("CJRT_GC_garbageRegions", garbageRegions);
-    TRACE_COUNT("CJRT_GC_garbageUnits", garbageUnits);
-    TRACE_COUNT("CJRT_GC_garbageSize", garbageSize);
-    TRACE_COUNT("CJRT_GC_allocGarbageSize", allocGarbageSize);
-    TRACE_COUNT("CJRT_GC_pinnedRegions", pinnedRegions);
-    TRACE_COUNT("CJRT_GC_pinnedUnits", pinnedUnits);
-    TRACE_COUNT("CJRT_GC_pinnedSize", pinnedSize);
-    TRACE_COUNT("CJRT_GC_allocPinnedSize", allocPinnedSize);
-    TRACE_COUNT("CJRT_GC_recentPinnedRegions", recentPinnedRegions);
-    TRACE_COUNT("CJRT_GC_recentPinnedUnits", recentPinnedUnits);
-    TRACE_COUNT("CJRT_GC_recentPinnedSize", recentPinnedSize);
-    TRACE_COUNT("CJRT_GC_allocRecentPinnedSize", allocRecentPinnedSize);
-    TRACE_COUNT("CJRT_GC_rawPointerPinnedRegions", rawPointerPinnedRegions);
-    TRACE_COUNT("CJRT_GC_rawPointerPinnedUnits", rawPointerPinnedUnits);
-    TRACE_COUNT("CJRT_GC_rawPointerPinnedSize", rawPointerPinnedSize);
-    TRACE_COUNT("CJRT_GC_allocRawPointerPinnedSize", allocRawPointerPinnedSize);
-    TRACE_COUNT("CJRT_GC_largeRegions", largeRegions);
-    TRACE_COUNT("CJRT_GC_largeUnits", largeUnits);
-    TRACE_COUNT("CJRT_GC_largeSize", largeSize);
-    TRACE_COUNT("CJRT_GC_allocLargeSize", allocLargeSize);
-    TRACE_COUNT("CJRT_GC_recentlargeRegions", recentlargeRegions);
-    TRACE_COUNT("CJRT_GC_recentlargeUnits", recentlargeUnits);
-    TRACE_COUNT("CJRT_GC_recentLargeSize", recentLargeSize);
-    TRACE_COUNT("CJRT_GC_allocRecentLargeSize", allocRecentLargeSize);
-    TRACE_COUNT("CJRT_GC_usedUnits", usedUnits);
-    TRACE_COUNT("CJRT_GC_releasedUnits", releasedUnits);
-    TRACE_COUNT("CJRT_GC_dirtyUnits", dirtyUnits);
-    TRACE_COUNT("CJRT_GC_listedUnits", listedUnits);
+        VLOG(REPORT, "\ttotal units: %zu (%zu B)", totalUnits, totalSize);
+        VLOG(REPORT, "\tactive units: %zu (%zu B)", activeUnits, activeSize);
+
+        VLOG(REPORT, "\ttl-regions %zu: %zu units (%zu B, alloc %zu)", tlRegions,  tlUnits, tlSize, allocTLSize);
+        VLOG(REPORT, "\tfrom-regions %zu: %zu units (%zu B, alloc %zu)", fromRegions,  fromUnits, fromSize, allocFromSize);
+        VLOG(REPORT, "\trecent-full regions %zu: %zu units (%zu B, alloc %zu)",
+             recentFullRegions, recentFullUnits, recentFullSize, allocRecentFullSize);
+        VLOG(REPORT, "\tgarbage regions %zu: %zu units (%zu B, alloc %zu)",
+             garbageRegions, garbageUnits, garbageSize, allocGarbageSize);
+        VLOG(REPORT, "\tpinned regions %zu: %zu units (%zu B, alloc %zu)",
+             pinnedRegions, pinnedUnits, pinnedSize, allocPinnedSize);
+        VLOG(REPORT, "\trecent pinned regions %zu: %zu units (%zu B, alloc %zu)",
+             recentPinnedRegions, recentPinnedUnits, recentPinnedSize, allocRecentPinnedSize);
+        VLOG(REPORT, "\trawPointer pinned regions %zu: %zu units (%zu B, alloc %zu)",
+             rawPointerPinnedRegions, rawPointerPinnedUnits, rawPointerPinnedSize, allocRawPointerPinnedSize);
+        VLOG(REPORT, "\tlarge-object regions %zu: %zu units (%zu B, alloc %zu)",
+             largeRegions, largeUnits, largeSize, allocLargeSize);
+        VLOG(REPORT, "\trecent large-object regions %zu: %zu units (%zu B, alloc %zu)",
+             recentlargeRegions, recentlargeUnits, recentLargeSize, allocRecentLargeSize);
+
+        VLOG(REPORT, "\tlisted units: %zu (%zu B)", listedUnits, listedUnits * RegionInfo::UNIT_SIZE);
+        VLOG(REPORT, "\tused units: %zu (%zu B)", usedUnits, usedUnits * RegionInfo::UNIT_SIZE);
+        VLOG(REPORT, "\treleased units: %zu (%zu B)", releasedUnits, releasedUnits * RegionInfo::UNIT_SIZE);
+        VLOG(REPORT, "\tdirty units: %zu (%zu B)", dirtyUnits, dirtyUnits * RegionInfo::UNIT_SIZE);
+
+        TRACE_COUNT("CJRT_GC_totalSize", totalSize);
+        TRACE_COUNT("CJRT_GC_totalUnits", totalUnits);
+        TRACE_COUNT("CJRT_GC_activeSize", activeSize);
+        TRACE_COUNT("CJRT_GC_activeUnits", activeUnits);
+        TRACE_COUNT("CJRT_GC_tlRegions", tlRegions);
+        TRACE_COUNT("CJRT_GC_tlUnits", tlUnits);
+        TRACE_COUNT("CJRT_GC_tlSize", tlSize);
+        TRACE_COUNT("CJRT_GC_allocTLSize", allocTLSize);
+        TRACE_COUNT("CJRT_GC_fromRegions", fromRegions);
+        TRACE_COUNT("CJRT_GC_fromUnits", fromUnits);
+        TRACE_COUNT("CJRT_GC_fromSize", fromSize);
+        TRACE_COUNT("CJRT_GC_allocFromSize", allocFromSize);
+        TRACE_COUNT("CJRT_GC_recentFullRegions", recentFullRegions);
+        TRACE_COUNT("CJRT_GC_recentFullUnits", recentFullUnits);
+        TRACE_COUNT("CJRT_GC_recentFullSize", recentFullSize);
+        TRACE_COUNT("CJRT_GC_allocRecentFullSize", allocRecentFullSize);
+        TRACE_COUNT("CJRT_GC_garbageRegions", garbageRegions);
+        TRACE_COUNT("CJRT_GC_garbageUnits", garbageUnits);
+        TRACE_COUNT("CJRT_GC_garbageSize", garbageSize);
+        TRACE_COUNT("CJRT_GC_allocGarbageSize", allocGarbageSize);
+        TRACE_COUNT("CJRT_GC_pinnedRegions", pinnedRegions);
+        TRACE_COUNT("CJRT_GC_pinnedUnits", pinnedUnits);
+        TRACE_COUNT("CJRT_GC_pinnedSize", pinnedSize);
+        TRACE_COUNT("CJRT_GC_allocPinnedSize", allocPinnedSize);
+        TRACE_COUNT("CJRT_GC_recentPinnedRegions", recentPinnedRegions);
+        TRACE_COUNT("CJRT_GC_recentPinnedUnits", recentPinnedUnits);
+        TRACE_COUNT("CJRT_GC_recentPinnedSize", recentPinnedSize);
+        TRACE_COUNT("CJRT_GC_allocRecentPinnedSize", allocRecentPinnedSize);
+        TRACE_COUNT("CJRT_GC_rawPointerPinnedRegions", rawPointerPinnedRegions);
+        TRACE_COUNT("CJRT_GC_rawPointerPinnedUnits", rawPointerPinnedUnits);
+        TRACE_COUNT("CJRT_GC_rawPointerPinnedSize", rawPointerPinnedSize);
+        TRACE_COUNT("CJRT_GC_allocRawPointerPinnedSize", allocRawPointerPinnedSize);
+        TRACE_COUNT("CJRT_GC_largeRegions", largeRegions);
+        TRACE_COUNT("CJRT_GC_largeUnits", largeUnits);
+        TRACE_COUNT("CJRT_GC_largeSize", largeSize);
+        TRACE_COUNT("CJRT_GC_allocLargeSize", allocLargeSize);
+        TRACE_COUNT("CJRT_GC_recentlargeRegions", recentlargeRegions);
+        TRACE_COUNT("CJRT_GC_recentlargeUnits", recentlargeUnits);
+        TRACE_COUNT("CJRT_GC_recentLargeSize", recentLargeSize);
+        TRACE_COUNT("CJRT_GC_allocRecentLargeSize", allocRecentLargeSize);
+        TRACE_COUNT("CJRT_GC_usedUnits", usedUnits);
+        TRACE_COUNT("CJRT_GC_releasedUnits", releasedUnits);
+        TRACE_COUNT("CJRT_GC_dirtyUnits", dirtyUnits);
+        TRACE_COUNT("CJRT_GC_listedUnits", listedUnits);
+    }
 }
 
 RegionInfo* RegionManager::AllocateThreadLocalRegion(bool expectPhysicalMem)
@@ -1145,7 +1174,7 @@ uintptr_t RegionManager::AllocPinnedFromFreeList(size_t size)
         mutatorPhase != GCPhase::GC_PHASE_CLEAR_SATB_BUFFER)) {
         return allocPtr;
     }
- 
+
     // Mark new allocated pinned object.
     BaseObject* object = reinterpret_cast<BaseObject*>(allocPtr);
     (reinterpret_cast<CopyCollector*>(&Heap::GetHeap().GetCollector()))->MarkObject(object);

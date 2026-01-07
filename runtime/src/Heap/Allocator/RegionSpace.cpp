@@ -55,6 +55,9 @@ bool RegionSpace::ShouldRetryAllocation(size_t& tryTimes, size_t size) const
         return true;
     }
     VLOG(REPORT, "Cannot allocate memory of %zu(B), throw an OutOfMemory exception", size);
+    size_t reqAlloc = ToAllocSize(size);
+    LOG(RTLOG_ERROR, "OOM: req_obj %zu B, req_alloc %zu B", size, reqAlloc);
+    regionManager.DumpRegionStats("OOM region stats:", true);
     ExceptionManager::OutOfMemory();
     return false;
 }
