@@ -46,12 +46,16 @@ public class PackageInfo <: Equatable<PackageInfo> & Hashable & ToString {
 
     // Return a specified packageInfo from the loaded dynamic module
     public static func get(qualifiedName: String): PackageInfo {
+        if (qualifiedName.contains("/")) {
+            throw InfoNotFoundException("TypeInfo '${qualifiedName}' not found.")
+        }
+        let replacedName = qualifiedName.replace("::", "/")
         synchronized(mutex) {
-            if (let Some(info) <- qualifiedNameMap.get(qualifiedName)) {
+            if (let Some(info) <- qualifiedNameMap.get(replacedName)) {
                 return info
             }
 
-            let cname = unsafe { LibC.mallocCString(qualifiedName) }
+            let cname = unsafe { LibC.mallocCString(replacedName) }
             var infoPointer = CPointer<Unit>()
             try {
                 infoPointer = getPackageByQualifiedName(cname.getChars())
