@@ -130,7 +130,7 @@ public:
     void DumpRegionInfo() const;
 #endif
 
-    void DumpRegionStats(const char* msg) const;
+    void DumpRegionStats(const char* msg, bool triggerOOM = false) const;
 
     uintptr_t GetInactiveZone() const { return inactiveZone; }
 
@@ -353,7 +353,7 @@ public:
             recentLargeRegionList.GetUnitCount() + oldPinnedRegionList.GetUnitCount() +
             recentPinnedRegionList.GetUnitCount() + rawPointerPinnedRegionList.GetUnitCount() +
             largeTraceRegions.GetUnitCount() + fullTraceRegions.GetUnitCount() +
-            Heap::GetHeap().GetAllocator().GetAllocBufersCount() + tlRegionList.GetUnitCount();
+            Heap::GetHeap().GetAllocator().GetAllocBufersCount();
     }
 
     size_t GetDirtyUnitCount() const { return freeRegionManager.GetDirtyUnitCount(); }
@@ -383,8 +383,7 @@ public:
             recentFullRegionList.GetAllocatedSize() + oldLargeRegionList.GetAllocatedSize() +
             recentLargeRegionList.GetAllocatedSize() + oldPinnedRegionList.GetAllocatedSize() +
             recentPinnedRegionList.GetAllocatedSize() + rawPointerPinnedRegionList.GetAllocatedSize() +
-            largeTraceRegions.GetAllocatedSize() + fullTraceRegions.GetAllocatedSize()
-            + tlRegionList.GetAllocatedSize() + threadLocalSize;
+            largeTraceRegions.GetAllocatedSize() + fullTraceRegions.GetAllocatedSize() + threadLocalSize;
     }
 
     inline size_t GetFromSpaceSize() const { return fromRegionList.GetAllocatedSize(); }
