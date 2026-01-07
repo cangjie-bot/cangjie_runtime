@@ -492,6 +492,7 @@ extern char* CJ_OS_HomeDir(void)
 char** GetCurrentProcessEnvironment(int32_t pid)
 {
     if (pid != getpid() || environ == NULL) {
+        printf("GetCurrentProcessEnvironment: pid != getpid() || environ == NULL, pid = %d, getpid() = %d\n", pid, getpid());
         return NULL;
     }
 
@@ -503,12 +504,13 @@ char** GetCurrentProcessEnvironment(int32_t pid)
 
     char** environment = calloc(envCount + 1, sizeof(char*));
     if (!environment) {
+        printf("GetCurrentProcessEnvironment: calloc failed\n");
         return NULL;
     }
 
     for (size_t i = 0; i < envCount; i++) {
         environment[i] = strdup(environ[i]);
     }
-
+    printf("GetCurrentProcessEnvironment success: envCount = %d\n", envCount);
     return environment;
 }
