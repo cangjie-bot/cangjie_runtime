@@ -82,6 +82,9 @@ public:
     {}
     InheritFuncTable& operator=(const InheritFuncTable& other)
     {
+        if (this == &other) {
+            return *this;
+        }
         superExtensionData = other.superExtensionData;
         superTypeInfo = other.superTypeInfo;
         cachedTypeInfos = other.cachedTypeInfos;
@@ -96,6 +99,9 @@ public:
     }
     InheritFuncTable& operator=(InheritFuncTable&& other)
     {
+        if (this == &other) {
+            return *this;
+        }
         superExtensionData = other.superExtensionData;
         superTypeInfo = other.superTypeInfo;
         cachedTypeInfos = std::move(other.cachedTypeInfos);
