@@ -1369,14 +1369,16 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     ObjRef obj = nullptr;
 
     // Need set tag for enum and temp enum.
-    if (ti->IsEnum()) {
-        // For enum types, the object's TypeInfo should be the enum's TypeInfo.
-        // Current ti is the constructor's TypeInfo of the enum.
+    if (ti->IsEnum() || ti->IsTempEnum()) {
         TypeInfo* enumTi = ti->GetSuperTypeInfo();
-        obj = ObjectManager::NewObject(enumTi, size);
-        SetEnumTag(obj, ti);
-    } else if (ti->IsTempEnum()) {
-        obj = ObjectManager::NewObject(ti, size);
+        EnumInfo* enumInfo = enumTi->GetEnumInfo();
+        if (enumInfo->IsEnumKind1()) {
+            obj = ObjectManager::NewObject(ti, size);
+        } else {
+            // For enum kind 1, the object's TypeInfo should be the enum's TypeInfo.
+            // Current ti is the constructor's TypeInfo of the enum.
+            obj = ObjectManager::NewObject(enumTi, size);
+        }
         SetEnumTag(obj, ti);
     } else {
         obj = ObjectManager::NewObject(ti, size);
