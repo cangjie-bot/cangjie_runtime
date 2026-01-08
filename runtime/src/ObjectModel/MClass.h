@@ -313,6 +313,7 @@ public:
     void SetCtorInfoNum(U32 num) { enumCtorInfoCnt = num; }
     void SetParsed() { modifier |= MODIFIER_ENUM_PARSED; }
     bool IsParsed() const { return (modifier & MODIFIER_ENUM_PARSED) != 0; }
+    bool IsEnumKind1() const { return (modifier & MODIFIER_ENUM_KIND1) != 0; }
 private:
     Uptr GetBaseAddr() const { return reinterpret_cast<Uptr>(base); }
     DataRefOffset64<EnumCtorInfo> enumCtorInfos;
