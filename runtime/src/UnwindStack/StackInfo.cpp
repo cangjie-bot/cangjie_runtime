@@ -122,6 +122,10 @@ void StackInfo::AnalyseAndSetFrameType(UnwindContext& uwContext)
     } else if (mFrame.IsRuntimeFrame()) {
         frameInfo.SetFrameType(FrameType::RUNTIME);
         isReliableN2CStub = false;
+    } else if (mFrame.IsExclusiveStubFrame()) {
+        LOG(RTLOG_DEBUG, "IsExclusiveStubFrame fa is %p", mFrame.GetFA());
+        frameInfo.SetFrameType(FrameType::EXSLUSIVE);
+        isReliableN2CStub = false;
     } else {
         // The judgment is mainly to identify the credible native call the managed code
         // through n2c in the macor. The so of macor is a mixed code library, which cannot

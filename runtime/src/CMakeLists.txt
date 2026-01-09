@@ -95,6 +95,7 @@ elseif ((CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64") AND (WINDOWS_FLAG MATCHES 0) A
         "CangjieRuntimeApi.cpp"
         "arch/x86_64_linux/N2CStub.S"
         "arch/x86_64_linux/C2NStub.S"
+        "arch/x86_64_linux/ExclusiveScope.S"
         "arch/x86_64_linux/CalleeSavedStub.S"
         "arch/x86_64_linux/StackGrowStub.S"
         "arch/x86_64_linux/HandleSafepointStub.S"

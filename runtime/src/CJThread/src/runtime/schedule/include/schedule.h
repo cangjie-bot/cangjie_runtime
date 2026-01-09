@@ -416,7 +416,8 @@ enum LuaCJThreadState {
 enum ScheduleType {
     SCHEDULE_DEFAULT = 0,               /* default scheduler */
     SCHEDULE_UI_THREAD,                 /* scheduler for UI thread */
-    SCHEDULE_FOREIGN_THREAD             /* scheduler for foreign thread */
+    SCHEDULE_FOREIGN_THREAD,            /* scheduler for foreign thread */
+    SCHEDULE_EXCLUSIVE
 };
 
 /**
@@ -565,6 +566,10 @@ int CJThreadAttrNameSet(struct CJThreadAttr *attrUser, const char *name);
  * @param  size       [IN]  stack size
  */
 void CJThreadAttrStackSizeSet(struct CJThreadAttr *attrUser, unsigned int size);
+
+// kbx todo
+CJThreadHandle ExclusiveCJThreadNew(CJThreadFunc func,
+                           const void *argStart, unsigned int argSize, bool isSignal = false);
 
 /**
  * @brief set cjthread attr from C side
