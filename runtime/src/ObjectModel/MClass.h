@@ -325,6 +325,16 @@ private:
     Uptr base[0];
 };
 
+class EnumCtorReflectInfo {
+public:
+    void* GetAnnotations(TypeInfo* arrayTi);
+    bool IsEnumCtor() const { return (modifier & MODIFIER_ENUM_CTOR) != 0; }
+    U32 GetModifier() const { return modifier; }
+private:
+    Uptr annotationMethod;
+    U32 modifier;
+};
+
 class ATTR_PACKED(4) TypeTemplate {
 public:
     inline bool IsRawArray() const;
@@ -360,6 +370,7 @@ public:
     inline EnumInfo* GetEnumInfo();
     inline bool ReflectInfoIsNull() const;
     bool ReflectIsEnable() const;
+    bool IsEnumCtor() const;
 
     CString GetTypeInfoName(U32 argSize, TypeInfo* args[]);
     ReflectInfo* GetReflectInfo() const { return reflectInfo; }
@@ -385,6 +396,7 @@ private:
     union {
         ReflectInfo* reflectInfo;
         EnumInfo* enumInfo;
+        EnumCtorReflectInfo* enumCtorReflectInfo;
     };
     ExtensionData **vExtensionDataStart;
     U16 validInheritNum;
@@ -460,8 +472,10 @@ public:
     inline bool HasExtPart() const;
     inline bool IsBoxClass();
     U32 GetModifier();
+    bool IsEnumCtor() const;
     bool ReflectIsEnable() const;
     bool ReflectInfoIsNull() const;
+    inline EnumCtorReflectInfo* GetEnumCtorReflectInfo();
     ReflectInfo* GetReflectInfo();
 
     inline const char* GetName() const;
@@ -578,6 +592,7 @@ private:
     union {
         ReflectInfo* reflectInfo;
         EnumInfo* enumInfo;
+        EnumCtorReflectInfo* enumCtorReflectInfo;
     };
 };
 

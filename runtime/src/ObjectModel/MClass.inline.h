@@ -214,12 +214,21 @@ inline EnumInfo* TypeInfo::GetEnumInfo()
     return nullptr;
 }
 
+inline EnumCtorReflectInfo* TypeInfo::GetEnumCtorReflectInfo()
+{
+    if ((IsEnum() || IsTempEnum()) && IsEnumCtor()) {
+        return enumCtorReflectInfo;
+    }
+    return nullptr;
+}
+
 inline bool TypeInfo::HasRefField() const
 {
     if (IsArrayType()) {
         TypeInfo* componentTi = GetComponentTypeInfo();
         if (componentTi->IsRef()) {
             return true;
+            
         } else {
             return componentTi->HasRefField();
         }

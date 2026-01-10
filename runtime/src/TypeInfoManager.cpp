@@ -553,7 +553,7 @@ void TypeInfoManager::ParseEnumInfo(TypeTemplate* tt, U32 argSize, TypeInfo* arg
     return;
 #endif
     EnumInfo* ttEi = tt->GetEnumInfo();
-    if (ttEi == nullptr || (ti->GetEnumInfo() != nullptr && ti->GetEnumInfo()->IsParsed())) {
+    if (ttEi == nullptr || tt->IsEnumCtor() || (ti->GetEnumInfo() != nullptr && ti->GetEnumInfo()->IsParsed())) {
         return;
     }
     U32 enumCtorNum = ttEi->GetNumOfEnumCtor();
