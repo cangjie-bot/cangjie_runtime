@@ -47,5 +47,16 @@ private:
     Uptr addr;
     U64 annotationMethod;
 };
+
+class FieldInitializer {
+public:
+    static bool SetPrimitiveField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj);
+    static bool SetStructField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj);
+    static bool SetVArrayField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj);
+    static void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args);
+    static ObjRef CreateEnumObject(TypeInfo* ti, MSize size);
+    static void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum);
+    static void SetEnumTag(ObjRef obj, TypeInfo* typeInfo);
+};
 } // namespace MapleRuntime
 #endif // MRT_FIELDINFO_H

@@ -11,6 +11,7 @@
 #include "Base/Log.h"
 #include "Base/LogFile.h"
 #include "Common/BaseObject.h"
+#include "ObjectModel/FieldInfo.h"
 
 // module interfaces
 #include "ObjectManager.inline.h"
@@ -33,6 +34,7 @@
 #include "TypeInfoManager.h"
 #include "ObjectModel/Field.inline.h"
 #include "ObjectModel/RefField.inline.h"
+#include "ObjectModel/FieldInfo.h"
 #ifdef _WIN64
 #include "Mutator/MutatorManager.h"
 #include "Mutator/ThreadLocal.h"
@@ -1302,71 +1304,9 @@ extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
     return fieldTypes;
 }
 
-static void SetEnumTag(ObjRef obj, TypeInfo* typeInfo)
-{
-    TypeInfo* enumTi = typeInfo->GetSuperTypeInfo();
-    EnumInfo* enumInfo = enumTi->GetEnumInfo();
-    U32 num = enumInfo->GetNumOfEnumCtor();
-    for (I32 idx = 0; idx < num; idx++) {
-        TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(idx);
-        if (typeInfo->GetUUID() == ctorTypeInfo->GetUUID()) {
-            obj->Store(TYPEINFO_PTR_SIZE, idx);
-            break;
-        }
-    }
-}
 
-static void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
-{
-    CJRawArray* cjRawArray = static_cast<CJArray*>(args)->rawPtr;
-    U64 argCnt = cjRawArray->len;
-    ObjRef rawArray = reinterpret_cast<ObjRef>(cjRawArray);
-    RefField<false>* refField = reinterpret_cast<RefField<false>*>(&(cjRawArray->data));
-    for (U64 idx = 0; idx < argCnt; ++idx) {
-        ObjRef argObj = static_cast<ObjRef>(Heap::GetBarrier().ReadReference(rawArray, *refField));
-        TypeInfo* argType = ti->GetFieldType(idx);
-        U32 offset = ti->GetFieldOffset(idx);
-        if (ti->IsEnum() || ti->IsTempEnum()) {
-            // For enum and temp enum, skip the first element (the tag).
-            argType = ti->GetFieldType(idx + 1);
-            offset = ti->GetFieldOffset(idx + 1);
-        }
-        Uptr argAddr = reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE + offset;
-        if (argType->IsRef()) {
-            obj->StoreRef(offset + TYPEINFO_PTR_SIZE, argObj);
-        } else if (argType->IsStruct() || argType->IsTuple() || argType->IsEnum()) {
-            MSize argSize = argType->GetInstanceSize();
-            if (argSize == 0) {
-                refField++;
-                continue;
-            }
-            void* tmp = malloc(argSize);
-            Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), argObj,
-                reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE, argSize);
-            Heap::GetBarrier().WriteStruct(obj, argAddr, argSize, reinterpret_cast<MAddress>(tmp), argSize);
-            free(tmp);
-        } else if (argType->IsPrimitiveType()) {
-            if (memcpy_s(reinterpret_cast<void*>(argAddr),
-                         argType->GetInstanceSize(),
-                         reinterpret_cast<void*>(reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE),
-                         argType->GetInstanceSize()) != EOK) {
-                LOG(RTLOG_ERROR, "NewObjectAndInit memcpy_s fail");
-            }
-        } else if (argType->IsVArray()) {
-            // VArray is only used to store value types,
-            // so we can copy the memory directly
-            MSize vArraySize = argType->GetFieldNum() * argType->GetComponentTypeInfo()->GetInstanceSize();
-            if (memcpy_s(reinterpret_cast<void*>(argAddr), vArraySize,
-                         reinterpret_cast<void*>(reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE),
-                         vArraySize) != EOK) {
-                LOG(RTLOG_ERROR, "NewObjectAndInit memcpy_s fail");
-            }
-        } else {
-            LOG(RTLOG_FATAL, "%s not to supported", argType->GetName());
-        }
-        refField++;
-    }
-}
+
+
 
 extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
@@ -1374,78 +1314,24 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
 
     // Need set tag for enum and temp enum.
     if (ti->IsEnum() || ti->IsTempEnum()) {
-        TypeInfo* enumTi = ti->GetSuperTypeInfo();
-        EnumInfo* enumInfo = enumTi->GetEnumInfo();
-        if (enumInfo->IsEnumKind1()) {
-            obj = ObjectManager::NewObject(ti, size);
-        } else {
-            // For enum kind 1, the object's TypeInfo should be the enum's TypeInfo.
-            // Current ti is the constructor's TypeInfo of the enum.
-            obj = ObjectManager::NewObject(enumTi, size);
-        }
-        SetEnumTag(obj, ti);
+        obj = FieldInitializer::CreateEnumObject(ti, size);
     } else {
         obj = ObjectManager::NewObject(ti, size);
     }
-    CHECK_DETAIL(obj != nullptr, "MCC_NewAndInitObject failed, obj is nullptr");
+    
+    if (obj == nullptr) {
+        VLOG(REPORT, "Allocating object %s (%zu B) failed and throw OutOfMemoryError", 
+             ti->GetName(), size);
+        ExceptionManager::CheckAndThrowPendingException("MCC_NewAndInitObject: Object creation failed");
+        return nullptr;
+    }
 
     // Parse fields from args and store them into obj.
-    SetFieldFromArgs(obj, ti, args);
+    FieldInitializer::SetFieldFromArgs(obj, ti, args);
     return obj;
 }
 
-static void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum)
-{
-    for (int idx = 0; idx < fieldNum; idx++) {
-        TypeInfo* fieldTi = ti->GetFieldType(idx);
-        U32 offset = ti->GetFieldOffset(idx);
-        if (ti->IsEnum() || ti->IsTempEnum()) {
-            // For enum and temp enum, skip the first element (the tag).
-            fieldTi = ti->GetFieldType(idx + 1);
-            offset = ti->GetFieldOffset(idx + 1);
-        }
-        Uptr fieldAddr = reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE + offset;
-        BaseObject* fieldObj = nullptr;
-        if (fieldTi->IsRef()) {
-            fieldObj = Heap::GetBarrier().ReadReference(obj, obj->GetRefField(offset + TYPEINFO_PTR_SIZE));
-        } else if (fieldTi->IsStruct() || fieldTi->IsTuple() || fieldTi->IsEnum()) {
-            MSize fieldSize = fieldTi->GetInstanceSize();
-            MSize size = MRT_ALIGN(fieldSize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-            fieldObj = ObjectManager::NewObject(fieldTi, size);
-            if (fieldSize == 0) {
-                array->SetRefElement(idx, fieldObj);
-                continue;
-            }
-            void* tmp = malloc(fieldSize);
-            Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), obj, fieldAddr, fieldSize);
-            Heap::GetBarrier().WriteStruct(fieldObj, reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE, fieldSize,
-                reinterpret_cast<MAddress>(tmp), fieldSize);
-            free(tmp);
-        } else if (fieldTi->IsPrimitiveType()) {
-            MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-            fieldObj = ObjectManager::NewObject(fieldTi, size);
-            if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE),
-                         fieldTi->GetInstanceSize(),
-                         reinterpret_cast<void*>(fieldAddr),
-                         fieldTi->GetInstanceSize()) != EOK) {
-                LOG(RTLOG_ERROR, "MCC_GetAssociatedValues memcpy_s fail");
-            }
-        } else if (fieldTi->IsVArray()) {
-            // VArray is only used to store value types,
-            // so we can copy the memory directly
-            MSize vArraySize = fieldTi->GetFieldNum() * fieldTi->GetComponentTypeInfo()->GetInstanceSize();
-            MSize size = MRT_ALIGN(vArraySize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-            fieldObj = ObjectManager::NewObject(fieldTi, size);
-            if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE), vArraySize,
-                         reinterpret_cast<void*>(fieldAddr), vArraySize) != EOK) {
-                LOG(RTLOG_ERROR, "MCC_GetAssociatedValues memcpy_s fail");
-            }
-        } else {
-            LOG(RTLOG_FATAL, "%s not to supported", fieldTi->GetName());
-        }
-        array->SetRefElement(idx, fieldObj);
-    }
-}
+
 
 extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
     TypeInfo* ti = obj->GetTypeInfo();
@@ -1458,6 +1344,7 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
         I32 tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
         EnumInfo* enumInfo = ti->GetEnumInfo();
         ti = enumInfo->GetCtorTypeInfo(tag);
+        fieldNum = ti->GetFieldNum();
         fieldNum -= 1;
     } else if (ti->IsTempEnum()) {
         fieldNum -= 1;
@@ -1466,7 +1353,7 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
     TypeInfo* rawArrayTi = arrayTi->GetFieldType(0);
     ArrayRef array = ObjectManager::NewArray(fieldNum, rawArrayTi);
     // Extract fields from obj and put them into array.
-    SetElementFromObject(array, obj, ti, fieldNum);
+    FieldInitializer::SetElementFromObject(array, obj, ti, fieldNum);
 
     U32 size = arrayTi->GetInstanceSize();
     MSize arrayObjSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
