@@ -256,8 +256,15 @@ void* StaticFieldInfo::GetAnnotations(TypeInfo* arrayTi)
     return obj;
 }
 
-// FieldInitializer class implementation
-bool FieldInitializer::SetPrimitiveField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj)
+// FieldInitializer namespace implementation
+namespace FieldInitializer {
+// Forward declarations for helper functions
+BaseObject* FieldToAny(ObjRef obj, TypeInfo* fieldTi, U32 offset);
+BaseObject* StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Uptr fieldAddr);
+BaseObject* PrimitiveToAny(TypeInfo* fieldTi, Uptr fieldAddr);
+BaseObject* VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr);
+
+bool SetPrimitiveField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj)
 {
     MSize fieldSize = argType->GetInstanceSize();
     if (memcpy_s(reinterpret_cast<void*>(argAddr), fieldSize,
@@ -269,7 +276,7 @@ bool FieldInitializer::SetPrimitiveField(ObjRef obj, Uptr argAddr, TypeInfo* arg
     return true;
 }
 
-bool FieldInitializer::SetStructField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj)
+bool SetStructField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj)
 {
     MSize fieldSize = argType->GetInstanceSize();
     if (fieldSize == 0) {
@@ -290,7 +297,7 @@ bool FieldInitializer::SetStructField(ObjRef obj, Uptr argAddr, TypeInfo* argTyp
     return true;
 }
 
-bool FieldInitializer::SetVArrayField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj)
+bool SetVArrayField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj)
 {
     MSize vArraySize = argType->GetFieldNum() * argType->GetComponentTypeInfo()->GetInstanceSize();
     if (memcpy_s(reinterpret_cast<void*>(argAddr), vArraySize,
@@ -302,7 +309,7 @@ bool FieldInitializer::SetVArrayField(ObjRef obj, Uptr argAddr, TypeInfo* argTyp
     return true;
 }
 
-void FieldInitializer::SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
+void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
 {
     CJRawArray* cjRawArray = static_cast<CJArray*>(args)->rawPtr;
     U64 argCnt = cjRawArray->len;
@@ -345,7 +352,7 @@ void FieldInitializer::SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
     }
 }
 
-ObjRef FieldInitializer::CreateEnumObject(TypeInfo* ti, MSize size)
+ObjRef CreateEnumObject(TypeInfo* ti, MSize size)
 {
     TypeInfo* enumTi = ti->GetSuperTypeInfo();
     EnumInfo* enumInfo = enumTi->GetEnumInfo();
@@ -367,7 +374,7 @@ ObjRef FieldInitializer::CreateEnumObject(TypeInfo* ti, MSize size)
     return obj;
 }
 
-void FieldInitializer::SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum)
+void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum)
 {
     for (int idx = 0; idx < fieldNum; idx++) {
         TypeInfo* fieldTi = ti->GetFieldType(idx);
@@ -389,7 +396,7 @@ void FieldInitializer::SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo
     }
 }
 
-BaseObject* FieldInitializer::FieldToAny(ObjRef obj, TypeInfo* fieldTi, U32 offset)
+BaseObject* FieldToAny(ObjRef obj, TypeInfo* fieldTi, U32 offset)
 {
     Uptr fieldAddr = reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE + offset;
     if (fieldTi->IsRef()) {
@@ -406,7 +413,7 @@ BaseObject* FieldInitializer::FieldToAny(ObjRef obj, TypeInfo* fieldTi, U32 offs
     }
 }
 
-BaseObject* FieldInitializer::StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Uptr fieldAddr)
+BaseObject* StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Uptr fieldAddr)
 {
     MSize fieldSize = fieldTi->GetInstanceSize();
     MSize size = MRT_ALIGN(fieldSize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
@@ -430,7 +437,7 @@ BaseObject* FieldInitializer::StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Upt
     return fieldObj;
 }
 
-BaseObject* FieldInitializer::PrimitiveToAny(TypeInfo* fieldTi, Uptr fieldAddr)
+BaseObject* PrimitiveToAny(TypeInfo* fieldTi, Uptr fieldAddr)
 {
     MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size);
@@ -445,7 +452,7 @@ BaseObject* FieldInitializer::PrimitiveToAny(TypeInfo* fieldTi, Uptr fieldAddr)
     return fieldObj;
 }
 
-BaseObject* FieldInitializer::VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
+BaseObject* VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
 {
     // VArray is only used to store value types, so we can copy the memory directly
     MSize vArraySize = fieldTi->GetFieldNum() * fieldTi->GetComponentTypeInfo()->GetInstanceSize();
@@ -460,7 +467,7 @@ BaseObject* FieldInitializer::VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
     return fieldObj;
 }
 
-void FieldInitializer::SetEnumTag(ObjRef obj, TypeInfo* typeInfo)
+void SetEnumTag(ObjRef obj, TypeInfo* typeInfo)
 {
     TypeInfo* enumTi = typeInfo->GetSuperTypeInfo();
     EnumInfo* enumInfo = enumTi->GetEnumInfo();
@@ -474,4 +481,5 @@ void FieldInitializer::SetEnumTag(ObjRef obj, TypeInfo* typeInfo)
         }
     }
 }
+} // namespace FieldInitializer
 } // namespace MapleRuntime

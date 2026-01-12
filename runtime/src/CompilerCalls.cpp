@@ -1124,7 +1124,8 @@ static TypeInfo* GetActualTypeFromGenericType(GenericTypeInfo* genericTi, void* 
             }
         }
     }
-    TypeInfo* ti = TypeInfoManager::GetTypeInfoManager().GetOrCreateTypeInfo(genericTi->GetSourceGeneric(), len, typeInfos);
+    TypeInfo* ti = TypeInfoManager::GetTypeInfoManager().GetOrCreateTypeInfo(
+        genericTi->GetSourceGeneric(), len, typeInfos);
     free(mem);
     mem = nullptr;
     return ti;
@@ -1304,10 +1305,6 @@ extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
     return fieldTypes;
 }
 
-
-
-
-
 extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef obj = nullptr;
@@ -1330,8 +1327,6 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     FieldInitializer::SetFieldFromArgs(obj, ti, args);
     return obj;
 }
-
-
 
 extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
     TypeInfo* ti = obj->GetTypeInfo();
@@ -1358,7 +1353,8 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
     U32 size = arrayTi->GetInstanceSize();
     MSize arrayObjSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef arrayObj = ObjectManager::NewObject(arrayTi, arrayObjSize, AllocType::RAW_POINTER_OBJECT);
-    Heap::GetBarrier().WriteReference(arrayObj, arrayObj->GetRefField(TYPEINFO_PTR_SIZE), static_cast<BaseObject*>(array));
+    Heap::GetBarrier().WriteReference(
+        arrayObj, arrayObj->GetRefField(TYPEINFO_PTR_SIZE), static_cast<BaseObject*>(array));
     CJArray* cjArray = reinterpret_cast<CJArray*>(reinterpret_cast<Uptr>(arrayObj) + TYPEINFO_PTR_SIZE);
     cjArray->start = 0;
     cjArray->length = fieldNum;
