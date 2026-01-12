@@ -91,18 +91,24 @@ public open class Exception <: ToString {
         eprintln("An exception has occurred:")
         eprintln(toString())
         traceElementArray = getStackTrace()
-        for (element in traceElementArray) {
-            if (element.declaringClass.isEmpty() && element.methodName.isEmpty()) { // simple stack trace format
-                eprintln("\t at ${element.fileName}:${element.lineNumber}")
-            } else {
-                let packageDelimiter: String = if (element.declaringClass.isEmpty()) { "" } else { "." }
-                eprintln(
-                    "\t at ${element.declaringClass}${packageDelimiter}${element.methodName}(${element.fileName}:${element.lineNumber})")
-            }
-        }
+        eprintln(stackTraceToString(traceElementArray))
     }
 
     public func getStackTrace(): Array<StackTraceElement> {
         getStackTraceImpl(pcArray)
     }
+}
+
+func stackTraceToString(traceElementArray: Array<StackTraceElement>): String {
+    let s = StringBuilder()
+    for (element in traceElementArray) {
+        if (element.declaringClass.isEmpty() && element.methodName.isEmpty()) { // simple stack trace format
+            s.append("\t at ${element.fileName}:${element.lineNumber}")
+        } else {
+            let packageDelimiter: String = if (element.declaringClass.isEmpty()) { "" } else { "." }
+            s.append(
+                "\t at ${element.declaringClass}${packageDelimiter}${element.methodName}(${element.fileName}:${element.lineNumber})")
+        }
+    }
+    s.toString()
 }
