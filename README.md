@@ -39,7 +39,7 @@ The Cangjie standard library (std) is built on a lower layer based on compiler f
 
 ### Directory Structure
 
-```
+```text
 /runtime
 ├─ src                  # Implementation of Cangjie Runtime, including memory management, Cangjie thread management, etc
 |   ├─ arch_os          # Hardware platform adaptation code
@@ -74,7 +74,7 @@ Building the Cangjie runtime is supported on Ubuntu/MacOS (x86_64, aarch64) envi
 
 Before building, you need to set up the compilation environment according to the target output. For details, please refer to the [Cangjie SDK Integration and Build Guide](https://gitcode.com/Cangjie/cangjie_build).
 
-##### Download the source code:
+##### Download the source code
 
 ``` shell
 $ git clone https://gitcode.com/Cangjie/cangjie_runtime.git;
@@ -89,10 +89,10 @@ For standalone builds, please run the `build.py` script, which supports three fu
 The `build` command is used to independently construct the Cangjie runtime environment and supports multiple configurable options:
 
 - `--target <value>` specifies the build target. Default `value`: `native`. Available options:
-  - `native` -- refers to compiling and building from Linux/macOS to the native   platform;
-  - `windows-x86_64` -- refers to cross-compiling and building from Linux to the   Windows-x86_64 platform;
-  - `ohos-aarch64` -- refers to cross-compiling and building from Linux to the   ohos-aarch64 platform;
-  - `ohos-x86_64` -- refers to cross-compiling and building from Linux to the ohos-x86_64 platform.
+    - `native` -- refers to compiling and building from Linux/macOS to the native   platform;
+    - `windows-x86_64` -- refers to cross-compiling and building from Linux to the   Windows-x86_64 platform;
+    - `ohos-aarch64` -- refers to cross-compiling and building from Linux to the   ohos-aarch64 platform;
+    - `ohos-x86_64` -- refers to cross-compiling and building from Linux to the ohos-x86_64 platform.
 - `-t, --build-type <value>` specifies the build configuration. Valid values: `release, debug, relwithdebinfo`. Default: `release`.
 - `-v, --version <value>` sets the version number for the Cangjie runtime. Default: `0.0.1`.
 - `--prefix <value>` defines the installation path for build outputs. Defaults to `runtime/output/common`. If both `build` and `install` specify paths, install takes precedence.
@@ -106,6 +106,7 @@ $ python3 build.py build --target native --build-type release -v 0.0.1
 ```
 
 ##### Install Command
+
 The `install` command can install the compiled output to the desired location. There is an optional parameter:
 
 - `--prefix <value>` specifies the installation path for build outputs. If not provided, outputs will be installed to the path specified by the `build` command. Otherwise, they will be installed to the path specified by this parameter.
@@ -117,6 +118,7 @@ $ python3 build.py install
 ```
 
 ##### Clean Command
+
 The `clean` command can be executed to remove all build outputs and intermediate files.
 
 Example:
@@ -126,7 +128,8 @@ $ python3 build.py clean
 ```
 
 #### Build Output
-```
+
+```text
 /runtime
 └─ output
     ├─ common           # Default installation path for compiled outputs
@@ -155,7 +158,6 @@ The Cangjie Standard Library has three key characteristics and goals:
 - Universal Functionality: The standard library provides the most commonly used library capabilities for developers, aiming to solve most basic problems.
 - Quality Benchmark: The standard library strives to set an example and benchmark for other Cangjie libraries in terms of performance, code style, etc.
 
-
 For a detailed introduction and usage of the standard library, please refer to the [official standard library documentation](https://cangjie-lang.cn/docs?url=%2F1.0.0%2Flibs%2Fstd%2Fstd_module_overview.html).
 
 ![](std/figures/cangjie_std.png)
@@ -164,7 +166,7 @@ For a detailed introduction and usage of the standard library, please refer to t
 
 The main directories are as follows:
 
-```
+```text
 std/libs/std
 ├── argopt                  # Command line argument string parsing
 ├── ast                     # Syntax parser
@@ -213,14 +215,13 @@ Before building the standard library, you need to first build the runtime in thi
 
 1. Configure cjc
 
-   ```
+   ```shell
    source <path to the source-built cjc, e.g., ..../output/envsetup.sh>
    ```
 
    You can verify if cjc is configured successfully using the command below. If version information appears, it indicates that cjc is configured successfully.
 
-
-   ```
+   ```shell
    cjc -v
    ```
 
@@ -228,14 +229,13 @@ Before building the standard library, you need to first build the runtime in thi
 
    Download the source code
 
-   ```
+   ```shell
    git clone https://gitcode.com/Cangjie/cangjie_runtime.git
    ```
 
    Enter the std directory, compile the standard library source code by executing the `build.py` script, which supports three functions: build, clean, and install.
 
-
-   ```
+   ```shell
    cd std
    python3 build.py clean
    python3 build.py build -t release --target-lib=<path to runtime build output directory> --target-lib=<path to openssl lib>
@@ -251,7 +251,7 @@ Before building the standard library, you need to first build the runtime in thi
 
 The output directory structure is as follows:
 
-```
+```text
 output
 ├── lib     #std static lib
 ├── modules #std cjo file
@@ -267,10 +267,10 @@ The standard library build artifacts need to be used with the cjc compiler and r
 The build functionality of build.py provides the following additional options:
 
 - `--target`: Specifies the build platform, defaults to native build, supported targets are shown below(For cross-compilation, please refer to [Cangjie SDK Integration Build Guide](https://gitcode.com/Cangjie/cangjie_build/blob/dev/README_zh.md)):
-  - `native` (default value)
-  - `ohos-aarch64`: Cross-compile for ohos(ohos-aarch64)
-  - `ohos-x86_64`: Cross-compile for ohos(ohos-x86_64)
-  - `windows-x86_64`: Cross-compile Windows from Linux
+    - `native` (default value)
+    - `ohos-aarch64`: Cross-compile for ohos(ohos-aarch64)
+    - `ohos-x86_64`: Cross-compile for ohos(ohos-x86_64)
+    - `windows-x86_64`: Cross-compile Windows from Linux
 - `--target-toolchain`: Specifies the path to compilation tools (required for cross-compilation)
 - `--target-sysroot`: Specifies the directory of target system libraries (required for cross-compilation)
 - `--build-args`: cjc build options (optional)
@@ -284,7 +284,7 @@ The install functionality of build.py provides the following additional options:
 
 You can also refer to [build.py](https://gitcode.com/Cangjie/cangjie_runtime/blob/dev/std/build.py) or use the `--help` option to learn more about compilation options:
 
-```
+```shell
 python3 build.py --help
 python3 build.py build --help
 python3 build.py install --help
@@ -311,6 +311,7 @@ For integration building, please refer to the [Cangjie SDK Integration Build Gui
 [cangjie_test](https://gitcode.com/Cangjie/cangjie_test)
 
 ## Open Source License
+
 This project is licensed under [Apache-2.0 with Runtime Library Exception](./LICENSE). Please enjoy and participate in open source freely.
 
 ## Contribution Guide
