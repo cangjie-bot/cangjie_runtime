@@ -319,13 +319,33 @@ char* GetProcessArgs(pid_t pid, size_t* length)
         return NULL;
     }
 
+    int retry = 3;
+
+
     int mib3[SYSCTL_ARGNUM_PROCARGS2] = {CTL_KERN, KERN_PROCARGS2, pid};
     size = (size_t)maxArgsLen;
-    if (sysctl(mib3, SYSCTL_ARGNUM_PROCARGS2, argv, &size, NULL, 0) == -1) {
-        free(argv);
-        printf("sysctl get argv failed\n");
-        printf("具体错误码：%d, 错误信息：%s\n", errno, strerror(errno));
-        return NULL;
+
+    while (retry > 0) {
+        retry--;
+        if (sysctl(mib3, SYSCTL_ARGNUM_PROCARGS2, argv, &size, NULL, 0) != -1) {
+            // 读取成功
+            break;
+        }
+        if (errno == EIO) {
+            if (retry == 0) {
+                free(argv);
+                printf("sysctl get argv failed\n");
+                printf("具体错误码：%d, 错误信息：%s\n", errno, strerror(errno));
+                return NULL;                
+            }
+            usleep(100000); // 休眠 100ms 重试
+            printf("sysctl get argv failed retry %d\n", retry);
+        } else {
+            free(argv);
+            printf("sysctl get argv failed\n");
+            printf("具体错误码：%d, 错误信息：%s\n", errno, strerror(errno));
+            return NULL;
+        }
     }
 
     *length = maxArgsLen;
