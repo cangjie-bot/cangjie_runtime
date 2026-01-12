@@ -440,6 +440,36 @@ extend<T> Iterator<T> where T <: Equatable<T> {
     }
 }
 
+public class PeekableIterator<T> <: Iterator<T> {
+    private let it: Iterator<T>
+    private var peeked: ?T
+
+    init(it: Iterator<T>) {
+        this.it = it
+        this.peeked = None
+    }
+
+    /**
+     *  Get next value without advancing the iterator.
+     */
+    public func peek(): Option<T> {
+        if (this.peeked.isNone()) {
+            this.peeked = this.it.next()
+        }
+
+        this.peeked
+    }
+
+    public func next(): Option<T> {
+        match (peeked) {
+            case Some(t) =>
+                this.peeked = None
+                t
+            case None => this.it.next()
+        }
+    }
+}
+
 extend<T> Iterator<T> where T <: Comparable<T> {
     public func max(): Option<T> {
         var result: Option<T> = None
@@ -631,5 +661,9 @@ extend<T> Iterator<T> {
             result = operation(result, item)
         }
         return result
+    }
+
+    public func peekable(): PeekableIterator<T> {
+        return PeekableIterator<T>(this)
     }
 }
