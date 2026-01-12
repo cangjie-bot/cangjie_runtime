@@ -275,17 +275,17 @@ bool FieldInitializer::SetStructField(ObjRef obj, Uptr argAddr, TypeInfo* argTyp
     if (fieldSize == 0) {
         return true;
     }
-    
+
     void* tmp = malloc(fieldSize);
     if (tmp == nullptr) {
         LOG(RTLOG_ERROR, "FieldInitializer: malloc failed for struct field");
         return false;
     }
-    
+
     Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), argObj,
         reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE, fieldSize);
     Heap::GetBarrier().WriteStruct(obj, argAddr, fieldSize, reinterpret_cast<MAddress>(tmp), fieldSize);
-    
+
     free(tmp);
     return true;
 }
@@ -308,20 +308,20 @@ void FieldInitializer::SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
     U64 argCnt = cjRawArray->len;
     ObjRef rawArray = reinterpret_cast<ObjRef>(cjRawArray);
     RefField<false>* refField = reinterpret_cast<RefField<false>*>(&(cjRawArray->data));
-    
+
     for (U64 idx = 0; idx < argCnt; ++idx) {
         ObjRef argObj = static_cast<ObjRef>(Heap::GetBarrier().ReadReference(rawArray, *refField));
         TypeInfo* argType = ti->GetFieldType(idx);
         U32 offset = ti->GetFieldOffset(idx);
-        
+
         if (ti->IsEnum() || ti->IsTempEnum()) {
             // For enum and temp enum, skip the first element (the tag).
             argType = ti->GetFieldType(idx + 1);
             offset = ti->GetFieldOffset(idx + 1);
         }
-        
+
         Uptr argAddr = reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE + offset;
-        
+
         bool success = true;
         if (argType->IsRef()) {
             obj->StoreRef(offset + TYPEINFO_PTR_SIZE, argObj);
@@ -336,11 +336,11 @@ void FieldInitializer::SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
         } else {
             LOG(RTLOG_FATAL, "FieldInitializer: %s type not supported", argType->GetName());
         }
-        
+
         if (!success) {
             LOG(RTLOG_ERROR, "FieldInitializer: failed to set field at index %zu", idx);
         }
-        
+
         refField++;
     }
 }
@@ -350,7 +350,7 @@ ObjRef FieldInitializer::CreateEnumObject(TypeInfo* ti, MSize size)
     TypeInfo* enumTi = ti->GetSuperTypeInfo();
     EnumInfo* enumInfo = enumTi->GetEnumInfo();
     CHECK_DETAIL(enumInfo != nullptr, "FieldInitializer: enumInfo is nullptr");
-    
+
     ObjRef obj = nullptr;
     if (enumInfo->IsEnumKind1()) {
         obj = ObjectManager::NewObject(ti, size);
@@ -359,11 +359,11 @@ ObjRef FieldInitializer::CreateEnumObject(TypeInfo* ti, MSize size)
         // Current ti is the constructor's TypeInfo of the enum.
         obj = ObjectManager::NewObject(enumTi, size);
     }
-    
+
     if (obj != nullptr) {
         SetEnumTag(obj, ti);
     }
-    
+
     return obj;
 }
 
@@ -372,15 +372,15 @@ void FieldInitializer::SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo
     for (int idx = 0; idx < fieldNum; idx++) {
         TypeInfo* fieldTi = ti->GetFieldType(idx);
         U32 offset = ti->GetFieldOffset(idx);
-        
+
         // For enum and temp enum, skip the first element (the tag)
         if (ti->IsEnum() || ti->IsTempEnum()) {
             fieldTi = ti->GetFieldType(idx + 1);
             offset = ti->GetFieldOffset(idx + 1);
         }
-        
+
         BaseObject* fieldObj = FieldToAny(obj, fieldTi, offset);
-        
+
         if (fieldObj != nullptr) {
             array->SetRefElement(idx, fieldObj);
         } else {
@@ -411,21 +411,21 @@ BaseObject* FieldInitializer::StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Upt
     MSize fieldSize = fieldTi->GetInstanceSize();
     MSize size = MRT_ALIGN(fieldSize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size);
-    
+
     if (fieldSize == 0) {
         return fieldObj;
     }
-    
+
     void* tmp = malloc(fieldSize);
     if (tmp == nullptr) {
         LOG(RTLOG_ERROR, "FieldInitializer: malloc failed for struct field");
         return nullptr;
     }
-    
+
     Heap::GetBarrier().ReadStruct(reinterpret_cast<MAddress>(tmp), obj, fieldAddr, fieldSize);
     Heap::GetBarrier().WriteStruct(fieldObj, reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE, fieldSize,
         reinterpret_cast<MAddress>(tmp), fieldSize);
-    
+
     free(tmp);
     return fieldObj;
 }
@@ -434,14 +434,14 @@ BaseObject* FieldInitializer::PrimitiveToAny(TypeInfo* fieldTi, Uptr fieldAddr)
 {
     MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size);
-    
+
     if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE),
                  fieldTi->GetInstanceSize(),
                  reinterpret_cast<void*>(fieldAddr),
                  fieldTi->GetInstanceSize()) != EOK) {
         LOG(RTLOG_ERROR, "FieldInitializer: memcpy_s failed for primitive field");
     }
-    
+
     return fieldObj;
 }
 
@@ -451,12 +451,12 @@ BaseObject* FieldInitializer::VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
     MSize vArraySize = fieldTi->GetFieldNum() * fieldTi->GetComponentTypeInfo()->GetInstanceSize();
     MSize size = MRT_ALIGN(vArraySize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size);
-    
+
     if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE), vArraySize,
                  reinterpret_cast<void*>(fieldAddr), vArraySize) != EOK) {
         LOG(RTLOG_ERROR, "FieldInitializer: memcpy_s failed for VArray field");
     }
-    
+
     return fieldObj;
 }
 

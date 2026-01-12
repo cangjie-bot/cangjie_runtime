@@ -57,7 +57,7 @@ public:
     static ObjRef CreateEnumObject(TypeInfo* ti, MSize size);
     static void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum);
     static void SetEnumTag(ObjRef obj, TypeInfo* typeInfo);
-        
+
 private:
     static BaseObject* FieldToAny(ObjRef obj, TypeInfo* fieldTi, U32 offset);
     static BaseObject* StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Uptr fieldAddr);
