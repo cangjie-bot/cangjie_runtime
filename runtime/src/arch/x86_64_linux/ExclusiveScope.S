@@ -102,10 +102,15 @@ CJ_MCC_ExclusiveScope:
     movq    %r12, -88(%rbp)     // thread
 
     // ==================== 3. 保存 EXCLUSIVE 上下文 ====================
+    movq    %rbp,  %rsi                  // rsi = fa (frame address)
+    // Get the current pc address through the following two assembly instructions.
+    call    .L_exc_get_pc
 .L_exc_get_pc:
     .global unwindPCForExclusiveStub
 unwindPCForExclusiveStub:
-
+    pop     %rdi
+    mov     %r15, %rdx
+    callq   MRT_SaveC2NContext@PLT
 
     // ==================== 4. EnterSaferegion ====================
     movq    $0, %rdi
@@ -266,31 +271,34 @@ ExecuteCangjieStubFull:
     movq    %rcx, -72(%rbp)      // func (函数指针)
     movq    %r8,  -80(%rbp)      // threadData
 
+    // 2. 保存入参（只需要 rdi 和 rdx）
+    movq    %rdi, -48(%rbp)      # sret (&g_ut)
+    movq    %rdx, -56(%rbp)      # closureObj (注意是 rdx 不是 rsi)
+    movq    %rcx, -64(%rbp)      # executeClosure 对象
+
+    // 3. SaveTopManagedContext
     movq    %rbp, %rdi
     callq   MRT_SaveTopManagedContextToN2CStub@PLT
 
+    // 4. 准备调用参数
+    movq    -48(%rbp), %rdi      # rdi = &g_ut
+    movq    -56(%rbp), %rdx      # rdx = closureObj (不要动 rsi)
 
-    movq    -80(%rbp), %r15
+    // 5. 从 executeClosure 对象取函数指针
+    movq    -64(%rbp), %r11      # r11 = executeClosure 对象
+    movq    8(%r11),   %r11      # r11 = slot[1] 函数指针 ($0_$g)
+    // 注意：不使用 r12 保存对象引用，避免 GC 时 "register r12 is not recorded"
 
-    movq    -48(%rbp), %rdi      // arg0
-    movq    -56(%rbp), %rsi      // arg1
-    movq    -64(%rbp), %rdx      // arg2
-    movq    -72(%rbp), %r12      // func
-    callq   *%r12
+    // 6. 调用
+    callq   *%r11
     .global unwindPCForExclusiveStubFull
 unwindPCForExclusiveStubFull:
 
-    // 6. 保存返回值
-    movq    %rax, -88(%rbp)
-
-    // 7. 恢复 N2C 上下文
+    // 7. RestoreTopManagedContext
     movq    %rbp, %rdi
     callq   MRT_RestoreTopManagedContextFromN2CStub@PLT
 
-    // 8. 恢复返回值
-    movq    -88(%rbp), %rax
-
-    // 9. 恢复 callee-saved 寄存器
+    // 8. 恢复寄存器和返回
     movq    -8(%rbp),  %r15
     movq    -16(%rbp), %r14
     movq    -24(%rbp), %r13

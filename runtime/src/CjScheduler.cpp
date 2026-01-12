@@ -448,38 +448,39 @@ static void* WrapperExclusiveClosure(void* arg, unsigned int len)
 {
     ASSERT(arg != nullptr);
     auto lwtData = static_cast<LWTData*>(arg);
-    auto executeClosure = lwtData->execute;
+    // auto executeClosure = lwtData->execute;
     uintptr_t threadData = MRT_GetThreadLocalData();
     // mutator has been set to a valid pointer before.
     Mutator* mutator = reinterpret_cast<ThreadLocalData*>(threadData)->mutator;
     MRT_PreRunManagedCode(mutator, 0, reinterpret_cast<ThreadLocalData*>(threadData));
-    TypeInfo* futureTi = static_cast<TypeInfo*>(lwtData->threadObject);
-    // threadObject is used to pass TypeInfo of future. After use, need set to nullptr.
     lwtData->threadObject = nullptr;
+    BaseObject* executeClosure = Heap::GetBarrier().ReadStaticRef(reinterpret_cast<RefField<false>&>(lwtData->execute));
     BaseObject* closureObj = Heap::GetBarrier().ReadStaticRef(reinterpret_cast<RefField<false>&>(lwtData->obj));
-    LOG(RTLOG_DEBUG, "------WrapperExclusiveClosure %d----------", mutator->GetTid());
+    //void* a = reinterpret_cast<uint64_t*>(executeClosure + 8);
+    //LOG(RTLOG_DEBUG, "------WrapperExclusiveClosure %d, func = %p----------", mutator->GetTid(), a, executeClosure[2]);
 #if defined(__aarch64__)
     ExecuteCangjieStubFull(closureObj, futureTi, 0, executeClosure, reinterpret_cast<void*>(threadData), &g_ut);
 #elif defined(__arm__)
     ExecuteCangjieStubFull(&g_ut, closureObj, futureTi, executeClosure, threadData);
 #elif defined(__x86_64__)
-    ExecuteCangjieStubFull(&g_ut,      /* arg0: sret */
-                       closureObj, /* arg1 */
-                       futureTi,
-                       executeClosure, threadData);
+    ExecuteCangjieStubFull(&g_ut, nullptr, closureObj, executeClosure);
 #endif
     MutatorManager::Instance().TransitMutatorToExit();
-    return nullptr;
+    // 返回用户函数的返回值（通过 sret 参数 &g_ut 传递）
+    return reinterpret_cast<void*>(g_ut.placeholder);
 }
 
 void* MCC_NewExclusiveCJThread(void* executeClosure, void* closurePtr, void* futureTi) 
 {
     LWTData data;
-    data.execute = executeClosure;
+    data.execute = nullptr;
     data.obj = nullptr;
     data.threadObject = futureTi; // used to pass TypeInfo of future
-    RefField<>* runtimeRootField = reinterpret_cast<RefField<>*>(&data.obj);
-    Heap::GetBarrier().WriteStaticRef(*runtimeRootField, reinterpret_cast<BaseObject*>(closurePtr));
+    RefField<>* executeRootField = reinterpret_cast<RefField<>*>(&data.obj);
+    Heap::GetBarrier().WriteStaticRef(*executeRootField, reinterpret_cast<BaseObject*>(closurePtr));
+    RefField<>* objRootField = reinterpret_cast<RefField<>*>(&data.execute);
+    Heap::GetBarrier().WriteStaticRef(*objRootField, reinterpret_cast<BaseObject*>(executeClosure));
+    
     return ExclusiveCJThreadNew(WrapperExclusiveClosure, &data, sizeof(LWTData));
 }
 

@@ -34,8 +34,6 @@ extern uintptr_t C2NStubFrameSize;
 namespace MapleRuntime {
 bool MachineFrame::IsN2CStubFrame() const
 {
-    //LOG(RTLOG_DEBUG, "unwindPCForN2CStub=%p, unwindPCForExclusiveStubFull=%p",
-    // (void*)&unwindPCForN2CStub, (void*)&unwindPCForExclusiveStubFull);
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
     //return PtrauthStripInstPointer(reinterpret_cast<Uptr>(ip)) == reinterpret_cast<uintptr_t>(&unwindPCForN2CStub);
     uintptr_t strippedIP = PtrauthStripInstPointer(reinterpret_cast<Uptr>(ip));
@@ -43,6 +41,7 @@ bool MachineFrame::IsN2CStubFrame() const
            strippedIP == reinterpret_cast<uintptr_t>(&unwindPCForExclusiveStubFull);
 #else
     uintptr_t ipAddr = reinterpret_cast<uintptr_t>(ip);
+    LOG(RTLOG_DEBUG, "ipAddr =  %p, unwindPCForN2CStub=%p, unwindPCForExclusiveStubFull=%p", ipAddr, (void*)&unwindPCForN2CStub, (void*)&unwindPCForExclusiveStubFull);
     return ipAddr == reinterpret_cast<uintptr_t>(&unwindPCForN2CStub) ||
            ipAddr == reinterpret_cast<uintptr_t>(&unwindPCForExclusiveStubFull);
 #endif
@@ -51,9 +50,11 @@ bool MachineFrame::IsN2CStubFrame() const
 bool MachineFrame::IsExclusiveStubFrame() const
 {
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    return PtrauthStripInstPointer(reinterpret_cast<Uptr>(ip)) == reinterpret_cast<uintptr_t>(&unwindPCForN2CStub);
+    return PtrauthStripInstPointer(reinterpret_cast<Uptr>(ip)) == reinterpret_cast<uintptr_t>(&unwindPCForExclusiveStub) ||
+           PtrauthStripInstPointer(reinterpret_cast<Uptr>(ip)) == reinterpret_cast<uintptr_t>(&unwindPCForExclusiveStubFull);
 #else
-    return reinterpret_cast<uintptr_t>(ip) == reinterpret_cast<uintptr_t>(&unwindPCForExclusiveStub);
+    return reinterpret_cast<uintptr_t>(ip) == reinterpret_cast<uintptr_t>(&unwindPCForExclusiveStub) ||
+           reinterpret_cast<uintptr_t>(ip) == reinterpret_cast<uintptr_t>(&unwindPCForExclusiveStubFull);
 #endif
 }
 
@@ -165,11 +166,19 @@ bool MachineFrame::UnwindToCallerMachineFrame(MachineFrame& caller) const
     FrameAddress* curFp = this->fa; // backup current frame address
     FrameAddress* callerFp = curFp->callerFrameAddress;
     caller.fa = callerFp;
+
+    uintptr_t curRet = curFp ? reinterpret_cast<uintptr_t>(curFp->returnAddress) : 0;
+    uintptr_t callerRet = 0;
+
 #if defined(__OHOS__) && defined(__aarch64__) && !defined(ENABLE_BACKWARD_PTRAUTH_CFI)
     caller.ip = PtrauthStripInstPointer(curFp->returnAddress);
 #else
     caller.ip = curFp->returnAddress;
+    callerRet = reinterpret_cast<uintptr_t>(caller.ip);
 #endif
+    LOG(RTLOG_DEBUG,
+        "UnwindToCaller curFp=%p curRet=%p callerFp=%p callerRet=%p",
+        curFp, (void*)curRet, callerFp, (void*)callerRet);
     return true;
 }
 #endif

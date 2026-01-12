@@ -623,7 +623,7 @@ MRT_STATIC_INLINE void CJThreadMake(const struct CJThreadAttrInner *attr,
     (void)memset_s(&newCJThread->context, sizeof(struct CJThreadContext), 0, sizeof(struct CJThreadContext));
 
     // foreign thread schedule do not create new stack and not need to init cjthread context.
-    if (newCJThread->schedule->scheduleType == SCHEDULE_FOREIGN_THREAD) {
+    if (newCJThread->schedule->scheduleType == SCHEDULE_FOREIGN_THREAD || newCJThread->schedule->scheduleType == SCHEDULE_EXCLUSIVE) {
         return;
     }
     if (attr != nullptr && attr->cjFromC) {
@@ -806,9 +806,9 @@ struct CJThread* CJThreadBuild(ScheduleHandle schedule, const struct CJThreadAtt
         return nullptr;
     }
     scheduleCJThread = &targetSchedule->schdCJThread;
-    if (CJThreadAttrCheck(attr, func, argStart, argSize) != 0) {
-        return nullptr;
-    }
+    // if (CJThreadAttrCheck(attr, func, argStart, argSize) != 0) {
+    //     return nullptr;
+    // }
 
     // Set stack info in cjthread through attr or default value
     CJThreadNewSetAttr(attr, scheduleCJThread, &stackAttr);
@@ -888,6 +888,7 @@ void* ExclusiveExecutor(
     MapleRuntime::Mutator* mutator = newCJThread->mutator;
     tlData->mutator = mutator;
     mutator->PreparedToRun(tlData);
+    //atomic_store_explicit(&newCJThread->state, CJTHREAD_READY, std::memory_order_release);
 
     LOG(RTLOG_DEBUG, "new mutator before execute %p saferegion %d", newCJThread->mutator, newCJThread->mutator->InSaferegion());
 
@@ -917,14 +918,19 @@ CJThreadHandle ExclusiveCJThreadNew(CJThreadFunc func,
 
     struct Schedule* newSchedule = new Schedule;
     newSchedule->scheduleType = SCHEDULE_EXCLUSIVE;
+
+    CJThreadHandle newCJThread = CJThreadNew(newSchedule, nullptr, func, argStart, argSize);
     
-    struct CJThread* newCJThread = CJThreadAlloc(newSchedule, &argAttr, &stackAttr, NO_BUF);
-    newCJThread->func = func;
-    MapleRuntime::Mutator* mutator = new MapleRuntime::Mutator();
-    mutator->Init();
-    mutator->InitTid();
-    mutator->SetCjthreadPtr(static_cast<void*>(newCJThread));
-    newCJThread->mutator = mutator;
+    // struct CJThread* newCJThread = CJThreadAlloc(newSchedule, &argAttr, &stackAttr, NO_BUF);
+    // newCJThread->func = func;
+    // MapleRuntime::Mutator* mutator = new MapleRuntime::Mutator();
+    // mutator->Init();
+    // mutator->InitTid();
+    // mutator->SetCjthreadPtr(static_cast<void*>(newCJThread));
+    // newCJThread->mutator = mutator;
+    if (newCJThread == nullptr) {
+        LOG(RTLOG_DEBUG, "failed !!!!!!!");
+    }
     return newCJThread;
 }
 
@@ -962,6 +968,8 @@ CJThreadHandle CJThreadNew(ScheduleHandle schedule, const struct CJThreadAttr *a
     if (targetSchedule->scheduleType == SCHEDULE_UI_THREAD &&
         g_scheduleManager.postTaskFunc != nullptr) {
         error = AddToCJSingleModeThreadList(newCJThread);
+    } else if (targetSchedule->scheduleType == SCHEDULE_EXCLUSIVE) {
+       error = 0;
     } else if (buf == GLOBAL_BUF) {
         error = ScheduleGlobalWrite(&newCJThread, 1);
     } else {

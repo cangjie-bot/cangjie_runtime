@@ -17,9 +17,15 @@ void GCStackInfo::FillInStackTrace()
 {
     UnwindContext uwContext;
     // Top unwind context can only be runtime or Cangjie context.
-    
+    int depth = 0;
     CheckTopUnwindContextAndInit(uwContext);
     while (!uwContext.frameInfo.mFrame.IsAnchorFrame(anchorFA)) {
+        LOG(RTLOG_DEBUG,
+            "GC FillInStackTrace depth=%d ip=%p fa=%p status=%d",
+            depth,
+            uwContext.frameInfo.mFrame.GetIP(),
+            uwContext.frameInfo.mFrame.GetFA(),
+            uwContext.GetUnwindContextStatus());
         AnalyseAndSetFrameType(uwContext);
         stack.emplace_back(uwContext.frameInfo);
         UnwindContext caller;
@@ -32,13 +38,19 @@ void GCStackInfo::FillInStackTrace()
             return;
         }
         uwContext = caller;
+        ++depth;
     }
 }
 
 void GCStackInfo::VisitStackRoots(const RootVisitor& func, Mutator& mutator) const
 {
     RegSlotsMap regSlotsMap;
+    LOG(RTLOG_ERROR, "GCStackInfo::VisitStackRoots start, total frames=%zu", stack.size());
+    int frameIdx = 0;
     for (auto frame : stack) {
+        LOG(RTLOG_ERROR, "  Frame[%d] type=%d ip=%p fa=%p",
+            frameIdx++, static_cast<int>(frame.GetFrameType()),
+            frame.mFrame.GetIP(), frame.mFrame.GetFA());
         switch (frame.GetFrameType()) {
             case FrameType::MANAGED: {
                 TracingCollector::VisitStackRoots(func, regSlotsMap, frame, mutator);

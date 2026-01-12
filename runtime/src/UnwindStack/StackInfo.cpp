@@ -65,6 +65,12 @@ void StackInfo::CheckTopUnwindContextAndInit(UnwindContext& uwContext)
 {
     if (topContext == nullptr) {
         UnwindContext& localContext = Mutator::GetMutator()->GetUnwindContext();
+        LOG(RTLOG_DEBUG,
+            "CheckTopUnwindContext localStatus=%d ip=%p fa=%p anchorFA=%p",
+            localContext.GetUnwindContextStatus(),
+            localContext.frameInfo.mFrame.GetIP(),
+            localContext.frameInfo.mFrame.GetFA(),
+            localContext.anchorFA);
         if (localContext.GetUnwindContextStatus() == UnwindContextStatus::RELIABLE) {
 #ifdef _WIN64
             Runtime& runtime = Runtime::Current();
@@ -81,6 +87,11 @@ void StackInfo::CheckTopUnwindContextAndInit(UnwindContext& uwContext)
             uwContext.frameInfo.SetFrameType(FrameType::RUNTIME);
             uwContext.SetUnwindContextStatus(UnwindContextStatus::RELIABLE);
         } else {
+             LOG(RTLOG_DEBUG,
+            "CheckTopUnwindContext use topContext ip=%p fa=%p anchorFA=%p",
+            topContext->frameInfo.mFrame.GetIP(),
+            topContext->frameInfo.mFrame.GetFA(),
+            topContext->anchorFA);
             uwContext = localContext;
         }
     } else {
@@ -119,12 +130,14 @@ void StackInfo::AnalyseAndSetFrameType(UnwindContext& uwContext)
     } else if (mFrame.IsStackGrowStubFrame()) {
         isReliableN2CStub = false;
         frameInfo.SetFrameType(FrameType::STACKGROW);
-    } else if (mFrame.IsRuntimeFrame()) {
-        frameInfo.SetFrameType(FrameType::RUNTIME);
-        isReliableN2CStub = false;
     } else if (mFrame.IsExclusiveStubFrame()) {
+        // MUST check IsExclusiveStubFrame BEFORE IsRuntimeFrame!
+        // Because ExclusiveStub is also in runtime library address range.
         LOG(RTLOG_DEBUG, "IsExclusiveStubFrame fa is %p", mFrame.GetFA());
         frameInfo.SetFrameType(FrameType::EXSLUSIVE);
+        isReliableN2CStub = false;
+    } else if (mFrame.IsRuntimeFrame()) {
+        frameInfo.SetFrameType(FrameType::RUNTIME);
         isReliableN2CStub = false;
     } else {
         // The judgment is mainly to identify the credible native call the managed code
@@ -137,6 +150,7 @@ void StackInfo::AnalyseAndSetFrameType(UnwindContext& uwContext)
             isReliableN2CStub = false;
             frameInfo.ResolveProcInfo();
         }
+        LOG(RTLOG_DEBUG, "mFrame type = %d, fa is %p", frameInfo.GetFrameType(), mFrame.GetFA());
         return;
     }
 
@@ -150,6 +164,7 @@ void StackInfo::AnalyseAndSetFrameType(UnwindContext& uwContext)
         }
         n2cCount++;
     }
+    LOG(RTLOG_DEBUG, "mFrame type = %d, fa is %p", frameInfo.GetFrameType(), mFrame.GetFA());
 }
 
 // The current judgment of anchor context is made by comparing the previous stack

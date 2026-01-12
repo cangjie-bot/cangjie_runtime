@@ -76,6 +76,7 @@ public:
 
     void RecordCalleeSaved(RegSlotsMap& regSlotsMap) const
     {
+        LOG(RTLOG_ERROR, "RootMap::RecordCalleeSaved base=%p", (void*)stackBase);
         calleeSavedPrologue.RecordCalleeSaved(regSlotsMap, stackBase);
     }
 
@@ -201,6 +202,7 @@ public:
 
     void RecordCalleeSaved(RegSlotsMap& regSlotsMap) const
     {
+        LOG(RTLOG_ERROR, "StackPtrMap::RecordCalleeSaved base=%p", (void*)stackBase);
         calleeSavedPrologue.RecordCalleeSaved(regSlotsMap, stackBase);
     }
 

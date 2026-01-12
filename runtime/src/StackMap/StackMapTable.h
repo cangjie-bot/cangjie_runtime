@@ -195,8 +195,13 @@ struct PrologueRegisterClosure {
     ~PrologueRegisterClosure() = default;
     void RecordCalleeSaved(RegSlotsMap& regSlotsMap, uintptr_t base) const
     {
+        LOG(RTLOG_ERROR, "PrologueRecord");
         size_t size = calleeSaved.size();
         for (size_t i = 0; i < size; ++i) {
+           auto regId = Register::ResolveCalleeSaved(calleeSaved[i]);
+           auto slot = reinterpret_cast<SlotAddress>( base + offset[i] * COEF );
+           LOG(RTLOG_ERROR, "PrologueRecord reg=%s, base=%p, offset=%d, slot=%p",
+               GetRegisterName(regId), (void*)base, offset[i], (void*)slot);
             regSlotsMap.Insert(
                 Register::ResolveCalleeSaved(calleeSaved[i]),
                 reinterpret_cast<SlotAddress>(static_cast<intptr_t>(base) + (static_cast<intptr_t>(offset[i] * COEF))));
