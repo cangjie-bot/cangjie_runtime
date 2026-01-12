@@ -33,6 +33,32 @@ Verify.unordered(Partial,
     @Called(foo.bar(2)).times(2)
 )
 ```
+Example：
+
+<!-- run -->
+```cangjie
+import std.unittest.mock.*
+import std.unittest.mock.mockmacro.*
+
+class Printer {
+    func print(message: String): Bool { return true }
+}
+
+main() {
+    let printer = mock<Printer>()
+
+    @On(printer.print(_)).returns(true)
+
+    printer.print("abc")
+    printer.print("xyz")
+
+    Verify.unordered(@Called(printer.print("abc")), @Called(printer.print("xyz")))
+    @ExpectThrows[VerificationFailedException](Verify.unordered(@Called(printer.print("abc"))))
+    Verify.unordered(Partial, @Called(printer.print("xyz")))
+
+    ()
+}
+```
 
 ### Exhaustive
 
@@ -86,6 +112,51 @@ public enum StubMode {
 ```
 
 Function: Controls the [stub modes](../unittest_mock_samples/mock_framework_stubs.md#stub-modes).
+
+Example：
+
+<!-- run -->
+```cangjie
+import std.unittest.mock.*
+import std.unittest.mock.mockmacro.*
+import std.collection.*
+
+class EntityGenerator {
+    var array: ArrayList<Int>
+    mut prop str: String {
+        get() { "generator" }
+        set(x) {}
+    }
+
+    init() {
+        this.array = ArrayList<Int>()
+    }
+
+    func getNumber(): Int { 42 }
+    func getOption(): Option<Int> { Some(42) }
+    func getHashMap(): HashMap<String, String> { HashMap() }
+}
+
+main() {
+    let generator = mock<EntityGenerator>(ReturnsDefaults, SyntheticFields)
+    @Assert(generator.array, ArrayList<Int>())
+    @Assert(generator.str, "")
+    @Assert(generator.getNumber(), 0)
+    @Assert(generator.getOption(), None)
+    @Assert(generator.getHashMap(), HashMap<String, String>())
+
+    let list = ArrayList<Int>()
+    list.add(1)
+    list.add(2)
+    list.add(3)
+
+    generator.array = list
+    @Assert(generator.array, list)
+
+    generator.str = "unknown"
+    @Assert(generator.str, "unknown")
+}
+```
 
 ### ReturnsDefaults
 
