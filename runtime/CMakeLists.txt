@@ -437,11 +437,15 @@ elseif (IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG
     endif()
 elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
     add_library(cjstart OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/aarch64_linux/Cjstart.S)
+    add_library(cjpgo OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/aarch64_linux/Cjpgo.S)
     install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/aarch64_linux/cjld.lds
             ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/aarch64_linux/discard_eh_frame.lds
             ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/aarch64_linux/cld.lds
             ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/aarch64_linux/cjld.shared.lds
             DESTINATION lib/${TARGET_ARCH})
+    install(PROGRAMS $<TARGET_OBJECTS:cjpgo>
+        RENAME cjpgo.o
+        DESTINATION lib/${TARGET_ARCH})
 elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
     add_library(cjstart OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/arm_linux/Cjstart.S)
     install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/arm_linux/cjld.lds
@@ -451,11 +455,15 @@ elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
         DESTINATION lib/${TARGET_ARCH})
 else()
     add_library(cjstart OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/x86_64_linux/Cjstart.S)
+    add_library(cjpgo OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/src/arch/x86_64_linux/Cjpgo.S)
     install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/x86_64_linux/cjld.lds
             ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/x86_64_linux/discard_eh_frame.lds
             ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/x86_64_linux/cld.lds
             ${CMAKE_CURRENT_SOURCE_DIR}/build/lds/x86_64_linux/cjld.shared.lds
             DESTINATION lib/${TARGET_ARCH})
+    install(PROGRAMS $<TARGET_OBJECTS:cjpgo>
+        RENAME cjpgo.o
+        DESTINATION lib/${TARGET_ARCH})
 endif()
 install(PROGRAMS $<TARGET_OBJECTS:cjstart>
         RENAME cjstart.o
@@ -518,6 +526,8 @@ if (CMAKE_BUILD_TYPE MATCHES "^(Release|MinSizeRel)$")
         if (OHOS_FLAG IN_LIST OHOS_FLAG_LIST)
         install(CODE "execute_process(COMMAND ${STRIP_PROGRAM} ${CMAKE_INSTALL_PREFIX}/runtime/lib/${TARGET_ARCH}/libcangjie-demangle.so)"
                 COMPONENT cangjie-demangle)
+        install(CODE "execute_process(COMMAND ${STRIP_PROGRAM} -g ${CMAKE_INSTALL_PREFIX}/lib/${TARGET_ARCH}/cjpgo.o)"
+                COMPONENT cjpgo)
         endif()
         if (ASAN_SUPPORT_FLAG MATCHES 0)
         install(CODE "execute_process(COMMAND ${STRIP_PROGRAM} ${CMAKE_INSTALL_PREFIX}/bin/cjfilt)"
