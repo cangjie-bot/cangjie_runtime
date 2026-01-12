@@ -38,6 +38,10 @@ void SignalManager::Init()
     // Install sigusr1 handler
     InstallSIGUSR1Handlers();
 #endif
+#ifdef __OHOS__
+    // Install sigusr2 handler
+    InstallSIGUSR2Handlers();
+#endif
 }
 
 void SignalManager::Fini()
@@ -212,6 +216,101 @@ void SignalManager::InstallSIGUSR1Handlers() const
     sa.scFlags = SA_SIGINFO | SA_ONSTACK;
     AddHandlerToSignalStack(SIGUSR1, &sa);
 }
+
+#ifdef __OHOS__
+void SignalManager::InstallSIGUSR2Handlers() const
+{
+    sigset_t mask;
+    CHECK_SIGNAL_CALL(sigemptyset, (&mask), "sigemptyset failed");
+    SignalAction sa;
+    sa.saSignalAction= HandleUnexpectedSIGUSR2;
+    sa.scMask = mask;
+    sa.scFlags = SA_SIGINFO | SA_ONSTACK;
+    AddHandlerToSignalStack(SIGUSR2, &sa);
+}
+
+// Simple wrapper for pthread_mutex_t
+class PthreadMutexGuard {
+public:
+    explicit PthreadMutexGuard(pthread_mutex_t *mut) : mutex(mut) {
+        pthread_mutex_lock(mutex);
+    }
+    ~PthreadMutexGuard() {
+        pthread_mutex_unlock(mutex);
+    }
+    // Disable copy and move to prevent misuse
+    PthreadMutexGuard(const PthreadMutexGuard&) = delete;
+    PthreadMutexGuard& operator=(const PthreadMutexGuard&) = delete;
+private:
+    pthread_mutex_t *mutex;
+};
+
+struct ProfDumpNode {
+    int (*func)(void);
+    ProfDumpNode* next;
+};
+
+struct ProfDumpNode *ProfileDumpList = nullptr;
+
+pthread_mutex_t ProfileDumpListLock = PTHREAD_MUTEX_INITIALIZER;
+
+extern "C" void RegisterProfileDumpFunction(int (*func)(void))
+{
+    if (func == nullptr) {
+        return;
+    }
+
+    PthreadMutexGuard guard(&ProfileDumpListLock);
+
+    // Check if func is already registered
+    ProfDumpNode* current = ProfileDumpList;
+    while (current != nullptr) {
+        if (current->func == func) {
+            return;
+        }
+        current = current->next;
+    }
+
+    // Not found, allocate and add
+    ProfDumpNode* node = reinterpret_cast<ProfDumpNode*>(malloc(sizeof(ProfDumpNode)));
+    if (node == nullptr) {
+        LOG(RTLOG_FATAL, "Failed to allocate for ProfDumpNode");
+        return;
+    }
+
+    node->func = func;
+    node->next = ProfileDumpList;
+    ProfileDumpList = node;
+
+    return;
+}
+
+
+extern "C" MRT_EXPORT
+    void CJ_MRT_RegisterProfDumpFunc(int (*func)(void)) __attribute__((alias("RegisterProfileDumpFunction")));
+
+bool SignalManager::HandleUnexpectedSIGUSR2(int sig, siginfo_t* info, void* context)
+{
+    PthreadMutexGuard guard(&ProfileDumpListLock);
+
+    if (ProfileDumpList == nullptr) {
+        LOG(RTLOG_INFO, "[CJ]: No Profile Dump Registered.");
+        return true;
+    }
+    LOG(RTLOG_INFO, "[CJ]: Inst Profile Dump Start.");
+
+    ProfDumpNode* current = ProfileDumpList;
+    while (current != nullptr) {
+        if (current->func != nullptr) {
+            current->func();
+        }
+        current = current->next;
+    }
+
+    LOG(RTLOG_INFO, "[CJ]: Inst Profile Dump Finished.");
+    return true;
+}
+#endif
 
 bool SignalManager::HandleUnexpectedSIGUSR1(int sig, siginfo_t* info, void* context)
 {
