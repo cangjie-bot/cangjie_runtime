@@ -13,6 +13,22 @@ public func mock<T>(): T
 
 - T - 类型 T 的 `mock object` 。
 
+示例：
+
+<!-- run -->
+```cangjie
+import std.unittest.mock.*
+
+class Generator {
+    public func generate(): Int { return 0 }
+}
+
+main(): Unit {
+    let generator = mock<Generator>()
+    @ExpectThrows[UnstubbedInvocationException](generator.generate())
+}
+```
+
 ## func mock\<T>(Array\<StubMode>)
 
 ```cangjie
@@ -28,6 +44,32 @@ public func mock<T>(modes: Array<StubMode>): T
 返回值：
 
 - T - 类型 T 的 `mock object` 。
+
+示例：
+
+<!-- run -->
+```cangjie
+import std.unittest.mock.*
+import std.unittest.mock.mockmacro.*
+
+interface Api {
+    func request(s: String): String
+}
+
+main(): Unit {
+    let api = mock<Api>(ReturnsDefaults)
+    @Expect(api.request("something"), "")
+
+    @On(api.request("cookie")).returns("🍪")
+    @On(api.request("pizza")).returns("🍕")
+    @On(api.request("salad")).returns("🥗")
+
+    @Expect(api.request("cookie"), "🍪")
+    @Expect(api.request("pizza"), "🍕")
+    @Expect(api.request("salad"), "🥗")
+    @ExpectThrows[UnstubbedInvocationException](api.request("pasta"))
+}
+```
 
 ## func spy\<T>(T)
 
@@ -45,3 +87,29 @@ public func spy<T>(objectToSpyOn: T): T
 返回值：
 
 - T - 类型 T 的 `spy object` 。
+
+示例：
+
+<!-- run -->
+```cangjie
+import std.unittest.mock.*
+import std.unittest.mock.mockmacro.*
+
+class GreetingBuilder {
+    func date(): String { "January 1st" }
+    func greet(name: String): String { "Hello, $name. Today is ${date()}." }
+}
+
+main() {
+    let originalBuilder = GreetingBuilder()
+    let builder = spy(originalBuilder)
+
+    @Expect(builder.date(), "January 1st")
+    @Expect(builder.greet("Jack"), "Hello, Jack. Today is January 1st")
+
+    @On(builder.date()).returns("February 29th")
+
+    @Expect(builder.date(), "February 29th")
+    @Expect(builder.greet("Mary"), "Hello, Mary. Today is February 29th")
+}
+```
