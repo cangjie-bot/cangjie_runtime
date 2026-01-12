@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 #ifdef __ios__
 #include <time.h>
 #else
@@ -297,6 +298,7 @@ char** GetCommandline(char* argv, size_t len, size_t argc, char** envStartAddr)
 #define SYSCTL_ARGNUM_PROCARGS2 3
 char* GetProcessArgs(pid_t pid, size_t* length)
 {
+    printf("GetProcessArgs pid is %d.\n", pid);
     int maxArgsLen;
     size_t size = sizeof(maxArgsLen);
     // Get the maximum size of the arguments
@@ -322,6 +324,7 @@ char* GetProcessArgs(pid_t pid, size_t* length)
     if (sysctl(mib3, SYSCTL_ARGNUM_PROCARGS2, argv, &size, NULL, 0) == -1) {
         free(argv);
         printf("sysctl get argv failed\n");
+        printf("具体错误码：%d, 错误信息：%s\n", errno, strerror(errno));
         return NULL;
     }
 
