@@ -1231,14 +1231,17 @@ extern "C" const char* MCC_GetEnumConstructorName(EnumCtorInfo* ti)
 
 extern "C" EnumCtorInfo* MCC_GetEnumConstructorInfoFromAny(ObjRef obj) {
     TypeInfo* ti = obj->GetTypeInfo();
-    I32 tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
-    EnumInfo* enumInfo = nullptr;
-    if (!ti->IsTempEnum()) {
-        enumInfo = ti->GetEnumInfo();
-    } else {
+    EnumInfo* enumInfo = ti->GetEnumInfo();
+    if (ti->IsEnumCtor()) {
         enumInfo = ti->GetSuperTypeInfo()->GetEnumInfo();
     }
-    CHECK_DETAIL(enumInfo != nullptr, "enumInfo is nullptr");
+    I32 tag = 0;
+    if (enumInfo->IsEnumKind2()) {
+        // If the type of enum is option-like, the type of tag is bool.
+        tag = obj->Load<I8>(TYPEINFO_PTR_SIZE);
+    } else {
+        tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
+    }
     return enumInfo->GetEnumCtor(tag);
 }
 
@@ -1350,7 +1353,7 @@ static void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
                          argType->GetInstanceSize(),
                          reinterpret_cast<void*>(reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE),
                          argType->GetInstanceSize()) != EOK) {
-                LOG(RTLOG_ERROR, "NewObjectAndInit memcpy_s fail");
+                LOG(RTLOG_ERROR, "SetFieldFromArgs memcpy_s fail");
             }
         } else if (argType->IsVArray()) {
             // VArray is only used to store value types,
@@ -1359,7 +1362,7 @@ static void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
             if (memcpy_s(reinterpret_cast<void*>(argAddr), vArraySize,
                          reinterpret_cast<void*>(reinterpret_cast<Uptr>(argObj) + TYPEINFO_PTR_SIZE),
                          vArraySize) != EOK) {
-                LOG(RTLOG_ERROR, "NewObjectAndInit memcpy_s fail");
+                LOG(RTLOG_ERROR, "SetFieldFromArgs memcpy_s fail");
             }
         } else {
             LOG(RTLOG_FATAL, "%s not to supported", argType->GetName());
@@ -1428,7 +1431,7 @@ static void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 f
                          fieldTi->GetInstanceSize(),
                          reinterpret_cast<void*>(fieldAddr),
                          fieldTi->GetInstanceSize()) != EOK) {
-                LOG(RTLOG_ERROR, "MCC_GetAssociatedValues memcpy_s fail");
+                LOG(RTLOG_ERROR, "SetElementFromObject memcpy_s fail");
             }
         } else if (fieldTi->IsVArray()) {
             // VArray is only used to store value types,
@@ -1438,7 +1441,7 @@ static void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 f
             fieldObj = ObjectManager::NewObject(fieldTi, size);
             if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE), vArraySize,
                          reinterpret_cast<void*>(fieldAddr), vArraySize) != EOK) {
-                LOG(RTLOG_ERROR, "MCC_GetAssociatedValues memcpy_s fail");
+                LOG(RTLOG_ERROR, "SetElementFromObject memcpy_s fail");
             }
         } else {
             LOG(RTLOG_FATAL, "%s not to supported", fieldTi->GetName());
@@ -1452,14 +1455,20 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
     U16 fieldNum = ti->GetFieldNum();
     // For enum and temp enum, fields include the tag,
     // but the tag is not part of associated values.
-    if (ti->IsEnum()) {
+    if (!ti->IsEnumCtor()) {
         // The object's TypeInfo(ti) is the enum's TypeInfo.
         // Read the tag, and get constructor's TypeInfo based on the tag.
-        I32 tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
+        I32 tag = 0;
         EnumInfo* enumInfo = ti->GetEnumInfo();
+        if (enumInfo->IsEnumKind2()) {
+            // If the type of enum is option-like, the type of tag is bool.
+            tag = obj->Load<I8>(TYPEINFO_PTR_SIZE);
+        } else {
+            tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
+        }
         ti = enumInfo->GetCtorTypeInfo(tag);
-        fieldNum -= 1;
-    } else if (ti->IsTempEnum()) {
+        fieldNum = ti->GetFieldNum() - 1;
+    } else {
         fieldNum -= 1;
     }
 
