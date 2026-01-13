@@ -50,7 +50,7 @@ public func assertEqual<T>(
     rightStr: String,
     expected: T,
     actual: T,
-    isDelta!: Bool = false,
+    isDelta!: Bool,
     optParentCtx!: ?AssertionCtx = None
 ): Unit where T <: Equatable<T>
 ```
@@ -122,7 +122,7 @@ public func expectEqual<T>(
     rightStr: String,
     expected: T,
     actual: T,
-    optParentCtx!: ?AssertionCtx
+    optParentCtx!: ?AssertionCtx = None
 ): Unit where T <: Equatable<T>
 ```
 
@@ -144,8 +144,8 @@ public func expectEqual<T>(
     rightStr: String,
     expected: T,
     actual: T,
-    isDelta!: Bool = false,
-    optParentCtx!: ?AssertionCtx
+    isDelta!: Bool,
+    optParentCtx!: ?AssertionCtx = None
 ): Unit where T <: Equatable<T>
 ```
 
@@ -195,7 +195,7 @@ public func invokeCustomAssert<T>(
 ): T
 ```
 
-功能：运行在 [`@Test`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#test-宏), [`@TestCase`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#testcase-宏)，或 [`@CustomAssertion`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#customassertion-宏) 宏中使用的 [`@Assert[caller](passerArgs)`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#assert-宏) 指定的用户定义断言函数。
+功能：运行在 [`@Test`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#test-宏), [`@TestCase`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#testcase-宏)，或 [`@CustomAssertion`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#customassertion-宏) 宏中使用的 [`@Assert\[caller\](passerArgs)`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#assert-宏) 指定的用户定义断言函数。
 
 参数：
 
@@ -219,7 +219,7 @@ public func invokeCustomExpect(
 ): Unit
 ```
 
-功能：运行在 [`@Test`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#test-宏), [`@TestCase`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#testcase-宏), 或 [`@CustomAssertion`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#customassertion-宏) 宏中使用的 [`@Expect[caller](passerArgs)`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#expect-宏) 指定的用户定义断言函数。
+功能：运行在 [`@Test`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#test-宏), [`@TestCase`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#testcase-宏), 或 [`@CustomAssertion`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#customassertion-宏) 宏中使用的 [`@Expect\[caller\](passerArgs)`](../../unittest_testmacro/unittest_testmacro_package_api/unittest_testmacro_package_macros.md#expect-宏) 指定的用户定义断言函数。
 
 参数：
 
