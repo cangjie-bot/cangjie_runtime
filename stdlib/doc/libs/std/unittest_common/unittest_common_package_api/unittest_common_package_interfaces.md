@@ -70,6 +70,284 @@ public interface DataShrinker<T> {
 }
 ```
 
+### `DataShrinker<T>` 的主要用途：
+
+- 随机测试数据通过 `Arbitrary<T>` 生成
+- 测试失败时，`DataShrinker<T>` 会自动找出更小的失败示例
+- 这有助于定位导致失败的最小触发条件
+
+### 示例
+<!-- run -->
+```cangjie
+@Test[data in random()]
+func testArrayProperties(data: Array<Int64>) {
+    // 如果测试因大型随机数组而失败，框架会：
+    // 1. 尝试较小的数组（空数组、较少元素）
+    // 2. 尝试元素值较小的数组
+    // 3. 持续直至找到最小失败案例
+    @Assert(data.fold(0, { l, r => l + r }) >= 0)
+}
+```
+
+### 输出：
+```text
+[ FAILED ] CASE: testArrayProperties (41869 ns)
+    REASON: After 3 generation steps and 200 reduction steps:
+        data = [0]
+    with randomSeed = 1766584201127051269
+    Assert Failed: `(data.fold(0, { l, r =>
+    l + r
+}) >= 0 == true)`
+       left: false
+      right: true
+
+Summary: TOTAL: 1
+    PASSED: 0, SKIPPED: 0, ERROR: 0
+    FAILED: 1, listed below:
+            TCS: TestCase_testArrayProperties, CASE: testArrayProperties (failed after 3 steps)
+```
+
+DataShrinker 已找到测试失败的最小且最简单的示例：data = [0]。
+
+### 自定义类型 DataShrinker 示例
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.prop_test.*
+import std.collection.*
+import std.random.*
+
+
+class Person <: ToString {
+    let name: String
+    let age: Int64
+    let email: String
+    
+    init(name: String, age: Int64, email: String) {
+        this.name = name
+        this.age = age
+        this.email = email
+    }
+    
+    public func toString(): String {
+        return "Person(name='${name}', age=${age}, email='${email}')"
+    }
+}
+
+class PersonShrinker <: DataShrinker<Person> {
+    public func shrink(value: Person): Iterable<Person> {
+        let results = ArrayList<Person>()
+        
+        // 策略 1：空值/默认值
+        results.add(Person("", 0, ""))
+        
+        // 策略 2：单独简化每个字段
+        if (value.name.size > 0) {
+            results.add(Person("a", value.age, value.email))
+        }
+        if (value.age != 0) {
+            results.add(Person(value.name, 0, value.email))
+        }
+        if (value.email.size > 0) {
+            results.add(Person(value.name, value.age, "a@b"))
+        }
+        
+        // 策略 3：数值减半
+        if (value.age > 1) {
+            results.add(Person(value.name, value.age / 2, value.email))
+        }
+        
+        // 策略 4：缩短姓名
+        if (value.name.size > 1) {
+            let halfName = value.name[0..(value.name.size / 2)]
+            results.add(Person(halfName, value.age, value.email))
+        }
+        
+        return results
+    }
+}
+
+extend Person <: Arbitrary<Person> {
+    public static func arbitrary(random: RandomSource): Generator<Person> {
+        let sampleNames = ["John", "Alice", "Bob", "Charlie", "Diana", "Eve", "Frank"]
+        let sampleDomains = ["example.com", "work.com", "company.com", "email.com", "test.com"]
+        // 使用提供的 RandomSource 生成随机人员
+        let randomIndex = Int64(random.nextUInt32()) % Int64(sampleNames.size)
+        let randomDomainIndex = Int64(random.nextUInt32()) % Int64(sampleDomains.size)
+        let randomAge = Int64(random.nextUInt32()) % 80  // 年龄 0-79
+        
+        let name = sampleNames[randomIndex] + " Smith"
+        let email = sampleNames[randomIndex] + "@" + sampleDomains[randomDomainIndex]
+        
+        return Generators.generate { Person(name, randomAge, email) }
+    }
+}
+
+
+class PersonStrategy <: DataStrategy<Person> {
+    let samplePeople: Array<Person>
+    
+    init() {
+        this.samplePeople = [
+            Person("John Doe", 25, "john@example.com"),
+            Person("Alice Smith", 30, "alice@work.com"),
+            Person("Bob Johnson", 45, "bob@company.com"),
+            Person("Charlie Brown", 60, "charlie@email.com"),
+            Person("Diana Prince", 35, "diana@justice.com")
+        ]
+    }
+    
+    public prop isInfinite: Bool {
+        get() { return false }
+    }
+    
+    public func provider(configuration: Configuration): DataProvider<Person> {
+        return samplePeople
+    }
+    
+    public func shrinker(configuration: Configuration): DataShrinker<Person> {
+        return PersonShrinker()
+    }
+}
+
+@Test
+class PersonTests {
+    @TestCase
+    func testPersonShrinker() {
+        let shrinker = PersonShrinker()
+        let original = Person("John Doe", 35, "john.doe@example.com")
+        
+        println("原始人员：${original}")
+        println("缩减版本：")
+        
+        for (shrunk in shrinker.shrink(original)) {
+            println("  - ${shrunk}")
+        }   
+        
+        @Assert(shrinker.shrink(original).iterator().next().isSome())
+    }
+    
+    @TestCase
+    func testPersonWithStrategy() {
+        let personStrategy = PersonStrategy()
+        let provider = personStrategy.provider(defaultConfiguration())
+        
+        println("使用确定性策略测试：")
+        for (person in provider.provide()) {
+            println("  - ${person}")
+            @Assert(person.age <= 70)
+        }
+    }
+    
+    @TestCase
+    func testPersonWithRandomData() {
+        // 使用 Random 测试多个随机人员
+        for (i in 0..5) {
+            let random = Random(UInt64(i))  // 使用种子保证可重现性
+            let generator = Person.arbitrary(random)
+            let person = generator.next()  // 调用生成器获取 Person
+            
+            println("测试随机人员 ${i}：${person}")
+            
+            // 测试：如果人员年龄过大则失败
+            @Assert(person.age <= 50)
+        }
+    }
+    
+    @TestCase[person in random<Person>()]
+    func testPersonWithBuiltInRandomSyntax(person: Person) {
+        println("使用内置随机语法测试人员：${person}")
+        @Assert(person.age <= 50)
+    }
+}
+```
+
+### 输出:
+```text
+原始人员：Person(name='John Doe', age=35, email='john.doe@example.com')
+缩减版本：
+  - Person(name='', age=0, email='')
+  - Person(name='a', age=35, email='john.doe@example.com')
+  - Person(name='John Doe', age=0, email='john.doe@example.com')
+  - Person(name='John Doe', age=35, email='a@b')
+  - Person(name='John Doe', age=17, email='john.doe@example.com')
+  - Person(name='John', age=35, email='john.doe@example.com')
+使用确定性策略测试：
+  - Person(name='John Doe', age=25, email='john@example.com')
+  - Person(name='Alice Smith', age=30, email='alice@work.com')
+  - Person(name='Bob Johnson', age=45, email='bob@company.com')
+  - Person(name='Charlie Brown', age=60, email='charlie@email.com')
+  - Person(name='Diana Prince', age=35, email='diana@justice.com')
+测试随机人员 0：Person(name='Alice Smith', age=57, email='Alice@test.com')
+使用内置随机语法测试人员：Person(name='John Smith', age=7, email='John@test.com')
+使用内置随机语法测试人员：Person(name='Eve Smith', age=27, email='Eve@work.com')
+使用内置随机语法测试人员：Person(name='Eve Smith', age=12, email='Eve@work.com')
+使用内置随机语法测试人员：Person(name='Charlie Smith', age=65, email='Charlie@example.com')
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 2870831 ns, RESULT:
+    TCS: PersonTests, time elapsed: 2865917 ns, RESULT:
+    [ PASSED ] CASE: testPersonShrinker (433985 ns)
+    [ PASSED ] CASE: testPersonWithStrategy (152129 ns)
+    [ FAILED ] CASE: testPersonWithRandomData (139911 ns)
+    Assert Failed: `(person.age <= 50 == true)`
+       left: false
+      right: true
+
+    [ FAILED ] CASE: testPersonWithBuiltInRandomSyntax (44782 ns)
+    REASON: After 4 generation steps:
+        person = Person(name=\'Charlie Smith\', age=65, email=\'Charlie@example.com\')
+    with randomSeed = 1766660451293893218
+    Assert Failed: `(person.age <= 50 == true)`
+       left: false
+      right: true
+
+Summary: TOTAL: 4
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 2, listed below:
+            TCS: PersonTests, CASE: testPersonWithRandomData
+            TCS: PersonTests, CASE: testPersonWithBuiltInRandomSyntax (failed after 4 steps)
+```
+
+### 自定义类型的关键缩减策略
+#### 1. 字段逐一简化
+
+    - 逐个缩减每个字段，同时保持其他字段不变
+
+    - 有助于确定具体是哪个字段导致失败
+
+#### 2. 零值/默认值测试
+
+    - 尝试空字符串、零数值、空值
+
+    - 常能揭示导致失败的最小条件
+
+#### 3. 数值缩减
+
+    - 将数值减半
+
+    - 系统性地减小数值规模
+
+#### 4. 字符串缩短
+
+    - 减少字符串长度
+
+    - 使用更简单的字符
+
+#### 5. 领域特定逻辑
+
+    - 运用领域知识创建有意义且更精简的案例
+
+### 优势
+
+    1. 根因分析：精确定位导致测试失败的字段
+
+    2. 最小示例：找出最小的失败输入
+
+    3. 领域知识应用：使用与类型相关的特定缩减逻辑
+
+    4. 调试辅助：清晰简洁的失败案例使调试更简单
+
 功能：[DataStrategy](#interface-datastrategy) 的组件，用于在测试期间缩减数据，T 指定该收缩器处理的数据类型。
 
 ### func shrink(T)

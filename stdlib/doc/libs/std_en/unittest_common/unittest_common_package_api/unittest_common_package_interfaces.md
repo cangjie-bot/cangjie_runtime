@@ -88,6 +88,275 @@ Returns:
 
 - [Iterable](../../core/core_package_api/core_package_interfaces.md#interface-iterablee)\<T> - Collection of smaller values, returns an empty collection when data can no longer be shrunk.
 
+### The primary use of `DataShrinker<T>`:
+
+- Random test data is generated using `Arbitrary<T>`
+- When a test fails, `DataShrinker<T>` automatically finds smaller failing examples
+- This helps identify the minimal conditions that cause failures
+
+
+### Example
+<!-- run -->
+```cangjie
+@Test[data in random()]
+func testArrayProperties(data: Array<Int64>) {
+    // If test fails with a large random array, framework will:
+    // 1. Try smaller arrays (empty, fewer elements)
+    // 2. Try arrays with smaller individual elements
+    // 3. Continue until minimal failing case is found
+    @Assert(data.fold(0, { l, r => l + r }) >= 0)
+}
+```
+
+Output:
+
+```text
+[ FAILED ] CASE: testArrayProperties (41869 ns)
+    REASON: After 3 generation steps and 200 reduction steps:
+        data = [0]
+    with randomSeed = 1766584201127051269
+    Assert Failed: `(data.fold(0, { l, r =>
+    l + r
+}) >= 0 == true)`
+       left: false
+      right: true
+
+Summary: TOTAL: 1
+    PASSED: 0, SKIPPED: 0, ERROR: 0
+    FAILED: 1, listed below:
+            TCS: TestCase_testArrayProperties, CASE: testArrayProperties (failed after 3 steps)
+```
+
+DataShrinker found minimal and simplest example where test fails: `data = [0]`.
+
+### Custom type `DataShrinker` example
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.prop_test.*
+import std.collection.*
+import std.random.*
+
+
+class Person <: ToString {
+    let name: String
+    let age: Int64
+    let email: String
+    
+    init(name: String, age: Int64, email: String) {
+        this.name = name
+        this.age = age
+        this.email = email
+    }
+    
+    public func toString(): String {
+        return "Person(name='${name}', age=${age}, email='${email}')"
+    }
+}
+
+class PersonShrinker <: DataShrinker<Person> {
+    public func shrink(value: Person): Iterable<Person> {
+        let results = ArrayList<Person>()
+        
+        // Strategy 1: Empty/default values
+        results.add(Person("", 0, ""))
+        
+        // Strategy 2: Simplify each field individually
+        if (value.name.size > 0) {
+            results.add(Person("a", value.age, value.email))
+        }
+        if (value.age != 0) {
+            results.add(Person(value.name, 0, value.email))
+        }
+        if (value.email.size > 0) {
+            results.add(Person(value.name, value.age, "a@b"))
+        }
+        
+        // Strategy 3: Halve numeric values
+        if (value.age > 1) {
+            results.add(Person(value.name, value.age / 2, value.email))
+        }
+        
+        // Strategy 4: Shorten name
+        if (value.name.size > 1) {
+            let halfName = value.name[0..(value.name.size / 2)]
+            results.add(Person(halfName, value.age, value.email))
+        }
+        
+        return results
+    }
+}
+
+extend Person <: Arbitrary<Person> {
+    public static func arbitrary(random: RandomSource): Generator<Person> {
+        let sampleNames = ["John", "Alice", "Bob", "Charlie", "Diana", "Eve", "Frank"]
+        let sampleDomains = ["example.com", "work.com", "company.com", "email.com", "test.com"]
+        // Generate random person using provided RandomSource
+        let randomIndex = Int64(random.nextUInt32()) % Int64(sampleNames.size)
+        let randomDomainIndex = Int64(random.nextUInt32()) % Int64(sampleDomains.size)
+        let randomAge = Int64(random.nextUInt32()) % 80  // Age 0-79
+        
+        let name = sampleNames[randomIndex] + " Smith"
+        let email = sampleNames[randomIndex] + "@" + sampleDomains[randomDomainIndex]
+        
+        return Generators.generate { Person(name, randomAge, email) }
+    }
+}
+
+
+class PersonStrategy <: DataStrategy<Person> {
+    let samplePeople: Array<Person>
+    
+    init() {
+        this.samplePeople = [
+            Person("John Doe", 25, "john@example.com"),
+            Person("Alice Smith", 30, "alice@work.com"),
+            Person("Bob Johnson", 45, "bob@company.com"),
+            Person("Charlie Brown", 60, "charlie@email.com"),
+            Person("Diana Prince", 35, "diana@justice.com")
+        ]
+    }
+    
+    public prop isInfinite: Bool {
+        get() { return false }
+    }
+    
+    public func provider(configuration: Configuration): DataProvider<Person> {
+        return samplePeople
+    }
+    
+    public func shrinker(configuration: Configuration): DataShrinker<Person> {
+        return PersonShrinker()
+    }
+}
+
+@Test
+class PersonTests {
+    @TestCase
+    func testPersonShrinker() {
+        let shrinker = PersonShrinker()
+        let original = Person("John Doe", 35, "john.doe@example.com")
+        
+        println("Original person: ${original}")
+        println("Shrunk versions:")
+        
+        for (shrunk in shrinker.shrink(original)) {
+            println("  - ${shrunk}")
+        }   
+        
+        @Assert(shrinker.shrink(original).iterator().next().isSome())
+    }
+    
+    @TestCase
+    func testPersonWithStrategy() {
+        let personStrategy = PersonStrategy()
+        let provider = personStrategy.provider(defaultConfiguration())
+        
+        println("Testing with deterministic strategy:")
+        for (person in provider.provide()) {
+            println("  - ${person}")
+            @Assert(person.age <= 70)
+        }
+    }
+    
+    @TestCase
+    func testPersonWithRandomData() {
+        // Test with multiple random persons using Random
+        for (i in 0..5) {
+            let random = Random(UInt64(i))  // Use seed for reproducibility
+            let generator = Person.arbitrary(random)
+            let person = generator.next()  // Call the generator to get a Person
+            
+            println("Testing random person ${i}: ${person}")
+            
+            // Test that fails if person is too old
+            @Assert(person.age <= 50)
+        }
+    }
+    
+    @TestCase[person in random<Person>()]
+    func testPersonWithBuiltInRandomSyntax(person: Person) {
+        println("Testing person with built-in random syntax: ${person}")
+        @Assert(person.age <= 50)
+    }
+}
+```
+
+Output:
+```text
+Original person: Person(name='John Doe', age=35, email='john.doe@example.com')
+Shrunk versions:
+  - Person(name='', age=0, email='')
+  - Person(name='a', age=35, email='john.doe@example.com')
+  - Person(name='John Doe', age=0, email='john.doe@example.com')
+  - Person(name='John Doe', age=35, email='a@b')
+  - Person(name='John Doe', age=17, email='john.doe@example.com')
+  - Person(name='John', age=35, email='john.doe@example.com')
+Testing with deterministic strategy:
+  - Person(name='John Doe', age=25, email='john@example.com')
+  - Person(name='Alice Smith', age=30, email='alice@work.com')
+  - Person(name='Bob Johnson', age=45, email='bob@company.com')
+  - Person(name='Charlie Brown', age=60, email='charlie@email.com')
+  - Person(name='Diana Prince', age=35, email='diana@justice.com')
+Testing random person 0: Person(name='Alice Smith', age=57, email='Alice@test.com')
+Testing person with built-in random syntax: Person(name='John Smith', age=7, email='John@test.com')
+Testing person with built-in random syntax: Person(name='Eve Smith', age=27, email='Eve@work.com')
+Testing person with built-in random syntax: Person(name='Eve Smith', age=12, email='Eve@work.com')
+Testing person with built-in random syntax: Person(name='Charlie Smith', age=65, email='Charlie@example.com')
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 2870831 ns, RESULT:
+    TCS: PersonTests, time elapsed: 2865917 ns, RESULT:
+    [ PASSED ] CASE: testPersonShrinker (433985 ns)
+    [ PASSED ] CASE: testPersonWithStrategy (152129 ns)
+    [ FAILED ] CASE: testPersonWithRandomData (139911 ns)
+    Assert Failed: `(person.age <= 50 == true)`
+       left: false
+      right: true
+
+    [ FAILED ] CASE: testPersonWithBuiltInRandomSyntax (44782 ns)
+    REASON: After 4 generation steps:
+        person = Person(name=\'Charlie Smith\', age=65, email=\'Charlie@example.com\')
+    with randomSeed = 1766660451293893218
+    Assert Failed: `(person.age <= 50 == true)`
+       left: false
+      right: true
+
+Summary: TOTAL: 4
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 2, listed below:
+            TCS: PersonTests, CASE: testPersonWithRandomData
+            TCS: PersonTests, CASE: testPersonWithBuiltInRandomSyntax (failed after 4 steps)
+```
+
+### Key Shrinking Strategies for Custom Types
+
+#### 1. Field-by-Field Simplification
+- Reduce each field individually while keeping others unchanged
+- Helps identify which specific field causes the failure
+
+#### 2. Zero/Default Values
+- Try empty strings, zero numbers, null values
+- Often reveals the minimal failing condition
+
+#### 3. Numeric Reduction
+- Halve numeric values
+- Reduces magnitude systematically
+
+#### 4. String Shortening
+- Reduce string length
+- Use simpler characters
+
+#### 5. Domain-Specific Logic
+- Apply knowledge about the domain to create meaningful smaller cases
+
+### Benefits
+
+1. **Root Cause Analysis**: Identify which field causes test failures
+2. **Minimal Examples**: Find the smallest failing input
+3. **Domain Knowledge**: Apply specific shrinking logic relevant to your types
+4. **Debugging Aid**: Clear, simple failing cases make debugging easier
+
 ## interface DataStrategy
 
 ```cangjie
