@@ -106,6 +106,19 @@ public:
     UnitCount GetDirtyUnitCount() const { return dirtyUnitTree.GetTotalCount(); }
     UnitCount GetReleasedUnitCount() const { return releasedUnitTree.GetTotalCount(); }
 
+    // 收集 dirtyUnitTree 中不同大小的节点信息
+    struct SizeDistribution {
+        size_t count2 = 0;    // 2个单元的节点数量
+        size_t count4 = 0;    // 4个单元的节点数量
+        size_t count6 = 0;    // 6个单元的节点数量
+        size_t count8 = 0;    // 8个单元的节点数量
+        size_t count16 = 0;   // 16个单元的节点数量
+        size_t count32 = 0;   // 32个单元的节点数量
+        size_t countOther = 0; // 其他大小的节点数量
+        size_t totalSizeOther = 0; // 其他大小节点的总大小
+    };
+    SizeDistribution GetDirtyTreeSizeDistribution() const;
+
 #if defined(MRT_DEBUG)
     void DumpReleasedUnitTree() const { releasedUnitTree.DumpTree("released-unit tree"); }
     void DumpDirtyUnitTree() const { dirtyUnitTree.DumpTree("dirty-unit tree"); }

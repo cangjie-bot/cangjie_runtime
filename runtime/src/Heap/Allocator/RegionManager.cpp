@@ -302,6 +302,45 @@ size_t FreeRegionManager::ReleaseGarbageRegions(size_t targetCachedSize)
     return releasedBytes;
 }
 
+FreeRegionManager::SizeDistribution FreeRegionManager::GetDirtyTreeSizeDistribution() const
+{
+    SizeDistribution distribution;
+    std::lock_guard<std::mutex> lock(dirtyUnitTreeMutex);
+
+    CartesianTree::Iterator it(dirtyUnitTree);
+    CartesianTree::Node* node = it.Next();
+    while (node != nullptr) {
+        UnitCount count = node->GetCount();
+        switch (count) {
+            case 2:
+                distribution.count2++;
+                break;
+            case 4:
+                distribution.count4++;
+                break;
+            case 6:
+                distribution.count6++;
+                break;
+            case 8:
+                distribution.count8++;
+                break;
+            case 16:
+                distribution.count16++;
+                break;
+            case 32:
+                distribution.count32++;
+                break;
+            default:
+                distribution.countOther++;
+                distribution.totalSizeOther += count;
+                break;
+        }
+        node = it.Next();
+    }
+    
+    return distribution;
+}
+
 void RegionManager::SetMaxUnitCountForRegion()
 {
     maxUnitCountPerRegion = CangjieRuntime::GetHeapParam().regionSize * KB / RegionInfo::UNIT_SIZE;
@@ -825,6 +864,17 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         LOG(RTLOG_ERROR, "\tused units: %zu (%zu B)", usedUnits, usedUnits * RegionInfo::UNIT_SIZE);
         LOG(RTLOG_ERROR, "\treleased units: %zu (%zu B)", releasedUnits, releasedUnits * RegionInfo::UNIT_SIZE);
         LOG(RTLOG_ERROR, "\tdirty units: %zu (%zu B)", dirtyUnits, dirtyUnits * RegionInfo::UNIT_SIZE);
+        
+        // 打印 dirtyTree 大小分布信息
+        FreeRegionManager::SizeDistribution dist = freeRegionManager.GetDirtyTreeSizeDistribution();
+        LOG(RTLOG_ERROR, "\tdirtyTree size distribution:");
+        LOG(RTLOG_ERROR, "\t\t2 units: %zu", dist.count2);
+        LOG(RTLOG_ERROR, "\t\t4 units: %zu", dist.count4);
+        LOG(RTLOG_ERROR, "\t\t6 units: %zu", dist.count6);
+        LOG(RTLOG_ERROR, "\t\t8 units: %zu", dist.count8);
+        LOG(RTLOG_ERROR, "\t\t16 units: %zu", dist.count16);
+        LOG(RTLOG_ERROR, "\t\t32 units: %zu", dist.count32);
+        LOG(RTLOG_ERROR, "\t\tother units: %zu (total size: %zu units)", dist.countOther, dist.totalSizeOther);
     } else {
 
         VLOG(REPORT, msg);
