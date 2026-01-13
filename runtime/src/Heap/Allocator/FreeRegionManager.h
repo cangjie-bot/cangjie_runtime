@@ -106,6 +106,26 @@ public:
     UnitCount GetDirtyUnitCount() const { return dirtyUnitTree.GetTotalCount(); }
     UnitCount GetReleasedUnitCount() const { return releasedUnitTree.GetTotalCount(); }
 
+    // 收集 dirtyUnitTree 中不同大小的节点信息
+    struct SizeDistribution {
+        size_t countLess2 = 0; // 小于2个单元的节点数量
+        size_t count2To4 = 0; // 大于等于2个且小于4个单元的节点数量
+        size_t count4To6 = 0; // 大于等于4个且小于6个单元的节点数量
+        size_t count6To8 = 0; // 大于等于6个且小于8个单元的节点数量
+        size_t count8To16 = 0; // 大于等于8个且小于16个单元的节点数量
+        size_t count16To32 = 0; // 大于等于16个且小于等于32个单元的节点数量
+        size_t countGreater32 = 0; // 大于等于32个单元的节点数量
+        size_t totalSizeLess2 = 0; // 小于2个单元节点的总大小
+        size_t totalSize2To4 = 0; // 大于等于2个且小于4个单元节点的总大小
+        size_t totalSize4To6 = 0; // 大于等于4个且小于6个单元节点的总大小
+        size_t totalSize6To8 = 0; // 大于等于6个且小于8个单元节点的总大小
+        size_t totalSize8To16 = 0; // 大于等于8个且小于16个单元节点的总大小
+        size_t totalSize16To32 = 0; // 大于等于16个且小于等于32个单元节点的总大小
+        size_t totalSizeGreater32 = 0; // 大于等于32个单元节点的总大小
+    };
+    SizeDistribution GetDirtyTreeSizeDistribution() const;
+    SizeDistribution GetReleasedTreeSizeDistribution() const;
+
 #if defined(MRT_DEBUG)
     void DumpReleasedUnitTree() const { releasedUnitTree.DumpTree("released-unit tree"); }
     void DumpDirtyUnitTree() const { dirtyUnitTree.DumpTree("dirty-unit tree"); }

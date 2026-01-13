@@ -302,6 +302,80 @@ size_t FreeRegionManager::ReleaseGarbageRegions(size_t targetCachedSize)
     return releasedBytes;
 }
 
+FreeRegionManager::SizeDistribution FreeRegionManager::GetDirtyTreeSizeDistribution() const
+{
+    SizeDistribution distribution;
+    std::lock_guard<std::mutex> lock(dirtyUnitTreeMutex);
+
+    CartesianTree::Iterator it(dirtyUnitTree);
+    CartesianTree::Node* node = it.Next();
+    while (node != nullptr) {
+        UnitCount count = node->GetCount();
+        if (count < 2) {
+            distribution.countLess2++;
+            distribution.totalSizeLess2 += count;
+        } else if (count < 4) {
+            distribution.count2To4++;
+            distribution.totalSize2To4 += count;
+        } else if (count < 6) {
+            distribution.count4To6++;
+            distribution.totalSize4To6 += count;
+        } else if (count < 8) {
+            distribution.count6To8++;
+            distribution.totalSize6To8 += count;
+        } else if (count < 16) {
+            distribution.count8To16++;
+            distribution.totalSize8To16 += count;
+        } else if (count <= 32) {
+            distribution.count16To32++;
+            distribution.totalSize16To32 += count;
+        } else {
+            distribution.countGreater32++;
+            distribution.totalSizeGreater32 += count;
+        }
+        node = it.Next();
+    }
+
+    return distribution;
+}
+
+FreeRegionManager::SizeDistribution FreeRegionManager::GetReleasedTreeSizeDistribution() const
+{
+    SizeDistribution distribution;
+    std::lock_guard<std::mutex> lock(releasedUnitTreeMutex);
+
+    CartesianTree::Iterator it(releasedUnitTree);
+    CartesianTree::Node* node = it.Next();
+    while (node != nullptr) {
+        UnitCount count = node->GetCount();
+        if (count < 2) {
+            distribution.countLess2++;
+            distribution.totalSizeLess2 += count;
+        } else if (count < 4) {
+            distribution.count2To4++;
+            distribution.totalSize2To4 += count;
+        } else if (count < 6) {
+            distribution.count4To6++;
+            distribution.totalSize4To6 += count;
+        } else if (count < 8) {
+            distribution.count6To8++;
+            distribution.totalSize6To8 += count;
+        } else if (count < 16) {
+            distribution.count8To16++;
+            distribution.totalSize8To16 += count;
+        } else if (count <= 32) {
+            distribution.count16To32++;
+            distribution.totalSize16To32 += count;
+        } else {
+            distribution.countGreater32++;
+            distribution.totalSizeGreater32 += count;
+        }
+        node = it.Next();
+    }
+
+    return distribution;
+}
+
 void RegionManager::SetMaxUnitCountForRegion()
 {
     maxUnitCountPerRegion = CangjieRuntime::GetHeapParam().regionSize * KB / RegionInfo::UNIT_SIZE;
@@ -825,6 +899,28 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         LOG(RTLOG_ERROR, "\tused units: %zu (%zu B)", usedUnits, usedUnits * RegionInfo::UNIT_SIZE);
         LOG(RTLOG_ERROR, "\treleased units: %zu (%zu B)", releasedUnits, releasedUnits * RegionInfo::UNIT_SIZE);
         LOG(RTLOG_ERROR, "\tdirty units: %zu (%zu B)", dirtyUnits, dirtyUnits * RegionInfo::UNIT_SIZE);
+
+        // 打印 dirtyTree 大小分布信息
+        FreeRegionManager::SizeDistribution dist = freeRegionManager.GetDirtyTreeSizeDistribution();
+        LOG(RTLOG_ERROR, "\tdirtyTree size distribution:");
+        LOG(RTLOG_ERROR, "\t\t< 2 units: %zu (total size: %zu units)", dist.countLess2, dist.totalSizeLess2);
+        LOG(RTLOG_ERROR, "\t\t2-4 units: %zu (total size: %zu units)", dist.count2To4, dist.totalSize2To4);
+        LOG(RTLOG_ERROR, "\t\t4-6 units: %zu (total size: %zu units)", dist.count4To6, dist.totalSize4To6);
+        LOG(RTLOG_ERROR, "\t\t6-8 units: %zu (total size: %zu units)", dist.count6To8, dist.totalSize6To8);
+        LOG(RTLOG_ERROR, "\t\t8-16 units: %zu (total size: %zu units)", dist.count8To16, dist.totalSize8To16);
+        LOG(RTLOG_ERROR, "\t\t16-32 units: %zu (total size: %zu units)", dist.count16To32, dist.totalSize16To32);
+        LOG(RTLOG_ERROR, "\t\t> 32 units: %zu (total size: %zu units)", dist.countGreater32, dist.totalSizeGreater32);
+
+        // 打印 releasedTree 大小分布信息
+        FreeRegionManager::SizeDistribution releasedDist = freeRegionManager.GetReleasedTreeSizeDistribution();
+        LOG(RTLOG_ERROR, "\treleasedTree size distribution:");
+        LOG(RTLOG_ERROR, "\t\t< 2 units: %zu (total size: %zu units)", releasedDist.countLess2, releasedDist.totalSizeLess2);
+        LOG(RTLOG_ERROR, "\t\t2-4 units: %zu (total size: %zu units)", releasedDist.count2To4, releasedDist.totalSize2To4);
+        LOG(RTLOG_ERROR, "\t\t4-6 units: %zu (total size: %zu units)", releasedDist.count4To6, releasedDist.totalSize4To6);
+        LOG(RTLOG_ERROR, "\t\t6-8 units: %zu (total size: %zu units)", releasedDist.count6To8, releasedDist.totalSize6To8);
+        LOG(RTLOG_ERROR, "\t\t8-16 units: %zu (total size: %zu units)", releasedDist.count8To16, releasedDist.totalSize8To16);
+        LOG(RTLOG_ERROR, "\t\t16-32 units: %zu (total size: %zu units)", releasedDist.count16To32, releasedDist.totalSize16To32);
+        LOG(RTLOG_ERROR, "\t\t> 32 units: %zu (total size: %zu units)", releasedDist.countGreater32, releasedDist.totalSizeGreater32);
     } else {
 
         VLOG(REPORT, msg);
