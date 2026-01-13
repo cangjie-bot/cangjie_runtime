@@ -294,8 +294,9 @@ public class ClassDecl <: Decl {
     }
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
-        return referenceType2Tokens(ret, RefTypeUpperBoundInfo(upBound_, superTypes_, superTypeBitAnds_),
-            genericConstraint, constraintCommas, classbody_)
+        return ret
+            .append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint, constraintCommas))
+            .append(classbody_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -388,9 +389,9 @@ public class StructDecl <: Decl {
     }
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
-        return referenceType2Tokens(ret, RefTypeUpperBoundInfo(upBound_, superTypes_, superTypeBitAnds_),
-            genericConstraint, constraintCommas, structbody_)
-
+        return ret
+            .append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint, constraintCommas))
+            .append(structbody_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -484,8 +485,9 @@ public class InterfaceDecl <: Decl {
 
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens()
-        return referenceType2Tokens(ret, RefTypeUpperBoundInfo(upBound_, superTypes_, superTypeBitAnds_),
-            genericConstraint, constraintCommas, interfacetbody_)
+        return ret
+            .append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint, constraintCommas))
+            .append(interfacetbody_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -806,8 +808,9 @@ public class ExtendDecl <: Decl {
     }
     public func toTokens(): Tokens {
         var ret: Tokens = super.toTokens().append(extendType_)
-        return referenceType2Tokens(ret, RefTypeUpperBoundInfo(upBound_, superTypes_, superTypeBitAnds_),
-            genericConstraint, constraintCommas, body_)
+        return ret
+            .append(referenceType2Tokens(upBound_, superTypes_, superTypeBitAnds_, genericConstraint, constraintCommas))
+            .append(body_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
