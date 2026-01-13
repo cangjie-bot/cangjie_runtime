@@ -133,41 +133,121 @@ TP: default, time elapsed: 68610430659 ns, Result:
 如果测试类使用 `@Configure` 宏指定配置，则该类中的所有测试函数都会继承此配置参数。
 如果此类中的测试函数也标有 `@Configure` 宏，则配置参数将从类和函数合并，其中函数级宏优先。
 
-## `@CustomAssertion` 宏
-
-功能：`@CustomAssertions` 将函数指定为用户自定义断言。
-
-该宏修饰的函数应满足两个要求：
-
-1. 顶层函数
-2. 首个入参为 [`AssertionCtx`](../../unittest/unittest_package_api/unittest_package_classes.md#class-assertionctx) 类型。
-
-示例如下：
-
-`@CustomAssertion` 的输出为树状结构，以提高 [嵌套断言](#嵌套断言) 的可读性。
-
-例如：
-
-<!-- compile -->
+示例:
+<!-- run -->
 ```cangjie
+// Define custom option using @UnittestOption macro
+@UnittestOption[String](testEnvironment)
+@UnittestOption[Int64](maxRetries) 
+@UnittestOption[Bool](enableLogging)
+
+@Test
+@Configure[testEnvironment: "production", maxRetries: 3, enableLogging: true]
+class BasicConfigurationTest {
+    @TestCase
+    func testConfigurationAccess() {
+        let config = Configuration()
+        
+        // Set configuration values programmatically
+        config.setByName("testEnvironment", "staging")
+        config.setByName("maxRetries", 5)
+        config.setByName("enableLogging", false)
+        
+        // Retrieve configuration values
+        let env = config.getByName<String>("testEnvironment") ?? "default"
+        let retries = config.getByName<Int64>("maxRetries") ?? 1
+        let logging = config.getByName<Bool>("enableLogging") ?? false
+        
+        println("Environment: ${env}")
+        println("Max retries: ${retries}")
+        println("Logging enabled: ${logging}")
+        
+        @Assert(env == "staging")
+        @Assert(retries == 5)
+        @Assert(!logging)
+    }
+}
+```
+
+## `@CustomAssertion` 宏
+`@CustomAssertion` 宏允许您创建可复用、领域特定的断言，这些断言能与测试框架无缝集成。自定义断言必须满足以下条件：
+
+1. 必须是顶层函数
+2. 首个参数必须是 [`AssertionCtx`](../../unittest/unittest_package_api/unittest_package_classes.md#class-assertionctx) 类型。
+3. 提供有意义的错误信息
+4. 返回可用于链式调用的有效值
+
+示例：
+<!-- run -->
+```cangjie
+import std.collection.*
+
 @CustomAssertion
-public func checkNotNone<T>(ctx: AssertionCtx, value: ?T): T {
+public func checkNotNone<T>(
+    ctx: AssertionCtx,
+    value: ?T,
+    errorMessage!: String = "Expected ${ctx.arg("value")} to be Some(_) but got None."
+): T {
     if (let Some(res) <- value) {
         return res
     }
-    ctx.fail("Expected ${ctx.arg("value")} to be Some(_) but got None")
+    ctx.fail(errorMessage)
 }
+
 @Test
-func customTest() {
-    @Assert[checkNotNone](Option<Bool>.None)
+func testSuccess() {
+    let maybeValue = Option<Int64>.Some(42)
+    let unwrapped = @Assert[checkNotNone](maybeValue)
+}
+
+@Test
+func testFail() {
+    let maybeValue = Option<Int64>.None
+    let unwrapped = @Assert[checkNotNone](maybeValue)
+}
+
+@CustomAssertion
+public func iterableWithoutNone<T>(ctx: AssertionCtx, iter: Iterable<?T>): Array<T> {
+    iter |> enumerate |> map { pair: (Int64, ?T) =>
+        let (index, elem) = pair
+        return @Assert[checkNotNone](
+            elem,
+            errorMessage: "Element at index ${index} is None. Expected all elements to be Some(_)"
+        )
+    } |> collectArray
+}
+
+@Test
+func testIterableFail() {
+    let iter = [Option<Int64>.Some(1), Option<Int64>.Some(2), Option<Int64>.None]
+    let result = @Assert[iterableWithoutNone](iter)
 }
 ```
 
+可能的运行结果：
 ```text
-[ FAILED ] CASE: customTest (120812 ns)
-Assert Failed: @Assert[checkNotNone](Option < Bool >.None)
-└── Assert Failed: `('Option < Bool >.None' was expected to be Some(_) but got None)`
+TP: default, time elapsed: 1943510 ns, RESULT:
+    TCS: TestCase_testSuccess, time elapsed: 853058 ns, RESULT:
+    [ PASSED ] CASE: testSuccess (432856 ns)
+    TCS: TestCase_testFail, time elapsed: 426161 ns, RESULT:
+    [ FAILED ] CASE: testFail (270125 ns)
+    Assert Failed: @Assert[checkNotNone](maybeValue):
+    └── Assert Failed: `(Expected <value not found> to be Some(_) but got None.)`
+
+    TCS: TestCase_testIterableFail, time elapsed: 626869 ns, RESULT:
+    [ FAILED ] CASE: testIterableFail (513480 ns)
+    Assert Failed: @Assert[iterableWithoutNone](iter):
+    └── @Assert[checkNotNone](elem, Element at index 2 is None. Expected all elements to be Some(_)):
+          └── Assert Failed: `(Element at index 2 is None. Expected all elements to be Some(_))`
+
+Summary: TOTAL: 3
+    PASSED: 1, SKIPPED: 0, ERROR: 0
+    FAILED: 2, listed below:
+            TCS: TestCase_testFail, CASE: testFail
+            TCS: TestCase_testIterableFail, CASE: testIterableFail
 ```
+
+`@CustomAssertion` 的输出为树状结构，以提高 [嵌套断言](#嵌套断言) 的可读性。
 
 ### 返回值
 

@@ -130,42 +130,123 @@ Users can specify other configuration parameters in the `@Configure` macro, whic
 If a test class uses the `@Configure` macro to specify configurations, all test functions in this class will inherit these configuration parameters.
 If a test function in this class is also marked with the `@Configure` macro, the configuration parameters will be merged from the class and function, with function-level macros taking precedence.
 
+### Example
+
+<!-- run -->
+```cangjie
+// Define custom option using @UnittestOption macro
+@UnittestOption[String](testEnvironment)
+@UnittestOption[Int64](maxRetries) 
+@UnittestOption[Bool](enableLogging)
+
+@Test
+@Configure[testEnvironment: "production", maxRetries: 3, enableLogging: true]
+class BasicConfigurationTest {
+    @TestCase
+    func testConfigurationAccess() {
+        let config = Configuration()
+        
+        // Set configuration values programmatically
+        config.setByName("testEnvironment", "staging")
+        config.setByName("maxRetries", 5)
+        config.setByName("enableLogging", false)
+        
+        // Retrieve configuration values
+        let env = config.getByName<String>("testEnvironment") ?? "default"
+        let retries = config.getByName<Int64>("maxRetries") ?? 1
+        let logging = config.getByName<Bool>("enableLogging") ?? false
+        
+        println("Environment: ${env}")
+        println("Max retries: ${retries}")
+        println("Logging enabled: ${logging}")
+        
+        @Assert(env == "staging")
+        @Assert(retries == 5)
+        @Assert(!logging)
+    }
+}
+```
+
 ## `@CustomAssertion` Macro
 
-Function: `@CustomAssertions` specifies a function as a user-defined assertion.
+The `@CustomAssertion` macro allows users to create reusable, domain-specific assertions that integrate seamlessly with the testing framework. Custom assertions must:
 
-The function decorated with this macro must meet two requirements:
+1. Be top-level functions
+2. Have [`AssertionCtx`](../../unittest/unittest_package_api/unittest_package_classes.md#class-assertionctx) as their first parameter
+3. Provide meaningful error messages
+4. Return useful values for chaining
 
-1. It must be a top-level function.
-2. Its first parameter must be of type [`AssertionCtx`](../../unittest/unittest_package_api/unittest_package_classes.md#class-assertionctx).
-
-Example:
-
+### Example
+<!-- run -->
 ```cangjie
+import std.collection.*
+
 @CustomAssertion
-public func checkNotNone<T>(ctx: AssertionCtx, value: ?T): T {
+public func checkNotNone<T>(
+    ctx: AssertionCtx,
+    value: ?T,
+    errorMessage!: String = "Expected ${ctx.arg("value")} to be Some(_) but got None."
+): T {
     if (let Some(res) <- value) {
         return res
     }
-    ctx.fail("Expected ${ctx.arg("value")} to be Some(_) but got None")
+    ctx.fail(errorMessage)
+}
+
+@Test
+func testSuccess() {
+    let maybeValue = Option<Int64>.Some(42)
+    let unwrapped = @Assert[checkNotNone](maybeValue)
+}
+
+@Test
+func testFail() {
+    let maybeValue = Option<Int64>.None
+    let unwrapped = @Assert[checkNotNone](maybeValue)
+}
+
+@CustomAssertion
+public func iterableWithoutNone<T>(ctx: AssertionCtx, iter: Iterable<?T>): Array<T> {
+    iter |> enumerate |> map { pair: (Int64, ?T) =>
+        let (index, elem) = pair
+        return @Assert[checkNotNone](
+            elem,
+            errorMessage: "Element at index ${index} is None. Expected all elements to be Some(_)"
+        )
+    } |> collectArray
+}
+
+@Test
+func testIterableFail() {
+    let iter = [Option<Int64>.Some(1), Option<Int64>.Some(2), Option<Int64>.None]
+    let result = @Assert[iterableWithoutNone](iter)
 }
 ```
+
+### Output
 
 The output of `@CustomAssertion` is a tree structure to improve readability for [nested assertions](#nested-assertions).
 
-For example:
-
-```cangjie
-@Test
-func customTest() {
-    @Assert[checkNotNone](Option<Bool>.None)
-}
-```
-
 ```text
-[ FAILED ] CASE: customTest (120812 ns)
-Assert Failed: @Assert[checkNotNone](Option < Bool >.None)
-└── Assert Failed: `('Option < Bool >.None' was expected to be Some(_) but got None)`
+TP: default, time elapsed: 1943510 ns, RESULT:
+    TCS: TestCase_testSuccess, time elapsed: 853058 ns, RESULT:
+    [ PASSED ] CASE: testSuccess (432856 ns)
+    TCS: TestCase_testFail, time elapsed: 426161 ns, RESULT:
+    [ FAILED ] CASE: testFail (270125 ns)
+    Assert Failed: @Assert[checkNotNone](maybeValue):
+    └── Assert Failed: `(Expected <value not found> to be Some(_) but got None.)`
+
+    TCS: TestCase_testIterableFail, time elapsed: 626869 ns, RESULT:
+    [ FAILED ] CASE: testIterableFail (513480 ns)
+    Assert Failed: @Assert[iterableWithoutNone](iter):
+    └── @Assert[checkNotNone](elem, Element at index 2 is None. Expected all elements to be Some(_)):
+          └── Assert Failed: `(Element at index 2 is None. Expected all elements to be Some(_))`
+
+Summary: TOTAL: 3
+    PASSED: 1, SKIPPED: 0, ERROR: 0
+    FAILED: 2, listed below:
+            TCS: TestCase_testFail, CASE: testFail
+            TCS: TestCase_testIterableFail, CASE: testIterableFail
 ```
 
 ### Return Value
