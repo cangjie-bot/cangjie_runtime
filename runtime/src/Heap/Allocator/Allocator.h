@@ -78,6 +78,8 @@ public:
         allocBufferManager->SwapHungryBuffers(getBufferList);
     }
 
+    virtual void DumpUnusualRoots(const RootVisitor& visitor) {}
+
 protected:
     AllocBufferManager* allocBufferManager;
     std::atomic<bool> isAsyncAllocationEnable = { true };

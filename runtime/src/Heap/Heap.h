@@ -94,7 +94,7 @@ public:
 
     virtual U64 RegisterExportRoot(BaseObject*) = 0;
     virtual void VisitAllExportRoots(const RootVisitor& visitor) = 0;
-
+    virtual void DumpUnusualRoots(const RootVisitor& visitor) = 0;
     virtual BaseObject* GetExportObject(U64) = 0;
     virtual void RemoveExportObject(U64) = 0;
 

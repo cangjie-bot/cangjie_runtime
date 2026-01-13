@@ -244,9 +244,47 @@ void CjHeapData::ProcessRootLocal()
         recordStackInfo->FillInStackTrace();
 
         ProcessStacktrace(recordStackInfo);
-        RootVisitor rootVisitor = [this, recordStackInfo](ObjectRef &objRef) {
+        RootVisitor rootVisitor = [this, recordStackInfo, &mutator](ObjectRef &objRef) {
             BaseObject* obj = objRef.object;
-            if (obj == nullptr || !Heap::IsHeapAddress(obj)) {
+            if (obj == nullptr) {
+                return;
+            }
+            // Object may be allocated on stack becasue of pea,
+            // and we need to trace them until we find objects allocated in heap.
+            if (mutator.IsStackAddr(reinterpret_cast<uintptr_t>(obj) && obj->HasRefField())) {
+                std::stack<BaseObject*> tranverseStack;
+                std::set<BaseObject*> visited;
+                visited.insert(obj);
+                tranverseStack.push(obj);
+                while (!tranverseStack.empty()) {
+                    BaseObject* node = tranverseStack.top();
+                    tranverseStack.pop();
+                    if (!node->HasRefField()) {
+                        continue;
+                    }
+                    node->ForEachRefField([&tranverseStack, &visited, &mutator, this, recordStackInfo] (RefField<false>& refField) {
+                        BaseObject* ref = refField.GetTargetObject();
+                        if (ref == nullptr) { return; }
+                        if (mutator.IsStackAddr(reinterpret_cast<uintptr_t>(ref)) && visited.find(ref) == visited.end()) {
+                            tranverseStack.push(ref);
+                            visited.insert(ref);
+                            return;
+                        }
+                        if (Heap::IsHeapAddress(ref)) {
+                            DumpObject dumpObject = {
+                                ref,
+                                TAG_ROOT_LOCAL,
+                                threadId,
+                                recordStackInfo->GetCurrentFrame(),
+                                LookupStringId(ref->GetTypeInfo()->GetName() == nullptr ? "anonymous" : ref->GetTypeInfo()->GetName())
+                            };
+                            dumpObjects.push_back(dumpObject);
+                        }
+                    });
+                }
+                return;
+            }
+            if (!Heap::IsHeapAddress(obj)) {
                 return;
             }
             DumpObject dumpObject = {obj,
@@ -306,7 +344,8 @@ void CjHeapData::ProcessRootFinalizer()
         };
         dumpObjects.push_back(dumpObject);
     };
-    Heap::GetHeap().GetFinalizerProcessor().VisitGCRoots(visitor);
+    Heap::GetHeap().GetFinalizerProcessor().VisitRawPointers(visitor);
+    Heap::GetHeap().DumpUnusualRoots(visitor);
 }
 
 void CjHeapData::WriteHeapDump()
@@ -594,11 +633,7 @@ void CjHeapData::WriteClass(TypeInfo* klass, CjHeapDataStringId klassId, const u
 {
     AddU1(tag);
     AddStringId(reinterpret_cast<u8>(klass));
-    // 8-byte alignment
-    if (!klass->IsObjectType()) {
-        AddU4(0);
-        return;
-    }
+
     u4 size = AlignUp<u4>((klass->GetInstanceSize() + TYPEINFO_PTR_SIZE), alignment);
     // 8 bytes for each field
     AddU4(size);

@@ -126,6 +126,8 @@ public:
 
     void ExemptFromRegion(RegionInfo* region);
 
+    void DumpUnusualRoots(const RootVisitor& visitor);
+
 #if defined(GCINFO_DEBUG) && GCINFO_DEBUG
     void DumpRegionInfo() const;
 #endif
@@ -383,8 +385,7 @@ public:
             recentFullRegionList.GetAllocatedSize() + oldLargeRegionList.GetAllocatedSize() +
             recentLargeRegionList.GetAllocatedSize() + oldPinnedRegionList.GetAllocatedSize() +
             recentPinnedRegionList.GetAllocatedSize() + rawPointerPinnedRegionList.GetAllocatedSize() +
-            largeTraceRegions.GetAllocatedSize() + fullTraceRegions.GetAllocatedSize()
-            + tlRegionList.GetAllocatedSize() + threadLocalSize;
+            largeTraceRegions.GetAllocatedSize() + fullTraceRegions.GetAllocatedSize() + threadLocalSize;
     }
 
     inline size_t GetFromSpaceSize() const { return fromRegionList.GetAllocatedSize(); }

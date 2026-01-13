@@ -168,7 +168,7 @@ public:
     void CollectFromSpaceGarbage()
     {
         regionManager.CollectFromSpaceGarbage();
-        regionManager.ReassembleFromSpace();
+        // regionManager.ReassembleFromSpace();
     }
 
     void AssembleGarbageCandidates(bool collectAll = false)
@@ -215,6 +215,8 @@ public:
         RegionInfo* regionInfo = RegionInfo::GetRegionInfoAt(reinterpret_cast<MAddress>(obj));
         return regionInfo->IsResurrectedObject(obj);
     }
+
+    void DumpUnusualRoots(const RootVisitor& visitor) override { regionManager.DumpUnusualRoots(visitor); }
 
     void AddRawPointerObject(BaseObject* obj) { regionManager.AddRawPointerObject(obj); }
 

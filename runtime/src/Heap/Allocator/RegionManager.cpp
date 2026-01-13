@@ -456,6 +456,21 @@ void RegionManager::AssembleLargeGarbageCandidates()
     }
 }
 
+void RegionManager::DumpUnusualRoots(const RootVisitor& visitor)
+{
+    auto objVisitor = [&visitor](BaseObject* obj) {
+        ObjectRef ref;
+        ref.object = obj;
+        visitor(ref);
+    };
+    unmovableFromRegionList.VisitAllRegions([&objVisitor](RegionInfo* region) {
+        region->VisitAllObjects(objVisitor);
+    });
+    rawPointerPinnedRegionList.VisitAllRegions([&objVisitor](RegionInfo* region) {
+        region->VisitAllObjects(objVisitor);
+    });
+}
+
 void RegionManager::AssemblePinnedGarbageCandidates(bool collectAll)
 {
     oldPinnedRegionList.MergeRegionList(recentPinnedRegionList, RegionInfo::RegionType::FULL_PINNED_REGION);

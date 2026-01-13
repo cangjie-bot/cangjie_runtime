@@ -111,6 +111,7 @@ public:
     void RemoveAllocBuffer(AllocBuffer& buffer) override;
     U64 RegisterExportRoot(BaseObject* obj) override;
     void VisitAllExportRoots(const RootVisitor& visitor) override;
+    void DumpUnusualRoots(const RootVisitor& visitor) override;
     BaseObject* GetExportObject(U64 id) override;
     void RemoveExportObject(U64 id) override;
     void StopGCWork() override;
@@ -334,6 +335,11 @@ void HeapImpl::VisitAllExportRoots(const RootVisitor &visitor)
     exportRootsTable.VisitGCRoots(visitor);
 }
 
+void HeapImpl::DumpUnusualRoots(const RootVisitor& visitor)
+{
+    exportRootsTable.VisitGCRoots(visitor);
+    theSpace->DumpUnusualRoots(visitor);
+}
 BaseObject* HeapImpl::GetExportObject(U64 id)
 {
     return exportRootsTable.GetExportRoot(id);
