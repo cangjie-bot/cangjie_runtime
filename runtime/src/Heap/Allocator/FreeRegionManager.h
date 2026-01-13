@@ -106,6 +106,26 @@ public:
     UnitCount GetDirtyUnitCount() const { return dirtyUnitTree.GetTotalCount(); }
     UnitCount GetReleasedUnitCount() const { return releasedUnitTree.GetTotalCount(); }
 
+    // Collect size distribution information of nodes in dirtyUnitTree
+    struct SizeDistribution {
+        size_t countLess2 = 0; // Number of nodes with less than 2 units
+        size_t count2To4 = 0; // Number of nodes with 2 or more but less than 4 units
+        size_t count4To6 = 0; // Number of nodes with 4 or more but less than 6 units
+        size_t count6To8 = 0; // Number of nodes with 6 or more but less than 8 units
+        size_t count8To16 = 0; // Number of nodes with 8 or more but less than 16 units
+        size_t count16To32 = 0; // Number of nodes with 16 or more but less than or equal to 32 units
+        size_t countGreater32 = 0; // Number of nodes with more than 32 units
+        size_t totalSizeLess2 = 0; // Total size of nodes with less than 2 units
+        size_t totalSize2To4 = 0; // Total size of nodes with 2 or more but less than 4 units
+        size_t totalSize4To6 = 0; // Total size of nodes with 4 or more but less than 6 units
+        size_t totalSize6To8 = 0; // Total size of nodes with 6 or more but less than 8 units
+        size_t totalSize8To16 = 0; // Total size of nodes with 8 or more but less than 16 units
+        size_t totalSize16To32 = 0; // Total size of nodes with 16 or more but less than or equal to 32 units
+        size_t totalSizeGreater32 = 0; // Total size of nodes with more than 32 units
+    };
+    SizeDistribution GetDirtyTreeSizeDistribution() const;
+    SizeDistribution GetReleasedTreeSizeDistribution() const;
+
 #if defined(MRT_DEBUG)
     void DumpReleasedUnitTree() const { releasedUnitTree.DumpTree("released-unit tree"); }
     void DumpDirtyUnitTree() const { dirtyUnitTree.DumpTree("dirty-unit tree"); }
@@ -124,11 +144,11 @@ private:
     RegionManager& regionManager;
 
     // physical pages of released units are probably released and they are prepared for allocation.
-    std::mutex releasedUnitTreeMutex;
+    mutable std::mutex releasedUnitTreeMutex;
     CartesianTree releasedUnitTree;
 
     // dirty units are neither cleared nor released, thus must be zeroed explicitly for allocation.
-    std::mutex dirtyUnitTreeMutex;
+    mutable std::mutex dirtyUnitTreeMutex;
     CartesianTree dirtyUnitTree;
 };
 } // namespace MapleRuntime

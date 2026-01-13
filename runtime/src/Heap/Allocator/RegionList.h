@@ -147,7 +147,7 @@ public:
         }
     }
 
-    std::mutex& GetListMutex() { return listMutex; }
+    std::mutex& GetListMutex() const { return listMutex; }
 
     void MoveTo(RegionList& targetList)
     {
@@ -166,7 +166,7 @@ public:
     }
 
 protected:
-    std::mutex listMutex;
+    mutable std::mutex listMutex;
     size_t regionCount = 0;
     size_t unitCount = 0;
     RegionInfo* listHead = nullptr; // the start region for iteration, i.e., the first region
