@@ -311,8 +311,8 @@ char* GetProcessArgs(pid_t pid, size_t* length)
     }
 
     if (maxArgsLen <= 0) {
-         return NULL; 
-     }
+        return NULL;
+    }
 
     char* argv = (char*)malloc((size_t)maxArgsLen);
     if (argv == NULL) {
