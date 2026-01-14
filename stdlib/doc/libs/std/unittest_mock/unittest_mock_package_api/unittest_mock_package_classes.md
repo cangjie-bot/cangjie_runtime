@@ -416,6 +416,8 @@ public class GetterActionSelector<TRet> <: ActionSelector {}
 
 - [ActionSelector](#class-actionselector)
 
+参考示例：[SyntheticField](#class-syntheticfieldt)。
+
 ### func getsField(SyntheticField\<TRet>)
 
 ```cangjie
@@ -1091,6 +1093,8 @@ public class SetterActionSelector<TArg> <: ActionSelector {}
 父类型：
 
 - [ActionSelector](#class-actionselector)
+
+参考示例：[SyntheticField](#class-syntheticfieldt)。
 
 ### func doesNothing()
 
