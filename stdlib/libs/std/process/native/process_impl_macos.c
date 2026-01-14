@@ -303,11 +303,16 @@ char* GetProcessArgs(pid_t pid, size_t* length)
 {
     int maxArgsLen = 0;
     size_t size = sizeof(maxArgsLen);
+    // Get the maximum size of the arguments
     int mib2[SYSCTL_ARGNUM_ARGMAX] = {CTL_KERN, KERN_ARGMAX};
-    
+
     if (sysctl(mib2, SYSCTL_ARGNUM_ARGMAX, &maxArgsLen, &size, NULL, 0) == -1) {
         return NULL;
     }
+
+    if (maxArgsLen <= 0) {
+         return NULL; 
+     }
 
     char* argv = (char*)malloc((size_t)maxArgsLen);
     if (argv == NULL) {
@@ -347,6 +352,7 @@ char* GetProcessArgs(pid_t pid, size_t* length)
 
     return argv;
 }
+
 char* SkipExecPath(char* argvStart, char* argvEnd)
 {
     char* cp = argvStart;
