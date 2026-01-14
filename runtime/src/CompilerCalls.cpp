@@ -1317,9 +1317,9 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     } else {
         obj = ObjectManager::NewObject(ti, size);
     }
-    
+
     if (obj == nullptr) {
-        VLOG(REPORT, "Allocating object %s (%zu B) failed and throw OutOfMemoryError", 
+        VLOG(REPORT, "Allocating object %s (%zu B) failed and throw OutOfMemoryError",
              ti->GetName(), size);
         ExceptionManager::CheckAndThrowPendingException("MCC_NewAndInitObject: Object creation failed");
         return nullptr;
@@ -1335,21 +1335,23 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
     U16 fieldNum = ti->GetFieldNum();
     // For enum and temp enum, fields include the tag,
     // but the tag is not part of associated values.
-    if (!ti->IsEnumCtor()) {
-        // The object's TypeInfo(ti) is the enum's TypeInfo.
-        // Read the tag, and get constructor's TypeInfo based on the tag.
-        I32 tag = 0;
-        EnumInfo* enumInfo = ti->GetEnumInfo();
-        if (enumInfo->IsEnumKind2()) {
-            // If the type of enum is option-like, the type of tag is bool.
-            tag = obj->Load<I8>(TYPEINFO_PTR_SIZE);
+    if (ti->IsEnum() || ti->IsTempEnum()) {
+        if (!ti->IsEnumCtor()) {
+            // The object's TypeInfo(ti) is the enum's TypeInfo.
+            // Read the tag, and get constructor's TypeInfo based on the tag.
+            I32 tag = 0;
+            EnumInfo* enumInfo = ti->GetEnumInfo();
+            if (enumInfo->IsEnumKind2()) {
+                // If the type of enum is option-like, the type of tag is bool.
+                tag = obj->Load<I8>(TYPEINFO_PTR_SIZE);
+            } else {
+                tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
+            }
+            ti = enumInfo->GetCtorTypeInfo(tag);
+            fieldNum = ti->GetFieldNum() - 1;
         } else {
-            tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
+            fieldNum -= 1;
         }
-        ti = enumInfo->GetCtorTypeInfo(tag);
-        fieldNum = ti->GetFieldNum() - 1;
-    } else {
-        fieldNum -= 1;
     }
 
     TypeInfo* rawArrayTi = arrayTi->GetFieldType(0);

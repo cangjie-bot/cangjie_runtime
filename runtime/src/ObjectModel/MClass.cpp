@@ -805,7 +805,9 @@ U32 TypeInfo::GetModifier()
 }
 bool TypeInfo::IsEnumCtor() const
 {
-    CHECK_DETAIL(IsEnum() || IsTempEnum(), "To get IsEnumCtor result, but the type is not Enum.");
+    if (!IsEnum() && !IsTempEnum()) {
+        return false;
+    }
     return enumInfo->GetModifier() & MODIFIER_ENUM_CTOR;
 }
 
