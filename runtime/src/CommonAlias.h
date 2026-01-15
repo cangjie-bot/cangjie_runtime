@@ -195,10 +195,6 @@ extern "C" MRT_EXPORT U32 CJ_MCC_GetNumOfFieldTypes(TypeInfo* ti)
     __attribute__((alias("MCC_GetNumOfFieldTypes")));
 extern "C" MRT_EXPORT TypeInfo** CJ_MCC_GetFieldTypes(TypeInfo* ti)
     __attribute__((alias("MCC_GetFieldTypes")));
-extern "C" MRT_EXPORT ObjRef CJ_MCC_NewAndInitObject(TypeInfo* ti, void* args)
-    __attribute__((alias("MCC_NewAndInitObject")));
-extern "C" MRT_EXPORT ObjRef CJ_MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi)
-    __attribute__((alias("MCC_GetAssociatedValues")));
 
 extern "C" MRT_EXPORT U32 CJ_MCC_GetQualifiedNameLength(TypeInfo* ti)
     __attribute__((alias("MCC_GetQualifiedNameLength")));

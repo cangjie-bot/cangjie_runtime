@@ -362,11 +362,11 @@ ObjRef CreateEnumObject(TypeInfo* ti, MSize size)
 
     ObjRef obj = nullptr;
     if (enumInfo->IsEnumKind1()) {
-        obj = ObjectManager::NewObject(ti, size);
+        obj = ObjectManager::NewObject(ti, size, AllocType::RAW_POINTER_OBJECT);
     } else {
         // For other enum kind, the object's TypeInfo should be the enum's TypeInfo.
         // Current ti is the constructor's TypeInfo of the enum.
-        obj = ObjectManager::NewObject(enumTi, size);
+        obj = ObjectManager::NewObject(enumTi, size, AllocType::RAW_POINTER_OBJECT);
     }
 
     if (obj != nullptr && HaveEnumTag(ti)) {
@@ -419,7 +419,7 @@ BaseObject* StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Uptr fieldAddr)
 {
     MSize fieldSize = fieldTi->GetInstanceSize();
     MSize size = MRT_ALIGN(fieldSize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-    BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size);
+    BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size, AllocType::RAW_POINTER_OBJECT);
 
     if (fieldSize == 0) {
         return fieldObj;
@@ -442,7 +442,7 @@ BaseObject* StructLikeToAny(ObjRef obj, TypeInfo* fieldTi, Uptr fieldAddr)
 BaseObject* PrimitiveToAny(TypeInfo* fieldTi, Uptr fieldAddr)
 {
     MSize size = MRT_ALIGN(fieldTi->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-    BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size);
+    BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size, AllocType::RAW_POINTER_OBJECT);
 
     if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE),
                  fieldTi->GetInstanceSize(),
@@ -459,7 +459,7 @@ BaseObject* VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
     // VArray is only used to store value types, so we can copy the memory directly
     MSize vArraySize = fieldTi->GetFieldNum() * fieldTi->GetComponentTypeInfo()->GetInstanceSize();
     MSize size = MRT_ALIGN(vArraySize + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
-    BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size);
+    BaseObject* fieldObj = ObjectManager::NewObject(fieldTi, size, AllocType::RAW_POINTER_OBJECT);
 
     if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<Uptr>(fieldObj) + TYPEINFO_PTR_SIZE), vArraySize,
                  reinterpret_cast<void*>(fieldAddr), vArraySize) != EOK) {
