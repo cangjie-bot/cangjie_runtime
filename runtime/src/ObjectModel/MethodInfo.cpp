@@ -581,20 +581,20 @@ DynamicMethodInfo::DynamicMethodInfo(ObjRef obj) {
     this->instanceObj = obj;
     this->functionTi = obj->GetTypeInfo();
     TypeInfo* ti = nullptr;
-        auto super = this->functionTi->GetSuperTypeInfo();
-        if (this->functionTi->IsFunc()) {
-            ti = this->functionTi;
-        } else if (super != nullptr && super->IsFunc()) {
-            ti = super;
-        } else {
-            LOG(RTLOG_FATAL, "DynamicMethodInfo: functionTi is not a function type");
-        }
+    auto super = this->functionTi->GetSuperTypeInfo();
+    if (this->functionTi->IsFunc()) {
+        ti = this->functionTi;
+    } else if (super != nullptr && super->IsFunc()) {
+        ti = super;
+    } else {
+        LOG(RTLOG_FATAL, "DynamicMethodInfo: functionTi is not a function type");
+    }
 
-        TypeInfo* funcType = ti->GetTypeArgs()[0];
-        this->parameterCount = funcType->GetTypeArgNum() - 1;
-        this->entryPoint = *reinterpret_cast<Uptr*>(reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE);
-        this->returnType = funcType->GetTypeArgs()[0];
-        this->parameterTypes = &(funcType->GetTypeArgs()[1]);
+    TypeInfo* funcType = ti->GetTypeArgs()[0];
+    this->parameterCount = funcType->GetTypeArgNum() - 1;
+    this->entryPoint = *reinterpret_cast<Uptr*>(reinterpret_cast<Uptr>(obj) + TYPEINFO_PTR_SIZE);
+    this->returnType = funcType->GetTypeArgs()[0];
+    this->parameterTypes = &(funcType->GetTypeArgs()[1]);
 }
 
 void* DynamicMethodInfo::ApplyCangjieMethod(void* argsArray)
