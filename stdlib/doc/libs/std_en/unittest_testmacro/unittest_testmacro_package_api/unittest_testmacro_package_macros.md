@@ -34,6 +34,22 @@ Function: Declares a function in a test class as a [test lifecycle](../../unitte
 
 Function: The `@Bench` macro marks a function to be executed multiple times and calculates its expected execution time.
 
+Example:
+
+<!-- run -->
+```cangjie
+@Test
+class Foo {
+    var x = 0
+    @Bench
+    func foo() {
+        x += 1
+    }
+}
+```
+
+You can read more abount benchmarking and find more examples here: [Getting Started with Benchmarking](../../unittest/unittest_samples/unittest_benchmarks.md#getting-started-with-benchmarking)
+
 Such functions are executed in batches, and the execution time is measured for the entire batch. This measurement is repeated multiple times to obtain a statistical distribution of results, and various statistical parameters of this distribution are calculated.
 Currently supported parameters include:
 
@@ -264,6 +280,7 @@ The default value is [TimeNow](../../unittest/unittest_package_api/unittest_pack
 
 For example:
 
+<!-- run -->
 ```cangjie
 @Test
 @Measure[TimeNow(), TimeNow(Nanos)]
@@ -319,6 +336,19 @@ All public and protected members of `unittest.TestCases` (see API overview below
     2. `name`: The name of the class.  
 Users of the unit testing framework should not modify these fields, as it may lead to unexpected errors.
 
+## `@Strategy` Macro
+
+Function: The `@Strategy` macro is applied to functions to define data generation strategies for benchmarks.
+
+When applied to a function, it creates a reusable data provider that can be referenced by `@Bench` macros. The function must follow the DSL syntax: `[parameters in generator]` where `generator` can be a range, array, or another strategy.
+
+Strategies defined with `@Strategy` support:
+1. Parameterized data generation for multiple benchmark runs
+2. Code reuse by separating data preparation from benchmark logic
+3. Flattened mapping of complex input parameters
+
+You can read more about @Strategy and find examples here: [Parameterized Benchmarking](../../unittest/unittest_samples/unittest_benchmarks.md#parameterized-benchmarking)
+
 ## `@TestBuilder` Macro
 
 Function: Declares a [dynamic test suite](../../unittest/unittest_samples/unittest_dynamic_tests.md#dynamic-tests).
@@ -348,8 +378,8 @@ func test(x: Int64, y: String, z: Float64): Unit {}
 ```
 
 This DSL can be used with the `@Test`, `@Strategy`, `@Bench`, and `@TestCase` macros, where `@Test` is only available for top-level functions. If a test function has both `@Bench` and `@TestCase`, only `@Bench` can include the DSL.  
-In the DSL syntax, the identifiers before `in` (e.g., `x`, `y`, and `z` in the example above) must directly correspond to the function's parameters. The parameter sources (`source1`, `source2`, and `source3` in the example) can be any valid Cangjie expression (the expression type must implement either the [DataStrategy](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategyt)\<T> or [DataStrategyProcessor](../../unittest/unittest_package_api/unittest_package_classes.md#class-datastrategyprocessort)\<T> interface, detailed below).  
-The element type of the parameter source (provided as the generic parameter `T` to [DataStrategy](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategyt)\<T>) must exactly match the type of the corresponding function parameter.
+In the DSL syntax, the identifiers before `in` (e.g., `x`, `y`, and `z` in the example above) must directly correspond to the function's parameters. The parameter sources (`source1`, `source2`, and `source3` in the example) can be any valid Cangjie expression (the expression type must implement either the [DataStrategy](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategy)\<T> or [DataStrategyProcessor](../../unittest/unittest_package_api/unittest_package_classes.md#class-datastrategyprocessort)\<T> interface, detailed below).  
+The element type of the parameter source (provided as the generic parameter `T` to [DataStrategy](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategy)\<T>) must exactly match the type of the corresponding function parameter.
 
 Supported parameter source types include:
 
@@ -361,7 +391,7 @@ Supported parameter source types include:
 - Functions marked with `@Strategy`: `x in nameOfStrategyAnnotatedFunction`.
 - Results combined using [DataStrategyProcessor](../../unittest/unittest_package_api/unittest_package_classes.md#class-datastrategyprocessort).
 
-> Advanced users can introduce their own parameter source types by defining custom types that implement the [DataStrategy](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategyt)\<T> interface.
+> Advanced users can introduce their own parameter source types by defining custom types that implement the [DataStrategy](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategy)\<T> interface.
 
 The `random()` function supports the following types by default:
 
