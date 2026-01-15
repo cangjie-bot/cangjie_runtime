@@ -1,5 +1,6 @@
 # 基准测试
 
+<a id="getting-started-with-benchmarking"></a>
 ## 基准测试入门
 
 仓颉单元测试框架为灵活创建基准测试提供了强大的支持。
