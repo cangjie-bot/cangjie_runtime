@@ -13,7 +13,6 @@
 
 namespace MapleRuntime {
 class TypeInfo;
-class BaseObject;
 class ATTR_PACKED(4) InstanceFieldInfo {
 public:
     const char* GetName(TypeInfo* declaringTypeInfo) const;

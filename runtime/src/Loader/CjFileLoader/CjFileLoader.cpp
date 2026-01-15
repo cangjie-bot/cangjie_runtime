@@ -10,7 +10,6 @@
 #include "ExceptionManager.inline.h"
 #include "ObjectManager.inline.h"
 #include "TypeInfoManager.h"
-#include "ObjectModel/MClass.h"
 namespace MapleRuntime {
 
 void CJFileLoader::Fini()

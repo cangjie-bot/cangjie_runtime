@@ -1233,6 +1233,9 @@ extern "C" const char* MCC_GetEnumConstructorName(EnumCtorInfo* ti)
 
 extern "C" EnumCtorInfo* MCC_GetEnumConstructorInfoFromAny(ObjRef obj) {
     TypeInfo* ti = obj->GetTypeInfo();
+    if (!ti->IsEnum() && !ti->IsTempEnum()) {
+        return nullptr;
+    }
     EnumInfo* enumInfo = ti->GetEnumInfo();
     if (ti->IsEnumCtor()) {
         enumInfo = ti->GetSuperTypeInfo()->GetEnumInfo();
