@@ -1241,8 +1241,24 @@ extern "C" EnumCtorInfo* MCC_GetEnumConstructorInfoFromAny(ObjRef obj) {
     if (ti->IsEnumCtor()) {
         enumInfo = ti->GetSuperTypeInfo()->GetEnumInfo();
     }
+
+    if (enumInfo->IsEnumKind2() && ti->GetFieldNum() == 1) {
+        U32 ctorNum = enumInfo->GetNumOfEnumCtor();
+        auto field = obj->LoadRef(TYPEINFO_PTR_SIZE);
+        for (U32 idx = 0; idx < ctorNum; idx++) {
+            EnumCtorInfo* ctorInfo = enumInfo->GetEnumCtor(idx);
+            U32 fieldNum = ctorInfo->GetTypeInfo()->GetFieldNum();
+            if ((fieldNum == 0 && field == nullptr) || (fieldNum != 0 && field != nullptr)) {
+                return ctorInfo;
+            }
+        }
+        LOG(RTLOG_FATAL, "MCC_GetEnumConstructorInfoFromAny failed");
+    }
+
     I32 tag = 0;
-    if (enumInfo->IsEnumKind2()) {
+    if (enumInfo->IsEnumKind0() && ti->GetFieldNum() == 0) {
+        tag = 0;
+    } else if (enumInfo->IsEnumKind2()) {
         // If the type of enum is option-like, the type of tag is bool.
         tag = obj->Load<I8>(TYPEINFO_PTR_SIZE);
     } else {
