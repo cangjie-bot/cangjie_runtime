@@ -844,6 +844,29 @@ bool TypeInfo::IsEnumCtor() const
     return enumInfo->GetModifier() & MODIFIER_ENUM_CTOR;
 }
 
+bool TypeInfo::IsOptionLikeRefEnum()
+{
+    if (!IsEnum() && !IsTempEnum()) {
+        return false;
+    }
+    EnumInfo* enumInfo = GetEnumInfo();
+    if (IsEnumCtor()) {
+        enumInfo = GetSuperTypeInfo()->GetEnumInfo();
+    }
+    if (!enumInfo->IsEnumKind2()) {
+        return true;
+    }
+    U32 ctorNum = enumInfo->GetNumOfEnumCtor();
+    for (U32 idx = 0; idx < ctorNum; idx++) {
+        TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(idx);
+        U32 fieldNum = ctorTypeInfo->GetFieldNum();
+        if (fieldNum == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 U32 TypeInfo::GetNumOfInstanceFieldInfos()
 {
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {
