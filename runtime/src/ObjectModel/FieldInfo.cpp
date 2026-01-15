@@ -12,7 +12,6 @@
 #include "Heap/Heap.h"
 #include "ObjectModel/MObject.inline.h"
 #include "ObjectManager.inline.h"
-#include "ExceptionManager.inline.h"
 namespace MapleRuntime {
 
 U32 InstanceFieldInfo::GetModifier() const { return modifier; }
