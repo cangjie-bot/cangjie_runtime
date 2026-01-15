@@ -115,6 +115,12 @@ int UdpsockBindConnect(SignedSocket connFd, struct SockAddr *local, struct SockA
         }
     }
 
+    if (peer == nullptr) {
+        ret = -1;
+        LOG_ERROR(ret, "UdpsockBindConnect received null peer.");
+        return ret;
+    }
+
     ret = UdpsockConnect(connFd, reinterpret_cast<const struct sockaddr *>(peer->sockaddr), peer->addrLen);
     if (ret != 0) {
         LOG_ERROR(ret, "UdpsockConnect failed");

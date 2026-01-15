@@ -60,6 +60,11 @@ SOCKET RawsockCreate(int domain, int type, int protocol, int *socketError)
 int RawsockBind(SOCKET fd, const struct SockAddr *addr, int backlog)
 {
     int error;
+    if (addr == nullptr) {
+        error = ERRNO_SOCK_ARG_INVALID;
+        LOG_ERROR(error, "RawsockBind failed, addr is nullptr.");
+        return error;
+    }
     struct sockaddr *unixSockAddr = reinterpret_cast<struct sockaddr *>(addr->sockaddr);
     socklen_t addrLen = addr->addrLen;
     (void)backlog;
