@@ -320,7 +320,7 @@ void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
         TypeInfo* argType = ti->GetFieldType(idx);
         U32 offset = ti->GetFieldOffset(idx);
 
-        if (ti->IsEnum() || ti->IsTempEnum()) {
+        if ((ti->IsEnum() || ti->IsTempEnum()) && HaveEnumTag(ti)) {
             // For enum and temp enum, skip the first element (the tag).
             argType = ti->GetFieldType(idx + 1);
             offset = ti->GetFieldOffset(idx + 1);
@@ -349,6 +349,9 @@ void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
 
         refField++;
     }
+    if(ti->IsOptionLikeRefEnum() && ti->GetFieldNum() == 0) {
+        obj->StoreRef(TYPEINFO_PTR_SIZE, nullptr);
+    }
 }
 
 ObjRef CreateEnumObject(TypeInfo* ti, MSize size)
@@ -361,12 +364,12 @@ ObjRef CreateEnumObject(TypeInfo* ti, MSize size)
     if (enumInfo->IsEnumKind1()) {
         obj = ObjectManager::NewObject(ti, size);
     } else {
-        // For enum kind 1, the object's TypeInfo should be the enum's TypeInfo.
+        // For other enum kind, the object's TypeInfo should be the enum's TypeInfo.
         // Current ti is the constructor's TypeInfo of the enum.
         obj = ObjectManager::NewObject(enumTi, size);
     }
 
-    if (obj != nullptr) {
+    if (obj != nullptr && HaveEnumTag(ti)) {
         SetEnumTag(obj, ti);
     }
 
@@ -380,7 +383,7 @@ void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum
         U32 offset = ti->GetFieldOffset(idx);
 
         // For enum and temp enum, skip the first element (the tag)
-        if (ti->IsEnum() || ti->IsTempEnum()) {
+        if ((ti->IsEnum() || ti->IsTempEnum()) && HaveEnumTag(ti)) {
             fieldTi = ti->GetFieldType(idx + 1);
             offset = ti->GetFieldOffset(idx + 1);
         }
@@ -464,6 +467,13 @@ BaseObject* VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
     }
 
     return fieldObj;
+}
+
+bool HaveEnumTag(TypeInfo* ti) {
+    if (ti->GetInstanceSize() == 0) {
+        return false;
+    }
+    return ti->IsOptionLikeRefEnum();
 }
 
 void SetEnumTag(ObjRef obj, TypeInfo* typeInfo)

@@ -1351,8 +1351,9 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
                 tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
             }
             ti = enumInfo->GetCtorTypeInfo(tag);
-            fieldNum = ti->GetFieldNum() - 1;
-        } else {
+            fieldNum = ti->GetFieldNum();
+        }
+        if (FieldInitializer::HaveEnumTag(ti)) {
             fieldNum -= 1;
         }
     }

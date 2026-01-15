@@ -622,6 +622,7 @@ public:
     inline bool IsBoxClass();
     U32 GetModifier();
     bool IsEnumCtor() const;
+    bool IsOptionLikeRefEnum();
     bool ReflectIsEnable() const;
     bool ReflectInfoIsNull() const;
     inline EnumCtorReflectInfo* GetEnumCtorReflectInfo();
