@@ -459,6 +459,7 @@ public:
     void SetCtorInfoNum(U32 num) { enumCtorInfoCnt = num; }
     void SetParsed() { modifier |= MODIFIER_ENUM_PARSED; }
     bool IsParsed() const { return (modifier & MODIFIER_ENUM_PARSED) != 0; }
+    bool IsEnumKind0() const { return (modifier & MODIFIER_ENUM_KIND0) != 0; }
     bool IsEnumKind1() const { return (modifier & MODIFIER_ENUM_KIND1) != 0; }
     bool IsEnumKind2() const { return (modifier & MODIFIER_ENUM_KIND2) != 0; }
     bool IsEnumCtor() const { return (modifier & MODIFIER_ENUM_CTOR) != 0; }
