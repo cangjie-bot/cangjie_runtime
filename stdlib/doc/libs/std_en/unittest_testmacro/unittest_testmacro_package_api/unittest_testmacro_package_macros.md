@@ -338,16 +338,17 @@ Users of the unit testing framework should not modify these fields, as it may le
 
 ## `@Strategy` Macro
 
-Function: The `@Strategy` macro is applied to functions to define data generation strategies for benchmarks.
+Function: Using `@Strategy` on a function creates a new [DataStrategy](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategyt) from that function. It is a convenient API for combining, mapping, and reusing strategies.
 
-When applied to a function, it creates a reusable data provider that can be referenced by `@Bench` macros. The function must follow the DSL syntax: `[parameters in generator]` where `generator` can be a range, array, or another strategy.
+Functions marked with `@Strategy` must satisfy the following conditions:
 
-Strategies defined with `@Strategy` support:
-1. Parameterized data generation for multiple benchmark runs
-2. Code reuse by separating data preparation from benchmark logic
-3. Flattened mapping of complex input parameters
+1. Must explicitly specify a return type.
+2. Parameters must correspond to the DSL specified in the macro arguments.
+3. Can be used both inside and outside of classes marked with `@Test`.
 
-You can read more about @Strategy and find examples here: [Parameterized Benchmarking](../../unittest/unittest_samples/unittest_benchmarks.md#parameterized-benchmarking)
+> Implementation note: The macro expansion results in a variable with the function name and type [DataStrategyProcessor](../../unittest/unittest_package_api/unittest_package_classes.md#class-datastrategyprocessort). This variable can be used anywhere a [DataStrategy](../../unittest_common/unittest_common_package_api/unittest_common_package_interfaces.md#interface-datastrategyt) can be used.
+
+For examples of `@Strategy` macro usage and its application in parameterized benchmarking, refer to the [Parameterized Benchmarking](../../unittest/unittest_samples/unittest_benchmarks.md#parameterized-benchmarking) section.
 
 ## `@TestBuilder` Macro
 
