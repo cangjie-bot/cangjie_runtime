@@ -15,6 +15,7 @@
 
 // module interfaces
 #include "ObjectManager.inline.h"
+#include "ObjectModel/MethodInfo.h"
 #if defined(CANGJIE_SANITIZER_SUPPORT) || defined(CANGJIE_GWPASAN_SUPPORT)
 #include "Sanitizer/SanitizerInterface.h"
 #endif
@@ -1317,8 +1318,10 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     // Need set tag for enum and temp enum.
     if (ti->IsEnum() || ti->IsTempEnum()) {
         obj = FieldInitializer::CreateEnumObject(ti, size);
+    } else if (ti->IsTuple()) {
+        obj = ObjectManager::NewObject(ti, size, AllocType::RAW_POINTER_OBJECT);
     } else {
-        obj = ObjectManager::NewObject(ti, size);
+        LOG(RTLOG_FATAL, "MCC_NewAndInitObject: unsupported type %s", ti->GetName());
     }
 
     if (obj == nullptr) {
@@ -1330,6 +1333,10 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
 
     // Parse fields from args and store them into obj.
     FieldInitializer::SetFieldFromArgs(obj, ti, args);
+    AllocBuffer* buffer = AllocBuffer::GetAllocBuffer();
+    if (buffer != nullptr) {
+        buffer->CommitRawPointerRegions();
+    }
     return obj;
 }
 
@@ -1358,7 +1365,7 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
     }
 
     TypeInfo* rawArrayTi = arrayTi->GetFieldType(0);
-    ArrayRef array = ObjectManager::NewArray(fieldNum, rawArrayTi);
+    ArrayRef array = ObjectManager::NewArray(fieldNum, rawArrayTi, AllocType::RAW_POINTER_OBJECT);
     // Extract fields from obj and put them into array.
     FieldInitializer::SetElementFromObject(array, obj, ti, fieldNum);
 
@@ -1370,6 +1377,10 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
     CJArray* cjArray = reinterpret_cast<CJArray*>(reinterpret_cast<Uptr>(arrayObj) + TYPEINFO_PTR_SIZE);
     cjArray->start = 0;
     cjArray->length = fieldNum;
+    AllocBuffer* buffer = AllocBuffer::GetAllocBuffer();
+    if (buffer != nullptr) {
+        buffer->CommitRawPointerRegions();
+    }
     return arrayObj;
 }
 

@@ -301,4 +301,22 @@ _CJ_MCC_DumpCJHeapData:
     CalleeSavedRegistersStub MCC_DumpCJHeapData
 
 .global _unwindPCForC2RStubEnd
+    .text
+    .align 2
+        .text
+    .align 2
+    .global _CJ_MCC_NewAndInitObject
+    .text
+    .align 2
+    .global _CJ_MCC_NewAndInitObject
+_CJ_MCC_NewAndInitObject:
+    CalleeSavedRegistersStub MCC_NewAndInitObject
+
+    .text
+    .align 2
+    .global _CJ_MCC_GetAssociatedValues
+_CJ_MCC_GetAssociatedValues:
+    CalleeSavedRegistersStub MCC_GetAssociatedValues
+
+.global _unwindPCForC2RStubEnd
 _unwindPCForC2RStubEnd:
