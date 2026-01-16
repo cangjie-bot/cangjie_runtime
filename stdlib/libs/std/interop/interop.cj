@@ -24,7 +24,7 @@ type CrossReferenceHandler = (ExportedRef, ForeignProxy) -> Unit
 
 public abstract class InteropContext <: Equatable<InteropContext> {
     private let crossReferenceHandler: CrossReferenceHandler
-    protected init(handler: CrossReferenceHandler) {
+    protected init(handler: (ExportedRef, ForeignProxy) -> Unit) {
         crossReferenceHandler = handler;
     }
 }
