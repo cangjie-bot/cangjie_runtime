@@ -1312,6 +1312,9 @@ extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
 // 1. Enum types (including temporary enums)
 // 2. Tuple types
 extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
+    if (args == nullptr) {
+        return nullptr;
+    }
     MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef obj = nullptr;
 
@@ -1320,6 +1323,10 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
         obj = FieldInitializer::CreateEnumObject(ti, size);
     } else if (ti->IsTuple()) {
         obj = ObjectManager::NewObject(ti, size, AllocType::RAW_POINTER_OBJECT);
+        if (obj == nullptr) {
+            VLOG(REPORT, "MCC_NewAndInitObject new tuple object failed and throw OutOfMemoryError");
+            ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewObject return nullptr");
+        }
     } else {
         LOG(RTLOG_FATAL, "MCC_NewAndInitObject: unsupported type %s", ti->GetName());
     }
@@ -1361,12 +1368,20 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
 
     TypeInfo* rawArrayTi = arrayTi->GetFieldType(0);
     ArrayRef array = ObjectManager::NewArray(fieldNum, rawArrayTi, AllocType::RAW_POINTER_OBJECT);
+    if (array == nullptr) {
+        VLOG(REPORT, "MCC_GetAssociatedValues new array failed and throw OutOfMemoryError");
+        ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewArray return nullptr");
+    }
     // Extract fields from obj and put them into array.
     FieldInitializer::SetElementFromObject(array, obj, ti, fieldNum);
 
     U32 size = arrayTi->GetInstanceSize();
     MSize arrayObjSize = MRT_ALIGN(size + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef arrayObj = ObjectManager::NewObject(arrayTi, arrayObjSize, AllocType::RAW_POINTER_OBJECT);
+    if (arrayObj == nullptr) {
+        VLOG(REPORT, "MCC_GetAssociatedValues new object failed and throw OutOfMemoryError");
+        ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewObject return nullptr");
+    }
     Heap::GetBarrier().WriteReference(
         arrayObj, arrayObj->GetRefField(TYPEINFO_PTR_SIZE), static_cast<BaseObject*>(array));
     CJArray* cjArray = reinterpret_cast<CJArray*>(reinterpret_cast<Uptr>(arrayObj) + TYPEINFO_PTR_SIZE);
