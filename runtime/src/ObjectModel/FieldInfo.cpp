@@ -470,10 +470,36 @@ BaseObject* VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
 }
 
 bool HaveEnumTag(TypeInfo* ti) {
-    if (ti->GetInstanceSize() == 0) {
-        return false;
+    return !ti->IsOptionLikeRefEnum() && !ti->IsZeroSizedEnum();
+}
+
+I32 GetEnumTag(ObjRef obj, TypeInfo* ti)
+{
+    EnumInfo* enumInfo = ti->GetEnumInfo();
+    if (ti->IsEnumCtor()) {
+        enumInfo = ti->GetSuperTypeInfo()->GetEnumInfo();
     }
-    return ti->IsOptionLikeRefEnum();
+
+    I32 tag = 0;
+    if (ti->IsZeroSizedEnum()) {
+        tag = 0;
+    } else if (ti->IsOptionLikeRefEnum()) {
+        U32 ctorNum = enumInfo->GetNumOfEnumCtor();
+        auto field = obj->LoadRef(TYPEINFO_PTR_SIZE);
+        for (I32 idx = 0; idx < ctorNum; idx++) {
+            EnumCtorInfo* ctorInfo = enumInfo->GetEnumCtor(idx);
+            U32 fieldNum = ctorInfo->GetTypeInfo()->GetFieldNum();
+            if ((fieldNum == 0 && field == nullptr) || (fieldNum != 0 && field != nullptr)) {
+                tag = idx;
+                break;
+            }
+        }
+    } else if (enumInfo->IsEnumKind2()) {
+        tag = obj->Load<I8>(TYPEINFO_PTR_SIZE);
+    } else {
+        tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
+    }
+    return tag;
 }
 
 void SetEnumTag(ObjRef obj, TypeInfo* typeInfo)

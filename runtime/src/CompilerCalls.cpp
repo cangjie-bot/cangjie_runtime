@@ -1242,28 +1242,7 @@ extern "C" EnumCtorInfo* MCC_GetEnumConstructorInfoFromAny(ObjRef obj) {
         enumInfo = ti->GetSuperTypeInfo()->GetEnumInfo();
     }
 
-    if (enumInfo->IsEnumKind2() && ti->GetFieldNum() == 1) {
-        U32 ctorNum = enumInfo->GetNumOfEnumCtor();
-        auto field = obj->LoadRef(TYPEINFO_PTR_SIZE);
-        for (U32 idx = 0; idx < ctorNum; idx++) {
-            EnumCtorInfo* ctorInfo = enumInfo->GetEnumCtor(idx);
-            U32 fieldNum = ctorInfo->GetTypeInfo()->GetFieldNum();
-            if ((fieldNum == 0 && field == nullptr) || (fieldNum != 0 && field != nullptr)) {
-                return ctorInfo;
-            }
-        }
-        LOG(RTLOG_FATAL, "MCC_GetEnumConstructorInfoFromAny failed");
-    }
-
-    I32 tag = 0;
-    if (enumInfo->IsEnumKind0() && ti->GetFieldNum() == 0) {
-        tag = 0;
-    } else if (enumInfo->IsEnumKind2()) {
-        // If the type of enum is option-like, the type of tag is bool.
-        tag = obj->Load<I8>(TYPEINFO_PTR_SIZE);
-    } else {
-        tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
-    }
+    I32 tag = FieldInitializer::GetEnumTag(obj, ti);
     return enumInfo->GetEnumCtor(tag);
 }
 
@@ -1312,7 +1291,7 @@ extern "C" TypeInfo** MCC_GetFunctionSignatureTypes(TypeInfo* funcTi)
 extern "C" U32 MCC_GetNumOfFieldTypes(TypeInfo* ti)
 {
     U32 num = ti->GetFieldNum();
-    if (ti->IsEnum() || ti->IsTempEnum()) {
+    if ((ti->IsEnum() || ti->IsTempEnum()) && FieldInitializer::HaveEnumTag(ti)) {
         return num - 1;
     }
     return num;
@@ -1321,7 +1300,7 @@ extern "C" U32 MCC_GetNumOfFieldTypes(TypeInfo* ti)
 extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
 {
     TypeInfo** fieldTypes = ti->GetFieldTypes();
-    if (ti->IsEnum() || ti->IsTempEnum()) {
+    if ((ti->IsEnum() || ti->IsTempEnum()) && FieldInitializer::HaveEnumTag(ti)) {
         return fieldTypes + 1;
     }
     return fieldTypes;
@@ -1370,14 +1349,8 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
         if (!ti->IsEnumCtor()) {
             // The object's TypeInfo(ti) is the enum's TypeInfo.
             // Read the tag, and get constructor's TypeInfo based on the tag.
-            I32 tag = 0;
             EnumInfo* enumInfo = ti->GetEnumInfo();
-            if (enumInfo->IsEnumKind2()) {
-                // If the type of enum is option-like, the type of tag is bool.
-                tag = obj->Load<I8>(TYPEINFO_PTR_SIZE);
-            } else {
-                tag = obj->Load<I32>(TYPEINFO_PTR_SIZE);
-            }
+            I32 tag = FieldInitializer::GetEnumTag(obj, ti);
             ti = enumInfo->GetCtorTypeInfo(tag);
             fieldNum = ti->GetFieldNum();
         }

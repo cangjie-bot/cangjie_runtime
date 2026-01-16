@@ -854,17 +854,40 @@ bool TypeInfo::IsOptionLikeRefEnum()
         enumInfo = GetSuperTypeInfo()->GetEnumInfo();
     }
     if (!enumInfo->IsEnumKind2()) {
-        return true;
+        return false;
     }
     U32 ctorNum = enumInfo->GetNumOfEnumCtor();
     for (U32 idx = 0; idx < ctorNum; idx++) {
         TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(idx);
         U32 fieldNum = ctorTypeInfo->GetFieldNum();
         if (fieldNum == 0) {
-            return false;
+            return true;
         }
     }
-    return true;
+    return false;
+}
+
+bool TypeInfo::IsZeroSizedEnum()
+{
+    if (!IsEnum() && !IsTempEnum()) {
+        return false;
+    }
+    if (IsEnumCtor()) {
+        return GetInstanceSize() == 0;
+    }
+    EnumInfo* enumInfo = GetEnumInfo();
+    if (!enumInfo->IsEnumKind0()) {
+        return false;
+    }
+    U32 ctorNum = enumInfo->GetNumOfEnumCtor();
+    if (ctorNum != 1) {
+        return false;
+    }
+    TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(0);
+    if (ctorTypeInfo->GetInstanceSize() == 0) {
+        return true;
+    }
+    return false;
 }
 
 U32 TypeInfo::GetNumOfInstanceFieldInfos()
