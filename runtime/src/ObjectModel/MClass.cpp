@@ -856,13 +856,9 @@ bool TypeInfo::IsOptionLikeRefEnum()
     if (!enumInfo->IsEnumKind2()) {
         return false;
     }
-    U32 ctorNum = enumInfo->GetNumOfEnumCtor();
-    for (U32 idx = 0; idx < ctorNum; idx++) {
-        TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(idx);
-        U32 fieldNum = ctorTypeInfo->GetFieldNum();
-        if (fieldNum == 0) {
-            return true;
-        }
+    TypeInfo* ctorTypeInfo = enumInfo->GetCtorTypeInfo(0);
+    if (ctorTypeInfo->GetFieldNum() == 1) {
+        return true;
     }
     return false;
 }
