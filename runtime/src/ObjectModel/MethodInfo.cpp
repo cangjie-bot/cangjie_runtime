@@ -609,7 +609,10 @@ void* DynamicMethodInfo::ApplyCangjieMethod(void* argsArray)
 
     size_t retObjSize = MRT_ALIGN(returnType->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef retObj = ObjectManager::NewObject(returnType, retObjSize, AllocType::RAW_POINTER_OBJECT);
+#if defined(__aarch64__)
+#else
     argValues.AddInt64(reinterpret_cast<I64>(&retObj));
+#endif
     argValues.AddReference(instanceObj);
 
     CJRawArray* cjRawArray = static_cast<CJArray*>(argsArray)->rawPtr;
@@ -624,7 +627,11 @@ void* DynamicMethodInfo::ApplyCangjieMethod(void* argsArray)
     // add outerTi
     argValues.AddInt64(reinterpret_cast<I64>(functionTi));
     uintptr_t threadData = MapleRuntime::MRT_GetThreadLocalData();
+#if defined(__aarch64__)
+    ApplyCangjieMethodStub(argValues.GetData(), argValues.GetStackSize(), entryPoint, threadData, &sret);
+#else
     ApplyCangjieMethodStub(argValues.GetData(), argValues.GetStackSize(), entryPoint, threadData);
+#endif
 
     if (ExceptionManager::HasPendingException()) {
         ExceptionManager::ThrowPendingException();
