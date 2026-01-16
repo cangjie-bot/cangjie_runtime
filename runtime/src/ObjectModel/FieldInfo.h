@@ -56,6 +56,7 @@ namespace FieldInitializer {
     ObjRef CreateEnumObject(TypeInfo* ti, MSize size);
     void SetElementFromObject(ArrayRef array, ObjRef obj, TypeInfo* ti, U16 fieldNum);
     bool HaveEnumTag(TypeInfo* ti);
+    I32 GetEnumTag(ObjRef obj, TypeInfo* typeInfo);
     void SetEnumTag(ObjRef obj, TypeInfo* typeInfo);
     // Helper functions for ToAny functionality
     BaseObject* FieldToAny(ObjRef obj, TypeInfo* fieldTi, U32 offset);
