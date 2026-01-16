@@ -1306,12 +1306,12 @@ extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
     return fieldTypes;
 }
 
-// MCC_NewAndInitObject - Creates and initializes objects for enum and tuple types
+// MCC_NewAndInitEnumTupleObject - Creates and initializes objects for enum and tuple types
 //
 // This function is specifically designed to handle object creation for:
 // 1. Enum types (including temporary enums)
 // 2. Tuple types
-extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args)
+extern "C" ObjRef MCC_NewAndInitEnumTupleObject(TypeInfo* ti, void* args)
 {
     if (args == nullptr) {
         return nullptr;
@@ -1325,17 +1325,17 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args)
     } else if (ti->IsTuple()) {
         obj = ObjectManager::NewObject(ti, size, AllocType::RAW_POINTER_OBJECT);
         if (obj == nullptr) {
-            VLOG(REPORT, "MCC_NewAndInitObject new tuple object failed and throw OutOfMemoryError");
+            VLOG(REPORT, "MCC_NewAndInitEnumTupleObject new tuple object failed and throw OutOfMemoryError");
             ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewObject return nullptr");
         }
     } else {
-        LOG(RTLOG_FATAL, "MCC_NewAndInitObject: unsupported type %s", ti->GetName());
+        LOG(RTLOG_FATAL, "MCC_NewAndInitEnumTupleObject: unsupported type %s", ti->GetName());
     }
 
     if (obj == nullptr) {
         VLOG(REPORT, "Allocating object %s (%zu B) failed and throw OutOfMemoryError",
              ti->GetName(), size);
-        ExceptionManager::CheckAndThrowPendingException("MCC_NewAndInitObject: Object creation failed");
+        ExceptionManager::CheckAndThrowPendingException("MCC_NewAndInitEnumTupleObject: Object creation failed");
         return nullptr;
     }
 
