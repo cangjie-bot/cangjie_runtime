@@ -1327,6 +1327,11 @@ extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
     return fieldTypes;
 }
 
+// MCC_NewAndInitObject - Creates and initializes objects for enum and tuple types
+//
+// This function is specifically designed to handle object creation for:
+// 1. Enum types (including temporary enums)
+// 2. Tuple types
 extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef obj = nullptr;
