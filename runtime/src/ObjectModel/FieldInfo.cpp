@@ -10,6 +10,7 @@
 #include "Base/Globals.h"
 #include "Loader/ILoader.h"
 #include "Heap/Heap.h"
+#include "ExceptionManager.inline.h"
 #include "ObjectModel/MObject.inline.h"
 #include "ObjectManager.inline.h"
 namespace MapleRuntime {
@@ -367,6 +368,10 @@ ObjRef CreateEnumObject(TypeInfo* ti, MSize size)
         // For other enum kind, the object's TypeInfo should be the enum's TypeInfo.
         // Current ti is the constructor's TypeInfo of the enum.
         obj = ObjectManager::NewObject(enumTi, size, AllocType::RAW_POINTER_OBJECT);
+    }
+    if (obj == nullptr) {
+        VLOG(REPORT, "FieldInitializer: new enum object failed and throw OutOfMemoryError");
+        ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewObject return nullptr");
     }
 
     if (obj != nullptr && HaveEnumTag(ti)) {
