@@ -407,9 +407,9 @@ _CJ_MCC_DumpCJHeapData:
 
     .text
     .align 2
-    .global _CJ_MCC_NewAndInitObject
-_CJ_MCC_NewAndInitObject:
-    CalleeSavedRegistersStub MCC_NewAndInitObject
+    .global _CJ_MCC_NewAndInitEnumTupleObject
+_CJ_MCC_NewAndInitEnumTupleObject:
+    CalleeSavedRegistersStub MCC_NewAndInitEnumTupleObject
 
     .text
     .align 2
