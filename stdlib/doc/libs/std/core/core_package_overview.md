@@ -179,3 +179,4 @@ core 包是标准库的核心包，提供了适用仓颉语言编程最基本的
 | [StackOverflowError](./core_package_api/core_package_exceptions.md#class-stackoverflowerror) | 表示堆栈溢出错误的错误类，该类不可被继承，不可初始化，但是可以被捕获到。 |
 | [TimeoutException](./core_package_api/core_package_exceptions.md#class-timeoutexception)| 当阻塞操作超时时引发异常。 |
 | [UnsupportedException](./core_package_api/core_package_exceptions.md#class-unsupportedexception) | 表示功能未支持的异常类。 |
+ 

@@ -112,3 +112,4 @@ SQL 数据类型和仓颉数据类型对应表如下：
 | 异常类名                                                     | 功能                      |
 | ------------------------------------------------------------ | ------------------------- |
 | [SqlException](./database_sql_package_api/database_sql_package_exceptions.md#class-sqlexception) | 用于处理 sql 相关的异常。 |
+ 

@@ -277,3 +277,4 @@ public func isNearExpansion<CT, D>(
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 是否近似相等。
+ 

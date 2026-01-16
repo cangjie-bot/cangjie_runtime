@@ -11,3 +11,4 @@ public class UnittestOptionValidationException <: Exception {}
 父类型：
 
 - [Exception](../../core/core_package_api/core_package_exceptions.md#class-exception)
+ 

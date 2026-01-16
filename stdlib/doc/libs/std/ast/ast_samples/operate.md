@@ -37,3 +37,4 @@ main() {
 Identifier value is Data
 ClassDecl body size is 3
 ```
+ 

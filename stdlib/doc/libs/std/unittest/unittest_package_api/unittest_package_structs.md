@@ -2039,3 +2039,4 @@ public func measure(): Float64
 返回值：
 
 - [Float64](../../core/core_package_api/core_package_intrinsics.md#float64) - 计算得到的数据，用于统计分析。
+ 

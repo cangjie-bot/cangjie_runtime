@@ -103,3 +103,4 @@ collection 包提供的集合类型都不支持并发安全，并发安全的集
 | 异常类名  | 功能  |
 | ------------ | ------------ |
 |[ConcurrentModificationException](./collection_package_api/collection_package_exception.md#class-concurrentmodificationexception)| 并发修改异常类。|
+ 

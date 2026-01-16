@@ -869,3 +869,4 @@ public func shrink(): Iterable<TupleWrapper5<T0, T1, T2, T3, T4>>
 返回值：
 
 - [Iterable](../../core/core_package_api/core_package_interfaces.md#interface-iterablee)\<TupleWrapper5\<T0, T1, T2, T3, T4>> -  数据迭代器。
+ 

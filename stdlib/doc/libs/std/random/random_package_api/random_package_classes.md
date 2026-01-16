@@ -1259,3 +1259,4 @@ public func nextUInt8s(array: Array<UInt8>): Array<UInt8>
 返回值：
 
 - [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[UInt8](../../core/core_package_api/core_package_intrinsics.md#uint8)> - 返回替换后的 [Array](../../core/core_package_api/core_package_structs.md#struct-arrayt)。
+ 

@@ -55,3 +55,4 @@ fs（file system）包提供对文件、文件夹、路径、文件元数据信�
 |              异常类名          |           功能           |
 | --------------------------- | ------------------------ |
 | [FSException](./fs_package_api/fs_package_exceptions.md#class-fsexception) | 文件流异常类，继承了 IO 流异常类。 |
+ 

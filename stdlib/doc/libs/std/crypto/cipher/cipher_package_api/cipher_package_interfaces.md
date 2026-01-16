@@ -100,3 +100,4 @@ func encrypt(input: Array<Byte>, to!: Array<Byte>): Int64
 返回值：
 
 - [Int64](../../../core/core_package_api/core_package_intrinsics.md#int64) - 输出长度。
+ 

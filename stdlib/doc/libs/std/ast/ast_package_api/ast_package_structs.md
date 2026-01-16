@@ -344,3 +344,4 @@ public operator func ==(r: Token): Bool
 返回值：
 
 - [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 两个词法单元的种类 `ID`、值、位置相同时，返回 true。
+ 

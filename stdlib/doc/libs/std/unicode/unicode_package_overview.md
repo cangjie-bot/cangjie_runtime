@@ -23,4 +23,4 @@ unicode 包提供了按 unicode 编码标准处理字符的能力。
 
 |                 枚举              |                功能                 |
 | --------------------------------- | ---------------------------------- |
-| [CasingOption](./unicode_package_api/unicode_package_enums.md#enum-casingoption) | 大小写转换时根据不同语言所需要的枚举类。 |
+| [CasingOption](./unicode_package_api/unicode_package_enums.md#enum-casingoption) | 大小写转换时根据不同语言所需要的枚举类。 | 

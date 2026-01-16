@@ -38,3 +38,4 @@ collection.concurrent 包提供了并发安全的集合类型实现。
 | [ConcurrentHashMap\<K, V> where K <: Hashable & Equatable\<K>](./collection_concurrent_package_api/collection_concurrent_class.md#class-concurrenthashmapk-v-where-k--hashable--equatablek) | 此类用于实现并发场景下线程安全的哈希表 ConcurrentHashMap 数据结构及相关操作函数。 |
 | [ConcurrentLinkedQueue\<E>](./collection_concurrent_package_api/collection_concurrent_class.md#class-concurrentlinkedqueuee) | 提供一个线程安全的队列，可以在多线程环境下安全地进行元素的添加和删除操作。 |
 | [LinkedBlockingQueue\<E>](./collection_concurrent_package_api/collection_concurrent_class.md#class-linkedblockingqueuee) | 实现是带阻塞机制并支持用户指定容量上界的并发队列。 |
+ 

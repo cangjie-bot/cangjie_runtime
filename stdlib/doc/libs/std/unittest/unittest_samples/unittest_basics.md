@@ -554,3 +554,4 @@ class Foo {
 
 禁用动态进度报告。
 如果指定选项 `--dry-run`，则隐含选项 `--no-progress`。
+ 

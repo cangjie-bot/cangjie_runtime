@@ -62,3 +62,4 @@ CString in Cangjie code.
 >
 > 1. 使用 gcc 命令 `gcc -fPIC -shared test.c -o libtest.so`，编出 C 库 `libtest.so`。
 > 2. 使用 cjc 命令 `cjc -L . -l test test.cj`，编出可执行文件 `main`。
+ 

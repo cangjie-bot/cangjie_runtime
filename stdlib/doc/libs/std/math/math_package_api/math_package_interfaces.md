@@ -2930,3 +2930,4 @@ extend UIntNative <: Number<UIntNative> {}
 父类型：
 
 - [Number](#interface-numbert)\<[UIntNative](../../core/core_package_api/core_package_intrinsics.md#uintnative)>
+ 

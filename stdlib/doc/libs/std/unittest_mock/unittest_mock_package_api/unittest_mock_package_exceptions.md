@@ -112,3 +112,4 @@ public class VerificationFailedException <: PrettyException {}
 父类型：
 
 - [PrettyException](#class-prettyexception)
+ 

@@ -687,3 +687,4 @@ public static func of<PP>(pp: PP): PrettyText where PP <: PrettyPrintable
 返回值：
 
 - [PrettyText](#class-prettytext) - 打印文本对象。
+ 

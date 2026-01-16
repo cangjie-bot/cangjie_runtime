@@ -45,3 +45,4 @@ Cangjie 语言使用自动垃圾回收机制来管理内存，runtime 包提供�
 | [MemoryInfo <sup>(deprecated)</sup>](./runtime_package_api/runtime_package_structs.md#struct-memoryinfo-deprecated) | 提供获取一些堆内存统计数据的接口。 |
 | [ProcessorInfo <sup>(deprecated)</sup>](./runtime_package_api/runtime_package_structs.md#struct-processorinfo-deprecated) | 提供获取一些处理器信息的接口。 |
 | [ThreadInfo <sup>(deprecated)</sup>](./runtime_package_api/runtime_package_structs.md#struct-threadinfo-deprecated) | 提供获取一些仓颉线程统计数据的接口。 |
+ 

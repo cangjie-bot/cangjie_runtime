@@ -260,3 +260,4 @@ class MyException <: SqlException {
 ```text
 Class name: SqlException
 ```
+ 

@@ -490,3 +490,4 @@ public func setItem(key: String, value: Tokens): Unit
 
 - key: [String](../../core/core_package_api/core_package_structs.md#struct-string) - 发送的关键字，用于检索信息。
 - value: [Tokens](ast_package_classes.md#class-tokens) - 要发送的 [Tokens](ast_package_classes.md#class-tokens) 类型的信息。
+ 

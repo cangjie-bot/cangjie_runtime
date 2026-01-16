@@ -27060,3 +27060,4 @@ func wrappingPow(y: UInt64): Int64
 返回值：
 
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 幂运算结果。
+ 

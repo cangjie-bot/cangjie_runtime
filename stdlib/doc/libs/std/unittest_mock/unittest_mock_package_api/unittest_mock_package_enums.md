@@ -192,3 +192,4 @@ SyntheticFields
 功能：`Mock object` 会将其可变属性和字段视为可变字段。
 与直接使用 SyntheticField 类似，但更简洁。
 读取未初始化的字段将导致错误。
+ 

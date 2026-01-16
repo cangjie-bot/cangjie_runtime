@@ -11,3 +11,4 @@ public type SignalHandlerFunc = (Int32) -> Bool
 > **注意：**
 >
 > 不支持平台：Windows。
+ 

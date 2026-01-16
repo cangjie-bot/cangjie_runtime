@@ -241,3 +241,4 @@ public func sortDescending(stable!: Bool): Unit
 参数：
 
 - stable!: [Bool](../../core/core_package_api/core_package_intrinsics.md#bool) - 是否使用稳定排序。
+ 

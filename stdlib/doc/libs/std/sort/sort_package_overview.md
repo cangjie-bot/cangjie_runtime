@@ -39,3 +39,4 @@ sort 包提供数组类型的排序函数。
 | --------------------------------- | ---------------------------------- |
 | [SortByExtension <sup>(deprecated)</sup>](./sort_package_api/sort_package_interfaces.md#interface-sortbyextensiont-deprecated) | 此接口作为排序相关的辅助接口，内部为空。 |
 | [SortExtension <sup>(deprecated)</sup>](./sort_package_api/sort_package_interfaces.md#interface-sortextension-deprecated) | 此接口作为排序相关的辅助接口，内部为空。 |
+ 

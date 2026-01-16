@@ -661,4 +661,4 @@ func test_that_derived_type_overwrite_parent_type_value_in_configuration() {
     let second = conf.get(KeyOpt.opt).getOrThrow()
     @PowerAssert(second.str() == "Derived")
 }
-```
+``` 

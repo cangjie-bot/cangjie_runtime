@@ -23,3 +23,4 @@ objectpool 包提供了对象缓存和复用的功能。
 |                 类名              |                功能                 |
 | --------------------------------- | ---------------------------------- |
 | [ObjectPool <sup>(deprecated)</sup>](./objectpool_package_api/objectpool_package_classes.md#class-objectpoolt-where-t--object-deprecated) | 此类提供了一个并发安全的对象缓存类型，该类型可以储存已经分配内存但未使用的对象。|
+ 

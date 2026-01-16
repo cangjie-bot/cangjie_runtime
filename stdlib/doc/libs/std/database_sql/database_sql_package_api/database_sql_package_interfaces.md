@@ -734,3 +734,4 @@ prop rowCount: Int64
 功能：执行 Insert、Update、Delete 语句影响的行数。
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
+ 

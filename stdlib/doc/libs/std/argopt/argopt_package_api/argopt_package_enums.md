@@ -185,3 +185,4 @@ Short(Rune, ArgumentMode, (String) -> Unit)
 ```
 
 功能：表示是一个短选项，同时持有一个 `lambda` 回调函数。
+ 

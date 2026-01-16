@@ -67,3 +67,4 @@ unittest.mock 包提供仓颉单元测试的**mock 框架**，提供 API 用于�
 | [Exhaustiveness](./unittest_mock_package_api/unittest_mock_package_enums.md#enum-exhaustiveness) | 此枚举类型用于指定 `unordered` 函数的验证模式，包含两种模式。 |
 | [MockSessionKind](./unittest_mock_package_api/unittest_mock_package_enums.md#enum-mocksessionkind) | 控制允许在 MockSession 使用的[桩](../unittest_mock/unittest_mock_samples/mock_framework_basics.md#配置-api)的类型。 |
 | [StubMode](./unittest_mock_package_api/unittest_mock_package_enums.md#enum-stubmode) | 控制[桩的模式](../unittest_mock/unittest_mock_samples/mock_framework_stubs.md#桩的模式)。 |
+ 

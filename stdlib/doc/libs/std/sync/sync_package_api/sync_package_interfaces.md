@@ -267,3 +267,4 @@ func condition(): Condition
 异常：
 
 - [IllegalSynchronizationStateException](sync_package_exceptions.md#class-illegalsynchronizationstateexception) - 如果当前线程没有持有该互斥体，抛出异常。
+ 

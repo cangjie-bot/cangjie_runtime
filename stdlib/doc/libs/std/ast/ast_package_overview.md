@@ -178,3 +178,4 @@ ast 包主要包含了仓颉源码的语法解析器和仓颉语法树节点，�
 | [ASTException](./ast_package_api/ast_package_exceptions.md#class-astexception) | ast 库的异常类，在 ast 库调用过程中发生异常时使用。 |
 | [MacroContextException](./ast_package_api/ast_package_exceptions.md#class-macrocontextexception) | ast 库的上下文宏异常类，在上下文宏的相关接口中发生异常时使用。 |
 | [ParseASTException](./ast_package_api/ast_package_exceptions.md#class-parseastexception) | ast 库的解析异常类，在节点解析过程中发生异常时使用。 |
+ 

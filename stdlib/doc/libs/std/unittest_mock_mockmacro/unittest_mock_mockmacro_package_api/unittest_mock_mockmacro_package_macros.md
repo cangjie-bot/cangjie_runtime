@@ -67,3 +67,4 @@ func test() {
     @Expect(hasher.hash("answer"), 42)
 }
 ```
+ 

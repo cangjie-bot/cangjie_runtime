@@ -190,3 +190,4 @@ unittest 包用于编写仓颉项目单元测试代码，提供包括代码编�
 | [UnittestCliOptionsFormatException](./unittest_package_api/unittest_package_exceptions.md#class-unittestclioptionsformatexception) | 控制台选项格式错误抛出的异常。 |
 | [UnittestException](./unittest_package_api/unittest_package_exceptions.md#class-unittestexception) | 框架通用异常。 |
 | [UnittestTimeoutException](./unittest_package_api/unittest_package_exceptions.md#class-unittesttimeoutexception) | 此异常用于在超时时中止测试用例的执行。不建议用户直接使用。 |
+ 

@@ -1803,3 +1803,4 @@ public func never(): VerifyStatement
 返回值：
 
 - [VerifyStatement](unittest_mock_package_classes.md#class-verifystatement) - 返回对象自身。
+ 

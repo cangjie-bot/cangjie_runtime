@@ -101,3 +101,4 @@ value1: value1  value2: value2
 ```
 
 在上面的代码中，内层宏 `Inner` 通过 `setItem` 向外层宏发送信息；`Outter` 宏通过 `getChildMessages` 函数接收到 `Inner` 发送的一组信息对象（`Outter` 中可以调用多次 `Inner`）；最后通过该信息对象的 `getString` 函数接收对应的值。
+ 

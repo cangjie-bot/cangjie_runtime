@@ -163,3 +163,4 @@ posix 包封装 POSIX 系统调用，提供跨平台的系统操作接口。
 | [S_IRWXO <sup>(deprecated)</sup>](./posix_package_api/posix_package_constants_vars.md#const-s_irwxo-deprecated) | 表示其他用户对文件具有读、写和执行权限，适用函数 `open`，`open64`，`openat`，`openat64`，`chmod(mode)`，`fchmod(mode)`，`fchmodat(mode)`，`creat`， 所属函数参数 `flag`。 |
 | [S_IXGRP <sup>(deprecated)</sup>](./posix_package_api/posix_package_constants_vars.md#const-s_ixgrp-deprecated) | 表示文件用户组具有执行权限，适用函数 `open`，`open64`，`openat`，`openat64`，`chmod(mode)`，`fchmod(mode)`，`fchmodat(mode)`，`creat`， 所属函数参数 `flag`。 |
 | [S_IXUSR <sup>(deprecated)</sup>](./posix_package_api/posix_package_constants_vars.md#const-s_ixusr-deprecated) | 表示文件所有者具有执行权限，适用函数 `open`，`open64`，`openat`，`openat64`，`chmod(mode)`，`fchmod(mode)`，`fchmodat(mode)`，`creat`， 所属函数参数 `flag`。 |
+ 

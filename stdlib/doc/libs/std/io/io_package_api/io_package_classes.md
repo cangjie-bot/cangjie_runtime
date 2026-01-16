@@ -4638,3 +4638,4 @@ Position after seek() : 11
 Error: Can't move the position before the beginning of the stream.
 87, 111, 114, 108, 100]
 ```
+ 

@@ -128,3 +128,4 @@ func seek(sp: SeekPosition): Int64
 返回值：
 
 - [Int64](../../core/core_package_api/core_package_intrinsics.md#int64) - 返回流中数据的起点到移动后位置的偏移量（以字节为单位）。
+ 

@@ -41,3 +41,4 @@ decimal2 scale: 4
 decimal2 value: -1234567890
 decimal2 precision: 10
 ```
+ 

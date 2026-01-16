@@ -339,3 +339,4 @@ public func unregisterSignalHandler(sig: Signal, handler: SignalHandlerFunc): Un
 > - 仅支持前 31 个可被捕获的非实时信号。
 > - 暂不支持 SIGBUS、SIGFPE、SIGSEGV 等中断信号。
 > - handler 暂不支持成员函数和 foreign 函数。
+ 

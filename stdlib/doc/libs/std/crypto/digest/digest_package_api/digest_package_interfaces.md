@@ -89,3 +89,4 @@ func write(buffer: Array<Byte>): Unit
 参数：
 
 - buffer: [Array](../../../core/core_package_api/core_package_structs.md#struct-arrayt)\<[Byte](../../../core/core_package_api/core_package_types.md#type-byte)> - 给定的数组。
+ 

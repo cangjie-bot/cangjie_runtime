@@ -3589,3 +3589,4 @@ public func shrink(): Iterable<HashMap<K, V>>
 返回值：
 
 - [Iterable](../../core/core_package_api/core_package_interfaces.md#interface-iterablee)\<HashMap\<K, V>> - 一组可能的“较小”值的迭代器。
+ 

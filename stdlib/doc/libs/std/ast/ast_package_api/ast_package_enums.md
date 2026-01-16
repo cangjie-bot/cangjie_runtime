@@ -1651,3 +1651,4 @@ public func toString(): String
 返回值：
 
 - [String](../../core/core_package_api/core_package_structs.md#struct-string) - [TokenKind](ast_package_enums.md#enum-tokenkind) 转换后的字符串值。
+ 

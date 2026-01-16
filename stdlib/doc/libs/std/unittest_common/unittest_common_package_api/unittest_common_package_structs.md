@@ -84,3 +84,4 @@ public let userDefined: Bool
 功能：选项是否已被定义。
 
 类型：[Bool](../../core/core_package_api/core_package_intrinsics.md#bool)
+ 

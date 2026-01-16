@@ -163,3 +163,4 @@ count: 5
 |  异常类名 | 功能  |
 | ------------ | ------------ |
 | [IllegalSynchronizationStateException](./sync_package_api/sync_package_exceptions.md#class-illegalsynchronizationstateexception) | 此类为非法同步状态异常。 |
+ 

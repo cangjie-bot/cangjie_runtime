@@ -19,3 +19,4 @@ public var unittestOptionsRegistryClosed = false
 功能：用于标记选项是否可以注册的内部标志。仅在框架内使用，不建议用户使用。
 
 类型：[Bool](../../core/core_package_api/core_package_intrinsics.md#bool)
+ 

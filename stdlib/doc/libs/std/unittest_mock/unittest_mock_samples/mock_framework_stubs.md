@@ -416,3 +416,4 @@ let foo = mock<Foo>(ReturnsDefaults, SyntheticFields)
 foo.bar = "Hello"
 @Assert(foo.bar, "Hello")
 ```
+ 

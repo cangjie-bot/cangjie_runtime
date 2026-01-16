@@ -40,3 +40,4 @@ public func randomInRange<T>(min!: Option<T> = None, max!: Option<T> = None): Ra
 返回值：
 
 - [RandomDataStrategyRange\<T>](../unittest_prop_test_package_api/unittest_prop_test_package_classes.md#class-randomdatastrategyranget) - 随机数据策略器。
+ 

@@ -124,3 +124,4 @@ public static prop threadCount: Int64
 功能：获取仓颉当前的线程数量。
 
 类型：[Int64](../../core/core_package_api/core_package_intrinsics.md#int64)
+ 

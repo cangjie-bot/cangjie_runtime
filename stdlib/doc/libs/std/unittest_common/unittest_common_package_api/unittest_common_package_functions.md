@@ -50,3 +50,4 @@ public func setOrUpdateOptionInfo(
 - description: ?[String](../../core/core_package_api/core_package_structs.md#struct-string) - 选项的描述。如果值不为 None ，则覆盖先前的值。
 - ty: [String](../../core/core_package_api/core_package_structs.md#struct-string) - 类型的字符串形式。
 - typeDescription: [String](../../core/core_package_api/core_package_structs.md#struct-string) - 选项的类型描述。
+ 

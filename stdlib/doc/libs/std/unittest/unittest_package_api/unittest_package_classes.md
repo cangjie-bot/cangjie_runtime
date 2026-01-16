@@ -2339,3 +2339,4 @@ public XmlPerPackageReporter(let directory: Path)
 参数：
 
 - directory: [Path](../../fs/fs_package_api/fs_package_structs.md#struct-path) - 打印文件生成地址。
+ 

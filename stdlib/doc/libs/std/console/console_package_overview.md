@@ -28,3 +28,4 @@
 | [Console](console_package_api/console_package_class.md#class-console-deprecated)   | 提供标准输入、标准输出和标准错误 Stream 的获取接口。  |
 | [ConsoleReader](console_package_api/console_package_class.md#class-consolereader-deprecated)  |  提供从标准输入读取字符或者字符串的功能。 |
 | [ConsoleWriter](console_package_api/console_package_class.md#class-consolewriter-deprecated)  |  提供向标准输出或者标准错误流写入字符或者字符串的功能。 |
+ 
