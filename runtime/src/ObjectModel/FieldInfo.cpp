@@ -469,7 +469,8 @@ BaseObject* VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
     return fieldObj;
 }
 
-bool HaveEnumTag(TypeInfo* ti) {
+bool HaveEnumTag(TypeInfo* ti)
+{
     return !ti->IsOptionLikeRefEnum() && !ti->IsZeroSizedEnum();
 }
 

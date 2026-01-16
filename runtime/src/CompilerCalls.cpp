@@ -1311,7 +1311,8 @@ extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
 // This function is specifically designed to handle object creation for:
 // 1. Enum types (including temporary enums)
 // 2. Tuple types
-extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
+extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args)
+{
     MSize size = MRT_ALIGN(ti->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef obj = nullptr;
 
@@ -1340,7 +1341,8 @@ extern "C" ObjRef MCC_NewAndInitObject(TypeInfo* ti, void* args) {
     return obj;
 }
 
-extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi) {
+extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi)
+{
     TypeInfo* ti = obj->GetTypeInfo();
     U16 fieldNum = ti->GetFieldNum();
     // For enum and temp enum, fields include the tag,
