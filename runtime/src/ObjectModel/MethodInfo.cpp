@@ -599,23 +599,36 @@ DynamicMethodInfo::DynamicMethodInfo(ObjRef obj) {
 
 void* DynamicMethodInfo::ApplyCangjieMethod(void* argsArray)
 {
+    if (argsArray == nullptr) {
+        LOG(RTLOG_ERROR, "DynamicMethodInfo: argsArray is null");
+        return nullptr;
+    }
     ScopedAllocBuffer scopedAllocBuffer;
     ArgValue argValues;
-    CJArray* actualArgs = static_cast<CJArray*>(argsArray);
-    U64 actualArgCount = actualArgs->rawPtr->len;
+    CJRawArray* cjRawArray = nullptr;
+    if (!Heap::IsHeapAddress(argsArray)) {
+        cjRawArray = static_cast<CJArray*>(argsArray)->rawPtr;
+    } else {
+        RefField<false> oldField(reinterpret_cast<MAddress>(argsArray));
+        cjRawArray = reinterpret_cast<CJRawArray*>(Heap::GetBarrier().ReadReference(nullptr, oldField));
+    }
+    U64 actualArgCount = cjRawArray->len;
     if (actualArgCount != parameterCount) {
         LOG(RTLOG_FATAL, "DynamicMethodInfo: actualArgCount %d != parameterCount %d", actualArgCount, parameterCount);
     }
 
     size_t retObjSize = MRT_ALIGN(returnType->GetInstanceSize() + TYPEINFO_PTR_SIZE, TYPEINFO_PTR_SIZE);
     ObjRef retObj = ObjectManager::NewObject(returnType, retObjSize, AllocType::RAW_POINTER_OBJECT);
+    if (retObj == nullptr) {
+        VLOG(REPORT, "ApplyCangjieMethod: new object failed and throw OutOfMemoryError");
+        ExceptionManager::CheckAndThrowPendingException("ObjectManager::NewObject return nullptr");
+    }
 #if defined(__aarch64__)
 #else
     argValues.AddInt64(reinterpret_cast<I64>(&retObj));
 #endif
     argValues.AddReference(instanceObj);
 
-    CJRawArray* cjRawArray = static_cast<CJArray*>(argsArray)->rawPtr;
     ObjRef rawArray = reinterpret_cast<ObjRef>(cjRawArray);
     RefField<false>* refField = reinterpret_cast<RefField<false>*>(&(cjRawArray->data));
     for (U64 actualArgIdx = 0; actualArgIdx < actualArgCount; ++actualArgIdx) {
