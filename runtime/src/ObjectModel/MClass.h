@@ -698,9 +698,22 @@ private:
 
     inline bool IsMTableDescUnInitialized()
     {
-        return (mTableDesc == nullptr) ||
-               (validInheritNum >> 15 == 1) ||
-               (reinterpret_cast<uintptr_t>(mTableDesc) >> 63 == 1);
+#ifdef __clang__
+        _Pragma("clang diagnostic push")
+        _Pragma("clang diagnostic ignored \"-Wshift-count-overflow\"")
+#elif defined(__GNUC__)
+        _Pragma("GCC diagnostic push")
+        _Pragma("GCC diagnostic ignored \"-Wshift-count-overflow\"")
+#endif
+        bool result = (mTableDesc == nullptr) ||
+                      (validInheritNum >> 15 == 1) ||
+                      (reinterpret_cast<uintptr_t>(mTableDesc) >> 63 == 1);
+#ifdef __clang__
+        _Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
+        _Pragma("GCC diagnostic pop")
+#endif
+        return result;
     }
     // This function must be called before mTableDesc is overwritten.
     inline BIT_TYPE GetResolveBitmapFromMTableDesc()
