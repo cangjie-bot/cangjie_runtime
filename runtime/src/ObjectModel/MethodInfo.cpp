@@ -641,7 +641,8 @@ void* DynamicMethodInfo::ApplyCangjieMethod(void* argsArray)
     argValues.AddInt64(reinterpret_cast<I64>(functionTi));
     uintptr_t threadData = MapleRuntime::MRT_GetThreadLocalData();
 #if defined(__aarch64__)
-    ApplyCangjieMethodStub(argValues.GetData(), argValues.GetStackSize(), entryPoint, threadData, &retObj);
+    ApplyCangjieMethodStub(argValues.GetData(), reinterpret_cast<void*>(argValues->GetStackSize()),
+        reinterpret_cast<void*>(entryPoint), reinterpret_cast<void*>(threadData), &retObj);
 #else
     ApplyCangjieMethodStub(argValues.GetData(), argValues.GetStackSize(), entryPoint, threadData);
 #endif
