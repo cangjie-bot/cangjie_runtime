@@ -4,9 +4,84 @@
 
 Function: Declares a function in a test class as a [test lifecycle](../../unittest/unittest_samples/unittest_basics.md#test-lifecycle) function. The function decorated with this macro runs once after all test cases.
 
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+class MyTestSuite {
+    @AfterAll
+    func afterAll() {
+        println("cleanup test suite's resources")
+    }
+
+    @TestCase
+    func testCase1() {}
+
+    @TestCase
+    func testCase2() {}
+}
+```
+
+Possible output:
+
+```text
+cleanup test suite's resources
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 502575 ns, RESULT:
+    TCS: MyTestSuite, time elapsed: 500320 ns, RESULT:
+    [ PASSED ] CASE: testCase1 (194063 ns)
+    [ PASSED ] CASE: testCase2 (7131 ns)
+Summary: TOTAL: 2
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
+```
+
 ## `@AfterEach` Macro
 
 Function: Declares a function in a test class as a [test lifecycle](../../unittest/unittest_samples/unittest_basics.md#test-lifecycle) function. The function decorated with this macro runs once after each test case.
+
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+class MyTestSuite {
+    @AfterEach
+    func afterEach() {
+        println("cleanup test cases's resources")
+    }
+
+    @TestCase
+    func testCase1() {}
+
+    @TestCase
+    func testCase2() {}
+}
+```
+
+Possible output:
+
+```text
+cleanup test cases's resources
+cleanup test cases's resources
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 234331 ns, RESULT:
+    TCS: MyTestSuite, time elapsed: 232757 ns, RESULT:
+    [ PASSED ] CASE: testCase1 (76191 ns)
+    [ PASSED ] CASE: testCase2 (6590 ns)
+Summary: TOTAL: 2
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
+```
 
 ## `@Assert` Macro
 
@@ -26,9 +101,84 @@ Function: Declares an [expected exception assertion](../../unittest/unittest_sam
 
 Function: Declares a function in a test class as a [test lifecycle](../../unittest/unittest_samples/unittest_basics.md#test-lifecycle) function. The function decorated with this macro runs once before all test cases.
 
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+class MyTestSuite {
+    @BeforeAll
+    func beforeAll() {
+        println("setup test suites's resources")
+    }
+
+    @TestCase
+    func testCase1() {}
+
+    @TestCase
+    func testCase2() {}
+}
+```
+
+Possible output:
+
+```text
+setup test suites's resources
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 209278 ns, RESULT:
+    TCS: MyTestSuite, time elapsed: 207797 ns, RESULT:
+    [ PASSED ] CASE: testCase1 (68319 ns)
+    [ PASSED ] CASE: testCase2 (3979 ns)
+Summary: TOTAL: 2
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
+```
+
 ## `@BeforeEach` Macro
 
 Function: Declares a function in a test class as a [test lifecycle](../../unittest/unittest_samples/unittest_basics.md#test-lifecycle) function. The function decorated with this macro runs once before each test case.
+
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+class MyTestSuite {
+    @BeforeEach
+    func beforeEach() {
+        println("setup test cases's resources")
+    }
+
+    @TestCase
+    func testCase1() {}
+
+    @TestCase
+    func testCase2() {}
+}
+```
+
+Possible output:
+
+```text
+setup test cases's resources
+setup test cases's resources
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 233547 ns, RESULT:
+    TCS: MyTestSuite, time elapsed: 231753 ns, RESULT:
+    [ PASSED ] CASE: testCase1 (83998 ns)
+    [ PASSED ] CASE: testCase2 (8987 ns)
+Summary: TOTAL: 2
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
+```
 
 ## `@Bench` Macro
 
@@ -141,6 +291,45 @@ The following parameters are generally used for Benchmark test functions decorat
 - `minBatches`: Type is [Int64](../../core/core_package_api/core_package_intrinsics.md#int64): Configures how many batches will be executed during Benchmark function testing. The default value is `10`.
 - `minDuration`: Type is [Duration](../../core/core_package_api/core_package_structs.md#struct-duration): Configures the time for repeated execution of Benchmark functions to obtain better results. The default value is [Duration](../../core/core_package_api/core_package_structs.md#struct-duration).second * 5.
 - `warmup`: Type is [Duration](../../core/core_package_api/core_package_structs.md#struct-duration) or [Int64](../../core/core_package_api/core_package_intrinsics.md#int64): Configures the time or number of times to repeat the Benchmark function before collecting results. The default value is [Duration](../../core/core_package_api/core_package_structs.md#struct-duration).second. When the value is 0, it means no warmup, and the number of executions is calculated as the user-input `batchSize` multiplied by `minBatches`. If `batchSize` is not specified, an exception will be thrown.
+
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+@Bench
+@Configure[warmup: Duration.millisecond, minBatches: 1]
+func bench() {}
+```
+
+Possible output:
+
+```text
+Starting the benchmark `TestCase_bench.bench()`.
+    Warming up for 1.000 ms.
+    Starting measurements of 200 batches. Measuring Duration.
+    Max batch size: 12395653, estimated execution time: 5.000 s.
+  percentiles:    [   10%        50%        90%        95%        99%        ]  
+  time:           [   0.990 ns   1.001 ns   1.029 ns   1.048 ns   1.146 ns   ]  
+  mean:           0.976 ns .. 1.022 ns  Err ±2.3%
+  median:         0.981 ns .. 1.146 ns
+  R²:             0.957 .. 0.994
+  stddev:         0.0101 ns
+
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 5452471582 ns, RESULT:
+    TCS: TestCase_bench, time elapsed: 5452469102 ns, RESULT:
+    | Case   |   Median |        Err |   Err% |     Mean |
+    |:-------|---------:|-----------:|-------:|---------:|
+    | bench  | 1.001 ns | ±0.0231 ns |  ±2.3% | 1.009 ns |
+Summary: TOTAL: 1
+    PASSED: 1, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
+```
 
 Users can specify other configuration parameters in the `@Configure` macro, which may be used in the future.
 If a test class uses the `@Configure` macro to specify configurations, all test functions in this class will inherit these configuration parameters.
@@ -268,9 +457,75 @@ Function: Declares an [expected exception assertion](../../unittest/unittest_sam
 
 Function: Declares an [expected failure assertion](../../unittest/unittest_samples/unittest_basics.md#failure-assertion), used inside test functions. If the assertion fails, the test case stops.
 
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+func fail(): Unit {
+    let condition = true
+    if (condition) {
+        @Fail("condition should not be true")
+    }
+}
+```
+
+Possible output:
+
+```text
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 237539 ns, RESULT:
+    TCS: TestCase_fail, time elapsed: 235710 ns, RESULT:
+    [ FAILED ] CASE: fail (22210 ns)
+    Assert Failed: `(condition should not be true)`
+
+Summary: TOTAL: 1
+    PASSED: 0, SKIPPED: 0, ERROR: 0
+    FAILED: 1, listed below:
+            TCS: TestCase_fail, CASE: fail
+--------------------------------------------------------------------------------------------------
+```
+
 ## `@FailExpect` Macro
 
 Function: Declares an [expected failure assertion](../../unittest/unittest_samples/unittest_basics.md#failure-assertion), used inside test functions. If the assertion fails, the test case continues execution.
+
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+func fail(): Unit {
+    let condition = true
+    if (condition) {
+        @FailExpect("condition should not be true")
+        println("Running after @FailExpect!")
+    }
+}
+```
+
+Possible output:
+
+```text
+Running after @FailExpect!
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 308612 ns, RESULT:
+    TCS: TestCase_fail, time elapsed: 304655 ns, RESULT:
+    [ FAILED ] CASE: fail (21974 ns)
+    Expect Failed: `(condition should not be true)`
+
+Summary: TOTAL: 1
+    PASSED: 0, SKIPPED: 0, ERROR: 0
+    FAILED: 1, listed below:
+            TCS: TestCase_fail, CASE: fail
+--------------------------------------------------------------------------------------------------
+```
 
 ## `@Measure` Macro
 
@@ -319,7 +574,45 @@ Function: The `@Parallel` macro can decorate a test class. Test cases in a class
 1. All related test cases should be independent and not depend on any mutable shared state values.
 2. `beforeAll()` and `afterAll()` should be reentrant so they can be run multiple times in different processes.
 3. The test cases to be parallelized should themselves be time-consuming. Otherwise, the overhead of multiple `beforeAll()` and `afterAll()` calls introduced by parallelization may exceed the benefits of parallelization.
-4. Concurrent use## `@Test` Macro
+4. Concurrent use
+
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+@Parallel
+class MyTestSuite {
+    @TestCase
+    func testCase1() {
+        sleep(Duration.second)
+    }
+
+    @TestCase
+    func testCase2() {
+        sleep(Duration.second * 2)
+    }
+}
+```
+
+Possible output:
+
+```text
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 2004554058 ns, RESULT:
+    TCS: MyTestSuite, time elapsed: 2004554058 ns, RESULT:
+    [ PASSED ] CASE: testCase1 (1001098368 ns)
+    [ PASSED ] CASE: testCase2 (2003288189 ns)
+Summary: TOTAL: 2
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
+```
+ 
+## `@Test` Macro
 
 Function: The `@Test` macro is applied to top-level functions or top-level classes to convert them into unit test classes.
 
@@ -335,6 +628,38 @@ All public and protected members of `unittest.TestCases` (see API overview below
     1. `ctx`: A `TestContext` instance containing this test.
     2. `name`: The name of the class.  
 Users of the unit testing framework should not modify these fields, as it may lead to unexpected errors.
+
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+func standaloneTest() {}
+
+@Test
+class MyTestSuite {
+    @TestCase
+    func testCase() {}
+}
+```
+
+Possible output:
+
+```text
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 685219 ns, RESULT:
+    TCS: TestCase_standaloneTest, time elapsed: 541497 ns, RESULT:
+    [ PASSED ] CASE: standaloneTest (90613 ns)
+    TCS: MyTestSuite, time elapsed: 609977 ns, RESULT:
+    [ PASSED ] CASE: testCase (101517 ns)
+Summary: TOTAL: 2
+    PASSED: 2, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
+```
 
 ## `@Strategy` Macro
 
@@ -354,6 +679,40 @@ For examples of `@Strategy` macro usage and its application in parameterized ben
 
 Function: Declares a [dynamic test suite](../../unittest/unittest_samples/unittest_dynamic_tests.md#dynamic-tests).
 
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@TestBuilder
+func testBuilder(): TestSuite {
+    let builder = TestSuite.builder("MyTestSuite")
+    for (i in 1..5) {
+        let testCase = UnitTestCase.create("testCase${i}", body: {=> @Assert(i, i)})
+        builder.add(testCase)
+    }
+    builder.build()
+}
+```
+
+Possible output:
+
+```text
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 425299 ns, RESULT:
+    TCS: MyTestSuite, time elapsed: 423045 ns, RESULT:
+    [ PASSED ] CASE: testCase1 (166142 ns)
+    [ PASSED ] CASE: testCase2 (9799 ns)
+    [ PASSED ] CASE: testCase3 (10501 ns)
+    [ PASSED ] CASE: testCase4 (9511 ns)
+Summary: TOTAL: 4
+    PASSED: 4, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
+```
+
 ## `@TestCase` Macro
 
 Function: The `@TestCase` macro marks functions within a unit test class as test cases for unit testing.
@@ -363,19 +722,30 @@ Functions marked with `@TestCase` must satisfy the following conditions:
 1. The class must be marked with `@Test`.
 2. The function's return type must be [Unit](../../core/core_package_api/core_package_intrinsics.md#unit).
 
+<!-- run -->
 ```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
 @Test
-class Tests {
+class MyTestSuite {
     @TestCase
-    func fooTest(): Unit {...}
+    func testCase(): Unit {}
 }
 ```
 
 Test cases may have parameters. In such cases, developers must specify the values of these parameters using the parameterized test DSL:
 
+<!-- run -->
 ```cangjie
-@Test[x in source1, y in source2, z in source3]
-func test(x: Int64, y: String, z: Float64): Unit {}
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+class MyTestSuite {
+    @TestCase[x in 1..3, y in random(), z in [1.1, 2.2]]
+    func testCase(x: Int64, y: String, z: Float64): Unit {}
+}
 ```
 
 This DSL can be used with the `@Test`, `@Strategy`, `@Bench`, and `@TestCase` macros, where `@Test` is only available for top-level functions. If a test function has both `@Bench` and `@TestCase`, only `@Bench` can include the DSL.  
@@ -420,6 +790,43 @@ Syntax: `@Timeout[expr]`
 Here, `expr` must be of type `std.time.[Duration](../../core/core_package_api/core_package_structs.md#struct-duration)`.  
 When applied to a test class, it sets the timeout for each corresponding test case.
 
+Example:
+
+<!-- run -->
+```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+
+@Test
+class MyTestSuite {
+    @TestCase
+    @Timeout[Duration.second]
+    func fastEnough() {}
+
+    @TestCase
+    @Timeout[Duration.second]
+    func tooSlow() {
+        sleep(Duration.second * 2)
+    }
+}
+```
+
+Possible output:
+
+```text
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 1003195433 ns, RESULT:
+    TCS: MyTestSuite, time elapsed: 1003195433 ns, RESULT:
+    [ PASSED ] CASE: fastEnough (147326 ns)
+    [ FAILED ] CASE: tooSlow (1002326118 ns)
+    Test case ended with timeout.
+Summary: TOTAL: 2
+    PASSED: 1, SKIPPED: 0, ERROR: 0
+    FAILED: 1, listed below:
+            TCS: MyTestSuite, CASE: tooSlow
+--------------------------------------------------------------------------------------------------
+```
+
 ## `@Types` Macro
 
 Function: The `@Types` macro provides type parameters for test classes or test functions. It can be placed on test classes or test functions.
@@ -434,14 +841,38 @@ Restrictions for `@Types`:
 - The declaration must be a generic class or function with the same type parameters listed in the `@Types` macro.
 - Types in the list must not depend on each other. For example, `@Types[A in <Int64, String>, B in <List<A>>]` will fail to compile. However, types provided for the test class can be used for test functions within the class. Example:
 
+Example:
+
+<!-- run -->
 ```cangjie
+import std.unittest.*
+import std.unittest.testmacro.*
+import std.collection.*
+
 @Test
-@Types[T in <...>]
-class TestClass<T> {
+@Types[T in <Int64, Float64>]
+class MyTestSuite<T> {
     @TestCase
-    @Types[U in <Array<T>>]
-    func testfunc<U>() {}
+    @Types[U in <Array<T>, ArrayList<T>>]
+    func testCase<U>() {}
 }
+```
+
+Possible output:
+
+```text
+--------------------------------------------------------------------------------------------------
+TP: default, time elapsed: 267789 ns, RESULT:
+    TCS: MyTestSuite<Int64>, time elapsed: 221802 ns, RESULT:
+    [ PASSED ] CASE: testCase<Array<T>> (66966 ns)
+    [ PASSED ] CASE: testCase<ArrayList<T>> (7340 ns)
+    TCS: MyTestSuite<Float64>, time elapsed: 40802 ns, RESULT:
+    [ PASSED ] CASE: testCase<Array<T>> (5709 ns)
+    [ PASSED ] CASE: testCase<ArrayList<T>> (7296 ns)
+Summary: TOTAL: 4
+    PASSED: 4, SKIPPED: 0, ERROR: 0
+    FAILED: 0
+--------------------------------------------------------------------------------------------------
 ```
 
 This mechanism can be combined with other testing framework features, such as `@Configure`.
