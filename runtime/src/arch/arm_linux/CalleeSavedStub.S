@@ -244,7 +244,7 @@ unwindPCForC2RStubStart:
     CalleeSavedRegistersStub MCC_GetStaticFieldValue CJ_MCC_GetStaticFieldValue
     CalleeSavedRegistersStub MCC_NewArrayGeneric CJ_MCC_NewArrayGeneric
     CalleeSavedRegistersStub MCC_DumpCJHeapData CJ_MCC_DumpCJHeapData
-    CalleeSavedRegistersStub MCC_NewAndInitObject CJ_MCC_NewAndInitObject
+    CalleeSavedRegistersStub MCC_NewAndInitEnumTupleObject CJ_MCC_NewAndInitEnumTupleObject
     CalleeSavedRegistersStub MCC_GetAssociatedValues CJ_MCC_GetAssociatedValues
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
     CalleeSavedRegistersStub MCC_ThrowException CJ_MCC_ThrowException
