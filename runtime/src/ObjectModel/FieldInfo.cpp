@@ -311,7 +311,13 @@ bool SetVArrayField(ObjRef obj, Uptr argAddr, TypeInfo* argType, ObjRef argObj)
 
 void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
 {
-    CJRawArray* cjRawArray = static_cast<CJArray*>(args)->rawPtr;
+    CJRawArray* cjRawArray = nullptr;
+    if (!Heap::IsHeapAddress(args)) {
+        cjRawArray = static_cast<CJArray*>(args)->rawPtr;
+    } else {
+        RefField<false> oldField(reinterpret_cast<MAddress>(args));
+        cjRawArray = reinterpret_cast<CJRawArray*>(Heap::GetBarrier().ReadReference(nullptr, oldField));
+    }
     U64 argCnt = cjRawArray->len;
     ObjRef rawArray = reinterpret_cast<ObjRef>(cjRawArray);
     RefField<false>* refField = reinterpret_cast<RefField<false>*>(&(cjRawArray->data));
