@@ -625,6 +625,7 @@ public:
     bool IsEnumCtor() const;
     bool IsOptionLikeRefEnum();
     bool IsZeroSizedEnum();
+    bool IsOptionLikeUnassociatedCtor();
     bool ReflectIsEnable() const;
     bool ReflectInfoIsNull() const;
     inline EnumCtorReflectInfo* GetEnumCtorReflectInfo();

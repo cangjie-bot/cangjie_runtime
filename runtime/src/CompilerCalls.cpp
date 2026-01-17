@@ -1292,6 +1292,9 @@ extern "C" U32 MCC_GetNumOfFieldTypes(TypeInfo* ti)
 {
     U32 num = ti->GetFieldNum();
     if ((ti->IsEnum() || ti->IsTempEnum()) && FieldInitializer::HaveEnumTag(ti)) {
+        if (ti->IsOptionLikeUnassociatedCtor()) {
+            return num - 2;
+        }
         return num - 1;
     }
     return num;
@@ -1301,6 +1304,9 @@ extern "C" TypeInfo** MCC_GetFieldTypes(TypeInfo* ti)
 {
     TypeInfo** fieldTypes = ti->GetFieldTypes();
     if ((ti->IsEnum() || ti->IsTempEnum()) && FieldInitializer::HaveEnumTag(ti)) {
+        if (ti->IsOptionLikeUnassociatedCtor()) {
+            return nullptr;
+        }
         return fieldTypes + 1;
     }
     return fieldTypes;
@@ -1364,7 +1370,11 @@ extern "C" ObjRef MCC_GetAssociatedValues(ObjRef obj, TypeInfo* arrayTi)
             fieldNum = ti->GetFieldNum();
         }
         if (FieldInitializer::HaveEnumTag(ti)) {
-            fieldNum -= 1;
+            if (ti->IsOptionLikeUnassociatedCtor()) {
+                fieldNum -= 2;
+            } else {
+                fieldNum -= 1;
+            }
         }
     }
 

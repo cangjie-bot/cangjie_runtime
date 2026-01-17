@@ -886,6 +886,26 @@ bool TypeInfo::IsZeroSizedEnum()
     return false;
 }
 
+bool TypeInfo::IsOptionLikeUnassociatedCtor()
+{
+    if (!IsEnumCtor()) {
+        return false;
+    }
+    EnumInfo* enumInfo = GetSuperTypeInfo()->GetEnumInfo();
+    if (!enumInfo->IsEnumKind2()) {
+        return false;
+    }
+    U32 num = enumInfo->GetNumOfEnumCtor();
+    for (U32 idx = 0; idx < num; idx++) {
+        TypeInfo* ctorTi = enumInfo->GetCtorTypeInfo(idx);
+        if (ctorTi->GetUUID() == GetUUID()) {
+            CString ctorName = CString(enumInfo->GetEnumCtor(idx)->GetName());
+            return ctorName.StartWith("N$_");
+        }
+    }
+    return false;
+}
+
 U32 TypeInfo::GetNumOfInstanceFieldInfos()
 {
     if ((IsGenericTypeInfo() && !GetSourceGeneric()->ReflectIsEnable()) || !ReflectIsEnable()) {

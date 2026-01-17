@@ -356,9 +356,6 @@ void SetFieldFromArgs(ObjRef obj, TypeInfo* ti, void* args)
 
         refField++;
     }
-    if(ti->IsOptionLikeRefEnum() && ti->GetFieldNum() == 0) {
-        obj->StoreRef(TYPEINFO_PTR_SIZE, nullptr);
-    }
 }
 
 ObjRef CreateEnumObject(TypeInfo* ti, MSize size)
@@ -482,7 +479,7 @@ BaseObject* VArrayToAny(TypeInfo* fieldTi, Uptr fieldAddr)
 
 bool HaveEnumTag(TypeInfo* ti)
 {
-    return !ti->IsOptionLikeRefEnum() && !ti->IsZeroSizedEnum();
+    return !ti->IsZeroSizedEnum();
 }
 
 I32 GetEnumTag(ObjRef obj, TypeInfo* ti)
@@ -499,9 +496,9 @@ I32 GetEnumTag(ObjRef obj, TypeInfo* ti)
         U32 ctorNum = enumInfo->GetNumOfEnumCtor();
         auto field = obj->LoadRef(TYPEINFO_PTR_SIZE);
         for (I32 idx = 0; idx < ctorNum; idx++) {
-            EnumCtorInfo* ctorInfo = enumInfo->GetEnumCtor(idx);
-            U32 fieldNum = ctorInfo->GetTypeInfo()->GetFieldNum();
-            if ((fieldNum == 0 && field == nullptr) || (fieldNum != 0 && field != nullptr)) {
+            TypeInfo* ctorTi = enumInfo->GetCtorTypeInfo(idx);
+            if ((ctorTi->IsOptionLikeUnassociatedCtor() && field == nullptr) ||
+                (!ctorTi->IsOptionLikeUnassociatedCtor() && field != nullptr)) {
                 tag = idx;
                 break;
             }
