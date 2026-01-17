@@ -199,7 +199,6 @@ void Mutator::VisitStackRoots(const RootVisitor& func)
         return;
     }
     IncObserver();
-
 #if defined(GCINFO_DEBUG) && GCINFO_DEBUG
     CreateCurrentGCInfo();
 #endif

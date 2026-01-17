@@ -35,7 +35,6 @@ namespace MapleRuntime {
 bool MachineFrame::IsN2CStubFrame() const
 {
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
-    //return PtrauthStripInstPointer(reinterpret_cast<Uptr>(ip)) == reinterpret_cast<uintptr_t>(&unwindPCForN2CStub);
     uintptr_t strippedIP = PtrauthStripInstPointer(reinterpret_cast<Uptr>(ip));
     return strippedIP == reinterpret_cast<uintptr_t>(&unwindPCForN2CStub) ||
            strippedIP == reinterpret_cast<uintptr_t>(&unwindPCForExclusiveStubFull);

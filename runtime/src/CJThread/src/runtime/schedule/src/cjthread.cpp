@@ -849,11 +849,8 @@ struct CJThread* CJThreadBuild(ScheduleHandle schedule, const struct CJThreadAtt
     return newCJThread;
 }
 
-void* ExclusiveExecutor(
-    struct CJThread* oldCJThread,
-    struct Thread* thread,
-    struct CJThread* newCJThread
-) {
+void* ExclusiveExecutor(struct CJThread* oldCJThread, struct Thread* thread, struct CJThread* newCJThread)
+{
     thread->cjthread = newCJThread;
     newCJThread->thread = thread;
 

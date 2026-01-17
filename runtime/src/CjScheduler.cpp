@@ -35,7 +35,6 @@
 #include "CpuProfiler/CpuProfiler.h"
 namespace MapleRuntime {
 #ifdef __cplusplus
-
 extern "C" {
 #endif
 

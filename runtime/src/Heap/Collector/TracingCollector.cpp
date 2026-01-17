@@ -206,7 +206,7 @@ void TracingCollector::VisitStackRoots(const RootVisitor& visitor, RegSlotsMap& 
 #if defined(GCINFO_DEBUG) && GCINFO_DEBUG
             mutator.PushFrameInfoForTrace(gcInfo);
 #endif
-            LOG(RTLOG_ERROR, "wrong reg info, start ip: %p frame pc: %p", reinterpret_cast<void*>(startIP),
+            LOG(RTLOG_FATAL, "wrong reg info, start ip: %p frame pc: %p", reinterpret_cast<void*>(startIP),
                 reinterpret_cast<void*>(frameIP));
         }
     }

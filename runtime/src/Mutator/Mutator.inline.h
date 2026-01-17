@@ -101,11 +101,6 @@ __attribute__((always_inline)) inline bool Mutator::TransitionToCpuProfile(bool 
             return true;
         }
         // Current thread set atomic variable to ensure atomicity of phase transition
-        // todo kbx
-        // if (bySelf && state == NO_CPUPROFILE) {
-        //     ClearSuspensionFlag(SUSPENSION_FOR_CPU_PROFILE);
-        //     return true;
-        // }
         CHECK(state == NEED_CPUPROFILE);
         if (cpuProfileState.compare_exchange_weak(state, IN_CPUPROFILING)) {
             TransitionToCpuProfileExclusive();
