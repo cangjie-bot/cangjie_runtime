@@ -48,6 +48,6 @@ class ExclusiveScopeException <: Exception {
 
     public override func toString(): String {
         let traceElementArray = cause.getStackTrace()
-        stackTraceToString(traceElementArray)
+        "ExclusiveScopeException: ${cause.toString()}\n${stackTraceToString(traceElementArray)}"
     }
 }
