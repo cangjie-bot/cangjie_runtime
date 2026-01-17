@@ -1585,6 +1585,9 @@ static bool IsTupleTypeOf(ObjectPtr obj, TypeInfo* typeInfo, TypeInfo* targetTyp
     if (ti == nullptr) {
         LOG(RTLOG_FATAL, "IsTupleTypeOf: get typeInfo failed");
     }
+    if (ti->GetUUID() == targetTypeInfo->GetUUID()) {
+        return true;
+    }
     if (ti->GetFieldNum() != targetTypeInfo->GetFieldNum()) {
         return false;
     }
@@ -1595,11 +1598,7 @@ static bool IsTupleTypeOf(ObjectPtr obj, TypeInfo* typeInfo, TypeInfo* targetTyp
         ObjectPtr curObj = nullptr;
         if (fieldTargetTI->IsRef()) {
             if (!fieldTypeInfo->IsClass() && !fieldTypeInfo->IsInterface()) {
-                if (!fieldTypeInfo->IsSubType(fieldTargetTI)) {
-                    return false;
-                } else {
-                    continue;
-                }
+                return false;
             }
             if (Heap::IsHeapAddress(obj)) {
                 curObj = Heap::GetBarrier().ReadReference(obj, obj->GetRefField(offset));
