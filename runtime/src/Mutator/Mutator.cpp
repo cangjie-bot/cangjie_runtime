@@ -200,16 +200,6 @@ void Mutator::VisitStackRoots(const RootVisitor& func)
     }
     IncObserver();
 
-    UnwindContext &ctx = uwContext;
-
-    LOG(RTLOG_DEBUG,
-        "GC VisitStackRoots mutator=%p tid=%u uwStatus=%d ip=%p fa=%p anchorFA=%p",
-        this,
-        tid,
-        ctx.GetUnwindContextStatus(),
-        ctx.frameInfo.mFrame.GetIP(),
-        ctx.frameInfo.mFrame.GetFA(),
-        ctx.anchorFA);
 #if defined(GCINFO_DEBUG) && GCINFO_DEBUG
     CreateCurrentGCInfo();
 #endif

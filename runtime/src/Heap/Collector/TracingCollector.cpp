@@ -177,8 +177,6 @@ void TracingCollector::VisitStackRoots(const RootVisitor& visitor, RegSlotsMap& 
     uintptr_t startIP = reinterpret_cast<uintptr_t>(frame.GetStartProc());
     uintptr_t frameIP = reinterpret_cast<uintptr_t>(frame.mFrame.GetIP());
     uintptr_t frameAddress = reinterpret_cast<uintptr_t>(frame.mFrame.GetFA());
-    LOG(RTLOG_ERROR, "VisitStackRoots MANAGED frame startIP=%p frameIP=%p fa=%p",
-        (void*)startIP, (void*)frameIP, (void*)frameAddress);
     StackMapBuilder builder = StackMapBuilder(startIP, frameIP, frameAddress);
     RootMap rootMap = builder.Build<RootMap>();
 #if defined(GCINFO_DEBUG) && GCINFO_DEBUG
@@ -272,9 +270,7 @@ void TracingCollector::VisitHeapReferencesOnStack(const RootVisitor& rootVisitor
 
 void TracingCollector::RecordStubCalleeSaved(RegSlotsMap& regSlotsMap, Uptr fp)
 {
-    LOG(RTLOG_ERROR, "RecordStubCalleeSaved stub frame fp=%p", (void*)fp);
     RegRoot::RecordStubCalleeSaved(regSlotsMap, fp);
-    LOG(RTLOG_ERROR, "RecordStubCalleeSaved done");
 }
 
 void TracingCollector::RecordStubAllRegister(RegSlotsMap& regSlotsMap, Uptr fp)

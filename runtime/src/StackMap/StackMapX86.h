@@ -49,7 +49,6 @@ public:
         static constexpr RegisterId calleeSavedRegister[] = { R15, R14, R13, R12, RBX };
 #endif
         for (auto reg : calleeSavedRegister) {
-            LOG(RTLOG_ERROR, "RecordStubCalleeSaved reg=%s, fp=%p, slotAddr=%p", GetRegisterName(reg), fp, slotAddr);
             regSlotsMap.Insert(reg, reinterpret_cast<SlotAddress>(slotAddr));
             slotAddr -= slotLength;
         }
@@ -100,7 +99,6 @@ public:
                       std::list<Uptr>* rootsList = nullptr) const
     {
         RegBits bits = regBits;
-        LOG(RTLOG_ERROR, "RegRoot::VisitGCRoots bits=0x%llx", static_cast<unsigned long long>(bits));
         // Visit universal register roots
         for (RegisterNum i = RAX; i <= R15; ++i, bits >>= 1) {
             if (bits == 0) {
@@ -109,7 +107,6 @@ public:
             if ((bits & LOWEST_BIT) == 0) {
                 continue;
             }
-            LOG(RTLOG_ERROR, "VisitGCRoots try reg=%s(id=%u)", GetRegisterName(i), static_cast<unsigned>(i));
             if (!regSlotsMap.VisitSingleSlotsRoot(visitor, debugFunc, i, rootsList)) {
                 return false;
             }
@@ -122,7 +119,6 @@ public:
             if ((bits & LOWEST_BIT) == 0) {
                 continue;
             }
-            LOG(RTLOG_ERROR, "VisitGCRoots try xmm reg=%s(id=%u)", GetRegisterName(i), static_cast<unsigned>(i));
             if (!regSlotsMap.VisitDoubleSlotsRoot(visitor, debugFunc, i)) {
                 return false;
             }

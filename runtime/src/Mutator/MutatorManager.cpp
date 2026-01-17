@@ -538,6 +538,7 @@ void MutatorManager::TransitionAllMutatorsToCpuProfile()
     VisitAllMutators([&undoneMutators](Mutator& mutator) {
         if (mutator.GetTid() != Heap::GetHeap().GetFinalizerProcessor().GetTid() &&
             mutator.GetCjthreadPtr() == MutatorManager::Instance().GetMainThreadHandle()) {
+            LOG(RTLOG_ERROR, "mutator.GetTid: %d, GetFinalizerProcessor().GetTid() %d", mutator.GetTid(), Heap::GetHeap().GetFinalizerProcessor().GetTid());
             mutator.SetSuspensionFlag(Mutator::SuspensionType::SUSPENSION_FOR_CPU_PROFILE);
             mutator.SetSafepointActive(true);
             undoneMutators.push_back(&mutator);

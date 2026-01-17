@@ -58,12 +58,6 @@ struct RegSlotsMap {
     {
         if (!HasReg(reg)) {
             LOG(RTLOG_ERROR, "register %s is not recorded", GetRegisterName(reg));
-            // 调试：dump 当前已记录的寄存器槽位
-            for (uint32_t i = 0; i < REGISTERS_COUNT; ++i) {
-                if (isRecorded[i]) {
-                    LOG(RTLOG_ERROR, "  recorded reg[%u]=%s slot=%p", i, GetRegisterName(i), addrMap[i]);
-                }
-            }
             return false;
         }
         if (rootsList != nullptr) {
@@ -81,12 +75,6 @@ struct RegSlotsMap {
     {
         if (!HasReg(reg)) {
             LOG(RTLOG_ERROR, "register %s is not recorded", GetRegisterName(reg));
-            // 调试：dump 当前已记录的寄存器槽位
-            for (uint32_t i = 0; i < REGISTERS_COUNT; ++i) {
-                if (isRecorded[i]) {
-                    LOG(RTLOG_ERROR, "  recorded reg[%u]=%s slot=%p", i, GetRegisterName(i), addrMap[i]);
-                }
-            }
             return false;
         }
         SlotAddress slot = addrMap[reg];

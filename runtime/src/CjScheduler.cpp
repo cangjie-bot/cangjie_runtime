@@ -36,9 +36,6 @@
 namespace MapleRuntime {
 #ifdef __cplusplus
 
-extern "C" void* CJ_MCC_ExclusiveScope(void* executeClosure, void* closurePtr, 
-                                     void* futureTi, void* reserved);
-
 extern "C" {
 #endif
 
@@ -448,26 +445,19 @@ static void* WrapperExclusiveClosure(void* arg, unsigned int len)
 {
     ASSERT(arg != nullptr);
     auto lwtData = static_cast<LWTData*>(arg);
-    // auto executeClosure = lwtData->execute;
     uintptr_t threadData = MRT_GetThreadLocalData();
-    // mutator has been set to a valid pointer before.
     Mutator* mutator = reinterpret_cast<ThreadLocalData*>(threadData)->mutator;
     MRT_PreRunManagedCode(mutator, 0, reinterpret_cast<ThreadLocalData*>(threadData));
     lwtData->threadObject = nullptr;
     BaseObject* executeClosure = Heap::GetBarrier().ReadStaticRef(reinterpret_cast<RefField<false>&>(lwtData->execute));
     BaseObject* closureObj = Heap::GetBarrier().ReadStaticRef(reinterpret_cast<RefField<false>&>(lwtData->obj));
-    //void* a = reinterpret_cast<uint64_t*>(executeClosure + 8);
-    //LOG(RTLOG_DEBUG, "------WrapperExclusiveClosure %d, func = %p----------", mutator->GetTid(), a, executeClosure[2]);
 #if defined(__aarch64__)
-    ExecuteCangjieStubFull(closureObj, futureTi, 0, executeClosure, reinterpret_cast<void*>(threadData), &g_ut);
-#elif defined(__arm__)
-    ExecuteCangjieStubFull(&g_ut, closureObj, futureTi, executeClosure, threadData);
+    ExecuteCangjieStubFull(&g_ut, nullptr, closureObj, executeClosure, reinterpret_cast<void*>(threadData));
 #elif defined(__x86_64__)
-    ExecuteCangjieStubFull(&g_ut, nullptr, closureObj, executeClosure);
+    ExecuteCangjieStubFull(&g_ut, nullptr, closureObj, executeClosure, reinterpret_cast<void*>(threadData));
 #endif
     MutatorManager::Instance().TransitMutatorToExit();
-    // 返回用户函数的返回值（通过 sret 参数 &g_ut 传递）
-    return reinterpret_cast<void*>(g_ut.placeholder);
+    return nullptr;
 }
 
 void* MCC_NewExclusiveCJThread(void* executeClosure, void* closurePtr, void* futureTi) 
@@ -490,8 +480,6 @@ void* MCC_NewExclusiveCJThread(void* executeClosure, void* closurePtr, void* fut
  */
 static void* WrapperOfExecuteClosure(void* arg, unsigned int len)
 {
-    // todo kbx test 
-    // return nullptr;
     ASSERT(arg != nullptr);
     auto lwtData = static_cast<LWTData*>(arg);
     auto executeClosure = lwtData->execute;
@@ -517,32 +505,8 @@ static void* WrapperOfExecuteClosure(void* arg, unsigned int len)
     return nullptr;
 }
 
-// todo kbx test
 void* MCC_NewCJThreadNoReturn(void* executeClosure, void* closurePtr, void* scheduler, void* futureTi)
 {
-    // ------------ test code ------------
-    // CJThreadHandle cjhandler = CJThreadGetHandle();
-    // LOG(RTLOG_DEBUG, "enter MCC_NewCJThreadNoReturn");
-   
-    // struct CJThread *cjthread = reinterpret_cast<struct CJThread *>(cjhandler);
-    // int id = 0;
-    // if(cjthread != nullptr) {
-    //     id = CJThreadGetId(cjhandler);
-    //     LOG(RTLOG_DEBUG, "start MCC_NewCJThreadNoReturn CJThreadNew in cjthread %u", id);
-        
-    // } else {
-    //     LOG(RTLOG_DEBUG, "start MCC_NewCJThreadNoReturn CJThreadNew without cjthread");
-    // }
-    // uintptr_t threadData = MRT_GetThreadLocalData();
-    // // mutator has been set to a valid pointer before.
-    // Mutator* mutator = reinterpret_cast<ThreadLocalData*>(threadData)->mutator;
-    // LOG(RTLOG_DEBUG, "mutator %p saferegion %d", mutator, mutator->InSaferegion());
-    // if (id == 1) {
-    //     //ExclusiveScop(func, argStart, argSize);
-    //     CJ_MCC_ExclusiveScope(executeClosure, closurePtr, futureTi, nullptr);
-    // }
-    // ------------ test code ------------
-
     LWTData data;
     data.execute = executeClosure;
     data.obj = nullptr;
@@ -832,7 +796,6 @@ MRT_EXPORT void CJ_MRT_CjRuntimeStart(void* execute)
     __attribute__((alias("MRT_CjRuntimeStart")));
 MRT_EXPORT void* CJ_MCC_NewCJThread(void* execute, void* future, void *scheduler)
     __attribute__((alias("MCC_NewCJThread")));
-// todo kbx test
 MRT_EXPORT void* CJ_MCC_NewCJThreadNoReturn(void* executeClosure, void* closurePtr, void* scheduler)
     __attribute__((alias("MCC_NewCJThreadNoReturn")));
 MRT_EXPORT void CJ_MRT_SetCommandLineArgs(int argc, const char* argv[])
