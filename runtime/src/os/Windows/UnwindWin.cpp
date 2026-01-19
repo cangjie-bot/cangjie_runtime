@@ -13,12 +13,14 @@
 
 extern uintptr_t CJ_MCC_C2NStub;
 extern uintptr_t CJ_MCC_N2CStub;
+extern uintptr_t CJ_MCC_ExclusiveScope;
 extern uintptr_t CJ_MCC_ThrowStackOverflowError;
 
 extern uintptr_t unwindPCForN2CStub;
 extern uintptr_t unwindPCForC2NStub;
 extern uintptr_t unwindPCForTPE;
 extern uintptr_t unwindPCForStackGrowStub;
+extern uintptr_t unwindPCForExclusiveStub;
 
 namespace MapleRuntime {
 static uint32_t GetSlotsNum(const UnwindCode& unwindCode)
@@ -135,6 +137,7 @@ FrameInfo GetCallerFrameInfo(WinModuleManager& winModuleManager, const MachineFr
     // otherwise caller fa only can be calculated by callerSP + stackOffset - 8
     if (startProc == reinterpret_cast<uintptr_t>(&CJ_MCC_C2NStub) ||
         startProc == reinterpret_cast<uintptr_t>(&CJ_MCC_N2CStub) ||
+        startProc == reinterpret_cast<uintptr_t>(&CJ_MCC_ExclusiveScope) ||
         startProc == reinterpret_cast<uintptr_t>(&ExecuteCangjieStub) ||
         startProc == reinterpret_cast<uintptr_t>(&ApplyCangjieMethodStub)) {
         if (startProc == reinterpret_cast<uintptr_t>(&CJ_MCC_C2NStub)) {
@@ -215,6 +218,7 @@ uintptr_t GetCallerRsp(WinModuleManager& winModuleManager, const MachineFrame& c
     // otherwise caller fa only can be calculated by callerSP + stackOffset - 8
     if (startProc == reinterpret_cast<uintptr_t>(&CJ_MCC_C2NStub) ||
         startProc == reinterpret_cast<uintptr_t>(&CJ_MCC_N2CStub) ||
+        startProc == reinterpret_cast<uintptr_t>(&CJ_MCC_ExclusiveScope) ||
         startProc == reinterpret_cast<uintptr_t>(&ExecuteCangjieStub) ||
         startProc == reinterpret_cast<uintptr_t>(&ApplyCangjieMethodStub) ||
         reinterpret_cast<uintptr_t>(curFrame.GetIP()) == reinterpret_cast<uintptr_t>(&unwindPCForStackGrowStub)) {

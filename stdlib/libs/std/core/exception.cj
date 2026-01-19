@@ -101,13 +101,17 @@ public open class Exception <: ToString {
 
 func stackTraceToString(traceElementArray: Array<StackTraceElement>): String {
     let s = StringBuilder()
-    for (element in traceElementArray) {
+    for (i in 0..traceElementArray.size) {
+        let element = traceElementArray[i]
         if (element.declaringClass.isEmpty() && element.methodName.isEmpty()) { // simple stack trace format
             s.append("\t at ${element.fileName}:${element.lineNumber}")
         } else {
             let packageDelimiter: String = if (element.declaringClass.isEmpty()) { "" } else { "." }
             s.append(
                 "\t at ${element.declaringClass}${packageDelimiter}${element.methodName}(${element.fileName}:${element.lineNumber})")
+        }
+        if (i != traceElementArray.size - 1) {
+            s.append("\n")
         }
     }
     s.toString()

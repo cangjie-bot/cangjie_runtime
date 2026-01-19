@@ -36,13 +36,11 @@ private enum Result<T> {
     | Err(Error)
 }
 
-
 @Intrinsic 
 func exclusiveScopeImpl<T>(executeClosure: (() -> T) -> T, fn: () -> T): T
 
 private class ExclusiveScope<T> {
     var result: Result<T> = unsafe { zeroValue<Result<T>>() }
-    
     func run(fn: () -> T): Unit {
         exclusiveScopeImpl(Future<Unit>.executeClosure) {
             try {
@@ -74,10 +72,6 @@ public class ExclusiveScopeException <: Exception {
      */
     public override func toString(): String {
         let traceElementArray = cause.getStackTrace()
-        stackTraceToString(traceElementArray)
-    }
-
-    protected override func getClassName(): String {
-        return "ExclusiveScopeException"
+        "ExclusiveScopeException: ${cause.toString()}\n${stackTraceToString(traceElementArray)}"
     }
 }
