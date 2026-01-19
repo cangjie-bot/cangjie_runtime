@@ -1088,7 +1088,6 @@ MethodInfo* EnumInfo::GetInstanceMethodInfo(U32 index) const
     baseAddr += index * sizeof(DataRefOffset64<MethodInfo>);
     return reinterpret_cast<DataRefOffset64<MethodInfo>*>(baseAddr)->GetDataRef();
 }
-
 MethodInfo* EnumInfo::GetStaticMethodInfo(U32 index)
 {
     Uptr baseAddr = GetBaseAddr();
@@ -1097,6 +1096,22 @@ MethodInfo* EnumInfo::GetStaticMethodInfo(U32 index)
     return reinterpret_cast<DataRefOffset64<MethodInfo>*>(baseAddr)->GetDataRef();
 }
 
+void EnumInfo::SetInstanceMethodInfo(U32 idx, MethodInfo* methodInfo)
+{
+    Uptr baseAddr = GetBaseAddr();
+    baseAddr += idx * sizeof(DataRefOffset64<MethodInfo>);
+    I64* addr = reinterpret_cast<I64*>(baseAddr);
+    *addr = reinterpret_cast<Uptr>(methodInfo) - reinterpret_cast<Uptr>(addr);
+}
+
+void EnumInfo::SetStaticMethodInfo(U32 idx, MethodInfo* methodInfo)
+{
+    Uptr baseAddr = GetBaseAddr();
+    baseAddr += instanceMethodCnt * sizeof(DataRefOffset64<MethodInfo>);
+    baseAddr += idx * sizeof(DataRefOffset64<MethodInfo>);
+    I64* addr = reinterpret_cast<I64*>(baseAddr);
+    *addr = reinterpret_cast<Uptr>(methodInfo) - reinterpret_cast<Uptr>(addr);
+}
 void EnumCtorInfo::SetName(const char* pName)
 {
     name.refOffset = reinterpret_cast<Uptr>(pName) - reinterpret_cast<Uptr>(this);
