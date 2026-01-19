@@ -161,7 +161,7 @@ inline bool IsSameRootPackage(TypeInfo* itf1, TypeInfo* itf2)
     U32 pos = 0U;
     char ch = name1[pos];
     while (ch == name2[pos]) {
-        if (ch == '.' | ch == ':') {
+        if ((ch == '.') | (ch == ':')) {
             return true;
         }
         ++pos;
@@ -249,14 +249,14 @@ void TypeInfo::TryUpdateExtensionData(TypeInfo* itf, ExtensionData* extensionDat
                     TypeInfoManager::GetTypeInfoManager().Allocate(newFtSize));
                 if (ftSize > 0) {
                     CHECK(memcpy_s(reinterpret_cast<void*>(newFt),
-                                        sizeof(FuncPtr) * ftSize,
-                                        reinterpret_cast<void*>(extensionData->GetFuncTable()),
-                                        sizeof(FuncPtr) * ftSize) == EOK);
+                                   sizeof(FuncPtr) * ftSize,
+                                   reinterpret_cast<void*>(extensionData->GetFuncTable()),
+                                   sizeof(FuncPtr) * ftSize) == EOK);
                 }
                 CHECK(memcpy_s(reinterpret_cast<void*>(newFt + ftSize),
-                                sizeof(FuncPtr) * incrementalSize,
-                                reinterpret_cast<void*>(edOfSuper->GetFuncTable() + ftSize),
-                                sizeof(FuncPtr) * incrementalSize) == EOK);
+                               sizeof(FuncPtr) * incrementalSize,
+                               reinterpret_cast<void*>(edOfSuper->GetFuncTable() + ftSize),
+                               sizeof(FuncPtr) * incrementalSize) == EOK);
                 if (!hasOuterTiFast) {
                     break;
                 }
@@ -267,8 +267,8 @@ void TypeInfo::TryUpdateExtensionData(TypeInfo* itf, ExtensionData* extensionDat
                                        sizeof(OuterTiUnion) * ftSize) == EOK);
                 }
                 CHECK(memset_s(reinterpret_cast<void*>(newFt + itfFtSize + ftSize),
-                                sizeof(OuterTiUnion) * incrementalSize,
-                                0, sizeof(OuterTiUnion) * incrementalSize) == EOK);
+                               sizeof(OuterTiUnion) * incrementalSize,
+                               0, sizeof(OuterTiUnion) * incrementalSize) == EOK);
                 extensionData->UpdateFuncTable(itfFtSize, newFt);
                 break;
             }
