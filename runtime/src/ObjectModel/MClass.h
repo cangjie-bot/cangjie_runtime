@@ -454,6 +454,8 @@ public:
     void* GetAnnotations(TypeInfo* arrayTi);
     MethodInfo* GetInstanceMethodInfo(U32 index) const;
     MethodInfo* GetStaticMethodInfo(U32 index);
+    void SetInstanceMethodInfo(U32 idx, MethodInfo* methodInfo);
+    void SetStaticMethodInfo(U32 idx, MethodInfo* methodInfo);
 
     void SetEnumCtors(void* ctors);
     void SetCtorInfoNum(U32 num) { enumCtorInfoCnt = num; }
@@ -470,6 +472,7 @@ private:
     U32 enumCtorInfoCnt;
     U32 instanceMethodCnt;
     U32 staticMethodCnt;
+    // void* genericTypeInfo; // to need add
     Uptr annotationMethod;
     Uptr base[0];
 };
