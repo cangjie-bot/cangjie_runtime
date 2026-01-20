@@ -31,8 +31,9 @@ class BenchExecutor<T> <: Executor {
 
     public func execute(suiteInfo: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
 
+        let benchRunner: BenchRunner
         let progress = ProgressOutput(configuration)
-        let benchRunner = BenchRunner(configuration, progress)
+        benchRunner = BenchRunner(configuration, progress)
         strategy.nextIteration(configuration)
         
         let measurementInfo = configuration.get(KeyMeasurementInfo.measurementInfo).getOrThrow()
