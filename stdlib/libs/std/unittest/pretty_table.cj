@@ -79,7 +79,7 @@ class PrettyTable <: PrettyPrintable {
     public func pprint(pp: PrettyPrinter): PrettyPrinter {
         for (row in 0..rows.size) {
             for (col in 0..columnSizes.size) {
-                var (data, color) = rows[row][col]
+                var (data, color) = rows[row][col] // cjlint-ignore !G.VAR.02
                 let width = columnSizes[col] + 2
                 let alignLeft = leftAligneAll || leftAlignedColumns.contains(col)
 
