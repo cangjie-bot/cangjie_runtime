@@ -410,27 +410,46 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
 
     @OverflowWrapping
     private func doMacroBench(max: Int64, batchCount: Int64) {
-        let avgStep = Float64(max) / Float64(batchCount)
         let start = DateTime.now()
+        runMacroBenchLoop(max, batchCount, start)
+        printMacroBenchSummary(start)
+    }
 
+    private func runMacroBenchLoop(max: Int64, batchCount: Int64, start: DateTime) {
+        let avgStep = Float64(max) / Float64(batchCount)
         var batch = 0.0
+
         for (i in 0..batchCount) {
             batch += avgStep
             explicitGC.invoke()
             runMultipleAndMeasure(Int64(batch |> ceil), max)
 
-            // sanity check
-            let elapsed = DateTime.now() - start
-            let limit = targetDuration * 4 + expectedGCTime
-            if (minBatches < i && limit < elapsed && targetDuration > Duration.Zero) {
+            if (shouldStopMacroBench(i, start)) {
+                break
+            }
+        }
+    }
+
+    private func shouldStopMacroBench(i: Int64, start: DateTime): Bool {
+        if (targetDuration == Duration.Zero) {
+            return false
         }
 
+        let elapsed = DateTime.now() - start
+        let limit = targetDuration * 4 + expectedGCTime
+        return minBatches < i && elapsed > limit
+    }
+
+    private func printMacroBenchSummary(start: DateTime) {
         progress.println {
             let realExecTime = DateTime.now() - start
             "Finished in ${printDuration(realExecTime)}. Analysing results:"
         }
-        
     }
+
+
+
+
 
     func calcBatchSize(): (Range<Int64>, Int64) {
         let targetDurationNs = max(Float64(targetDuration.toNanoseconds()), 0.0)
