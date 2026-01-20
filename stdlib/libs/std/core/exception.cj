@@ -68,6 +68,17 @@ public open class Exception <: ToString {
         pcArray = fillInStackTrace(RawArray<UInt64>(1, repeat: 0), detailMessage.toArray().rawptr)
     }
 
+    public init(message: String, causedBy: Exception) {
+        detailMessage = message
+        innerCause = causedBy
+        pcArray = fillInStackTrace(RawArray<UInt64>(1, repeat: 0), detailMessage.toArray().rawptr)
+    }
+
+    public init(causedBy: Exception) {
+        innerCause = causedBy
+        pcArray = fillInStackTrace(RawArray<UInt64>(1, repeat: 0), detailMessage.toArray().rawptr)
+    }
+
     protected open func getClassName(): String {
         return "Exception"
     }
@@ -75,6 +86,15 @@ public open class Exception <: ToString {
     public open prop message: String {
         get() {
             return detailMessage
+        }
+    }
+
+    public mut prop causedBy: ?Exception {
+        get() {
+            return innerCause
+        }
+        set(cause) {
+            innerCause = cause
         }
     }
 
@@ -88,17 +108,37 @@ public open class Exception <: ToString {
     }
 
     public func printStackTrace(): Unit {
-        eprintln("An exception has occurred:")
-        eprintln(toString())
-        traceElementArray = getStackTrace()
-        for (element in traceElementArray) {
+        printStackTrace("An exception has occurred:\n", Array<StackTraceElement>())
+    }
+
+    func printStackTrace(caption: String, enclosingTrace: Array<StackTraceElement>): Unit {
+        eprintln("${caption}${toString()}")
+        let trace = getStackTrace()
+        var m = trace.size - 1
+        var n = enclosingTrace.size - 1
+        while (m >= 0 && n >= 0 && trace[m].fileName == enclosingTrace[n].fileName && trace[m].lineNumber == enclosingTrace[n].lineNumber) {
+            m--
+            n--
+        }
+        let commonSize = trace.size - 1 - m
+        for (i in 0..=m) {
+            let element = trace[i]
+            if (element.methodName.contains("Exception::init")) {
+                continue
+            }
             if (element.declaringClass.isEmpty() && element.methodName.isEmpty()) { // simple stack trace format
                 eprintln("\t at ${element.fileName}:${element.lineNumber}")
             } else {
-                let packageDelimiter: String = if (element.declaringClass.isEmpty()) { "" } else { "." }
+                let packageDelimiter: String = if (element.declaringClass.isEmpty()) { "" } else { "::" }
                 eprintln(
                     "\t at ${element.declaringClass}${packageDelimiter}${element.methodName}(${element.fileName}:${element.lineNumber})")
             }
+        }
+        if (commonSize > 0) {
+            eprintln("\t ... ${commonSize} more")
+        }
+        if (let Some(cause) <- innerCause) {
+            cause.printStackTrace("Caused by: ", trace)
         }
     }
 
