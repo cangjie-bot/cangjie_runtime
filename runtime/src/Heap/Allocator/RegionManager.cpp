@@ -869,11 +869,17 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
     size_t recentLargeSize = recentlargeUnits * RegionInfo::UNIT_SIZE;
     size_t allocRecentLargeSize = recentLargeRegionList.GetAllocatedSize();
 
+    size_t unmovableFromRegions = unmovableFromRegionList.GetRegionCount();
+    size_t unmovableFromUnits = unmovableFromRegionList.GetUnitCount();
+    size_t unmovableFromSize = unmovableFromUnits * RegionInfo::UNIT_SIZE;
+    size_t allocUnmovableFromSize = unmovableFromRegionList.GetAllocatedSize();
+
     size_t usedUnits = GetUsedUnitCount();
     size_t releasedUnits = freeRegionManager.GetReleasedUnitCount();
     size_t dirtyUnits = freeRegionManager.GetDirtyUnitCount();
     size_t listedUnits = fromUnits + garbageUnits + recentFullUnits + tlRegions +
-        rawPointerPinnedRegions + largeUnits + recentlargeUnits + pinnedUnits + recentPinnedUnits;
+        rawPointerPinnedRegions + largeUnits + recentlargeUnits + pinnedUnits + recentPinnedUnits +
+        unmovableFromUnits;
     if (triggerOOM) {
         LOG(RTLOG_ERROR, msg);
 
@@ -896,6 +902,8 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
              largeRegions, largeUnits, largeSize, allocLargeSize);
         LOG(RTLOG_ERROR, "\trecent large-object regions %zu: %zu units (%zu B, alloc %zu)",
              recentlargeRegions, recentlargeUnits, recentLargeSize, allocRecentLargeSize);
+        LOG(RTLOG_ERROR, "\tunmovable-from regions %zu: %zu units (%zu B, alloc %zu)",
+             unmovableFromRegions, unmovableFromUnits, unmovableFromSize, allocUnmovableFromSize);
 
         LOG(RTLOG_ERROR, "\tlisted units: %zu (%zu B)", listedUnits, listedUnits * RegionInfo::UNIT_SIZE);
         LOG(RTLOG_ERROR, "\tused units: %zu (%zu B)", usedUnits, usedUnits * RegionInfo::UNIT_SIZE);
@@ -987,6 +995,8 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
              largeRegions, largeUnits, largeSize, allocLargeSize);
         VLOG(REPORT, "\trecent large-object regions %zu: %zu units (%zu B, alloc %zu)",
              recentlargeRegions, recentlargeUnits, recentLargeSize, allocRecentLargeSize);
+        VLOG(REPORT, "\tunmovable-from regions %zu: %zu units (%zu B, alloc %zu)",
+             unmovableFromRegions, unmovableFromUnits, unmovableFromSize, allocUnmovableFromSize);
 
         VLOG(REPORT, "\tlisted units: %zu (%zu B)", listedUnits, listedUnits * RegionInfo::UNIT_SIZE);
         VLOG(REPORT, "\tused units: %zu (%zu B)", usedUnits, usedUnits * RegionInfo::UNIT_SIZE);
@@ -1033,6 +1043,10 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         TRACE_COUNT("CJRT_GC_recentlargeUnits", recentlargeUnits);
         TRACE_COUNT("CJRT_GC_recentLargeSize", recentLargeSize);
         TRACE_COUNT("CJRT_GC_allocRecentLargeSize", allocRecentLargeSize);
+        TRACE_COUNT("CJRT_GC_unmovableFromRegions", unmovableFromRegions);
+        TRACE_COUNT("CJRT_GC_unmovableFromUnits", unmovableFromUnits);
+        TRACE_COUNT("CJRT_GC_unmovableFromSize", unmovableFromSize);
+        TRACE_COUNT("CJRT_GC_allocUnmovableFromSize", allocUnmovableFromSize);
         TRACE_COUNT("CJRT_GC_usedUnits", usedUnits);
         TRACE_COUNT("CJRT_GC_releasedUnits", releasedUnits);
         TRACE_COUNT("CJRT_GC_dirtyUnits", dirtyUnits);
