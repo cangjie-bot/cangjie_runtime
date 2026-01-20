@@ -392,43 +392,33 @@ extend<T> Iterator<T> {
             return {
                 var current = first
                 for (e in this) {
-                    let candidateKey = f(e)
-                    let currentKey = f(current)
-                    if (currentKey > candidateKey) {
+                    if (f(current) > f(e)) {
                         current = e
                     }
                 }
                 Some(current)
             }
-        } else {
-            // CI rule G.FUN.01 requires single-purpose functions with no side effects
-            None
         }
+        None
     }
 
 
-    func maxBy<K>(f: (T) -> K): ?T where K <: Comparable<K> {
+        func maxBy<K>(f: (T) -> K): ?T where K <: Comparable<K> {
         if (let Some(first) <- this.next()) {
             return {
                 var current = first
-                var currentKey = f(current)
                 for (e in this) {
-                    let candidateKey = f(e)
-                    if ( currentKey < candidateKey) {
+                    if (f(current) < f(e)) {
                         current = e
-                        currentKey = candidateKey
                     }
                 }
                 Some(current)
             }
-        } else {
-            // CI rule G.FUN.01 requires single-purpose functions with no side effects
-            None
         }
+        None
     }
-
-
 }
+
 
 
 class BootstrapResult {
