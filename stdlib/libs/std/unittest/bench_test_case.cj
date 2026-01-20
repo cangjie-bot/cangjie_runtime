@@ -447,10 +447,14 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
         let avgBatchSize = if (targetDurationNs > 0.0) {
             targetDurationNs / avgOneIterationTime / batches
         } else if (this.batchSize.end >= MAX_BATCH_SIZE) {
-            throw IllegalArgumentException("if 'minDuration' parameter is zero then 'batchSize' must be specified")
+            progress.println {
+                "Error: if 'minDuration' parameter is zero then 'batchSize' must be specified."
+            }
+            1.0
         } else {
             Float64(this.batchSize.end) / 2.0
         }
+
 
         // apply all of the constraints on batch size
         let maxBatchSize = Int64(ceil((avgBatchSize - 1.0) * 2.0 + 1.0))
