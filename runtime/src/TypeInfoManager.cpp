@@ -594,8 +594,18 @@ void TypeInfoManager::ParseEnumInfo(TypeTemplate* tt, U32 argSize, TypeInfo* arg
         TypeInfo* enumTi = reinterpret_cast<TypeInfo*>(TypeTemplate::ExecuteGenericFunc(fn, argSize, args));
         ctor->SetTypeInfo(enumTi);
     }
+    if (!tt->ReflectIsEnable()) {
+        return;
+    }
     EnumInfo* tiEnumInfo = reinterpret_cast<EnumInfo*>(enumInfoAddr);
 
+    if (ttEnumInfo->GetReflectVersion() == 0) {
+        enumInfo->SetParsed();
+        ti->SetEnumInfo(tiEnumInfo);
+        return;
+    }
+    enumInfo->SetDeclaringGenericTypeInfo((reinterpret_cast<GenericTypeInfo*>(
+        ttEnumInfo->GetDeclaringGenericTypeInfo())));
     for (U32 idx = 0; idx < ttEnumInfo->GetNumOfInstanceMethodInfos(); ++idx) {
         uintptr_t methodInfoAddr = Allocate(sizeof(MethodInfo));
         MethodInfo* ttMethodInfo = ttEnumInfo->GetInstanceMethodInfo(idx);
