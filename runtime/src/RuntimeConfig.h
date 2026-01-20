@@ -47,6 +47,7 @@ MRT_EXPORT void* CJ_MRT_ARKTS_CreateEngineStub();
 #endif
 #else
 void* ExecuteCangjieStub(...);
+void* ExecuteCangjieStubFull(...);
 bool InitCJLibraryStub(...);
 void* ApplyCangjieMethodStub(...);
 float ApplyCangjieMethodStubFloat32(...);
