@@ -32,13 +32,12 @@ class BenchExecutor<T> <: Executor {
     public func execute(suiteInfo: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
 
         let benchRunner = BenchRunner(configuration, ProgressOutput(configuration))
-        let progress = benchRunner.progress
         strategy.nextIteration(configuration)
         
         let measurementInfo = configuration.get(KeyMeasurementInfo.measurementInfo).getOrThrow()
         while (true) {
             let result = strategy.processNextWith(configuration) {
-                v, inputs => runSingle(v, inputs, suiteInfo, tcase.caseId, tcase.caseInfo, benchRunner, progress,
+                v, inputs => runSingle(v, inputs, suiteInfo, tcase.caseId, tcase.caseInfo, benchRunner, benchRunner.progress,
                     configuration, step)
             }
 
@@ -47,7 +46,7 @@ class BenchExecutor<T> <: Executor {
                     step += 1
                     tcase.add(result)
                     if (let Bench(benchmarkResult) <- result.info) {
-                        benchmarkResult.printSummary(progress, measurementInfo)
+                        benchmarkResult.printSummary(benchRunner.progress, measurementInfo)
                     }
                 case Failure(input, failure) =>
                     tcase.add(failure)
@@ -390,39 +389,45 @@ class BenchmarkResult {
 extend<T> Iterator<T> {
     func minBy<K>(f: (T) -> K): ?T where K <: Comparable<K> {
         if (let Some(first) <- this.next()) {
-            var current = first
-            var key = f(current)
-            for (e in this) {
-                let new_key = f(e)
-                if (new_key < key) {
-                    key = new_key
-                    current = e
+            return {
+                var current = first
+                var currentKey = f(current)
+                for (e in this) {
+                    let candidateKey = f(e)
+                    if (candidateKey < currentKey) {
+                        current = e
+                        currentKey = candidateKey
+                    }
                 }
+                Some(current)
             }
-            Some(current)
         } else {
             // CI rule G.FUN.01 requires single-purpose functions with no side effects
             None
         }
     }
 
+
     func maxBy<K>(f: (T) -> K): ?T where K <: Comparable<K> {
         if (let Some(first) <- this.next()) {
-            var current = first
-            var key = f(current)
-            for (e in this) {
-                let newKey = f(e)
-                if (newKey > key) {
-                    key = newKey
-                    current = e
+            return {
+                var current = first
+                var currentKey = f(current)
+                for (e in this) {
+                    let candidateKey = f(e)
+                    if (candidateKey > currentKey) {
+                        current = e
+                        currentKey = candidateKey
+                    }
                 }
+                Some(current)
             }
-            Some(current)
         } else {
             // CI rule G.FUN.01 requires single-purpose functions with no side effects
             None
         }
     }
+
 
 }
 
@@ -540,14 +545,14 @@ class BootstrapResult {
             // At least it gives expected results if there are two very distinct modes in our distribution.
 
             // sampled mean of measured distribution
-            let N = overhead_sample + batch[0] * mean_sample
+            let N = overhead_sample + (batch[0] * mean_sample)
             let b = (batch[1] - N)
             let variance1 = overhead.stddev()
             let variance2 = batch[0] * medianStats.sample.stddev()
 
             // b * variance2 / (variance2 + variance1) is ratio of how much of variance comes from the variance of actual benchmark
             {
-                let value = mean_sample + (b * variance2 / (variance2 + variance1)) / batch[0]
+                let value = mean_sample + (b * (variance2 / (variance2 + variance1))) / batch[0]
                 if (!value.isNaN()) {
                     result.add(value)
                 } else {
