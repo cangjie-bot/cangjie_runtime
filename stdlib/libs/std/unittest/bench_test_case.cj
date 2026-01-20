@@ -79,7 +79,7 @@ struct WarmupInfo {
 
     private mut func beforeWarmup() {
         gcCount = getGCCount()
-        let mem1 = memory()
+        let mem1 = memory() // cjlint-ignore !G.VAR.02
 
         // ideally this should be zero, however with current implementation of generics
         // there is an overhead to call our benchmark loop lambda
@@ -447,7 +447,7 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
         let batchesFrom1ToN = targetDurationNs / avgOneIterationTime |> sqrt |> ceil
 
         // apply all of the constraints on amount of batches
-        let batches = max(min(batchesFrom1ToN, DEFAULT_BATCHES_AMOUNT), Float64(minBatches))
+        let batches = max(min(batchesFrom1ToN, DEFAULT_BATCHES_AMOUNT), Float64(minBatches)) // cjlint-ignore !G.VAR.02
 
         let avgBatchSize = if (targetDurationNs > 0.0) {
             targetDurationNs / avgOneIterationTime / batches
