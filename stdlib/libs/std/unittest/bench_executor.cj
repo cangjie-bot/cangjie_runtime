@@ -210,14 +210,13 @@ struct StatisticsSample {
 
 private let BOOTSTRAP_ITERATIONS: Int64 = 2000
 private let BOOTSTRAP_PARALLEL: Int64 = 8
-private let EXPECTED_CAP: Int64 = BOOTSTRAP_ITERATIONS / BOOTSTRAP_PARALLEL
 
 enum SeparateGc <: ToString {
     | AllPoints
     | GCOnly
     | WithoutGCOnly
 
-    public func toString() {
+    public func toString(): String {
         match(this) {
             case AllPoints => "all"
             case GCOnly => "only GC"
@@ -236,7 +235,7 @@ enum SeparateGc <: ToString {
         match (this) {
             case AllPoints => { x => true }
             case GCOnly => { x => x[2] >= 1.0 }
-            case WithoutGCOnly => { x => x[2] == 0.0 }
+            case WithoutGCOnly => { x => abs(x[2]) < 1e-9 }
         }
     }
 }
@@ -275,7 +274,7 @@ class BenchmarkResult {
     prop errorEstPercent: Float64 { get() {
         let result = this.median
         let error = this.errorEst
-        if (error == 0.0 && result == 0.0) {
+        if (abs(error) < 1e-9 && abs(result) < 1e-9) {
             0.0
         } else {
             error / result * 100.0
@@ -414,11 +413,12 @@ extend<T> Iterator<T> {
 
 
 class BootstrapResult {
-    let meanStats = StatisticsSample(EXPECTED_CAP)
-    let meanOverheadStats = StatisticsSample(EXPECTED_CAP)
-    let medianStats = StatisticsSample(EXPECTED_CAP)
-    let medianOverheadStats = StatisticsSample(EXPECTED_CAP)
-    let r2Stats = StatisticsSample(EXPECTED_CAP)
+    let expectedCap = BOOTSTRAP_ITERATIONS / BOOTSTRAP_PARALLEL
+    let meanStats = StatisticsSample(expectedCap)
+    let meanOverheadStats = StatisticsSample(expectedCap)
+    let medianStats = StatisticsSample(expectedCap)
+    let medianOverheadStats = StatisticsSample(expectedCap)
+    let r2Stats = StatisticsSample(expectedCap)
     let buffer = ArrayList<Float64>()
     let buffer2 = ArrayList<Float64>()
 
@@ -436,16 +436,14 @@ class BootstrapResult {
 
     prop overhead: StatisticsSample {
         get() {
-            let medianOH = medianOverheadStats.median
             let medianIrq = medianOverheadStats.sample.irq()
-            let meanOH = meanOverheadStats.mean
             let meanIrq = meanOverheadStats.sample.irq()
             // Choose better estimation of overhead based on their IRQ.
             // It is necessary because for cases with heteroschedasticity, 
             // median estimation is much better because it is a robust estimator.
             // But for good cases where OLS is the best linear regression estimator,
             // OLS based bootstrapped distribution of overhead is also the best.
-            if (abs(meanOH - medianOH) < medianIrq/2.0 && medianIrq > meanIrq) {
+            if (abs(meanOverheadStats.mean - medianOverheadStats.median) < medianIrq/2.0 && medianIrq > meanIrq) {
                 meanOverheadStats
             } else {
                 medianOverheadStats
@@ -463,7 +461,10 @@ class BootstrapResult {
         medianStats.sample.data.add(all: other.medianStats.sample.data)
         medianOverheadStats.sample.data.add(all: other.medianOverheadStats.sample.data)
         r2Stats.sample.data.add(all: other.r2Stats.sample.data)
-        allPoints?.join(other.allPoints.getOrThrow())
+        match (other.allPoints) {
+            case Some(ap) => allPoints?.join(ap)
+            case None => ()
+        }
         this
     }
 
@@ -494,7 +495,6 @@ class BootstrapResult {
         let N1 = overhead.mean()
         let N2 = mean.mean()
 
-        let stddev1 = overhead.stddev()
         let stddev2 = medianStats.sample.stddev()
         let gcRatio = rawData.iterator().map{ x => x[2] }.sum() / Float64(rawData.size)
 
@@ -529,7 +529,7 @@ class BootstrapResult {
             // sampled mean of measured distribution
             let N = overhead_sample + batch[0] * mean_sample
             let b = (batch[1] - N)
-            let variance1 = stddev1
+            let variance1 = overhead.stddev()
             let variance2 = batch[0] * stddev2
 
             // ratio of how much of variance comes from the variance of actual benchmark
