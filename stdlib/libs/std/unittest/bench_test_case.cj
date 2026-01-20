@@ -251,7 +251,7 @@ class BenchRunner {
         this.explicitGC = configuration.get(KeyExplicitGC.explicitGC) ?? ExplicitGcType.Auto
         this.warmupInfo = WarmupInfo(this.explicitGC) // reset info
 
-        this.targetDuration = configuration.get(KeyMinDuration.minDuration) ?? Duration.second * 5
+        this.targetDuration = configuration.get(KeyMinDuration.minDuration) ?? Duration.second * 5 // cjlint-ignore !G.EXP.03
         let minBatchesConfig = configuration.get(KeyMinBatches.minBatches) ?? 10
         this.minBatches = max(minBatchesConfig, 1)
 

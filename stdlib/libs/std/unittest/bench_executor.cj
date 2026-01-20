@@ -26,7 +26,7 @@ class BenchExecutor<T> <: Executor {
         private let strategy: DataStrategyProcessor<T>,
         private let measurement: Measurement,
         private let doRun: (T, Int64, Int64, Int64, Measurement) -> Float64
-    ) {
+    ) { // cjlint-ignore !G.VAR.02
     }
 
     public func execute(suiteInfo: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
@@ -535,13 +535,13 @@ class BootstrapResult {
 
             // sampled mean of measured distribution
             let N = overhead_sample + (batch[0] * mean_sample)
-            let b = (batch[1] - N)
-            let variance1 = overhead.stddev()
-            let variance2 = batch[0] * medianStats.sample.stddev()
+            let b = (batch[1] - N) // cjlint-ignore !G.VAR.02
+            let variance1 = overhead.stddev() // cjlint-ignore !G.VAR.02
+            let variance2 = batch[0] * medianStats.sample.stddev() // cjlint-ignore !G.VAR.02
 
             // b * variance2 / (variance2 + variance1) is ratio of how much of variance comes from the variance of actual benchmark
             {
-                let value = mean_sample + (b * (variance2 / (variance2 + variance1))) / batch[0]
+                let value = mean_sample + (b * (variance2 / (variance2 + variance1))) / batch[0] // cjlint-ignore !G.VAR.02
                 if (!value.isNaN()) {
                     result.add(value)
                 } else {
@@ -563,19 +563,19 @@ class BootstrapResult {
             return
         }
         {
-            let (median, overheadMedian) = medianRegression(filtered)
+            let (median, overheadMedian) = medianRegression(filtered) // cjlint-ignore !G.VAR.02
             if (!median.isNaN()) {
                 this.medianStats.append(median)
                 this.medianOverheadStats.append(overheadMedian)
             }
         }
         {
-            let (mean, meanOverhead, r2) = olsRegression(filtered)
+            let (mean, meanOverhead, r2) = olsRegression(filtered) // cjlint-ignore !G.VAR.02
             if (!mean.isNaN()) {
                 this.meanStats.append(mean)
                 this.meanOverheadStats.append(meanOverhead)
                 this.r2Stats.append(r2)
-            }
+            } 
         }
     }
 
@@ -599,8 +599,8 @@ class BootstrapResult {
 
         for (i in sqrtSlice) {
             for (j in sqrtSlice) {
-                let (x1, y1) = subsample[i]
-                let (x2, y2) = subsample[j]
+                let (x1, y1) = subsample[i] // cjlint-ignore !G.VAR.02
+                let (x2, y2) = subsample[j] // cjlint-ignore !G.VAR.02
                 if (abs(x1 - x2) > 0.0001) {
                     let slope = (y1 - y2) / (x1 - x2)
                     let yat0 = abs(y2 - x2 * slope) - 0.001
