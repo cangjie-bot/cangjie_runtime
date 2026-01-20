@@ -399,7 +399,9 @@ void TypeInfoManager::CreatedTypeInfoImpl(GenericTiDesc* &tiDesc, TypeTemplate* 
 
     U16 fieldNum = tt->GetFieldNum();
     U16 typeArgNum = tt->GetTypeArgNum();
-    if (tt->IsTuple() || tt->IsFunc() || tt->IsRawArray()) {
+    if (tt->IsCFunc()) {
+        typeArgNum = argSize;
+    } else if (tt->IsTuple() || tt->IsFunc() || tt->IsRawArray()) {
         fieldNum = argSize;
         typeArgNum = argSize;
     } else if (tt->IsVArray()) {
@@ -416,6 +418,10 @@ void TypeInfoManager::CreatedTypeInfoImpl(GenericTiDesc* &tiDesc, TypeTemplate* 
         AddTypeInfo(newTypeInfo);
         tiDesc->SetTypeInfoStatus(TypeInfoStatus::TYPEINFO_INITED);
         return;
+    } else if (tt->IsCFunc()) {
+        newTypeInfo->SetInstanceSize(8U);
+        newTypeInfo->SetAlign(8U);
+        return;
     }
     U32* offsets = reinterpret_cast<U32*>(Allocate(fieldNum * sizeof(U32)));
     newTypeInfo->SetOffsets(offsets);
@@ -424,7 +430,7 @@ void TypeInfoManager::CreatedTypeInfoImpl(GenericTiDesc* &tiDesc, TypeTemplate* 
 
 void TypeInfoManager::FillRemainingField(GenericTiDesc* &tiDesc, TypeTemplate* tt, U32 argSize, TypeInfo* args[])
 {
-    if (tt->IsArrayType()) {
+    if (tt->IsArrayType() || tt->IsCFunc()) {
         return;
     }
     TypeInfo* newTypeInfo = tiDesc->typeInfo;
