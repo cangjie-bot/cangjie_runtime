@@ -8,6 +8,7 @@
 package std.unittest
 
 import std.collection.ArrayList
+import std.collection.Range
 import std.time.DateTime
 import std.random.Random
 import std.math.sqrt
@@ -15,8 +16,11 @@ import std.math.ceil
 import std.math.round
 import std.core
 import std.runtime.gc
-import std.runtime.isGCRunning
 import std.runtime.getGCCount
+import std.runtime.getAllocatedHeapSize
+import std.runtime.getGCFreedSize
+import std.runtime.MemoryInfo
+import std.runtime.memoryStats
 import std.runtime
 import std.convert.Formattable
 import std.sort.*
@@ -113,7 +117,9 @@ struct WarmupInfo {
         ema = Ema(5)
         do {
             n = n * 12 / 10 + 1  // ~20% increase
-            if (let Auto <- warmupGC && aggregateTime < Float64(warmupTime.toNanoseconds()/2)) {
+            let isAuto = warmupGC == Auto
+            let halfTime = aggregateTime < Float64(warmupTime.toNanoseconds()/2)
+            if (isAuto && halfTime) {
                 // for small allocation heavy benchmarks it is essential that we finish warmup
                 // with same GC strategy that will be active during benchmark
                 chooseWarmupGC()
@@ -212,9 +218,11 @@ class BenchRunner {
 
     private func warmupAndEstimate() {
         warmupInfo.benchmark = this.benchmark
-        if (let Some(warmupCount) <- configuration.get<Int64>(KeyWarmup.warmup)) {
+        let warmupOption = configuration.get<Int64>(KeyWarmup.warmup)
+        if (let Some(warmupCount) <- warmupOption) {
             return warmupFixedSize(warmupCount)
         }
+
 
         let warmupTime = configuration.get<Duration>(KeyWarmup.warmup) ?? Duration.second
         progress.println { "    Warming up for ${printDuration(warmupTime)}."}
@@ -235,7 +243,7 @@ class BenchRunner {
     // Runs warmup and based on various warmup measurements selects best values for various parameters
     func warmupAndConfigure(): Unit {
         this.explicitGC = configuration.get(KeyExplicitGC.explicitGC) ?? ExplicitGcType.Auto
-        warmupInfo = WarmupInfo(this.explicitGC) // reset info
+        this.warmupInfo = WarmupInfo(this.explicitGC) // reset info
 
         this.targetDuration = configuration.get(KeyMinDuration.minDuration) ?? Duration.second * 5
         let minBatches = configuration.get(KeyMinBatches.minBatches) ?? 10
@@ -297,8 +305,9 @@ class BenchRunner {
 
         // due to some issues in runtime this causes a lot of false positives
         // so for now warn only from 2 bad measurements
-        let gcTwiceWarn = (!explicitGC.waitsForFinish() && badBatches >= 2)
-            || (explicitGC.waitsForFinish() && gcBatches >= 1)
+        let waitForFinish = explicitGC.waitsForFinish()
+        let gcTwiceWarn = (!waitForFinish && badBatches >= 2) || (waitForFinish && gcBatches >= 1)
+
 
         if (gcTwiceWarn) {
             progress.println {
@@ -311,7 +320,8 @@ Warning: GC was invoked twice during some of the batches. This can significantly
             }
         }
 
-        let tooLongGc = gcRatio > 0.2 && memoryDiff.gcTimeNs > BIG_GC_THRESHOLD_NS
+        let isBigGc = memoryDiff.gcTimeNs > BIG_GC_THRESHOLD_NS
+        let tooLongGc = gcRatio > 0.2 && isBigGc
         if (tooLongGc) {
             progress.println {
 """
