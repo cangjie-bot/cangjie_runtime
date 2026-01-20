@@ -12,6 +12,7 @@
 #include "ExceptionManager.inline.h"
 #include "LoaderManager.h"
 #include "Loader/ILoader.h"
+#include "MClass.h"
 #include "MClass.inline.h" // module internal header
 #include "Mutator/Mutator.h"
 #include "ObjectManager.inline.h"
@@ -774,6 +775,25 @@ MethodInfo* ReflectInfo::GetStaticMethodInfo(U32 index)
     baseAddr += instanceMethodCnt * sizeof(DataRefOffset64<MethodInfo>);
     baseAddr += index * sizeof(DataRefOffset64<MethodInfo>);
     return reinterpret_cast<DataRefOffset64<MethodInfo>*>(baseAddr)->GetDataRef();
+}
+
+static U8 GetReflectVersionFromModifier(U32 modifier)
+{
+    U8 version = 0;
+    if (modifier & MODIFIER_REFLECT_VER_BIT1) version |= 1;
+    if (modifier & MODIFIER_REFLECT_VER_BIT2) version |= 2;
+    if (modifier & MODIFIER_REFLECT_VER_BIT3) version |= 4;
+    return version;
+}
+
+U8 ReflectInfo::GetReflectVersion() const
+{
+    return GetReflectVersionFromModifier(GetModifier());
+}
+
+U8 EnumInfo::GetReflectVersion() const
+{
+    return GetReflectVersionFromModifier(GetModifier());
 }
 
 static void* GetAnnotations(Uptr annotationMethod, TypeInfo* arrayTi)
