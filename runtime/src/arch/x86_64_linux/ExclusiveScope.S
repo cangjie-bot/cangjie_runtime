@@ -86,6 +86,11 @@ CJ_MCC_ExclusiveScope:
     jz      .L_exc_no_thread
     movq    %r12, -88(%rbp)     // thread
 
+    // Save original processor (thread->processor) before it's modified
+    // thread->processor is at offset 0x38 in Thread struct
+    movq    0x38(%r12), %r11
+    movq    %r11, -168(%rbp)    // oldProcessor
+
     movq    %rbp,  %rsi                  // rsi = fa (frame address)
     call    .L_exc_get_pc
 .L_exc_get_pc:
@@ -132,10 +137,8 @@ unwindPCForExclusiveStub:
     subq    $128, %rsp
     andq    $-16, %rsp
 
-
-
     // ExclusiveExecutor(thread, newCJThread)
-    //                     rsi      rdx
+    //                     rdi      rsi
     movq    -88(%rbp), %rdi
     movq    -160(%rbp), %rsi
     callq   ExclusiveExecutor@PLT
@@ -147,11 +150,12 @@ unwindPCForExclusiveStub:
     // ==================== switch back to cjthread stack ====================
     movq    -104(%rbp), %rsp
 
-    // ExclusiveRestore(oldCJThread, thread, newCJThread)
-    //                     rdi         rsi      rdx
+    // ExclusiveRestore(oldCJThread, thread, newCJThread, oldProcessor)
+    //                     rdi         rsi      rdx         rcx
     movq    -80(%rbp), %rdi
     movq    -88(%rbp), %rsi
     movq    -160(%rbp), %rdx
+    movq    -168(%rbp), %rcx    // oldProcessor
     callq   ExclusiveRestore@PLT
 
     // ==================== continue ====================

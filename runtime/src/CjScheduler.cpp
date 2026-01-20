@@ -451,7 +451,7 @@ static void* WrapperExclusiveClosure(void* arg, unsigned int len)
     BaseObject* executeClosure = Heap::GetBarrier().ReadStaticRef(reinterpret_cast<RefField<false>&>(lwtData->execute));
     BaseObject* closureObj = Heap::GetBarrier().ReadStaticRef(reinterpret_cast<RefField<false>&>(lwtData->obj));
 #if defined(__aarch64__)
-    ExecuteCangjieStubFull(&g_ut, nullptr, closureObj, executeClosure, reinterpret_cast<void*>(threadData));
+    ExecuteCangjieStubFull(closureObj, nullptr, executeClosure, reinterpret_cast<void*>(threadData), &g_ut);
 #elif defined(__x86_64__)
     ExecuteCangjieStubFull(&g_ut, nullptr, closureObj, executeClosure, reinterpret_cast<void*>(threadData));
 #endif

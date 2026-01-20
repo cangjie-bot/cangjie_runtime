@@ -1044,7 +1044,8 @@ void ScheduleAllNonDefaultExit(void)
         if (schedule == curschdeule) {
             continue;
         }
-        if (pthread_self() != schedule->thread0->osThread &&
+        if (schedule->scheduleType != SCHEDULE_EXCLUSIVE &&
+            pthread_self() != schedule->thread0->osThread &&
             !ScheduleProcessorSkipFFI(&(schedule->schdProcessor.processorGroup[0]))) {
             pthread_join(schedule->thread0->osThread, nullptr);
             atomic_store(&schedule->schdProcessor.processorGroup[0].state, PROCESSOR_EXITING);

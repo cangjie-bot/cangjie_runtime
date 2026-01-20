@@ -854,34 +854,27 @@ void* ExclusiveExecutor(struct Thread* thread, struct CJThread* newCJThread)
 {
     // Save old scheduler and processor before switching
     struct Schedule* newSchedule = newCJThread->schedule;
-
     thread->cjthread = newCJThread;
     newCJThread->thread = thread;
-
     // Temporarily switch thread->processor to EXCLUSIVE processor for timer wake to work
     struct Processor* exclusiveProcessor = &newSchedule->schdProcessor.processorGroup[0];
     thread->processor = exclusiveProcessor;
-
     // Switch to new scheduler (TLS)
     ScheduleSet(newSchedule);
     CJThreadSet(newCJThread);
-
     MapleRuntime::ThreadLocal::SetProtectAddr(nullptr);
     uintptr_t threadData = MapleRuntime::MRT_GetThreadLocalData();
     MapleRuntime::ThreadLocalData* tlData = reinterpret_cast<MapleRuntime::ThreadLocalData*>(threadData);
     tlData->cjthread = reinterpret_cast<uint8_t*>(newCJThread);
-
     MapleRuntime::Mutator* mutator = newCJThread->mutator;
     tlData->mutator = mutator;
     mutator->PreparedToRun(tlData);
-
     newCJThread->func(newCJThread->argStart, newCJThread->argSize);
-
     return nullptr;
 }
 
 // ExclusiveRestore restore from exclusive cjthread
-void ExclusiveRestore(struct CJThread* oldCJThread, struct Thread* thread, struct CJThread* newCJThread)
+void ExclusiveRestore(struct CJThread* oldCJThread, struct Thread* thread, struct CJThread* newCJThread, struct Processor* oldProcessor)
 {
     struct Schedule* oldSchedule = oldCJThread->schedule;
     struct Schedule* newSchedule = newCJThread->schedule;
@@ -894,10 +887,9 @@ void ExclusiveRestore(struct CJThread* oldCJThread, struct Thread* thread, struc
     exclusiveProcessor->thread = nullptr;
     atomic_store(&exclusiveProcessor->state, PROCESSOR_EXITING);
 
-    // Restore thread's original processor
-    // oldProcessor was saved before, we need to get it from oldCJThread's original binding
-    struct Processor* oldProcessor = &oldSchedule->schdProcessor.processorGroup[0];
+    // Restore thread's original processor (passed from assembly)
     thread->processor = oldProcessor;
+    oldProcessor->thread = thread;
 
     // Restore TLS
     ScheduleSet(oldSchedule);
@@ -905,6 +897,7 @@ void ExclusiveRestore(struct CJThread* oldCJThread, struct Thread* thread, struc
     newSchedule->state = SCHEDULE_EXITED;
 
     // Restore thread data
+    thread->cjthread = oldCJThread;
     tlData->mutator = oldCJThread->mutator;
 }
 
@@ -1718,8 +1711,14 @@ void *CJThreadStackGuardGet(void)
     if (cjthread == nullptr) {
         return nullptr;
     }
-#ifdef __arm__
+
+    // EXCLUSIVE uses OS thread stack which doesn't need checking
     struct Schedule *schedule = ScheduleGet();
+    if (schedule != nullptr && schedule->scheduleType == SCHEDULE_EXCLUSIVE) {
+        return nullptr;
+    }
+
+#ifdef __arm__
     if (schedule == nullptr) {
         return nullptr;
     }

@@ -41,21 +41,20 @@
 
 // Thread structure offset to context
 #define THREAD_CONTEXT_OFFSET       0x78
-
-// Frame size (must be 16-byte aligned)
+#define THREAD_PROCESSOR_OFFSET     0x38
 #define ExclusiveScopeFrameSize     (16 * 16)
 
 // ==============================================================================
-// CJ_MCC_ExclusiveScope: from cjthread switch OS thread and exclusive this thread
+// CJ_MCC_ExclusiveScope: Switch from cjthread to OS thread for exclusive execution
 // ==============================================================================
 //
 //   void* CJ_MCC_ExclusiveScope(void* executeClosure, void* closurePtr)
 //                                    x0              x1
 //
-// 1. call MCC_NewExclusiveCJThread to create exclusive cjthread
-// 2. switch to OS thread
-// 3. call ExclusiveExecutor to execute closure
-// 4. switch to normal cjthread
+// 1. Create exclusive cjthread
+// 2. Switch to OS thread
+// 3. Execute closure
+// 4. Switch back to cjthread
 
     .text
     .align 2
@@ -66,7 +65,6 @@ CJ_MCC_ExclusiveScope:
 #if defined(ENABLE_BACKWARD_PTRAUTH_CFI)
     paciasp
 #endif
-    // Save frame pointer and link register
     stp     x29, x30, [sp, #-ExclusiveScopeFrameSize]!
     cfi_adjust_cfa_offset(ExclusiveScopeFrameSize)
     cfi_rel_offset(x29, 0)
@@ -74,76 +72,71 @@ CJ_MCC_ExclusiveScope:
     mov     x29, sp
     cfi_def_cfa_register(x29)
 
-    // Save callee-saved registers
-    stp     x19, x20, [sp, #0x10]
-    cfi_rel_offset(x19, 0x10)
-    cfi_rel_offset(x20, 0x18)
-    stp     x21, x22, [sp, #0x20]
-    cfi_rel_offset(x21, 0x20)
-    cfi_rel_offset(x22, 0x28)
-    stp     x23, x24, [sp, #0x30]
-    cfi_rel_offset(x23, 0x30)
-    cfi_rel_offset(x24, 0x38)
-    stp     x25, x26, [sp, #0x40]
-    cfi_rel_offset(x25, 0x40)
-    cfi_rel_offset(x26, 0x48)
-    stp     x27, x28, [sp, #0x50]
-    cfi_rel_offset(x27, 0x50)
-    cfi_rel_offset(x28, 0x58)
+    // Save callee-saved registers (GC scans from x29+0x20)
+    stp     x19, x20, [x29, #0x20]
+    cfi_rel_offset(x19, 0x20)
+    cfi_rel_offset(x20, 0x28)
+    stp     x21, x22, [x29, #0x30]
+    cfi_rel_offset(x21, 0x30)
+    cfi_rel_offset(x22, 0x38)
+    stp     x23, x24, [x29, #0x40]
+    cfi_rel_offset(x23, 0x40)
+    cfi_rel_offset(x24, 0x48)
+    stp     x25, x26, [x29, #0x50]
+    cfi_rel_offset(x25, 0x50)
+    cfi_rel_offset(x26, 0x58)
+    stp     x27, x28, [x29, #0x60]
+    cfi_rel_offset(x27, 0x60)
+    cfi_rel_offset(x28, 0x68)
 
-    // Save floating point callee-saved registers
-    stp     d8, d9, [sp, #0x60]
-    stp     d10, d11, [sp, #0x70]
-    stp     d12, d13, [sp, #0x80]
-    stp     d14, d15, [sp, #0x90]
+    stp     d8, d9, [x29, #0x70]
+    stp     d10, d11, [x29, #0x80]
+    stp     d12, d13, [x29, #0x90]
+    stp     d14, d15, [x29, #0xa0]
 
-    // Save arguments
-    // x19 = executeClosure, x20 = closurePtr
-    mov     x19, x0
-    mov     x20, x1
+    mov     x19, x0                     // executeClosure
+    mov     x20, x1                     // closurePtr
 
-    // MCC_NewExclusiveCJThread(executeClosure, closurePtr, futureTi)
-    //                              x0           x1          x2
-    mov     x0, x19         // executeClosure
-    mov     x1, x20         // closurePtr
-    mov     x2, xzr         // futureTi = 0
+    // Create new exclusive cjthread
+    mov     x0, x19
+    mov     x1, x20
+    mov     x2, xzr                     // futureTi = 0
     bl      MCC_NewExclusiveCJThread
-
-    // Check if newCJThread is valid
     cbz     x0, .L_exc_create_failed
-    mov     x21, x0         // x21 = newCJThread
+    str     x0, [x29, #0xe0]            // newCJThread
 
-    // Get current CJThread handle
     bl      CJ_CJThreadGetHandle
     cbz     x0, .L_exc_no_cjthread
-    mov     x22, x0         // x22 = oldCJThread
+    str     x0, [x29, #0xe8]            // oldCJThread
 
-    // thread = oldCJThread->thread
-    ldr     x23, [x22, #CJTHREAD_THREAD_OFFSET]
-    cbz     x23, .L_exc_no_thread
-    // x23 = thread
+    ldr     x1, [x0, #CJTHREAD_THREAD_OFFSET]
+    cbz     x1, .L_exc_no_thread
+    str     x1, [x29, #0xf0]            // thread
 
-    // Save C2N context
-    adr     x0, unwindPCForExclusiveStub
-    mov     x1, x29         // fa (frame address)
-    mov     x2, x28         // tlData
-    bl      MRT_SaveC2NContext
+    // Save oldProcessor before it's modified by ExclusiveExecutor
+    // thread->processor is at offset THREAD_PROCESSOR_OFFSET (0x38)
+    ldr     x2, [x1, #THREAD_PROCESSOR_OFFSET]
+    str     x2, [x29, #0xf8]            // oldProcessor
 
+    // Save C2N context (unwindPCForExclusiveStub must be before MRT_SaveC2NContext)
     .global unwindPCForExclusiveStub
 unwindPCForExclusiveStub:
+    adr     x0, unwindPCForExclusiveStub
+    mov     x1, x29
+    mov     x2, x28
+    bl      MRT_SaveC2NContext
 
-    // Enter safe region
     mov     x0, #0
     bl      MRT_EnterSaferegion
-    mov     x24, x0         // x24 = enterSafe
+    str     x0, [x29, #0xc0]            // enterSafe
+    mov     x0, sp
+    str     x0, [x29, #0xc8]            // saved sp
 
-    // Save current sp
-    mov     x25, sp
+    // Save cjthread context
+    ldr     x22, [x29, #0xe8]           // oldCJThread
+    ldr     x23, [x29, #0xf0]           // thread
+    add     x26, x22, #CJTHREAD_CONTEXT_OFFSET
 
-    // ==================== save cjthread context ====================
-    add     x26, x22, #CJTHREAD_CONTEXT_OFFSET  // x26 = &oldCJThread->context
-
-    // Save callee-saved registers to oldCJThread context
     str     x18, [x26, #CONTEXT_X18]
     str     x19, [x26, #CONTEXT_X19]
     str     x20, [x26, #CONTEXT_X20]
@@ -162,7 +155,6 @@ unwindPCForExclusiveStub:
     mov     x0, sp
     str     x0, [x26, #CONTEXT_SP]
 
-    // Save floating point registers
     str     d8,  [x26, #CONTEXT_D8]
     str     d9,  [x26, #CONTEXT_D9]
     str     d10, [x26, #CONTEXT_D10]
@@ -174,88 +166,86 @@ unwindPCForExclusiveStub:
     mrs     x0, fpcr
     str     w0, [x26, #CONTEXT_FPCR]
 
-    // ==================== switch to OS thread ====================
-    add     x27, x23, #THREAD_CONTEXT_OFFSET    // x27 = &thread->context
-
-    // Restore thread sp
+    // Switch to OS thread
+    add     x27, x23, #THREAD_CONTEXT_OFFSET
     ldr     x0, [x27, #CONTEXT_SP]
     mov     sp, x0
-
-    // Restore fpcr
     ldr     w0, [x27, #CONTEXT_FPCR]
     msr     fpcr, x0
 
-    // Allocate some stack space and align to 16 bytes
     sub     sp, sp, #128
-    and     sp, sp, #~0xF
+    mov     x0, sp
+    bic     x0, x0, #0xF
+    mov     sp, x0
 
-    // ExclusiveExecutor(oldCJThread, thread, newCJThread)
-    //                      x0          x1      x2
-    mov     x0, x22
-    mov     x1, x23
-    mov     x2, x21
+    // Execute closure
+    ldr     x0, [x29, #0xf0]            // thread
+    ldr     x1, [x29, #0xe0]            // newCJThread
     bl      ExclusiveExecutor
 
-    // Save return value
-    mov     x19, x0
-    mov     x20, d0
+    // Restore to original stack frame (still on current function's stack)
+    ldr     x0, [x29, #0xc8]            // saved sp
+    mov     sp, x0
+
+    // Call ExclusiveRestore to complete the restoration
+    // Important: Call on current stack, not oldCJThread's saved stack
+    // ExclusiveRestore(oldCJThread, thread, newCJThread, oldProcessor)
+    //                     x0          x1       x2           x3
+    ldr     x0, [x29, #0xe8]            // oldCJThread
+    ldr     x1, [x29, #0xf0]            // thread
+    ldr     x2, [x29, #0xe0]            // newCJThread
+    ldr     x3, [x29, #0xf8]            // oldProcessor
+    bl      ExclusiveRestore
+
+    // After ExclusiveRestore, continue cleanup
 
 .L_exc_return_point:
-    // Restore sp from saved value
-    mov     sp, x25
+    ldr     x0, [x29, #0xc8]
+    mov     sp, x0
 
-    // Save return value
-    str     x19, [sp, #0xa0]
-    str     d0, [sp, #0xa8]
-
-    // ==================== LeaveSaferegion ====================
-    cbz     x24, .L_exc_skip_leave
+    ldr     x0, [x29, #0xc0]            // enterSafe
+    cbz     x0, .L_exc_skip_leave
     bl      MRT_LeaveSaferegion
     bl      MRT_GetThreadLocalData
     mov     x19, x0
-.L_exc_skip_leave:
+    b       .L_exc_do_delete
 
-    // Delete C2N context
+.L_exc_skip_leave:
+    mov     x19, x28
+
+.L_exc_do_delete:
     mov     x0, x19
     bl      MRT_DeleteC2NContext
-
-    // Restore return value
-    ldr     x0, [sp, #0xa0]
-    ldr     d0, [sp, #0xa8]
-
+    mov     x0, xzr
     b       .L_exc_cleanup
 
-// ==================== exception ====================
 .L_exc_create_failed:
 .L_exc_no_cjthread:
 .L_exc_no_thread:
     mov     x0, xzr
 
 .L_exc_cleanup:
-    // Restore floating point callee-saved registers
-    ldp     d8, d9, [sp, #0x60]
-    ldp     d10, d11, [sp, #0x70]
-    ldp     d12, d13, [sp, #0x80]
-    ldp     d14, d15, [sp, #0x90]
+    ldp     d8, d9, [x29, #0x70]
+    ldp     d10, d11, [x29, #0x80]
+    ldp     d12, d13, [x29, #0x90]
+    ldp     d14, d15, [x29, #0xa0]
 
-    // Restore callee-saved registers
-    ldp     x19, x20, [sp, #0x10]
+    ldp     x19, x20, [x29, #0x20]
     cfi_restore(x19)
     cfi_restore(x20)
-    ldp     x21, x22, [sp, #0x20]
+    ldp     x21, x22, [x29, #0x30]
     cfi_restore(x21)
     cfi_restore(x22)
-    ldp     x23, x24, [sp, #0x30]
+    ldp     x23, x24, [x29, #0x40]
     cfi_restore(x23)
     cfi_restore(x24)
-    ldp     x25, x26, [sp, #0x40]
+    ldp     x25, x26, [x29, #0x50]
     cfi_restore(x25)
     cfi_restore(x26)
-    ldp     x27, x28, [sp, #0x50]
+    ldp     x27, x28, [x29, #0x60]
     cfi_restore(x27)
     cfi_restore(x28)
 
-    // Restore frame pointer and link register
     ldp     x29, x30, [sp], #ExclusiveScopeFrameSize
     cfi_adjust_cfa_offset(-ExclusiveScopeFrameSize)
     cfi_restore(x29)
@@ -274,11 +264,12 @@ unwindPCForExclusiveStub:
 // ExecuteCangjieStubFull: Execute Cangjie closure with new ThreadLocalData
 // ==============================================================================
 //
-//   void* ExecuteCangjieStubFull(void* sret, void* arg1, void* closureObj, 
-//                                void* executeClosure, void* threadData)
-//                                 x0         x1          x2          x3          x4
+//   void* ExecuteCangjieStubFull(void* closureObj, void* arg1, void* executeClosure,
+//                                void* threadData, void* sret)
+//                                 x0            x1        x2
+//                                 x3            x4
 //
-// Update x28 with threadData before executing closure
+// Update x28 with threadData before executing closure, sret in x8
 
     .text
     .align 2
@@ -296,65 +287,47 @@ ExecuteCangjieStubFull:
     mov     x29, sp
     cfi_def_cfa_register(x29)
 
-    // Save callee-saved registers
     stp     x19, x20, [sp, #0x10]
     cfi_rel_offset(x19, 0x10)
     cfi_rel_offset(x20, 0x18)
-    stp     x21, x22, [sp, #0x20]
-    cfi_rel_offset(x21, 0x20)
-    cfi_rel_offset(x22, 0x28)
-    stp     x27, x28, [sp, #0x30]
-    cfi_rel_offset(x27, 0x30)
-    cfi_rel_offset(x28, 0x38)
+    stp     x27, x28, [sp, #0x20]
+    cfi_rel_offset(x27, 0x20)
+    cfi_rel_offset(x28, 0x28)
 
-    // Save arguments
-    mov     x19, x0         // sret
-    mov     x20, x2         // closureObj
-    mov     x21, x3         // executeClosure
-    mov     x22, x4         // threadData
+    // Save object references to stack for GC scanning
+    str     x0, [sp, #0x30]     // closureObj
+    str     x2, [sp, #0x38]     // executeClosure
+    str     x4, [sp, #0x40]     // sret
 
-    // Update x28 with new ThreadLocalData
-    mov     x28, x4
-
-    // SaveTopManagedContext
+    mov     x28, x3
     mov     x0, x29
     bl      MRT_SaveTopManagedContextToN2CStub
 
-    // Prepare arguments for closure call
-    mov     x0, x19         // sret
-    mov     x1, x20         // closureObj
+    // Reload references (may be updated by GC)
+    ldr     x19, [sp, #0x30]
+    ldr     x20, [sp, #0x38]
+    ldr     x21, [sp, #0x40]
 
-    // Get func from executeClosure (func is at offset 8)
-    ldr     x9, [x21, #8]
-
-    // Call closure
+    mov     x8, x21
+    mov     x0, x21
+    mov     x1, x19
+    ldr     x9, [x20, #8]
     blr     x9
 
     .global unwindPCForExclusiveStubFull
 unwindPCForExclusiveStubFull:
-
-    // Save return value
     mov     x19, x0
-
-    // RestoreTopManagedContext
     mov     x0, x29
     bl      MRT_RestoreTopManagedContextFromN2CStub
-
-    // Restore return value
     mov     x0, x19
 
-    // Restore callee-saved registers
     ldp     x19, x20, [sp, #0x10]
     cfi_restore(x19)
     cfi_restore(x20)
-    ldp     x21, x22, [sp, #0x20]
-    cfi_restore(x21)
-    cfi_restore(x22)
-    ldp     x27, x28, [sp, #0x30]
+    ldp     x27, x28, [sp, #0x20]
     cfi_restore(x27)
     cfi_restore(x28)
 
-    // Restore frame pointer and link register
     ldp     x29, x30, [sp], #96
     cfi_adjust_cfa_offset(-96)
     cfi_restore(x29)
