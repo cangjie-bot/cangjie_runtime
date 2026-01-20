@@ -594,8 +594,21 @@ void TypeInfoManager::ParseEnumInfo(TypeTemplate* tt, U32 argSize, TypeInfo* arg
         TypeInfo* enumTi = reinterpret_cast<TypeInfo*>(TypeTemplate::ExecuteGenericFunc(fn, argSize, args));
         ctor->SetTypeInfo(enumTi);
     }
+    if (!tt->ReflectIsEnable()) {
+        return;
+    }
     EnumInfo* tiEnumInfo = reinterpret_cast<EnumInfo*>(enumInfoAddr);
-
+    // To support dynamic creation of Enum generics, added genericTypeInfo in EnumInfo.
+    // However, genericTypeInfo will overlap with base.
+    // To ensure compatibility, determine if it's an old version by checking if genericTypeInfo size is 0.
+    if ((ttEnumInfo->GetNumOfInstanceMethodInfos() > 0 || ttEnumInfo->GetNumOfStaticMethodInfos() > 0) &&
+        reinterpret_cast<intptr_t>(ttEnumInfo->GetDeclaringGenericTypeInfo()) < 0) {
+        enumInfo->SetParsed();
+        ti->SetEnumInfo(tiEnumInfo);
+        return;
+    }
+    enumInfo->SetDeclaringGenericTypeInfo((reinterpret_cast<GenericTypeInfo*>(
+        ttEnumInfo->GetDeclaringGenericTypeInfo())));
     for (U32 idx = 0; idx < ttEnumInfo->GetNumOfInstanceMethodInfos(); ++idx) {
         uintptr_t methodInfoAddr = Allocate(sizeof(MethodInfo));
         MethodInfo* ttMethodInfo = ttEnumInfo->GetInstanceMethodInfo(idx);
