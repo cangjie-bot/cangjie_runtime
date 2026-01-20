@@ -388,33 +388,42 @@ class BenchmarkResult {
 }
 
 extend<T> Iterator<T> {
-    func minBy<K>(f: (T) -> K): T where K <: Comparable<K> {
-        var current = this.next().getOrThrow()
-        var key = f(current)
-        for (e in this) {
-            let new_key = f(e)
-            if (new_key < key) {
-                key = new_key
-                current = e
+    func minBy<K>(f: (T) -> K): ?T where K <: Comparable<K> {
+        if (let Some(first) <- this.next()) {
+            var current = first
+            var key = f(current)
+            for (e in this) {
+                let new_key = f(e)
+                if (new_key < key) {
+                    key = new_key
+                    current = e
+                }
             }
+            Some(current)
+        } else {
+            // CI rule G.FUN.01 requires single-purpose functions with no side effects
+            None
         }
-
-        current
     }
 
-    func maxBy<K>(f: (T) -> K): T where K <: Comparable<K> {
-        var current = this.next().getOrThrow()
-        var key = f(current)
-        for (e in this) {
-            let new_key = f(e)
-            if (new_key > key) {
-                key = new_key
-                current = e
+    func maxBy<K>(f: (T) -> K): ?T where K <: Comparable<K> {
+        if (let Some(first) <- this.next()) {
+            var current = first
+            var key = f(current)
+            for (e in this) {
+                let newKey = f(e)
+                if (newKey > key) {
+                    key = newKey
+                    current = e
+                }
             }
+            Some(current)
+        } else {
+            // CI rule G.FUN.01 requires single-purpose functions with no side effects
+            None
         }
-
-        current
     }
+
 }
 
 
