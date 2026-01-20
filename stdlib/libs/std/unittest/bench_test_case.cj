@@ -252,8 +252,8 @@ class BenchRunner {
         this.warmupInfo = WarmupInfo(this.explicitGC) // reset info
 
         this.targetDuration = configuration.get(KeyMinDuration.minDuration) ?? Duration.second * 5
-        let minBatches = configuration.get(KeyMinBatches.minBatches) ?? 10
-        this.minBatches = max(minBatches, 1)
+        let minBatchesConfig = configuration.get(KeyMinBatches.minBatches) ?? 10
+        this.minBatches = max(minBatchesConfig, 1)
 
         if (let Some(range) <- configuration.get<Range<Int64>>(KeyBatchSize.batchSize)) {
             this.maxMeasureBatch = range.end
@@ -263,9 +263,11 @@ class BenchRunner {
             this.maxMeasureBatch = size
             this.batchSize = size..=size
         }
-        if (this.batchSize.end <= 0){
-            throw IllegalArgumentException("batchSize must be positive")
+        if (this.batchSize.end <= 0) {
+            progress.println { "Error: batchSize must be positive." }
+            return
         }
+
 
         waitGCFinish()
 
@@ -418,9 +420,9 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
             runMultipleAndMeasure(Int64(batch |> ceil), max)
 
             // sanity check
-            if (i > minBatches && DateTime.now() - start > targetDuration * 4 && targetDuration > Duration.Zero) {
-                break
-            }
+            let elapsed = DateTime.now() - start
+            let limit = targetDuration * 4 + expectedGCTime
+            if (minBatches < i && limit < elapsed && targetDuration > Duration.Zero) {
         }
 
         progress.println {
