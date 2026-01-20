@@ -199,23 +199,28 @@ class BenchRunner {
 
     private func warmupFixedSize(warmupCount: Int64) {
         if (warmupCount < 0 ) {
-            return Err("Number of warmup iterations must be non negative")
+            progress.println { "Error: number of warmup iterations must be non negative." }
+            return
         }
+
         if (warmupCount == 0) {
             if (maxMeasureBatch >= MAX_BATCH_SIZE) {
-                throw IllegalArgumentException("if 'warmup' parameter is zero then 'batchSize' must be specified")
+                progress.println { "Error: if 'warmup' parameter is zero then 'batchSize' must be specified." }
+                return
             }
+
             progress.println { "    Warmup disabled." }
 
             let avgBatchSize = Float64(batchSize.end + batchSize.start) / 2.0
-            warmupInfo.estimation = Float64(targetDuration.toNanoseconds())/ avgBatchSize / Float64(minBatches)
+            warmupInfo.estimation = Float64(targetDuration.toNanoseconds()) / avgBatchSize / Float64(minBatches)
             warmupInfo.aggregateRuns = 1
             warmupInfo.executedBatches = 1
         } else {
             progress.println { "    Warming up for ${warmupCount} iterations." }
-            warmupInfo.warmupFixed(warmupCount, this.batchSize.start)
+            warmupInfo.warmupFixed(warmupCount, this.batchSize.start, this.batchSize.end)
         }
     }
+
 
     private func warmupAndEstimate() {
         warmupInfo.benchmark = this.benchmark
@@ -392,9 +397,12 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
             runMultipleAndMeasure(Int64(batch |> round), maxBatch)
 
             // sanity check
-            if (i*2 > minBatches && DateTime.now() - start > targetDuration * 4 && targetDuration > Duration.Zero) {
+            let elapsed = DateTime.now() - start
+            let timeLimit = targetDuration * 4 + expectedGCTime
+            if (i*2 > minBatches && elapsed > timeLimit && targetDuration > Duration.Zero) {
                 break
             }
+
         }
     }
 
