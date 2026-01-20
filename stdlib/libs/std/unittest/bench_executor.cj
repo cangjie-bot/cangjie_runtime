@@ -391,11 +391,11 @@ extend<T> Iterator<T> {
         if (let Some(first) <- this.next()) {
             return {
                 var current = first
-                var currentKey = f(current)
                 for (e in this) {
-                    if (let candidateKey = f(e); currentKey > candidateKey) {
+                    let candidateKey = f(e)
+                    let currentKey = f(current)
+                    if (currentKey > candidateKey) {
                         current = e
-                        currentKey = candidateKey
                     }
                 }
                 Some(current)
