@@ -578,6 +578,8 @@ void TypeInfoManager::ParseEnumInfo(TypeTemplate* tt, U32 argSize, TypeInfo* arg
 
     U32 enumCtorNum = ttEnumInfo->GetNumOfEnumCtor();
     EnumInfo* enumInfo = reinterpret_cast<EnumInfo*>(enumInfoAddr);
+    enumInfo->SetDeclaringGenericTypeInfo((reinterpret_cast<GenericTypeInfo*>(
+        ttEnumInfo->GetDeclaringGenericTypeInfo())));
     size_t sizeOfEnumCtors = enumCtorNum * sizeof(EnumCtorInfo);
     uintptr_t enumCtorInfoAddr = Allocate(sizeOfEnumCtors);
     MapleRuntime::MemoryCopy(enumCtorInfoAddr, sizeOfEnumCtors,
