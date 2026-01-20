@@ -153,7 +153,8 @@ struct WarmupInfo {
         let batches = max(warmupCount / maxMeasureBatch, 1)
         ema = Ema(batches / 2)
         for (i in 0..batches) {
-            if (let Auto <- warmupGC && i > batches / 2) {
+            let isAuto = warmupGC == Auto
+            if (isAuto && i > batches / 2) {
                 chooseWarmupGC()
             }
             warmupGC.invoke()
@@ -198,7 +199,7 @@ class BenchRunner {
 
     private func warmupFixedSize(warmupCount: Int64) {
         if (warmupCount < 0 ) {
-            throw IllegalArgumentException("Number of warmup iterations must be non negative")
+            return Err("Number of warmup iterations must be non negative")
         }
         if (warmupCount == 0) {
             if (maxMeasureBatch >= MAX_BATCH_SIZE) {
@@ -305,8 +306,9 @@ class BenchRunner {
 
         // due to some issues in runtime this causes a lot of false positives
         // so for now warn only from 2 bad measurements
-        let waitForFinish = explicitGC.waitsForFinish()
-        let gcTwiceWarn = (!waitForFinish && badBatches >= 2) || (waitForFinish && gcBatches >= 1)
+        let waitFinish = explicitGC.waitsForFinish()
+        let gcTwiceWarn = (!waitFinish && badBatches >= 2) || (waitFinish && gcBatches >= 1)
+
 
 
         if (gcTwiceWarn) {
