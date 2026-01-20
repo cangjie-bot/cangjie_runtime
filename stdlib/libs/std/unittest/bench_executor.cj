@@ -238,7 +238,7 @@ enum SeparateGc <: ToString {
             case GCOnly => { x => x[2] >= 1.0 }
             case WithoutGCOnly => { x =>
                 let value = abs(x[2])
-                value < 1e-9
+                value < 0.000000001
             }
 
         }
@@ -279,8 +279,8 @@ class BenchmarkResult {
     prop errorEstPercent: Float64 { get() {
         let result = this.median
         let error = this.errorEst
-        let isErrorSmall = abs(error) < 1e-9
-        let isResultSmall = abs(result) < 1e-9
+        let isErrorSmall = abs(error) < 0.000000001
+        let isResultSmall = abs(result) < 0.000000001
         if (isErrorSmall && isResultSmall) {
             0.0
         } else {
