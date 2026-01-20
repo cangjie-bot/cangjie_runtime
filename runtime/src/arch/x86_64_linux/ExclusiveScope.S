@@ -134,19 +134,27 @@ unwindPCForExclusiveStub:
 
 
 
-    // ExclusiveExecutor(oldCJThread, thread, newCJThread)
-    //                      rdi         rsi      rdx
-    movq    -80(%rbp), %rdi
-    movq    -88(%rbp), %rsi 
-    movq    -160(%rbp), %rdx
+    // ExclusiveExecutor(thread, newCJThread)
+    //                     rsi      rdx
+    movq    -88(%rbp), %rdi
+    movq    -160(%rbp), %rsi
     callq   ExclusiveExecutor@PLT
 
     movq    %rax, %r13
     movapd  %xmm0, -128(%rbp)
     movapd  %xmm1, -144(%rbp)
 
-    // ==================== switch  ====================
+    // ==================== switch back to cjthread stack ====================
     movq    -104(%rbp), %rsp
+
+    // ExclusiveRestore(oldCJThread, thread, newCJThread)
+    //                     rdi         rsi      rdx
+    movq    -80(%rbp), %rdi
+    movq    -88(%rbp), %rsi
+    movq    -160(%rbp), %rdx
+    callq   ExclusiveRestore@PLT
+
+    // ==================== continue ====================
     movq    %r13, -112(%rbp)
 
     // ==================== LeaveSaferegion ====================
@@ -218,15 +226,11 @@ ExecuteCangjieStubFull:
     .cfi_rel_offset %r14, -16
     .cfi_rel_offset %r15, -8
 
-    movq    %rdi, -48(%rbp)
-    movq    %rsi, -56(%rbp)
-    movq    %rdx, -64(%rbp)
-    movq    %rcx, -72(%rbp)
-    movq    %r8,  -80(%rbp)
-
-    movq    %rdi, -48(%rbp)
-    movq    %rdx, -56(%rbp)
-    movq    %rcx, -64(%rbp)
+    // Save arguments directly to the slots used for closure call
+    movq    %rdi, -48(%rbp)     // sret
+    movq    %rdx, -56(%rbp)     // closureObj (remap to arg1 slot)
+    movq    %rcx, -64(%rbp)     // executeClosure (remap to arg2 slot)
+    movq    %r8,  -80(%rbp)     // threadData
 
     // Update r15 with new ThreadLocalData from r8
     movq    %r8, %r15

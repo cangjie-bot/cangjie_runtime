@@ -644,7 +644,8 @@ MRT_STATIC_INLINE void CJThreadMake(const struct CJThreadAttrInner *attr,
 void CJThread0Make(struct CJThread *cjthread0)
 {
     // foreign thread schedule do not create new stack and not need to init cjthread context.
-    if (cjthread0->schedule->scheduleType == SCHEDULE_FOREIGN_THREAD) {
+    if (cjthread0->schedule->scheduleType == SCHEDULE_FOREIGN_THREAD ||
+        cjthread0->schedule->scheduleType == SCHEDULE_EXCLUSIVE) {
         return;
     }
     CJThreadContextInit(&cjthread0->context, nullptr, cjthread0->stack.cjthreadStackBaseAddr);
@@ -849,31 +850,66 @@ struct CJThread* CJThreadBuild(ScheduleHandle schedule, const struct CJThreadAtt
     return newCJThread;
 }
 
-void* ExclusiveExecutor(struct CJThread* oldCJThread, struct Thread* thread, struct CJThread* newCJThread)
+void* ExclusiveExecutor(struct Thread* thread, struct CJThread* newCJThread)
 {
+    // Save old scheduler and processor before switching
+    struct Schedule* newSchedule = newCJThread->schedule;
+
     thread->cjthread = newCJThread;
     newCJThread->thread = thread;
+
+    // Temporarily switch thread->processor to EXCLUSIVE processor for timer wake to work
+    struct Processor* exclusiveProcessor = &newSchedule->schdProcessor.processorGroup[0];
+    thread->processor = exclusiveProcessor;
+
+    // Switch to new scheduler (TLS)
+    ScheduleSet(newSchedule);
+    CJThreadSet(newCJThread);
 
     MapleRuntime::ThreadLocal::SetProtectAddr(nullptr);
     uintptr_t threadData = MapleRuntime::MRT_GetThreadLocalData();
     MapleRuntime::ThreadLocalData* tlData = reinterpret_cast<MapleRuntime::ThreadLocalData*>(threadData);
-    uint8_t* savedTLSCJThread = tlData->cjthread;
     tlData->cjthread = reinterpret_cast<uint8_t*>(newCJThread);
-    
+
     MapleRuntime::Mutator* mutator = newCJThread->mutator;
     tlData->mutator = mutator;
     mutator->PreparedToRun(tlData);
 
     newCJThread->func(newCJThread->argStart, newCJThread->argSize);
 
-    thread->cjthread = oldCJThread;
-    tlData->cjthread = savedTLSCJThread;
-    tlData->mutator = oldCJThread->mutator;
     return nullptr;
 }
 
+// ExclusiveRestore restore from exclusive cjthread
+void ExclusiveRestore(struct CJThread* oldCJThread, struct Thread* thread, struct CJThread* newCJThread)
+{
+    struct Schedule* oldSchedule = oldCJThread->schedule;
+    struct Schedule* newSchedule = newCJThread->schedule;
+
+    // Get saved values
+    uintptr_t threadData = MapleRuntime::MRT_GetThreadLocalData();
+    MapleRuntime::ThreadLocalData* tlData = reinterpret_cast<MapleRuntime::ThreadLocalData*>(threadData);
+
+    struct Processor* exclusiveProcessor = &newSchedule->schdProcessor.processorGroup[0];
+    exclusiveProcessor->thread = nullptr;
+    atomic_store(&exclusiveProcessor->state, PROCESSOR_EXITING);
+
+    // Restore thread's original processor
+    // oldProcessor was saved before, we need to get it from oldCJThread's original binding
+    struct Processor* oldProcessor = &oldSchedule->schdProcessor.processorGroup[0];
+    thread->processor = oldProcessor;
+
+    // Restore TLS
+    ScheduleSet(oldSchedule);
+    CJThreadSet(oldCJThread);
+    newSchedule->state = SCHEDULE_EXITED;
+
+    // Restore thread data
+    tlData->mutator = oldCJThread->mutator;
+}
+
 CJThreadHandle ExclusiveCJThreadNew(CJThreadFunc func,
-                           const void *argStart, unsigned int argSize, bool isSignal)
+                           const void *argStart, unsigned int argSize)
 {
     struct StackAttr stackAttr;
     stackAttr.stackGrow = false;
@@ -882,10 +918,19 @@ CJThreadHandle ExclusiveCJThreadNew(CJThreadFunc func,
     argAttr.argStart = argStart;
     argAttr.argSize = argSize;
 
-    struct Schedule* newSchedule = new Schedule;
-    newSchedule->scheduleType = SCHEDULE_EXCLUSIVE;
+    // Use CreateSubSchedulerAndInit to properly initialize the exclusive scheduler
+    auto runtime = reinterpret_cast<MapleRuntime::CangjieRuntime*>(&MapleRuntime::Runtime::Current());
+    ScheduleHandle scheduler = runtime->CreateSubSchedulerAndInit(SCHEDULE_EXCLUSIVE);
+    if (scheduler == nullptr) {
+        LOG(RTLOG_ERROR, "failed to create exclusive scheduler");
+        return nullptr;
+    }
+    
+    // Set scheduler state to RUNNING to allow timer wake to work
+    struct Schedule* schedule = reinterpret_cast<struct Schedule*>(scheduler);
+    schedule->state = SCHEDULE_RUNNING;
 
-    CJThreadHandle newCJThread = CJThreadNew(newSchedule, nullptr, func, argStart, argSize);
+    CJThreadHandle newCJThread = CJThreadNew(scheduler, nullptr, func, argStart, argSize);
     if (newCJThread == nullptr) {
         LOG(RTLOG_FATAL, "failed to create exclusive cjthread");
     }
@@ -1100,12 +1145,23 @@ int CJThreadParkInForeignThread(CJThread* cjthread, ParkCallbackFunc func, void 
     TRACE_START(MapleRuntime::TraceInfoFormat(TRACE_CJTHREAD_EXEC, cjthread->id));
 #endif
 
-    // Check the timer.
+    // Check the timer. Use ProcessorGetWithCheck to safely get processor.
     ProcessorCheckFunc checkFunc;
     unsigned long long now = 0;
     checkFunc = g_scheduleManager.check[PROCESSOR_TIMER_HOOK];
     if (checkFunc != nullptr) {
-        checkFunc(ProcessorGet(), &now, nullptr);
+        // For SCHEDULE_EXCLUSIVE, get processor from schedule's processor group
+        struct Processor* processor = nullptr;
+        if (cjthread->schedule->scheduleType == SCHEDULE_EXCLUSIVE || 
+            cjthread->schedule->scheduleType == SCHEDULE_FOREIGN_THREAD) {
+            // Use processor0 for exclusive/foreign schedules
+            processor = &(cjthread->schedule->schdProcessor.processorGroup[0]);
+        } else {
+            processor = ProcessorGet();
+        }
+        if (processor != nullptr) {
+            checkFunc(processor, &now, nullptr);
+        }
     }
 
     atomic_store_explicit(&cjthread->state, CJTHREAD_RUNNING, std::memory_order_relaxed);

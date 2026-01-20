@@ -235,8 +235,13 @@ int ScheduleProcessorInit(struct Schedule *schedule, unsigned int processorNum)
     }
 
     // bind processor0 to thread0.
-    thread = schedule->thread0;
-    thread->processor = &processorGroup[0];
+     if (schedule->scheduleType == SCHEDULE_EXCLUSIVE) {
+        thread = CJThreadGet()->thread;
+        schedule->thread0 = thread;
+    } else {
+        thread = schedule->thread0;
+        thread->processor = &processorGroup[0];
+    }
     processorGroup[0].thread = thread;
     processorGroup[0].state = PROCESSOR_RUNNING;
     // free num is processor_num - 1, because processor0 is running.
@@ -539,7 +544,8 @@ ScheduleHandle ScheduleNew(ScheduleType scheduleType, const struct ScheduleAttr 
     // When the scheduler is initialized, the created thread is bound to thread0. It is
     // convenient to use CJThreadGet() to obtain the cjthread. Therefore, only one scheduler
     // can be created for a thread.
-    if (scheduleType != SCHEDULE_FOREIGN_THREAD && CJThreadGet() != nullptr) {
+    if (scheduleType != SCHEDULE_FOREIGN_THREAD && scheduleType != SCHEDULE_EXCLUSIVE &&
+        CJThreadGet() != nullptr) {
         LOG_ERROR(ERRNO_SCHD_INIT_FAILED, "schedule has been inited");
         return nullptr;
     }
@@ -583,21 +589,21 @@ ScheduleHandle ScheduleNew(ScheduleType scheduleType, const struct ScheduleAttr 
         ScheduleFini(schedule, FINI_CJTHREAD);
         return nullptr;
     }
-    
-    // Init thread0 and cjthread0
-    error = ScheduleThread0Init(schedule, schedAttr);
-    if (error) {
-        LOG_ERROR(error, "thread0 init failed");
-        ScheduleFini(schedule, FINI_THREAD0);
-        return nullptr;
-    }
-
-    // Init thread structure
-    error = ScheduleThreadInit(&(schedule->schdThread), schedAttr);
-    if (error) {
-        LOG_ERROR(error, "schedule thread control block init failed");
-        ScheduleFini(schedule, FINI_THREAD);
-        return nullptr;
+    if (schedule->scheduleType != SCHEDULE_EXCLUSIVE) {
+        // Init thread0 and cjthread0
+        error = ScheduleThread0Init(schedule, schedAttr);
+        if (error) {
+            LOG_ERROR(error, "thread0 init failed");
+            ScheduleFini(schedule, FINI_THREAD0);
+            return nullptr;
+        }
+         // Init thread structure
+        error = ScheduleThreadInit(&(schedule->schdThread), schedAttr);
+        if (error) {
+            LOG_ERROR(error, "schedule thread control block init failed");
+            ScheduleFini(schedule, FINI_THREAD);
+            return nullptr;
+        }
     }
 
     // Init processor group
