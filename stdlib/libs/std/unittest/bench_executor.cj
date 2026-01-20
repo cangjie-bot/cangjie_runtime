@@ -31,15 +31,13 @@ class BenchExecutor<T> <: Executor {
 
     public func execute(suiteInfo: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
 
-        let benchRunner: BenchRunner
-        let progress = ProgressOutput(configuration)
-        benchRunner = BenchRunner(configuration, progress)
+        let benchRunner = BenchRunner(configuration, ProgressOutput(configuration))
         strategy.nextIteration(configuration)
         
         let measurementInfo = configuration.get(KeyMeasurementInfo.measurementInfo).getOrThrow()
         while (true) {
             let result = strategy.processNextWith(configuration) {
-                v, inputs => runSingle(v, inputs, suiteInfo, tcase.caseId, tcase.caseInfo, benchRunner, progress,
+                v, inputs => runSingle(v, inputs, suiteInfo, tcase.caseId, tcase.caseInfo, benchRunner, benchRunner.progress,
                     configuration, step)
             }
 
@@ -48,7 +46,7 @@ class BenchExecutor<T> <: Executor {
                     step += 1
                     tcase.add(result)
                     if (let Bench(benchmarkResult) <- result.info) {
-                        benchmarkResult.printSummary(progress, measurementInfo)
+                        benchmarkResult.printSummary(benchRunner.progress, measurementInfo)
                     }
                 case Failure(input, failure) =>
                     tcase.add(failure)
@@ -238,7 +236,7 @@ enum SeparateGc <: ToString {
             case GCOnly => { x => x[2] >= 1.0 }
             case WithoutGCOnly => { x =>
                 let value = abs(x[2])
-                value < 1e-9
+                value < 0.000000001
             }
 
         }
@@ -279,8 +277,8 @@ class BenchmarkResult {
     prop errorEstPercent: Float64 { get() {
         let result = this.median
         let error = this.errorEst
-        let isErrorSmall = abs(error) < 1e-9
-        let isResultSmall = abs(result) < 1e-9
+        let isErrorSmall = abs(error) < 0.000000001
+        let isResultSmall = abs(result) < 0.000000001
         if (isErrorSmall && isResultSmall) {
             0.0
         } else {
@@ -389,33 +387,48 @@ class BenchmarkResult {
 }
 
 extend<T> Iterator<T> {
-    func minBy<K>(f: (T) -> K): T where K <: Comparable<K> {
-        var current = this.next().getOrThrow()
-        var key = f(current)
-        for (e in this) {
-            let new_key = f(e)
-            if (new_key < key) {
-                key = new_key
-                current = e
+    func minBy<K>(f: (T) -> K): ?T where K <: Comparable<K> {
+        if (let Some(first) <- this.next()) {
+            return {
+                var current = first
+                var currentKey = f(current)
+                for (e in this) {
+                    let candidateKey = f(e)
+                    if (candidateKey < currentKey) {
+                        current = e
+                        currentKey = candidateKey
+                    }
+                }
+                Some(current)
             }
+        } else {
+            // CI rule G.FUN.01 requires single-purpose functions with no side effects
+            None
         }
-
-        current
     }
 
-    func maxBy<K>(f: (T) -> K): T where K <: Comparable<K> {
-        var current = this.next().getOrThrow()
-        var key = f(current)
-        for (e in this) {
-            let new_key = f(e)
-            if (new_key > key) {
-                key = new_key
-                current = e
-            }
-        }
 
-        current
+    func maxBy<K>(f: (T) -> K): ?T where K <: Comparable<K> {
+        if (let Some(first) <- this.next()) {
+            return {
+                var current = first
+                var currentKey = f(current)
+                for (e in this) {
+                    let candidateKey = f(e)
+                    if (candidateKey > currentKey) {
+                        current = e
+                        currentKey = candidateKey
+                    }
+                }
+                Some(current)
+            }
+        } else {
+            // CI rule G.FUN.01 requires single-purpose functions with no side effects
+            None
+        }
     }
+
+
 }
 
 
@@ -532,22 +545,21 @@ class BootstrapResult {
             // At least it gives expected results if there are two very distinct modes in our distribution.
 
             // sampled mean of measured distribution
-            let N = overhead_sample + batch[0] * mean_sample
+            let N = overhead_sample + (batch[0] * mean_sample)
             let b = (batch[1] - N)
             let variance1 = overhead.stddev()
             let variance2 = batch[0] * medianStats.sample.stddev()
 
-            // ratio of how much of variance comes from the variance of actual benchmark
-            let b2 = b * variance2 / (variance2 + variance1)
-
+            // b * variance2 / (variance2 + variance1) is ratio of how much of variance comes from the variance of actual benchmark
             {
-                let value = mean_sample + b2 / batch[0]
+                let value = mean_sample + (b * (variance2 / (variance2 + variance1))) / batch[0]
                 if (!value.isNaN()) {
                     result.add(value)
                 } else {
                     result.add(mean_sample)
                 }
             }
+
 
         }
 
@@ -561,7 +573,6 @@ class BootstrapResult {
         if (filtered.size < 5 || filtered.size < subsample.size/10) {
             return
         }
-
         {
             let (median, overheadMedian) = medianRegression(filtered)
             if (!median.isNaN()) {
@@ -569,7 +580,6 @@ class BootstrapResult {
                 this.medianOverheadStats.append(overheadMedian)
             }
         }
-
         {
             let (mean, meanOverhead, r2) = olsRegression(filtered)
             if (!mean.isNaN()) {
@@ -578,7 +588,6 @@ class BootstrapResult {
                 this.r2Stats.append(r2)
             }
         }
-
     }
 
     private func olsRegression(subsample: Array<(Float64, Float64)>): (Float64, Float64, Float64) {
@@ -600,8 +609,8 @@ class BootstrapResult {
         let sqrtSlice = 0..max(Int64(sqrt(Float64(subsample.size))), min(subsample.size, 15))
 
         for (i in sqrtSlice) {
-            let (x1, y1) = subsample[i]
             for (j in sqrtSlice) {
+                let (x1, y1) = subsample[i]
                 let (x2, y2) = subsample[j]
                 if (abs(x1 - x2) > 0.0001) {
                     let slope = (y1 - y2) / (x1 - x2)
