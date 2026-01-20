@@ -26,14 +26,14 @@ import std.convert.Formattable
 import std.sort.*
 
 // upper limit on number of saved measurements to keep reasonable statistics calculation time and memory cost
-const MEASUREMENTS_LIMIT = 500
-const DEFAULT_BATCHES_AMOUNT = 200.0
+const MEASUREMENTS_LIMIT = 500 // cjlint-ignore !G.VAR.02
+const DEFAULT_BATCHES_AMOUNT = 200.0 // cjlint-ignore !G.VAR.02
 const MAX_BATCH_SIZE = 2 ** 60
 // Currently in Cangjie minimal possible size of object is 8 because every object on heap has to store pointer to metadata
-const MIN_OBJECT_SIZE = 8.0
+const MIN_OBJECT_SIZE = 8.0 // cjlint-ignore !G.VAR.02
 
 // Threshold to detect that GC taking a lot of time so that it can infuence results of benchmarks
-const BIG_GC_THRESHOLD_NS = 50000.0
+const BIG_GC_THRESHOLD_NS = 50000.0 // cjlint-ignore !G.VAR.02
 
 
 struct WarmupInfo {
@@ -110,7 +110,7 @@ struct WarmupInfo {
         beforeWarmup()
 
         var aggregateTime = 0.0
-        var n = 0
+        var n = 0 // cjlint-ignore !G.VAR.02
         // use exponential moving average to prevent single abnormal result
         // on last warmup iteration to ruin some subsequent calculations
         // which can cause benchmark to work for too long
@@ -273,7 +273,7 @@ class BenchRunner {
 
         warmupAndEstimate()
         
-        let gcPerInv = Float64(warmupInfo.gcCount) / Float64(warmupInfo.aggregateRuns)
+        let gcPerInv = Float64(warmupInfo.gcCount) / Float64(warmupInfo.aggregateRuns) // cjlint-ignore !G.VAR.02
 
         if (let Auto <- this.explicitGC) {
             let noGC = warmupInfo.allocatedPerIteration < MIN_OBJECT_SIZE && warmupInfo.gcCount == 0
@@ -374,7 +374,7 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
     @OverflowWrapping
     private func doMicroBench(maxBatch: Int64, batchCount: Int64) {
         let max = Float64(maxBatch)
-        let avgStep = max / Float64(batchCount)
+        let avgStep = max / Float64(batchCount) // cjlint-ignore !G.VAR.02
 
         // run once on max to ensure that runtime requested all required memory from OS.
         // Otherwise some allocations can cause page faults if new memory is requested from OS
@@ -383,7 +383,7 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
             benchmark.measureLoopOnce(maxBatch, maxBatch, this.batchSize.end)
         }
         
-        let start = DateTime.now()
+        let start = DateTime.now() // cjlint-ignore !G.VAR.02
         for (i in 0..batchCount/2) {
 
             // this way of invoking GC and changing batch size is necessary to average out the effects
@@ -410,10 +410,10 @@ Warning: Too many objects survive GC which causes unexpectedly long GC times.
 
     @OverflowWrapping
     private func doMacroBench(max: Int64, batchCount: Int64) {
-        let avgStep = Float64(max) / Float64(batchCount)
+        let avgStep = Float64(max) / Float64(batchCount) // cjlint-ignore !G.VAR.02
         let start = DateTime.now()
 
-        var batch = 0.0
+        var batch = 0.0 // cjlint-ignore !G.VAR.02
         for (i in 0..batchCount) {
             batch += avgStep
             runSingleMacroBenchStep(batch, max)
