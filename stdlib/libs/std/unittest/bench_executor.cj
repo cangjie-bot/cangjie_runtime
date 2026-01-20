@@ -31,9 +31,8 @@ class BenchExecutor<T> <: Executor {
 
     public func execute(suiteInfo: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
 
-        let benchRunner: BenchRunner
-        let progress = ProgressOutput(configuration)
-        benchRunner = BenchRunner(configuration, progress)
+        let benchRunner = BenchRunner(configuration, ProgressOutput(configuration))
+        let progress = benchRunner.progress
         strategy.nextIteration(configuration)
         
         let measurementInfo = configuration.get(KeyMeasurementInfo.measurementInfo).getOrThrow()
@@ -537,17 +536,16 @@ class BootstrapResult {
             let variance1 = overhead.stddev()
             let variance2 = batch[0] * medianStats.sample.stddev()
 
-            // ratio of how much of variance comes from the variance of actual benchmark
-            let b2 = b * variance2 / (variance2 + variance1)
-
+            // b * variance2 / (variance2 + variance1) is ratio of how much of variance comes from the variance of actual benchmark
             {
-                let value = mean_sample + b2 / batch[0]
+                let value = mean_sample + (b * variance2 / (variance2 + variance1)) / batch[0]
                 if (!value.isNaN()) {
                     result.add(value)
                 } else {
                     result.add(mean_sample)
                 }
             }
+
 
         }
 
@@ -561,7 +559,6 @@ class BootstrapResult {
         if (filtered.size < 5 || filtered.size < subsample.size/10) {
             return
         }
-
         {
             let (median, overheadMedian) = medianRegression(filtered)
             if (!median.isNaN()) {
@@ -569,7 +566,6 @@ class BootstrapResult {
                 this.medianOverheadStats.append(overheadMedian)
             }
         }
-
         {
             let (mean, meanOverhead, r2) = olsRegression(filtered)
             if (!mean.isNaN()) {
@@ -578,7 +574,6 @@ class BootstrapResult {
                 this.r2Stats.append(r2)
             }
         }
-
     }
 
     private func olsRegression(subsample: Array<(Float64, Float64)>): (Float64, Float64, Float64) {
@@ -600,8 +595,8 @@ class BootstrapResult {
         let sqrtSlice = 0..max(Int64(sqrt(Float64(subsample.size))), min(subsample.size, 15))
 
         for (i in sqrtSlice) {
-            let (x1, y1) = subsample[i]
             for (j in sqrtSlice) {
+                let (x1, y1) = subsample[i]
                 let (x2, y2) = subsample[j]
                 if (abs(x1 - x2) > 0.0001) {
                     let slope = (y1 - y2) / (x1 - x2)
