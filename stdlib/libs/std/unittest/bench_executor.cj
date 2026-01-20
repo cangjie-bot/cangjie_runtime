@@ -236,7 +236,11 @@ enum SeparateGc <: ToString {
         match (this) {
             case AllPoints => { x => true }
             case GCOnly => { x => x[2] >= 1.0 }
-            case WithoutGCOnly => { x => abs(x[2]) < 1e-9 }
+            case WithoutGCOnly => { x =>
+                let value = abs(x[2])
+                value < 1e-9
+            }
+
         }
     }
 }
@@ -275,7 +279,9 @@ class BenchmarkResult {
     prop errorEstPercent: Float64 { get() {
         let result = this.median
         let error = this.errorEst
-        if (abs(error) < 1e-9 && abs(result) < 1e-9) {
+        let isErrorSmall = abs(error) < 1e-9
+        let isResultSmall = abs(result) < 1e-9
+        if (isErrorSmall && isResultSmall) {
             0.0
         } else {
             error / result * 100.0
@@ -496,14 +502,12 @@ class BootstrapResult {
         let N1 = overhead.mean()
         let N2 = mean.mean()
 
-        let stddev2 = medianStats.sample.stddev()
         let gcRatio = rawData.iterator().map{ x => x[2] }.sum() / Float64(rawData.size)
 
         let random = Random()
         for (_ in 0..BOOTSTRAP_ITERATIONS) {
-            let offset = overhead.data.size / 5 // remove overhead outliers
-            
-            let overheadIdx = try { random.nextInt64(overhead.data.size - 2 * offset) + offset } catch (_: Exception) { 0 }
+            // overhead.data.size / 5 is offset to remove overhead outliers
+            let overheadIdx = try { random.nextInt64(overhead.data.size - 2 * overhead.data.size / 5) + overhead.data.size / 5 } catch (_: Exception) { 0 }
 
             let overhead_sample = max(overhead.data[overheadIdx], 0.0)
 
@@ -531,17 +535,20 @@ class BootstrapResult {
             let N = overhead_sample + batch[0] * mean_sample
             let b = (batch[1] - N)
             let variance1 = overhead.stddev()
-            let variance2 = batch[0] * stddev2
+            let variance2 = batch[0] * medianStats.sample.stddev()
 
             // ratio of how much of variance comes from the variance of actual benchmark
             let b2 = b * variance2 / (variance2 + variance1)
 
-            let value = mean_sample + b2/batch[0]
-            if (!value.isNaN()) {
-                result.add(value)
-            } else {
-                result.add(mean_sample)
+            {
+                let value = mean_sample + b2 / batch[0]
+                if (!value.isNaN()) {
+                    result.add(value)
+                } else {
+                    result.add(mean_sample)
+                }
             }
+
         }
 
         StatisticsSample(Sample(result))
@@ -555,18 +562,23 @@ class BootstrapResult {
             return
         }
 
-        let (median, overheadMedian) = medianRegression(filtered)
-        if (!median.isNaN()) {
-            this.medianStats.append(median)
-            this.medianOverheadStats.append(overheadMedian)
+        {
+            let (median, overheadMedian) = medianRegression(filtered)
+            if (!median.isNaN()) {
+                this.medianStats.append(median)
+                this.medianOverheadStats.append(overheadMedian)
+            }
         }
 
-        let (mean, meanOverhead, r2) = olsRegression(filtered)
-        if (!mean.isNaN()) {
-            this.meanStats.append(mean)
-            this.meanOverheadStats.append(meanOverhead)
-            this.r2Stats.append(r2)
+        {
+            let (mean, meanOverhead, r2) = olsRegression(filtered)
+            if (!mean.isNaN()) {
+                this.meanStats.append(mean)
+                this.meanOverheadStats.append(meanOverhead)
+                this.r2Stats.append(r2)
+            }
         }
+
     }
 
     private func olsRegression(subsample: Array<(Float64, Float64)>): (Float64, Float64, Float64) {
