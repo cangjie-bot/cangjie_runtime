@@ -31,11 +31,11 @@ class BenchExecutor<T> <: Executor {
 
     public func execute(suiteInfo: TestSuiteReportInfo, tcase: TestCaseResult, configuration: Configuration): Unit {
 
-        let benchRunner = BenchRunner(configuration, ProgressOutput(configuration))
         strategy.nextIteration(configuration)
         
         let measurementInfo = configuration.get(KeyMeasurementInfo.measurementInfo).getOrThrow()
         while (true) {
+            let benchRunner = BenchRunner(configuration, ProgressOutput(configuration))
             let result = strategy.processNextWith(configuration) {
                 v, inputs => runSingle(v, inputs, suiteInfo, tcase.caseId, tcase.caseInfo, benchRunner, benchRunner.progress,
                     configuration, step)
