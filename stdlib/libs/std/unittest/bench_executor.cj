@@ -393,8 +393,7 @@ extend<T> Iterator<T> {
                 var current = first
                 var currentKey = f(current)
                 for (e in this) {
-                    let candidateKey = f(e)
-                    if (candidateKey < currentKey) {
+                    if (let candidateKey = f(e); currentKey > candidateKey) {
                         current = e
                         currentKey = candidateKey
                     }
@@ -415,7 +414,7 @@ extend<T> Iterator<T> {
                 var currentKey = f(current)
                 for (e in this) {
                     let candidateKey = f(e)
-                    if (candidateKey > currentKey) {
+                    if ( currentKey < candidateKey) {
                         current = e
                         currentKey = candidateKey
                     }
