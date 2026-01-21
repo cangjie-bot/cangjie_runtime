@@ -668,6 +668,7 @@ Output:
 ```text
 Exception class name: IllegalArgumentException
 ```
+
 ## class ExclusiveScopeException
 
 ```cangjie
@@ -679,29 +680,6 @@ Purpose: Custom exception class used to wrap exceptions thrown within an exclusi
 Parent Type: 
 - [Exception](#class-exception)
 
-### func getClassName()
-```cangjie
-protected override func getClassName(): String
-```
-
-Purpose: Get class name.
-
-Return Value:
-- [String](core_package_structs.md#struct-string)
-
-Example:
-
-<!-- compile -->
-```cangjie
-// This example is for demonstration only, assuming an ExclusiveScopeException is thrown
-main() {
-    try {
-    // Assume memory error occurs
-    } catch (e: ExclusiveScopeException) {
-        println(e.message)
-    }
-}
-```
 ### func toString()
 
 ```cangjie
@@ -715,7 +693,7 @@ Return Value:
 
 Example:
 
-<!-- compile -->
+<!-- code_no_check -->
 ```cangjie
 // This example is for demonstration only, assuming an ExclusiveScopeException is thrown
 main() {

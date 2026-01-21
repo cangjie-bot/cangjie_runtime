@@ -534,6 +534,7 @@ main() {
 默认异常的字符串表示: Exception
 带消息异常的字符串表示: Exception: 自定义异常信息
 ```
+
 ## class ExclusiveScopeException
 
 ```cangjie
@@ -545,32 +546,6 @@ public class ExclusiveScopeException <: Exception
 父类型：
 
 - [Exception](#class-exception)
-
-### func getClassName()
-
-```cangjie
-protected override func getClassName(): String
-```
-
-功能：获得类名。
-
-返回值：
-
-- [String](core_package_structs.md#struct-string) - 类名。
-
-示例：
-
-<!-- compile -->
-```cangjie
-// 此示例只做展示，假设抛出 ExclusiveScopeException
-main() {
-    try {
-    // 假设出现内存错误
-    } catch (e: ExclusiveScopeException) {
-        println(e.message)
-    }
-}
-```
 
 ### func toString()
 
@@ -586,7 +561,7 @@ public override func toString(): String
 
 示例：
 
-<!-- compile -->
+<!-- code_no_check -->
 ```cangjie
 // 此示例只做展示，假设抛出 ExclusiveScopeException
 main() {
