@@ -8,7 +8,7 @@
 #ifndef MRT_REGION_SPACE_H
 #define MRT_REGION_SPACE_H
 
-#include <cassert>
+#include <assert.h>
 #include <list>
 #include <map>
 #include <set>

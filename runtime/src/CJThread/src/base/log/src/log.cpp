@@ -8,7 +8,6 @@
 #include <libgen.h>
 #include "securec.h"
 #include "log.h"
-#include "Base/Log.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,31 +97,6 @@ void LogWrite(ThreadLogLevel level,
     if (level == ThreadLogLevel::LOG_LEVEL_FATAL) {
         abort();
     }
-}
-
-void HiLogWrite(RTLogLevel level, const char *fmt, ...)
-{
-#if defined (__OHOS__) || defined(__ANDROID__) || defined(__IOS__)
-    va_list args;
-    va_start(args, fmt);
-    MapleRuntime::HiLogForCJThread(level, fmt, args);
-    va_end(args);
-    return;
-#else
-    if (level == RTLogLevel::RTLOG_FATAL) {
-        va_list alist;
-        char output[LOG_BUF_SIZE];
-        va_start(alist, fmt);
-        int ret = vsnprintf_s(output, LOG_BUF_SIZE, LOG_BUF_SIZE - 1, fmt, alist);
-        va_end(alist);
-        if (ret < 0) {
-            printf("HiLogWrite failed: %d\n", errno);
-            printf("%s\r\n", output);
-            return;
-        }
-        printf("%s\r\n", output);
-    }
-#endif
 }
 
 void LogRegister(LogFunc logFunc, bool enable, int level)

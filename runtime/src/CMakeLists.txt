@@ -57,28 +57,6 @@ if (BUILD_RUNTIME)
         "os/Linux/Loader.cpp"
         "os/Linux/Path.cpp"
     )
-elseif ((CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64" AND IOS_FLAG MATCHES 1) OR IOS_SIMULATOR_FLAG MATCHES 2)
-    set(SRC_LIST
-        "CompilerCalls.cpp"
-        "ExceptionManager.cpp"
-        "StackManager.cpp"
-        "HeapManager.cpp"
-        "LoaderManager.cpp"
-        "SignalManager.cpp"
-        "TypeInfoManager.cpp"
-        "LogManager.cpp"
-        "CangjieRuntime.cpp"
-        "CjScheduler.cpp"
-        "CjTimer.cpp"
-        "CangjieRuntimeApi.cpp"
-        "arch/x86_64_ios/N2CStub.S"
-        "arch/x86_64_ios/C2NStub.S"
-        "arch/x86_64_ios/CalleeSavedStub.S"
-        "arch/x86_64_ios/StackGrowStub.S"
-        "arch/x86_64_ios/HandleSafepointStub.S"
-        "Os/Linux/Loader.cpp"
-        "Os/Linux/Path.cpp"
-    )
 elseif ((CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64") AND (WINDOWS_FLAG MATCHES 0) AND (IOS_FLAG MATCHES 0) AND (IOS_SIMULATOR_FLAG MATCHES 0))
     set(SRC_LIST
         "CompilerCalls.cpp"
@@ -123,7 +101,7 @@ elseif ((CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64") AND (MACOS_FLAG MATCHES 1))
         "os/Linux/Loader.cpp"
         "os/Linux/Path.cpp"
     )
-elseif ((IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1) AND (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64"))
+elseif (IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1)
     set(SRC_LIST
         "CompilerCalls.cpp"
         "ExceptionManager.cpp"
@@ -137,11 +115,11 @@ elseif ((IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1) AND (CMAKE_SYSTEM_P
         "CjScheduler.cpp"
         "CjTimer.cpp"
         "CangjieRuntimeApi.cpp"
-        "arch/aarch64_ios/N2CStub.S"
-        "arch/aarch64_ios/C2NStub.S"
-        "arch/aarch64_ios/CalleeSavedStub.S"
-        "arch/aarch64_ios/StackGrowStub.S"
-        "arch/aarch64_ios/HandleSafepointStub.S"
+        "arch/ios/N2CStub.S"
+        "arch/ios/C2NStub.S"
+        "arch/ios/CalleeSavedStub.S"
+        "arch/ios/StackGrowStub.S"
+        "arch/ios/HandleSafepointStub.S"
         "Os/Linux/Loader.cpp"
         "Os/Linux/Path.cpp"
     )
@@ -217,18 +195,6 @@ elseif (WINDOWS_FLAG MATCHES 1)
 endif()
     add_library(runtime STATIC ${SRC_LIST})
     add_library(cangjie-runtime SHARED ${SRC_LIST})
-    if (((IOS_FLAG MATCHES 1 OR IOS_SIMULATOR_FLAG MATCHES 1) AND (CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")) OR
-        ((CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64" AND IOS_FLAG MATCHES 1) OR IOS_SIMULATOR_FLAG MATCHES 2))
-	target_compile_options(cangjie-runtime PRIVATE -Wno-elaborated-enum-base)
-	target_compile_options(cangjie-runtime PRIVATE -Wno-availability)
-	target_compile_options(runtime PRIVATE -Wno-elaborated-enum-base)
-	target_compile_options(runtime PRIVATE -Wno-availability)
-	find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
-    if (COREFOUNDATION_FRAMWORK)
-	    target_link_libraries(cangjie-runtime ${COREFOUNDATION_FRAMEWORK}/CoreFoundation.tbd)
-	    target_link_libraries(runtime ${COREFOUNDATION_FRAMEWORK}/CoreFoundation.tbd)
-    endif()
-endif()
 
 elseif (BUILD_DEMANGLE)
     add_subdirectory(Demangler)

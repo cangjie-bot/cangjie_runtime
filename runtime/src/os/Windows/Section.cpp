@@ -87,13 +87,6 @@ uintptr_t __CJReflectGV;
 unsigned long __CJReflectGISize;
 uintptr_t __CJReflectGI;
 
-// CJTypeExt
-unsigned long __CJTypeExtSize;
-uintptr_t __CJTypeExt;
-
-uintptr_t g_runtimeStaticStart;
-uintptr_t g_runtimeStaticEnd;
-
 __attribute__((constructor(0))) __declspec(dllexport) void InitData()
 {
     HMODULE hModule = NULL;
@@ -201,15 +194,6 @@ __attribute__((constructor(0))) __declspec(dllexport) void InitData()
             __CJReflectGI = reinterpret_cast<uintptr_t>(hModule) +
                              sectionHeader->VirtualAddress;
             __CJReflectGISize = sectionHeader->Misc.VirtualSize;
-        } else if (strncmp(secName, ".cjtpe", sizeof(".cjtpe") - 1) == 0) {
-            __CJTypeExt = reinterpret_cast<uintptr_t>(hModule) +
-                             sectionHeader->VirtualAddress;
-            __CJTypeExtSize = sectionHeader->Misc.VirtualSize;
-        } else if (strncmp(secName, ".text_rt", sizeof(".text_rt") - 1) == 0) {
-            g_runtimeStaticStart = reinterpret_cast<uintptr_t>(hModule) +
-                                   sectionHeader->VirtualAddress;
-            g_runtimeStaticEnd =
-                g_runtimeStaticStart + sectionHeader->Misc.VirtualSize;
         }
         ++sectionHeader;
     }
@@ -234,7 +218,6 @@ __attribute__((constructor(0))) __declspec(dllexport) void InitData()
         __CJReflectPkgInfo, reinterpret_cast<uintptr_t>(__CJReflectPkgInfo + __CJGCReflectPkgInfoSize),
         __CJReflectGV,      reinterpret_cast<uintptr_t>(__CJReflectGV + __CJReflectGVSize),
         __CJReflectGI,      reinterpret_cast<uintptr_t>(__CJReflectGI + __CJReflectGISize),
-        __CJTypeExt,      reinterpret_cast<uintptr_t>(__CJTypeExt + __CJTypeExtSize),
     };
     uintptr_t start = std::min<uintptr_t>(addrs);
     uintptr_t end = std::max<uintptr_t>(addrs);

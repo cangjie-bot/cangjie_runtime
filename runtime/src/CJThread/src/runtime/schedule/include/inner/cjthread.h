@@ -18,7 +18,9 @@
 #include "list.h"
 #include "thread.h"
 #include "cjthread_context.h"
+#ifndef MRT_TEST
 #include "Mutator/Mutator.h"
+#endif
 #include "base.h"
 
 #ifdef __cplusplus
@@ -90,6 +92,16 @@ struct StackInfo {
     unsigned long long lastLeaveFrame = 0ULL;
 };
 
+#ifdef MRT_TEST
+enum CJThreadState {
+    CJTHREAD_IDLE,         /* init state of cjthread */
+    CJTHREAD_READY,        /* ready to execute */
+    CJTHREAD_RUNNING,      /* running */
+    CJTHREAD_PENDING,      /* waiting */
+    CJTHREAD_SYSCALL,      /* system call */
+};
+#endif
+
 /**
  * @brief cjthread allocation type
  */
@@ -126,7 +138,11 @@ struct CJThread {
                                               * cjthread_context assembly. Therefore, do not
                                               * change the offset. */
     std::atomic<CJThreadState> state;        /* cjthread state */
+#ifdef MRT_TEST
+    void *mutator;
+#else
     MapleRuntime::Mutator *mutator;          /* mutator, use for gc */
+#endif
     struct Schedule *schedule;               /* scheduler */
     struct Dulink allCJThreadDulink;         /* Global manafement queue connected to all cjthreads */
     struct Dulink cjSingleModeThreadDulink;

@@ -9,9 +9,6 @@
 #include "Base/LogFile.h"
 #include "Common/Runtime.h"
 #include "Exception/ExceptionCApi.h"
-#ifdef __APPLE__
-#include "Exception/CFException.h"
-#endif
 #include "ExceptionManager.inline.h"
 #include "Mutator/Mutator.h"
 #include "ObjectModel/MObject.h"
@@ -96,11 +93,11 @@ void ExceptionManager::RegisterUncaughtExceptionHandler(const CJUncaughtExceptio
 }
 #endif
 
-#ifdef __IOS__
+#ifdef __APPLE__
 void ExceptionManager::DefaultUncaughtTask(const char* sunmary, const CJErrorObject errorObj)
 {
-    (void)sunmary;
-    (void)errorObj;
+    PRINT_INFO("%s\n", sunmary);
+    PRINT_INFO("%s\n%s\n%s\n", errorObj.name, errorObj.message, errorObj.stack);
     abort();
 }
 #endif
@@ -109,27 +106,19 @@ void ExceptionManager::DumpException()
 {
     ExceptionWrapper& eWrapper = Mutator::GetMutator()->GetExceptionWrapper();
     std::vector<uint64_t>& liteFrameInfos = eWrapper.GetLiteFrameInfos();
-    LOG(RTLOG_ERROR, "An exception has occurred:\n");
+    LOG(RTLOG_INFO, "An exception has occurred:\n");
     MObject* exceptionObject = eWrapper.GetExceptionRef();
     MangleNameHelper helper(exceptionObject->GetTypeInfo()->GetName());
     CString clsName(helper.GetSimpleClassName());
     std::vector<StackTraceElement> stackTrace;
     StackManager::GetStackTraceByLiteFrameInfos(liteFrameInfos, stackTrace);
-    if (stackTrace.empty()) {
-        LOG(RTLOG_ERROR, "Stacetrace is empty.");
-    }
+
     // If uncaughtExceptionHandler is registered, then execute the handler.
     // Otherwise, dump the exception information.
     std::lock_guard<std::mutex> lock(gUncaughtExceptionHandlerMtx);
     if (Runtime::Current().GetExceptionManager().GetUncaughtExceptionHandler().uncaughtTask) {
 #if defined(__OHOS__) && (__OHOS__ == 1) || (__APPLE__)
         const char* summary = "Uncaught exception was found.";
-        CString exceptionMsg(eWrapper.GetExceptionMessage());
-#if defined(__APPLE__) && (__IOS__ == 1)
-        CFException::ReportBacktraceToIosIpsLog(eWrapper);
-        LOG(RTLOG_ERROR, summary);
-        LOG(RTLOG_ERROR, exceptionMsg.Str());
-#endif
         CString exceptionStack;
         const int strLen = 10;
         char* str = static_cast<char*>(NativeAllocator::NativeAlloc(strLen * sizeof(char)));
@@ -149,33 +138,30 @@ void ExceptionManager::DumpException()
             exceptionStack += +":";
             exceptionStack += str;
             exceptionStack += ")\n";
-#if defined(__APPLE__)
-            LOG(RTLOG_ERROR, exceptionStack.Str());
-            exceptionStack = "";
-#endif
         }
-        CJErrorObject errObj = {clsName.Str(), exceptionMsg.Str(), exceptionStack.Str()};
+        CString exeptionMsg(eWrapper.GetExceptionMessage());
+        CJErrorObject errObj = {clsName.Str(), exeptionMsg.Str(), exceptionStack.Str()};
         eWrapper.ClearInfo();
         Runtime::Current().GetExceptionManager().GetUncaughtExceptionHandler().uncaughtTask(summary, errObj);
 #endif
     } else {
 #ifdef __APPLE__
-        PRINT_ERROR("%s", clsName.Str());
+        PRINT_INFO("%s", clsName.Str());
 #endif
-        LOG(RTLOG_ERROR, clsName.Str());
+        LOG(RTLOG_INFO, clsName.Str());
         if (eWrapper.GetExceptionMessage() != nullptr && eWrapper.GetExceptionMessageLength() != 0) {
             const char* linkStr = ": ";
 #ifdef __APPLE__
-            PRINT_ERROR("%s", linkStr);
-            PRINT_ERROR("%s", eWrapper.GetExceptionMessage());
+            PRINT_INFO("%s", linkStr);
+            PRINT_INFO("%s", eWrapper.GetExceptionMessage());
 #endif
             LOG(RTLOG_ERROR, linkStr);
             LOG(RTLOG_ERROR, eWrapper.GetExceptionMessage());
         }
 #ifdef __APPLE__
-        PRINT_ERROR("\n");
+        PRINT_INFO("\n");
 #endif
-        LOG(RTLOG_ERROR, "\n");
+        LOG(RTLOG_INFO, "\n");
         constexpr int32_t frameInfoPairLen = 3; // function PC and startpc form one pair in liteFrameInfos
         // When some frames are folded, arraySize is an odd number and the last frame is invalid.
         // In this case, the last frame is discarded.
@@ -187,29 +173,24 @@ void ExceptionManager::DumpException()
 
         if (sofFoldedFlag == SofStackFlag::TOP_FOLDED) {
 #ifdef __APPLE__
-            PRINT_ERROR("\t ... Some frames are not displayed ...\n");
+            PRINT_INFO("\t ... Some frames are not displayed ...\n");
 #endif
-            LOG(RTLOG_ERROR, "\t ... Some frames are not displayed ...\n");
+            LOG(RTLOG_INFO, "\t ... Some frames are not displayed ...\n");
         }
         for (auto ste : stackTrace) {
 #ifdef __APPLE__
-            PRINT_ERROR("\t at %s%s%s(%s:%lld)\n", ste.className.Str(), ste.className.Length() > 0 ? "." : "",
+            PRINT_INFO("\t at %s%s%s(%s:%lld)\n", ste.className.Str(), ste.className.Length() > 0 ? "." : "",
                        ste.methodName.Str(), ste.fileName.Str(), ste.lineNumber);
 #endif
-            LOG(RTLOG_ERROR, "\t at %s%s%s(%s:%ld)\n", ste.className.Str(), ste.className.Length() > 0 ? "." : "",
+            LOG(RTLOG_INFO, "\t at %s%s%s(%s:%ld)\n", ste.className.Str(), ste.className.Length() > 0 ? "." : "",
                 ste.methodName.Str(), ste.fileName.Str(), ste.lineNumber);
         }
         if (sofFoldedFlag == SofStackFlag::BOTTOM_FOLDED) {
 #ifdef __APPLE__
-            PRINT_ERROR("\t ... Some frames are not displayed ...\n");
+            PRINT_INFO("\t ... Some frames are not displayed ...\n");
 #endif
-            LOG(RTLOG_ERROR, "\t ... Some frames are not displayed ...\n");
+            LOG(RTLOG_INFO, "\t ... Some frames are not displayed ...\n");
         }
-#if defined(__OHOS__) && (__OHOS__ == 1)
-        // In OHOS, C calling Cangjie: uncaught exception allow C-side execution to continue without proactive exit,
-        // leading to unexpected behavior. Proactive exit is required.
-        LOG(RTLOG_FATAL, "Uncaught exception: %s. Terminate required.", clsName.Str());
-#endif
     }
 }
 
