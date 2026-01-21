@@ -86,7 +86,6 @@ We use a self-invoked lambda because Cangjie doesn't support blocks, and it's a 
 self-invoked lambdas are also optimised by the compiler not to have call actually,
 due to this, for example, capturing mutable variables is allowed by the Cangjie compiler front-end.
 */
-// TODO: look at how we can isolate `pa__` not to pollute a lexical scope with it
 private func commonPowerAssertDiagramBuilderInvocation(result: VisitorResult): Tokens {
     // assertEqual inserts a cancelation point
     quote(

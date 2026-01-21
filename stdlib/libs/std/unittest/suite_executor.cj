@@ -178,7 +178,6 @@ class TestSuiteExecutor {
         }
     }
 
-    // TODO: as discussed timeout handling should limit whole test case execution
     // itself rather than individual run execution
     // we cannot properly implement property test that would shrink data that timed out
     private static func runConsideringTimeout(

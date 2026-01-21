@@ -82,7 +82,6 @@ let RADIX_UNIT_TABLE: MeasurementUnitTable = [
     TimeUnit.Seconds.conversionRow()
 ]
 
-// TODO: use that for printing test duration as well 
 func printDuration(dur: Duration): String {
     let duration = Float64(dur.toNanoseconds())
     TimeNow().conversionTable.toString(duration)

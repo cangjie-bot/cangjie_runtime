@@ -457,7 +457,6 @@ public interface TestClass {
 }
 
 // NOTE: this class is used internally by the compiler and is considered implementation details
-// TODO: rename to __TestRegister
 public class TestPackage {
     private let builder: TestGroupBuilder
 
