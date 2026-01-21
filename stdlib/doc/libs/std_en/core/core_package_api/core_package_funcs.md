@@ -280,7 +280,6 @@ Throws:
 Example:
 
 <!-- verify -->
-
 ```cangjie
 main() {
     let result = exclusiveScope<Int64> {
