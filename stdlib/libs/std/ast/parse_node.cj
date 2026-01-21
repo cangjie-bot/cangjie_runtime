@@ -352,7 +352,7 @@ func createMacroExpand(nodeInvocation: Option<NodeFormat_MacroInvocation>, isDec
         }
         return m
     }
-    return MacroExpandExpr(key, packageIdentifier, identifier, lSquare, attrs, rSquare, lParen, inputs, rParen,
+    return MacroExpandExpr(key, packageIdentifier, lSquare, attrs, rSquare, lParen, inputs, rParen,
         macroInputDecl, hasParenthesis)
 }
 

@@ -1010,7 +1010,7 @@ public class ResumeExpr <: Expr {
             match (parseExpr(inputs) as ResumeExpr) {
                 case Some(v) =>
                     this.resume_ = v.resume_
-                    this.with_ = with_
+                    this.with_ = v.with_
                     this.withExpr_ = v.withExpr_
                     this.throwing_ = v.throwing_
                     this.throwingExpr_ = v.throwingExpr_
@@ -4195,11 +4195,10 @@ public class VArrayExpr <: Expr {
 }
 
 public class MacroExpandExpr <: Expr {
-    init(at: Token, fullIdentifier: Token, identifier: Token, lSquare: Token, macroAttrs: Tokens, rSquare: Token,
+    init(at: Token, fullIdentifier: Token, lSquare: Token, macroAttrs: Tokens, rSquare: Token,
         lParen: Token, macroInputs: Tokens, rParen: Token, macroInputDecl: Option<Decl>, hasParenthesis: Bool) {
         at_ = at
         pkgIdentifier_ = fullIdentifier
-        identifier_ = identifier
         lSquare_ = lSquare
         macroAttrs_ = macroAttrs
         rSquare_ = rSquare
@@ -4217,7 +4216,6 @@ public class MacroExpandExpr <: Expr {
                     this.end_ = v.endPos
                     this.at_ = v.at_
                     this.pkgIdentifier_ = v.pkgIdentifier_
-                    this.identifier_ = v.identifier_
                     this.lSquare_ = checkValid(v.lSquare_)
                     this.macroAttrs_ = v.macroAttrs_
                     this.rSquare_ = checkValid(v.rSquare_)
@@ -4239,7 +4237,6 @@ public class MacroExpandExpr <: Expr {
     public init() {}
     private var at_: Token = Token(TokenKind.AT)
     private var pkgIdentifier_: Token = Token()
-    private var identifier_: Token = Token()
     private var lSquare_: Token = Token()
     private var macroAttrs_: Tokens = Tokens()
     private var rSquare_: Token = Token()
@@ -4260,10 +4257,10 @@ public class MacroExpandExpr <: Expr {
     }
     public mut prop identifier: Token {
         get() {
-            identifier_
+            pkgIdentifier_
         }
         set(v) {
-            identifier_ = v
+            pkgIdentifier_ = v
         }
     }
 
@@ -4308,6 +4305,11 @@ public class MacroExpandExpr <: Expr {
         }
         set(v) {
             macroInputs_ = v
+            macroInputDecl_ = try {
+                Some(parseDecl(v))
+            } catch (_: ParseASTException | ASTException) {
+                None
+            }
         }
     }
     public mut prop rParen: Token {
@@ -4335,15 +4337,14 @@ public class MacroExpandExpr <: Expr {
             let identifier = identArray[identArray.size - 1]
             ret = ret + Token(TokenKind.IDENTIFIER, identifier).addPosition(identPos.fileID, identPos.line, identColumn)
         }
-        ret.append(Token(TokenKind.NL))
-        if (isValidToken(lSquare_)) {
+        if (isValidToken(lSquare_) && isValidToken(rSquare_)) {
             ret.append(lSquare_).append(macroAttrs_).append(rSquare_)
         }
-        if (hasParenthesis_) {
+        if (isValidToken(lParen_) && isValidToken(rParen_)) {
             ret.append(lParen_).append(macroInputs_).append(rParen_)
         } else {
             match (macroInputDecl_) {
-                case Some(v) => ret.append(v)
+                case Some(v) => ret.append(Token(NL)).append(v)
                 case None => ()
             }
         }
@@ -4362,7 +4363,6 @@ public class MacroExpandExpr <: Expr {
             currentIndent++
         }
         ret += getTokenIndent("-packageIdentifier", pkgIdentifier_, currentIndent)
-        ret += getTokenIndent("-identifier", identifier_, currentIndent)
 
         for (i in 0..macroAttrs_.size) {
             ret += getTokenIndent("-macroAttrs:${i}", macroAttrs_[i], currentIndent)
