@@ -21,6 +21,7 @@
 
 namespace MapleRuntime {
 class ExtensionData;
+class BaseFile;
 constexpr U8 BITS_FOR_REF = 1;
 constexpr U8 REF_BIT_MASK = 1;
 constexpr U64 SIGN_BIT_64 = (U64)1 << 63;
@@ -71,13 +72,162 @@ union MTableBitmap {
     }
 };
 
+class InheritFuncTable {
+public:
+    InheritFuncTable() = delete;
+    InheritFuncTable(const InheritFuncTable& other)
+        : superExtensionData(other.superExtensionData),
+          superTypeInfo(other.superTypeInfo),
+          cachedTypeInfos(other.cachedTypeInfos)
+    {}
+    InheritFuncTable& operator=(const InheritFuncTable& other)
+    {
+        if (this == &other) {
+            return *this;
+        }
+        superExtensionData = other.superExtensionData;
+        superTypeInfo = other.superTypeInfo;
+        cachedTypeInfos = other.cachedTypeInfos;
+        return *this;
+    }
+
+    InheritFuncTable(InheritFuncTable&& other)
+    {
+        superExtensionData = other.superExtensionData;
+        superTypeInfo = other.superTypeInfo;
+        cachedTypeInfos = std::move(other.cachedTypeInfos);
+    }
+    InheritFuncTable& operator=(InheritFuncTable&& other)
+    {
+        if (this == &other) {
+            return *this;
+        }
+        superExtensionData = other.superExtensionData;
+        superTypeInfo = other.superTypeInfo;
+        cachedTypeInfos = std::move(other.cachedTypeInfos);
+        other.superExtensionData = nullptr;
+        other.superTypeInfo = nullptr;
+        return *this;
+    }
+    InheritFuncTable(ExtensionData* ed, TypeInfo* super, size_t sz)
+        : superExtensionData(ed), superTypeInfo(super), cachedTypeInfos(sz) {}
+    ExtensionData* GetExtensionData() const { return superExtensionData; }
+    TypeInfo* GetSuperTi() const { return superTypeInfo; }
+    void ResetAtomicInfoArray(size_t size) { cachedTypeInfos = AtomicTypeInfoArray(size); }
+    TypeInfo* GetCachedTypeInfo(size_t index) const { return cachedTypeInfos.Get(index); }
+    void SetCachedTypeInfo(size_t index, TypeInfo* ti) { cachedTypeInfos.Set(index, ti); }
+private:
+    class AtomicTypeInfoArray {
+    public:
+        AtomicTypeInfoArray() = default;
+        AtomicTypeInfoArray(const AtomicTypeInfoArray& other) : cacheSize(other.cacheSize)
+        {
+            if (cacheSize == 0) {
+                typeInfos = nullptr;
+                return;
+            }
+            typeInfos = new (std::nothrow) std::atomic<TypeInfo*>[cacheSize];
+            if (UNLIKELY(typeInfos == nullptr)) {
+                LOG(RTLOG_FATAL, "copy construct func table memory failed, size %zu", cacheSize);
+            }
+            for (size_t i = 0; i < cacheSize; ++i) {
+                TypeInfo* ti = other.typeInfos[i].load(std::memory_order_relaxed);
+                typeInfos[i].store(ti, std::memory_order_relaxed);
+            }
+        }
+
+        AtomicTypeInfoArray& operator=(const AtomicTypeInfoArray& other)
+        {
+            if (this == &other) {
+                return *this;
+            }
+            cacheSize = other.cacheSize;
+            if (cacheSize == 0) {
+                typeInfos = nullptr;
+                return *this;
+            }
+            typeInfos = new (std::nothrow) std::atomic<TypeInfo*>[cacheSize];
+            if (UNLIKELY(typeInfos == nullptr)) {
+                LOG(RTLOG_FATAL, "copy assign func table memory failed, size %zu", cacheSize);
+            }
+            for (size_t i = 0; i < cacheSize; ++i) {
+                TypeInfo* ti = other.typeInfos[i].load(std::memory_order_relaxed);
+                typeInfos[i].store(ti, std::memory_order_relaxed);
+            }
+            return *this;
+        }
+
+        AtomicTypeInfoArray(AtomicTypeInfoArray&& other)
+        {
+            cacheSize = other.cacheSize;
+            typeInfos = other.typeInfos;
+            other.cacheSize = 0;
+            other.typeInfos = nullptr;
+        }
+
+        AtomicTypeInfoArray& operator=(AtomicTypeInfoArray&& other)
+        {
+            if (this == &other) {
+                return *this;
+            }
+            cacheSize = other.cacheSize;
+            typeInfos = other.typeInfos;
+            other.cacheSize = 0;
+            other.typeInfos = nullptr;
+            return *this;
+        }
+
+        explicit AtomicTypeInfoArray(size_t size) : cacheSize(size)
+        {
+            if (size == 0) {
+                typeInfos = nullptr;
+                return;
+            }
+            typeInfos = new (std::nothrow) std::atomic<TypeInfo*>[size];
+            if (UNLIKELY(typeInfos == nullptr)) {
+                LOG(RTLOG_FATAL, "allocation func table memory failed, cache size %zu", size);
+            }
+            for (size_t i = 0; i < size; ++i) {
+                typeInfos[i].store(nullptr, std::memory_order_relaxed);
+            }
+        }
+
+        ~AtomicTypeInfoArray()
+        {
+            if (typeInfos != nullptr) {
+                delete[] typeInfos;
+            }
+        }
+        TypeInfo* Get(size_t index) const
+        {
+            return typeInfos[index].load(std::memory_order_acquire);
+        }
+        void Set(size_t index, TypeInfo* ti)
+        {
+            typeInfos[index].store(ti, std::memory_order_release);
+        }
+    private:
+        size_t cacheSize{ 0 };
+        std::atomic<TypeInfo*>* typeInfos{ nullptr };
+    };
+
+    ExtensionData* superExtensionData { nullptr };
+    TypeInfo* superTypeInfo { nullptr };
+    // The size of this array is the same as the virtual function size of virtual function count in this extenstion
+    // data.
+    AtomicTypeInfoArray cachedTypeInfos;
+};
 struct MTableDesc {
-    std::unordered_map<U32, FuncPtr*> mTable;
+    std::unordered_map<U32, InheritFuncTable> mTable;
+    std::vector<BaseFile*> waitedExtensionDatas;
     MTableBitmap mTableBitmap;
     std::recursive_mutex mTableMutex;
     bool pending = false;
-    explicit MTableDesc(BIT_TYPE bitmap_) { mTableBitmap.tag = bitmap_; }
+    bool needsResolveInner = true;
+    explicit MTableDesc(BIT_TYPE bitmap_);
     MTableDesc() = delete;
+    bool IsFullyHandled() const { return !NeedResolveInner() && waitedExtensionDatas.empty(); };
+    inline bool NeedResolveInner() const { return needsResolveInner; }
 };
 
 typedef TypeInfo* (*GenericFunc)(TypeInfo**);
@@ -117,11 +267,7 @@ struct ShortGCTib {
 };
 
 struct StdGCTib {
-#ifdef __arm__
-    static constexpr U32 BITS_PER_BYTE = 4;
-#else
     static constexpr U32 BITS_PER_BYTE = 8;
-#endif
     static constexpr U32 REFS_PER_BIT_WORD = ((sizeof(U8) * BITS_PER_BYTE) / BITS_FOR_REF);
     // Number of bitmap words.
     U32 nBitmapWords;
@@ -345,6 +491,7 @@ public:
     inline bool IsRef() const;
     inline bool HasRefField() const;
     inline bool HasFinalizer() const;
+    inline bool HasExtPart() const;
     inline const char* GetName() const;
     inline I8 GetType() const { return type; }
     inline I8 GetFlag() const { return flag; }
@@ -371,7 +518,7 @@ private:
     ~TypeTemplate() = delete;
     const char* name;
     I8 type;
-    I8 flag; // hasRefField, hasFinalize, monitor, waitQueue，use 0-3 bit
+    I8 flag; // hasRefField, hasFinalize, future, mutex, monitor, waitQueue, reflection, use 0-6 bit
     U16 fieldNum;
     U16 typeArgsNum;
     // The member does not exist in the IR, use the alignment bits to record the UUID in runtime.
@@ -433,13 +580,13 @@ public:
     inline bool IsReflectUnsupportedType() const;
     inline bool HasRefField() const;
     inline bool HasFinalizer() const;
+    inline bool IsInitialUUID() const;
     inline I8 GetFlags() const;
     inline I8 GetType() const;
     inline U16 GetAlign() const;
     inline U16 GetFieldNum() const;
     inline U32* GetFieldOffsets() const;
     inline U16 GetValidInheritNum() const;
-    inline bool IsInheritNumValid() { return validInheritNum != INVALID_INHERIT_NUM; }
 
     inline TypeInfo* GetFieldType(U16 idx) const;
     inline TypeInfo* GetComponentTypeInfo() const;
@@ -447,13 +594,14 @@ public:
     inline U32 GetFieldOffsets(U16 idx) const { return fieldOffsets[idx]; }
     inline TypeInfo* GetFieldTypeInfo(U16 idx) const { return fields[idx]; }
     inline TypeInfo** GetTypeArgs() const { return typeArgs; }
-    inline TypeTemplate* GetSourceGeneric() const { return sourceGeneric; }
-    inline ExtensionData** GetvExtensionDataStart() const { return vExtensionDataStart; }
+    inline TypeTemplate* GetSourceGeneric() const;
+    inline ExtensionData** GetvExtensionDataStart() const;
 
     inline bool IsFutureClass() const;
     inline bool IsMonitorClass() const;
     inline bool IsMutexClass() const;
     inline bool IsWaitQueueClass() const;
+    inline bool HasExtPart() const;
     inline bool IsBoxClass();
     U32 GetModifier();
     bool ReflectIsEnable() const;
@@ -504,8 +652,10 @@ public:
     void SetvExtensionDataStart(ExtensionData **ptr) { this->vExtensionDataStart = ptr; }
     void SetEnumInfo(EnumInfo* ei) { this->enumInfo = ei; }
     MTableDesc* GetMTableDesc() const { return mTableDesc; }
-    void AddMTable(TypeInfo* ti, FuncPtr* funcTable);
+    void AddMTable(TypeInfo* ti, ExtensionData* extensionData);
     FuncPtr* GetMTable(TypeInfo* itf);
+    TypeInfo* GetMethodOuterTI(TypeInfo* itf, U64 index);
+    TypeInfo* GetMethodOuterTIWithCache(TypeInfo* itf, U64 index);
     U32 GetUUID();
     inline U32 GetClassSize() const;
     inline TypeInfo* GetSuperTypeInfo() const;                     // it can be null
@@ -517,18 +667,23 @@ public:
     void TryInitMTable();
     void TryInitMTableNoLock();
     void GetInterfaces(std::vector<TypeInfo*> &itfs);
+    bool NeedRefresh();
+    void TryUpdateExtensionData(TypeInfo* itf, ExtensionData* extensionData);
 private:
     TypeInfo() = delete;
     ~TypeInfo() = delete;
 
     void TraverseInnerExtensionDefs(const std::function<void(TypeInfo*)> getInterface = nullptr);
-    void TraverseOuterExtensionDefs(std::function<void(TypeInfo*)> getInterface = nullptr);
+    void TraverseOuterExtensionDefs(const std::function<void(TypeInfo*)> getInterface = nullptr);
+    // find ExtensionData of this TypeInfo and itf
+    ExtensionData* FindExtensionData(TypeInfo* itf, bool searchRecursively = false);
+    ExtensionData* FindExtensionDataRecursively(TypeInfo* itf);
     // 0: functable, 1: is_sub_type
     std::pair<FuncPtr*, bool> FindMTable(U32 itfUUID);
 
     inline bool IsMTableDescUnInitialized() { return validInheritNum >> 15 == 1; }
     // This function must be called before mTableDesc is overwritten.
-    inline U64 GetResolveBitmapFromMTableDesc()
+    inline BIT_TYPE GetResolveBitmapFromMTableDesc()
     {
         return reinterpret_cast<uintptr_t>(mTableDesc);
     }
