@@ -24,6 +24,7 @@
 #include "Sanitizer/SanitizerInterface.h"
 #endif
 #include "Sync/Sync.h"
+#include "CJThread/src/runtime/schedule/include/schedule.h"
 
 namespace MapleRuntime {
 uintptr_t RegionInfo::UnitInfo::totalUnitCount = 0;
@@ -1070,6 +1071,10 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         LOG(RTLOG_ERROR, "\t\tfinalizers size: %zu", finalizersSize);
         LOG(RTLOG_ERROR, "\t\tfinalizables size: %zu", finalizablesSize);
         LOG(RTLOG_ERROR, "\t\tworkingFinalizables size: %zu", workingFinalizablesSize);
+
+        // Print current OS thread count
+        unsigned int osThreadCount = ScheduleRunningOSThreadCount();
+        LOG(RTLOG_ERROR, "\tCurrent OS thread count: %u", osThreadCount);
     } else {
 
         VLOG(REPORT, msg);
