@@ -14,6 +14,7 @@
 #include "Base/CString.h"
 #include "Collector/Collector.h"
 #include "Collector/CopyCollector.h"
+#include "Collector/GcStats.h"
 #include "Common/ScopedObjectAccess.h"
 #include "Heap.h"
 #include "Mutator/Mutator.inline.h"
@@ -1056,6 +1057,10 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         LOG(RTLOG_ERROR, "\t\t1024-2048 units: %zu (total size: %zu units)", garbageDist.count1024To2048, garbageDist.totalSize1024To2048);
         LOG(RTLOG_ERROR, "\t\t2048-2560 units: %zu (total size: %zu units)", garbageDist.count2048To2560, garbageDist.totalSize2048To2560);
         LOG(RTLOG_ERROR, "\t\t> 2560 units: %zu (total size: %zu units)", garbageDist.countGreater2560, garbageDist.totalSizeGreater2560);
+
+        // Print last GC events
+        LOG(RTLOG_ERROR, "\tGC event history:");
+        GCEventHistory::GetInstance().DumpEvents();
     } else {
 
         VLOG(REPORT, msg);
