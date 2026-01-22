@@ -594,6 +594,7 @@ class SocketCommon<NS> <: Resource & ToString where NS <: PlatformSocket<NS> {
 
         unsafe {
             let bindToDevice = bindToDevice_ ?? return ()
+            println("[SocketCommon.applyBindToDevice] device=${bindToDevice}")
             try (s = LibC.mallocCString(bindToDevice).asResource()) {
                 if (s.value.isNull()) {
                     throw SocketException("MallocCString failed.")

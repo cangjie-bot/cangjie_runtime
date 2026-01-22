@@ -176,6 +176,7 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
     public open override func shutdown(): Unit {
         // we don't need special synchronization here because nether shutdown
         // nor dispose are never invoked concurrently
+        println("[DopraSocketImpl.shutdown] handle=${handle}")
         unsafe { CJ_MRT_SockShutdown(handle) }
     }
 
