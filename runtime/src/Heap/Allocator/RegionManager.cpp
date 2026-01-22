@@ -331,9 +331,30 @@ FreeRegionManager::SizeDistribution FreeRegionManager::GetDirtyTreeSizeDistribut
         } else if (count <= 32) {
             distribution.count16To32++;
             distribution.totalSize16To32 += count;
+        } else if (count < 64) {
+            distribution.count32To64++;
+            distribution.totalSize32To64 += count;
+        } else if (count < 128) {
+            distribution.count64To128++;
+            distribution.totalSize64To128 += count;
+        } else if (count < 256) {
+            distribution.count128To256++;
+            distribution.totalSize128To256 += count;
+        } else if (count < 512) {
+            distribution.count256To512++;
+            distribution.totalSize256To512 += count;
+        } else if (count < 1024) {
+            distribution.count512To1024++;
+            distribution.totalSize512To1024 += count;
+        } else if (count < 2048) {
+            distribution.count1024To2048++;
+            distribution.totalSize1024To2048 += count;
+        } else if (count <= 2560) {
+            distribution.count2048To2560++;
+            distribution.totalSize2048To2560 += count;
         } else {
-            distribution.countGreater32++;
-            distribution.totalSizeGreater32 += count;
+            distribution.countGreater2560++;
+            distribution.totalSizeGreater2560 += count;
         }
         node = it.Next();
     }
@@ -369,9 +390,30 @@ FreeRegionManager::SizeDistribution FreeRegionManager::GetReleasedTreeSizeDistri
         } else if (count <= 32) {
             distribution.count16To32++;
             distribution.totalSize16To32 += count;
+        } else if (count < 64) {
+            distribution.count32To64++;
+            distribution.totalSize32To64 += count;
+        } else if (count < 128) {
+            distribution.count64To128++;
+            distribution.totalSize64To128 += count;
+        } else if (count < 256) {
+            distribution.count128To256++;
+            distribution.totalSize128To256 += count;
+        } else if (count < 512) {
+            distribution.count256To512++;
+            distribution.totalSize256To512 += count;
+        } else if (count < 1024) {
+            distribution.count512To1024++;
+            distribution.totalSize512To1024 += count;
+        } else if (count < 2048) {
+            distribution.count1024To2048++;
+            distribution.totalSize1024To2048 += count;
+        } else if (count <= 2560) {
+            distribution.count2048To2560++;
+            distribution.totalSize2048To2560 += count;
         } else {
-            distribution.countGreater32++;
-            distribution.totalSizeGreater32 += count;
+            distribution.countGreater2560++;
+            distribution.totalSizeGreater2560 += count;
         }
         node = it.Next();
     }
@@ -919,7 +961,14 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         LOG(RTLOG_ERROR, "\t\t6-8 units: %zu (total size: %zu units)", dist.count6To8, dist.totalSize6To8);
         LOG(RTLOG_ERROR, "\t\t8-16 units: %zu (total size: %zu units)", dist.count8To16, dist.totalSize8To16);
         LOG(RTLOG_ERROR, "\t\t16-32 units: %zu (total size: %zu units)", dist.count16To32, dist.totalSize16To32);
-        LOG(RTLOG_ERROR, "\t\t> 32 units: %zu (total size: %zu units)", dist.countGreater32, dist.totalSizeGreater32);
+        LOG(RTLOG_ERROR, "\t\t32-64 units: %zu (total size: %zu units)", dist.count32To64, dist.totalSize32To64);
+        LOG(RTLOG_ERROR, "\t\t64-128 units: %zu (total size: %zu units)", dist.count64To128, dist.totalSize64To128);
+        LOG(RTLOG_ERROR, "\t\t128-256 units: %zu (total size: %zu units)", dist.count128To256, dist.totalSize128To256);
+        LOG(RTLOG_ERROR, "\t\t256-512 units: %zu (total size: %zu units)", dist.count256To512, dist.totalSize256To512);
+        LOG(RTLOG_ERROR, "\t\t512-1024 units: %zu (total size: %zu units)", dist.count512To1024, dist.totalSize512To1024);
+        LOG(RTLOG_ERROR, "\t\t1024-2048 units: %zu (total size: %zu units)", dist.count1024To2048, dist.totalSize1024To2048);
+        LOG(RTLOG_ERROR, "\t\t2048-2560 units: %zu (total size: %zu units)", dist.count2048To2560, dist.totalSize2048To2560);
+        LOG(RTLOG_ERROR, "\t\t> 2560 units: %zu (total size: %zu units)", dist.countGreater2560, dist.totalSizeGreater2560);
 
         // Print releasedTree size distribution information
         FreeRegionManager::SizeDistribution releasedDist = freeRegionManager.GetReleasedTreeSizeDistribution();
@@ -930,7 +979,14 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         LOG(RTLOG_ERROR, "\t\t6-8 units: %zu (total size: %zu units)", releasedDist.count6To8, releasedDist.totalSize6To8);
         LOG(RTLOG_ERROR, "\t\t8-16 units: %zu (total size: %zu units)", releasedDist.count8To16, releasedDist.totalSize8To16);
         LOG(RTLOG_ERROR, "\t\t16-32 units: %zu (total size: %zu units)", releasedDist.count16To32, releasedDist.totalSize16To32);
-        LOG(RTLOG_ERROR, "\t\t> 32 units: %zu (total size: %zu units)", releasedDist.countGreater32, releasedDist.totalSizeGreater32);
+        LOG(RTLOG_ERROR, "\t\t32-64 units: %zu (total size: %zu units)", releasedDist.count32To64, releasedDist.totalSize32To64);
+        LOG(RTLOG_ERROR, "\t\t64-128 units: %zu (total size: %zu units)", releasedDist.count64To128, releasedDist.totalSize64To128);
+        LOG(RTLOG_ERROR, "\t\t128-256 units: %zu (total size: %zu units)", releasedDist.count128To256, releasedDist.totalSize128To256);
+        LOG(RTLOG_ERROR, "\t\t256-512 units: %zu (total size: %zu units)", releasedDist.count256To512, releasedDist.totalSize256To512);
+        LOG(RTLOG_ERROR, "\t\t512-1024 units: %zu (total size: %zu units)", releasedDist.count512To1024, releasedDist.totalSize512To1024);
+        LOG(RTLOG_ERROR, "\t\t1024-2048 units: %zu (total size: %zu units)", releasedDist.count1024To2048, releasedDist.totalSize1024To2048);
+        LOG(RTLOG_ERROR, "\t\t2048-2560 units: %zu (total size: %zu units)", releasedDist.count2048To2560, releasedDist.totalSize2048To2560);
+        LOG(RTLOG_ERROR, "\t\t> 2560 units: %zu (total size: %zu units)", releasedDist.countGreater2560, releasedDist.totalSizeGreater2560);
 
         // Print garbageRegionList size distribution information
         FreeRegionManager::SizeDistribution garbageDist = {0};
@@ -957,9 +1013,30 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
                 } else if (unitCount <= 32) {
                     garbageDist.count16To32++;
                     garbageDist.totalSize16To32 += unitCount;
+                } else if (unitCount < 64) {
+                    garbageDist.count32To64++;
+                    garbageDist.totalSize32To64 += unitCount;
+                } else if (unitCount < 128) {
+                    garbageDist.count64To128++;
+                    garbageDist.totalSize64To128 += unitCount;
+                } else if (unitCount < 256) {
+                    garbageDist.count128To256++;
+                    garbageDist.totalSize128To256 += unitCount;
+                } else if (unitCount < 512) {
+                    garbageDist.count256To512++;
+                    garbageDist.totalSize256To512 += unitCount;
+                } else if (unitCount < 1024) {
+                    garbageDist.count512To1024++;
+                    garbageDist.totalSize512To1024 += unitCount;
+                } else if (unitCount < 2048) {
+                    garbageDist.count1024To2048++;
+                    garbageDist.totalSize1024To2048 += unitCount;
+                } else if (unitCount <= 2560) {
+                    garbageDist.count2048To2560++;
+                    garbageDist.totalSize2048To2560 += unitCount;
                 } else {
-                    garbageDist.countGreater32++;
-                    garbageDist.totalSizeGreater32 += unitCount;
+                    garbageDist.countGreater2560++;
+                    garbageDist.totalSizeGreater2560 += unitCount;
                 }
                 region = region->GetNextRegion();
             }
@@ -971,7 +1048,14 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         LOG(RTLOG_ERROR, "\t\t6-8 units: %zu (total size: %zu units)", garbageDist.count6To8, garbageDist.totalSize6To8);
         LOG(RTLOG_ERROR, "\t\t8-16 units: %zu (total size: %zu units)", garbageDist.count8To16, garbageDist.totalSize8To16);
         LOG(RTLOG_ERROR, "\t\t16-32 units: %zu (total size: %zu units)", garbageDist.count16To32, garbageDist.totalSize16To32);
-        LOG(RTLOG_ERROR, "\t\t> 32 units: %zu (total size: %zu units)", garbageDist.countGreater32, garbageDist.totalSizeGreater32);
+        LOG(RTLOG_ERROR, "\t\t32-64 units: %zu (total size: %zu units)", garbageDist.count32To64, garbageDist.totalSize32To64);
+        LOG(RTLOG_ERROR, "\t\t64-128 units: %zu (total size: %zu units)", garbageDist.count64To128, garbageDist.totalSize64To128);
+        LOG(RTLOG_ERROR, "\t\t128-256 units: %zu (total size: %zu units)", garbageDist.count128To256, garbageDist.totalSize128To256);
+        LOG(RTLOG_ERROR, "\t\t256-512 units: %zu (total size: %zu units)", garbageDist.count256To512, garbageDist.totalSize256To512);
+        LOG(RTLOG_ERROR, "\t\t512-1024 units: %zu (total size: %zu units)", garbageDist.count512To1024, garbageDist.totalSize512To1024);
+        LOG(RTLOG_ERROR, "\t\t1024-2048 units: %zu (total size: %zu units)", garbageDist.count1024To2048, garbageDist.totalSize1024To2048);
+        LOG(RTLOG_ERROR, "\t\t2048-2560 units: %zu (total size: %zu units)", garbageDist.count2048To2560, garbageDist.totalSize2048To2560);
+        LOG(RTLOG_ERROR, "\t\t> 2560 units: %zu (total size: %zu units)", garbageDist.countGreater2560, garbageDist.totalSizeGreater2560);
     } else {
 
         VLOG(REPORT, msg);
