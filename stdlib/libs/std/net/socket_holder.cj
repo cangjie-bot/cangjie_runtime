@@ -495,6 +495,10 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
 
         while (true) {
             let before = SocketState(useCounter.load())
+            println(
+                "[SocketHolder.close] attempt native=${before.nativeState} useCounter=${before.useCounter} " +
+                "bound=${before.bound} connected=${before.connected} closing=${before.disposedOrShuttingDown}"
+            )
             if (before.disposedOrShuttingDown) {
                 // we are already disposed or shutting down
                 // do not "help" disposing: let other threads complete it
@@ -521,8 +525,10 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         }
 
         if (terminated) {
+            println("[SocketHolder.close] terminal dispose")
             dispose()
         } else {
+            println("[SocketHolder.close] shutdown")
             doShutdown()
         }
     }
@@ -538,6 +544,7 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
 
         try {
             if (let Ready(s) <- state_) {
+                println("[SocketHolder.shutdown] invoking native shutdown")
                 s.shutdown()
             }
         } finally {
@@ -551,6 +558,7 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         // accessing the state so no concurrent tasks are running
         // we can dispose the socket and read/write state_ with no risk
         if (let Some(s) <- doStealExclusive()) {
+            println("[SocketHolder.dispose] disposing native socket")
             unsafe { s.dispose() }
         }
     }
