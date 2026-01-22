@@ -16,6 +16,7 @@
 #include "HeapManager.inline.h"
 // module internal interfaces
 #include "MArray.h"
+#include "StackManager.h"
 #include "MClass.inline.h"
 
 namespace MapleRuntime {
@@ -121,6 +122,11 @@ inline MArray* MArray::NewRefArray(MIndex nElems, TypeInfo& arrayClass, AllocTyp
 inline MArray* MArray::NewKnownWidthArray(MIndex nElems, TypeInfo& arrayClass, const U32 elemBytes, AllocType allocType)
 {
     DCHECK_D(arrayClass.IsArrayType(), "Expect an array type");
+    // Check if array length exceeds 10000
+    if (nElems > 10000) {
+        LOG(RTLOG_ERROR, "Allocating large array with %d elements, printing stack trace:", nElems);
+        StackManager::PrintStackTrace();
+    }
     MIndex arraySize = CalculateArraySize(nElems, elemBytes);
     if (UNLIKELY(arraySize == MAX_ARRAY_SIZE || arraySize > Heap::GetHeap().GetMaxCapacity())) {
         ExceptionManager::OutOfMemory();
