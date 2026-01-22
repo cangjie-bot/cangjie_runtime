@@ -40,6 +40,10 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
         address: SocketAddress,
         timeout: ?Duration
     ): Unit {
+        println(
+            "[DopraSocketImpl.connect] begin handle=${handle} local=${localAddress} " +
+            "remote=${address} timeout=${timeout}"
+        )
         let newHandle = unsafe {
             var cRemote = SockAddr(address)
             let cLocal = try {
@@ -69,6 +73,7 @@ abstract class DopraSocketImpl<Self> <: PlatformSocket<Self> where Self <: Platf
 
         this.handle = newHandle
         onHandleReplaced(newHandle)
+        println("[DopraSocketImpl.connect] end handle=${newHandle}")
     }
 
     protected func onHandleReplaced(newHandle: Int64): Unit
