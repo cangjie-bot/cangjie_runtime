@@ -299,6 +299,10 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
 
         do {
             let before = SocketState(useCounter.load())
+            println(
+                "[SocketHolder.startWriting] attempt native=${before.nativeState} useCounter=${before.useCounter} " +
+                "hasWriters=${before.hasWriters} closing=${before.disposedOrShuttingDown}"
+            )
             if (before.disposedOrShuttingDown) {
                 return None
             }
@@ -316,6 +320,9 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         } while (true)
 
         if (let Ready(socket) <- state_) {
+            println(
+                "[SocketHolder.startWriting] ready native=${state.nativeState} useCounter=${state.useCounter}"
+            )
             return (socket, state)
         }
 
@@ -323,6 +330,7 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
     }
 
     private func createSocketWriteSession(state: SocketState): ?(NS, SocketState) {
+        println("[SocketHolder.startWriting] create socket session")
         let socket = try {
             ensureSocket()
         } catch (e: Exception) {
@@ -349,7 +357,9 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         // on the other hand concurrent shutdown or creation is still possible
 
         return match (state_) {
-            case NotCreated(_) => tryCreate()
+            case NotCreated(_) =>
+                println("[SocketHolder.ensureSocket] not created, tryCreate")
+                tryCreate()
             case Ready(s) => s
             case Disposed =>
                 // close has been invoked during creation
@@ -364,6 +374,7 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
             // because reading outside of the lock could be too weak
             match (state_) {
                 case NotCreated(create) =>
+                    println("[SocketHolder.tryCreate] creating native socket")
                     let s: NS = create()
                     if (state.disposedOrShuttingDown) {
                         state_ = Disposed
@@ -426,6 +437,10 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
 
         while (true) {
             let before = SocketState(useCounter.load())
+            println(
+                "[SocketHolder.leaveWrite] attempt native=${before.nativeState} useCounter=${before.useCounter} " +
+                "closing=${before.disposedOrShuttingDown}"
+            )
             if (before.useCounter == 0) {
                 throwLeaveWithoutEnter()
             }
@@ -449,6 +464,7 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
         if (doDispose) {
             // we had replaced -1 to Int64.Min
             // so we are the last one
+            println("[SocketHolder.leaveWrite] disposing after last writer")
             dispose()
         }
     }
@@ -502,6 +518,7 @@ class SocketHolder<NS> <: Resource where NS <: PlatformSocket<NS> {
             if (before.disposedOrShuttingDown) {
                 // we are already disposed or shutting down
                 // do not "help" disposing: let other threads complete it
+                println("[SocketHolder.close] already closing/closed, skip")
                 return
             }
 
