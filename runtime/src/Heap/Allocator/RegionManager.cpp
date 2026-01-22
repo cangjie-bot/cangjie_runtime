@@ -1061,6 +1061,15 @@ void RegionManager::DumpRegionStats(const char* msg, bool triggerOOM) const
         // Print last GC events
         LOG(RTLOG_ERROR, "\tGC event history:");
         GCEventHistory::GetInstance().DumpEvents();
+
+        // Print FinalizerProcessor data structures sizes
+        FinalizerProcessor& finalizerProcessor = Heap::GetHeap().GetFinalizerProcessor();
+        size_t finalizersSize, finalizablesSize, workingFinalizablesSize;
+        finalizerProcessor.GetListSizes(finalizersSize, finalizablesSize, workingFinalizablesSize);
+        LOG(RTLOG_ERROR, "\tFinalizerProcessor data structures:");
+        LOG(RTLOG_ERROR, "\t\tfinalizers size: %zu", finalizersSize);
+        LOG(RTLOG_ERROR, "\t\tfinalizables size: %zu", finalizablesSize);
+        LOG(RTLOG_ERROR, "\t\tworkingFinalizables size: %zu", workingFinalizablesSize);
     } else {
 
         VLOG(REPORT, msg);
