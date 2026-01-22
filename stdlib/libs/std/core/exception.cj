@@ -111,17 +111,23 @@ public open class Exception <: ToString {
         printStackTrace("An exception has occurred:\n", Array<StackTraceElement>())
     }
 
+    /*
+     * print the stack trace of this exception with a caption and enclosing trace. 
+     *
+     * @param caption the caption to print before the stack trace
+     * @param enclosingTrace the enclosing stack trace if present (that is the stack trace of `causedBy`)
+     */
     func printStackTrace(caption: String, enclosingTrace: Array<StackTraceElement>): Unit {
         eprintln("${caption}${toString()}")
         let trace = getStackTrace()
-        var m = trace.size - 1
-        var n = enclosingTrace.size - 1
-        while (m >= 0 && n >= 0 && trace[m].fileName == enclosingTrace[n].fileName && trace[m].lineNumber == enclosingTrace[n].lineNumber) {
-            m--
-            n--
+        var ourSize = trace.size - 1
+        var enclosingSize = enclosingTrace.size - 1
+        while (ourSize >= 0 && enclosingSize >= 0 && trace[ourSize].fileName == enclosingTrace[enclosingSize].fileName && trace[ourSize].lineNumber == enclosingTrace[enclosingSize].lineNumber) {
+            ourSize--
+            enclosingSize--
         }
-        let commonSize = trace.size - 1 - m
-        for (i in 0..=m) {
+        let commonSize = trace.size - 1 - ourSize
+        for (i in 0..=ourSize) {
             let element = trace[i]
             if (element.methodName.contains("Exception::init")) {
                 continue
