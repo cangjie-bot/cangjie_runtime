@@ -2240,9 +2240,6 @@ public class MacroExpandDecl <: Decl {
             return
         }
         super.traverse(v)
-        for (anno in annotations) {
-            anno.traverse(v)
-        }
         match (macroInputDecl_) {
             case Some(node) => node.traverse(v)
             case None => ()
@@ -2441,9 +2438,6 @@ public class MacroExpandParam <: FuncParam {
             return
         }
         super.traverse(v)
-        for (anno in annotations) {
-            anno.traverse(v)
-        }
         match (macroInputDecl_) {
             case Some(node) => node.traverse(v)
             case None => ()

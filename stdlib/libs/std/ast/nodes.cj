@@ -35,9 +35,8 @@ abstract sealed class Node <: ToTokens {
     }
     public func toTokens(): Tokens
 
-    public func traverse(v: Visitor): Unit {
+    public open func traverse(v: Visitor): Unit {
         v.visit(this)
-        super.traverse(v)
     }
 
     public func dump(): Unit {
