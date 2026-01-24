@@ -297,7 +297,7 @@ protected class Verify {
     var size: Int64
     var index: Int64 = 0
 
-    public init(fmt: String) {
+    init(fmt: String) {
         this.data = fmt.toRuneArray()
         this.size = data.size
     }
