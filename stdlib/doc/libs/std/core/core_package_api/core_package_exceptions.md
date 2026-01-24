@@ -692,7 +692,7 @@ main() {
 public class ExclusiveScopeException <: Exception
 ```
 
-功能：自定义异常类，用于包装在独占作用域中抛出的异常。它保留了原始异常的堆栈跟踪和信息，不支持主动构造该异常。
+功能：自定义异常类，用于包装在独占作用域中抛出的异常。它保留了原始异常的堆栈信息，不支持主动构造该异常，但是可以被捕获到。
 
 父类型：
 
@@ -708,7 +708,7 @@ public override func toString(): String
 
 返回值：
 
-- [String](core_package_structs.md#struct-string) - 类名。
+- [String](core_package_structs.md#struct-string) - 。
 
 示例：
 
