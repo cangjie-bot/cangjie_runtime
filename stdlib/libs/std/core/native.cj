@@ -84,5 +84,6 @@ struct StructureString {
     let length: UIntNative = 0
 }
 
-@When[backend == "cjnative"]
-foreign func FiniCJRuntime(): Int64
+@FastNative
+// foreign func abort(): Unit
+foreign func CJ_CORE_Abort(): Unit
