@@ -7,6 +7,11 @@
  */
 
 #include <stdatomic.h>
+#include <stdlib.h>
+
+#ifdef WIN32
+#include <intrin.h>
+#endif  // WIN32
 
 #ifdef __arm__
 #pragma GCC diagnostic push
@@ -23,6 +28,18 @@ extern void CJ_CORE_AtExitCallbackListUnlook(void)
 {
     atomic_flag_clear(&g_atexitCallbackListLocker);
 }
+
+#ifdef WIN32
+extern void CJ_CORE_Abort(void)
+{
+    __fastfail(7); // 7 represents FAST_FAIL_FATAL_APP_EXIT
+}
+#else
+extern void CJ_CORE_Abort(void)
+{
+    abort();
+}
+#endif
 
 #ifdef __arm__
 #pragma GCC diagnostic pop

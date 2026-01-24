@@ -44,7 +44,8 @@ func handleError(er: Error): Unit {
             } catch (e: Error) {
                 eprintln("Thread id: ${Thread.currentThread.id} throws an error in the error handler: ${e}")
                 unsafe {
-                    FiniCJRuntime()
+                    // abort()
+                    CJ_CORE_Abort()
                 }
             }
             case None => match (er) {
