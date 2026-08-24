@@ -171,7 +171,7 @@ private:
                 if (entry.region == nullptr) {
                     return nullptr;
                 }
-                if (entry.region != Tombstone() && entry.slot == slot) {
+                if (entry.region != DeletedEntry() && entry.slot == slot) {
                     return entry.region;
                 }
                 idx = (idx + 1) & (entries.size() - 1);
@@ -181,7 +181,7 @@ private:
 
         bool Insert(MAddress slot, LocalNativeRegion* region)
         {
-            CHECK_DETAIL(region != nullptr && region != Tombstone(), "insert invalid native local region");
+            CHECK_DETAIL(region != nullptr && region != DeletedEntry(), "insert invalid native local region");
             EnsureInsertCapacity();
             return InsertWithoutResize(slot, region);
         }
@@ -197,10 +197,10 @@ private:
                 if (entry.region == nullptr) {
                     return false;
                 }
-                if (entry.region != Tombstone() && entry.slot == slot) {
-                    entry.region = Tombstone();
+                if (entry.region != DeletedEntry() && entry.slot == slot) {
+                    entry.region = DeletedEntry();
                     --entryCount;
-                    ++tombstoneCount;
+                    ++deletedEntryCount;
                     CompactAfterErase();
                     return true;
                 }
@@ -217,7 +217,7 @@ private:
 
         static constexpr size_t INITIAL_CAPACITY = 4;
 
-        static LocalNativeRegion* Tombstone()
+        static LocalNativeRegion* DeletedEntry()
         {
             return reinterpret_cast<LocalNativeRegion*>(static_cast<uintptr_t>(1));
         }
@@ -241,8 +241,8 @@ private:
                 Rehash(INITIAL_CAPACITY);
                 return;
             }
-            // Keep at least 30% empty slots, including tombstones.
-            if ((entryCount + tombstoneCount + 1) * 10 >= entries.size() * 7) {
+            // Keep at least 30% empty slots, including deleted entries.
+            if ((entryCount + deletedEntryCount + 1) * 10 >= entries.size() * 7) {
                 Rehash(entries.size() * 2);
             }
         }
@@ -250,31 +250,31 @@ private:
         bool InsertWithoutResize(MAddress slot, LocalNativeRegion* region)
         {
             size_t idx = Hash(slot) & (entries.size() - 1);
-            size_t firstTombstone = entries.size();
+            size_t firstDeletedEntry = entries.size();
             for (size_t probe = 0; probe < entries.size(); ++probe) {
                 Entry& entry = entries[idx];
                 if (entry.region == nullptr) {
-                    size_t insertIdx = firstTombstone == entries.size() ? idx : firstTombstone;
+                    size_t insertIdx = firstDeletedEntry == entries.size() ? idx : firstDeletedEntry;
                     entries[insertIdx] = { slot, region };
                     ++entryCount;
-                    if (firstTombstone != entries.size()) {
-                        --tombstoneCount;
+                    if (firstDeletedEntry != entries.size()) {
+                        --deletedEntryCount;
                     }
                     return true;
                 }
-                if (entry.region == Tombstone()) {
-                    if (firstTombstone == entries.size()) {
-                        firstTombstone = idx;
+                if (entry.region == DeletedEntry()) {
+                    if (firstDeletedEntry == entries.size()) {
+                        firstDeletedEntry = idx;
                     }
                 } else if (entry.slot == slot) {
                     return false;
                 }
                 idx = (idx + 1) & (entries.size() - 1);
             }
-            CHECK_DETAIL(firstTombstone != entries.size(), "native local region index is full");
-            entries[firstTombstone] = { slot, region };
+            CHECK_DETAIL(firstDeletedEntry != entries.size(), "native local region index is full");
+            entries[firstDeletedEntry] = { slot, region };
             ++entryCount;
-            --tombstoneCount;
+            --deletedEntryCount;
             return true;
         }
 
@@ -282,12 +282,12 @@ private:
         {
             if (entryCount == 0) {
                 std::fill(entries.begin(), entries.end(), Entry {});
-                tombstoneCount = 0;
+                deletedEntryCount = 0;
                 return;
             }
             if (entries.size() > INITIAL_CAPACITY && entryCount * 8 <= entries.size()) {
                 Rehash(entries.size() / 2);
-            } else if (tombstoneCount > entryCount) {
+            } else if (deletedEntryCount > entryCount) {
                 Rehash(entries.size());
             }
         }
@@ -299,9 +299,9 @@ private:
             oldEntries.swap(entries);
             entries.resize(capacity);
             entryCount = 0;
-            tombstoneCount = 0;
+            deletedEntryCount = 0;
             for (const Entry& entry : oldEntries) {
-                if (entry.region != nullptr && entry.region != Tombstone()) {
+                if (entry.region != nullptr && entry.region != DeletedEntry()) {
                     CHECK_DETAIL(InsertWithoutResize(entry.slot, entry.region),
                                  "duplicate native local region while rebuilding index");
                 }
@@ -310,7 +310,7 @@ private:
 
         std::vector<Entry> entries;
         size_t entryCount = 0;
-        size_t tombstoneCount = 0;
+        size_t deletedEntryCount = 0;
     };
 
     struct NativeMutatorLocalData {
@@ -686,8 +686,8 @@ bool HeapLocalObjectAllocator::PushBlock(Mutator& mutator, RegionInfo* region, b
 {
     LocalHeapBlock* prev = GetBlockStackTop(mutator);
     CHECK_DETAIL(firstOfRegion || prev != nullptr, "push non-first local heap block without active region");
-    LocalHeapBlock* block = firstOfRegion
-        ? static_cast<LocalHeapBlock*>(new (std::nothrow) LocalHeapFirstBlock(region, prev, ownerFA))
+    LocalHeapBlock* block = firstOfRegion ? static_cast<LocalHeapBlock*>(
+        new (std::nothrow) LocalHeapFirstBlock(region, prev, ownerFA))
         : new (std::nothrow) LocalHeapBlock(region, prev, prev->firstBlock);
     if (block == nullptr) {
         VLOG(LOCAL_REGION, "push local heap block failed, region %p", region);
@@ -697,8 +697,8 @@ bool HeapLocalObjectAllocator::PushBlock(Mutator& mutator, RegionInfo* region, b
     return true;
 }
 
-HeapLocalObjectAllocator::LocalHeapBlock* HeapLocalObjectAllocator::PopRegionBlocks(Mutator& mutator,
-                                                                                   FrameAddress* ownerFA)
+HeapLocalObjectAllocator::LocalHeapBlock* HeapLocalObjectAllocator::PopRegionBlocks(
+    Mutator& mutator, FrameAddress* ownerFA)
 {
     LocalHeapBlock* curr = GetBlockStackTop(mutator);
     if (curr != nullptr && ownerFA != nullptr && curr->firstBlock->ownerFA != ownerFA) {
@@ -1038,8 +1038,8 @@ MAddress NativeLocalObjectAllocator::TryAllocateInRegion(LocalNativeRegion& regi
     return objAddr;
 }
 
-NativeLocalObjectAllocator::LocalNativeRegion* NativeLocalObjectAllocator::PopRegionChain(Mutator& mutator,
-                                                                                        FrameAddress* ownerFA)
+NativeLocalObjectAllocator::LocalNativeRegion* NativeLocalObjectAllocator::PopRegionChain(
+    Mutator& mutator, FrameAddress* ownerFA)
 {
     LocalNativeRegion* curr = GetRegionStackTop(mutator);
     if (curr != nullptr && ownerFA != nullptr && curr->firstRegion->ownerFA != ownerFA) {
@@ -1133,7 +1133,8 @@ void NativeLocalObjectAllocator::RegisterObject(MAddress obj, LocalNativeRegion&
 
 void NativeLocalObjectAllocator::WriteObjectMarker(MAddress obj)
 {
-    CHECK_DETAIL(obj >= LOCAL_OBJECT_MARKER_SIZE, "invalid native local object address %p", reinterpret_cast<void*>(obj));
+    CHECK_DETAIL(obj >= LOCAL_OBJECT_MARKER_SIZE, "invalid native local object address %p",
+                 reinterpret_cast<void*>(obj));
     *reinterpret_cast<uint64_t*>(obj - LOCAL_OBJECT_MARKER_SIZE) = LOCAL_OBJECT_MARKER;
 }
 

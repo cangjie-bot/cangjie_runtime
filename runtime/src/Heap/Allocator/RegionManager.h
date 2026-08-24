@@ -619,7 +619,6 @@ private:
 #endif
     std::mutex freePinnedSlotListMutex;
     FreePinnedSlotLists freePinnedSlotLists;
-
 };
 } // namespace MapleRuntime
 #endif // MRT_REGION_MANAGER_H

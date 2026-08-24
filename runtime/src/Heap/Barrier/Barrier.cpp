@@ -209,7 +209,7 @@ void Barrier::ReadStaticStruct(MAddress dst, MAddress src, size_t size, const GC
 
 void Barrier::WriteGeneric(const ObjectPtr obj, void* fieldPtr, const ObjectPtr src, size_t size) const
 {
-    // todo del 
+    // todo del
     if (UNLIKELY(IsLocalObject(obj) || IsLocalObject(src))) {
         LOG(RTLOG_FATAL, "Barrier::WriteGeneric does not support local object: obj %p, src %p", obj, src);
     }

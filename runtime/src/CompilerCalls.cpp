@@ -396,7 +396,7 @@ extern "C" void MCC_MaybeLocalWriteRef(const ObjectPtr obj, RefField<false>* fie
 }
 
 extern "C" void MCC_MaybeLocalWriteStruct(const ObjectPtr obj, MAddress dst, size_t dstLen, MAddress src,
-                                           size_t srcLen, GCTib gctib)
+                                          size_t srcLen, GCTib gctib)
 {
     CHECK_DETAIL(dst != 0u && src != 0u, "MCC_MaybeLocalWriteStruct wrong parameter, dst: %p src: %p", dst, src);
     CHECK_DETAIL(srcLen <= dstLen, "MCC_MaybeLocalWriteStruct source is larger than destination: %zu > %zu", srcLen,
