@@ -1874,6 +1874,23 @@ extern "C" void CJ_MCC_AssignGeneric(ObjectPtr dst, ObjectPtr src, TypeInfo* typ
     }
 }
 
+extern "C" void CJ_MCC_AssignLocalGeneric(ObjectPtr dst, ObjectPtr src, TypeInfo* typeInfo)
+{
+    size_t instanceSize = typeInfo->GetInstanceSize();
+    if (instanceSize == 0) {
+        return;
+    }
+    MAddress dstAddr = reinterpret_cast<MAddress>(dst) + TYPEINFO_PTR_SIZE;
+    if (!typeInfo->HasRefField()) {
+        CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dstAddr), instanceSize,
+                              reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(src) + TYPEINFO_PTR_SIZE),
+                              instanceSize) == EOK,
+                     "MCC_AssignLocalGeneric memcpy_s failed");
+        return;
+    }
+    MCC_MaybeLocalWriteGeneric(dst, reinterpret_cast<void*>(dstAddr), src, instanceSize);
+}
+
 extern "C" void CJ_MCC_WriteGenericPayload(ObjectPtr dst, MAddress srcField, size_t srcSize)
 {
     TypeInfo* typeInfo = dst->GetTypeInfo();
