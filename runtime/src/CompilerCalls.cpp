@@ -402,7 +402,7 @@ extern "C" void MCC_MaybeLocalWriteStruct(const ObjectPtr obj, MAddress dst, siz
     CHECK_DETAIL(srcLen <= dstLen, "MCC_MaybeLocalWriteStruct source is larger than destination: %zu > %zu", srcLen,
                  dstLen);
 
-    auto copyRange = [=](size_t begin, size_t end) {
+    auto copyRange = [dst, dstLen, src](size_t begin, size_t end) {
         if (begin == end) {
             return;
         }
@@ -414,7 +414,7 @@ extern "C" void MCC_MaybeLocalWriteStruct(const ObjectPtr obj, MAddress dst, siz
     };
     size_t copiedUntil = 0;
     gctib.ForEachBitmapWordInRange(dst,
-        [=, &copyRange, &copiedUntil](RefField<>& dstField) {
+        [obj, dst, src, srcLen, &copyRange, &copiedUntil](RefField<>& dstField) {
             size_t offset = reinterpret_cast<MAddress>(&dstField) - dst;
             CHECK_DETAIL(offset >= copiedUntil && offset + sizeof(RefField<>) <= srcLen,
                          "invalid MaybeLocalWriteStruct reference offset: %zu, copiedUntil: %zu, srcLen: %zu", offset,

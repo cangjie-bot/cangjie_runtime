@@ -30,7 +30,7 @@
 namespace MapleRuntime {
 class LocalObjectRootRegistry {
 public:
-    // TODO(localmode): replace std::function with a lightweight function_ref/template when this path is hot.
+    // NOTE(localmode): replace std::function with a lightweight function_ref/template when this path is hot.
     using LocalObjectChecker = std::function<bool(BaseObject*)>;
 
     void AddFinalizer(BaseObject* obj);
@@ -215,7 +215,15 @@ private:
             LocalNativeRegion* region = nullptr;
         };
 
-        static constexpr size_t INITIAL_CAPACITY = 4;
+        static constexpr size_t initialCapacity = 4;
+        static constexpr size_t hashShiftA = 30;
+        static constexpr size_t hashShiftB = 27;
+        static constexpr size_t hashShiftC = 31;
+        static constexpr size_t loadFactorScale = 10;
+        static constexpr size_t loadFactorLimit = 7;
+        static constexpr size_t capacityGrowth = 2;
+        static constexpr size_t shrinkThreshold = 8;
+        static constexpr size_t capacityShift = 1;
 
         static LocalNativeRegion* DeletedEntry()
         {
@@ -227,23 +235,23 @@ private:
             // Mix adjacent 4KB slots so clustered native regions do not form
             // long linear-probe runs after table growth.
             size_t value = static_cast<size_t>(slot);
-            value ^= value >> 30;
+            value ^= value >> hashShiftA;
             value *= static_cast<size_t>(0xbf58476d1ce4e5b9ULL);
-            value ^= value >> 27;
+            value ^= value >> hashShiftB;
             value *= static_cast<size_t>(0x94d049bb133111ebULL);
-            value ^= value >> 31;
+            value ^= value >> hashShiftC;
             return value;
         }
 
         void EnsureInsertCapacity()
         {
             if (entries.empty()) {
-                Rehash(INITIAL_CAPACITY);
+                Rehash(initialCapacity);
                 return;
             }
             // Keep at least 30% empty slots, including deleted entries.
-            if ((entryCount + deletedEntryCount + 1) * 10 >= entries.size() * 7) {
-                Rehash(entries.size() * 2);
+            if ((entryCount + deletedEntryCount + 1) * loadFactorScale >= entries.size() * loadFactorLimit) {
+                Rehash(entries.size() * capacityGrowth);
             }
         }
 
@@ -285,8 +293,8 @@ private:
                 deletedEntryCount = 0;
                 return;
             }
-            if (entries.size() > INITIAL_CAPACITY && entryCount * 8 <= entries.size()) {
-                Rehash(entries.size() / 2);
+            if (entries.size() > initialCapacity && entryCount * shrinkThreshold <= entries.size()) {
+                Rehash(entries.size() / capacityGrowth);
             } else if (deletedEntryCount > entryCount) {
                 Rehash(entries.size());
             }
@@ -294,7 +302,8 @@ private:
 
         void Rehash(size_t capacity)
         {
-            CHECK_DETAIL((capacity & (capacity - 1)) == 0, "native local region index capacity is not power of two");
+            CHECK_DETAIL((capacity & (capacity - capacityShift)) == 0,
+                         "native local region index capacity is not power of two");
             std::vector<Entry> oldEntries;
             oldEntries.swap(entries);
             entries.resize(capacity);
@@ -358,7 +367,7 @@ private:
 namespace {
 constexpr size_t DEFAULT_NATIVE_LOCAL_REGION_SIZE = 4 * KB;
 constexpr size_t NATIVE_LOCAL_REGION_SLOT_SHIFT = 12;
-static_assert((static_cast<size_t>(1) << NATIVE_LOCAL_REGION_SLOT_SHIFT) == DEFAULT_NATIVE_LOCAL_REGION_SIZE,
+static_assert(DEFAULT_NATIVE_LOCAL_REGION_SIZE == (static_cast<size_t>(1) << NATIVE_LOCAL_REGION_SLOT_SHIFT),
               "native local region slot size must match normal region size");
 constexpr size_t LOCAL_OBJECT_MARKER_SIZE = sizeof(uint64_t);
 constexpr uint64_t LOCAL_OBJECT_MARKER = 0x4c4f43414c4f424aULL; // "LOCALOBJ"
@@ -464,7 +473,7 @@ void LocalObjectRootRegistry::VisitOneLocalObject(BaseObject* obj, const RootVis
             visitor(reinterpret_cast<ObjectRef&>(field));
             return;
         }
-        // TODO(localmode): decide whether raw/native non-heap references are legal in local object fields.
+        // NOTE(localmode): decide whether raw/native non-heap references are legal in local object fields.
         LOG(RTLOG_FATAL, "local object field references non-heap and non-local object %p", target);
     });
 }
@@ -552,12 +561,13 @@ void HeapLocalObjectAllocator::EndRegionsForFrame(Mutator& mutator, FrameAddress
     if (ownerFA == nullptr) {
         return;
     }
-    while (true) {
-        LocalHeapBlock* block = GetBlockStackTop(mutator);
-        if (block == nullptr || block->firstBlock->ownerFA != ownerFA) {
+    LocalHeapBlock* block = GetBlockStackTop(mutator);
+    while (block != nullptr) {
+        if (block->firstBlock->ownerFA != ownerFA) {
             return;
         }
         EndRegion(mutator, ownerFA);
+        block = GetBlockStackTop(mutator);
     }
 }
 
@@ -659,7 +669,7 @@ void HeapLocalObjectAllocator::AddLocalRoot(Mutator& mutator, BaseObject* obj)
 
 void HeapLocalObjectAllocator::VisitLocalObjectRefFields(Mutator& mutator, const RootVisitor& visitor)
 {
-    // TODO(localmode): reuse a per-mutator scratch visited set to avoid allocating during every root visit.
+    // NOTE(localmode): reuse a per-mutator scratch visited set to avoid allocating during every root visit.
     std::unordered_set<BaseObject*> visited;
     for (LocalHeapBlock* block = GetBlockStackTop(mutator); block != nullptr; block = block->prev) {
         if (block->firstBlock != block) {
@@ -800,12 +810,13 @@ void NativeLocalObjectAllocator::EndRegionsForFrame(Mutator& mutator, FrameAddre
     if (ownerFA == nullptr) {
         return;
     }
-    while (true) {
-        LocalNativeRegion* region = GetRegionStackTop(mutator);
-        if (region == nullptr || region->firstRegion->ownerFA != ownerFA) {
+    LocalNativeRegion* region = GetRegionStackTop(mutator);
+    while (region != nullptr) {
+        if (region->firstRegion->ownerFA != ownerFA) {
             return;
         }
         EndRegion(mutator, ownerFA);
+        region = GetRegionStackTop(mutator);
     }
 }
 
@@ -910,7 +921,7 @@ void NativeLocalObjectAllocator::AddLocalRoot(Mutator& mutator, BaseObject* obj)
 
 void NativeLocalObjectAllocator::VisitLocalObjectRefFields(Mutator& mutator, const RootVisitor& visitor)
 {
-    // TODO(localmode): reuse a per-mutator scratch visited set to avoid allocating during every root visit.
+    // NOTE(localmode): reuse a per-mutator scratch visited set to avoid allocating during every root visit.
     std::unordered_set<BaseObject*> visited;
     for (LocalNativeRegion* region = GetRegionStackTop(mutator); region != nullptr; region = region->prev) {
         if (region->firstRegion != region) {
