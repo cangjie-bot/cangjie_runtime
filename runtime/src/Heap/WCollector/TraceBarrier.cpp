@@ -344,9 +344,8 @@ void TraceBarrier::WriteGeneric(const ObjectPtr obj, void* fieldPtr, const Objec
 
 void TraceBarrier::ReadGeneric(const ObjectPtr dstObj, ObjectPtr obj, void* fieldPtr, size_t size) const
 {
-    // tdo del
-    if (UNLIKELY(IsLocalObject(dstObj) || IsLocalObject(obj))) {
-        LOG(RTLOG_FATAL, "TraceBarrier::ReadGeneric does not support local object: dstObj %p, obj %p", dstObj, obj);
+    if (TryReadGenericWithLocalObject(dstObj, obj, fieldPtr, size)) {
+        return;
     }
     if (!Heap::IsHeapAddress(dstObj) && !Heap::IsHeapAddress(obj)) {
         CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(dstObj) + TYPEINFO_PTR_SIZE),

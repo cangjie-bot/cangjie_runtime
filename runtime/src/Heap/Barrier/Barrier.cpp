@@ -9,6 +9,7 @@
 #include "Allocator/LocalObjectUtil.h"
 #include "Heap/Collector/Collector.h"
 #include "Heap/Heap.h"
+#include "Mutator/Mutator.h"
 #include "ObjectModel/Field.inline.h"
 #include "ObjectModel/RefField.inline.h"
 #if defined(CANGJIE_TSAN_SUPPORT)
@@ -16,6 +17,9 @@
 #endif
 
 namespace MapleRuntime {
+extern "C" void MCC_MaybeLocalWriteStruct(const ObjectPtr obj, MAddress dst, size_t dstLen, MAddress src,
+                                           size_t srcLen, GCTib gctib);
+
 void Barrier::WriteI8(BaseObject* obj, Field<int8_t>& field, int8_t val) const { field.SetFieldValue(obj, val); }
 
 void Barrier::WriteI16(BaseObject* obj, Field<int16_t>& field, int16_t val) const { field.SetFieldValue(obj, val); }
@@ -240,8 +244,8 @@ void Barrier::WriteGeneric(const ObjectPtr obj, void* fieldPtr, const ObjectPtr 
 }
 void Barrier::ReadGeneric(const ObjectPtr dstObj, ObjectPtr obj, void* fieldPtr, size_t size) const
 {
-    if (UNLIKELY(IsLocalObject(dstObj) || IsLocalObject(obj))) {
-        LOG(RTLOG_FATAL, "Barrier::ReadGeneric does not support local object: dstObj %p, obj %p", dstObj, obj);
+    if (TryReadGenericWithLocalObject(dstObj, obj, fieldPtr, size)) {
+        return;
     }
     if (!Heap::IsHeapAddress(dstObj) && !Heap::IsHeapAddress(obj)) {
         CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(dstObj) + TYPEINFO_PTR_SIZE),
@@ -257,6 +261,31 @@ void Barrier::ReadGeneric(const ObjectPtr dstObj, ObjectPtr obj, void* fieldPtr,
         MAddress srcAddr = reinterpret_cast<MAddress>(fieldPtr);
         WriteStruct(dstObj, dstAddr, size, srcAddr, size);
     }
+}
+
+bool Barrier::TryReadGenericWithLocalObject(const ObjectPtr dstObj, ObjectPtr obj, void* fieldPtr, size_t size) const
+{
+    Mutator* mutator = Mutator::GetMutator();
+    bool dstIsHeap = Heap::IsHeapAddress(dstObj);
+    bool objIsHeap = Heap::IsHeapAddress(obj);
+    bool dstIsLocal = !dstIsHeap && IsLocalObject(dstObj, mutator);
+    bool objIsLocal = !objIsHeap && IsLocalObject(obj, mutator);
+    if (!dstIsLocal && !objIsLocal) {
+        return false;
+    }
+
+    CHECK_DETAIL(dstObj != nullptr && fieldPtr != nullptr,
+                 "ReadGeneric with local object has invalid parameter: dstObj %p, obj %p, fieldPtr %p",
+                 dstObj, obj, fieldPtr);
+    MAddress dstAddr = reinterpret_cast<MAddress>(dstObj) + TYPEINFO_PTR_SIZE;
+    if (!dstObj->HasRefField()) {
+        CHECK_DETAIL(memcpy_s(reinterpret_cast<void*>(dstAddr), size, fieldPtr, size) == EOK,
+                     "ReadGeneric local payload memcpy_s failed");
+        return true;
+    }
+    MCC_MaybeLocalWriteStruct(dstObj, dstAddr, size, reinterpret_cast<MAddress>(fieldPtr), size,
+                              dstObj->GetGCTib());
+    return true;
 }
 
 } // namespace MapleRuntime
