@@ -1283,6 +1283,7 @@ public class CallExpr <: Expr {
                     this.lParen_ = v.lParen_
                     this.args_ = v.args_
                     this.rParen_ = v.rParen_
+                    this.modal_ = v.modal_
                 case None => throw ASTException("Cannot construct the 'CallExpr' node.")
             }
         } catch (e: ParseASTException) {
@@ -1300,6 +1301,11 @@ public class CallExpr <: Expr {
     private var lParen_: Token = Token(TokenKind.LPAREN)
     private var args_: ArrayList<Argument> = ArrayList<Argument>()
     private var rParen_: Token = Token(TokenKind.RPAREN)
+    private var modal_: ModalInfo = ModalInfo()
+    public mut prop modal: ModalInfo {
+        get() { modal_ }
+        set(v) { modal_ = v }
+    }
     public mut prop callFunc: Expr {
         get() {
             postfixExpr_
@@ -1351,6 +1357,7 @@ public class CallExpr <: Expr {
         ret.append(lParen_)
         ret.append(arguments.toTokens())
         ret.append(rParen_)
+        ret.append(modal_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -2655,6 +2662,7 @@ public class TypeConvExpr <: Expr {
                     this.lParen_ = v.lParen_
                     this.expr_ = v.expr_
                     this.rParen_ = v.rParen_
+                    this.modal_ = v.modal_
                 case None => throw ASTException("Cannot construct the 'TypeConvExpr' node.")
             }
         } catch (e: ParseASTException) {
@@ -2678,6 +2686,11 @@ public class TypeConvExpr <: Expr {
     private var lParen_: Token = Token(TokenKind.LPAREN)
     private var expr_: Expr = Expr()
     private var rParen_: Token = Token(TokenKind.RPAREN)
+    private var modal_: ModalInfo = ModalInfo()
+    public mut prop modal: ModalInfo {
+        get() { modal_ }
+        set(v) { modal_ = v }
+    }
     public mut prop targetType: PrimitiveType {
         get() {
             type_
@@ -2713,7 +2726,7 @@ public class TypeConvExpr <: Expr {
         }
     }
     public func toTokens(): Tokens {
-        Tokens().append(type_.toTokens()).append(lParen_).append(expr_.toTokens()).append(rParen_)
+        Tokens().append(type_.toTokens()).append(lParen_).append(expr_.toTokens()).append(rParen_).append(modal_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -2939,6 +2952,7 @@ public class PrimitiveTypeExpr <: Expr {
         keyword_ = kind
     }
     private var keyword_: Token = Token()
+    private var modal_: ModalInfo = ModalInfo()
     public mut prop keyword: Token {
         get() {
             keyword_
@@ -2948,8 +2962,12 @@ public class PrimitiveTypeExpr <: Expr {
             keyword_ = v
         }
     }
+    public mut prop modal: ModalInfo {
+        get() { modal_ }
+        set(v) { modal_ = v }
+    }
     public func toTokens(): Tokens {
-        Tokens().append(keyword_)
+        Tokens().append(keyword_).append(modal_.toTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -2965,6 +2983,80 @@ public class PrimitiveTypeExpr <: Expr {
             currentIndent++
         }
         ret += getTokenIndent("-keyword", keyword_, currentIndent)
+        ret += getIndent(indent) + "}\n"
+        ret
+    }
+}
+
+public class ExclaveExpr <: Expr {
+    init(`exclave`: Token, body: Block) {
+        this.exclave_ = `exclave`
+        this.body_ = body
+    }
+    public init(inputs: Tokens) {
+        try {
+            match (parseExpr(inputs) as ExclaveExpr) {
+                case Some(v) =>
+                    this.begin_ = v.beginPos
+                    this.end_ = v.endPos
+                    this.exclave_ = v.exclave_
+                    this.body_ = v.body_
+                case None => throw ASTException("Cannot construct the 'ExclaveExpr' node.")
+            }
+        } catch (e: ParseASTException) {
+            if (e.message == String.empty) {
+                throw ASTException("Cannot construct the 'ExclaveExpr' node.")
+            } else {
+                throw ASTException(e.message)
+            }
+        }
+    }
+    public init() {
+        super()
+    }
+    private var exclave_: Token = Token(TokenKind.EXCLAVE)
+    private var body_: Block = Block()
+    public mut prop keyword: Token {
+        get() {
+            exclave_
+        }
+        set(v) {
+            checkTokenType(v, EXCLAVE)
+            exclave_ = v
+        }
+    }
+    public mut prop body: Block {
+        get() {
+            body_
+        }
+        set(v) {
+            body_ = v
+        }
+    }
+    public func toTokens(): Tokens {
+        var ret = Tokens().append(exclave_).append(body_)
+        ret
+    }
+
+    public func traverse(v: Visitor): Unit {
+        v.visit(this)
+        super.traverse(v)
+        if (v.needBreakTraverse()) {
+            return
+        }
+        body_.traverse(v)
+        return
+    }
+
+    protected func dump(indent: UInt16): String {
+        var ret: String = "ExclaveExpr {\n"
+        currentIndent = indent
+        if (indent != 0 || beginNode) {
+            currentIndent++
+        }
+        ret += getTokenIndent("-exclave", exclave_, currentIndent)
+        ret += getIndent(currentIndent) + "-body: "
+        ret += body_.dump(currentIndent)
         ret += getIndent(indent) + "}\n"
         ret
     }

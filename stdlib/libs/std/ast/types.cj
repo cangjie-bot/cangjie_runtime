@@ -21,6 +21,7 @@ public open class TypeNode <: Node {
     }
     private var typeParameterName_: Token = Token(TokenKind.IDENTIFIER, "")
     private var colon_: Token = Token(TokenKind.COLON)
+    private var modal_: ModalInfo = ModalInfo()
     public mut prop typeParameterName: Token {
         get() {
             typeParameterName_
@@ -37,6 +38,19 @@ public open class TypeNode <: Node {
             checkTokenType(v, COLON)
             colon_ = v
         }
+    }
+    // Postfix modal (@local! / @local? / @~local) trailing this type. Empty when absent.
+    public mut prop modal: ModalInfo {
+        get() {
+            modal_
+        }
+        set(v) {
+            modal_ = v
+        }
+    }
+    // Tokens for the trailing modal, if any. Subclasses append this at the end of toTokens().
+    protected func modalTokens(): Tokens {
+        return modal_.toTokens()
     }
 
     public open func toTokens(): Tokens {
@@ -57,6 +71,7 @@ public open class TypeNode <: Node {
             ret += getTokenIndent("-typeParameterName", typeParameterName_, indent)
             ret += getTokenIndent("-COLON", colon_, indent)
         }
+        ret += modal_.dump(indent)
         ret
     }
 }
@@ -69,6 +84,8 @@ public class PrimitiveType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
+                    super.modal = v.modal
                     this.keyword_ = v.keyword_
                 case None => throw ASTException("Cannot construct the 'PrimitiveType' node.")
             }
@@ -96,7 +113,7 @@ public class PrimitiveType <: TypeNode {
         }
     }
     public func toTokens(): Tokens {
-        return super.toTokens().append(keyword_)
+        return super.toTokens().append(keyword_).append(modalTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -135,6 +152,8 @@ public class RefType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
+                    super.modal = v.modal
                     this.identifier_ = v.identifier_
                     this.lAngle_ = checkValid(v.lAngle_)
                     this.typeArguments_ = v.typeArguments_
@@ -212,6 +231,7 @@ public class RefType <: TypeNode {
             ret.append(typeArguments_[typeArguments_.size - 1].toTokens())
             ret.append(rAngle_.tryGet() ?? Token(TokenKind.GT))
         }
+        ret.append(modalTokens())
         ret
     }
 
@@ -263,6 +283,7 @@ public class QualifiedType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
                     this.baseType_ = v.baseType_
                     this.dot_ = v.dot_
                     this.identifier_ = v.identifier_
@@ -360,6 +381,7 @@ public class QualifiedType <: TypeNode {
             ret.append(typeArguments_[typeArguments_.size - 1].toTokens())
             ret.append(rAngle_)
         }
+        ret.append(modalTokens())
         ret
     }
 
@@ -410,6 +432,7 @@ public class ParenType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
                     this.lParen_ = v.lParen_
                     this.ty_ = v.ty_
                     this.rParen_ = v.rParen_
@@ -453,7 +476,7 @@ public class ParenType <: TypeNode {
         }
     }
     public func toTokens(): Tokens {
-        super.toTokens().append(lParen_).append(ty_.toTokens()).append(rParen_)
+        super.toTokens().append(lParen_).append(ty_.toTokens()).append(rParen_).append(modalTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -496,6 +519,7 @@ public class TupleType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
                     this.lParen_ = v.lParen_
                     this.commas_ = v.commas_
                     this.types_ = v.types_
@@ -552,7 +576,7 @@ public class TupleType <: TypeNode {
             }
             ret.append(types_[types_.size - 1].toTokens())
         }
-        ret.append(rParen_)
+        ret.append(rParen_).append(modalTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -604,6 +628,7 @@ public class ThisType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
                     this.keyword_ = v.keyword_
                 case None => throw ASTException("Cannot construct the 'ThisType' node.")
             }
@@ -622,7 +647,7 @@ public class ThisType <: TypeNode {
         }
     }
     public func toTokens(): Tokens {
-        super.toTokens().append(keyword_)
+        super.toTokens().append(keyword_).append(modalTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -657,6 +682,7 @@ public class PrefixType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
                     this.prefixOps_ = v.prefixOps_
                     this.baseType_ = v.baseType_
                 case None => throw ASTException("Cannot construct the 'PrefixType' node.")
@@ -689,7 +715,7 @@ public class PrefixType <: TypeNode {
         }
     }
     public func toTokens(): Tokens {
-        super.toTokens().append(prefixOps).append(baseType_)
+        super.toTokens().append(prefixOps).append(baseType_).append(modalTokens())
     }
 
     public func traverse(v: Visitor): Unit {
@@ -738,6 +764,7 @@ public class FuncType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
                     this.keyword_ = checkValid(v.keyword_)
                     this.lParen_ = v.lParen_
                     this.types_ = v.types_
@@ -838,7 +865,7 @@ public class FuncType <: TypeNode {
             }
             ret.append(types_[types_.size - 1].toTokens())
         }
-        ret.append(rParen_).append(arrow_).append(retTy_.toTokens())
+        ret.append(rParen_).append(arrow_).append(retTy_.toTokens()).append(modalTokens())
 
         ret
     }
@@ -894,6 +921,7 @@ public class VArrayType <: TypeNode {
                     this.begin_ = v.beginPos
                     this.end_ = v.endPos
                     super.typeParameterName = v.typeParameterName
+                    super.modal = v.modal
                     this.keyword_ = v.keyword_
                     this.lAngle_ = v.lAngle_
                     this.elementTy_ = v.elementTy_
@@ -980,6 +1008,7 @@ public class VArrayType <: TypeNode {
             .append(dollar_)
             .append(size)
             .append(rAngle_)
+            .append(modalTokens())
     }
 
     public func traverse(v: Visitor): Unit {
