@@ -212,7 +212,7 @@ public struct Array<T> {
     }
     @Frozen
     @OverflowWrapping
-    public operator func [](this @local?, index: Int64): T @local? {
+    public exclave operator func [](this @local?, index: Int64): T @local? {
         // Using type conversion to replace typical bounds checking,
         // if (index < 0 || index >= this.len), to a single comparison.
         // The negative value of index will be converted to a large positive number
@@ -255,14 +255,12 @@ public struct Array<T> {
     }
 
     @Frozen
-    public operator func [](this @local!, range: Range<Int64>): Array<T> @local! {
-        exclave {
-            rangeSlice(range, this.len)
-        }
+    public exclave operator func [](this @local!, range: Range<Int64>): Array<T> @local! {
+        rangeSlice(range, this.len)
     }
 
     @Frozen
-    public operator func [](this @local?, range: Range<Int64>): Array<T> @local? {
+    public exclave operator func [](this @local?, range: Range<Int64>): Array<T> @local? {
         rangeSlice(range, this.len)
     }
 
@@ -387,7 +385,9 @@ public struct Array<T> {
             throw IndexOutOfBoundsException(arrayRangeOutOfBoundsExceptionMessage(
                 this.len, range.start, range.end, range.step, range.hasStart, range.hasEnd, range.isClosed))
         }
-        Array<T>(this.rawptr, this.start + start_, end_ - start_)
+        exclave {
+            Array<T>(this.rawptr, this.start + start_, end_ - start_)
+        }
     }
 
     // The parameters represents a half-open range [start_, end_)

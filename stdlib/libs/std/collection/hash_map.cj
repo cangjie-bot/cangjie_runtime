@@ -262,7 +262,7 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
     @Frozen
     public prop key: K @local? {
         get() {
-            getKey()
+            exclave { getKey() }
         }
     }
 
@@ -293,7 +293,7 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
     @Frozen
     public mut prop value: ?V @local? {
         get() {
-            getValue()
+            exclave { getValue() }
         }
         set(_) {
             throw Exception()
@@ -351,18 +351,18 @@ class HashMapEntryView<K, V> <: MapEntryView<K, V> where K <: Hashable & Equatab
         if (lockVersion != map.version()) {
             throw ConcurrentModificationException()
         }
-        return if (_isAbsent) {
+        if (_isAbsent) {
             None
         } else {
             map.entries[index].value
         }
     }
     @Frozen
-    func getValue(this @local?): ?V @local? {
+    exclave func getValue(this @local?): ?V @local? {
         if (lockVersion != map.version()) {
             throw ConcurrentModificationException()
         }
-        return if (_isAbsent) {
+        if (_isAbsent) {
             None
         } else {
             map.entries[index].value
@@ -1272,7 +1272,7 @@ public class HashMap<K, V> <: Map<K, V> where K <: Hashable & Equatable<K> {
         return HashMapIterator<K, V>(this)
     }
     @Frozen
-    public func iterator(this @local?): HashMapIterator<K, V> @local? {
+    public exclave func iterator(this @local?): HashMapIterator<K, V> @local? {
         return HashMapIterator<K, V>(this)
     }
 

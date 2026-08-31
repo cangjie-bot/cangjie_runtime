@@ -868,6 +868,10 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     public func trimAscii(): String {
         this.trimAsciiStart().trimAsciiEnd()
     }
+    @Frozen
+    public exclave func trimAscii(this @local?): String @local? {
+        trimAsciiStart().trimAsciiEnd()
+    }
 
     @Frozen
     @OverflowWrapping
@@ -886,6 +890,23 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         String(myData, this.start + UInt32(start), length - UInt32(start))
     }
+    @Frozen
+    @OverflowWrapping
+    public exclave func trimAsciiStart(this  @local?): String @local? {
+        var start: Int64 = 0
+        var foundFirst: Bool = false
+        for (i in 0..size) {
+            if (!arrayGetUnchecked3(myData, i + Int64(this.start)).isAsciiWhiteSpace()) {
+                start = i
+                foundFirst = true
+                break
+            }
+        }
+        if (!foundFirst) {
+            return String() @local!
+        }
+        String(myData, this.start + UInt32(start), length - UInt32(start))
+    }
 
     @Frozen
     @OverflowWrapping
@@ -901,6 +922,23 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
         }
         if (!foundLast) {
             return String.empty
+        }
+        String(myData, this.start, UInt32(end) + 1)
+    }
+    @Frozen
+    @OverflowWrapping
+    public exclave func trimAsciiEnd(this @local?): String @local? {
+        var end: Int64 = size - 1
+        var foundLast: Bool = false
+        for (i in end..-1 : -1) {
+            if (!arrayGetUnchecked3(myData, i + Int64(this.start)).isAsciiWhiteSpace()) {
+                end = i
+                foundLast = true
+                break
+            }
+        }
+        if (!foundLast) {
+            return String() @local!
         }
         String(myData, this.start, UInt32(end) + 1)
     }
@@ -1478,7 +1516,7 @@ public struct String <: Collection<Byte> & Comparable<String> & Hashable & ToStr
     }
 
     @Frozen
-    private func sliceUnchecked(this @local?, startIndex: Int64, len: Int64): String @local? {
+    private exclave func sliceUnchecked(this @local?, startIndex: Int64, len: Int64): String @local? {
         String(Array<Byte>(myData, Int64(this.start) + startIndex, len))
     }
 

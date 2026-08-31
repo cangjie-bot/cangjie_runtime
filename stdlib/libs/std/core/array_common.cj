@@ -52,7 +52,7 @@ exclave func toArray<T>(raw: RawArray<T> @local!): Array<T> @local! {
     return Array<T>(raw, 0, arraySize(raw))
 }
 @Frozen
-func toArray<T>(raw: RawArray<T> @local?): Array<T> @local? {
+exclave func toArray<T>(raw: RawArray<T> @local?): Array<T> @local? {
     if (arraySize(raw) == 0) {
         return Array<T>()
     }
@@ -486,7 +486,7 @@ public unsafe func acquireArrayRawData<T>(arr: Array<T>): CPointerHandle<T> wher
 }
 
 @Frozen
-public unsafe func acquireArrayRawData<T>(arr: Array<T> @local?): CPointerHandle<T> @local? where T <: CType {
+public exclave unsafe func acquireArrayRawData<T>(arr: Array<T> @local?): CPointerHandle<T> @local? where T <: CType {
     CPointerHandle<T>(acquireRawData2<T>(arr.rawptr) + arr.start, arr)
 }
 

@@ -341,7 +341,7 @@ class StringByteIterator <: Iterator<Byte> {
     }
     @Frozen
     @OverflowWrapping
-    public func next(this @local?): Option<Byte> @local? {
+    public exclave func next(this @local?): Option<Byte> @local? {
         if (iteratorData.nextPos >= iteratorData.end) {
             return None
         }

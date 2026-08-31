@@ -970,7 +970,7 @@ func getDataAndFlag(data: String, isSigned: Bool, typeName: String): (Array<Byte
     checkParseDataNotEmpty(data)
     getDataAndFlagCore(data, isSigned, typeName, false)
 }
-func getDataAndFlag(data: String @local?, isSigned: Bool, typeName: String): (Array<Byte>, Int64) @local? {
+exclave func getDataAndFlag(data: String @local?, isSigned: Bool, typeName: String): (Array<Byte>, Int64) @local? {
     if (data.isEmpty()) {
         throw IllegalArgumentException("The string is empty.")
     }
@@ -993,7 +993,7 @@ func getDataAndFlag(data: String @local?, isSigned: Bool, typeName: String): (Ar
 func getTryDataAndFlag(data: String, isSigned: Bool, _: String): (Array<Byte>, Int64) {
     getTryDataAndFlagCore(data, isSigned, false)
 }
-func getTryDataAndFlag(data: String @local?, isSigned: Bool, _: String): (Array<Byte>, Int64) @local? {
+exclave func getTryDataAndFlag(data: String @local?, isSigned: Bool, _: String): (Array<Byte>, Int64) @local? {
     if (data.isEmpty()) {
         return ([], 1)
     }
