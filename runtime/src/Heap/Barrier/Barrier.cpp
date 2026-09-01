@@ -18,7 +18,7 @@
 
 namespace MapleRuntime {
 extern "C" void MCC_MaybeLocalWriteStruct(const ObjectPtr obj, MAddress dst, size_t dstLen, MAddress src,
-                                           size_t srcLen, GCTib gctib);
+    size_t srcLen, GCTib gctib);
 
 void Barrier::WriteI8(BaseObject* obj, Field<int8_t>& field, int8_t val) const { field.SetFieldValue(obj, val); }
 
