@@ -854,6 +854,59 @@ func wyrand(seed: Int64) {
 }
 
 @OverflowWrapping
+func wyhash(arr: RawArray<UInt8>, start: Int64, size: Int64, see: UInt64) {
+    var seed = see ^ mix(see ^ SECRET0, SECRET1)
+    if (size == 0) {
+        return seed
+    }
+    var a: UInt64
+    var b: UInt64
+    match {
+        case size < 4 =>
+            a = (UInt64(arrayGetUnchecked3<UInt8>(arr, start)) << 16) |
+                (UInt64(arrayGetUnchecked3<UInt8>(arr, start + (size >> 1))) << 8) |
+                (UInt64(arrayGetUnchecked3<UInt8>(arr, start + size - 1)))
+            b = 0
+        case size == 4 =>
+            a = r4(arr, start)
+            b = a
+        case size < 8 =>
+            a = r4(arr, start)
+            b = r4(arr, start + size - 4)
+        case size <= 16 =>
+            a = r8(arr, start)
+            b = r8(arr, start + size - 8)
+        case _ =>
+            var pos = start
+            var l = size
+            if (l > 48) {
+                var seed1 = seed
+                var seed2 = seed
+
+                do {
+                    seed = mix(r8(arr, pos) ^ SECRET1, r8(arr, pos + 8) ^ seed)
+                    seed1 = mix(r8(arr, pos + 16) ^ SECRET2, r8(arr, pos + 24) ^ seed1)
+                    seed2 = mix(r8(arr, pos + 32) ^ SECRET3, r8(arr, pos + 40) ^ seed2)
+                    pos += 48
+                    l -= 48
+                } while (l > 48)
+                seed = seed ^ seed1 ^ seed2
+            }
+
+            while (l > 16) {
+                seed = mix(r8(arr, pos) ^ SECRET1, r8(arr, pos + 8) ^ seed)
+                l -= 16
+                pos += 16
+            }
+            a = r8(arr, pos + l - 16)
+            b = r8(arr, pos + l - 8)
+    }
+    a ^= SECRET1
+    b ^= seed
+    mix(a ^ SECRET0 ^ UInt64(size), b ^ SECRET1)
+}
+
+@OverflowWrapping
 func wyhash(arr: RawArray<UInt8> @local?, start: Int64, size: Int64, see: UInt64) {
     var seed = see ^ mix(see ^ SECRET0, SECRET1)
     if (size == 0) {
