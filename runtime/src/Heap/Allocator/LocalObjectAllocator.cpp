@@ -792,8 +792,19 @@ bool NativeLocalObjectAllocator::StartRegion(Mutator& mutator, FrameAddress* own
 
 void NativeLocalObjectAllocator::EndRegion(Mutator& mutator, FrameAddress* ownerFA)
 {
-    if (GetRegionStackTop(mutator) == nullptr) {
+    LocalNativeRegion* currentRegion = GetRegionStackTop(mutator);
+    if (currentRegion == nullptr) {
         LOG(RTLOG_WARNING, "end native local region without active region: mutator %p ownerFA %p", &mutator, ownerFA);
+        return;
+    }
+
+    // Exception unwinding can be re-entered while a local finalizer is running.
+    // In that case the EH frame being unwound may not own the current region.
+    // Do not run finalizers or pop another frame's region in this situation.
+    if (ownerFA != nullptr && currentRegion->firstRegion->ownerFA != ownerFA) {
+        LOG(RTLOG_WARNING,
+            "skip native local region end for mismatched frame: region ownerFA %p, target ownerFA %p",
+            currentRegion->firstRegion->ownerFA, ownerFA);
         return;
     }
     RunLocalFinalizers(mutator, ownerFA);
@@ -1061,15 +1072,17 @@ NativeLocalObjectAllocator::LocalNativeRegion* NativeLocalObjectAllocator::PopRe
 {
     LocalNativeRegion* curr = GetRegionStackTop(mutator);
     if (curr != nullptr && ownerFA != nullptr && curr->firstRegion->ownerFA != ownerFA) {
-        LOG(RTLOG_FATAL, "end native local region with mismatched frame: top ownerFA %p, target ownerFA %p",
+        LOG(RTLOG_WARNING, "skip native local region pop with mismatched frame: top ownerFA %p, target ownerFA %p",
             curr->firstRegion->ownerFA, ownerFA);
+        return nullptr;
     }
     LocalNativeRegion* ret = curr;
     while (curr != nullptr) {
         LocalNativeRegion* prev = curr->prev;
         if (ownerFA != nullptr && curr->firstRegion->ownerFA != ownerFA) {
-            LOG(RTLOG_FATAL, "native local region crosses frame boundary: region ownerFA %p, target ownerFA %p",
+            LOG(RTLOG_WARNING, "skip native local region pop across frame boundary: region ownerFA %p, target ownerFA %p",
                 curr->firstRegion->ownerFA, ownerFA);
+            return nullptr;
         }
         if (curr->firstRegion == curr) {
             SetRegionStackTop(mutator, prev);
@@ -1163,8 +1176,9 @@ void NativeLocalObjectAllocator::RunLocalFinalizers(Mutator& mutator, FrameAddre
         return;
     }
     if (ownerFA != nullptr && region->firstRegion->ownerFA != ownerFA) {
-        LOG(RTLOG_FATAL, "run native local finalizers with mismatched frame: region ownerFA %p, target ownerFA %p",
+        LOG(RTLOG_WARNING, "skip native local finalizers with mismatched frame: region ownerFA %p, target ownerFA %p",
             region->firstRegion->ownerFA, ownerFA);
+        return;
     }
     while (region->firstRegion->rootRegistry.RunPendingFinalizers(mutator)) {
     }
