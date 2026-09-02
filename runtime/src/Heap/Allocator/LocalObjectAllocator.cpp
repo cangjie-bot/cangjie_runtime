@@ -26,7 +26,6 @@
 #include <new>
 #include <unordered_set>
 #include <vector>
-#include <fstream>
 
 namespace MapleRuntime {
 class LocalObjectRootRegistry {
@@ -779,36 +778,29 @@ void HeapLocalObjectAllocator::RecordReclamation(const LocalHeapBlock& block)
 
 bool NativeLocalObjectAllocator::StartRegion(Mutator& mutator, FrameAddress* ownerFA)
 {
-    std::ofstream of("/home/yujunqiang/cangjieLocalModal/a.log", std::ios::app);
     LocalNativeRegion* region =
         AllocateRegion(mutator, DEFAULT_NATIVE_LOCAL_REGION_SIZE, GetRegionStackTop(mutator), true, ownerFA);
     if (region == nullptr) {
         VLOG(LOCAL_REGION, "Start native local object region failed");
-        of << "NativeLocalObjectAllocator::StartLocalRegion failed, ownerFA=" << ownerFA << "\n";
         return false;
     }
     SetRegionStackTop(mutator, region);
     VLOG(LOCAL_REGION, "StartNativeLocalRegion: mutator %p, region %p, ownerFA %p, base %p, size %zu", &mutator,
          region, ownerFA, reinterpret_cast<void*>(region->base), region->size);
-    of << "NativeLocalObjectAllocator::StartLocalRegion region=" << region << " ownerFA=" << ownerFA << " base=" << reinterpret_cast<void*>(region->base) << " size=" << region->size << "\n";
     return true;
 }
 
 void NativeLocalObjectAllocator::EndRegion(Mutator& mutator, FrameAddress* ownerFA)
 {
-    std::ofstream of("/home/yujunqiang/cangjieLocalModal/a.log", std::ios::app);
     if (GetRegionStackTop(mutator) == nullptr) {
         LOG(RTLOG_WARNING, "end native local region without active region: mutator %p ownerFA %p", &mutator, ownerFA);
-        of << "NativeLocalObjectAllocator::EndRegion failed 001, ownerFA=" << ownerFA << "\n";
         return;
     }
     RunLocalFinalizers(mutator, ownerFA);
     LocalNativeRegion* headRegion = PopRegionChain(mutator, ownerFA);
     if (headRegion == nullptr) {
-        of << "NativeLocalObjectAllocator::EndRegion failed 002, ownerFA=" << ownerFA << "\n";
         return;
     }
-    of << "NativeLocalObjectAllocator::EndRegion region=" << headRegion << " ownerFA=" << ownerFA << " base=" << reinterpret_cast<void*>(headRegion->base) << " size=" << headRegion->size << "\n";
     while (headRegion != nullptr) {
         LocalNativeRegion* del = headRegion;
         headRegion = headRegion->prev;
