@@ -87,6 +87,22 @@ public struct Array<T> {
     }
 
     @Frozen
+    public init(this @local!, size: Int64, initElement: (Int64) -> T @local!) {
+        exclave {
+            this.start = 0
+            let raw = rawArrayAllocate2<T>(size)
+            var i: Int64 = 0
+            while (i < size) {
+                let v: T @local! = initElement(i)
+                arraySet2<T>(raw, i, v)
+                i = i + 1
+            }
+            this.rawptr = raw
+            this.len = size
+        }
+    }
+
+    @Frozen
     init(data: RawArray<T>, start: Int64, len: Int64) {
         this.rawptr = data
         this.start = start

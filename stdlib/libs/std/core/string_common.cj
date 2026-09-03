@@ -221,6 +221,26 @@ func checkUtf8Of4BytesWithoutException(arr: RawArray<UInt8>, startIndex: Int64, 
  * @throws IllegalArgumentException if Array<Byte> is an Invalid unicode scalar value.
  * @return Int64 : Number of characters
  */
+func checkInvalid(arr: RawArray<Byte>, startIndex: Int64, endIndex: Int64): Unit {
+    var i = startIndex
+    while (i < endIndex) {
+        var nowByte: UInt8 = arrayGetUnchecked3<UInt8>(arr, i)
+        match {
+            case nowByte < HIGH_1_UInt8 => i += 1
+            case nowByte < HIGH_2_UInt8 => throw IllegalArgumentException("Invalid utf8 byte sequence.")
+            case nowByte < HIGH_3_UInt8 =>
+                checkUtf8Of2Bytes(arr, i, endIndex)
+                i += 2
+            case nowByte < HIGH_4_UInt8 =>
+                checkUtf8Of3Bytes(arr, i, endIndex)
+                i += 3
+            case nowByte < HIGH_5_UInt8 =>
+                checkUtf8Of4Bytes(arr, i, endIndex)
+                i += 4
+            case _ => throw IllegalArgumentException("Invalid unicode scalar value.")
+        }
+    }
+}
 func checkInvalid(arr: RawArray<Byte> @local?, startIndex: Int64, endIndex: Int64): Unit {
     var i = startIndex
     while (i < endIndex) {
