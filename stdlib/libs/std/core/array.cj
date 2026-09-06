@@ -1090,7 +1090,7 @@ private func arrayInvalidRangeStepExceptionMessage(rangeStep: Int64): String {
     "Illegal step ${rangeStep}, step should be 1."
 }
 
-sealed interface Copyable {}
+public interface Copyable {}
 
 extend<T> Array<T> where T <: Copyable {
     public func cloneToNotLocal(this @local?): Array<T> {
