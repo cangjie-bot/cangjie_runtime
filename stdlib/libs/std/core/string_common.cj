@@ -45,7 +45,7 @@ const HIGH_6_UInt8: UInt8 = 0b11111100 // 0xfc
 @ConstSafe
 const EMPTY_UINT8_ARRAY: Array<UInt8> = Array<UInt8>()
 @ConstSafe
-const EMPTY_UINT8_RAW_ARRAY: RawArray<UInt8> = RawArray<UInt8>()
+const EMPTY_UINT8_RAW_ARRAY: RawArray<UInt8> = rawArrayAllocate<UInt8>(0)
 let EMPTY_INT64_ARRAY: Array<Int64> = Array<Int64>()
 let EMPTY_STRING_ARRAY: Array<String> = Array<String>()
 const STRING_C_THRESHOLD = 32
@@ -56,12 +56,12 @@ const STRING_C_THRESHOLD = 32
  * U+0080..U+07FF  110xxxxx   10xxxxxx
  *                 C2..DF     80..BF
  */
-func checkUtf8Of2Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64): Rune {
+func checkUtf8Of2Bytes(arr: RawArray<UInt8> @local?, startIndex: Int64, endIndex: Int64): Rune {
     if (startIndex + 2 > endIndex) {
         throw IllegalArgumentException("Invalid utf8 byte sequence.")
     }
-    let byte1 = arrayGetUnchecked<UInt8>(arr, startIndex)
-    let byte2 = arrayGetUnchecked<UInt8>(arr, startIndex + 1)
+    let byte1 = arrayGetUnchecked3<UInt8>(arr, startIndex)
+    let byte2 = arrayGetUnchecked3<UInt8>(arr, startIndex + 1)
     if ((byte1 & 0x1e) == 0 || (byte2 & 0xc0) != 0x80) {
         throw IllegalArgumentException("Invalid unicode scalar value.")
     }
@@ -87,13 +87,13 @@ func checkUtf8Of2BytesWithoutException(arr: RawArray<UInt8>, startIndex: Int64, 
  * U+0800..U+0FFF    E0         A0..BF     80..BF
  * U+1000..U+FFFF    E1..EF     80..BF     80..BF
  */
-func checkUtf8Of3Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64): Rune {
+func checkUtf8Of3Bytes(arr: RawArray<UInt8> @local?, startIndex: Int64, endIndex: Int64): Rune {
     if (startIndex + 3 > endIndex) {
         throw IllegalArgumentException("Invalid utf8 byte sequence.")
     }
-    let byte1 = arrayGetUnchecked<UInt8>(arr, startIndex)
-    let byte2 = arrayGetUnchecked<UInt8>(arr, startIndex + 1)
-    let byte3 = arrayGetUnchecked<UInt8>(arr, startIndex + 2)
+    let byte1 = arrayGetUnchecked3<UInt8>(arr, startIndex)
+    let byte2 = arrayGetUnchecked3<UInt8>(arr, startIndex + 1)
+    let byte3 = arrayGetUnchecked3<UInt8>(arr, startIndex + 2)
     // ensure b2 and b3 start with 0b10
     if ((byte2 & 0xc0) != 0x80 || (byte3 & 0xc0) != 0x80) {
         throw IllegalArgumentException("Invalid unicode scalar value.")
@@ -148,15 +148,15 @@ func checkUtf8Of3BytesWithoutException(arr: RawArray<UInt8>, startIndex: Int64, 
  * U+40000..U+FFFFF  F1..F3     80..BF     80..BF    80..BF
  * U+100000..U10FFFF F4         80..8F     80..BF    80..BF
  */
-func checkUtf8Of4Bytes(arr: RawArray<UInt8>, startIndex: Int64, endIndex: Int64): Rune {
+func checkUtf8Of4Bytes(arr: RawArray<UInt8> @local?, startIndex: Int64, endIndex: Int64): Rune {
     if (startIndex + 4 > endIndex) {
         throw IllegalArgumentException("Invalid utf8 byte sequence.")
     }
 
-    let byte1 = arrayGetUnchecked<UInt8>(arr, startIndex)
-    let byte2 = arrayGetUnchecked<UInt8>(arr, startIndex + 1)
-    let byte3 = arrayGetUnchecked<UInt8>(arr, startIndex + 2)
-    let byte4 = arrayGetUnchecked<UInt8>(arr, startIndex + 3)
+    let byte1 = arrayGetUnchecked3<UInt8>(arr, startIndex)
+    let byte2 = arrayGetUnchecked3<UInt8>(arr, startIndex + 1)
+    let byte3 = arrayGetUnchecked3<UInt8>(arr, startIndex + 2)
+    let byte4 = arrayGetUnchecked3<UInt8>(arr, startIndex + 3)
     if ((byte2 & 0xc0) != 0x80 || (byte3 & 0xc0) != 0x80 || (byte4 & 0xc0) != 0x80) {
         throw IllegalArgumentException("Invalid unicode scalar value.")
     }
@@ -224,7 +224,27 @@ func checkUtf8Of4BytesWithoutException(arr: RawArray<UInt8>, startIndex: Int64, 
 func checkInvalid(arr: RawArray<Byte>, startIndex: Int64, endIndex: Int64): Unit {
     var i = startIndex
     while (i < endIndex) {
-        var nowByte: UInt8 = arrayGetUnchecked<UInt8>(arr, i)
+        var nowByte: UInt8 = arrayGetUnchecked3<UInt8>(arr, i)
+        match {
+            case nowByte < HIGH_1_UInt8 => i += 1
+            case nowByte < HIGH_2_UInt8 => throw IllegalArgumentException("Invalid utf8 byte sequence.")
+            case nowByte < HIGH_3_UInt8 =>
+                checkUtf8Of2Bytes(arr, i, endIndex)
+                i += 2
+            case nowByte < HIGH_4_UInt8 =>
+                checkUtf8Of3Bytes(arr, i, endIndex)
+                i += 3
+            case nowByte < HIGH_5_UInt8 =>
+                checkUtf8Of4Bytes(arr, i, endIndex)
+                i += 4
+            case _ => throw IllegalArgumentException("Invalid unicode scalar value.")
+        }
+    }
+}
+func checkInvalid(arr: RawArray<Byte> @local?, startIndex: Int64, endIndex: Int64): Unit {
+    var i = startIndex
+    while (i < endIndex) {
+        var nowByte: UInt8 = arrayGetUnchecked3<UInt8>(arr, i)
         match {
             case nowByte < HIGH_1_UInt8 => i += 1
             case nowByte < HIGH_2_UInt8 => throw IllegalArgumentException("Invalid utf8 byte sequence.")
@@ -258,6 +278,27 @@ class StringIteratorData {
         this.end = myData.size
         this.nextPos = 0
     }
+
+    exclave init(this @local!, data: Array<UInt8> @local!) {
+        myData = data
+        end = myData.size
+        nextPos = 0
+    }
+    exclave init(this @local!, data: RawArray<UInt8> @local!) {
+        this.myData = toArray(data)
+        this.end = myData.size
+        this.nextPos = 0
+    }
+    exclave init(this @local?, data: Array<UInt8> @local?) {
+        myData = data
+        end = myData.size
+        nextPos = 0
+    }
+    exclave init(this @local?, data: RawArray<UInt8> @local?) {
+        this.myData = toArray(data)
+        this.end = myData.size
+        this.nextPos = 0
+    }
 }
 
 // String's Rune Iterator.
@@ -285,6 +326,14 @@ class StringRuneIterator <: Iterator<Rune> {
 class StringByteIterator <: Iterator<Byte> {
     @Frozen
     StringByteIterator(let iteratorData: StringIteratorData) {}
+    @Frozen
+    exclave init(this @local!, iteratorData: StringIteratorData @local!) {
+        this.iteratorData = iteratorData
+    }
+    @Frozen
+    exclave init(this @local?, iteratorData: StringIteratorData @local?) {
+        this.iteratorData = iteratorData
+    }
     /**
      * @return the next element in the iteration.
      * @throws IllegalArgumentException if there is an invalid utf8 leading code
@@ -293,6 +342,26 @@ class StringByteIterator <: Iterator<Byte> {
     @Frozen
     @OverflowWrapping
     public func next(): Option<Byte> {
+        if (iteratorData.nextPos >= iteratorData.end) {
+            return None
+        }
+        let byte = iteratorData.myData.get(iteratorData.nextPos)
+        iteratorData.nextPos = iteratorData.nextPos + 1
+        return byte
+    }
+    @Frozen
+    @OverflowWrapping
+    public exclave func next(this @local!): Option<Byte> @local! {
+        if (iteratorData.nextPos >= iteratorData.end) {
+            return None
+        }
+        let byte = iteratorData.myData.get(iteratorData.nextPos)
+        iteratorData.nextPos = iteratorData.nextPos + 1
+        return byte
+    }
+    @Frozen
+    @OverflowWrapping
+    public exclave func next(this @local?): Option<Byte> @local? {
         if (iteratorData.nextPos >= iteratorData.end) {
             return None
         }
@@ -364,7 +433,7 @@ class StringLazySplitIterator <: Iterator<String> {
     /**
      * @throws OutOfMemoryError if failed to call CJ_CORE_CountAndIndexString.
      */
-    init(orgStrData: Array<UInt8>, orgStrSize: Int64, str: String, maxSplits: Int64, removeEmpty: Bool) {
+    init(orgStrData: Array<UInt8>, orgStrSize: Int64, str: String @local?, maxSplits: Int64, removeEmpty: Bool) {
         this.orgData = orgStrData
         this.separatorLen = str.size
         this.maxSplits = maxSplits
@@ -378,8 +447,8 @@ class StringLazySplitIterator <: Iterator<String> {
             }
         } else {
             unsafe {
-                let org: CPointerHandle<UInt8> = acquireArrayRawData<UInt8>(this.orgData)
-                let pat: CPointerHandle<UInt8> = acquireArrayRawData<UInt8>(str.rawData())
+                let org: CPointerHandle<UInt8> @local? = acquireArrayRawData<UInt8>(this.orgData)
+                let pat: CPointerHandle<UInt8> @local? = acquireArrayRawData<UInt8>(str.rawData())
                 var res: CPointer<Int64> = CJ_CORE_CountAndIndexString(
                     org.pointer,
                     pat.pointer,

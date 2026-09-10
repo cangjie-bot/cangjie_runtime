@@ -41,6 +41,11 @@ public class StringBuilder <: ToString {
         this.endIndex = 0
     }
 
+    public exclave init(this @local!) {
+        this.data = Array<UInt8>(defaultCapacity, repeat: 0)
+        this.endIndex = 0
+    }
+
     @Frozen
     public init(str: String) {
         let capacity = str.size + defaultCapacity
@@ -117,6 +122,12 @@ public class StringBuilder <: ToString {
         return String(this.data[0..this.endIndex])
     }
 
+    public exclave func toString(this @local?): String @local! {
+        var itemData: Array<UInt8> @local! = Array<UInt8>(this.endIndex, repeat: 0)
+        this.data.copyTo(itemData, 0, 0, this.endIndex)
+        String(itemData)
+    }
+
     /**
      * @throws IllegalMemoryException if there are some system errors.
      */
@@ -159,6 +170,27 @@ public class StringBuilder <: ToString {
         var strData = unsafe { str.rawData() }
         var itemLen = strData.size
         this.grow(itemLen)
+        strData.copyTo(this.data, 0, this.endIndex, itemLen)
+        this.endIndex += itemLen
+    }
+
+    @OverflowWrapping
+    public func append(str: String @local?): Unit {
+        if (str.isEmpty()) {
+            return
+        }
+        let strData = unsafe { str.rawData() }
+        let itemLen = strData.size
+        if (this.data.size - this.endIndex < itemLen) {
+            let oldCapacity = this.data.size
+            var newCapacity = oldCapacity + (oldCapacity >> 1)
+            if (newCapacity < this.endIndex + itemLen) {
+                newCapacity = this.endIndex + itemLen + (oldCapacity >> 1)
+            }
+            let itemData = Array<UInt8>(newCapacity, repeat: 0)
+            this.data.copyTo(itemData, 0, 0, this.endIndex)
+            this.data = itemData
+        }
         strData.copyTo(this.data, 0, this.endIndex, itemLen)
         this.endIndex += itemLen
     }
@@ -233,6 +265,10 @@ public class StringBuilder <: ToString {
             case b: Bool => this.append(b)
             case _ => this.append(v.toString())
         }
+    }
+
+    public exclave func append<T>(this @local!, v: T @local?): Unit where T <: ToString {
+        this.append(v.toString())
     }
 
     @Frozen
@@ -409,6 +445,28 @@ func calcNumLen(num: UInt64): Int64 {
 
 @OverflowWrapping
 func numberToString(number: UInt64, endIndex: Int64, buffer: Array<Byte>): Unit {
+    //make sure endindex is smaller then buffer.size
+    var next = endIndex - 1
+    var value = number
+    var i = 0
+    while (value >= 100) {
+        let remain = value / 100
+        i = Int64((value - 100 * remain) * 2)
+        value = remain
+        buffer[next] = digits100[i + 1]
+        buffer[next - 1] = digits100[i]
+        next = next - 2
+    }
+    if (value < 10) {
+        buffer[next] = b'0' + UInt8(value)
+    } else {
+        i = Int64(value * 2)
+        buffer[next] = digits100[i + 1]
+        buffer[next - 1] = digits100[i]
+    }
+}
+@OverflowWrapping
+exclave func numberToString(number: UInt64, endIndex: Int64, buffer: Array<Byte> @local!): Unit {
     //make sure endindex is smaller then buffer.size
     var next = endIndex - 1
     var value = number

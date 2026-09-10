@@ -177,6 +177,15 @@ static std::vector<std::pair<std::string, std::string>> checkList = {
       "default.array_funcTest_1(RawArray<core/core.String>[][][])" },
     { "_CN7default16array_funcTest_2EA1_CN7default9classTestIlEE",
       "default.array_funcTest_2(RawArray<default.classTest<Int64>>[])" },
+    // default param funtion
+    { "_CPI9pkg1.pkg212global_test3HlllE1cHll", "pkg1.pkg2.global_test3(Int64, Int64, Int64).c(Int64, Int64)" },
+    // Global var function
+    { "_CGV9pkg1.pkg28global_aHv", "pkg1.pkg2.global_a" },
+    // Local modal on function decls (this param and param modal).
+    { "_CN18stdx.encoding.json9parseJsonHCNY_15JsonParserLocalEQLE",
+      "stdx.encoding.json.parseJson(stdx.encoding.json.JsonParserLocal @ local!)" },
+    { "_CN18stdx.encoding.json14JsonArrayLocal3addHWLECN18stdx.encoding.json14JsonValueLocalEQLE",
+      "stdx.encoding.json.JsonArrayLocal.add(this @ local!, stdx.encoding.json.JsonValueLocal @ local!)" },
 };
 
 static std::vector<std::pair<std::string, std::string>> checkListForTypes = {
@@ -188,6 +197,10 @@ static std::vector<std::pair<std::string, std::string>> checkListForTypes = {
     { "defaultLambda", "defaultLambda" },
     { "Dh", "Float16" },
     { "DhfaultLambda", "DhfaultLambda" },
+    { "iQLE", "Int32 @ local!" },
+    { "iQlE", "Int32 @ local?" },
+    { "lQLE", "Int64 @ local!" },
+    { "CN7default1AEQLE", "default.A @ local!" },
 };
 
 std::string AssembleDemangledName(const std::string& pkgName, const std::string& fullName, bool isFunctionLike)

@@ -70,6 +70,7 @@ func generateExprAST(exprNode: Option<NodeFormat_Expr>): Expr {
         case "optional_expr" => createOptionalExpr(expr)
         case "optional_chain_expr" => createOptionalChainExpr(expr)
         case "primitive_type_expr" => createPrimitiveTypeExpr(expr, exprBase)
+        case "exclave_expr" => createExclaveExpr(expr, exprBase)
         case "return_expr" => createReturnExpr(expr)
         case "lit_const_expr" => createLitConstExpr(expr, exprBase)
         case "assign_expr" => createAssignExpr(expr)
@@ -227,7 +228,9 @@ func createCallExpr(expr: NodeFormat_Expr): Expr {
         args.add(createArgument(arg))
     }
     var rParen = Token(TokenKind.RPAREN).addPosition(callExpr.GetRightParenPos())
-    return CallExpr(childExpr, lParen, args, rParen)
+    var call = CallExpr(childExpr, lParen, args, rParen)
+    call.modal = createModalInfo(callExpr.GetModal())
+    return call
 }
 
 func createRefExpr(expr: NodeFormat_Expr): Expr {
@@ -610,7 +613,9 @@ func createTypeConvExpr(expr: NodeFormat_Expr): Expr {
     var lParen = Token(TokenKind.LPAREN).addPosition(typeConvExpr.GetLeftParenPos())
     var exprNode = generateExprAST(typeConvExpr.GetExpr())
     var rParen = Token(TokenKind.RPAREN).addPosition(typeConvExpr.GetRightParenPos())
-    return TypeConvExpr(ty, lParen, exprNode, rParen)
+    var typeConv = TypeConvExpr(ty, lParen, exprNode, rParen)
+    typeConv.modal = createModalInfo(typeConvExpr.GetModal())
+    return typeConv
 }
 
 func createForInExpr(expr: NodeFormat_Expr): Expr {
@@ -644,7 +649,20 @@ func createPrimitiveTypeExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBas
     let typeKind = primitiveTypeExpr.GetKind()
     let beginPos = exprBase.GetBegin()
     var kind = Token(TokenKindHelper.getPrimitiveTypeTokenKind(typeKind)).addPosition(beginPos)
-    return PrimitiveTypeExpr(kind)
+    var primExpr = PrimitiveTypeExpr(kind)
+    primExpr.modal = createModalInfo(primitiveTypeExpr.GetModal())
+    return primExpr
+}
+
+func createExclaveExpr(expr: NodeFormat_Expr, exprBase: NodeFormat_NodeBase): Expr {
+    var exclaveExpr = match (expr.GetExprAsExclaveExpr()) {
+        case Some(v) => v
+        case None => throw ParseASTException()
+    }
+    var exclaveToken = Token(TokenKind.EXCLAVE).addPosition(exclaveExpr.GetExclavePos())
+    var body = generateBlock(exclaveExpr.GetBody())
+    var node = ExclaveExpr(exclaveToken, body)
+    return node
 }
 
 func createArrayLiteral(expr: NodeFormat_Expr): Expr {
